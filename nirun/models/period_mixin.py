@@ -25,6 +25,52 @@ class PeriodMixin(models.AbstractModel):
     duration_years = fields.Integer(
         "Duration (years)", compute="_compute_duration", default=0
     )
+    tense = fields.Selection(
+        [("past", "Past"), ("present", "Present"), ("future", "Future")],
+        compute="_compute_tense",
+        require=False,
+        readonly=True,
+    )
+    is_present = fields.Boolean(compute="_compute_tense", readonly=True)
+    is_past = fields.Boolean(compute="_compute_tense", readonly=True)
+    is_future = fields.Boolean(compute="_compute_tense", readonly=True)
+
+    @api.onchange("period_start", "period_end")
+    @api.depends("period_start", "period_end")
+    def _compute_tense(self):
+        today = fields.Date.today()
+        for rec in self:
+            is_present = rec.in_period(today)
+            is_past = rec.period_end and today > rec.period_end
+            is_future = rec.period_start and today < rec.period_start
+            rec.update(
+                {
+                    "is_present": is_present,
+                    "is_past": is_past,
+                    "is_future": is_future,
+                    "tense": (
+                        "present"
+                        if is_present
+                        else "past"
+                        if is_past
+                        else "future"
+                        if is_future
+                        else None
+                    ),
+                }
+            )
+
+    def in_period(self, date=None):
+        self.ensure_one()
+        if not date:
+            date = fields.Date.today()
+        if not self.period_start and not self.period_end:
+            return False
+        if self.period_start and date < self.period_start:
+            return False
+        if self.period_end and date > self.period_end:
+            return False
+        return True
 
     @api.onchange("period_start", "period_end")
     def _compute_duration(self):
