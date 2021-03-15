@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ReferenceRange(models.Model):
@@ -10,9 +10,9 @@ class ReferenceRange(models.Model):
 
     observation = fields.Selection(
         [
-            ("bp-s", "Blood Pressure Systolic"),
-            ("bp-d", "Blood Pressure Diastolic"),
-            ("body-temp", "Body Temperature"),
+            ("bp_s", "Blood Pressure Systolic"),
+            ("bp_d", "Blood Pressure Diastolic"),
+            ("body_temp", "Body Temperature"),
         ],
         required=True,
         index=True,
@@ -26,3 +26,14 @@ class ReferenceRange(models.Model):
             (ref.id, "%s [%d-%d]" % (ref.observation, ref.low, ref.high))
             for ref in self
         ]
+
+    @api.model
+    def match_for(self, observation, value):
+        return self.search(
+            [
+                ("observation", "=", observation),
+                ("low", "<=", value),
+                ("high", ">", value),
+            ],
+            limit=1,
+        )

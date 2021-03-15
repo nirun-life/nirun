@@ -5,23 +5,22 @@ from odoo import fields, models
 class ObservationBase(models.AbstractModel):
     _name = "ni.observation.base"
     _description = "Observation"
+    _inherit = ["ni.patient.res"]
 
-    company_id = fields.Many2one(
-        "res.company",
-        tracking=True,
-        required=True,
-        index=True,
-        default=lambda self: self.env.company,
-    )
-    patient_id = fields.Many2one(
-        "ni.patient", index=True, required=True, ondelete="cascade", check_company=True,
-    )
     patient_age_years = fields.Integer(related="patient_id.age_years")
-    encounter_id = fields.Many2one("ni.encounter", index=True, require=False)
     performer_ref = fields.Reference(
         [("ni.patient", "Patient"), ("hr.employee", "Practitioner")],
         required=False,
         index=True,
     )
-    effective_date = fields.Datetime(default=lambda _: fields.Datetime.now())
+    effective_date = fields.Datetime(
+        required=True, default=lambda _: fields.Datetime.now()
+    )
     note = fields.Text()
+
+    def interpretation_for(self, field):
+        self.ensure_one()
+        ref_range = self.env["ni.observation.reference.range"].match_for(
+            field, self[field]
+        )
+        return ref_range[0].interpretation_id if ref_range else None
