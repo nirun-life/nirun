@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_view_form" model="ir.ui.view">
+        <field name="name">patient.view.form.inherit.personality</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='private']" position="after">
+                <page name="personality" string="Personality">
+                    <group>
+                        <field name="talent" />
+                    </group>
+                    <group>
+                        <field name="face" />
+                        <field name="skin" />
+                        <field name="flaw" />
+                        <field name="conversation" />
+                        <field name="demeanor" />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
