@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <menuitem id="careplan_menu_root" name="Care Plans" />
+    <menuitem id="careplan_menu" name="Care Plans" action="careplan_action" parent="careplan_menu_root" />
+    <menuitem id="activity_menu" name="Activity" action="careplan_activity_action" parent="careplan_menu_root" />
+    <menuitem
+        id="careplan_configuration_menu"
+        name="Configuration"
+        groups="careplan_group_manager"
+        parent="careplan_menu_root"
+        sequence="100"
+    />
+    <menuitem
+        id="careplan_category_menu"
+        name="Categories"
+        action="careplan_category_action"
+        parent="careplan_configuration_menu"
+    />
+</odoo>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="careplan_action_sub_careplan" model="ir.actions.act_window">
+        <field name="name">Sub-Care Plans</field>
+        <field name="res_model">ni.careplan</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('active', '=', True)]</field>
+        <field name="context">
+            {
+                'search_default_parent_id': [active_id],
+                'default_parent_id': active_id,
+            }
+        </field>
+    </record>
+    <record id="careplan_view_search_inherit" model="ir.ui.view">
+        <field name="name">careplan.view.search.inherit</field>
+        <field name="model">ni.careplan</field>
+        <field name="inherit_id" ref="nirun_careplan.careplan_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='patient_id']" position="after">
+                <separator />
+                <field name="parent_id" string="Sub plan of" />
+            </xpath>
+        </field>
+    </record>
+    <record id="careplan_view_form_inherit" model="ir.ui.view">
+        <field name="name">careplan.view.form.inherit</field>
+        <field name="model">ni.careplan</field>
+        <field name="inherit_id" ref="nirun_careplan.careplan_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[@name='button_box']">
+                <field name="parent_id" invisible="1" />
+                <button name="%(careplan_action_sub_careplan)d" class="oe_stat_button" icon="fa-file" type="action">
+                    <field name="child_count" string="Sub-plan" widget="statinfo" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+    <record id="careplan_view_form_simplified_inherit" model="ir.ui.view">
+        <field name="name">careplan.view.form.simplified.inherit</field>
+        <field name="model">ni.careplan</field>
+        <field name="inherit_id" ref="nirun_careplan.careplan_view_form_simplified" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='patient_id']" position="after">
+                <field name="parent_id" invisible="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

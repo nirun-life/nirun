@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="careplan_action" model="ir.actions.act_window">
+        <field name="name">Care Plans</field>
+        <field name="res_model">ni.careplan</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+    <record id="careplan_view_search" model="ir.ui.view">
+        <field name="name">careplan.view.search</field>
+        <field name="model">ni.careplan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <separator />
+                <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
+                <separator />
+                <group expand="1" string="Group By">
+                    <filter name="Manager" context="{'group_by': 'manager_id'}" string="Care Manager" />
+                    <filter name="Patient" context="{'group_by': 'patient_id'}" string="Patient" />
+                    <filter name="Author" context="{'group_by': 'author_id'}" string="Author" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="careplan_view_form" model="ir.ui.view">
+        <field name="name">careplan.view.form</field>
+        <field name="model">ni.careplan</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="active" invisible="1" />
+                <field name="id" invisible="1" />
+                <header class="oe_read_only">
+                    <button
+                        name="action_confirm"
+                        attrs="{'invisible': [('state', 'not in', ['draft'])]}"
+                        class="btn-primary"
+                        string="Confirm"
+                        type="object"
+                    />
+                    <button
+                        name="action_close"
+                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
+                        class="oe_highlight"
+                        string="Close"
+                        type="object"
+                    />
+                    <button
+                        name="action_hold_on"
+                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
+                        string="Hold on"
+                        type="object"
+                    />
+                    <button
+                        name="action_resume"
+                        attrs="{'invisible': [('state', 'not in', ['on-hold'])]}"
+                        string="Resume"
+                        type="object"
+                    />
+                    <button
+                        name="action_revoked"
+                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
+                        string="Revoke"
+                        type="object"
+                    />
+                    <field name="state" statusbar_visible="draft,active,completed" widget="statusbar" />
+                </header>
+                <sheet string="Careplan">
+                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                        <button
+                            name="%(careplan_activity_action_from_careplan)d"
+                            class="oe_stat_button"
+                            icon="fa-tasks"
+                            type="action"
+                        >
+                            <field name="activity_count" string="Activities" widget="statinfo" />
+                        </button>
+                    </div>
+                    <field name="patient_avatar" class="oe_avatar" widget='image' />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <div class="oe_title">
+                        <label for="patient_id" string="Care plan for" />
+                        <h1>
+                            <field name="patient_id" placeholder="Patient" />
+                        </h1>
+                        <field
+                            name="category_ids"
+                            options="{ 'color_field': 'color'}"
+                            placeholder="Categories"
+                            widget="many2many_tags"
+                        />
+                    </div>
+                    <group>
+                        <group>
+                            <field name="description" placeholder="Summary of nature of plan" />
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field
+                                name="encounter_id"
+                                attrs="{'readonly': [('id','>', 0 )]}"
+                                context="{'show_patient_name': True}"
+                            />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Details">
+                            <group string="Responsible">
+                                <field name="manager_id" />
+                            </group>
+                            <group string="Schedule">
+                                <field name="period_start" />
+                                <field name="period_end" />
+                            </group>
+                        </page>
+                        <page string="Misc">
+                            <group>
+                                <group string="Planning">
+                                    <field name="author_id" />
+                                    <field
+                                        name="contributor_ids"
+                                        options="{'color_field': 'color', 'no_create_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                    <field name="patient_contribution" />
+                                </group>
+                                <group string="Intent">
+                                    <field name="intent" widget="radio" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user" widget="mail_followers" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="careplan_view_tree" model="ir.ui.view">
+        <field name="name">careplan.view.tree</field>
+        <field name="model">ni.careplan</field>
+        <field name="arch" type="xml">
+            <tree decoration-bf="message_needaction==True" decoration-muted="active == False" string="Care Plans">
+                <field name="sequence" widget="handle" />
+                <field name="message_needaction" invisible="1" />
+                <field name="active" invisible="1" />
+                <field name="id" optional="hide" />
+                <field name="description" optional="hide" />
+                <field name="patient_id" />
+                <field name="category_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
+                <field name="manager_id" />
+                <field name="period_start" optional="show" />
+                <field name="period_end" optional="hide" />
+                <field name="state" string="Status" />
+                <field name="company_id" groups="base.group_multi_company" />
+            </tree>
+        </field>
+    </record>
+    <record id="careplan_view_form_simplified" model="ir.ui.view">
+        <field name="name">careplan.view.form.simplified</field>
+        <field name="model">ni.careplan</field>
+        <field name="arch" type="xml">
+            <form string="Project">
+                <group>
+                    <field name="company_id" groups="base.group_multi_company" />
+                    <group>
+                        <field name="patient_id" />
+                        <field name="encounter_id" context="{'default_patient_id': patient_id}" />
+                        <field name="manager_id" />
+                        <field name="author_id" invisible="1" />
+                        <field name="description" />
+                    </group>
+                </group>
+                <footer>
+                    <button name="open_activities" class="btn-primary" string="Create" type="object" />
+                    <button class="btn-secondary" special="cancel" string="Discard" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="open_create_careplan" model="ir.actions.act_window">
+        <field name="name">Create a Care plan</field>
+        <field name="res_model">ni.careplan</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="careplan_view_form_simplified" />
+        <field name="target">new</field>
+    </record>
+    <record id="careplan_view_kanban" model="ir.ui.view">
+        <field name="name">project.project.kanban</field>
+        <field name="model">ni.careplan</field>
+        <field name="arch" type="xml">
+            <kanban
+                class="oe_background_grey o_kanban_dashboard o_emphasize_colors"
+                on_create="nirun_careplan.open_create_careplan"
+            >
+                <field name="id" />
+                <field name="description" />
+                <field name="patient_id" />
+                <field name="manager_id" />
+                <field name="activity_count" />
+                <field name="state" />
+                <field name="period_start" />
+                <field name="period_end" />
+                <field name="color" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click o_has_icon">
+                            <div class="o_project_kanban_main">
+                                <div class="o_kanban_card_content">
+                                    <div class="o_kanban_primary_left">
+                                        <div class="o_primary">
+                                            <span t-if="record.patient_id.value">
+                                                <strong>
+                                                    <t t-esc="record.patient_id.value" />
+                                                </strong>
+                                            </span>
+                                            <span>
+                                                <small class="text-muted">
+                                                    <t t-set="id_display" t-value="'#' + record.id.value" />
+                                                    <span t-esc="id_display" />
+                                                    <span>
+                                                        <i
+                                                            aria-label="period"
+                                                            class="fa fa-calendar"
+                                                            role="img"
+                                                            title="Period"
+                                                        />
+                                                        <t t-esc="record.period_start.value" />
+                                                        <t t-if="record.period_end.value">
+                                                            -
+                                                            <t t-esc="record.end.value" />
+                                                        </t>
+                                                    </span>
+                                                </small>
+                                            </span>
+                                            <field
+                                                name="category_ids"
+                                                options="{'color_field': 'color', 'no_create_edit': True}"
+                                                widget="many2many_tags"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="o_kanban_card_manage_pane dropdown-menu"
+                                    groups="nirun_careplan.careplan_group_manager"
+                                    role="menu"
+                                >
+                                    <div class="o_kanban_card_manage_section o_kanban_manage_reports">
+                                        <div role="menuitem">
+                                            <a type="edit">Edit</a>
+                                        </div>
+                                    </div>
+                                    <div aria-haspopup="true" class="o_no_padding_kanban_colorpicker" role="menuitem">
+                                        <ul class="oe_kanban_colorpicker" data-field="color" role="popup" />
+                                    </div>
+                                </div>
+                                <a class="o_kanban_manage_toggle_button o_left" href="#">
+                                    <i aria-label="Manage" class="fa fa-ellipsis-v" role="img" title="Manage" />
+                                </a>
+                            </div>
+                            <div class="o_project_kanban_boxes">
+                                <a
+                                    name="%(careplan_activity_action_from_careplan)d"
+                                    class="o_project_kanban_box"
+                                    type="action"
+                                >
+                                    <div>
+                                        <span class="o_value">
+                                            <i aria-label="Activity" class="fa fa-tasks" role="img" title="Activity" />
+                                            <t t-esc="record.activity_count.value" />
+                                        </span>
+                                        <span class="o_label">Activities</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>
