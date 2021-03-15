@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo noupdate="1">
+    <record id="mrs_glenda" model="ni.patient">
+        <field name="title" ref="base.res_partner_title_madam" />
+        <field name="firstname">Glenda</field>
+        <field name="lastname">J Langlois</field>
+        <field name="gender">female</field>
+        <field name="birthdate">1960-02-19</field>
+        <field name="country_id" ref="base.us" />
+        <field name="identification_id">435-60-4145</field>
+        <field name="category_ids" eval="[(6, 0, [ref('cat_ptdp', 'cat_disa')])]" />
+        <field name="image_1920" file="nirun_patient/static/img/patient_mrs_glenda.jpg" type="base64" />
+    </record>
+    <record id="mr_dennis" model="ni.patient">
+        <field name="title" ref="base.res_partner_title_mister" />
+        <field name="firstname">Dennis</field>
+        <field name="lastname">J Landry</field>
+        <field name="gender">male</field>
+        <field name="birthdate">1952-02-19</field>
+        <field name="country_id" ref="base.us" />
+        <field name="category_ids" eval="[(6, 0, [ref('cat_vvdp')])]" />
+        <field name="image_1920" file="nirun_patient/static/img/patient_mr_dennis.jpg" type="base64" />
+    </record>
+    <record id="miss_judith" model="ni.patient">
+        <field name="title" ref="base.res_partner_title_miss" />
+        <field name="firstname">Judith</field>
+        <field name="lastname">Gonzalez</field>
+        <field name="gender">female</field>
+        <field name="birthdate">1957-02-19</field>
+        <field name="deceased_date">2021-01-10</field>
+        <field name="country_id" ref="base.ca" />
+        <field name="identification_id">555-94-0592</field>
+        <field name="category_ids" eval="[(6, 0, [ref('cat_mndp')])]" />
+        <field name="image_1920" file="nirun_patient/static/img/patient_miss_judith.jpg" type="base64" />
+    </record>
+    <record id="prof_song" model="ni.patient">
+        <field name="title" ref="base.res_partner_title_prof" />
+        <field name="firstname">Song</field>
+        <field name="lastname">Yijun</field>
+        <field name="gender">male</field>
+        <field name="birthdate">1966-02-19</field>
+        <field name="country_id" ref="base.cn" />
+        <field name="category_ids" eval="[(6, 0, [ref('cat_indp')])]" />
+        <field name="image_1920" file="nirun_patient/static/img/patient_prof_song.jpg" type="base64" />
+    </record>
+</odoo>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="encounter_action" model="ir.actions.act_window">
+        <field name="name">Patient Encounter</field>
+        <field name="res_model">ni.encounter</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="encounter_view_form" model="ir.ui.view">
+        <field name="name">encounter.view.form</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+                        name="action_confirm"
+                        attrs="{'invisible': [('state', 'not in', ['draft'])]}"
+                        string="Confirm"
+                        type="object"
+                    />
+                    <button
+                        name="action_close"
+                        attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
+                        string="Confirm"
+                        type="object"
+                    />
+                    <field name="state" statusbar_visible="draft,planned,in-progress,finished" widget="statusbar" />
+                </header>
+                <sheet>
+                    <field
+                        name="image_1920"
+                        class="oe_avatar"
+                        options='{"zoom": true, "preview_image":"image_128"}'
+                        widget='image'
+                    />
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="AN. 0000X" />
+                        </h1>
+                        <div groups="base.group_multi_company">
+                            <label for="company_id" string="Company" />
+                            <field name="company_id" />
+                        </div>
+                        <label for="patient_id" string="Patient" />
+                        <field
+                            name="patient_id"
+                            attrs="{'readonly': [('id','>', 0 )]}"
+                            placeholder="select patient..."
+                        />
+                    </div>
+                    <group>
+                        <field name="id" invisible="1" />
+                        <field name="period_start" />
+                        <field name="period_end" />
+                        <field name="duration_days" />
+                        <field name="duration" />
+                        <field name="location_id" />
+                        <field name="reason_ids" options="{'color_field': 'color'}" widget='many2many_tags' />
+                        <field name="origin_partner_id" />
+                    </group>
+                    <notebook>
+                        <page string="Location">
+                            <field
+                                name="location_history_ids"
+                                context="{'default_encounter_id': active_id, 'default_start': period_start, 'default_end': period_end}"
+                                mode="tree"
+                            >
+                                <tree editable="top" string="Locations History List">
+                                    <control>
+                                        <create string="Add Location" />
+                                    </control>
+                                    <field name="location_id" />
+                                    <field name="period_start" />
+                                    <field name="period_end" />
+                                    <field name="company_id" groups="base.group_multi_company" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Diagnosis">
+                            <field
+                                name="diagnosis_id"
+                                context="{'default_encounter_id': active_id, 'default_patient_id': patient_id}"
+                                mode="tree"
+                            />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user" widget="mail_followers" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="encounter_view_tree" model="ir.ui.view">
+        <field name="name">encounter.view.tree</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <tree string="Patient Categories">
+                <field name="name" />
+                <field name="patient_id" />
+                <field name="period_start" />
+                <field name="period_end" />
+                <field name="duration_days" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+    <record id="encounter_view_search" model="ir.ui.view">
+        <field name="name">encounter.view.search</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="period_start" />
+            </search>
+        </field>
+    </record>
+</odoo>

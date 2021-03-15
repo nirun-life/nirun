@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="encounter_reason_action" model="ir.actions.act_window">
+        <field name="name">Encounter Reason</field>
+        <field name="res_model">ni.encounter.reason</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="encounter_reason_view_form" model="ir.ui.view">
+        <field name="name">encounter.reason.view.form</field>
+        <field name="model">ni.encounter.reason</field>
+        <field name="arch" type="xml">
+            <form string="Patient Categories">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="color" />
+                        <field name="sequence" />
+                    </group>
+                    <notebook>
+                        <page string="Patients">
+                            <field name="encounter_ids" no_create="True" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="encounter_reason_view_tree" model="ir.ui.view">
+        <field name="name">encounter_reason.view.tree</field>
+        <field name="model">ni.encounter.reason</field>
+        <field name="arch" type="xml">
+            <tree string="Patient Categories">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+    <record id="encounter_reason_view_search" model="ir.ui.view">
+        <field name="name">encounter_reason.view.search</field>
+        <field name="model">ni.encounter.reason</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+            </search>
+        </field>
+    </record>
+</odoo>

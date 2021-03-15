@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="care_episode_view_form" model="ir.ui.view">
+        <field name="name">care.episode.view.form</field>
+        <field name="model">ni.care.episode</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="1" />
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" />
+                        </h1>
+                        <label for="company_id" string="Company" />
+                        <field name="company_id" groups="base.group_multi_company" />
+                        <field name="patient_id" attrs="{'invisible': [('id','=', 0 )]}" placeholder="Patient" />
+                    </div>
+                    <group>
+                        <field
+                            name="encounter_id"
+                            attrs="{'readonly': [('id','>', 0 )]}"
+                            context="{'show_patient_name': True}"
+                        />
+                        <field name="care_manager" />
+                    </group>
+                    <group>
+                        <field name="period_start" />
+                        <field name="period_end" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="care_episode_view_tree" model="ir.ui.view">
+        <field name="name">care.episode.view.tree</field>
+        <field name="model">ni.care.episode</field>
+        <field name="arch" type="xml">
+            <tree string="Patient Episode of Care">
+                <field name="name" />
+                <field name="care_manager" />
+                <field name="period_start" />
+                <field name="duration_days" />
+                <field name="period_end" />
+            </tree>
+        </field>
+    </record>
+</odoo>

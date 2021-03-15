@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="location_action" model="ir.actions.act_window">
+        <field name="name">Location</field>
+        <field name="res_model">ni.location</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="location_view_tree" model="ir.ui.view">
+        <field name="name">location.view.tree</field>
+        <field name="model">ni.location</field>
+        <field name="arch" type="xml">
+            <tree name="Locations">
+                <field name="company_id" groups="base.group_multi_company" />
+                <field name="display_name" />
+                <field name="alias" />
+                <field name="physical_type_id" />
+                <field name="parent_id" invisible="1" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+    <record id="location_view_form" model="ir.ui.view">
+        <field name="name">location.view.form</field>
+        <field name="model">ni.location</field>
+        <field name="arch" type="xml">
+            <form string="Location">
+                <sheet>
+                    <group>
+                        <field name="parent_path" invisible="1" />
+                        <field name="company_id" groups="base.group_multi_company" />
+                        <field name="name" />
+                        <field name="alias" />
+                        <field name="physical_type_id" />
+                        <field name="parent_id" />
+                        <field name="active" />
+                        <field name="child_ids" context="{'default_parent_id': active_id}">
+                            <tree create="0" edit="0">
+                                <field name="name" />
+                                <field name="physical_type_id" />
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="location_view_search" model="ir.ui.view">
+        <field name="name">location.view.search</field>
+        <field name="model">ni.location</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="display_name" />
+                <separator />
+                <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
+            </search>
+        </field>
+    </record>
+    <record id="location_type_action" model="ir.actions.act_window">
+        <field name="name">Location Type</field>
+        <field name="res_model">ni.location.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="location_type_view_tree" model="ir.ui.view">
+        <field name="name">location.type.view.tree</field>
+        <field name="model">ni.location.type</field>
+        <field name="arch" type="xml">
+            <tree name="Location Types">
+                <field name="code" />
+                <field name="name" />
+                <field name="definition" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+</odoo>

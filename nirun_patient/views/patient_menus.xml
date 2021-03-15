@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <menuitem id="patient_menu_root" name="Patients" />
+    <menuitem id="patient_menu" name="Patients Directory" action="patient_action" parent="patient_menu_root" />
+    <menuitem id="encounter_menu" name="Encounter" action="encounter_action" parent="patient_menu_root" />
+    <menuitem id="patient_configuration_menu" name="Configuration" parent="patient_menu_root" />
+    <menuitem
+        id="patient_category_menu"
+        name="Category"
+        action="patient_category_action"
+        parent="patient_configuration_menu"
+    />
+    <menuitem id="location_menu" name="Location" action="location_action" parent="patient_configuration_menu" />
+    <menuitem
+        id="location_type_menu"
+        name="Location Type"
+        action="location_type_action"
+        parent="patient_configuration_menu"
+    />
+    <menuitem
+        id="encounter_reason_menu"
+        name="Encounter Reason"
+        action="encounter_reason_action"
+        parent="patient_configuration_menu"
+    />
+</odoo>
