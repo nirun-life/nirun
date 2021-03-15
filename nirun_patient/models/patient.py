@@ -141,6 +141,9 @@ class Patient(models.Model):
         string="Category",
     )
     encounter_ids = fields.One2many("ni.encounter", "patient_id", string="Encounter")
+    current_encounter_id = fields.Many2one(
+        "ni.encounter", compute="_compute_current_encounter_id", require=False
+    )
     diagnosis_ids = fields.One2many(
         "ni.patient.condition.latest", "patient_id", string="Diagnosis", readonly=True
     )
@@ -152,6 +155,17 @@ class Patient(models.Model):
             _("Identifier must be unique !"),
         )
     ]
+
+    @api.depends("encounter_ids")
+    def _compute_current_encounter_id(self):
+        enc = (
+            self.env["ni.encounter"]
+            .search([("patient_id", "in", self.ids)], order="patient_id, id DESC")
+            .filtered(lambda en: en.is_present)
+        )
+        for rec in self:
+            enc_ids = enc.filtered(lambda en: en.patient_id.id == rec.id)
+            rec.current_encounter_id = enc_ids[0] if enc_ids else None
 
     @api.model
     def _default_image(self):
@@ -175,7 +189,7 @@ class Patient(models.Model):
             if not record.birthdate:
                 continue
             if record.birthdate > fields.date.today():
-                raise ValidationError(_("Patient cannot be born in the future.",))
+                raise ValidationError(_("PatientRes cannot be born in the future.",))
 
     @api.constrains("deceased_date")
     def _check_deceased_date(self):
@@ -184,10 +198,10 @@ class Patient(models.Model):
                 continue
             if record.deceased_date > fields.date.today():
                 raise ValidationError(
-                    _("You should not forecast that Patient will die!",)
+                    _("You should not forecast that PatientRes will die!",)
                 )
             if record.birthdate and record.deceased_date < record.birthdate:
-                raise ValidationError(_("Patient cannot die before they was born!",))
+                raise ValidationError(_("PatientRes cannot die before they was born!",))
 
     @api.depends("title", "firstname", "lastname")
     def _compute_name(self):
@@ -197,7 +211,7 @@ class Patient(models.Model):
                 for name in [record.title.shortcut, record.firstname, record.lastname]
             ]
             computed_name = " ".join(filter(None, names))
-            record.name = computed_name if computed_name else _("New Patient")
+            record.name = computed_name if computed_name else _("New PatientRes")
 
     @api.model
     def _compute_is_deceased(self):
