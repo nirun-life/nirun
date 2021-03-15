@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <menuitem id="observation_menu_root" name="Observations" />
+    <menuitem id="vitalsign_menu" name="Vital Signs" action="vitalsign_action" parent="observation_menu_root" />
+    <menuitem id="configuration_menu" name="Configurations" parent="observation_menu_root" sequence="100" />
+    <menuitem
+        id="interpretation_menu"
+        name="Interpretation"
+        action="interpretation_action"
+        parent="configuration_menu"
+    />
+    <menuitem
+        id="reference_range_menu"
+        name="Reference Range"
+        action="reference_range_action"
+        parent="configuration_menu"
+    />
+</odoo>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="vitalsign_action" model="ir.actions.act_window">
+        <field name="name">Vital Signs</field>
+        <field name="res_model">ni.observation.vitalsign</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="vitalsign_view_tree" model="ir.ui.view">
+        <field name="name">vitalsign.view.tree</field>
+        <field name="model">ni.observation.vitalsign</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="effective_date" />
+                <field name="patient_id" />
+                <field name="bp_s_interpretation_id" invisible="True" />
+                <field name="bp_s" />
+                <field name="bp_d_interpretation_id" invisible="True" />
+                <field name="bp_d" />
+                <field name="performer_ref" optional="show" />
+                <field name="company_id" groups="base.group_multi_company" optional="show" />
+            </tree>
+        </field>
+    </record>
+    <record id="vitalsign_view_form" model="ir.ui.view">
+        <field name="name">vitalsign.view.form</field>
+        <field name="model">ni.observation.vitalsign</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="company_id" groups="base.group_multi_company" />
+                        <field name="patient_id" />
+                        <field name="effective_date" />
+                    </group>
+                    <group>
+                        <field name="encounter_id" />
+                        <field name="performer_ref" />
+                    </group>
+                    <group string="Blood Pressure">
+                        <field name="bp_s" />
+                        <field name="bp_d" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>
