@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_contact_view_tree" model="ir.ui.view">
+        <field name="name">patient.contact.view.tree</field>
+        <field name="model">ni.patient.contact</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="contact_id" />
+                <field name="relationship" />
+                <field name="comment" />
+                <field name="is_contactable" />
+            </tree>
+        </field>
+    </record>
+    <record id="patient_contact_view_form" model="ir.ui.view">
+        <field name="name">patient.contact.view.form</field>
+        <field name="model">ni.patient.contact</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="sequence" invisible="1" />
+                <field name="patient_id" invisible="context.get('hide_patient',False)" />
+                <group>
+                    <field name="contact_id" domain="[('type', '!=', 'private')]" />
+                    <field name="relationship" />
+                    <field name="is_contactable" />
+                </group>
+                <label for="comment" string="Internal Note" />
+                <field name="comment" placeholder="Comment..." />
+            </form>
+        </field>
+    </record>
+</odoo>
