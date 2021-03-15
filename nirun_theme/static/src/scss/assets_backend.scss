@@ -1,0 +1,95 @@
+$link-color: $ni-primary-dark-color;
+
+.btn-primary {
+    color: white;
+    &:hover,
+    &:focus {
+        color: white;
+    }
+}
+
+a {
+    color: $link-color;
+    &:hover {
+        color: darken($link-color, 15%);
+    }
+}
+
+.o_list_view thead {
+    background-color: #f6f7f9;
+}
+
+.modal-header {
+    color: $ni-primary-color;
+    background-color: #f6f7f9;
+}
+
+// =============================================================================
+// Override web/src/scss/fields_extra.scss
+// =============================================================================
+.o_required_modifier {
+    &.o_input,
+    .o_input {
+        background-color: $ni-accent-light-color !important;
+    }
+}
+
+.o_field_widget {
+    &.o_field_many2one .o_external_button {
+        color: $ni-accent-color;
+        &:hover {
+            color: darken($ni-accent-color, 15%);
+        }
+    }
+}
+
+// =============================================================================
+// Override web/src/scss/form_view.scss
+// =============================================================================
+
+.o_form_view {
+    .o_horizontal_separator {
+        color: $ni-primary-dark-color;
+        font-weight: bold;
+    }
+
+    .o_form_uri {
+        display: inline-block;
+        color: $link-color;
+        &:hover {
+            color: darken($link-color, 15%);
+        }
+        > span {
+            color: $o-main-text-color;
+            &:hover {
+                color: $o-main-text-color;
+            }
+        }
+        > span:first-child {
+            color: $link-color;
+            &:hover {
+                color: darken($link-color, 15%);
+            }
+        }
+    }
+}
+
+// =============================================================================
+// Override web/src/scss/search_panel.scss
+// =============================================================================
+.o_controller_with_searchpanel {
+    .o_search_panel {
+        .o_search_panel_category .o_search_panel_section_icon {
+            color: $ni-primary-dark-color;
+        }
+    }
+}
+
+// =============================================================================
+// Override mail/src/scss/systray.scss
+// =============================================================================
+.o_mail_systray_item {
+    .o_notification_counter {
+        background: $ni-accent-color;
+    }
+}

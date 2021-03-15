@@ -1,0 +1,62 @@
+// =============================================================================
+// Override web/src/scss/navbar.scss
+// =============================================================================
+$ni-navbar-bg: #f6f7f9;
+$ni-navbar-link-hover-bg: darken($ni-navbar-bg, 10%);
+$ni-navbar-text-color: $ni-primary-color;
+
+.o_main_navbar {
+    background-color: $ni-navbar-bg;
+    border-bottom: 1px solid $ni-navbar-link-hover-bg;
+    color: $ni-navbar-text-color;
+    font-weight: bold;
+
+    > a,
+    > button {
+        &:hover,
+        &:focus {
+            background-color: $ni-navbar-link-hover-bg;
+            color: $ni-navbar-text-color;
+        }
+        &:focus,
+        &:active,
+        &:focus:active {
+            color: $ni-navbar-text-color;
+        }
+    }
+
+    > ul {
+        > li {
+            > a,
+            > label {
+                color: $ni-navbar-text-color;
+                &:hover,
+                &:active,
+                &:focus:active {
+                    background-color: $ni-navbar-link-hover-bg;
+                    color: $ni-navbar-text-color;
+                }
+            }
+
+            &.o_extra_menu_items {
+                &.show > ul {
+                    > li {
+                        > a {
+                            background-color: $ni-navbar-link-hover-bg;
+                            color: $ni-navbar-text-color;
+                            border-bottom: 1px solid $ni-navbar-link-hover-bg;
+
+                            &.dropdown-toggle {
+                                background-color: $ni-navbar-link-hover-bg;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .show .dropdown-toggle {
+        background-color: $ni-navbar-link-hover-bg;
+    }
+}
