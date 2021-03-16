@@ -1,5 +1,6 @@
 #  Copyright (c) 2021 Piruin P.
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class ObservationBase(models.AbstractModel):
@@ -16,8 +17,10 @@ class ObservationBase(models.AbstractModel):
     effective_date = fields.Datetime(
         required=True, default=lambda _: fields.Datetime.now()
     )
+    active = fields.Boolean(default=True)
     note = fields.Text()
     _codes = []
+    _codes_min_max = []
 
     @api.depends(lambda self: self._codes)
     def _compute_interpretation(self):
@@ -37,3 +40,12 @@ class ObservationBase(models.AbstractModel):
             if ranges
             else self.env.ref("nirun_observation.interpretation_EX")
         )
+
+    def check_input_range(self, args):
+        self.ensure_one()
+        for code, _min, _max in args:
+            if not (_min <= self[code] <= _max):
+                raise ValidationError(
+                    _("%s is out of range [%d-%d]")
+                    % (self._fields[code].string, _min, _max)
+                )

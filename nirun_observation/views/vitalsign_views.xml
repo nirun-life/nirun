@@ -8,6 +8,27 @@
         <field name="res_model">ni.observation.vitalsign</field>
         <field name="view_mode">tree,form</field>
     </record>
+    <record id="vitalsign_view_search" model="ir.ui.view">
+        <field name="name">vitalsign.view.search</field>
+        <field name="model">ni.observation.vitalsign</field>
+        <field name="arch" type="xml">
+            <search string="Search Vital Signs">
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <filter
+                    name="activities_today"
+                    string="Today"
+                    domain="[('effective_date', '=', context_today().strftime('%Y-%m-%d'))]"
+                />
+                <filter name="effective_date" string="Period" date="effective_date" />
+                <separator />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <group string="Group By">
+                    <filter name="Patient" context="{'group_by': 'patient_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
     <record id="vitalsign_view_tree" model="ir.ui.view">
         <field name="name">vitalsign.view.tree</field>
         <field name="model">ni.observation.vitalsign</field>
@@ -29,23 +50,25 @@
         <field name="model">ni.observation.vitalsign</field>
         <field name="arch" type="xml">
             <form>
-                <group>
+                <sheet>
                     <group>
-                        <field name="company_id" groups="base.group_multi_company" />
-                        <field name="patient_id" />
-                        <field name="effective_date" />
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="patient_id" />
+                            <field name="effective_date" />
+                        </group>
+                        <group>
+                            <field name="encounter_id" />
+                            <field name="performer_ref" />
+                        </group>
+                        <group string="Blood Pressure">
+                            <field name="bp_s" />
+                            <field name="bp_s_interpretation_id" />
+                            <field name="bp_d" />
+                            <field name="bp_d_interpretation_id" />
+                        </group>
                     </group>
-                    <group>
-                        <field name="encounter_id" />
-                        <field name="performer_ref" />
-                    </group>
-                    <group string="Blood Pressure">
-                        <field name="bp_s" />
-                        <field name="bp_s_interpretation_id" />
-                        <field name="bp_d" />
-                        <field name="bp_d_interpretation_id" />
-                    </group>
-                </group>
+                </sheet>
             </form>
         </field>
     </record>
