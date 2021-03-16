@@ -1,5 +1,5 @@
 #  Copyright (c) 2021 Piruin P.
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ObservationBase(models.AbstractModel):
@@ -17,10 +17,23 @@ class ObservationBase(models.AbstractModel):
         required=True, default=lambda _: fields.Datetime.now()
     )
     note = fields.Text()
+    _codes = []
 
-    def interpretation_for(self, field):
-        self.ensure_one()
-        ref_range = self.env["ni.observation.reference.range"].match_for(
-            field, self[field]
+    @api.depends(lambda self: self._codes)
+    def _compute_interpretation(self):
+        for rec in self:
+            for code in self._codes:
+                rec["%s_interpretation_id" % code] = rec._interpretation_for(code)
+
+    def _interpretation_for(self, code):
+        if not self[code]:
+            return None
+
+        ranges = self.env["ni.observation.reference.range"].match_for(
+            observation=code, value=self[code]
         )
-        return ref_range[0].interpretation_id if ref_range else None
+        return (
+            ranges[0].interpretation_id
+            if ranges
+            else self.env.ref("nirun_observation.interpretation_EX")
+        )

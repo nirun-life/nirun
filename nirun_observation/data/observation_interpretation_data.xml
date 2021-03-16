@@ -3,6 +3,20 @@
   ~ Copyright (c) 2021 Piruin P.
   -->
 <odoo noupdate="1">
+    <record id="interpretation_EX" model="ni.observation.interpretation">
+        <field name="name">Outside threshold</field>
+        <field name="code">EX</field>
+    </record>
+    <record id="interpretation_LX" model="ni.observation.interpretation">
+        <field name="name">Below low threshold</field>
+        <field name="code">LX</field>
+        <field name="parent_id" ref="interpretation_EX" />
+    </record>
+    <record id="interpretation_HX" model="ni.observation.interpretation">
+        <field name="name">Above high threshold</field>
+        <field name="code">HX</field>
+        <field name="parent_id" ref="interpretation_EX" />
+    </record>
     <record id="interpretation_N" model="ni.observation.interpretation">
         <field name="name">Normal</field>
         <field name="code">N</field>
@@ -18,26 +32,36 @@
     <record id="interpretation_L" model="ni.observation.interpretation">
         <field name="name">Low</field>
         <field name="code">L</field>
+        <field name="parent_id" ref="interpretation_A" />
     </record>
     <record id="interpretation_LU" model="ni.observation.interpretation">
         <field name="name">Significantly Low</field>
         <field name="code">LU</field>
+        <field name="parent_id" ref="interpretation_L" />
     </record>
     <record id="interpretation_LL" model="ni.observation.interpretation">
         <field name="name">Critical Low</field>
         <field name="code">LL</field>
+        <field name="parent_id" ref="interpretation_AA" />
     </record>
     <record id="interpretation_H" model="ni.observation.interpretation">
         <field name="name">High</field>
         <field name="code">H</field>
+        <field name="parent_id" ref="interpretation_A" />
     </record>
     <record id="interpretation_HU" model="ni.observation.interpretation">
         <field name="name">Significantly High</field>
         <field name="code">HU</field>
+        <field name="parent_id" ref="interpretation_H" />
     </record>
     <record id="interpretation_HH" model="ni.observation.interpretation">
         <field name="name">Critical High</field>
         <field name="code">HH</field>
+        <field name="parent_id" ref="interpretation_AA" />
+    </record>
+    <record id="interpretation_IND" model="ni.observation.interpretation">
+        <field name="name">Indeterminate</field>
+        <field name="code">IND</field>
     </record>
     <record id="interpretation_POS" model="ni.observation.interpretation">
         <field name="name">Positive</field>

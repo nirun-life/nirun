@@ -16,6 +16,7 @@
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="code" optional="show" />
+                <field name="parent_id" optional="hide" />
                 <field name="color" optional="hide" />
                 <field name="active" optional="hide" />
             </tree>
@@ -26,14 +27,22 @@
         <field name="model">ni.observation.interpretation</field>
         <field name="arch" type="xml">
             <form>
-                <group>
+                <sheet>
                     <group>
-                        <field name="name" />
+                        <group>
+                            <field name="name" />
+                            <field name="parent_id" />
+                        </group>
+                        <group>
+                            <field name="code" />
+                        </group>
                     </group>
-                    <group>
-                        <field name="code" />
-                    </group>
-                </group>
+                    <notebook>
+                        <page string="Definition">
+                            <field name="definition" />
+                        </page>
+                    </notebook>
+                </sheet>
             </form>
         </field>
     </record>

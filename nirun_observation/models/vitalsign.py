@@ -1,12 +1,14 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class VitalSign(models.Model):
     _name = "ni.observation.vitalsign"
     _description = "Vital Signs"
     _inherit = ["ni.observation.base"]
+
+    _codes = ["bp_s", "bp_d"]
 
     bp_s = fields.Float("Blood Pressure Systolic")
     bp_s_interpretation_id = fields.Many2one(
@@ -22,9 +24,3 @@ class VitalSign(models.Model):
         readonly=True,
         store=True,
     )
-
-    @api.depends("bp_s", "bp_d")
-    def _compute_interpretation(self):
-        for rec in self:
-            rec.bp_s_interpretation_id = rec.interpretation_for("bp_s")
-            rec.bp_d_interpretation_id = rec.interpretation_for("bp_d")
