@@ -2,8 +2,8 @@
 from odoo import fields, models
 
 
-class ObservationBase(models.Model):
-    _name = "ni.observation.base"
+class Observation(models.Model):
+    _name = "ni.observation"
     _description = "Observation"
     _inherit = ["ni.patient.res"]
     _order = "effective_date DESC"

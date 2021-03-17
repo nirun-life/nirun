@@ -5,12 +5,12 @@
 <odoo>
     <record id="ob_action" model="ir.actions.act_window">
         <field name="name">Observations</field>
-        <field name="res_model">ni.observation.base</field>
+        <field name="res_model">ni.observation</field>
         <field name="view_mode">tree,form,graph</field>
     </record>
     <record id="ob_view_search" model="ir.ui.view">
         <field name="name">ob.view.search</field>
-        <field name="model">ni.observation.base</field>
+        <field name="model">ni.observation</field>
         <field name="arch" type="xml">
             <search>
                 <field name="patient_id" />
@@ -42,7 +42,7 @@
     </record>
     <record id="ob_view_tree" model="ir.ui.view">
         <field name="name">ob.view.tree</field>
-        <field name="model">ni.observation.base</field>
+        <field name="model">ni.observation</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="effective_date" />
@@ -57,7 +57,7 @@
     </record>
     <record id="ob_view_graph" model="ir.ui.view">
         <field name="name">ob.line.view.graph</field>
-        <field name="model">ni.observation.base</field>
+        <field name="model">ni.observation</field>
         <field name="arch" type="xml">
             <graph stacked="False" type="bar">
                 <field name="patient_id" type="col" />
@@ -67,7 +67,7 @@
     </record>
     <record id="ob_view_form" model="ir.ui.view">
         <field name="name">ob.view.form</field>
-        <field name="model">ni.observation.base</field>
+        <field name="model">ni.observation</field>
         <field name="arch" type="xml">
             <form>
                 <field name="id" invisible="True" />

@@ -9,11 +9,7 @@ class ObservationLine(models.Model):
     _order = "effective_date DESC,patient_id,sequence"
 
     observation_id = fields.Many2one(
-        "ni.observation.base",
-        required=True,
-        readonly=True,
-        index=True,
-        ondelete="cascade",
+        "ni.observation", required=True, readonly=True, index=True, ondelete="cascade",
     )
     patient_id = fields.Many2one(
         related="observation_id.patient_id", store=True, readonly=True
@@ -31,7 +27,9 @@ class ObservationLine(models.Model):
         compute="_compute_interpretation",
         ondelete="restrict",
         readonly=True,
+        require=False,
         store=True,
+        default=None,
     )
     display_class = fields.Selection(
         [
@@ -55,6 +53,11 @@ class ObservationLine(models.Model):
         ),
     ]
 
+    @api.onchange("type_id")
+    def _onchange_type(self):
+        self.update({"interpretation_id": None})
+        self._compute_interpretation()
+
     @api.depends("value")
     def _compute_interpretation(self):
         for rec in self:
@@ -69,11 +72,10 @@ class ObservationLine(models.Model):
             ],
             limit=1,
         )
-        return (
-            ranges[0].interpretation_id
-            if ranges
-            else self.env.ref("nirun_observation.interpretation_EX")
-        )
+        if ranges:
+            return ranges[0].interpretation_id
+        else:
+            return self.env.ref("nirun_observation.interpretation_EX")
 
     @api.constrains("value")
     def check_input_range(self):

@@ -15,6 +15,7 @@
             <search>
                 <field name="observation_id" />
                 <field name="patient_id" />
+                <field name="interpretation_id" operator="child_of" />
                 <filter
                     name="effective_today"
                     string="Today"
@@ -75,7 +76,9 @@
                 decoration-success="display_class == 'success'"
                 decoration-warning="display_class == 'warning'"
                 editable="bottom"
+                default_order="sequence,type_id"
             >
+                <field name="sequence" widget="handle" />
                 <field name="effective_date" optional="hide" />
                 <field name="type_id" optional="show" />
                 <field name="value" />
