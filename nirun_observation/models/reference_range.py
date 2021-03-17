@@ -12,6 +12,7 @@ class ReferenceRange(models.Model):
         [
             ("bp_s", "Blood Pressure Systolic"),
             ("bp_d", "Blood Pressure Diastolic"),
+            ("heart_rate", "Heart Rate (Pulse)"),
             ("body_temp", "Body Temperature"),
         ],
         required=True,

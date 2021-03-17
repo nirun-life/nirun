@@ -6,7 +6,7 @@
     <record id="vitalsign_action" model="ir.actions.act_window">
         <field name="name">Vital Signs</field>
         <field name="res_model">ni.observation.vitalsign</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,graph</field>
     </record>
     <record id="vitalsign_view_search" model="ir.ui.view">
         <field name="name">vitalsign.view.search</field>
@@ -40,6 +40,8 @@
                 <field name="bp_s" />
                 <field name="bp_d_interpretation_id" invisible="True" />
                 <field name="bp_d" />
+                <field name="heart_rate" />
+                <field name="heart_rate_interpretation_id" invisible="True" />
                 <field name="performer_ref" optional="show" />
                 <field name="company_id" groups="base.group_multi_company" optional="show" />
             </tree>
@@ -50,7 +52,14 @@
         <field name="model">ni.observation.vitalsign</field>
         <field name="arch" type="xml">
             <form>
+                <field name="active" invisible="True" />
                 <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
                     <group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
@@ -61,15 +70,46 @@
                             <field name="encounter_id" />
                             <field name="performer_ref" />
                         </group>
-                        <group string="Blood Pressure">
-                            <field name="bp_s" />
-                            <field name="bp_s_interpretation_id" />
-                            <field name="bp_d" />
-                            <field name="bp_d_interpretation_id" />
-                        </group>
                     </group>
+                    <notebook>
+                        <page string="Detail">
+                            <group string="Blood Pressure">
+                                <label for="bp_s" />
+                                <div>
+                                    <field name="bp_s" class="oe_inline" />
+                                    <field name="bp_s_interpretation_id" class="oe_right" />
+                                    <small>mmHg</small>
+                                </div>
+                                <label for="bp_d" />
+                                <div>
+                                    <field name="bp_d" class="oe_inline" />
+                                    <field name="bp_d_interpretation_id" class="oe_right" />
+                                    <small>mmHg</small>
+                                </div>
+                                <label for="heart_rate" />
+                                <div>
+                                    <field name="heart_rate" class="oe_inline" />
+                                    <field name="heart_rate_interpretation_id" class="oe_right" />
+                                    <small>bpm</small>
+                                </div>
+                            </group>
+                        </page>
+                        <page string="Note">
+                            <field name="note" />
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+    <record id="vitalsign_view_graph" model="ir.ui.view">
+        <field name="name">vitalsign.view.graph</field>
+        <field name="model">ni.observation.vitalsign</field>
+        <field name="arch" type="xml">
+            <graph stacked="False">
+                <field name="effective_date" interval="hour" />
+                <field name="patient_id" type="col" />
+            </graph>
         </field>
     </record>
 </odoo>

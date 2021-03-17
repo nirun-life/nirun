@@ -189,7 +189,7 @@ class Patient(models.Model):
             if not record.birthdate:
                 continue
             if record.birthdate > fields.date.today():
-                raise ValidationError(_("PatientRes cannot be born in the future.",))
+                raise ValidationError(_("Patient cannot be born in the future.",))
 
     @api.constrains("deceased_date")
     def _check_deceased_date(self):
@@ -198,10 +198,10 @@ class Patient(models.Model):
                 continue
             if record.deceased_date > fields.date.today():
                 raise ValidationError(
-                    _("You should not forecast that PatientRes will die!",)
+                    _("You should not forecast that Patient will die!",)
                 )
             if record.birthdate and record.deceased_date < record.birthdate:
-                raise ValidationError(_("PatientRes cannot die before they was born!",))
+                raise ValidationError(_("Patient cannot die before they was born!",))
 
     @api.depends("title", "firstname", "lastname")
     def _compute_name(self):
@@ -211,7 +211,7 @@ class Patient(models.Model):
                 for name in [record.title.shortcut, record.firstname, record.lastname]
             ]
             computed_name = " ".join(filter(None, names))
-            record.name = computed_name if computed_name else _("New PatientRes")
+            record.name = computed_name if computed_name else _("New Patient")
 
     @api.model
     def _compute_is_deceased(self):

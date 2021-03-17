@@ -18,7 +18,7 @@ class PatientRes(models.AbstractModel):
     )
     patient_id = fields.Many2one(
         "ni.patient",
-        "PatientRes",
+        "Patient",
         store=True,
         index=True,
         ondelete="cascade",
