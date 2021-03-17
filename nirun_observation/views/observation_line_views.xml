@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="ob_line_action" model="ir.actions.act_window">
+        <field name="name">Observation Detail</field>
+        <field name="res_model">ni.observation.line</field>
+        <field name="view_mode">graph,pivot</field>
+    </record>
+    <record id="ob_line_view_search" model="ir.ui.view">
+        <field name="name">ob.line.view.search</field>
+        <field name="model">ni.observation.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="observation_id" />
+                <field name="patient_id" />
+                <filter
+                    name="effective_today"
+                    string="Today"
+                    domain="[
+                    ('effective_date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                    ('effective_date', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter
+                    name="effective_yesterday"
+                    string="Yesterday"
+                    domain="[
+                    ('effective_date', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
+                    ('effective_date', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter name="effective_date" string="Period" date="effective_date" />
+                <separator />
+                <group string="Group By">
+                    <filter name="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="Task" context="{'group_by': 'observation_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ob_line_view_graph" model="ir.ui.view">
+        <field name="name">ob.line.view.graph</field>
+        <field name="model">ni.observation.line</field>
+        <field name="arch" type="xml">
+            <graph stacked="False" type="bar">
+                <field name="effective_date" interval="day" />
+                <field name="type_id" type="row" />
+                <field name="value" type="measure" />
+            </graph>
+        </field>
+    </record>
+    <record id="ob_line_view_pivot" model="ir.ui.view">
+        <field name="name">ob.line.view.pivot</field>
+        <field name="model">ni.observation.line</field>
+        <field name="arch" type="xml">
+            <pivot default_order="patient_id, effective_date DESC">
+                <field name="patient_id" type="row" />
+                <field name="effective_date" interval="hour" type="row" />
+                <field name="type_id" type="col" />
+                <field name="value" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ob_line_view_tree" model="ir.ui.view">
+        <field name="name">ob.line.view.tree</field>
+        <field name="model">ni.observation.line</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-danger="display_class == 'danger'"
+                decoration-info="display_class == 'info'"
+                decoration-muted="display_class == 'muted'"
+                decoration-primary="display_class == 'primary'"
+                decoration-success="display_class == 'success'"
+                decoration-warning="display_class == 'warning'"
+                editable="bottom"
+            >
+                <field name="effective_date" optional="hide" />
+                <field name="type_id" optional="show" />
+                <field name="value" />
+                <field name="unit" />
+                <field name="interpretation_id" />
+                <field name="display_class" invisible="True" />
+            </tree>
+        </field>
+    </record>
+    <record id="ob_line_view_form" model="ir.ui.view">
+        <field name="name">ob.line.view.form</field>
+        <field name="model">ni.observation.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="observation_id" />
+                        <field name="patient_id" />
+                        <group>
+                            <field name="type_id" widget="radio" />
+                        </group>
+                        <group>
+                            <field name="value" />
+                            <field name="unit" />
+                            <field name="interpretation_id" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

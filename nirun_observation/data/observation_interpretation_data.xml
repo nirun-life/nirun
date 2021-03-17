@@ -34,36 +34,37 @@
         <field name="name">Critical Abnormal</field>
         <field name="code">AA</field>
         <field name="display_class">danger</field>
+        <field name="parent_id" ref="interpretation_A" />
     </record>
     <record id="interpretation_L" model="ni.observation.interpretation">
         <field name="name">Low</field>
         <field name="code">L</field>
         <field name="parent_id" ref="interpretation_A" />
-        <field name="display_class">info</field>
+        <field name="display_class">text</field>
     </record>
     <record id="interpretation_LU" model="ni.observation.interpretation">
         <field name="name">Significantly Low</field>
         <field name="code">LU</field>
         <field name="parent_id" ref="interpretation_L" />
-        <field name="display_class">primary</field>
+        <field name="display_class">info</field>
     </record>
     <record id="interpretation_LL" model="ni.observation.interpretation">
         <field name="name">Critical Low</field>
         <field name="code">LL</field>
         <field name="parent_id" ref="interpretation_AA" />
-        <field name="display_class">danger</field>
+        <field name="display_class">primary</field>
     </record>
     <record id="interpretation_H" model="ni.observation.interpretation">
         <field name="name">High</field>
         <field name="code">H</field>
         <field name="parent_id" ref="interpretation_A" />
-        <field name="display_class">info</field>
+        <field name="display_class">warning</field>
     </record>
     <record id="interpretation_HU" model="ni.observation.interpretation">
         <field name="name">Significantly High</field>
         <field name="code">HU</field>
         <field name="parent_id" ref="interpretation_H" />
-        <field name="display_class">warning</field>
+        <field name="display_class">danger</field>
     </record>
     <record id="interpretation_HH" model="ni.observation.interpretation">
         <field name="name">Critical High</field>

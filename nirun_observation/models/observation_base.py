@@ -6,6 +6,7 @@ class ObservationBase(models.Model):
     _name = "ni.observation.base"
     _description = "Observation"
     _inherit = ["ni.patient.res"]
+    _order = "effective_date DESC"
 
     patient_age_years = fields.Integer(related="patient_id.age_years")
     performer_ref = fields.Reference(

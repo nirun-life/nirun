@@ -11,6 +11,7 @@ class Interpretation(models.Model):
     parent_id = fields.Many2one("ni.observation.interpretation")
     display_class = fields.Selection(
         [
+            ("text", "Text"),
             ("muted", "Muted"),
             ("info", "Info"),
             ("primary", "Primary"),
@@ -18,7 +19,7 @@ class Interpretation(models.Model):
             ("warning", "Warning"),
             ("danger", "Danger"),
         ],
-        default="info",
+        default="text",
     )
 
     @api.constrains("parent_id")

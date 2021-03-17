@@ -9,7 +9,11 @@ class ObservationLine(models.Model):
     _order = "effective_date DESC,patient_id,sequence"
 
     observation_id = fields.Many2one(
-        "ni.observation.base", required=True, readonly=True, index=True
+        "ni.observation.base",
+        required=True,
+        readonly=True,
+        index=True,
+        ondelete="cascade",
     )
     patient_id = fields.Many2one(
         related="observation_id.patient_id", store=True, readonly=True
@@ -17,7 +21,7 @@ class ObservationLine(models.Model):
     effective_date = fields.Datetime(
         related="observation_id.effective_date", store=True, readonly=True
     )
-    type_id = fields.Many2one("ni.observation.type")
+    type_id = fields.Many2one("ni.observation.type", required=True)
     sequence = fields.Integer(related="type_id.sequence")
     category_id = fields.Many2one(related="type_id.category_id", readonly=True)
     value = fields.Float(group_operator="avg")
@@ -31,6 +35,7 @@ class ObservationLine(models.Model):
     )
     display_class = fields.Selection(
         [
+            ("text", "Text"),
             ("muted", "Muted"),
             ("info", "Info"),
             ("primary", "Primary"),
@@ -39,8 +44,16 @@ class ObservationLine(models.Model):
             ("danger", "Danger"),
         ],
         related="interpretation_id.display_class",
-        default="info",
+        default="text",
     )
+
+    _sql_constraints = [
+        (
+            "type__uniq",
+            "unique (observation_id, type_id)",
+            "Duplication observation type!",
+        ),
+    ]
 
     @api.depends("value")
     def _compute_interpretation(self):
