@@ -9,6 +9,17 @@ class Interpretation(models.Model):
     _inherit = ["coding.base"]
 
     parent_id = fields.Many2one("ni.observation.interpretation")
+    display_class = fields.Selection(
+        [
+            ("muted", "Muted"),
+            ("info", "Info"),
+            ("primary", "Primary"),
+            ("success", "Success"),
+            ("warning", "Warning"),
+            ("danger", "Danger"),
+        ],
+        default="info",
+    )
 
     @api.constrains("parent_id")
     def _check_hierarchy(self):

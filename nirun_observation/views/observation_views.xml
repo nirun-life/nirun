@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="ob_action" model="ir.actions.act_window">
+        <field name="name">ob Signs</field>
+        <field name="res_model">ni.observation.base</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="ob_view_search" model="ir.ui.view">
+        <field name="name">ob.view.search</field>
+        <field name="model">ni.observation.base</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <filter
+                    name="effective_today"
+                    string="Today"
+                    domain="[('effective_date', '=', context_today().strftime('%Y-%m-%d'))]"
+                />
+                <filter name="effective_date" string="Period" date="effective_date" />
+                <separator />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <group string="Group By">
+                    <filter name="Patient" context="{'group_by': 'patient_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ob_view_tree" model="ir.ui.view">
+        <field name="name">ob.view.tree</field>
+        <field name="model">ni.observation.base</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="effective_date" />
+                <field name="patient_id" />
+                <field name="performer_ref" optional="show" />
+                <field name="company_id" groups="base.group_multi_company" optional="show" />
+            </tree>
+        </field>
+    </record>
+    <record id="ob_line_view_tree" model="ir.ui.view">
+        <field name="name">ob.line.view.tree</field>
+        <field name="model">ni.observation.line</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-danger="display_class == 'danger'"
+                decoration-info="display_class == 'info'"
+                decoration-muted="display_class == 'muted'"
+                decoration-primary="display_class == 'primary'"
+                decoration-success="display_class == 'success'"
+                decoration-warning="display_class == 'warning'"
+            >
+                <field name="observation_id" optional="hide" />
+                <field name="effective_date" optional="show" />
+                <field name="type_id" optional="show" />
+                <field name="value" />
+                <field name="unit" />
+                <field name="interpretation_id" />
+                <field name="display_class" invisible="True" />
+            </tree>
+        </field>
+    </record>
+    <record id="ob_view_form" model="ir.ui.view">
+        <field name="name">ob.view.form</field>
+        <field name="model">ni.observation.base</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="patient_id" />
+                            <field name="effective_date" />
+                        </group>
+                        <group>
+                            <field name="encounter_id" />
+                            <field name="performer_ref" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detail">
+                            <field name="lines" context="{'default_observation_id':active_id}" />
+                        </page>
+                        <page string="Note">
+                            <field name="note" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ob_line_action" model="ir.actions.act_window">
+        <field name="name">Observation Detail</field>
+        <field name="res_model">ni.observation.line</field>
+        <field name="view_mode">graph,pivot</field>
+    </record>
+    <record id="ob_line_view_graph" model="ir.ui.view">
+        <field name="name">ob.line.view.graph</field>
+        <field name="model">ni.observation.line</field>
+        <field name="arch" type="xml">
+            <graph stacked="False" type="bar">
+                <field name="effective_date" interval="day" />
+                <field name="type_id" type="row" />
+                <field name="value" type="measure" />
+                <field name="interpretation_id" type="measure" />
+            </graph>
+        </field>
+    </record>
+    <record id="ob_line_view_pivot" model="ir.ui.view">
+        <field name="name">ob.line.view.pivot</field>
+        <field name="model">ni.observation.line</field>
+        <field name="arch" type="xml">
+            <pivot default_order="patient_id, effective_date DESC">
+                <field name="patient_id" type="row" />
+                <field name="effective_date" interval="hour" type="row" />
+                <field name="type_id" type="col" />
+                <field name="value" type="measure" />
+            </pivot>
+        </field>
+    </record>
+</odoo>

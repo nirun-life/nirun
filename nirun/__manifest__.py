@@ -13,7 +13,7 @@
     "data": [
         "data/ir_module_category_data.xml",
         "data/res_company_data.xml",
-        "security/nirun_group.xml",
+        "data/ni.quantity.unit.csv",
         "security/ir.model.access.csv",
     ],
     "application": False,

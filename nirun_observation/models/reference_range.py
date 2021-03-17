@@ -6,18 +6,9 @@ from odoo import api, fields, models
 class ReferenceRange(models.Model):
     _name = "ni.observation.reference.range"
     _description = "Observation Reference Range"
-    _order = "observation, low"
+    _order = "type_id, low"
 
-    observation = fields.Selection(
-        [
-            ("bp_s", "Blood Pressure Systolic"),
-            ("bp_d", "Blood Pressure Diastolic"),
-            ("heart_rate", "Heart Rate (Pulse)"),
-            ("body_temp", "Body Temperature"),
-        ],
-        required=True,
-        index=True,
-    )
+    type_id = fields.Many2one("ni.observation.type", index=True, required=True)
     low = fields.Float(help="Inclusive")
     high = fields.Float(help="Exclusive")
     interpretation_id = fields.Many2one("ni.observation.interpretation", required=True)
@@ -32,7 +23,7 @@ class ReferenceRange(models.Model):
     def match_for(self, observation, value):
         return self.search(
             [
-                ("observation", "=", observation),
+                ("type_id", "=", observation),
                 ("low", "<=", value),
                 ("high", ">", value),
             ],
