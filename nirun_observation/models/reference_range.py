@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class ReferenceRange(models.Model):
@@ -12,20 +12,10 @@ class ReferenceRange(models.Model):
     low = fields.Float(help="Inclusive")
     high = fields.Float(help="Exclusive")
     interpretation_id = fields.Many2one("ni.observation.interpretation", required=True)
+    active = fields.Boolean(default="True")
 
     def name_get(self):
         return [
             (ref.id, "%s [%d-%d]" % (ref.observation, ref.low, ref.high))
             for ref in self
         ]
-
-    @api.model
-    def match_for(self, observation, value):
-        return self.search(
-            [
-                ("type_id", "=", observation),
-                ("low", "<=", value),
-                ("high", ">", value),
-            ],
-            limit=1,
-        )

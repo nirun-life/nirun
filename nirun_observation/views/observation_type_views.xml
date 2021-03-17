@@ -30,7 +30,15 @@
         <field name="model">ni.observation.type</field>
         <field name="arch" type="xml">
             <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
                 <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
                     <group>
                         <group>
                             <field name="name" />
@@ -49,8 +57,16 @@
                         </page>
                         <page string="Extra Info">
                             <group>
-                                <field name="color" />
-                                <field name="sequence" />
+                                <group>
+                                    <field name="color" />
+                                    <field name="sequence" />
+                                </group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
                             </group>
                         </page>
                     </notebook>

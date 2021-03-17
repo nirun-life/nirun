@@ -25,7 +25,15 @@
         <field name="model">ni.observation.reference.range</field>
         <field name="arch" type="xml">
             <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
                 <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
                     <group>
                         <group>
                             <field name="type_id" />

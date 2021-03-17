@@ -3,28 +3,27 @@
   ~ Copyright (c) 2021 Piruin P.
   -->
 <odoo>
-    <record id="interpretation_action" model="ir.actions.act_window">
-        <field name="name">Interpretations</field>
-        <field name="res_model">ni.observation.interpretation</field>
+    <record id="ob_category_action" model="ir.actions.act_window">
+        <field name="name">Observation Categories</field>
+        <field name="res_model">ni.observation.category</field>
         <field name="view_mode">tree,form</field>
     </record>
-    <record id="interpretation_view_tree" model="ir.ui.view">
-        <field name="name">interpretation.view.tree</field>
-        <field name="model">ni.observation.interpretation</field>
+    <record id="ob_category_view_tree" model="ir.ui.view">
+        <field name="name">ob.category.view.tree</field>
+        <field name="model">ni.observation.category</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="code" optional="show" />
-                <field name="parent_id" optional="hide" />
-                <field name="color" optional="hide" />
+                <field name="definition" optional="show" />
                 <field name="active" optional="hide" />
             </tree>
         </field>
     </record>
-    <record id="interpretation_view_form" model="ir.ui.view">
-        <field name="name">interpretation.view.form</field>
-        <field name="model">ni.observation.interpretation</field>
+    <record id="ob_category_view_form" model="ir.ui.view">
+        <field name="name">ob.category.view.form</field>
+        <field name="model">ni.observation.category</field>
         <field name="arch" type="xml">
             <form>
                 <field name="id" invisible="True" />
@@ -39,11 +38,9 @@
                     <group>
                         <group>
                             <field name="name" />
-                            <field name="parent_id" />
                         </group>
                         <group>
                             <field name="code" />
-                            <field name="display_class" />
                         </group>
                     </group>
                     <notebook>

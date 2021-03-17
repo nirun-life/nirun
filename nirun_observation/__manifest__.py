@@ -21,6 +21,7 @@
         "views/interpretation_views.xml",
         "views/reference_range_views.xml",
         "views/observation_type_views.xml",
+        "views/observation_category_views.xml",
         "views/observation_line_views.xml",
         "views/observation_views.xml",
         "views/observation_menu.xml",
