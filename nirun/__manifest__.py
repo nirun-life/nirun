@@ -14,6 +14,7 @@
         "data/ir_module_category_data.xml",
         "data/res_company_data.xml",
         "data/ni.quantity.unit.csv",
+        "security/nirun_group.xml",
         "security/ir.model.access.csv",
     ],
     "application": False,
