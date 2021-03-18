@@ -73,6 +73,16 @@
                 <field name="id" invisible="True" />
                 <field name="active" invisible="True" />
                 <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                        <button
+                            name="action_patient_observation_graph"
+                            string="Graph"
+                            class="oe_stat_button"
+                            icon="fa-bar-chart"
+                            inivisible="[('id','=', False)]"
+                            type="object"
+                        />
+                    </div>
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('active', '=', True)]}"

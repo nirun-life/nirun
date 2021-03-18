@@ -25,6 +25,7 @@
         "views/observation_line_views.xml",
         "views/observation_views.xml",
         "views/observation_menu.xml",
+        "views/patient_views.xml",
     ],
     "demo": [],
     "application": True,

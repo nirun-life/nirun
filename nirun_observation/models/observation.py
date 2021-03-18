@@ -20,3 +20,16 @@ class Observation(models.Model):
     active = fields.Boolean(default=True)
     note = fields.Text()
     lines = fields.One2many("ni.observation.line", "observation_id")
+
+    def action_patient_observation_graph(self):
+        action_rec = self.env.ref("nirun_observation.ob_line_action")
+        action = action_rec.read()[0]
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "search_default_patient_id": self.ids[0],
+                "default_patient_id": self.ids[0],
+            }
+        )
+        action["context"] = ctx
+        return action
