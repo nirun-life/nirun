@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_observation" class="oe_stat_button" icon="fa-thermometer-half" type="object">
+                    <field name="observation_count" string="Observations" widget="statinfo" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

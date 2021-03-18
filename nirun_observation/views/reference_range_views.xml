@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="reference_range_action" model="ir.actions.act_window">
+        <field name="name">Reference Ranges</field>
+        <field name="res_model">ni.observation.reference.range</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="reference_range_view_tree" model="ir.ui.view">
+        <field name="name">reference.range.view.tree</field>
+        <field name="model">ni.observation.reference.range</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="type_id" />
+                <field name="low" />
+                <field name="high" />
+                <field name="interpretation_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="reference_range_view_form" model="ir.ui.view">
+        <field name="name">reference.range.view.form</field>
+        <field name="model">ni.observation.reference.range</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="type_id" />
+                            <field name="interpretation_id" />
+                        </group>
+                        <group>
+                            <field name="low" />
+                            <field name="high" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

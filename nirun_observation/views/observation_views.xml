@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="ob_action" model="ir.actions.act_window">
+        <field name="name">Observations</field>
+        <field name="res_model">ni.observation</field>
+        <field name="view_mode">tree,form,graph</field>
+    </record>
+    <record id="ob_view_search" model="ir.ui.view">
+        <field name="name">ob.view.search</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <filter
+                    name="effective_today"
+                    string="Today"
+                    domain="[
+                    ('effective_date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                    ('effective_date', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter
+                    name="effective_yesterday"
+                    string="Yesterday"
+                    domain="[
+                    ('effective_date', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
+                    ('effective_date', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter name="effective_date" string="Period" date="effective_date" />
+                <separator />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <group string="Group By">
+                    <filter name="Patient" context="{'group_by': 'patient_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ob_view_tree" model="ir.ui.view">
+        <field name="name">ob.view.tree</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="effective_date" />
+                <field name="patient_id" />
+                <field name="performer_ref" optional="show" />
+                <field name="lines" />
+                <field name="note" optional="hide" />
+                <field name="active" optional="hide" />
+                <field name="company_id" groups="base.group_multi_company" optional="show" />
+            </tree>
+        </field>
+    </record>
+    <record id="ob_view_graph" model="ir.ui.view">
+        <field name="name">ob.line.view.graph</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <graph stacked="False" type="bar">
+                <field name="patient_id" type="col" />
+                <field name="effective_date" interval="day" />
+            </graph>
+        </field>
+    </record>
+    <record id="ob_view_form" model="ir.ui.view">
+        <field name="name">ob.view.form</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                        <button
+                            name="action_patient_observation_graph"
+                            string="Graph"
+                            class="oe_stat_button"
+                            icon="fa-bar-chart"
+                            inivisible="[('id','=', False)]"
+                            type="object"
+                        />
+                    </div>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="patient_id" />
+                            <field name="effective_date" />
+                        </group>
+                        <group>
+                            <field name="encounter_id" context="{'show_state': True}" />
+                            <field name="performer_ref" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detail">
+                            <field name="lines" context="{'default_observation_id':id}" />
+                        </page>
+                        <page string="Note">
+                            <field name="note" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

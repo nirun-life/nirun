@@ -13,8 +13,12 @@
     "data": [
         "data/ir_module_category_data.xml",
         "data/res_company_data.xml",
+        "data/ni.quantity.unit.csv",
         "security/nirun_group.xml",
         "security/ir.model.access.csv",
+        "views/quantity_unit_views.xml",
+        "views/condition_views.xml",
+        "views/condition_category_views.xml",
     ],
     "application": False,
     "auto_install": False,

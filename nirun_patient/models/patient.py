@@ -26,7 +26,7 @@ class Patient(models.Model):
     identifier_number = fields.Char(
         "HN", copy=False, tracking=True, help="Hospital Identification Number"
     )
-    name = fields.Char("Name", require=True, compute="_compute_name", store=False)
+    name = fields.Char("Name", require=True, compute="_compute_name", store=True)
     title = fields.Many2one("res.partner.title", "Title", tracking=True)
     firstname = fields.Char("Firstname", copy=False, require=True, tracking=True)
     lastname = fields.Char("Lastname", copy=False, tracking=True)
@@ -140,7 +140,24 @@ class Patient(models.Model):
         "category_id",
         string="Category",
     )
-    encounter_ids = fields.One2many("ni.encounter", "patient_id", string="Encounter")
+    encounter_ids = fields.One2many(
+        "ni.encounter", "patient_id", readonly=True, string="Encounter"
+    )
+    encounter_count = fields.Integer(compute="_compute_encounter_count")
+    encountering_id = fields.Many2one(
+        "ni.encounter",
+        compute="_compute_encountering",
+        require=False,
+        compute_sudo=True,
+        store=True,
+    )
+    encountering_start = fields.Date(
+        compute="_compute_encountering", require=False, compute_sudo=True
+    )
+    is_encountering = fields.Boolean(
+        compute="_compute_encountering", default=False, store=True, compute_sudo=True
+    )
+
     diagnosis_ids = fields.One2many(
         "ni.patient.condition.latest", "patient_id", string="Diagnosis", readonly=True
     )
@@ -152,6 +169,39 @@ class Patient(models.Model):
             _("Identifier must be unique !"),
         )
     ]
+
+    def _compute_encounter_count(self):
+        for rec in self:
+            rec.encounter_count = len(rec.encounter_ids)
+
+    @api.depends("encounter_ids")
+    def _compute_encountering(self):
+        enc = (
+            self.env["ni.encounter"]
+            .search([("patient_id", "in", self.ids)], order="patient_id, id DESC")
+            .filtered(lambda en: en.is_present)
+        )
+        for rec in self:
+            enc_ids = enc.filtered(lambda en: en.patient_id.id == rec.id)
+            if enc_ids:
+                rec.update(
+                    {
+                        "encountering_id": enc_ids[0].id,
+                        "encountering_start": enc_ids[0].period_start,
+                        "is_encountering": True,
+                    }
+                )
+            else:
+                # encountering_start must have value before it used to show at
+                # 'statinfo' button and will be error if none. 'invisible' can't
+                # help to prevent error
+                rec.update(
+                    {
+                        "encountering_id": None,
+                        "encountering_start": fields.Date.today(),
+                        "is_encountering": False,
+                    }
+                )
 
     @api.model
     def _default_image(self):
@@ -234,3 +284,24 @@ class Patient(models.Model):
         today = fields.date.today()
         for record in self.filtered(lambda r: not (r.deceased_date and r.birthdate)):
             record.birthdate = today - relativedelta(years=record.age)
+
+    def action_encounter(self):
+        action_rec = self.env.ref("nirun_patient.encounter_action")
+        action = action_rec.read()[0]
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "search_default_patient_id": self.ids[0],
+                "default_patient_id": self.ids[0],
+            }
+        )
+        action["context"] = ctx
+        return action
+
+    def action_current_encounter(self):
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "ni.encounter",
+            "views": [[False, "form"]],
+            "res_id": self.encountering_id.id,
+        }
