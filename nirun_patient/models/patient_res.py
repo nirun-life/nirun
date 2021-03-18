@@ -39,7 +39,7 @@ class PatientRes(models.AbstractModel):
 
     @api.onchange("patient_id")
     def onchange_patient(self):
-        self.encounter_id = self.patient_id.current_encounter_id
+        self.encounter_id = self.patient_id.encountering_id
 
         if self.patient_id.deceased:
             warning = {

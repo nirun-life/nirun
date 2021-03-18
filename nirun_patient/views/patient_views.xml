@@ -14,6 +14,20 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                        <button name="action_encounter" class="oe_stat_button" icon="fa-hospital-o" type="object">
+                            <field name="encounter_count" string="Encounter" widget="statinfo" />
+                        </button>
+                        <button
+                            name="action_current_encounter"
+                            attrs='{"invisible": [("is_encountering", "=", False)]}'
+                            class="oe_stat_button"
+                            icon="fa-bed"
+                            type="object"
+                        >
+                            <field name="encountering_start" string="since" widget="statinfo" />
+                        </button>
+                    </div>
                     <field name="deceased" invisible="1" />
                     <field
                         name="image_1920"
@@ -96,9 +110,14 @@
                             </group>
                         </page>
                         <page accesskey="D" string="Diagnosis/Problem">
-                            <group string="Diagnosis">
-                                <field name="diagnosis_ids" />
+                            <field name="diagnosis_ids" />
+                        </page>
+                        <page string="Encounter" groups="nirun.group_manager">
+                            <field name="encounter_ids" />
+                            <group>
+                                <field name="encountering_id" />
                             </group>
+                            <field name="is_encountering" invisible="1" />
                         </page>
                     </notebook>
                 </sheet>
@@ -118,7 +137,7 @@
                 <field name="name" />
                 <field name="gender" />
                 <field name="birthdate" />
-                <field name="current_encounter_id" optional="show" />
+                <field name="encountering_id" optional="show" />
                 <field name="company_id" groups="base.group_multi_company" />
             </tree>
         </field>
