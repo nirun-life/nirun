@@ -11,6 +11,7 @@ class Encounter(models.Model):
     _description = _("Encounter with Patient")
     _inherit = ["mail.thread", "period.mixin", "image.mixin", "ir.sequence.mixin"]
     _check_company_auto = True
+    _order = "id DESC"
 
     company_id = fields.Many2one(
         "res.company",

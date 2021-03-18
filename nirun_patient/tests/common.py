@@ -12,7 +12,7 @@ class TestPatientCommon(common.TransactionCase):
         self.patient_admin = mail_new_test_user(
             self.env,
             login="patient",
-            groups="base.group_user,nirun_patient.patient_group_user",
+            groups="base.group_user,nirun_patient.group_user",
             name="Patient Administrator",
             email="p.admin@example.com",
         )

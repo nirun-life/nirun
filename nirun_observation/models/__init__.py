@@ -1,3 +1,4 @@
+from . import encounter
 from . import interpretation
 from . import observation
 from . import observation_category

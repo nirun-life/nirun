@@ -3,8 +3,8 @@
   ~ Copyright (c) 2021 Piruin P.
   -->
 <odoo>
-    <record id="patient_group_user" model="res.groups">
-        <field name="name">Officer</field>
+    <record id="group_user" model="res.groups">
+        <field name="name">Patient Recorder</field>
         <field name="users" eval="[(4, ref('base.user_demo'))]" />
         <field
             name="implied_ids"
@@ -12,9 +12,9 @@
         />
         <field name="category_id" ref="nirun.module_category_medical_patient" />
     </record>
-    <record id="patient_group_manager" model="res.groups">
-        <field name="name">Administrator</field>
-        <field name="implied_ids" eval="[(4, ref('patient_group_user'))]" />
+    <record id="group_manager" model="res.groups">
+        <field name="name">Patient Administrator</field>
+        <field name="implied_ids" eval="[(4, ref('nirun_patient.group_user'))]" />
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]" />
         <field name="category_id" ref="nirun.module_category_medical_patient" />
     </record>
