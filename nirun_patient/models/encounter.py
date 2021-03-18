@@ -109,7 +109,12 @@ class Encounter(models.Model):
     def name_get(self):
         if self._context.get("show_patient_name"):
             return [
-                (en.id, "{} [{}]".format(en.patient_id.name, en.name)) for en in self
+                (en.id, "{} [{}]".format(en.name, en.patient_id.name)) for en in self
+            ]
+        if self._context.get("show_state"):
+            state = dict(self._fields["state"].selection)
+            return [
+                (en.id, "{} [{}]".format(en.name, state.get(en.state))) for en in self
             ]
         return super(Encounter, self).name_get()
 
