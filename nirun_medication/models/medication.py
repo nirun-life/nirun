@@ -8,32 +8,43 @@ class Medication(models.Model):
 
     name = fields.Char(index=True)
     active = fields.Boolean(default=True)
-    manufacturer_name = fields.Char()
+    manufacturer_name = fields.Char(index=True)
     manufacturer_id = fields.Many2one("res.partner", domain=[("is_company", "=", True)])
-    form = fields.Many2one("ni.medication.form")
-    ingredient = fields.Char("Ingredient", compute="_compute_ingredient")
-    ingredient_ids = fields.One2many("ni.medication.ingredient", "medication_id")
-    amount = fields.Char(compute="_compute_amount")
+    form = fields.Many2one("ni.medication.form", index=True)
+    ingredient = fields.Char(
+        "Ingredient", compute="_compute_ingredient", store=True, index=True
+    )
+    ingredient_ids = fields.One2many(
+        "ni.medication.ingredient", "medication_id", "Ingredient List"
+    )
+    amount = fields.Char(compute="_compute_amount", store=True, index=True)
     amount_numerator = fields.Float()
     amount_numerator_unit = fields.Many2one("ni.quantity.unit")
     amount_denominator = fields.Float(default=1.0, require=True)
     amount_denominator_unit = fields.Many2one("ni.quantity.unit", required=True)
 
-    def name_get(self):
-        return [
-            (
-                rec.id,
-                "%s (%s) (%s) %s"
-                % (rec.name, rec.manufacturer_name, rec.ingredient, rec.form.name),
-            )
-            for rec in self
-        ]
+    @api.model
+    def _name_search(
+        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
+        args = list(args or [])
+        if not (name == "" and operator == "ilike"):
+            args += [
+                "|",
+                "|",
+                ("name", operator, name),
+                ("manufacturer_name", operator, name),
+                ("ingredient", operator, name),
+            ]
+        ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
+        return models.lazy_name_get(self.browse(ids).with_user(name_get_uid))
 
     @api.depends("ingredient_ids")
     def _compute_ingredient(self):
         for rec in self:
-            ingredient = [ing.display_name for ing in rec.ingredient_ids]
-            rec.ingredient = " + ".join(ingredient)
+            if rec.ingredient_ids:
+                ingredient = [ing.display_name for ing in rec.ingredient_ids]
+                rec.ingredient = " + ".join(ingredient)
 
     @api.depends(
         "amount_numerator",
@@ -54,6 +65,8 @@ class Medication(models.Model):
                         rec.amount_denominator, rec.amount_denominator_unit.name
                     )
                 )
+            elif not rec.amount_numerator:
+                res.append("1 {}".format(rec.amount_denominator_unit.name))
             else:
                 res.append(rec.amount_denominator_unit.name)
             rec.amount = " ".join(res)

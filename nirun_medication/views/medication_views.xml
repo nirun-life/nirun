@@ -14,8 +14,10 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" />
-                <field name="form" />
+                <field name="manufacturer_name" />
                 <field name="ingredient" />
+                <field name="form" />
+                <field name="amount" />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
             </search>
         </field>
@@ -26,6 +28,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name" />
+                <field name="manufacturer_name" optional="show" />
                 <field name="ingredient" optional="show" />
                 <field name="form" optional="show" />
                 <field name="amount" optional="show" />
@@ -81,6 +84,7 @@
                     </group>
                     <notebook>
                         <page string="Ingredient">
+                            <field name="ingredient" />
                             <field name="ingredient_ids" />
                         </page>
                         <page string="Extra Info">

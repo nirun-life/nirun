@@ -17,7 +17,7 @@ class MedicationStatement(models.Model):
         default="active",
     )
     period_start = fields.Date(string="Since", required=True)
-    period_end = fields.Date(string="Until", required=True)
+    period_end = fields.Date(string="Until")
     period_end_calendar = fields.Date(compute="_compute_period_end_calendar")
     active = fields.Boolean(default=True)
     state_reason = fields.Char(required=False)
