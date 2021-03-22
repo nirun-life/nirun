@@ -19,6 +19,7 @@
         "views/medication_form_views.xml",
         "views/medication_ingredient_views.xml",
         "views/medication_views.xml",
+        "views/medication_statement_category_views.xml",
         "views/medication_statement_views.xml",
         "views/medication_menus.xml",
         "views/patient_views.xml",
