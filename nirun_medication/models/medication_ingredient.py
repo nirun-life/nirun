@@ -11,9 +11,9 @@ class MedicationIngredient(models.Model):
     is_active = fields.Boolean(default=True, help="Active ingredient indicator")
 
     strength = fields.Char("Strength", compute="_compute_strength")
-    strength_numerator = fields.Float()
-    strength_numerator_unit = fields.Many2one("ni.quantity.unit")
-    strength_denominator = fields.Float()
+    strength_numerator = fields.Float(required=False)
+    strength_numerator_unit = fields.Many2one("ni.quantity.unit", required=False)
+    strength_denominator = fields.Float(required=False)
     strength_denominator_unit = fields.Many2one("ni.quantity.unit", required=False)
 
     def name_get(self):

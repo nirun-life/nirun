@@ -21,6 +21,8 @@
         "views/medication_views.xml",
         "views/medication_statement_views.xml",
         "views/medication_menus.xml",
+        "views/patient_views.xml",
+        "views/encounter_views.xml",
     ],
     "application": True,
     "auto_install": False,

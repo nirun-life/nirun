@@ -39,7 +39,8 @@ class PatientRes(models.AbstractModel):
 
     @api.onchange("patient_id")
     def onchange_patient(self):
-        self.encounter_id = self.patient_id.encountering_id
+        if self.encounter_id.patient_id != self.patient_id:
+            self.encounter_id = self.patient_id.encountering_id
 
         if self.patient_id.deceased:
             warning = {
@@ -51,3 +52,8 @@ class PatientRes(models.AbstractModel):
                 % self.patient_id.name,
             }
             return {"warning": warning}
+
+    @api.onchange("encounter_id")
+    def onchange_encounter(self):
+        if self.encounter_id and (self.patient_id != self.encounter_id.patient_id):
+            self.patient_id = self.encounter_id.patient_id

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_medication_statement" class="oe_stat_button" icon="fa-medkit" type="object">
+                    <field name="medication_count" string="Medications" widget="statinfo" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
