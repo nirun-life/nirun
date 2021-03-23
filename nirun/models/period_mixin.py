@@ -98,6 +98,8 @@ class PeriodMixin(models.AbstractModel):
             result.append(_("%s Months") % delta.months)
         if delta.days > 0:
             result.append(_("%s Days") % delta.days)
+        if delta.days == 0 and not result:
+            result.append(_("Today"))
         if delta.days < 0:
             result.append(_("Next %s days") % abs(delta.days))
         return " ".join(result) or None

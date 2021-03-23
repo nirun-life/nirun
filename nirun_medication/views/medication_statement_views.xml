@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="medication_statement_action" model="ir.actions.act_window">
+        <field name="name">Medications Statement</field>
+        <field name="res_model">ni.medication.statement</field>
+        <field name="view_mode">tree,calendar,form</field>
+        <field name="context">{'search_default_period_today': True}</field>
+    </record>
+    <record id="medication_statement_view_search" model="ir.ui.view">
+        <field name="name">medication.statement.view.search</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="medication_id" />
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <separator />
+                <filter
+                    name="period_today"
+                    string="Today"
+                    domain="[
+                    ('state', '=', 'active'),
+                    ('period_start', '&lt;=', context_today().strftime('%Y-%m-%d')),
+                    '|', ('period_end', '&gt;=', context_today().strftime('%Y-%m-%d')),
+                         ('period_end', '=', False),
+                    ]"
+                />
+                <filter name="period_start" string="Since" date="period_start" />
+                <filter name="period_end" string="Until" date="period_end" />
+                <separator />
+                <filter name="state_active" string="Active" domain="[('state', '=', 'active')]" />
+                <filter name="state_completed" string="Completed" domain="[('state', '=', 'completed')]" />
+                <filter name="state_stopped" string="Stopped" domain="[('state', '=', 'stopped')]" />
+                <separator />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <group string="Group by">
+                    <filter name="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="Medication" context="{'group_by': 'medication_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="medication_statement_view_tree" model="ir.ui.view">
+        <field name="name">medication.statement.view.tree</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="patient_id" invisible="context.get('default_patient_id', False)" optional="show" />
+                <field name="encounter_id" optional="hide" />
+                <field name="medication_id" />
+                <field name="category_id" optional="hide" />
+                <field name="period_start" optional="show" />
+                <field name="period_end" optional="hide" />
+                <field name="duration" optional="show" />
+                <field name="state" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="medication_statement_view_form" model="ir.ui.view">
+        <field name="name">medication.statement.view.form</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <header class="oe_read_only">
+                    <field name="state" statusbar_visible="active,completed" widget="statusbar" />
+                </header>
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="patient_id" />
+                        </group>
+                        <group>
+                            <field name="encounter_id" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="medication_id" />
+                        <field name="category_id" widget="radio" />
+                    </group>
+                    <notebook>
+                        <page string="Detail">
+                            <group>
+                                <group string="Effective">
+                                    <field name="period_start" />
+                                    <field name="period_end" />
+                                </group>
+                                <group string="Reason">
+                                    <field name="reason_ref" string="Reference" />
+                                </group>
+                            </group>
+                            <group attrs="{'invisible':[('state', '!=', 'stopped')]}">
+                                <field name="state_reason" />
+                            </group>
+                        </page>
+                        <page string="Dosage">
+                            <field name="dosage" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="medication_statement_view_calendar" model="ir.ui.view">
+        <field name="name">medication.statement.view.calendar</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <calendar
+                color="patient_id"
+                date_start="period_start"
+                date_stop="period_end_calendar"
+                hide_time="true"
+                mode="month"
+                quick_add="False"
+            >
+                <field name="patient_id" />
+                <field name="medication_id" />
+                <field name="category_id" />
+            </calendar>
+        </field>
+    </record>
+</odoo>

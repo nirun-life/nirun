@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <menuitem id="medication_menu_root" name="Medication" />
+    <menuitem
+        id="medication_statement_menu"
+        name="Statement"
+        action="medication_statement_action"
+        parent="medication_menu_root"
+    />
+    <menuitem
+        id="medication_configuration_menu"
+        name="Configuration"
+        groups="nirun_medication.group_manager"
+        parent="medication_menu_root"
+        sequence="100"
+    />
+    <menuitem
+        id="medication_menu"
+        name="Medications"
+        action="medication_action"
+        parent="medication_configuration_menu"
+        sequence="1"
+    />
+    <menuitem
+        id="medication_form_menu"
+        name="Forms"
+        action="medication_form_action"
+        parent="medication_configuration_menu"
+    />
+    <menuitem id="unit_menu" name="Units" action="nirun.unit_action" parent="medication_configuration_menu" />
+    <menuitem id="medication_statement_configuration_menu" name="Statement" parent="medication_configuration_menu" />
+    <menuitem
+        id="medication_statement_category_menu"
+        name="Category"
+        action="medication_statement_category_action"
+        parent="medication_statement_configuration_menu"
+    />
+</odoo>
