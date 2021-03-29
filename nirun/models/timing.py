@@ -9,7 +9,7 @@ class Timing(models.Model):
     _name = "ni.timing"
     _description = "Timing"
 
-    name = fields.Char(compute="_compute_name")
+    name = fields.Char(compute="_compute_name", readonly=False, store=True)
     bound_start = fields.Datetime("Since", tracking=True, index=True)
     bound_end = fields.Datetime("Until", tracking=True, index=True)
     bound_duration_days = fields.Integer(
@@ -65,10 +65,18 @@ class Timing(models.Model):
     )
 
     @api.depends("frequency", "frequency_max", "period", "period_max", "period_unit")
-    @api.onchange("frequency", "frequency_max", "period", "period_max", "period_unit")
     def _compute_name(self):
         for rec in self:
-            text = [rec.frequency_text, rec.period_text]
+            text = filter(
+                None,
+                [
+                    rec.frequency_text,
+                    rec.period_text,
+                    rec.day_of_week_text,
+                    rec.when_text,
+                    rec.duration_text,
+                ],
+            )
             rec.name = (" ".join(text)).strip().capitalize()
 
     @property
@@ -82,10 +90,12 @@ class Timing(models.Model):
 
     @property
     def period_text(self):
-        if self.day_of_week:
-            return self.day_of_week_text
         if self.period == 1 and not self.period_max:
-            return _("every %s") % self.period_unit
+            return (
+                _("every %s") % self.period_unit
+                if not (self.period_unit == "day" and self.day_of_week)
+                else ""
+            )
         if self.period > 1 and not self.period_max:
             return _("every %s %ss") % (self.period, self.period_unit_text.lower())
         if self.period and self.period_max:
@@ -103,12 +113,34 @@ class Timing(models.Model):
         return ", ".join(dow) if dow else ""
 
     @property
+    def when_text(self):
+        wh = self.when.sorted("code").mapped("name")
+        return (
+            ", ".join(wh)
+            if not self.offset
+            else _("%s min %s") % (self.offset, ", ".join(wh))
+        )
+
+    @property
     def period_unit_text(self):
         return dict(self._fields["period_unit"].selection).get(self.period_unit)
 
     @property
     def duration_unit_text(self):
         return dict(self._fields["duration_unit"].selection).get(self.duration_unit)
+
+    @property
+    def duration_text(self):
+        if self.duration and not self.duration_max:
+            return _("for %s %s") % (self.duration, self.duration_unit_text)
+        if self.duration and self.duration_max:
+            return _("for %s-%s %s") % (
+                self.duration,
+                self.duration_max,
+                self.duration_unit_text,
+            )
+        else:
+            return ""
 
     @api.onchange("bound_start", "bound_end")
     def _compute_bound_duration(self):
