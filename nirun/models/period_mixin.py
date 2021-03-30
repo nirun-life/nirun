@@ -12,9 +12,12 @@ class PeriodMixin(models.AbstractModel):
 
     _date_name = "period_start"
     period_start = fields.Date(
-        tracking=True, index=True, default=lambda self: fields.Date.context_today(self)
+        "Since",
+        tracking=True,
+        index=True,
+        default=lambda self: fields.Date.context_today(self),
     )
-    period_end = fields.Date(tracking=True, index=True)
+    period_end = fields.Date("Until", tracking=True, index=True)
     duration = fields.Char("Duration", compute="_compute_duration", default="")
     duration_days = fields.Integer(
         "Duration (days)", compute="_compute_duration", default=0

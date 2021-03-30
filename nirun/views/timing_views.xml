@@ -31,59 +31,57 @@
                     </group>
                     <notebook>
                         <page string="Detail">
-                            <separator string="Repeating" />
-                            <field
-                                name="repeat_type"
-                                class="oe_edit_only"
-                                options="{'horizontal': True}"
-                                widget="radio"
-                            />
-                            <group attrs="{'invisible': [('repeat_type', '!=', 'period')]}">
-                                <label string="Min-Max" for="period" />
+                            <group>
                                 <div>
-                                    <field name="period" class="oe_inline" />
-                                    <span>-</span>
-                                    <field name="period_max" class="oe_inline" />
+                                    <group>
+                                        <label string="Repeat Every" for="period" />
+                                        <div class="o_row">
+                                            <field name="period" class="oe_inline" />
+                                            <span>-</span>
+                                            <field name="period_max" class="oe_inline" />
+                                            <field name="period_unit" string="Unit" />
+                                        </div>
+                                    </group>
+                                    <group attrs="{'invisible': [('period_unit', '!=', 'week')]}">
+                                        <field name="day_of_week" widget="many2many_checkboxes" />
+                                    </group>
                                 </div>
-                                <field name="period_unit" string="Unit" />
+                                <group>
+                                    <label for="frequency" />
+                                    <div class="o_row">
+                                        <field name="frequency" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="frequency_max" class="oe_inline" />
+                                        <span>Times</span>
+                                    </div>
+                                    <label string="Duration" for="duration" />
+                                    <div class="o_row">
+                                        <field name="duration" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="duration_max" class="oe_inline" />
+                                        <field name="duration_unit" nolabel="True" />
+                                    </div>
+                                </group>
                             </group>
-                            <group attrs="{'invisible': [('repeat_type', '!=', 'dow')]}">
-                                <field name="day_of_week" widget="many2many_checkboxes" />
+                            <group>
+                                <field name="time_type" options="{'horizontal':True}" widget="radio" />
+                                <field
+                                    name="when"
+                                    attrs="{'invisible': [('time_type', '!=', 'event')]}"
+                                    widget="many2many_tags"
+                                />
+                                <field
+                                    name="offset"
+                                    string="Min. before/after"
+                                    attrs="{'invisible': [('time_type', '!=', 'event')]}"
+                                />
                             </group>
-                            <separator string="Timing" />
-                            <field
-                                name="period_type"
-                                class="oe_edit_only"
-                                options="{'horizontal': True}"
-                                widget="radio"
-                            />
-                            <group attrs="{'invisible': [('period_type', '!=', 'event')]}">
-                                <field name="when" widget="many2many_tags" />
-                                <field name="offset" string="Min. before/after" />
-                            </group>
-                            <group attrs="{'invisible': [('period_type', '!=', 'tod')]}">
+                            <group attrs="{'invisible': [('time_type', '!=', 'tod')]}">
                                 <field name="time_of_day" context="{'default_timing_id': id}" nolabel="1">
                                     <tree default_order="value" editable="bottom">
                                         <field name="value" widget="float_time" />
                                     </tree>
                                 </field>
-                            </group>
-                            <group string="Frequency">
-                                <label string="Min-Max" for="frequency" />
-                                <div>
-                                    <field name="frequency" class="oe_inline" />
-                                    <span>-</span>
-                                    <field name="frequency_max" class="oe_inline" />
-                                </div>
-                            </group>
-                            <group string="Duration">
-                                <label string="Min-Max" for="duration" />
-                                <div>
-                                    <field name="duration" class="oe_inline" />
-                                    <span>-</span>
-                                    <field name="duration_max" class="oe_inline" />
-                                </div>
-                                <field name="duration_unit" string="Unit" />
                             </group>
                         </page>
                     </notebook>

@@ -23,9 +23,11 @@ class Timing(models.Model):
         store=True,
     )
 
-    frequency = fields.Integer("Times", default=1,)
-    frequency_max = fields.Integer("Times (max)")
-    duration = fields.Integer()
+    frequency = fields.Integer(
+        default=1, help="Event occurs frequency times per period"
+    )
+    frequency_max = fields.Integer()
+    duration = fields.Integer(help="How long when it happens")
     duration_max = fields.Integer()
     duration_unit = fields.Selection(
         [
@@ -62,12 +64,16 @@ class Timing(models.Model):
         "ni.timing.dow", "ni_timing_dow_rel", "timing_id", "dow_id"
     )
 
-    period_type = fields.Selection(
+    time_type = fields.Selection(
         [("event", "Event"), ("tod", "Time of Day")], default="event"
     )
     offset = fields.Integer("", help="Minutes from event (before of after)")
     when = fields.Many2many(
-        "ni.timing.event", "ni_timing_event_rel", "timing_id", "event_id"
+        "ni.timing.event",
+        "ni_timing_event_rel",
+        "timing_id",
+        "event_id",
+        auto_join=True,
     )
     time_of_day = fields.One2many("ni.timing.tod", "timing_id")
 
@@ -110,6 +116,11 @@ class Timing(models.Model):
                 ],
             )
             rec.name = (" ".join(text)).strip().capitalize()
+
+    @api.onchange("period_unit")
+    def _onchange_period_unit(self):
+        if self.period_unit != "week" and self.day_of_week:
+            self.update({"day_of_week": [(5, 0, 0)]})
 
     @api.onchange("template_id")
     def _onchange_template(self):
