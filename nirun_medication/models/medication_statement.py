@@ -26,6 +26,7 @@ class MedicationStatement(models.Model):
         required=False,
     )
     dosage = fields.Text()
+    dosage_timing = fields.Many2one("ni.timing", "Timing")
 
     def name_get(self):
         if self._context.get("show_since"):
