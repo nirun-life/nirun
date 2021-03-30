@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="timing_view_form" model="ir.ui.view">
+        <field name="name">timing.view.form</field>
+        <field name="model">ni.timing</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <sheet>
+                    <label string="Summary" for="name" />
+                    <h2>
+                        <field name="name" />
+                    </h2>
+                    <p class="oe_edit_only text-muted">
+                        The summarize is automatically generated from the given
+                        information.
+                        You can edit as you please but it will be overwritten when information was changed.
+                    </p>
+                    <group>
+                        <group invisible="context.get('no_bound',False)">
+                            <field name="bound_start" />
+                            <field name="bound_end" />
+                            <field name="bound_duration_days" />
+                        </group>
+                        <group class="oe_edit_only">
+                            <field name="template_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detail">
+                            <separator string="Repeating" />
+                            <field
+                                name="repeat_type"
+                                class="oe_edit_only"
+                                options="{'horizontal': True}"
+                                widget="radio"
+                            />
+                            <group attrs="{'invisible': [('repeat_type', '!=', 'period')]}">
+                                <label string="Min-Max" for="period" />
+                                <div>
+                                    <field name="period" class="oe_inline" />
+                                    <span>-</span>
+                                    <field name="period_max" class="oe_inline" />
+                                </div>
+                                <field name="period_unit" string="Unit" />
+                            </group>
+                            <group attrs="{'invisible': [('repeat_type', '!=', 'dow')]}">
+                                <field name="day_of_week" widget="many2many_checkboxes" />
+                            </group>
+                            <separator string="Timing" />
+                            <field
+                                name="period_type"
+                                class="oe_edit_only"
+                                options="{'horizontal': True}"
+                                widget="radio"
+                            />
+                            <group attrs="{'invisible': [('period_type', '!=', 'event')]}">
+                                <field name="when" widget="many2many_tags" />
+                                <field name="offset" string="Min. before/after" />
+                            </group>
+                            <group attrs="{'invisible': [('period_type', '!=', 'tod')]}">
+                                <field name="time_of_day" context="{'default_timing_id': id}" nolabel="1">
+                                    <tree default_order="value" editable="bottom">
+                                        <field name="value" widget="float_time" />
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Frequency">
+                                <label string="Min-Max" for="frequency" />
+                                <div>
+                                    <field name="frequency" class="oe_inline" />
+                                    <span>-</span>
+                                    <field name="frequency_max" class="oe_inline" />
+                                </div>
+                            </group>
+                            <group string="Duration">
+                                <label string="Min-Max" for="duration" />
+                                <div>
+                                    <field name="duration" class="oe_inline" />
+                                    <span>-</span>
+                                    <field name="duration_max" class="oe_inline" />
+                                </div>
+                                <field name="duration_unit" string="Unit" />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

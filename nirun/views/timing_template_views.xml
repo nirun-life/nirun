@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="timing_template_view_form" model="ir.ui.view">
+        <field name="name">timing.template.view.form</field>
+        <field name="model">ni.timing.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <label string="Summary" for="name" />
+                    <h2>
+                        <field name="name" />
+                    </h2>
+                    <group>
+                        <group invisible="context.get('no_bound',False)">
+                            <field name="bound_start" />
+                            <field name="bound_end" />
+                            <field name="bound_duration_days" />
+                        </group>
+                        <group class="oe_edit_only">
+                            <field name="template_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detail">
+                            <group string="Repeating period">
+                                <label string="min-max" for="period" />
+                                <div>
+                                    <field name="period" class="oe_inline" />
+                                    <span>-</span>
+                                    <field name="period_max" class="oe_inline" />
+                                </div>
+                                <field name="period_unit" string="Unit" />
+                            </group>
+                            <group string="Timing">
+                                <field name="when" widget="many2many_tags" />
+                                <field name="offset" string="Min. before/after" />
+                            </group>
+                            <group string="Frequency">
+                                <label string="min-max" for="frequency" />
+                                <div>
+                                    <field name="frequency" class="oe_inline" />
+                                    <span>-</span>
+                                    <field name="frequency_max" class="oe_inline" />
+                                </div>
+                            </group>
+                            <group string="Duration">
+                                <label string="min-max" for="duration" />
+                                <div>
+                                    <field name="duration" class="oe_inline" />
+                                    <span>-</span>
+                                    <field name="duration_max" class="oe_inline" />
+                                </div>
+                                <field name="duration_unit" string="Unit" />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

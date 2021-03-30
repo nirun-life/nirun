@@ -41,9 +41,15 @@ class TestTiming(TransactionCase):
                 "period": 1,
                 "period_unit": "day",
                 "day_of_week": [
-                    (0, 0, {"value": "Mon"}),
-                    (0, 0, {"value": "Wed"}),
-                    (0, 0, {"value": "Fri"}),
+                    (
+                        6,
+                        0,
+                        [
+                            self.ref("nirun.Mon"),
+                            self.ref("nirun.Wed"),
+                            self.ref("nirun.Fri"),
+                        ],
+                    )
                 ],
             }
         )

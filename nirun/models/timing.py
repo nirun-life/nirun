@@ -10,6 +10,9 @@ class Timing(models.Model):
     _description = "Timing"
 
     name = fields.Char(compute="_compute_name", readonly=False, store=True)
+    template_id = fields.Many2one(
+        "ni.timing.template", string="Template", required=False, index=True
+    )
     bound_start = fields.Datetime("Since", tracking=True, index=True)
     bound_end = fields.Datetime("Until", tracking=True, index=True)
     bound_duration_days = fields.Integer(
@@ -19,9 +22,9 @@ class Timing(models.Model):
         readonly=False,
         store=True,
     )
-    count = fields.Integer("times")
-    count_max = fields.Integer("times (max)")
 
+    frequency = fields.Integer("Times", default=1,)
+    frequency_max = fields.Integer("Times (max)")
     duration = fields.Integer()
     duration_max = fields.Integer()
     duration_unit = fields.Selection(
@@ -37,11 +40,10 @@ class Timing(models.Model):
         required=False,
     )
 
-    day_of_week = fields.One2many("ni.timing.dow", "timing_id")
-
-    frequency = fields.Integer()
-    frequency_max = fields.Integer()
-    period = fields.Integer()
+    repeat_type = fields.Selection(
+        [("period", "Period"), ("dow", "Day of Week")], default="period"
+    )
+    period = fields.Integer(default=1)
     period_max = fields.Integer()
     period_unit = fields.Selection(
         [
@@ -54,17 +56,47 @@ class Timing(models.Model):
             ("second", "Second"),
         ],
         required=False,
+        default="day",
     )
-    offset = fields.Integer("", help="Minutes from event (when)")
+    day_of_week = fields.Many2many(
+        "ni.timing.dow", "ni_timing_dow_rel", "timing_id", "dow_id"
+    )
+
+    period_type = fields.Selection(
+        [("event", "Event"), ("tod", "Time of Day")], default="event"
+    )
+    offset = fields.Integer("", help="Minutes from event (before of after)")
     when = fields.Many2many(
         "ni.timing.event", "ni_timing_event_rel", "timing_id", "event_id"
     )
     time_of_day = fields.One2many("ni.timing.tod", "timing_id")
-    template_id = fields.Many2one(
-        "ni.timing.template", string="Template", required=False, index=True
-    )
 
-    @api.depends("frequency", "frequency_max", "period", "period_max", "period_unit")
+    @api.depends(
+        "frequency",
+        "frequency_max",
+        "duration",
+        "duration_max",
+        "duration_unit",
+        "period",
+        "period_max",
+        "period_unit",
+        "day_of_week",
+        "when",
+        "offset",
+    )
+    @api.onchange(
+        "frequency",
+        "frequency_max",
+        "duration",
+        "duration_max",
+        "duration_unit",
+        "period",
+        "period_max",
+        "period_unit",
+        "day_of_week",
+        "when",
+        "offset",
+    )
     def _compute_name(self):
         for rec in self:
             text = filter(
@@ -78,6 +110,25 @@ class Timing(models.Model):
                 ],
             )
             rec.name = (" ".join(text)).strip().capitalize()
+
+    @api.onchange("template_id")
+    def _onchange_template(self):
+        if self.template_id:
+            self.update(
+                {
+                    "frequency": self.template_id.frequency,
+                    "frequency_max": self.template_id.frequency_max,
+                    "duration": self.template_id.duration,
+                    "duration_max": self.template_id.duration_max,
+                    "duration_unit": self.template_id.duration_unit,
+                    "period": self.template_id.period,
+                    "period_max": self.template_id.period_max,
+                    "period_unit": self.template_id.period_unit,
+                    "when": [(6, 0, self.template_id.when.mapped("id"))],
+                    "offset": self.template_id.offset,
+                    "name": self.template_id.name,
+                }
+            )
 
     @property
     def frequency_text(self):
@@ -109,7 +160,7 @@ class Timing(models.Model):
 
     @property
     def day_of_week_text(self):
-        dow = self.day_of_week.mapped("value")
+        dow = self.day_of_week.mapped("code")
         return ", ".join(dow) if dow else ""
 
     @property
@@ -157,6 +208,7 @@ class Timing(models.Model):
                 delta = rec.bound_end - rec.bound_start
                 rec.bound_duration_days = delta.days
 
+    @api.onchange("bound_duration_days")
     def _inverse_bound_duration(self):
         for rec in self:
             if rec.bound_end and not rec.bound_start:
@@ -243,33 +295,13 @@ class TimingTimeOfDay(models.Model):
     _name = "ni.timing.tod"
     _description = "Time of Day"
     timing_id = fields.Many2one("ni.timing", required=True)
-    value = fields.Float()
+    value = fields.Float("Time")
 
 
 class TimingDayOfWeek(models.Model):
     _name = "ni.timing.dow"
     _description = "Day of Week"
-    timing_id = fields.Many2one("ni.timing", required=True)
-    value = fields.Selection(
-        [
-            ("Mon", "Monday"),
-            ("Tue", "Tuesday"),
-            ("Wed", "Wednesday"),
-            ("Thu", "Thursday"),
-            ("Fri", "Friday"),
-            ("Sat", "Saturday"),
-            ("Sun", "Sunday"),
-        ],
-        required=True,
-    )
-
-    _sql_constraints = [
-        (
-            "timing_value__uniq",
-            "unique (timing_id, value)",
-            "Duplicate day of week in timing!",
-        ),
-    ]
+    _inherit = ["coding.base"]
 
 
 class TimingEvent(models.Model):
@@ -286,4 +318,7 @@ class TimingTemplate(models.Model):
     name = fields.Char("Template Name", compute=None, store=True)
     when = fields.Many2many(
         "ni.timing.event", "ni_timing_template_event_rel", "template_id", "event_id"
+    )
+    day_of_week = fields.Many2many(
+        "ni.timing.dow", "ni_timing_template_dow_rel", "template_id", "dow_id"
     )
