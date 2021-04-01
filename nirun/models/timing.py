@@ -1,8 +1,28 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import _, api, fields, models
+from odoo import _, _lt, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import date_utils
+
+time_unit = {
+    "year": _lt("year"),
+    "month": _lt("month"),
+    "week": _lt("week"),
+    "day": _lt("day"),
+    "hour": _lt("hour"),
+    "minute": _lt("minute"),
+    "second": _lt("second"),
+}
+
+time_unit_plural = {
+    "year": _lt("years"),
+    "month": _lt("months"),
+    "week": _lt("weeks"),
+    "day": _lt("days"),
+    "hour": _lt("hours"),
+    "minute": _lt("minutes"),
+    "second": _lt("seconds"),
+}
 
 
 class Timing(models.Model):
@@ -49,13 +69,13 @@ class Timing(models.Model):
     period_max = fields.Integer()
     period_unit = fields.Selection(
         [
-            ("year", "Year"),
-            ("month", "Month"),
-            ("week", "Week"),
-            ("day", "Day"),
-            ("hour", "Hour"),
-            ("minute", "Minute"),
-            ("second", "Second"),
+            ("year", "Years"),
+            ("month", "Months"),
+            ("week", "Weeks"),
+            ("day", "Days"),
+            ("hour", "Hours"),
+            ("minute", "Minutes"),
+            ("second", "Seconds"),
         ],
         required=False,
         default="day",
@@ -143,35 +163,40 @@ class Timing(models.Model):
 
     @property
     def frequency_text(self):
-        if self.frequency == 1 and not self.frequency_max:
+        if self.frequency == 1 and (not self.frequency_max or self.frequency_max == 1):
             return ""
-        if self.frequency > 1 and not self.frequency_max:
+        if self.frequency > 1 and (
+            not self.frequency_max or self.frequency == self.frequency_max
+        ):
             return _("%s times") % self.frequency
         if self.frequency and self.frequency_max:
             return _("%s-%s times") % (self.frequency, self.frequency_max)
 
     @property
     def period_text(self):
-        if self.period == 1 and not self.period_max:
+        if self.period == 1 and (not self.period_max or self.period_max == 1):
             return (
-                _("every %s") % self.period_unit
-                if not (self.period_unit == "day" and self.day_of_week)
+                _("every %s") % time_unit.get(self.period_unit)
+                if not (self.period_unit == "week" and self.day_of_week)
                 else ""
             )
-        if self.period > 1 and not self.period_max:
-            return _("every %s %ss") % (self.period, self.period_unit_text.lower())
+        if self.period > 1 and (not self.period_max or self.period == self.period_max):
+            return _("every %s %s") % (
+                self.period,
+                time_unit_plural.get(self.period_unit),
+            )
         if self.period and self.period_max:
-            return _("every %s-%s %ss") % (
+            return _("every %s-%s %s") % (
                 self.period,
                 self.period_max,
-                self.period_unit_text.lower(),
+                time_unit_plural.get(self.period_unit),
             )
         else:
             return ""
 
     @property
     def day_of_week_text(self):
-        dow = self.day_of_week.mapped("code")
+        dow = self.day_of_week.mapped("name")
         return ", ".join(dow) if dow else ""
 
     @property
@@ -184,22 +209,21 @@ class Timing(models.Model):
         )
 
     @property
-    def period_unit_text(self):
-        return dict(self._fields["period_unit"].selection).get(self.period_unit)
-
-    @property
-    def duration_unit_text(self):
-        return dict(self._fields["duration_unit"].selection).get(self.duration_unit)
-
-    @property
     def duration_text(self):
-        if self.duration and not self.duration_max:
-            return _("for %s %s") % (self.duration, self.duration_unit_text)
+        if self.duration and (
+            not self.duration_max or self.duration_max == self.duration
+        ):
+            return _("for %s %s") % (
+                self.duration,
+                time_unit.get(self.duration_unit)
+                if self.duration == 1
+                else time_unit_plural.get(self.duration_unit),
+            )
         if self.duration and self.duration_max:
             return _("for %s-%s %s") % (
                 self.duration,
                 self.duration_max,
-                self.duration_unit_text,
+                time_unit_plural.get(self.duration_unit),
             )
         else:
             return ""

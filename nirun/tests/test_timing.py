@@ -8,7 +8,7 @@ _timing_name = [
     ("3 times every day", 3, 0, 1, 0, "day", 0, 0, 0),
     ("Every 4-6 hours", 1, 0, 4, 6, "hour", 0, 0, 0),
     ("1-2 times every day", 1, 2, 1, 0, "day", 0, 0, 0),
-    ("Every 21 days for 1 hours", 1, 0, 21, 0, "day", 1, 0, "hour"),
+    ("Every 21 days for 1 hour", 1, 0, 21, 0, "day", 1, 0, "hour"),
     ("Every 2 days for 10-15 minutes", 1, 0, 2, 0, "day", 10, 15, "minute"),
 ]
 
@@ -39,7 +39,7 @@ class TestTiming(TransactionCase):
             {
                 "frequency": 1,
                 "period": 1,
-                "period_unit": "day",
+                "period_unit": "week",
                 "day_of_week": [
                     (
                         6,
@@ -53,11 +53,11 @@ class TestTiming(TransactionCase):
                 ],
             }
         )
-        self.assertEqual("Mon, wed, fri", time.name)
+        self.assertEqual("Monday, wednesday, friday", time.name)
 
         time.update({"when": [(4, self.ref("nirun.MORN"))]})
         time._compute_name()
-        self.assertEqual("Mon, wed, fri morning", time.name)
+        self.assertEqual("Monday, wednesday, friday morning", time.name)
 
     def test_offset_when(self):
         with self.assertRaises(ValidationError):
