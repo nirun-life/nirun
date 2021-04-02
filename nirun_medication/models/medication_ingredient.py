@@ -5,12 +5,13 @@ from odoo import api, fields, models
 
 class MedicationIngredient(models.Model):
     _name = "ni.medication.ingredient"
+    _description = "Medication Ingredient"
 
     medication_id = fields.Many2one("ni.medication", index=True)
     name = fields.Char(required=True)
-    is_active = fields.Boolean(default=True, help="Active ingredient indicator")
+    is_active = fields.Boolean("Active Ingredient", default=True)
 
-    strength = fields.Char("Strength", compute="_compute_strength")
+    strength = fields.Char(compute="_compute_strength")
     strength_numerator = fields.Float(required=False)
     strength_numerator_unit = fields.Many2one("ni.quantity.unit", required=False)
     strength_denominator = fields.Float(required=False)

@@ -50,30 +50,22 @@
                         bg_color="bg-danger"
                         title="Archived"
                     />
+                    <div>
+                        <h2>
+                            <field name="name" required="True" />
+                        </h2>
+                    </div>
                     <group>
                         <group>
-                            <field name="name" />
                             <field name="form" />
-                        </group>
-                        <group>
-                            <field name="manufacturer_name" />
-                            <field name="manufacturer_id" />
-                        </group>
-                    </group>
-                    <group string="Amount">
-                        <group>
-                            <label string="Numerator" for="amount_numerator" />
-                            <div>
+                            <label string="Amount" for="amount_numerator" />
+                            <div class="o_row">
                                 <field name="amount_numerator" />
                                 <field
                                     name="amount_numerator_unit"
                                     options='{"create":False,"create_edit": False,"no_open": True}'
                                 />
-                            </div>
-                        </group>
-                        <group>
-                            <label string="Denominator" for="amount_denominator" />
-                            <div>
+                                <span>/</span>
                                 <field name="amount_denominator" />
                                 <field
                                     name="amount_denominator_unit"
@@ -81,11 +73,18 @@
                                 />
                             </div>
                         </group>
+                        <group>
+                            <field name="manufacturer_name" />
+                            <field name="manufacturer_id" />
+                        </group>
                     </group>
                     <notebook>
                         <page string="Ingredient">
-                            <field name="ingredient" />
-                            <field name="ingredient_ids" />
+                            <field name="ingredient" invisible="True" />
+                            <field
+                                name="ingredient_ids"
+                                context="{'default_strength_denominator': 1, 'default_strength_denominator_unit': amount_numerator_unit}"
+                            />
                         </page>
                         <page string="Extra Info">
                             <group>

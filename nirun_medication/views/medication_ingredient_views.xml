@@ -22,14 +22,14 @@
         <field name="name">medication.ingredient.view.tree</field>
         <field name="model">ni.medication.ingredient</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-muted="not is_active" editable="bottom">
                 <field name="medication_id" optional="hide" />
-                <field name="name" />
+                <field name="name" string="Ingredient" />
                 <field name="strength" optional="show" />
-                <field name="strength_numerator" optional="show" />
-                <field name="strength_numerator_unit" optional="show" />
-                <field name="strength_denominator" optional="show" />
-                <field name="strength_denominator_unit" optional="show" />
+                <field name="strength_numerator" string="Numerator" optional="show" />
+                <field name="strength_numerator_unit" string="Unit" optional="show" />
+                <field name="strength_denominator" string="Denominator" optional="show" />
+                <field name="strength_denominator_unit" string="Unit" optional="show" />
                 <field name="is_active" optional="hide" />
             </tree>
         </field>
@@ -44,30 +44,18 @@
                     <h2>
                         <field name="name" />
                     </h2>
+                    <field name="medication_id" />
                     <group>
-                        <group>
-                            <field name="strength_numerator" class="oe_inline" />
+                        <label string="Strength" for="strength_numerator" />
+                        <div class="o_row">
+                            <field name="strength_numerator" />
                             <field name="strength_numerator_unit" />
-                            <field name="strength_denominator" class="oe_inline" />
+                            <span>/</span>
+                            <field name="strength_denominator" />
                             <field name="strength_denominator_unit" />
-                        </group>
-                        <group>
-                            <field name="medication_id" widget="radio" />
-                            <field name="is_active" widget="radio" />
-                        </group>
+                        </div>
+                        <field name="is_active" />
                     </group>
-                    <notebook>
-                        <page string="Extra Info" groups="nirun_medication.group_manager">
-                            <group>
-                                <group>
-                                    <field name="create_date" />
-                                    <field name="create_uid" />
-                                    <field name="write_date" />
-                                    <field name="write_uid" />
-                                </group>
-                            </group>
-                        </page>
-                    </notebook>
                 </sheet>
             </form>
         </field>

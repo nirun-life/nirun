@@ -13,16 +13,18 @@ class MedicationStatement(models.Model):
     location_id = fields.Many2one(
         related="encounter_id.location_id", store=True, index=True
     )
-    category_id = fields.Many2one("ni.medication.statement.category", required=True)
+    category_id = fields.Many2one(
+        "ni.medication.statement.category", "Statement Category", required=True
+    )
     medication_id = fields.Many2one("ni.medication", required=True)
     state = fields.Selection(
-        [("active", "Active"), ("completed", "Completed"), ("stopped", "Stopped")],
+        [("active", "Currently"), ("completed", "Completed"), ("stopped", "Stopped")],
         default="active",
         required=True,
     )
     state_reason = fields.Char(required=False)
-    period_start = fields.Date(string="Since", required=True)
-    period_end = fields.Date(string="Until")
+    period_start = fields.Date(required=True)
+    period_end = fields.Date()
     period_end_calendar = fields.Date(compute="_compute_period_end_calendar")
     active = fields.Boolean(default=True)
 
@@ -37,8 +39,8 @@ class MedicationStatement(models.Model):
         help="When medication should be administered",
         auto_join=True,
     )
-    dosage_when = fields.Many2many(related="dosage_timing.when")
-    dosage_as_need = fields.Boolean("As need?", help='Take "as needed"', default=False)
+    dosage_when = fields.Many2many(string="Dosage (when)", related="dosage_timing.when")
+    dosage_as_need = fields.Boolean("As need?", default=False)
 
     def name_get(self):
         if self._context.get("show_since"):

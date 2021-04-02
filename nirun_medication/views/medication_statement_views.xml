@@ -49,7 +49,7 @@
                 />
                 <filter name="at_night" string="At night" domain="[('dosage_when.code', 'in', ['HS'])]" />
                 <separator />
-                <filter name="state_active" string="Active" domain="[('state', '=', 'active')]" />
+                <filter name="state_active" string="Currently" domain="[('state', '=', 'active')]" />
                 <filter name="state_completed" string="Completed" domain="[('state', '=', 'completed')]" />
                 <filter name="state_stopped" string="Stopped" domain="[('state', '=', 'stopped')]" />
                 <separator />
@@ -65,7 +65,11 @@
         <field name="name">medication.statement.view.tree</field>
         <field name="model">ni.medication.statement</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree
+                decoration-bf="message_needaction==True"
+                decoration-muted="state in ['completed','stopped']"
+                multi_edit="1"
+            >
                 <field name="patient_id" invisible="context.get('default_patient_id', False)" optional="show" />
                 <field name="encounter_id" optional="hide" />
                 <field name="medication_id" />
@@ -78,6 +82,7 @@
                 <field name="duration" optional="show" />
                 <field name="state" />
                 <field name="active" optional="hide" />
+                <field name="message_needaction" invisible="1" />
             </tree>
         </field>
     </record>
@@ -89,7 +94,7 @@
                 <field name="id" invisible="True" />
                 <field name="active" invisible="True" />
                 <header class="oe_read_only">
-                    <field name="state" statusbar_visible="active,completed" widget="statusbar" />
+                    <field name="state" options="{'clickable': '1'}" widget="statusbar" />
                 </header>
                 <sheet>
                     <widget
@@ -99,43 +104,37 @@
                         title="Archived"
                     />
                     <group>
+                        <field name="medication_id" />
+                        <field name="category_id" nolabel="True" options="{'horizontal': True}" widget="radio" />
+                    </group>
+                    <group>
                         <group>
-                            <field name="company_id" groups="base.group_multi_company" />
                             <field name="patient_id" />
-                        </group>
-                        <group>
                             <field name="encounter_id" />
                             <field name="location_id" />
                         </group>
-                    </group>
-                    <group>
-                        <field name="medication_id" />
-                        <field name="category_id" widget="radio" />
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="period_start" />
+                            <field name="period_end" />
+                        </group>
                     </group>
                     <notebook>
-                        <page string="Detail">
-                            <group>
-                                <group string="Effective">
-                                    <field name="period_start" />
-                                    <field name="period_end" />
-                                </group>
-                                <group string="Reason">
-                                    <field name="reason_ref" string="Reference" />
-                                </group>
-                                <group string="Status">
-                                    <field name="state" />
-                                    <field
-                                        name="state_reason"
-                                        attrs="{'invisible': [('state', '!=', 'stopped')], 'required':[('state', '=', 'stopped')]}"
-                                    />
-                                </group>
-                            </group>
-                        </page>
                         <page string="Dosage">
                             <field name="dosage" placeholder="How the medication is/was taken or should be taken" />
                             <group>
                                 <field name="dosage_timing" context="{'no_bound': True}" />
                                 <field name="dosage_as_need" />
+                            </group>
+                        </page>
+                        <page string="Detail">
+                            <group>
+                                <group>
+                                    <field name="reason_ref" string="Reference" />
+                                </group>
+                                <group attrs="{'invisible': [('state', '!=', 'stopped')]}">
+                                    <field name="state_reason" attrs="{'required':[('state', '=', 'stopped')]}" />
+                                </group>
                             </group>
                         </page>
                     </notebook>

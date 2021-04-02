@@ -20,8 +20,8 @@ class Medication(models.Model):
     amount = fields.Char(compute="_compute_amount", store=True, index=True)
     amount_numerator = fields.Float()
     amount_numerator_unit = fields.Many2one("ni.quantity.unit")
-    amount_denominator = fields.Float(default=1.0, require=True)
-    amount_denominator_unit = fields.Many2one("ni.quantity.unit", required=True)
+    amount_denominator = fields.Float(default=1.0)
+    amount_denominator_unit = fields.Many2one("ni.quantity.unit")
 
     @api.model
     def _name_search(
@@ -70,3 +70,9 @@ class Medication(models.Model):
             else:
                 res.append(rec.amount_denominator_unit.name)
             rec.amount = " ".join(res)
+
+    @api.onchange("manufacturer_id")
+    def _onchange_manufacturer_id(self):
+        for rec in self:
+            if rec.manufacturer_id:
+                rec.manufacturer_name = rec.manufacturer_id.name
