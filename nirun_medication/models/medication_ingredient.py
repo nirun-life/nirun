@@ -41,4 +41,4 @@ class MedicationIngredient(models.Model):
                         rec.strength_denominator, rec.strength_denominator_unit.name
                     )
                 )
-            rec.strength = "/".join(res)
+            rec.strength = " / ".join(res)
