@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="medication_view_form" model="ir.ui.view">
+        <field name="name">medication.view.form</field>
+        <field name="model">ni.medication</field>
+        <field name="inherit_id" ref="nirun_medication.medication_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='product_gen']" position="after">
+                <group string="Accounting">
+                    <field name="property_account_expense_id" groups="account.group_account_user" />
+                    <field
+                        name="supplier_taxes_id"
+                        context="{'default_type_tax_use':'purchase'}"
+                        widget="many2many_tags"
+                    />
+                    <field name="taxes_id" context="{'default_type_tax_use':'sale'}" widget="many2many_tags" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

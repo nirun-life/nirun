@@ -11,12 +11,15 @@ class MedicationStatement(models.Model):
 
     name = fields.Char(related="medication_id.name", store=False)
     location_id = fields.Many2one(
-        related="encounter_id.location_id", store=True, index=True
+        related="encounter_id.location_id", store=True, index=True,
     )
     category_id = fields.Many2one(
-        "ni.medication.statement.category", "Statement Category", required=True
+        "ni.medication.statement.category",
+        "Statement Category",
+        required=True,
+        ondelete="restrict",
     )
-    medication_id = fields.Many2one("ni.medication", required=True)
+    medication_id = fields.Many2one("ni.medication", required=True, ondelete="restrict")
     state = fields.Selection(
         [("active", "Currently"), ("completed", "Completed"), ("stopped", "Stopped")],
         default="active",

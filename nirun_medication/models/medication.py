@@ -6,6 +6,7 @@ class Medication(models.Model):
     _name = "ni.medication"
     _description = "Medication"
     _inherits = {"product.template": "product_tmpl_id"}
+
     product_tmpl_id = fields.Many2one(
         "product.template",
         "Product Template",
@@ -14,7 +15,6 @@ class Medication(models.Model):
         ondelete="cascade",
         required=True,
     )
-
     manufacturer_name = fields.Char(index=True)
     manufacturer_id = fields.Many2one("res.partner", domain=[("is_company", "=", True)])
     form = fields.Many2one("ni.medication.form", index=True)
