@@ -5,12 +5,13 @@ from odoo import api, fields, models
 
 class MedicationIngredient(models.Model):
     _name = "ni.medication.ingredient"
+    _description = "Medication Ingredient"
 
-    medication_id = fields.Many2one("ni.medication", index=True)
+    medication_id = fields.Many2one("ni.medication", index=True, ondelete="cascade")
     name = fields.Char(required=True)
-    is_active = fields.Boolean(default=True, help="Active ingredient indicator")
+    is_active = fields.Boolean("Active Ingredient", default=True)
 
-    strength = fields.Char("Strength", compute="_compute_strength")
+    strength = fields.Char(compute="_compute_strength")
     strength_numerator = fields.Float(required=False)
     strength_numerator_unit = fields.Many2one("ni.quantity.unit", required=False)
     strength_denominator = fields.Float(required=False)
@@ -28,16 +29,16 @@ class MedicationIngredient(models.Model):
     def _compute_strength(self):
         for rec in self:
             res = []
-            if rec.strength_numerator:
+            if rec.strength_numerator and rec.strength_numerator_unit:
                 res.append(
                     "{} {}".format(
                         rec.strength_numerator, rec.strength_numerator_unit.name
                     )
                 )
-            if rec.strength_denominator:
+            if rec.strength_denominator and rec.strength_denominator_unit:
                 res.append(
                     "{} {}".format(
                         rec.strength_denominator, rec.strength_denominator_unit.name
                     )
                 )
-            rec.strength = "/".join(res)
+            rec.strength = " / ".join(res)

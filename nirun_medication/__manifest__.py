@@ -9,10 +9,11 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun", "nirun_patient"],
+    "depends": ["nirun_patient", "product"],
     "data": [
         "security/medication_group.xml",
         "security/ir.model.access.csv",
+        "data/medication_data.xml",
         "data/ni.medication.form.csv",
         "data/ni.quantity.unit.csv",
         "data/ni.medication.statement.category.csv",

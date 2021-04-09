@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="timing_template_action" model="ir.actions.act_window">
+        <field name="name">Timing Template</field>
+        <field name="res_model">ni.timing.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="timing_template_view_search" model="ir.ui.view">
+        <field name="name">timing.template.view.search</field>
+        <field name="model">ni.timing.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="code" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+            </search>
+        </field>
+    </record>
+    <record id="timing_template_view_tree" model="ir.ui.view">
+        <field name="name">timing.template.view.tree</field>
+        <field name="model">ni.timing.template</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" optional="show" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="timing_template_view_form" model="ir.ui.view">
+        <field name="name">timing.template.view.form</field>
+        <field name="model">ni.timing.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <sheet>
+                    <label string="Summary" for="name" />
+                    <h2>
+                        <field name="name" />
+                    </h2>
+                    <p class="oe_edit_only text-muted">
+                        The summarize is automatically generated from the given
+                        information.
+                        You can edit as you please but it will be overwritten when information was changed.
+                    </p>
+                    <notebook>
+                        <page string="Detail">
+                            <group>
+                                <div>
+                                    <group>
+                                        <label string="Repeat Every" for="period" />
+                                        <div class="o_row">
+                                            <field name="period" class="oe_inline" />
+                                            <span>-</span>
+                                            <field name="period_max" class="oe_inline" />
+                                            <field name="period_unit" string="Unit" />
+                                        </div>
+                                    </group>
+                                    <group attrs="{'invisible': [('period_unit', '!=', 'week')]}">
+                                        <field name="day_of_week" widget="many2many_checkboxes" />
+                                    </group>
+                                </div>
+                                <group>
+                                    <label for="frequency" />
+                                    <div class="o_row">
+                                        <field name="frequency" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="frequency_max" class="oe_inline" />
+                                        <span>Times</span>
+                                    </div>
+                                    <label string="Duration" for="duration" />
+                                    <div class="o_row">
+                                        <field name="duration" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="duration_max" class="oe_inline" />
+                                        <field name="duration_unit" nolabel="True" />
+                                    </div>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="time_type" options="{'horizontal':True}" widget="radio" />
+                                <field
+                                    name="when"
+                                    attrs="{'invisible': [('time_type', '!=', 'event')]}"
+                                    widget="many2many_tags"
+                                />
+                                <field
+                                    name="offset"
+                                    string="Min. before/after"
+                                    attrs="{'invisible': [('time_type', '!=', 'event')]}"
+                                />
+                            </group>
+                            <group attrs="{'invisible': [('time_type', '!=', 'tod')]}">
+                                <field name="time_of_day" context="{'default_timing_id': id}" nolabel="1">
+                                    <tree default_order="value" editable="bottom">
+                                        <field name="value" widget="float_time" />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

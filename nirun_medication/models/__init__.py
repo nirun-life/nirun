@@ -5,3 +5,4 @@ from . import medication_statement
 from . import medication_statement_category
 from . import patient
 from . import encounter
+from . import product_template

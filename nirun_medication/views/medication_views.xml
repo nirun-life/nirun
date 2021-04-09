@@ -7,6 +7,7 @@
         <field name="name">Medications</field>
         <field name="res_model">ni.medication</field>
         <field name="view_mode">tree,form</field>
+        <field name="context" eval="{'default_categ_id': ref('product_category_medication')}" />
     </record>
     <record id="medication_view_search" model="ir.ui.view">
         <field name="name">medication.view.search</field>
@@ -50,30 +51,30 @@
                         bg_color="bg-danger"
                         title="Archived"
                     />
+                    <field
+                        name="image_1920"
+                        class="oe_avatar"
+                        options="{'image_preview': 'image_128'}"
+                        widget="image"
+                    />
+                    <div class="oe_title">
+                        <label string="Medication Name" class="oe_edit_only" for="name" />
+                        <h2>
+                            <field name="name" placeholder="e.g. Nstdamol (Paracetamol 500mg)" required="True" />
+                        </h2>
+                        <field name="is_medication" invisible="True" />
+                    </div>
                     <group>
                         <group>
-                            <field name="name" />
                             <field name="form" />
-                        </group>
-                        <group>
-                            <field name="manufacturer_name" />
-                            <field name="manufacturer_id" />
-                        </group>
-                    </group>
-                    <group string="Amount">
-                        <group>
-                            <label string="Numerator" for="amount_numerator" />
-                            <div>
+                            <label string="Amount" for="amount_numerator" />
+                            <div class="o_row">
                                 <field name="amount_numerator" />
                                 <field
                                     name="amount_numerator_unit"
                                     options='{"create":False,"create_edit": False,"no_open": True}'
                                 />
-                            </div>
-                        </group>
-                        <group>
-                            <label string="Denominator" for="amount_denominator" />
-                            <div>
+                                <span>/</span>
                                 <field name="amount_denominator" />
                                 <field
                                     name="amount_denominator_unit"
@@ -81,11 +82,47 @@
                                 />
                             </div>
                         </group>
+                        <group>
+                            <field name="manufacturer_name" />
+                            <field name="manufacturer_id" />
+                        </group>
                     </group>
                     <notebook>
-                        <page string="Ingredient">
-                            <field name="ingredient" />
-                            <field name="ingredient_ids" />
+                        <page name="ingredient" string="Ingredient">
+                            <field name="ingredient" invisible="True" />
+                            <field
+                                name="ingredient_ids"
+                                context="{'default_strength_denominator': 1, 'default_strength_denominator_unit': amount_numerator_unit}"
+                            />
+                        </page>
+                        <page name="product" string="Product">
+                            <div>
+                                <field name="sale_ok" />
+                                <label for="sale_ok" />
+                            </div>
+                            <div>
+                                <field name="purchase_ok" />
+                                <label for="purchase_ok" />
+                            </div>
+                            <group>
+                                <group name="product_gen" string="General Information">
+                                    <field name="type" />
+                                    <field name="categ_id" readonly="True" />
+                                    <field name="list_price" />
+                                    <field name="standard_price" />
+                                    <field name="uom_id" groups="uom.group_uom" options="{'no_create': True}" />
+                                    <field name="uom_po_id" invisible="1" />
+                                    <label for="default_code" />
+                                    <div>
+                                        <field name="default_code" />
+                                        <i class="text-muted oe_edit_only">
+                                            Use this reference as a subject prefix when
+                                            submitting by email.
+                                        </i>
+                                    </div>
+                                    <field name="company_id" groups="base.group_multi_company" />
+                                </group>
+                            </group>
                         </page>
                         <page string="Extra Info">
                             <group>
