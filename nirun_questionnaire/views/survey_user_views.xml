@@ -3,13 +3,29 @@
   ~ Copyright (c) 2021 Piruin P.
   -->
 <odoo>
+    <record id="survey_user_input_view_search_inherit" model="ir.ui.view">
+        <field name="name">survey.user_input.view.search.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_search" />
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="patient_id" optional="hide" />
+                <filter name="patient" string="Patient Answer" domain="[('patient_id', '!=', False)]" />
+                <separator />
+            </field>
+        </field>
+    </record>
     <record id="survey_user_input_view_tree_inherit" model="ir.ui.view">
         <field name="name">survey.user_input.view.tree.inherit</field>
         <field name="model">survey.user_input</field>
         <field name="inherit_id" ref="survey.survey_user_input_view_tree" />
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
-                <field name="subject_ref" optional="show" />
+                <field name="patient_id" optional="show" />
+                <field name="encounter_id" optional="hide" />
+            </field>
+            <field name="subject_ref" position="attributes">
+                <attribute name="optional">hide</attribute>
             </field>
         </field>
     </record>
@@ -18,8 +34,15 @@
         <field name="model">survey.user_input</field>
         <field name="inherit_id" ref="survey.survey_user_input_view_form" />
         <field name="arch" type="xml">
+            <field name="subject_ref" position="attributes">
+                <attribute name="attrs">{'invisible': [('subject_model', '=', 'ni.patient')]}</attribute>
+            </field>
             <field name="token" position="after">
-                <field name="subject_ref" />
+                <field
+                    name="patient_id"
+                    attrs="{'invisible': [('subject_model', '!=', 'ni.patient')], 'required': [('subject_model', '=', 'ni.patient')]}"
+                />
+                <field name="encounter_id" attrs="{'invisible': [('subject_model', '!=', 'ni.patient')]}" />
             </field>
         </field>
     </record>

@@ -1,53 +1,44 @@
 #  Copyright (c) 2021 Piruin P.
 
-import logging
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
-
-_logger = logging.getLogger(__name__)
 
 
 class SurveySubjectWizard(models.TransientModel):
-    _name = "survey.subject.wizard"
+    _inherit = "survey.subject.wizard"
 
-    @api.model
-    def _select_target_model(self):
-        models = self.env["ir.model"].search([])
-        return [(model.model, model.name) for model in models]
-
-    survey_id = fields.Many2one("survey.survey", required=True)
-    type = fields.Char(
-        compute="_compute_type",
-        readonly=True,
-        help="subject's model name of current survey",
+    subject_ni_patient = fields.Many2one("ni.patient", string="Patient")
+    subject_ni_encounter = fields.Many2one(
+        "ni.encounter",
+        string="Encounter",
+        domain="[ ('patient_id', '=', subject_ni_patient)]",
     )
 
-    subject_res_partner = fields.Many2one("res.partner", string="Partner")
-    subject_res_users = fields.Many2one("res.users", string="User")
-
-    @api.depends("survey_id")
-    def _compute_type(self):
-        for rec in self:
-            rec.type = rec.survey_id.subject_type
-
     def subject_get(self):
-        try:
-            subject = getattr(self, "subject_" + self.type.replace(".", "_"))
-        except AttributeError:
-            _logger.error(self.type + ": Not found field value for this subject type")
-            raise ValidationError(
-                _("%s : Not found field value for this subject type") % self.type
+        result = super(SurveySubjectWizard, self).subject_get()
+        if result:
+            result.update(
+                {
+                    "patient_id": self.subject_ni_patient.id,
+                    "encounter_id": self.subject_ni_encounter.id,
+                }
             )
+            return result
         else:
-            if not subject:
-                raise ValidationError(_("Please select %s") % subject.string)
-            return {"subject_model": self.type, "subject_id": subject.id}
+            return {}
 
-    def action_survey(self):
-        answer = self.survey_id._create_answer(user=self.env.user, **self.subject_get())
-        return {
-            "type": "ir.actions.act_url",
-            "target": "self",
-            "url": "{}?answer_token={}".format(self.survey_id.public_url, answer.token),
-        }
+    @api.onchange("subject_ni_patient")
+    def onchange_patient(self):
+        if self.subject_ni_encounter.patient_id != self.subject_ni_patient:
+            self.subject_ni_encounter = self.subject_ni_patient.encountering_id
+
+        if self.subject_ni_patient.deceased:
+            warning = {
+                "title": _("Warning!"),
+                "message": _(
+                    "%s is already deceased. Reference to this patient may "
+                    "cause database inconsistency!"
+                )
+                % self.subject_ni_patient.name,
+            }
+            return {"warning": warning}

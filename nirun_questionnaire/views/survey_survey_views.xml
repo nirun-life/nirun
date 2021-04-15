@@ -3,14 +3,16 @@
 ~ Copyright (c) 2021 Piruin P.
 -->
 <odoo>
-    <record id="survey_form_inherit" model="ir.ui.view">
-        <field name="name">survey.view.form.inherit</field>
-        <field name="model">survey.survey</field>
-        <field name="inherit_id" ref="survey.survey_form" />
-        <field name="arch" type="xml">
-            <field name="category" position="after">
-                <field name="subject_type" />
+    <data>
+        <record id="survey_view_form_inherit" model="ir.ui.view">
+            <field name="name">survey.view.form.inherit</field>
+            <field name="model">survey.survey</field>
+            <field name="inherit_id" ref="survey.survey_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='category']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
             </field>
-        </field>
-    </record>
+        </record>
+    </data>
 </odoo>
