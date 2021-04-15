@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="survey_user_input_view_tree_inherit" model="ir.ui.view">
+        <field name="name">survey.user_input.view.tree.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_tree" />
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="subject_ref" optional="show" />
+            </field>
+        </field>
+    </record>
+    <record id="survey_user_input_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.user_input.view.form.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_form" />
+        <field name="arch" type="xml">
+            <field name="token" position="after">
+                <field name="subject_ref" />
+                <field name="subject_model" invisible="True" />
+            </field>
+        </field>
+    </record>
+    <template id="back_to_survey" name="Back" inherit_id="survey.back">
+        <div position="attributes">
+            <attribute name="groups">survey.group_survey_user</attribute>
+        </div>
+    </template>
+</odoo>
