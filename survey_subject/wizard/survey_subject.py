@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class SurveySubjectWizard(models.TransientModel):
     _name = "survey.subject.wizard"
+    _description = "Survey Subject Wizard"
 
     @api.model
     def _select_target_model(self):

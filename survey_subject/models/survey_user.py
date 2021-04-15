@@ -16,6 +16,7 @@ class SurveyUserInput(models.Model):
     )
     subject_id = fields.Many2oneReference(
         model_field="subject_model",
+        string="Subject ID",
         readonly=True,
         help="The record id that be subject of this answer",
     )

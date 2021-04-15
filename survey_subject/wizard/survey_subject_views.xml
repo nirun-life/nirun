@@ -1,29 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="survey_subject_wizard_action" model="ir.actions.act_window">
+    <record id="survey_subject_action" model="ir.actions.act_window">
         <field name="name">Select survey subject</field>
         <field name="res_model">survey.subject.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
-    <record id="survey_form_inherit_subject_wizard" model="ir.ui.view">
-        <field name="name">survey.view.form.inherit.subject.wizard</field>
-        <field name="model">survey.survey</field>
-        <field name="inherit_id" ref="survey.survey_form" />
-        <field name="arch" type="xml">
-            <button name="action_send_survey" position="after">
-                <button
-                    name="%(survey_subject.survey_subject_wizard_action)d"
-                    string="Answer Survey"
-                    attrs="{'invisible': ['|', '|', ('subject_type', '=', False), ('state', '=', 'draft'), ('id', '=', False)]}"
-                    class="oe_highlight"
-                    context="{'default_survey_id': active_id}"
-                    type="action"
-                />
-            </button>
-        </field>
-    </record>
-    <record id="survey_subject_view_form_wizard" model="ir.ui.view">
+    <record id="survey_subject_view_form" model="ir.ui.view">
         <field name="name">survey.subject.view.form</field>
         <field name="model">survey.subject.wizard</field>
         <field name="arch" type="xml">
@@ -39,6 +22,23 @@
                     <button string="Cancel" class="btn-secondary" special="cancel" />
                 </footer>
             </form>
+        </field>
+    </record>
+    <record id="survey_view_form_inherit_wizard" model="ir.ui.view">
+        <field name="name">survey.view.form.inherit.wizard</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_form" />
+        <field name="arch" type="xml">
+            <button name="action_send_survey" position="after">
+                <button
+                    name="%(survey_subject.survey_subject_action)d"
+                    string="Answer Survey"
+                    attrs="{'invisible': ['|', '|', ('subject_type', '=', False), ('state', '=', 'draft'), ('id', '=', False)]}"
+                    class="oe_highlight"
+                    context="{'default_survey_id': active_id}"
+                    type="action"
+                />
+            </button>
         </field>
     </record>
 </odoo>
