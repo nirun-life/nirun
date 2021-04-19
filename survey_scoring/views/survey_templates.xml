@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <template id="sfinished_inherit" name="Survey Finished" inherit_id="survey.sfinished">
+        <xpath expr="//t/div/div[1]/div/div[2]/div[1]/t[1]/div" position="inside">
+            <span class="text-muted fw-light">
+                (
+                <t t-esc="answer.quizz_score_raw" />
+                /
+                <t t-esc="answer.quizz_score_total" />
+                )
+            </span>
+        </xpath>
+    </template>
+</odoo>
