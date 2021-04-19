@@ -9,7 +9,8 @@
         <field name="inherit_id" ref="survey.survey_user_input_view_search" />
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
-                <field name="patient_id" optional="hide" />
+                <field name="patient_id" />
+                <field name="encounter_id" />
                 <filter name="patient" string="Patient Answer" domain="[('patient_id', '!=', False)]" />
                 <separator />
             </field>
@@ -38,6 +39,7 @@
                 <attribute name="attrs">{'invisible': [('subject_model', '=', 'ni.patient')]}</attribute>
             </field>
             <field name="token" position="after">
+                <field name="company_id" groups="base.group_multi_company" />
                 <field
                     name="patient_id"
                     attrs="{'invisible': [('subject_model', '!=', 'ni.patient')], 'required': [('subject_model', '=', 'ni.patient')]}"

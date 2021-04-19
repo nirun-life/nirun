@@ -14,6 +14,8 @@
         "wizard/survey_subject_views.xml",
         "views/survey_survey_views.xml",
         "views/survey_user_views.xml",
+        "views/patient_views.xml",
+        "views/encounter_views.xml",
     ],
     "demo": [],
     "application": True,

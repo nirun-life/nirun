@@ -8,7 +8,7 @@ class Survey(models.Model):
 
     subject_type = fields.Selection(selection_add=[("ni.patient", "Patient")])
     category = fields.Selection(
-        selection_add=[("patient", "Patient's health Assessment")]
+        selection_add=[("patient", "Encounter's health Assessment")]
     )
 
     @api.onchange("category")

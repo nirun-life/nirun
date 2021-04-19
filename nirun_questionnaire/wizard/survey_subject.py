@@ -7,7 +7,7 @@ from odoo import _, api, fields, models
 class SurveySubjectWizard(models.TransientModel):
     _inherit = "survey.subject.wizard"
 
-    subject_ni_patient = fields.Many2one("ni.patient", string="Patient")
+    subject_ni_patient = fields.Many2one("ni.patient", string="Encounter")
     subject_ni_encounter = fields.Many2one(
         "ni.encounter",
         string="Encounter",
