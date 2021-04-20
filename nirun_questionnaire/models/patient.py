@@ -28,6 +28,7 @@ class Patient(models.Model):
                 "search_default_patient_id": self.ids[0],
                 "search_default_completed": 1,
                 "search_default_not_test": 1,
+                "search_default_group_by_survey": 1,
             }
         )
         action["context"] = ctx

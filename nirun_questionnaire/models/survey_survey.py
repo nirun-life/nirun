@@ -7,9 +7,7 @@ class Survey(models.Model):
     _inherit = "survey.survey"
 
     subject_type = fields.Selection(selection_add=[("ni.patient", "Patient")])
-    category = fields.Selection(
-        selection_add=[("patient", "Encounter's health Assessment")]
-    )
+    category = fields.Selection(selection_add=[("patient", "Patient Assessment")])
 
     @api.onchange("category")
     def _onchange_category(self):
