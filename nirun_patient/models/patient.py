@@ -1,12 +1,29 @@
 #  Copyright (c) 2021 Piruin P.
 
-import base64
-
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.modules.module import get_module_resource
+
+
+class Partner(models.Model):
+    _inherit = "res.partner"
+
+    patient = fields.Boolean(compute="_compute_patient", store=True)
+    patient_ids = fields.One2many("ni.patient", "partner_id")
+    patient_related_person = fields.Boolean(
+        compute="_compute_patient_related_person", store=True
+    )
+
+    @api.depends("patient_ids")
+    def _compute_patient(self):
+        for rec in self:
+            rec.patient = bool(rec.patient_ids)
+
+    @api.depends("parent_id")
+    def _compute_patient_related_person(self):
+        for rec in self:
+            rec.patient_related_person = rec.parent_id and rec.parent_id.patient
 
 
 class Patient(models.Model):
@@ -26,11 +43,36 @@ class Patient(models.Model):
     identifier_number = fields.Char(
         "HN", copy=False, tracking=True, help="Hospital Identification Number"
     )
-    name = fields.Char("Name", require=True, compute="_compute_name", store=True)
-    title = fields.Many2one("res.partner.title", "Title", tracking=True)
-    firstname = fields.Char("Firstname", copy=False, require=True, tracking=True)
-    lastname = fields.Char("Lastname", copy=False, tracking=True)
-    country_id = fields.Many2one("res.country", "Nationality (Country)", tracking=True)
+    partner_id = fields.Many2one(
+        "res.partner",
+        "Contact Information",
+        required=True,
+        copy=False,
+        ondelete="restrict",
+        domain="[('type', '=', 'contact'), ('is_company', '=', False)]",
+        help="Contact information of patient",
+        check_company=True,
+    )
+    image_1920 = fields.Image(related="partner_id.image_1920")
+    image_1024 = fields.Image(related="partner_id.image_1024")
+    image_512 = fields.Image(related="partner_id.image_512")
+    image_256 = fields.Image(related="partner_id.image_256")
+    image_128 = fields.Image(related="partner_id.image_128")
+
+    name = fields.Char(related="partner_id.name", store=True, index=True)
+    display_name = fields.Char(
+        related="partner_id.display_name", store=True, index=True
+    )
+    contact_address = fields.Char(
+        related="partner_id.contact_address", string="Address"
+    )
+
+    country_id = fields.Many2one(
+        "res.country",
+        "Nationality (Country)",
+        tracking=True,
+        default=lambda self: self.env.company.country_id,
+    )
     identification_id = fields.Char(
         string="Identification No",
         copy=False,
@@ -81,58 +123,6 @@ class Patient(models.Model):
     deceased_date = fields.Date("Deceased Date", tracking=True, copy=False)
     deceased = fields.Boolean("Deceased", compute="_compute_is_deceased")
 
-    private_mobile = fields.Char(
-        related="home_address_id.mobile",
-        related_sudo=False,
-        readonly=False,
-        tracking=True,
-        string="Private Phone",
-        groups="hr.group_hr_user",
-    )
-    home_address_id = fields.Many2one(
-        "res.partner",
-        "Home Address",
-        help="the private address of the Patient",
-        tracking=True,
-        check_company=True,
-        copy=False,
-    )
-    home_phone = fields.Char(
-        related="home_address_id.phone",
-        related_sudo=False,
-        readonly=False,
-        tracking=True,
-        string="Home Phone",
-        groups="hr.group_hr_user",
-    )
-    work_address_id = fields.Many2one(
-        "res.partner",
-        "Work Address",
-        help="Work contract of Patient",
-        tracking=True,
-        check_company=True,
-        copy=False,
-        domain=[("is_company", "=", True)],
-    )
-    work_phone = fields.Char(
-        related="work_address_id.phone",
-        related_sudo=False,
-        readonly=False,
-        tracking=True,
-        string="Work Phone",
-        groups="hr.group_hr_user",
-    )
-    job_title = fields.Char(tracking=True)
-
-    hometown_address_id = fields.Many2one(
-        "res.partner",
-        "Hometown Address",
-        domain=[("type", "=", "private")],
-        help="hometown address of the Patient",
-        tracking=True,
-        check_company=True,
-        copy=False,
-    )
     category_ids = fields.Many2many(
         "ni.patient.category",
         "ni_patient_category_rel",
@@ -170,6 +160,14 @@ class Patient(models.Model):
         )
     ]
 
+    @api.onchange("partner_id")
+    def onchange_partner_id(self):
+        for rec in self:
+            if rec.partner_id:
+                rec.country_id = rec.partner_id.country_id
+                if not rec._origin.identification_id:
+                    rec.identification_id = rec.partner_id.vat
+
     def _compute_encounter_count(self):
         for rec in self:
             rec.encounter_count = len(rec.encounter_ids)
@@ -203,21 +201,6 @@ class Patient(models.Model):
                     }
                 )
 
-    @api.model
-    def _default_image(self):
-        image_path = get_module_resource(
-            "nirun_patient", "static/src/img", "default_patient.png"
-        )
-        return base64.b64encode(open(image_path, "rb").read())
-
-    image_1920 = fields.Image(default=_default_image, copy=False)
-
-    @api.constrains("firstname", "lastname")
-    def _check_name(self):
-        for record in self:
-            if not (record.firstname or record.lastname):
-                raise ValidationError(_("No name set."))
-
     @api.constrains("birthdate")
     def _check_birthdate(self):
         """ Not allow birthdates in the future. """
@@ -238,16 +221,6 @@ class Patient(models.Model):
                 )
             if record.birthdate and record.deceased_date < record.birthdate:
                 raise ValidationError(_("Patient cannot die before they was born!",))
-
-    @api.depends("title", "firstname", "lastname")
-    def _compute_name(self):
-        for record in self:
-            names = [
-                name.strip() if name else None
-                for name in [record.title.shortcut, record.firstname, record.lastname]
-            ]
-            computed_name = " ".join(filter(None, names))
-            record.name = computed_name if computed_name else _("New Patient")
 
     @api.model
     def _compute_is_deceased(self):

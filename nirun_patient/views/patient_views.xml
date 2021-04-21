@@ -42,9 +42,8 @@
                         title="Deceased"
                     />
                     <div class="oe_title">
-                        <label for="health_patient_name" string="Patient" />
                         <h1>
-                            <field id="health_patient_name" name="name" placeholder="Patient's Name" required="True" />
+                            <field name="name" placeholder="Patient's Name" required="True" />
                         </h1>
                         <field
                             name="category_ids"
@@ -56,15 +55,19 @@
                     <group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
-                            <field name="identifier_number" placeholder="HN." />
-                            <field name="title" />
-                            <field name="firstname" attrs="{'required': [('lastname', '=', False)]}" />
-                            <field name="lastname" attrs="{'required': [('firstname', '=', False)]}" />
+                            <field
+                                name="partner_id"
+                                context="{'default_type': 'contact','default_is_company': False, 'default_country_id': country_id}"
+                            />
+                            <field name="identifier_number" placeholder="ex. HN-001204" />
                         </group>
                         <group>
-                            <field name="birthdate" />
-                            <field name="deceased_date" />
-                            <field name="age" attrs="{'invisible': [('birthdate', '=', False)]}" />
+                            <label class="oe_read_only" for="age" />
+                            <div class="o_row oe_read_only">
+                                <field name="age" />
+                            </div>
+                            <field name="birthdate" placeholder="ex. 31/01/1950" />
+                            <field name="deceased_date" placeholder="ex. 31/12/2019" />
                         </group>
                     </group>
                     <notebook name="notebook">
@@ -73,39 +76,13 @@
                                 <group string="Citizenship">
                                     <field name="identification_id" />
                                     <field name="country_id" />
-                                    <newline />
                                     <field name="gender" />
                                     <field name="marital_status" />
-                                </group>
-                                <group aria-hidden="true" icon="fa-flag" string="Contact">
-                                    <field name="private_mobile" icon="fa-flag" />
-                                    <field
-                                        name="home_address_id"
-                                        context="{'show_address': 2, 'default_name': name,'default_type': 'private', 'default_country_id': country_id, 'default_image_1920': image_1920,'form_view_ref': 'patient.res_partner_view_form_private' }"
-                                        domain="[('type', '=', 'private')]"
-                                        options='{"always_reload": True, "highlight_first_line": True}'
-                                    />
-                                    <field name="home_phone" />
-                                    <field
-                                        name="hometown_address_id"
-                                        context="{'show_address': 2, 'default_name': name,'default_type': 'private', 'default_country_id': country_id, 'default_image_1920': image_1920,'form_view_ref': 'patient.res_partner_view_form_private' }"
-                                        domain="[('type', '=', 'private')]"
-                                        options='{"always_reload": True, "highlight_first_line": True}'
-                                    />
                                 </group>
                                 <group string="Education">
                                     <field name="education_level" />
                                     <field name="study_field" />
                                     <field name="study_school" />
-                                </group>
-                                <group string="Working">
-                                    <field name="job_title" />
-                                    <field
-                                        name="work_address_id"
-                                        context="{'show_address': 1, 'default_type': 'contact', 'default_is_company': True, 'default_country_id': country_id }"
-                                        options='{"always_reload": True, "highlight_first_line": True}'
-                                    />
-                                    <field name="work_phone" />
                                 </group>
                             </group>
                         </page>
