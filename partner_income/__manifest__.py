@@ -9,7 +9,7 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun_patient_contact", "uom"],
+    "depends": ["base", "uom"],
     "data": ["data/uom_data.xml", "views/partner_views.xml"],
     "application": False,
     "auto_install": False,

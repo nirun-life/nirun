@@ -10,8 +10,11 @@
         <field name="priority" eval="1" />
         <field name="arch" type="xml">
             <field name="function" position="after">
-                <label attrs="{'invisible': [('type', '!=', 'relate')]}" for="income" />
-                <div attrs="{'invisible': [('type', '!=', 'relate')]}" class="o_row">
+                <label
+                    attrs="{'invisible': [('type', 'in', ['invoice', 'delivery', 'other', 'private'])]}"
+                    for="income"
+                />
+                <div attrs="{'invisible': [('type', 'in', ['invoice', 'delivery', 'other', 'private'])]}" class="o_row">
                     <field name="income" />
                     <span>/</span>
                     <field
@@ -22,11 +25,14 @@
                 </div>
                 <field name="income_currency_id" invisible="True" />
             </field>
-            <xpath expr="//notebook/page[1]/field/form/sheet/group/group[1]/field[@name='email']" position="before">
-                <label attrs="{'invisible': [('type', '!=', 'relate')]}" for="income" />
-                <div attrs="{'invisible': [('type', '!=', 'relate')]}" class="o_row">
+            <xpath expr="//notebook/page[1]/field/form/sheet/group/group[2]/field[@name='email']" position="before">
+                <label
+                    attrs="{'invisible': [('type', 'in', ['invoice', 'delivery', 'other', 'private'])]}"
+                    for="income"
+                />
+                <div attrs="{'invisible': [('type', 'in', ['invoice', 'delivery', 'other', 'private'])]}" class="o_row">
                     <field name="income" />
-                    <span>/</span>
+                    <span>each</span>
                     <field
                         name="income_uom"
                         attrs="{'required': [('income','&gt;=', 1)]}"
