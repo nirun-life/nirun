@@ -66,7 +66,7 @@
                             <field name="company_id" groups="base.group_multi_company" />
                             <field
                                 name="partner_id"
-                                context="{'show_address': True, 'default_type': 'contact','default_is_company': False, 'default_country_id': country_id}"
+                                context="{'show_address': True, 'default_type': 'contact', 'default_is_company': False, 'default_country_id': country_id}"
                                 options='{"always_reload": True}'
                             />
                             <label class="oe_read_only" for="phone" />
@@ -100,11 +100,6 @@
                                 </group>
                                 <group string="Marital Status">
                                     <field name="marital_status" />
-                                    <field
-                                        name="spouse"
-                                        attrs="{'invisible': [('marital_status', '=', 'single')]}"
-                                        context="{'default_parent_id':partner_id, 'default_type': 'other', 'form_view_ref': 'base.res_partner_view_form_private'}"
-                                    />
                                 </group>
                                 <group string="Family">
                                     <field name="father" />

@@ -11,19 +11,11 @@ class Partner(models.Model):
 
     patient = fields.Boolean(compute="_compute_patient", store=True)
     patient_ids = fields.One2many("ni.patient", "partner_id")
-    patient_related_person = fields.Boolean(
-        compute="_compute_patient_related_person", store=True
-    )
 
     @api.depends("patient_ids")
     def _compute_patient(self):
         for rec in self:
             rec.patient = bool(rec.patient_ids)
-
-    @api.depends("parent_id")
-    def _compute_patient_related_person(self):
-        for rec in self:
-            rec.patient_related_person = rec.parent_id and rec.parent_id.patient
 
 
 class Patient(models.Model):
@@ -106,7 +98,6 @@ class Patient(models.Model):
         default="single",
         tracking=True,
     )
-    spouse = fields.Many2one("res.partner", domain=[("is_company", "=", False)])
     father = fields.Char("Father (fullname)")
     mother = fields.Char("Mother (fullname)")
     sibling = fields.Integer("Number of Sibling")

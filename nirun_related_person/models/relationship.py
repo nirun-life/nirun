@@ -4,6 +4,6 @@ from odoo import models
 
 
 class PatientRelationship(models.Model):
-    _name = "ni.patient.relationship"
+    _name = "res.partner.relationship"
     _description = "Relationship"
     _inherit = ["coding.base"]

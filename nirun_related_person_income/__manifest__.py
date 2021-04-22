@@ -1,7 +1,7 @@
 #  Copyright (c) 2021 Piruin P.
 
 {
-    "name": "Patients - Contacts",
+    "name": "Related person - Income",
     "version": "13.0.0.1.0",
     "development_status": "Alpha",
     "category": "Healthcare",
@@ -9,9 +9,9 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun_patient", "contacts"],
-    "data": ["views/partner_views.xml", "views/patient_views.xml"],
+    "depends": ["nirun_patient_contact", "uom"],
+    "data": ["data/uom_data.xml", "views/partner_views.xml"],
     "application": False,
-    "auto_install": True,
+    "auto_install": False,
     "installable": True,
 }

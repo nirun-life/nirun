@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+    <record id="product_uom_week" model="uom.uom">
+        <field name="name">Weeks</field>
+        <field name="category_id" ref="uom.uom_categ_wtime" />
+        <field name="factor" eval="5.0" />
+        <field name="uom_type">bigger</field>
+    </record>
+    <record id="product_uom_month" model="uom.uom">
+        <field name="name">Months</field>
+        <field name="category_id" ref="uom.uom_categ_wtime" />
+        <field name="factor" eval="20.9" />
+        <field name="uom_type">bigger</field>
+    </record>
+    <record id="product_uom_year" model="uom.uom">
+        <field name="name">Years</field>
+        <field name="category_id" ref="uom.uom_categ_wtime" />
+        <field name="factor" eval="251" />
+        <!-- from https://www.calendar-12.com/working_days/2022 -->
+        <field name="uom_type">bigger</field>
+    </record>
+</odoo>

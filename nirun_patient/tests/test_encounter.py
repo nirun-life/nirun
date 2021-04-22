@@ -24,7 +24,7 @@ class TestPatientEncounter(TestPatientCommon):
                 "encounter_id": encounter.id,
                 "period_start": fields.date.today() - relativedelta(years=2),
                 "period_end": fields.date.today() - relativedelta(years=1),
-                "author_id": self.care_manager.id,
+                "care_manager": self.care_manager.id,
             }
         )
         encounter.update({"episode_ids": [(4, ep1.id)]})
@@ -34,7 +34,7 @@ class TestPatientEncounter(TestPatientCommon):
             {
                 "encounter_id": encounter.id,
                 "period_start": fields.date.today() - relativedelta(years=1),
-                "author_id": self.care_manager.id,
+                "care_manager": self.care_manager.id,
             }
         )
         encounter.update({"episode_ids": [(4, ep2.id)]})
@@ -44,7 +44,7 @@ class TestPatientEncounter(TestPatientCommon):
             {
                 "encounter_id": encounter.id,
                 "period_start": fields.date.today() - relativedelta(years=3),
-                "author_id": self.care_manager.id,
+                "care_manager": self.care_manager.id,
             }
         )
         encounter.update({"episode_ids": [(4, ep0.id)]})
@@ -66,7 +66,7 @@ class TestPatientEncounter(TestPatientCommon):
             {
                 "encounter_id": encounter.id,
                 "period_start": fields.Date.add(fields.date.today(), months=1),
-                "author_id": self.care_manager,
+                "care_manager": self.care_manager,
             }
         )
         encounter.update({"episode_ids": [(4, ep1.id)]})

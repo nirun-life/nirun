@@ -9,9 +9,15 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun_patient", "contacts"],
-    "data": ["views/partner_views.xml", "views/patient_views.xml"],
+    "depends": ["nirun_patient"],
+    "data": [
+        "data/res.partner.relationship.csv",
+        "security/ir.model.access.csv",
+        "views/relationship_views.xml",
+        "views/partner_views.xml",
+        "views/patient_views.xml",
+    ],
     "application": False,
-    "auto_install": True,
+    "auto_install": False,
     "installable": True,
 }

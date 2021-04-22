@@ -17,7 +17,6 @@
         "security/patient_security.xml",
         "security/ir.model.access.csv",
         "views/location_views.xml",
-        "views/res_partner_views.xml",
         "views/patient_views.xml",
         "views/patient_category_views.xml",
         "views/patient_condition.xml",
