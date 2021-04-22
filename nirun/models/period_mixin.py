@@ -10,7 +10,6 @@ class PeriodMixin(models.AbstractModel):
     _name = "period.mixin"
     _description = "Period Mixin"
 
-    _date_name = "period_start"
     period_start = fields.Date(
         "Since",
         tracking=True,

@@ -56,6 +56,7 @@ class TestPatient(TestPatientCommon):
         patient = self.env["ni.patient"].with_user(self.patient_admin)
         form = Form(patient)
         form.firstname = "Eunice"
+        form.age_years = 62
 
         patient = form.save()
 

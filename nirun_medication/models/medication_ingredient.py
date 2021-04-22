@@ -2,6 +2,13 @@
 
 from odoo import api, fields, models
 
+STRENGTH_FIELDS = (
+    "strength_numerator",
+    "strength_numerator_unit",
+    "strength_denominator",
+    "strength_denominator_unit",
+)
+
 
 class MedicationIngredient(models.Model):
     _name = "ni.medication.ingredient"

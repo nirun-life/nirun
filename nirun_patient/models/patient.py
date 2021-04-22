@@ -40,31 +40,35 @@ class Patient(models.Model):
         index=True,
         default=lambda self: self.env.company,
     )
-    identifier_number = fields.Char(
-        "HN", copy=False, tracking=True, help="Hospital Identification Number"
-    )
+
     partner_id = fields.Many2one(
         "res.partner",
-        "Contact Information",
-        required=True,
+        "Personal Information",
         copy=False,
+        check_company=True,
+        required=True,
         ondelete="restrict",
+        index=True,
+        tracking=True,
         domain="[('type', '=', 'contact'), ('is_company', '=', False)]",
         help="Contact information of patient",
-        check_company=True,
     )
     image_1920 = fields.Image(related="partner_id.image_1920")
     image_1024 = fields.Image(related="partner_id.image_1024")
     image_512 = fields.Image(related="partner_id.image_512")
     image_256 = fields.Image(related="partner_id.image_256")
     image_128 = fields.Image(related="partner_id.image_128")
-
     name = fields.Char(related="partner_id.name", store=True, index=True)
-    display_name = fields.Char(
-        related="partner_id.display_name", store=True, index=True
-    )
-    contact_address = fields.Char(
-        related="partner_id.contact_address", string="Address"
+    phone = fields.Char(related="partner_id.phone")
+    mobile = fields.Char(related="partner_id.mobile")
+
+    code = fields.Char("Internal Reference", copy=False, tracking=True)
+    category_ids = fields.Many2many(
+        "ni.patient.category",
+        "ni_patient_category_rel",
+        "patient_id",
+        "category_id",
+        string="Category",
     )
 
     country_id = fields.Many2one(
@@ -79,6 +83,36 @@ class Patient(models.Model):
         tracking=True,
         help="ID related to patient's nationality",
     )
+    gender = fields.Selection(
+        [("male", "Male"), ("female", "Female"), ("other", "Other")], tracking=True,
+    )
+    birthdate = fields.Date("Date of Birth", tracking=True)
+    age = fields.Char("Age", compute="_compute_age")
+    age_years = fields.Integer(
+        "Age (years)", compute="_compute_age", inverse="_inverse_age"
+    )
+    deceased_date = fields.Date("Deceased Date", tracking=True, copy=False)
+    deceased = fields.Boolean("Deceased", compute="_compute_is_deceased")
+
+    marital_status = fields.Selection(
+        [
+            ("single", "Single"),
+            ("married", "Married"),
+            ("cohabitant", "Legal Cohabitant"),
+            ("widower", "Widower"),
+            ("divorced", "Divorced"),
+        ],
+        string="Marital Status",
+        default="single",
+        tracking=True,
+    )
+    spouse = fields.Many2one("res.partner", domain=[("is_company", "=", False)])
+    father = fields.Char("Father (fullname)")
+    mother = fields.Char("Mother (fullname)")
+    sibling = fields.Integer("Number of Sibling")
+    birth_order = fields.Integer("Birth Order")
+    children = fields.Integer("Number of Children")
+
     education_level = fields.Selection(
         [
             ("0", "Early Childhood"),
@@ -99,37 +133,6 @@ class Patient(models.Model):
     study_field = fields.Char()
     study_school = fields.Char()
 
-    gender = fields.Selection(
-        [("male", "Male"), ("female", "Female"), ("other", "Other")],
-        default="male",
-        tracking=True,
-    )
-    marital_status = fields.Selection(
-        [
-            ("single", "Single"),
-            ("married", "Married"),
-            ("cohabitant", "Legal Cohabitant"),
-            ("widower", "Widower"),
-            ("divorced", "Divorced"),
-        ],
-        string="Marital Status",
-        default="single",
-        copy=False,
-        tracking=True,
-    )
-    birthdate = fields.Date("Date of Birth", tracking=True, copy=False)
-    age = fields.Char("Age", compute="_compute_age")
-    age_years = fields.Integer("Age (years)", compute="_compute_age")
-    deceased_date = fields.Date("Deceased Date", tracking=True, copy=False)
-    deceased = fields.Boolean("Deceased", compute="_compute_is_deceased")
-
-    category_ids = fields.Many2many(
-        "ni.patient.category",
-        "ni_patient_category_rel",
-        "patient_id",
-        "category_id",
-        string="Category",
-    )
     encounter_ids = fields.One2many(
         "ni.encounter", "patient_id", readonly=True, string="Encounter"
     )
@@ -148,8 +151,8 @@ class Patient(models.Model):
         compute="_compute_encountering", default=False, store=True, compute_sudo=True
     )
 
-    diagnosis_ids = fields.One2many(
-        "ni.patient.condition.latest", "patient_id", string="Diagnosis", readonly=True
+    condition_ids = fields.One2many(
+        "ni.patient.condition.latest", "patient_id", string="Problem", readonly=True
     )
 
     _sql_constraints = [
@@ -157,8 +160,26 @@ class Patient(models.Model):
             "identifier_number_uniq",
             "unique (company_id, identifier_number)",
             _("Identifier must be unique !"),
-        )
+        ),
+        (
+            "partner_uniq",
+            "unique (company_id, partner_id)",
+            _("This contact have already registered as patient!"),
+        ),
     ]
+
+    def name_get(self):
+        return [(patient.id, patient._name_get()) for patient in self]
+
+    def _name_get(self):
+        patient = self
+        name = patient.name or ""
+        if self._context.get("show_address"):
+            name = patient.partner_id.with_context(show_address=True).name_get()
+        if self._context.get("ref_no") and patient.identifier_number:
+            name = "[{}] {}".format(patient.identifier_number, name)
+
+        return name
 
     @api.onchange("partner_id")
     def onchange_partner_id(self):
@@ -256,7 +277,7 @@ class Patient(models.Model):
     def _inverse_age(self):
         today = fields.date.today()
         for record in self.filtered(lambda r: not (r.deceased_date and r.birthdate)):
-            record.birthdate = today - relativedelta(years=record.age)
+            record.birthdate = today - relativedelta(years=record.age_years)
 
     def action_encounter(self):
         action_rec = self.env.ref("nirun_patient.encounter_action")

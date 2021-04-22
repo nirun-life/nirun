@@ -92,7 +92,7 @@ class Encounter(models.Model):
         help="",
         copy=True,
     )
-    diagnosis_id = fields.One2many(
+    condition_id = fields.One2many(
         "ni.patient.condition",
         "encounter_id",
         states={"cancelled": [("readonly", True)], "finished": [("readonly", True)]},

@@ -13,6 +13,7 @@
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <form>
+                <field name="id" invisible="1" />
                 <sheet>
                     <div name="button_box" class="oe_button_box" groups="base.group_user">
                         <button name="action_encounter" class="oe_stat_button" icon="fa-hospital-o" type="object">
@@ -28,7 +29,6 @@
                             <field name="encountering_start" string="since" widget="statinfo" />
                         </button>
                     </div>
-                    <field name="deceased" invisible="1" />
                     <field
                         name="image_1920"
                         class="oe_avatar"
@@ -43,51 +43,89 @@
                     />
                     <div class="oe_title">
                         <h1>
-                            <field name="name" placeholder="Patient's Name" required="True" />
+                            <div attrs="{'invisible': [('id', '!=', False)]}">New Patient</div>
+                            <field
+                                name="name"
+                                attrs="{'invisible': [('id', '=', False)]}"
+                                placeholder="Patient's Name"
+                                required="True"
+                            />
                         </h1>
-                        <field
-                            name="category_ids"
-                            options="{'color_field': 'color', 'no_create_edit': True}"
-                            placeholder="Categories"
-                            widget="many2many_tags"
-                        />
                     </div>
+                    <div class="oe_read_only">
+                        <field name="age" />
+                    </div>
+                    <field
+                        name="category_ids"
+                        options="{'color_field': 'color', 'no_create_edit': True}"
+                        placeholder="Categories.."
+                        widget="many2many_tags"
+                    />
                     <group>
-                        <group>
+                        <group name="partner">
                             <field name="company_id" groups="base.group_multi_company" />
                             <field
                                 name="partner_id"
-                                context="{'default_type': 'contact','default_is_company': False, 'default_country_id': country_id}"
+                                context="{'show_address': True, 'default_type': 'contact','default_is_company': False, 'default_country_id': country_id}"
+                                options='{"always_reload": True}'
                             />
-                            <field name="identifier_number" placeholder="ex. HN-001204" />
-                        </group>
-                        <group>
-                            <label class="oe_read_only" for="age" />
-                            <div class="o_row oe_read_only">
-                                <field name="age" />
+                            <label class="oe_read_only" for="phone" />
+                            <div class="oe_read_only">
+                                <field name="phone" widget="phone" />
                             </div>
-                            <field name="birthdate" placeholder="ex. 31/01/1950" />
-                            <field name="deceased_date" placeholder="ex. 31/12/2019" />
+                            <label class="oe_read_only" for="mobile" />
+                            <div class="oe_read_only">
+                                <field name="mobile" widget="phone" />
+                            </div>
+                        </group>
+                        <group name="internal">
+                            <field name="code" placeholder="ex. HN-001204" />
                         </group>
                     </group>
                     <notebook name="notebook">
-                        <page name="private" accesskey="P" string="Private Information">
+                        <page name="private" string="Private Information" accesskey="P">
                             <group>
                                 <group string="Citizenship">
-                                    <field name="identification_id" />
                                     <field name="country_id" />
-                                    <field name="gender" />
+                                    <field name="identification_id" placeholder="ex. 1104740100001" />
+                                    <field name="gender" options="{'horizontal': True}" widget="radio" />
+                                    <field name="birthdate" placeholder="ex. 31/01/1950" />
+                                    <label class="oe_edit_only" for="age_years" />
+                                    <div class="o_row oe_edit_only">
+                                        <field
+                                            name="age_years"
+                                            attrs="{'readonly': [('deceased_date', '!=', False)]}"
+                                        />
+                                    </div>
+                                </group>
+                                <group string="Marital Status">
                                     <field name="marital_status" />
+                                    <field
+                                        name="spouse"
+                                        attrs="{'invisible': [('marital_status', '=', 'single')]}"
+                                        context="{'default_parent_id':partner_id, 'default_type': 'other', 'form_view_ref': 'base.res_partner_view_form_private'}"
+                                    />
+                                </group>
+                                <group string="Family">
+                                    <field name="father" />
+                                    <field name="mother" />
+                                    <field name="sibling" />
+                                    <field name="birth_order" attrs="{'invisible': [('sibling', '=', 0)]}" />
+                                    <field name="children" />
                                 </group>
                                 <group string="Education">
                                     <field name="education_level" />
-                                    <field name="study_field" />
-                                    <field name="study_school" />
+                                    <field name="study_field" placeholder="ex. Public Health" />
+                                    <field name="study_school" placeholder="ex. Health Science" />
+                                </group>
+                                <group string="Decease">
+                                    <field name="deceased" invisible="1" />
+                                    <field name="deceased_date" />
                                 </group>
                             </group>
                         </page>
-                        <page accesskey="D" string="Diagnosis/Problem">
-                            <field name="diagnosis_ids" />
+                        <page string="Condition / Problem" accesskey="D">
+                            <field name="condition_ids" />
                         </page>
                         <page string="Encounter" groups="nirun.group_manager">
                             <field name="encounter_ids" />
@@ -113,7 +151,10 @@
             <tree>
                 <field name="name" />
                 <field name="gender" />
+                <field name="age_years" />
                 <field name="birthdate" />
+                <field name="phone" optional="show" />
+                <field name="mobile" optional="show" />
                 <field name="encountering_id" optional="show" />
                 <field name="company_id" groups="base.group_multi_company" />
             </tree>
@@ -125,7 +166,10 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" />
+                <field name="phone" />
+                <field name="mobile" />
                 <field name="category_ids" />
+                <filter name="encountering" string='Currently' domain="[('is_encountering', '=', True)]" />
             </search>
         </field>
     </record>
