@@ -50,9 +50,12 @@ class Patient(models.Model):
     image_512 = fields.Image(related="partner_id.image_512")
     image_256 = fields.Image(related="partner_id.image_256")
     image_128 = fields.Image(related="partner_id.image_128")
-    name = fields.Char(related="partner_id.name", store=True, index=True)
-    phone = fields.Char(related="partner_id.phone")
-    mobile = fields.Char(related="partner_id.mobile")
+    name = fields.Char(
+        related="partner_id.name", readonly=False, store=True, index=True
+    )
+    phone = fields.Char(related="partner_id.phone", readonly=False)
+    mobile = fields.Char(related="partner_id.mobile", readonly=False)
+    email = fields.Char(related="partner_id.email", readonly=False)
 
     code = fields.Char("Internal Reference", copy=False, tracking=True)
     category_ids = fields.Many2many(
@@ -98,8 +101,8 @@ class Patient(models.Model):
         default="single",
         tracking=True,
     )
-    father = fields.Char("Father (fullname)")
-    mother = fields.Char("Mother (fullname)")
+    father = fields.Char("Father Complete Name")
+    mother = fields.Char("Mother Complete Name")
     sibling = fields.Integer("Number of Sibling")
     birth_order = fields.Integer("Birth Order")
     children = fields.Integer("Number of Children")

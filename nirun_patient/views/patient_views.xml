@@ -29,12 +29,7 @@
                             <field name="encountering_start" string="since" widget="statinfo" />
                         </button>
                     </div>
-                    <field
-                        name="image_1920"
-                        class="oe_avatar"
-                        options='{"zoom": true, "preview_image":"image_128"}'
-                        widget='image'
-                    />
+                    <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('deceased', '=', False)]}"
@@ -63,22 +58,17 @@
                     />
                     <group>
                         <group name="partner">
-                            <field name="company_id" groups="base.group_multi_company" />
                             <field
                                 name="partner_id"
                                 context="{'show_address': True, 'default_type': 'contact', 'default_is_company': False, 'default_country_id': country_id}"
                                 options='{"always_reload": True}'
                             />
-                            <label class="oe_read_only" for="phone" />
-                            <div class="oe_read_only">
-                                <field name="phone" widget="phone" />
-                            </div>
-                            <label class="oe_read_only" for="mobile" />
-                            <div class="oe_read_only">
-                                <field name="mobile" widget="phone" />
-                            </div>
+                            <field name="phone" widget="phone" />
+                            <field name="mobile" widget="phone" />
+                            <field name="email" widget="email" />
                         </group>
                         <group name="internal">
+                            <field name="company_id" groups="base.group_multi_company" />
                             <field name="code" placeholder="ex. HN-001204" />
                         </group>
                     </group>

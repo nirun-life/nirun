@@ -25,6 +25,7 @@
         "views/encounter_views.xml",
         "views/encounter_location_views.xml",
         "views/encounter_reason_views.xml",
+        "views/partner_views.xml",
         "views/patient_menus.xml",
     ],
     "demo": [
