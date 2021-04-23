@@ -6,9 +6,37 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
+class EncounterClassification(models.Model):
+    _name = "ni.encounter.cls"
+    _description = "Encounter Classification"
+    _inherit = ["coding.base"]
+    _parent_store = True
+
+    parent_id = fields.Many2one("ni.encounter.cls", string="Parent Class", index=True)
+    parent_path = fields.Char(index=True, readonly=True)
+
+    @api.constrains("parent_id")
+    def _check_hierarchy(self):
+        if not self._check_recursion():
+            raise models.ValidationError(
+                _("Error! You cannot create recursive encounter class.")
+            )
+
+    def name_get(self):
+        res = []
+        for enc_cls in self:
+            names = []
+            current = enc_cls
+            while current:
+                names.append(current.name)
+                current = current.parent_id
+            res.append((enc_cls.id, ", ".join(reversed(names))))
+        return res
+
+
 class Encounter(models.Model):
     _name = "ni.encounter"
-    _description = _("Encounter with Patient")
+    _description = "Encounter"
     _inherit = ["mail.thread", "period.mixin", "image.mixin", "ir.sequence.mixin"]
     _check_company_auto = True
     _order = "name DESC"
@@ -43,6 +71,14 @@ class Encounter(models.Model):
     image_512 = fields.Image(related="patient_id.image_512")
     image_256 = fields.Image(related="patient_id.image_256")
     image_128 = fields.Image(related="patient_id.image_128")
+
+    cls = fields.Many2one(
+        "ni.encounter.cls",
+        "Classification",
+        index=True,
+        required=True,
+        help="Classification of patient encounter",
+    )
 
     state = fields.Selection(
         [
@@ -138,24 +174,25 @@ class Encounter(models.Model):
         origin_location = self._origin.location_id
         new_location = vals.get("location_id")
         if new_location and not origin_location:
-            self._create_location_hist(location=new_location, start=self.period_start)
-        elif (new_location and origin_location) and (
-            new_location != self._origin.location_id
-        ):
-            encounter_location = self.env["ni.encounter.location.rel"].sudo()
-            last_hist = encounter_location.search(
-                [("encounter_id", "=", self.id)], order="period_start DESC", limit=1
-            )
-            if last_hist.period_start != fields.date.today():
-                self._create_location_hist(location=new_location)
-                last_hist.update(
+            self._create_location_hist(new_location, self.period_start)
+        if (new_location and origin_location) and (new_location != origin_location):
+            last_location = self._get_last_location()
+            if last_location.period_start != fields.date.today():
+                self._create_location_hist(new_location)
+                last_location.update(
                     {"period_end": fields.date.today() - relativedelta(days=1)}
                 )
             else:
-                last_hist.update({"location_id": new_location})
+                last_location.update({"location_id": new_location})
         super().write(vals)
 
-    def _create_location_hist(self, location, start=lambda self: fields.date.today()):
+    def _get_last_location(self):
+        enc_location = self.env["ni.encounter.location.rel"].sudo()
+        return enc_location.search(
+            args=[("encounter_id", "=", self.id)], order="period_start DESC", limit=1
+        )
+
+    def _create_location_hist(self, location, start):
         self.ensure_one()
         encounter_location = self.env["ni.encounter.location.rel"].sudo()
         encounter_location.create(
@@ -163,7 +200,7 @@ class Encounter(models.Model):
                 "company_id": self.company_id.id,
                 "encounter_id": self.id,
                 "location_id": location,
-                "period_start": start,
+                "period_start": start or fields.date.today(),
             }
         )
 
@@ -187,4 +224,4 @@ class Encounter(models.Model):
             if enc.state != "in-progress":
                 raise UserError(_("Must be in-progress state"))
             else:
-                enc.update({"state": "finished"})
+                enc.update({"state": "finished", "period_end": fields.date.today()})

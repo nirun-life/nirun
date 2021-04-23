@@ -13,11 +13,11 @@
     "data": [
         "data/ir_sequence_data.xml",
         "data/location_data.xml",
+        "data/encounter_data.xml",
         "security/patient_group.xml",
         "security/patient_security.xml",
         "security/ir.model.access.csv",
         "views/location_views.xml",
-        "views/patient_views.xml",
         "views/patient_category_views.xml",
         "views/patient_condition.xml",
         "views/patient_condition_latest.xml",
@@ -26,6 +26,7 @@
         "views/encounter_location_views.xml",
         "views/encounter_reason_views.xml",
         "views/partner_views.xml",
+        "views/patient_views.xml",
         "views/patient_menus.xml",
     ],
     "demo": [

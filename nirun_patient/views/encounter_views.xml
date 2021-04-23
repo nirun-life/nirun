@@ -8,12 +8,19 @@
         <field name="res_model">ni.encounter</field>
         <field name="view_mode">tree,form</field>
     </record>
+    <record id="encounter_action_from_patient" model="ir.actions.act_window">
+        <field name="name">Encounter</field>
+        <field name="res_model">ni.encounter</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_patient_id': active_id}</field>
+    </record>
     <record id="encounter_view_form" model="ir.ui.view">
         <field name="name">encounter.view.form</field>
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
             <form>
-                <header>
+                <header class="oe_read_only">
                     <button
                         name="action_confirm"
                         attrs="{'invisible': [('state', 'not in', ['draft'])]}"
@@ -23,43 +30,52 @@
                     <button
                         name="action_close"
                         attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
-                        string="Confirm"
+                        string="Discharge"
                         type="object"
                     />
                     <field name="state" statusbar_visible="draft,planned,in-progress,finished" widget="statusbar" />
                 </header>
                 <sheet>
-                    <div name="button_box" class="oe_button_box" groups="base.group_user">
-
-                    </div>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
+                    <field name="id" invisible="1" />
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
                     <div class="oe_title">
+                        <div>
+                            <field
+                                name="cls"
+                                options="{'no_open': True, 'no_create': True}"
+                                placeholder="Classification"
+                            />
+                            <b class='ml-1'>Encounter</b>
+                        </div>
                         <h1>
                             <field name="name" placeholder="AN. 0000X" />
                         </h1>
-                        <div groups="base.group_multi_company">
-                            <label for="company_id" string="Company" />
-                            <field name="company_id" />
-                        </div>
-                        <label for="patient_id" string="Patient" />
-                        <field
-                            name="patient_id"
-                            attrs="{'readonly': [('id','>', 0 )]}"
-                            placeholder="select patient..."
-                        />
                     </div>
+                    <field name="company_id" class="mr-2" groups="base.group_multi_company" placeholder="Company" />
+                    <span class="fa fa-clock-o" />
+                    <field name="duration" class="mx-1" />
                     <group>
-                        <field name="id" invisible="1" />
-                        <field name="period_start" />
-                        <field name="period_end" />
-                        <field name="duration_days" />
-                        <field name="duration" />
-                        <field name="location_id" />
-                        <field name="reason_ids" options="{'color_field': 'color'}" widget='many2many_tags' />
-                        <field name="origin_partner_id" />
+                        <group>
+                            <field name="patient_id" />
+                            <field name="location_id" />
+                            <field name="origin_partner_id" />
+                        </group>
+                        <group>
+                            <label name="period" for="">
+                                <b attrs="{'invisible':[('state', '=', 'finished')]}">Since</b>
+                                <b attrs="{'invisible':[('state', '!=', 'finished')]}">Period</b>
+                            </label>
+                            <div class="o_row">
+                                <field name="period_start" />
+                                <span attrs="{'invisible':[('state', '!=', 'finished')]}">-</span>
+                                <field name="period_end" attrs="{'invisible':[('state', '!=', 'finished')]}" />
+                            </div>
+                            <field name="reason_ids" options="{'color_field': 'color'}" widget='many2many_tags' />
+                        </group>
                     </group>
                     <notebook>
-                        <page string="Location">
+                        <page string="Location History">
                             <field
                                 name="location_history_ids"
                                 context="{'default_encounter_id': active_id, 'default_start': period_start, 'default_end': period_end}"

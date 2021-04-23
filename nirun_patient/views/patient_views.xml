@@ -14,6 +14,15 @@
         <field name="arch" type="xml">
             <form>
                 <field name="id" invisible="1" />
+                <header class="oe_read_only">
+                    <button
+                        name="%(encounter_action_from_patient)d"
+                        string="Admission"
+                        attrs="{'invisible': [('is_encountering', '=', True)]}"
+                        class="btn-primary"
+                        type="action"
+                    />
+                </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box" groups="base.group_user">
                         <button name="action_encounter" class="oe_stat_button" icon="fa-hospital-o" type="object">
@@ -63,13 +72,14 @@
                                 context="{'show_address': True, 'default_type': 'contact', 'default_is_company': False, 'default_country_id': country_id}"
                                 options='{"always_reload": True}'
                             />
-                            <field name="phone" widget="phone" />
-                            <field name="mobile" widget="phone" />
-                            <field name="email" widget="email" />
+                            <field name="phone" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="phone" />
+                            <field name="mobile" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="phone" />
+                            <field name="email" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="email" />
                         </group>
                         <group name="internal">
                             <field name="company_id" groups="base.group_multi_company" />
                             <field name="code" placeholder="ex. HN-001204" />
+                            <field name="encountering_id" />
                         </group>
                     </group>
                     <notebook name="notebook">
@@ -90,13 +100,17 @@
                                 </group>
                                 <group string="Marital Status">
                                     <field name="marital_status" />
+                                    <field
+                                        name="spouse_name"
+                                        attrs="{'invisible':[('marital_status', '=', 'single')]}"
+                                    />
                                 </group>
                                 <group string="Family">
-                                    <field name="father" />
-                                    <field name="mother" />
-                                    <field name="sibling" />
-                                    <field name="birth_order" attrs="{'invisible': [('sibling', '=', 0)]}" />
-                                    <field name="children" />
+                                    <field name="father_name" />
+                                    <field name="mother_name" />
+                                    <field name="sibling_count" />
+                                    <field name="birth_order" attrs="{'invisible': [('sibling_count', '=', 0)]}" />
+                                    <field name="children_count" />
                                 </group>
                                 <group string="Education">
                                     <field name="education_level" />

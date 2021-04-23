@@ -35,21 +35,21 @@ class Patient(models.Model):
 
     partner_id = fields.Many2one(
         "res.partner",
-        "Personal Information",
+        "Patient",
         copy=False,
         check_company=True,
         required=True,
         ondelete="restrict",
         index=True,
         tracking=True,
-        domain="[('type', '=', 'contact'), ('is_company', '=', False)]",
+        domain="[('cls', '=', 'contact'), ('is_company', '=', False)]",
         help="Contact information of patient",
     )
-    image_1920 = fields.Image(related="partner_id.image_1920")
-    image_1024 = fields.Image(related="partner_id.image_1024")
-    image_512 = fields.Image(related="partner_id.image_512")
-    image_256 = fields.Image(related="partner_id.image_256")
-    image_128 = fields.Image(related="partner_id.image_128")
+    image_1920 = fields.Image(related="partner_id.image_1920", readonly=False)
+    image_1024 = fields.Image(related="partner_id.image_1024", readonly=False)
+    image_512 = fields.Image(related="partner_id.image_512", readonly=False)
+    image_256 = fields.Image(related="partner_id.image_256", readonly=False)
+    image_128 = fields.Image(related="partner_id.image_128", readonly=False)
     name = fields.Char(
         related="partner_id.name", readonly=False, store=True, index=True
     )
@@ -101,11 +101,12 @@ class Patient(models.Model):
         default="single",
         tracking=True,
     )
-    father = fields.Char("Father Complete Name")
-    mother = fields.Char("Mother Complete Name")
-    sibling = fields.Integer("Number of Sibling")
+    father_name = fields.Char("Father Complete Name")
+    mother_name = fields.Char("Mother Complete Name")
+    spouse_name = fields.Char("Spouse Complete Name")
+    sibling_count = fields.Integer("Number of Sibling")
     birth_order = fields.Integer("Birth Order")
-    children = fields.Integer("Number of Children")
+    children_count = fields.Integer("Number of Children")
 
     education_level = fields.Selection(
         [
@@ -288,7 +289,7 @@ class Patient(models.Model):
 
     def action_current_encounter(self):
         return {
-            "type": "ir.actions.act_window",
+            "cls": "ir.actions.act_window",
             "res_model": "ni.encounter",
             "views": [[False, "form"]],
             "res_id": self.encountering_id.id,
