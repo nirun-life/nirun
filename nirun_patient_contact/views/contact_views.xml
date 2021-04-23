@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="action_contacts_patient" model="ir.actions.act_window">
+        <field name="name">Contact</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form,activity</field>
+        <field name="search_view_id" ref="base.view_res_partner_filter" />
+        <field name="context">{'default_is_company': False, 'search_default_type_patient':True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No any contact registered as Patient</p>
+        </field>
+    </record>
+    <menuitem
+        id="res_partner_menu_all"
+        name="Contacts"
+        action="contacts.action_contacts"
+        parent="contacts.res_partner_menu_contacts"
+        sequence="1"
+    />
+    <menuitem
+        id="res_partner_menu_patient"
+        name="Patient"
+        action="action_contacts_patient"
+        parent="contacts.res_partner_menu_contacts"
+        sequence="2"
+    />
+</odoo>
