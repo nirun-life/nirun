@@ -18,6 +18,8 @@
         "security/patient_security.xml",
         "security/ir.model.access.csv",
         "views/location_views.xml",
+        "views/service_category_views.xml",
+        "views/service_view.xml",
         "views/patient_category_views.xml",
         "views/patient_condition.xml",
         "views/patient_condition_latest.xml",
