@@ -28,15 +28,6 @@
                         <button name="action_encounter" class="oe_stat_button" icon="fa-hospital-o" type="object">
                             <field name="encounter_count" string="Encounter" widget="statinfo" />
                         </button>
-                        <button
-                            name="action_current_encounter"
-                            attrs='{"invisible": [("is_encountering", "=", False)]}'
-                            class="oe_stat_button"
-                            icon="fa-bed"
-                            type="object"
-                        >
-                            <field name="encountering_start" string="since" widget="statinfo" />
-                        </button>
                     </div>
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
                     <widget
@@ -55,9 +46,16 @@
                                 required="True"
                             />
                         </h1>
+                        <div class="oe_read_only">
+                            <label for="age" />
+                            <field name="age" />
+                        </div>
                     </div>
-                    <div class="oe_read_only">
-                        <field name="age" />
+                    <div class="oe_read_only mt-1" attrs="{'invisible': [('is_encountering', '=', False)]}">
+                        <span class="fa fa-hospital-o" />
+                        <field name="encountering_id" class="ml-2" />
+                        <span class="fa fa-bed ml-3" />
+                        <field name="location_id" class="ml-2" />
                     </div>
                     <field
                         name="category_ids"
@@ -79,7 +77,7 @@
                         <group name="internal">
                             <field name="company_id" groups="base.group_multi_company" />
                             <field name="code" placeholder="ex. HN-001204" />
-                            <field name="encountering_id" />
+                            <field name="encountering_start" />
                         </group>
                     </group>
                     <notebook name="notebook">

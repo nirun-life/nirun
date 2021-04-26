@@ -149,6 +149,7 @@ class Patient(models.Model):
     condition_ids = fields.One2many(
         "ni.patient.condition.latest", "patient_id", string="Problem", readonly=True
     )
+    location_id = fields.Many2one(related="encountering_id.location_id")
 
     _sql_constraints = [
         (
