@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="service_view_form_inherit" model="ir.ui.view">
+        <field name="name">service.view.form.inherit</field>
+        <field name="model">ni.service</field>
+        <field name="inherit_id" ref="nirun_patient.service_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_calendar_event" class="oe_stat_button" icon="fa-calendar" type="object">
+                    <field name="event_count" string="Schedule" widget="statinfo" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

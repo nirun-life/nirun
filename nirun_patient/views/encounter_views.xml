@@ -75,6 +75,13 @@
                         </group>
                     </group>
                     <notebook>
+                        <page string="Condition/Problem">
+                            <field
+                                name="condition_id"
+                                context="{'default_encounter_id': active_id, 'default_patient_id': patient_id}"
+                                mode="tree"
+                            />
+                        </page>
                         <page string="Location History">
                             <field
                                 name="location_history_ids"
@@ -91,13 +98,6 @@
                                     <field name="company_id" groups="base.group_multi_company" />
                                 </tree>
                             </field>
-                        </page>
-                        <page string="Diagnosis">
-                            <field
-                                name="condition_id"
-                                context="{'default_encounter_id': active_id, 'default_patient_id': patient_id}"
-                                mode="tree"
-                            />
                         </page>
                     </notebook>
                 </sheet>

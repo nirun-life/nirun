@@ -83,7 +83,6 @@ class Timing(models.Model):
     day_of_week = fields.Many2many(
         "ni.timing.dow", "ni_timing_dow_rel", "timing_id", "dow_id"
     )
-
     time_type = fields.Selection(
         [("event", "Event"), ("tod", "Time of Day")], default="event"
     )
@@ -155,8 +154,10 @@ class Timing(models.Model):
                     "period": self.template_id.period,
                     "period_max": self.template_id.period_max,
                     "period_unit": self.template_id.period_unit,
-                    "when": [(6, 0, self.template_id.when.mapped("id"))],
+                    "when": [(6, 0, self.template_id.when.ids)],
+                    "day_of_week": [(6, 0, self.template_id.day_of_week.ids)],
                     "offset": self.template_id.offset,
+                    "time_of_day": [(6, 0, self.template_id.time_of_day.ids)],
                     "name": self.template_id.name,
                 }
             )

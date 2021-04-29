@@ -26,8 +26,8 @@ class HealthcareServiceCategory(models.Model):
 class HealthcareServiceAvailableTime(models.Model):
     _name = "ni.service.time"
     _description = "Healthcare Service Available Time"
-    service_id = fields.Many2one("ni.service")
 
+    service_id = fields.Many2one("ni.service", ondelete="cascade")
     name = fields.Char(compute="_compute_name", store=True)
 
     everyday = fields.Boolean(readonly=False, compute="_compute_everyday")
@@ -38,13 +38,13 @@ class HealthcareServiceAvailableTime(models.Model):
     start_time = fields.Integer()
     end_time = fields.Integer()
 
-    day_txt = fields.Char("Day", compute="_compute_dow_txt")
-    time_txt = fields.Char("Time", compute="_compute_time_txt")
+    display_day = fields.Char("Day", compute="_compute_dow_txt")
+    display_time = fields.Char("Time", compute="_compute_time_txt")
 
     @api.depends("day_of_week", "all_day", "start_time", "end_time")
     def _compute_name(self):
         for rec in self:
-            text = filter(None, [rec.day_txt, rec.time_txt])
+            text = filter(None, [rec.display_day, rec.display_time])
             rec.name = (" ".join(text)).strip().capitalize()
 
     @api.onchange("start_time")
@@ -58,20 +58,20 @@ class HealthcareServiceAvailableTime(models.Model):
     def _compute_dow_txt(self):
         for rec in self:
             dow = rec.day_of_week.mapped("name")
-            rec.day_txt = ", ".join(dow) if dow else ""
+            rec.display_day = ", ".join(dow) if dow else ""
 
     @api.depends("all_day", "start_time", "end_time")
     def _compute_time_txt(self):
         for rec in self:
             if rec.all_day:
-                rec.time_txt = _("24 hrs")
+                rec.display_time = _("24 hrs")
                 continue
             res = []
             if rec.start_time:
                 res.append(float_time_format(rec.start_time))
                 if rec.end_time:
                     res.append(float_time_format(rec.end_time))
-            rec.time_txt = "-".join(res).strip()
+            rec.display_time = "-".join(res).strip()
 
     def check_end_time(self):
         for rec in self:
@@ -91,6 +91,25 @@ class HealthcareServiceAvailableTime(models.Model):
     def _compute_everyday(self):
         for rec in self:
             rec.everyday = len(rec.day_of_week) == 7
+
+
+class HealthcareServiceTiming(models.Model):
+    _name = "ni.service.timing"
+    _description = "Healthcare Service Event Timing"
+    _inherit = ["ni.timing"]
+
+    service_id = fields.Many2one("ni.service", ondelete="cascade")
+
+    day_of_week = fields.Many2many(
+        "ni.timing.dow", "ni_service_timing_dow", "timing_id", "dow_id"
+    )
+    when = fields.Many2many(
+        "ni.timing.event",
+        "ni_service_timing_event",
+        "timing_id",
+        "event_id",
+        auto_join=True,
+    )
 
 
 class HealthcareService(models.Model):
@@ -122,10 +141,40 @@ class HealthcareService(models.Model):
         "service_id",
         "location_id",
         help="Location(s) where service may be provided",
+        ondelete="cascade",
     )
     comment = fields.Text(
         "Internal Notes",
         help="Additional description and/or any specific issues not covered elsewhere",
     )
 
-    available_time_ids = fields.One2many("ni.service.time", "service_id")
+    available_type = fields.Selection(
+        [("routine", "Routine "), ("event", "Event")],
+        default="routine",
+        required=True,
+        help="""Whether service is routine or base on event.
+         Technical: time_ids for routine, timing_ids for event""",
+    )
+    available_time_ids = fields.One2many(
+        "ni.service.time",
+        "service_id",
+        "Available Times",
+        help="Times the Service is available",
+    )
+    available_timing_ids = fields.One2many(
+        "ni.service.timing",
+        "service_id",
+        "Recurrent",
+        help="When the Service is to occur",
+    )
+    condition_ids = fields.Many2many(
+        "ni.condition", "ni_service_condition", "service_id", "condition_id"
+    )
+
+
+class Condition(models.Model):
+    _inherit = "ni.condition"
+
+    service_ids = fields.Many2many(
+        "ni.service", "ni_service_condition", "condition_id", "service_id"
+    )

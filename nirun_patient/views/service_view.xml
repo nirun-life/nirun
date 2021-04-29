@@ -42,11 +42,15 @@
                     </group>
                     <notebook>
                         <page string="Available Time">
-                            <group>
+                            <field name="available_type" options="{'horizontal': True}" widget="radio" />
+                            <group
+                                name="available_time_ids"
+                                attrs="{'invisible': [('available_type', '!=', 'routine')]}"
+                            >
                                 <field name="available_time_ids" context="{'default_service_id': id}" nolabel="1">
                                     <tree>
-                                        <field name="day_txt" />
-                                        <field name="time_txt" />
+                                        <field name="display_day" />
+                                        <field name="display_time" />
                                     </tree>
                                     <form>
                                         <group>
@@ -70,6 +74,23 @@
                                         </group>
                                     </form>
                                 </field>
+                            </group>
+                            <group
+                                name="available_timing_ids"
+                                attrs="{'invisible': [('available_type', '!=', 'event')]}"
+                            >
+                                <field name="available_timing_ids" context="{'default_service_id': id}" nolabel="1">
+                                    <tree>
+                                        <field name="name" string="Recurrent" />
+                                        <field name="bound_start" />
+                                        <field name="bound_end" />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Suggestion">
+                            <group name="condition_ids" string="For Condition/Problem">
+                                <field name="condition_ids" nolabel="1" />
                             </group>
                         </page>
                         <page string="Internal Note">
