@@ -7,7 +7,7 @@
     <menuitem id="patient_menu" name="Patients Directory" action="patient_action" parent="patient_menu_root" />
     <menuitem id="encounter_menu" name="Encounter" action="encounter_action" parent="patient_menu_root" />
     <menuitem id="configuration_menu" name="Configuration" parent="patient_menu_root" />
-    <menuitem id="service_menu_section" name="Healthcare Service" action="service_action" parent="configuration_menu" />
+    <menuitem id="service_menu_section" name="Healthcare Service" parent="configuration_menu" />
     <menuitem id="service_menu" name="Healthcare Service" action="service_action" parent="service_menu_section" />
     <menuitem
         id="service_category_menu"
@@ -15,13 +15,65 @@
         action="service_category_action"
         parent="service_menu_section"
     />
-    <menuitem id="patient_category_menu" name="Category" action="patient_category_action" parent="configuration_menu" />
-    <menuitem id="location_menu" name="Location" action="location_action" parent="configuration_menu" />
-    <menuitem id="location_type_menu" name="Location Type" action="location_type_action" parent="configuration_menu" />
+    <menuitem id="location_menu_section" name="Location" parent="configuration_menu" />
+    <menuitem id="location_menu" name="Location" action="location_action" parent="location_menu_section" />
+    <menuitem id="location_type_menu" name="Type" action="location_type_action" parent="location_menu_section" />
+    <menuitem id="patient_menu_section" name="Patient" parent="configuration_menu" />
+    <menuitem
+        id="patient_category_menu"
+        name="Category"
+        action="patient_category_action"
+        parent="patient_menu_section"
+    />
+    <menuitem id="encounter_menu_section" name="Encounter" parent="configuration_menu" />
+    <menuitem
+        id="encounter_class_menu"
+        name="Classification"
+        action="encounter_class_action"
+        parent="encounter_menu_section"
+    />
     <menuitem
         id="encounter_reason_menu"
-        name="Encounter Reason"
+        name="Reason"
         action="encounter_reason_action"
-        parent="configuration_menu"
+        parent="encounter_menu_section"
+    />
+    <menuitem
+        id="encounter_admit_menu"
+        name="Admission Source"
+        action="encounter_admit_action"
+        parent="encounter_menu_section"
+    />
+    <menuitem
+        id="encounter_arrangement_menu"
+        name="Arrangement"
+        action="encounter_arrangement_action"
+        parent="encounter_menu_section"
+    />
+    <menuitem
+        id="encounter_courtesy_menu"
+        name="Courtesy"
+        action="encounter_courtesy_action"
+        parent="encounter_menu_section"
+    />
+    <menuitem id="encounter_diet_menu" name="Diet" action="encounter_diet_action" parent="encounter_menu_section" />
+    <menuitem
+        id="encounter_discharge_menu"
+        name="Discharge Disposition"
+        action="encounter_diet_action"
+        parent="encounter_menu_section"
+    />
+    <menuitem id="condition_menu_section" name="Condition/Problem" parent="configuration_menu" />
+    <menuitem
+        id="condition_menu"
+        name="Condition/Problem"
+        action="nirun.condition_action"
+        parent="condition_menu_section"
+    />
+    <menuitem
+        id="condition_category_menu"
+        name="Category"
+        action="nirun.condition_category_action"
+        parent="condition_menu_section"
     />
 </odoo>

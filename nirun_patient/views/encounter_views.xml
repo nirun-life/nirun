@@ -42,7 +42,7 @@
                     <div class="oe_title">
                         <div>
                             <field
-                                name="cls"
+                                name="class_id"
                                 options="{'no_open': True, 'no_create': True}"
                                 placeholder="Classification"
                             />
@@ -59,7 +59,7 @@
                         <group>
                             <field name="patient_id" />
                             <field name="location_id" />
-                            <field name="origin_partner_id" />
+                            <field name="priority" widget="priority" />
                         </group>
                         <group>
                             <label name="period" for="">
@@ -75,6 +75,40 @@
                         </group>
                     </group>
                     <notebook>
+                        <page string="Hospitalization">
+                            <group>
+                                <group string="Admission">
+                                    <field name="admit_id" />
+                                    <field name="origin_partner_id" />
+                                    <field name="re_admission" />
+                                </group>
+                                <group string="Special">
+                                    <field
+                                        name="arrangement_ids"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="courtesy_ids"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                </group>
+                                <group string="Preferences">
+                                    <field
+                                        name="diet_ids"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Discharge">
+                                    <field name="discharge_id" />
+                                    <field name="discharge_partner_id" />
+                                </group>
+                            </group>
+                        </page>
                         <page string="Condition/Problem">
                             <field
                                 name="condition_id"

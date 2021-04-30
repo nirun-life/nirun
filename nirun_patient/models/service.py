@@ -171,6 +171,8 @@ class HealthcareService(models.Model):
         "ni.condition", "ni_service_condition", "service_id", "condition_id"
     )
 
+    request_ids = fields.One2many("ni.service.request", "service_id")
+
 
 class Condition(models.Model):
     _inherit = "ni.condition"

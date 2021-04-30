@@ -6,34 +6,6 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
-class EncounterClassification(models.Model):
-    _name = "ni.encounter.cls"
-    _description = "Encounter Classification"
-    _inherit = ["coding.base"]
-    _parent_store = True
-
-    parent_id = fields.Many2one("ni.encounter.cls", string="Parent Class", index=True)
-    parent_path = fields.Char(index=True, readonly=True)
-
-    @api.constrains("parent_id")
-    def _check_hierarchy(self):
-        if not self._check_recursion():
-            raise models.ValidationError(
-                _("Error! You cannot create recursive encounter class.")
-            )
-
-    def name_get(self):
-        res = []
-        for enc_cls in self:
-            names = []
-            current = enc_cls
-            while current:
-                names.append(current.name)
-                current = current.parent_id
-            res.append((enc_cls.id, ", ".join(reversed(names))))
-        return res
-
-
 class Encounter(models.Model):
     _name = "ni.encounter"
     _description = "Encounter"
@@ -48,6 +20,7 @@ class Encounter(models.Model):
         required=True,
         index=True,
         default=lambda self: self.env.company,
+        ondelete="cascade",
     )
     name = fields.Char(
         "Identifier",
@@ -56,6 +29,15 @@ class Encounter(models.Model):
         states={"draft": [("readonly", False)]},
         index=True,
         default=lambda self: self._sequence_default,
+    )
+    class_id = fields.Many2one(
+        "ni.encounter.cls",
+        "Classification",
+        index=True,
+        required=True,
+        help="Classification of patient encounter",
+        ondelete="restrict",
+        tracking=True,
     )
     patient_id = fields.Many2one(
         "ni.patient",
@@ -66,20 +48,18 @@ class Encounter(models.Model):
         states={"draft": [("readonly", False)]},
         auto_join=True,
     )
+    partner_id = fields.Many2one(
+        related="patient_id.partner_id", store=True, index=True
+    )
     image_1920 = fields.Image(related="patient_id.image_1920")
     image_1024 = fields.Image(related="patient_id.image_1024")
     image_512 = fields.Image(related="patient_id.image_512")
     image_256 = fields.Image(related="patient_id.image_256")
     image_128 = fields.Image(related="patient_id.image_128")
 
-    cls = fields.Many2one(
-        "ni.encounter.cls",
-        "Classification",
-        index=True,
-        required=True,
-        help="Classification of patient encounter",
+    priority = fields.Selection(
+        [("0", "Routine"), ("1", "Urgent"), ("2", "ASAP"), ("3", "STAT")], tracking=True
     )
-
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -95,13 +75,6 @@ class Encounter(models.Model):
         tracking=True,
         default="draft",
     )
-    episode_ids = fields.One2many(
-        "ni.care.episode",
-        "encounter_id",
-        states={"cancelled": [("readonly", True)], "finished": [("readonly", True)]},
-        copy=True,
-        auto_join=True,
-    )
     location_id = fields.Many2one(
         "ni.location",
         "Location",
@@ -114,24 +87,71 @@ class Encounter(models.Model):
         states={"cancelled": [("readonly", True)], "finished": [("readonly", True)]},
         copy=True,
     )
+
     reason_ids = fields.Many2many(
         "ni.encounter.reason",
         "ni_encounter_reason_rel",
         "encounter_id",
         "reason_id",
         copy=True,
+        help="Reason the encounter takes place",
     )
-    origin_partner_id = fields.Many2one(
-        "res.partner",
-        string="From",
-        domain=[("is_company", "=", True)],
-        help="",
-        copy=True,
-    )
+
     condition_id = fields.One2many(
         "ni.patient.condition",
         "encounter_id",
         states={"cancelled": [("readonly", True)], "finished": [("readonly", True)]},
+    )
+
+    # Hospitalization
+    origin_partner_id = fields.Many2one(
+        "res.partner",
+        string="Transfer from",
+        domain=[("is_company", "=", True)],
+        help="The organization from which the patient came before admission",
+        copy=True,
+    )
+    admit_id = fields.Many2one(
+        "ni.encounter.admit",
+        "Admit Source",
+        help="From where patient was admitted (physician referral, transfer)",
+    )
+    re_admission = fields.Boolean(
+        "Re-Admission",
+        help="The type of hospital re-admission that has occurred (if any). "
+        "If the value is absent, then this is not identified as a readmission",
+    )
+    diet_ids = fields.Many2many(
+        "ni.encounter.diet",
+        "ni_encounter_diet_rel",
+        "encounter_id",
+        "diet_id",
+        "Diet Preferences",
+    )
+    arrangement_ids = fields.Many2many(
+        "ni.encounter.arrangement",
+        "ni_encounter_arrangement_rel",
+        "encounter_id",
+        "arrange_id",
+        "Special Arrangements",
+    )
+    courtesy_ids = fields.Many2many(
+        "ni.encounter.courtesy",
+        "ni_encounter_courtesy_rel",
+        "encouter_id",
+        "courtesy_id",
+        "Special Courtesy",
+    )
+    discharge_id = fields.Many2one(
+        "ni.encounter.discharge",
+        "Disposition",
+        help="Category or kind of location after discharge",
+    )
+    discharge_partner_id = fields.Many2one(
+        "res.partner",
+        "Refer to",
+        domain="[('is_company', '=', True)]",
+        help="Location/organization to which the patient is discharged",
     )
 
     _sql_constraints = [
@@ -153,13 +173,6 @@ class Encounter(models.Model):
                 (en.id, "{} [{}]".format(en.name, state.get(en.state))) for en in self
             ]
         return super(Encounter, self).name_get()
-
-    @api.depends("episode_ids.period_start")
-    def _compute_start(self):
-        for encounter in self:
-            if encounter.episode_ids:
-                dates = encounter.episode_ids.mapped("period_start")
-                encounter.period_start = min(dates)
 
     @api.model
     def create(self, vals):
@@ -208,12 +221,7 @@ class Encounter(models.Model):
         today = fields.date.today()
         for enc in self:
             if not enc.period_start:
-                raise UserError(
-                    _(
-                        "Verified encounter must defined episode "
-                        + "of care period_start date"
-                    )
-                )
+                raise UserError(_("Verified encounter must defined start date (since)"))
             if today < enc.period_start:
                 enc.update({"state": "planned"})
             else:

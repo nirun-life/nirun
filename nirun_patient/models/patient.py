@@ -9,8 +9,12 @@ from odoo.exceptions import ValidationError
 class Partner(models.Model):
     _inherit = "res.partner"
 
-    patient = fields.Boolean(compute="_compute_patient", store=True)
-    patient_ids = fields.One2many("ni.patient", "partner_id")
+    patient = fields.Boolean(
+        compute="_compute_patient",
+        store=True,
+        help="Check this box if this contact is an Patient.",
+    )
+    patient_ids = fields.One2many("ni.patient", "partner_id", "Patients")
 
     @api.depends("patient_ids")
     def _compute_patient(self):
@@ -42,7 +46,7 @@ class Patient(models.Model):
         ondelete="restrict",
         index=True,
         tracking=True,
-        domain="[('cls', '=', 'contact'), ('is_company', '=', False)]",
+        domain="[('type', '=', 'contact'), ('is_company', '=', False)]",
         help="Contact information of patient",
     )
     image_1920 = fields.Image(related="partner_id.image_1920", readonly=False)
@@ -152,11 +156,7 @@ class Patient(models.Model):
     location_id = fields.Many2one(related="encountering_id.location_id")
 
     _sql_constraints = [
-        (
-            "identifier_number_uniq",
-            "unique (company_id, identifier_number)",
-            _("Identifier must be unique !"),
-        ),
+        ("code_uniq", "unique (company_id, code)", _("Code must be unique !"),),
         (
             "partner_uniq",
             "unique (company_id, partner_id)",
@@ -172,8 +172,8 @@ class Patient(models.Model):
         name = patient.name or ""
         if self._context.get("show_address"):
             name = patient.partner_id.with_context(show_address=True).name_get()
-        if self._context.get("ref_no") and patient.identifier_number:
-            name = "[{}] {}".format(patient.identifier_number, name)
+        if self._context.get("show_code") and patient.code:
+            name = "[{}] {}".format(patient.code, name)
 
         return name
 
