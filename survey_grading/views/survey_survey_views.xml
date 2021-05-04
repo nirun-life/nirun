@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+~ Copyright (c) 2021 Piruin P.
+-->
+<odoo>
+    <record id="survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.view.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='scoring']" position="after">
+                <group name="grading" string="Grading" attrs="{'invisible': [('scoring_type', '=', 'no_scoring')]}">
+                    <field name="grade_ids" nolabel="1">
+                        <tree decoration-success="passing_grade == True" editable="bottom">
+                            <field name="name" />
+                            <field name="low" widget="float_factor" />
+                            <field name="high" />
+                            <field name="passing_grade" invisible="1" />
+                        </tree>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
