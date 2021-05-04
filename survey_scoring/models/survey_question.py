@@ -6,7 +6,7 @@ from odoo import api, fields, models
 class SurveyQuestion(models.Model):
     _inherit = "survey.question"
 
-    score = fields.Float(compute="_compute_score")
+    score = fields.Float(compute="_compute_score", store=True)
 
     @api.depends("labels_ids.answer_score")
     def _compute_score(self):
@@ -14,9 +14,9 @@ class SurveyQuestion(models.Model):
             if not rec.labels_ids:
                 rec.score = 0
             elif rec.question_type == "simple_choice":
-                rec.score = self.max_score_label(rec.labels_ids).answer_score
+                rec.score = self.get_max_score_in(rec.labels_ids).answer_score
             elif rec.question_type == "matrix" and rec.matrix_subtype == "simple":
-                rec.score = self.max_score_label(rec.labels_ids).answer_score * len(
+                rec.score = self.get_max_score_in(rec.labels_ids).answer_score * len(
                     rec.labels_ids_2
                 )
             elif rec.question_type == "matrix" and rec.matrix_subtype == "multiple":
@@ -35,9 +35,9 @@ class SurveyQuestion(models.Model):
         )
 
     @api.model
-    def max_score_label(self, labels):
+    def get_max_score_in(self, labels):
         if len(labels) == 1:
             return labels[0]
         else:
-            m = self.max_score_label(labels[1:])
+            m = self.get_max_score_in(labels[1:])
             return m if m.answer_score > labels[0].answer_score else labels[0]
