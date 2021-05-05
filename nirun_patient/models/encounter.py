@@ -5,6 +5,12 @@ from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
+INACTIVE_STATE_DICT = {
+    "cancelled": [("readonly", True)],
+    "entered-in-error": [("readonly", True)],
+    "finished": [("readonly", True)],
+}
+
 
 class Encounter(models.Model):
     _name = "ni.encounter"
@@ -65,15 +71,18 @@ class Encounter(models.Model):
     image_128 = fields.Image(related="patient_id.image_128")
 
     priority = fields.Selection(
-        [("0", "Routine"), ("1", "Urgent"), ("2", "ASAP"), ("3", "STAT")], tracking=True
+        [("0", "Routine"), ("1", "Urgent"), ("2", "ASAP"), ("3", "STAT")],
+        tracking=True,
+        states=INACTIVE_STATE_DICT,
     )
     state = fields.Selection(
         [
             ("draft", "Draft"),
             ("planned", "Planned"),
-            ("in-progress", "Progressing"),
-            ("finished", "Finished"),
             ("cancelled", "Cancelled"),
+            ("in-progress", "In-Progress"),
+            ("finished", "Finished"),
+            ("entered-in-error", "Error Entry"),
         ],
         string="Status",
         readonly=True,
@@ -86,12 +95,13 @@ class Encounter(models.Model):
         "ni.location",
         "Location",
         help="Where services are provided to the patient",
+        states=INACTIVE_STATE_DICT,
         tracking=True,
     )
     location_history_ids = fields.One2many(
         "ni.encounter.location.rel",
         "encounter_id",
-        states={"cancelled": [("readonly", True)], "finished": [("readonly", True)]},
+        states=INACTIVE_STATE_DICT,
         copy=True,
     )
     reason_ids = fields.Many2many(
@@ -99,21 +109,26 @@ class Encounter(models.Model):
         "ni_encounter_reason_rel",
         "encounter_id",
         "reason_id",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
         copy=True,
         help="Reason the encounter takes place",
     )
 
-    condition_id = fields.One2many(
+    condition_ids = fields.One2many(
         "ni.patient.condition",
         "encounter_id",
-        states={"cancelled": [("readonly", True)], "finished": [("readonly", True)]},
+        states=INACTIVE_STATE_DICT,
+        tracking=True,
     )
 
     # Hospitalization
-    pre_admit_identifier = fields.Char(help="Pre-admission identifier")
+    pre_admit_identifier = fields.Char(help="Pre-admission identifier", tracking=True)
     origin_partner_id = fields.Many2one(
         "res.partner",
         string="Transfer from",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
         domain=[("is_company", "=", True)],
         help="The organization from which the patient came before admission",
         copy=True,
@@ -121,10 +136,14 @@ class Encounter(models.Model):
     admit_source_id = fields.Many2one(
         "ni.encounter.admit",
         "Admit Source",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
         help="From where patient was admitted (physician referral, transfer)",
     )
     re_admit = fields.Boolean(
         "Re-Admission",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
         help="The type of hospital re-admission that has occurred (if any). "
         "If the value is absent, then this is not identified as a readmission",
     )
@@ -133,21 +152,24 @@ class Encounter(models.Model):
         "ni_encounter_diet_rel",
         "encounter_id",
         "diet_id",
-        "Diet Preferences",
+        string="Diet Preferences",
+        states=INACTIVE_STATE_DICT,
     )
     arrangement_ids = fields.Many2many(
         "ni.encounter.arrangement",
         "ni_encounter_arrangement_rel",
         "encounter_id",
         "arrange_id",
-        "Special Arrangements",
+        string="Special Arrangements",
+        states=INACTIVE_STATE_DICT,
     )
     courtesy_ids = fields.Many2many(
         "ni.encounter.courtesy",
         "ni_encounter_courtesy_rel",
         "encouter_id",
         "courtesy_id",
-        "Special Courtesy",
+        string="Special Courtesy",
+        states=INACTIVE_STATE_DICT,
     )
     discharge_id = fields.Many2one(
         "ni.encounter.discharge",
@@ -163,11 +185,17 @@ class Encounter(models.Model):
 
     # Participant
     performer_id = fields.Many2one(
-        "res.partner", "Primary Performer", domain="[('is_company', '=', False)]",
+        "res.partner",
+        "Primary Performer",
+        tracking=True,
+        states=INACTIVE_STATE_DICT,
+        domain="[('is_company', '=', False)]",
     )
     performer_id_2 = fields.Many2one(
         "res.partner",
         "Secondary Performer",
+        tracking=True,
+        states=INACTIVE_STATE_DICT,
         domain="[('is_company', '=', False), ('id', '!=', performer_id)]",
     )
     attendant_ids = fields.Many2many(
@@ -176,6 +204,7 @@ class Encounter(models.Model):
         "encounter_id",
         "partner_id",
         "Attendants",
+        states=INACTIVE_STATE_DICT,
         domain="""[
             ('is_company', '=', False),
             ('id', 'not in', [performer_id, performer_id_2, consultant_id])
@@ -183,6 +212,8 @@ class Encounter(models.Model):
     )
     consultant_id = fields.Many2one(
         "res.partner",
+        tracking=True,
+        states=INACTIVE_STATE_DICT,
         domain="[('is_company', '=', False), ('id', '!=', performer_id)]",
     )
 

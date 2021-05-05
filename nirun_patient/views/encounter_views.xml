@@ -7,6 +7,7 @@
         <field name="name">Patient Encounter</field>
         <field name="res_model">ni.encounter</field>
         <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
     </record>
     <record id="encounter_action_from_patient" model="ir.actions.act_window">
         <field name="name">Encounter</field>
@@ -39,6 +40,24 @@
                     <div name="button_box" class="oe_button_box" groups="base.group_user" />
                     <field name="id" invisible="1" />
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'cancelled')]}"
+                        bg_color="bg-danger"
+                        title="Cancelled"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'finished')]}"
+                        bg_color="bg-success"
+                        title="Finished"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'entered-in-error')]}"
+                        bg_color="bg-danger"
+                        title="Entered in Error"
+                    />
                     <div class="oe_title">
                         <div>
                             <field
@@ -130,7 +149,7 @@
                         </page>
                         <page name="diagnosis" string="Condition/Problem">
                             <field
-                                name="condition_id"
+                                name="condition_ids"
                                 context="{'default_encounter_id': active_id, 'default_patient_id': patient_id}"
                                 mode="tree"
                             />
@@ -165,16 +184,21 @@
         <field name="name">encounter.view.tree</field>
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
-            <tree string="Patient Categories">
+            <tree
+                decoration-danger="state == 'cancelled'"
+                decoration-info="state == 'planned'"
+                decoration-muted="state == 'draft'"
+                decoration-success="state == 'finished'"
+            >
                 <field name="name" />
                 <field name="patient_id" />
                 <field name="class_id" optional="show" />
+                <field name="priority" widget="priority" />
                 <field name="performer_id" optional="show" />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
                 <field name="period_end" optional="hide" />
                 <field name="duration_days" optional="hide" />
-                <field name="priority" widget="priority" />
                 <field name="state" />
             </tree>
         </field>
@@ -184,8 +208,19 @@
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
             <search>
+                <field name="name" />
                 <field name="patient_id" />
                 <field name="period_start" />
+                <field name="location_id" />
+                <filter name="active" string="Active" domain="[('state', 'not in', ['finished', 'cancelled'])]" />
+                <filter name="period_start" string="Since" date="period_start" />
+                <separator />
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
+                <filter name="planned" string="Plan" domain="[('state', '=', 'planned')]" />
+                <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]" />
+                <filter name="in_progress" string="In-Progress" domain="[('state', '=', 'in-progress')]" />
+                <filter name="finished" string="Finished" domain="[('state', '=', 'finished')]" />
+                <filter name="entered-in-error" string="Error Entry" domain="[('state', '=', 'entered-in-error')]" />
             </search>
         </field>
     </record>
