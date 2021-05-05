@@ -10,14 +10,47 @@
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button
-                    name="action_survey_user_input_completed"
+                    name="action_start_survey"
                     class="oe_stat_button"
-                    icon="fa-pencil-square-o"
+                    attrs="{'invisible':['|', ('survey_id','=',False), ('response_id', '!=', False)]}"
+                    type="object"
+                    context="{'survey_id': survey_id}"
+                    help="Questionnaire relate to  encounter classification"
+                    icon="fa-commenting-o"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Start</span>
+                        <span class="o_stat_text">Questionnaire</span>
+                    </div>
+                </button>
+                <button
+                    name="action_print_survey"
+                    attrs="{'invisible':[('survey_id','=',False)]}"
+                    class="oe_stat_button"
+                    help="Print questionnaire response"
+                    icon="fa-commenting"
                     type="object"
                 >
-                    <field name="response_count" string="Answers" widget="statinfo" />
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Print</span>
+                        <span class="o_stat_text">Questionnaire</span>
+                    </div>
                 </button>
             </xpath>
+            <field name="reason_ids" position="after">
+                <field name="survey_id" invisible="1" />
+                <field name="response_id" invisible="1" />
+            </field>
+        </field>
+    </record>
+    <record id="encounter_class_view_form_inherit" model="ir.ui.view">
+        <field name="name">encounter.class.view.form.inherit</field>
+        <field name="model">ni.encounter.cls</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_class_view_form" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="survey_id" />
+            </field>
         </field>
     </record>
 </odoo>

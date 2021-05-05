@@ -1,20 +1,23 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import api, fields, models
+from odoo import fields, models
+
+
+class EncounterClassification(models.Model):
+    _inherit = "ni.encounter.cls"
+
+    survey_id = fields.Many2one(
+        "survey.survey",
+        "Questionnaire",
+        help="Questionnaire relate for this class of encounter",
+    )
 
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
-    response_ids = fields.One2many(
-        "survey.user_input", "encounter_id", domain=[("state", "=", "done")]
-    )
-    response_count = fields.Integer(compute="_compute_response_count")
-
-    @api.depends("response_ids")
-    def _compute_response_count(self):
-        for rec in self:
-            rec.response_count = len(rec.response_ids)
+    survey_id = fields.Many2one(related="class_id.survey_id")
+    response_id = fields.Many2one("survey.user_input", store=True)
 
     def action_survey_user_input_completed(self):
         action_rec = self.env.ref("survey.action_survey_user_input")
@@ -30,3 +33,32 @@ class Encounter(models.Model):
         )
         action["context"] = ctx
         return action
+
+    def action_start_survey(self):
+        self.ensure_one()
+        # create a response and link it to this applicant
+        if not self.response_id:
+            response = self.survey_id._create_answer(
+                partner=self.partner_id,
+                subject_model="ni.encounter",
+                subject_id=self.id,
+            )
+            self.response_id = response.id
+        else:
+            response = self.response_id
+        # grab the token of the response and start surveying
+        return self.survey_id.with_context(
+            survey_token=response.token
+        ).action_start_survey()
+
+    def action_print_survey(self):
+        """ If response is available then print this response otherwise print
+        survey form (print template of the survey) """
+        self.ensure_one()
+        if not self.response_id:
+            return self.survey_id.action_print_survey()
+        else:
+            response = self.response_id
+            return self.survey_id.with_context(
+                survey_token=response.token
+            ).action_print_survey()
