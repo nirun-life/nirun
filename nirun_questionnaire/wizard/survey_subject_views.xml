@@ -8,9 +8,12 @@
             <field name="subject_res_users" position="after">
                 <field
                     name="subject_ni_patient"
-                    attrs="{'invisible': [('type', '!=', 'ni.patient')], 'required': [('type', '=', 'ni.patient')]}"
+                    attrs="{'invisible': [('type', 'not in', ['ni.patient', 'ni.encounter'])], 'required': [('type', '=', 'ni.patient')]}"
                 />
-                <field name="subject_ni_encounter" attrs="{'invisible': [('type', '!=', 'ni.patient')] }" />
+                <field
+                    name="subject_ni_encounter"
+                    attrs="{'invisible': [('type', 'not in', ['ni.patient', 'ni.encounter'])] }"
+                />
             </field>
         </field>
     </record>

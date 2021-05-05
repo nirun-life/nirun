@@ -47,9 +47,11 @@ class Encounter(models.Model):
         else:
             response = self.response_id
         # grab the token of the response and start surveying
-        return self.survey_id.with_context(
+        action = self.survey_id.with_context(
             survey_token=response.token
         ).action_start_survey()
+        action.update({"target": "new"})
+        return action
 
     def action_print_survey(self):
         """ If response is available then print this response otherwise print
@@ -58,7 +60,8 @@ class Encounter(models.Model):
         if not self.response_id:
             return self.survey_id.action_print_survey()
         else:
-            response = self.response_id
-            return self.survey_id.with_context(
-                survey_token=response.token
+            action = self.survey_id.with_context(
+                survey_token=self.response_id.token
             ).action_print_survey()
+            action.update({"target": "new"})
+            return action
