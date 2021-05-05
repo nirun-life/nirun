@@ -14,6 +14,7 @@
         <field name="arch" type="xml">
             <form>
                 <field name="id" invisible="1" />
+                <field name="is_encountering" invisible="1" />
                 <header class="oe_read_only">
                     <button
                         name="%(encounter_action_from_patient)d"
@@ -54,8 +55,10 @@
                     <div class="oe_read_only mt-1" attrs="{'invisible': [('is_encountering', '=', False)]}">
                         <span class="fa fa-hospital-o" />
                         <field name="encountering_id" class="ml-2" />
-                        <span class="fa fa-bed ml-3" />
-                        <field name="location_id" class="ml-2" />
+                        <span attrs="{'invisible':[('location_id', '=', False)]}" class="fa fa-bed ml-3" />
+                        <field name="location_id" attrs="{'invisible':[('location_id', '=', False)]}" class="ml-2" />
+                        <span class="ml-3 o_form_label">Since</span>
+                        <field name="encountering_start" />
                     </div>
                     <field
                         name="category_ids"
@@ -77,7 +80,6 @@
                         <group name="internal">
                             <field name="company_id" groups="base.group_multi_company" />
                             <field name="code" placeholder="ex. HN-001204" />
-                            <field name="encountering_start" />
                         </group>
                     </group>
                     <notebook name="notebook">
@@ -123,13 +125,6 @@
                         </page>
                         <page string="Condition / Problem" accesskey="D">
                             <field name="condition_ids" />
-                        </page>
-                        <page string="Encounter" groups="nirun.group_manager">
-                            <field name="encounter_ids" />
-                            <group>
-                                <field name="encountering_id" />
-                            </group>
-                            <field name="is_encountering" invisible="1" />
                         </page>
                     </notebook>
                 </sheet>

@@ -75,12 +75,13 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Hospitalization">
+                        <page name="hospitalization" string="Hospitalization">
                             <group>
                                 <group string="Admission">
-                                    <field name="admit_id" />
+                                    <field name="admit_source_id" />
                                     <field name="origin_partner_id" />
-                                    <field name="re_admission" />
+                                    <field name="re_admit" />
+                                    <field name="pre_admit_identifier" />
                                 </group>
                                 <group string="Special">
                                     <field
@@ -102,21 +103,39 @@
                                     />
                                 </group>
                             </group>
-                            <group>
+                            <group attrs="{'invisible': [('state', '!=', 'finished')]}">
                                 <group string="Discharge">
                                     <field name="discharge_id" />
                                     <field name="discharge_partner_id" />
                                 </group>
                             </group>
                         </page>
-                        <page string="Condition/Problem">
+                        <page name="participant" string="Participant">
+                            <group>
+                                <group name="performer" string="Performer">
+                                    <field name="performer_id" />
+                                    <field name="performer_id_2" />
+                                </group>
+                                <group name="performer_2" string="Consultant">
+                                    <field name="consultant_id" />
+                                </group>
+                                <group name="attendant" string="Attendants">
+                                    <field
+                                        name="attendant_ids"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                </group>
+                            </group>
+                        </page>
+                        <page name="diagnosis" string="Condition/Problem">
                             <field
                                 name="condition_id"
                                 context="{'default_encounter_id': active_id, 'default_patient_id': patient_id}"
                                 mode="tree"
                             />
                         </page>
-                        <page string="Location History">
+                        <page name="locations" string="Location History">
                             <field
                                 name="location_history_ids"
                                 context="{'default_encounter_id': active_id, 'default_start': period_start, 'default_end': period_end}"
@@ -149,9 +168,13 @@
             <tree string="Patient Categories">
                 <field name="name" />
                 <field name="patient_id" />
-                <field name="period_start" />
-                <field name="period_end" />
-                <field name="duration_days" />
+                <field name="class_id" optional="show" />
+                <field name="performer_id" optional="show" />
+                <field name="location_id" optional="show" />
+                <field name="period_start" optional="show" />
+                <field name="period_end" optional="hide" />
+                <field name="duration_days" optional="hide" />
+                <field name="priority" widget="priority" />
                 <field name="state" />
             </tree>
         </field>

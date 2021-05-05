@@ -3,7 +3,7 @@
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
 
 
 class Encounter(models.Model):
@@ -35,10 +35,13 @@ class Encounter(models.Model):
         "Classification",
         index=True,
         required=True,
+        readonly=True,
+        states={"draft": [("readonly", False)]},
         help="Classification of patient encounter",
         ondelete="restrict",
         tracking=True,
     )
+    period_start = fields.Date(readonly=True, states={"draft": [("readonly", False)]})
     patient_id = fields.Many2one(
         "ni.patient",
         "Patient",
@@ -48,8 +51,12 @@ class Encounter(models.Model):
         states={"draft": [("readonly", False)]},
         auto_join=True,
     )
+
     partner_id = fields.Many2one(
-        related="patient_id.partner_id", store=True, index=True
+        related="patient_id.partner_id",
+        string="Patient Contact",
+        store=True,
+        index=True,
     )
     image_1920 = fields.Image(related="patient_id.image_1920")
     image_1024 = fields.Image(related="patient_id.image_1024")
@@ -87,7 +94,6 @@ class Encounter(models.Model):
         states={"cancelled": [("readonly", True)], "finished": [("readonly", True)]},
         copy=True,
     )
-
     reason_ids = fields.Many2many(
         "ni.encounter.reason",
         "ni_encounter_reason_rel",
@@ -104,6 +110,7 @@ class Encounter(models.Model):
     )
 
     # Hospitalization
+    pre_admit_identifier = fields.Char(help="Pre-admission identifier")
     origin_partner_id = fields.Many2one(
         "res.partner",
         string="Transfer from",
@@ -111,12 +118,12 @@ class Encounter(models.Model):
         help="The organization from which the patient came before admission",
         copy=True,
     )
-    admit_id = fields.Many2one(
+    admit_source_id = fields.Many2one(
         "ni.encounter.admit",
         "Admit Source",
         help="From where patient was admitted (physician referral, transfer)",
     )
-    re_admission = fields.Boolean(
+    re_admit = fields.Boolean(
         "Re-Admission",
         help="The type of hospital re-admission that has occurred (if any). "
         "If the value is absent, then this is not identified as a readmission",
@@ -154,6 +161,31 @@ class Encounter(models.Model):
         help="Location/organization to which the patient is discharged",
     )
 
+    # Participant
+    performer_id = fields.Many2one(
+        "res.partner", "Primary Performer", domain="[('is_company', '=', False)]",
+    )
+    performer_id_2 = fields.Many2one(
+        "res.partner",
+        "Secondary Performer",
+        domain="[('is_company', '=', False), ('id', '!=', performer_id)]",
+    )
+    attendant_ids = fields.Many2many(
+        "res.partner",
+        "ni_encounter_secondary_performer",
+        "encounter_id",
+        "partner_id",
+        "Attendants",
+        domain="""[
+            ('is_company', '=', False),
+            ('id', 'not in', [performer_id, performer_id_2, consultant_id])
+        ]""",
+    )
+    consultant_id = fields.Many2one(
+        "res.partner",
+        domain="[('is_company', '=', False), ('id', '!=', performer_id)]",
+    )
+
     _sql_constraints = [
         (
             "company_id__name__uniq",
@@ -161,6 +193,33 @@ class Encounter(models.Model):
             "Name already exists !",
         ),
     ]
+
+    @api.constrains("performer_id", "performer_id_2")
+    def _check_performer_id(self):
+        for rec in self:
+            if not rec.performer_id:
+                continue
+            if rec.performer_id == rec.performer_id_2:
+                raise ValidationError(
+                    _("Primary and Secondary performer should not be the same person")
+                )
+
+    @api.constrains("consultant_id",)
+    def _check_consultant_id(self):
+        for rec in self:
+            if not rec.consultant_id:
+                continue
+            if (
+                rec.consultant_id == rec.performer_id
+                or rec.consultant_id == rec.performer_id_2
+            ):
+                raise ValidationError(_("Consultant should not be performer"))
+
+    @api.onchange("partner_id")
+    def onchange_patient(self):
+        for rec in self:
+            if self.patient_id:
+                self.pre_admit_identifier = rec.patient_id.code
 
     def name_get(self):
         if self._context.get("show_patient_name"):
@@ -189,7 +248,7 @@ class Encounter(models.Model):
         if new_location and not origin_location:
             self._create_location_hist(new_location, self.period_start)
         if (new_location and origin_location) and (new_location != origin_location):
-            last_location = self._get_last_location()
+            last_location = self.get_last_location()
             if last_location.period_start != fields.date.today():
                 self._create_location_hist(new_location)
                 last_location.update(
@@ -199,7 +258,7 @@ class Encounter(models.Model):
                 last_location.update({"location_id": new_location})
         super().write(vals)
 
-    def _get_last_location(self):
+    def get_last_location(self):
         enc_location = self.env["ni.encounter.location.rel"].sudo()
         return enc_location.search(
             args=[("encounter_id", "=", self.id)], order="period_start DESC", limit=1
@@ -221,7 +280,9 @@ class Encounter(models.Model):
         today = fields.date.today()
         for enc in self:
             if not enc.period_start:
-                raise UserError(_("Verified encounter must defined start date (since)"))
+                raise ValidationError(
+                    _("Verified encounter must defined start date (since)")
+                )
             if today < enc.period_start:
                 enc.update({"state": "planned"})
             else:
@@ -230,6 +291,6 @@ class Encounter(models.Model):
     def action_close(self):
         for enc in self:
             if enc.state != "in-progress":
-                raise UserError(_("Must be in-progress state"))
+                raise ValidationError(_("Must be in-progress state"))
             else:
                 enc.update({"state": "finished", "period_end": fields.date.today()})
