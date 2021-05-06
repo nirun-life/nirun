@@ -5,6 +5,8 @@ from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
+ENCOUNTER_INACTIVE_STATE = ["entered-in-error", "draft", "cancelled"]
+
 
 class Partner(models.Model):
     _inherit = "res.partner"
@@ -13,10 +15,11 @@ class Partner(models.Model):
         compute="_compute_patient",
         store=True,
         help="Check this box if this contact is an Patient.",
+        compute_sudo=True,
     )
     patient_ids = fields.One2many("ni.patient", "partner_id", "Patient Records")
     patient_id = fields.Many2one(
-        "ni.patient", "Patient Record", compute="_compute_patient",
+        "ni.patient", "Patient Record", compute="_compute_patient", compute_sudo=True
     )
 
     @api.depends("patient_ids")
@@ -33,6 +36,7 @@ class Patient(models.Model):
     _description = "Patient"
     _inherit = ["mail.thread", "mail.activity.mixin", "image.mixin"]
     _check_company_auto = True
+    _order = "name"
 
     company_id = fields.Many2one(
         "res.company",
@@ -141,21 +145,44 @@ class Patient(models.Model):
     encounter_ids = fields.One2many(
         "ni.encounter", "patient_id", readonly=True, string="Encounter"
     )
-    encounter_count = fields.Integer(compute="_compute_encounter_count")
-    encountering_id = fields.Many2one(
+    encounter_count = fields.Integer(compute="_compute_encounter", compute_sudo=True)
+    last_encounter_id = fields.Many2one(
         "ni.encounter",
-        compute="_compute_encountering",
+        "Encounter",
+        compute="_compute_encounter",
         require=False,
         compute_sudo=True,
         store=True,
     )
+    encountering_id = fields.Many2one(
+        "ni.encounter",
+        "Present Encounter",
+        compute="_compute_encounter",
+        require=False,
+        compute_sudo=True,
+        store=True,
+    )
+    performer_id = fields.Many2one(related="encountering_id.performer_id")
+
     encountering_start = fields.Date(
-        compute="_compute_encountering", require=False, compute_sudo=True
+        compute="_compute_encounter", require=False, compute_sudo=True
     )
     is_encountering = fields.Boolean(
-        compute="_compute_encountering", default=False, store=True, compute_sudo=True
+        compute="_compute_encounter", default=False, store=True, compute_sudo=True
     )
-
+    presence_state = fields.Selection(
+        [
+            ("in-progress", "Treating"),
+            ("planned", "Waiting"),
+            ("finished", "Treated"),
+            ("deceased", "Deceased"),
+            ("unknown", "Unknown"),
+        ],
+        compute="_compute_encounter",
+        default="unknown",
+        store=True,
+        compute_sudo=True,
+    )
     condition_ids = fields.One2many(
         "ni.patient.condition.latest", "patient_id", string="Problem", readonly=True
     )
@@ -191,38 +218,51 @@ class Patient(models.Model):
                 if not rec._origin.identification_id:
                     rec.identification_id = rec.partner_id.vat
 
-    def _compute_encounter_count(self):
-        for rec in self:
-            rec.encounter_count = len(rec.encounter_ids)
-
     @api.depends("encounter_ids")
-    def _compute_encountering(self):
-        enc = (
-            self.env["ni.encounter"]
-            .search([("patient_id", "in", self.ids)], order="patient_id, id DESC")
-            .filtered(lambda en: en.is_present)
+    def _compute_encounter(self):
+        enc = self.env["ni.encounter"].search(
+            [
+                ("patient_id", "in", self.ids),
+                ("state", "not in", ENCOUNTER_INACTIVE_STATE),
+            ],
+            order="patient_id, id DESC",
         )
         for rec in self:
             enc_ids = enc.filtered(lambda en: en.patient_id.id == rec.id)
-            if enc_ids:
+            rec.encounter_count = len(enc_ids)
+            last_enc = enc_ids[0] if enc_ids else None
+            if last_enc and last_enc.state == "in-progress":
                 rec.update(
                     {
-                        "encountering_id": enc_ids[0].id,
-                        "encountering_start": enc_ids[0].period_start,
+                        "last_encounter_id": last_enc.id,
+                        "encountering_id": last_enc.id,
+                        "encountering_start": last_enc.period_start,
                         "is_encountering": True,
+                        "presence_state": last_enc.state,
+                    }
+                )
+            elif last_enc and last_enc.state in ["finished", "planned"]:
+                rec.update(
+                    {
+                        "last_encounter_id": last_enc.id,
+                        "encountering_id": None,
+                        "encountering_start": None,
+                        "is_encountering": False,
+                        "presence_state": last_enc.state,
                     }
                 )
             else:
-                # encountering_start must have value before it used to show at
-                # 'statinfo' button and will be error if none. 'invisible' can't
-                # help to prevent error
                 rec.update(
                     {
+                        "last_encounter_id": None,
                         "encountering_id": None,
-                        "encountering_start": fields.Date.today(),
+                        "encountering_start": None,
                         "is_encountering": False,
+                        "presence_state": "unknown",
                     }
                 )
+            if rec.deceased:
+                rec.presence_state = "deceased"
 
     @api.constrains("birthdate")
     def _check_birthdate(self):
@@ -296,7 +336,7 @@ class Patient(models.Model):
 
     def action_current_encounter(self):
         return {
-            "cls": "ir.actions.act_window",
+            "type": "ir.actions.act_window",
             "res_model": "ni.encounter",
             "views": [[False, "form"]],
             "res_id": self.encountering_id.id,
