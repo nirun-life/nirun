@@ -6,7 +6,7 @@
     <record id="patient_action" model="ir.actions.act_window">
         <field name="name">Patients</field>
         <field name="res_model">ni.patient</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
         <field name="context">{'search_default_treating': True}</field>
     </record>
     <record id="patient_view_search" model="ir.ui.view">
@@ -14,11 +14,8 @@
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" />
-                <field name="code" />
-                <field name="phone" />
-                <field name="mobile" />
-                <field name="category_ids" />
+                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
+                <field name="phone" filter_domain="['|' ,('phone', 'ilike', self), ('mobile', 'ilike', self)]" />
                 <separator />
                 <filter name="treating" string='Treating' domain="[('presence_state', '=', 'in-progress')]" />
                 <filter name="waiting" string='Waiting' domain="[('presence_state', '=', 'waiting')]" />
@@ -30,7 +27,12 @@
                 <group string="Group by">
                     <filter name="Gender" context="{'group_by': 'gender'}" />
                     <filter name="Presence State" context="{'group_by': 'presence_state'}" />
+                    <filter name="Education Level" context="{'group_by': 'education_level'}" />
+                    <filter name="Date of Birth" context="{'group_by': 'birthdate'}" />
                 </group>
+                <searchpanel>
+                    <field name="category_ids" select="multi" />
+                </searchpanel>
             </search>
         </field>
     </record>
@@ -305,6 +307,25 @@
                     </t>
                 </templates>
             </kanban>
+        </field>
+    </record>
+    <record id="patient_view_pivot" model="ir.ui.view">
+        <field name="name">patient.view.pivot</field>
+        <field name="model">ni.patient</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="gender" type="row" />
+                <field name="birthdate" interval="year" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="patient_view_graph" model="ir.ui.view">
+        <field name="name">patient.view.graph</field>
+        <field name="model">ni.patient</field>
+        <field name="arch" type="xml">
+            <graph stacked="False" type="pie">
+                <field name="gender" type="col" />
+            </graph>
         </field>
     </record>
 </odoo>

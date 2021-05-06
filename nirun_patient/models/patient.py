@@ -98,7 +98,7 @@ class Patient(models.Model):
     birthdate = fields.Date("Date of Birth", tracking=True)
     age = fields.Char("Age", compute="_compute_age")
     age_years = fields.Integer(
-        "Age (years)", compute="_compute_age", inverse="_inverse_age"
+        "Age (years)", compute="_compute_age", inverse="_inverse_age",
     )
     deceased_date = fields.Date("Deceased Date", tracking=True, copy=False)
     deceased = fields.Boolean("Deceased", compute="_compute_is_deceased")

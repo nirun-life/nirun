@@ -72,6 +72,7 @@ class Encounter(models.Model):
 
     priority = fields.Selection(
         [("0", "Routine"), ("1", "Urgent"), ("2", "ASAP"), ("3", "STAT")],
+        default="0",
         tracking=True,
         states=LOCK_STATE_DICT,
     )
