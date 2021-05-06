@@ -14,11 +14,12 @@
         <field name="arch" type="xml">
             <tree name="Locations">
                 <field name="company_id" groups="base.group_multi_company" />
-                <field name="display_name" />
-                <field name="alias" />
-                <field name="physical_type_id" />
+                <field name="physical_type_id" optional="show" />
+                <field name="display_name" string="Name" />
+                <field name="child_ids" />
+                <field name="alias" optional="show" />
                 <field name="parent_id" invisible="1" />
-                <field name="active" />
+                <field name="active" invisible="1" />
             </tree>
         </field>
     </record>
@@ -27,22 +28,42 @@
         <field name="model">ni.location</field>
         <field name="arch" type="xml">
             <form string="Location">
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <field name="parent_path" invisible="1" />
                 <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Location's Name" required="True" />
+                        </h1>
+                    </div>
                     <group>
-                        <field name="parent_path" invisible="1" />
-                        <field name="company_id" groups="base.group_multi_company" />
-                        <field name="name" />
-                        <field name="alias" />
-                        <field name="physical_type_id" />
-                        <field name="parent_id" />
-                        <field name="active" />
-                        <field name="child_ids" context="{'default_parent_id': active_id}">
-                            <tree create="0" edit="0">
-                                <field name="name" />
-                                <field name="physical_type_id" />
-                            </tree>
-                        </field>
+                        <group>
+                            <field name="physical_type_id" />
+                            <field name="parent_id" />
+                        </group>
+                        <group>
+                            <field name="alias" />
+                            <field name="company_id" groups="base.group_multi_company" />
+                        </group>
                     </group>
+                    <notebook>
+                        <page string="Locations Inside">
+                            <field name="child_ids" context="{'default_parent_id': active_id}">
+                                <tree create="0" edit="0">
+                                    <field name="physical_type_id" />
+                                    <field name="name" />
+                                    <field name="alias" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -52,8 +73,7 @@
         <field name="model">ni.location</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" />
-                <field name="display_name" />
+                <field name="display_name" string="Name" />
                 <separator />
                 <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
             </search>

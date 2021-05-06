@@ -32,7 +32,7 @@ class Location(models.Model):
     child_ids = fields.One2many(
         "ni.location",
         "parent_id",
-        string="Inner Location",
+        string="Locations Inside",
         domain=[("active", "=", True)],
     )
     active = fields.Boolean("Active", default=True)
