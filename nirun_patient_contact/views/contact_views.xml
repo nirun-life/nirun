@@ -9,9 +9,37 @@
         <field name="res_model">res.partner</field>
         <field name="view_mode">kanban,tree,form,activity</field>
         <field name="search_view_id" ref="base.view_res_partner_filter" />
-        <field name="context">{'default_is_company': False, 'search_default_type_patient':True}</field>
+        <field name="context">{'default_is_company': False, 'search_default_type_patient': True}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No any contact registered as Patient</p>
+        </field>
+    </record>
+    <record id="res_partner_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <field name="active" position="after">
+                <field name="patient_ids" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="patient" invisible="1" />
+            </field>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_patient_record"
+                    attrs="{'invisible':[('patient','=',False)]}"
+                    class="oe_stat_button"
+                    groups="nirun_patient.group_user"
+                    help="Patient Medical Record"
+                    icon="fa-bed"
+                    type="object"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Patient</span>
+                        <span class="o_stat_text">Record</span>
+                    </div>
+                </button>
+            </xpath>
         </field>
     </record>
     <menuitem

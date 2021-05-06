@@ -14,12 +14,18 @@ class Partner(models.Model):
         store=True,
         help="Check this box if this contact is an Patient.",
     )
-    patient_ids = fields.One2many("ni.patient", "partner_id", "Patients")
+    patient_ids = fields.One2many("ni.patient", "partner_id", "Patient Records")
+    patient_id = fields.Many2one(
+        "ni.patient", "Patient Record", compute="_compute_patient",
+    )
 
     @api.depends("patient_ids")
     def _compute_patient(self):
         for rec in self:
             rec.patient = bool(rec.patient_ids)
+            rec.patient_id = rec.patient_ids.filtered(
+                lambda p: p.company_id == self.env.company
+            )
 
 
 class Patient(models.Model):
