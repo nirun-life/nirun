@@ -16,8 +16,8 @@
                 <field name="company_id" groups="base.group_multi_company" />
                 <field name="physical_type_id" optional="show" />
                 <field name="display_name" string="Name" />
-                <field name="child_ids" />
                 <field name="alias" optional="show" />
+                <field name="child_ids" />
                 <field name="parent_id" invisible="1" />
                 <field name="active" invisible="1" />
             </tree>
@@ -73,27 +73,18 @@
         <field name="model">ni.location</field>
         <field name="arch" type="xml">
             <search>
-                <field name="display_name" string="Name" />
+                <field
+                    name="name"
+                    string="Name"
+                    filter_domain="['|', ('name', 'ilike', self), ('alias', 'ilike', self)]"
+                />
                 <separator />
                 <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
+                <group string="Group by">
+                    <filter name="Type" context="{'group_by': 'physical_type_id'}" />
+                    <filter name="Parent Location" context="{'group_by': 'parent_id'}" />
+                </group>
             </search>
-        </field>
-    </record>
-    <record id="location_type_action" model="ir.actions.act_window">
-        <field name="name">Location Type</field>
-        <field name="res_model">ni.location.type</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-    <record id="location_type_view_tree" model="ir.ui.view">
-        <field name="name">location.type.view.tree</field>
-        <field name="model">ni.location.type</field>
-        <field name="arch" type="xml">
-            <tree name="Location Types">
-                <field name="code" />
-                <field name="name" />
-                <field name="definition" />
-                <field name="active" />
-            </tree>
         </field>
     </record>
 </odoo>

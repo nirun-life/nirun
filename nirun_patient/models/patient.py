@@ -210,6 +210,15 @@ class Patient(models.Model):
 
         return name
 
+    def _name_search(
+        self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
+        args = list(args or [])
+        if not (name == "" and operator == "ilike"):
+            args += ["|", ("name", operator, name), ("code", operator, name)]
+        ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
+        return models.lazy_name_get(self.browse(ids).with_user(name_get_uid))
+
     @api.onchange("partner_id")
     def onchange_partner_id(self):
         for rec in self:

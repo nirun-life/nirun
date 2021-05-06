@@ -23,6 +23,7 @@
         "security/patient_security.xml",
         "security/ir.model.access.csv",
         "views/location_views.xml",
+        "views/location_type_views.xml",
         "views/service_category_views.xml",
         "views/service_timing_views.xml",
         "views/service_view.xml",
