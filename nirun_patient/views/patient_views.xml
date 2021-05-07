@@ -24,15 +24,13 @@
                     string='Discharged'
                     domain="[('presence_state', 'in', ['finished', 'deceased'])]"
                 />
-                <group string="Group by">
+                <group name="group_by" string="Group by">
                     <filter name="Gender" context="{'group_by': 'gender'}" />
                     <filter name="Presence State" context="{'group_by': 'presence_state'}" />
                     <filter name="Education Level" context="{'group_by': 'education_level'}" />
                     <filter name="Date of Birth" context="{'group_by': 'birthdate'}" />
                 </group>
-                <searchpanel>
-                    <field name="category_ids" select="multi" />
-                </searchpanel>
+                <searchpanel />
             </search>
         </field>
     </record>
@@ -46,12 +44,6 @@
                 <field name="name" />
                 <field name="last_encounter_id" optional="show" />
                 <field name="performer_id" optional="show" />
-                <field
-                    name="category_ids"
-                    optional="show"
-                    options="{'color_field': 'color', 'no_create_edit': True}"
-                    widget="many2many_tags"
-                />
                 <field name="gender" optional="show" />
                 <field name="age_years" string="Age" optional="show" />
                 <field name="birthdate" optional="hide" />
@@ -113,12 +105,6 @@
                         <span class="ml-3 o_form_label">Since</span>
                         <field name="encountering_start" />
                     </div>
-                    <field
-                        name="category_ids"
-                        options="{'color_field': 'color', 'no_create_edit': True}"
-                        placeholder="Categories.."
-                        widget="many2many_tags"
-                    />
                     <group>
                         <group name="partner">
                             <field
@@ -195,7 +181,6 @@
         <field name="arch" type="xml">
             <kanban class="o_res_partner_kanban">
                 <field name="name" />
-                <field name="category_ids" />
                 <field name="code" />
                 <field name="age" />
                 <field name="age_years" />
@@ -229,7 +214,7 @@
                                 />
                             </div>
                             <div class="oe_kanban_details">
-                                <div class="o_kanban_record_top">
+                                <div name="kanban_top" class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
                                         <div class="float-right" t-if="record.presence_state.raw_value == 'unknown'">
                                             <span
@@ -289,7 +274,6 @@
                                         </t>
                                     </div>
                                 </div>
-                                <field name="category_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
                                 <div t-if="record.gender.value">
                                     <small>
                                         <field name="gender" />

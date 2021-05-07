@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_group_action" model="ir.actions.act_window">
+        <field name="name">Patient Group</field>
+        <field name="res_model">ni.patient.group</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+    </record>
+    <record id="patient_group_view_search" model="ir.ui.view">
+        <field name="name">patient.group.view.search</field>
+        <field name="model">ni.patient.group</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <filter name="selectable" string="Selectable" domain="[('user_select', '=', True)]" />
+                <filter name="section" string="Section" domain="[('is_section','=', True), ('active', '=', False)]" />
+                <filter
+                    name="archived"
+                    string="Archived"
+                    domain="[('is_section','=', False), ('active', '=', False)]"
+                />
+                <group>
+                    <filter name="group_by_parent" string="Parent" context="{'group_by': 'parent_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="patient_group_view_form" model="ir.ui.view">
+        <field name="name">patient.group.view.form</field>
+        <field name="model">ni.patient.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                        <button name="action_patient" class="oe_stat_button" icon="fa-hospital-o" type="object">
+                            <field name="patient_count" string="Members" widget="statinfo" />
+                        </button>
+                    </div>
+                    <div class="oe_edit_only">
+                        <field name="is_section" string="Section" />
+                        <label string="Section" for="is_section" />
+                    </div>
+                    <h1>
+                        <field name="name" placeholder="Group Name" />
+                    </h1>
+                    <div attrs="{'invisible': [('is_section', '=', True)]}">
+                        <label for="parent_id" />
+                        <field
+                            name="parent_id"
+                            context="{'active_test': False}"
+                            options="{'no_create': True}"
+                            placeholder="Section"
+                        />
+                    </div>
+                    <group>
+                        <group>
+                            <field
+                                name="select"
+                                attrs="{'readonly': [('parent_id', '>', 0)]}"
+                                options="{'horizontal': True}"
+                                widget="radio"
+                            />
+                            <field name="user_select" attrs="{'invisible': [('is_section', '=', True)]}" />
+                        </group>
+                        <group>
+                            <field name="code" />
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="active" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Definition">
+                            <field name="definition" />
+                        </page>
+                        <page string="Member">
+                            <field name="patient_ids" mode="kanban" no_create="True" />
+                        </page>
+                        <page string="Extra Info">
+                            <group>
+                                <group>
+                                    <field name="color" />
+                                    <field name="sequence" />
+                                </group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="patient_group_view_tree" model="ir.ui.view">
+        <field name="name">patient.group.view.tree</field>
+        <field name="model">ni.patient.group</field>
+        <field name="arch" type="xml">
+            <tree string="Patient Categories">
+                <field name="sequence" widget="handle" />
+                <field name="display_name" />
+                <field name="patient_ids" />
+                <field name="parent_id" optional="show" />
+                <field name="select" optional="show" />
+                <field name="user_select" optional="show" />
+                <field name="definition" optional="hide" />
+                <field name="company_id" groups="base.group_multi_company" />
+            </tree>
+        </field>
+    </record>
+    <record id="patient_group_view_pivot" model="ir.ui.view">
+        <field name="name">patient.group.view.pivot</field>
+        <field name="model">ni.patient.group</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="display_name" type="row" />
+                <field name="patient_count" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="patient_group_view_graph" model="ir.ui.view">
+        <field name="name">patient.group.view.graph</field>
+        <field name="model">ni.patient.group</field>
+        <field name="arch" type="xml">
+            <graph stacked="False" type="pie">
+                <field name="display_name" type="col" />
+                <field name="patient_count" type="measure" />
+            </graph>
+        </field>
+    </record>
+</odoo>

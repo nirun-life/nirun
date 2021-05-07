@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_view_search_inherit" model="ir.ui.view">
+        <field name="name">patient.view.search.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_search" />
+        <field name="arch" type="xml">
+            <field name="phone" position="after">
+                <field name="group_ids" operator="child_of" />
+            </field>
+            <xpath expr="//searchpanel" position="inside">
+                <field name="group_ids" icon="fa-users" select="multi" />
+            </xpath>
+        </field>
+    </record>
+    <record id="patient_view_tree_inherit" model="ir.ui.view">
+        <field name="name">patient.view.tree.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field
+                    name="group_ids"
+                    optional="show"
+                    options="{'color_field': 'color', 'no_create_edit': True}"
+                    widget="many2many_tags"
+                />
+            </field>
+        </field>
+    </record>
+    <record id="patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group" position="before">
+                <field
+                    name="group_ids"
+                    domain="[('user_select', '=', True)]"
+                    options="{'color_field': 'color', 'no_create_edit': True}"
+                    placeholder="Groups.."
+                    widget="many2many_tags"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="patient_view_kanban_inherit" model="ir.ui.view">
+        <field name="name">patient.view.kanban.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_kanban" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='kanban_top']" position="after">
+                <field name="group_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

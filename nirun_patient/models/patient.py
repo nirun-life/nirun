@@ -72,13 +72,6 @@ class Patient(models.Model):
     email = fields.Char(related="partner_id.email", readonly=False)
 
     code = fields.Char("Internal Reference", copy=False, tracking=True)
-    category_ids = fields.Many2many(
-        "ni.patient.category",
-        "ni_patient_category_rel",
-        "patient_id",
-        "category_id",
-        string="Category",
-    )
 
     country_id = fields.Many2one(
         "res.country",

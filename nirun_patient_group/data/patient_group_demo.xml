@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo noupdate="1">
+    <record id="adl" model="ni.patient.group">
+        <field name="name">ADL</field>
+        <field name="color" eval="4" />
+        <field name="select">single</field>
+        <field name="is_section" eval="True" />
+        <field name="company_id" />
+    </record>
+    <record id="adl_low" model="ni.patient.group">
+        <field name="name">Low</field>
+        <field name="color" eval="4" />
+        <field name="company_id" />
+        <field name="select">single</field>
+        <field name="parent_id" ref="adl" />
+        <field name="user_select" eval="False" />
+    </record>
+    <record id="adl_mid" model="ni.patient.group">
+        <field name="name">Mid</field>
+        <field name="color" eval="10" />
+        <field name="company_id" />
+        <field name="select">single</field>
+        <field name="parent_id" ref="adl" />
+        <field name="user_select" eval="False" />
+    </record>
+    <record id="adl_high" model="ni.patient.group">
+        <field name="name">High</field>
+        <field name="color" eval="3" />
+        <field name="company_id" />
+        <field name="select">single</field>
+        <field name="parent_id" ref="adl" />
+        <field name="user_select" eval="False" />
+    </record>
+</odoo>
