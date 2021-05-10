@@ -36,8 +36,8 @@ class Observation(models.Model):
         ctx = dict(self.env.context)
         ctx.update(
             {
-                "search_default_patient_id": self.ids[0],
-                "default_patient_id": self.ids[0],
+                "search_default_patient_id": self.patient_id.id,
+                "default_patient_id": self.patient_id.id,
                 "graph_mode": "line",
             }
         )

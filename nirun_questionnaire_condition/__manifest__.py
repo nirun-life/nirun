@@ -1,7 +1,7 @@
 #  Copyright (c) 2021 Piruin P.
 
 {
-    "name": "Questionnaire",
+    "name": "Questionnaire - Condition",
     "version": "13.0.0.1.0",
     "development_status": "Alpha",
     "category": "Healthcare",
@@ -12,7 +12,7 @@
     "depends": ["nirun_questionnaire"],
     "data": ["views/survey_user_views.xml"],
     "demo": [],
-    "application": True,
+    "application": False,
     "auto_install": False,
     "installable": True,
 }
