@@ -6,14 +6,88 @@
     <record id="encounter_action" model="ir.actions.act_window">
         <field name="name">Patient Encounter</field>
         <field name="res_model">ni.encounter</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
+    </record>
+    <record id="encounter_action_from_patient" model="ir.actions.act_window">
+        <field name="name">Encounter</field>
+        <field name="res_model">ni.encounter</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_patient_id': active_id}</field>
+    </record>
+    <record id="encounter_view_search" model="ir.ui.view">
+        <field name="name">encounter.view.search</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('patient_id', 'ilike', self)]" />
+                <field name="period_start" />
+                <field name="location_id" />
+                <field name="performer_id" />
+                <separator />
+                <filter name="period_start" string="Since" date="period_start" />
+                <separator />
+                <filter name="period_end" string="Until" date="period_start" />
+                <separator />
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
+                <filter name="planned" string="Planned" domain="[('state', '=', 'planned')]" />
+                <filter name="in_progress" string="In-Progress" domain="[('state', '=', 'in-progress')]" />
+                <filter name="finished" string="Finished" domain="[('state', '=', 'finished')]" />
+                <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]" />
+                <separator />
+                <filter name="entered-in-error" string="Error Entry" domain="[('state', '=', 'entered-in-error')]" />
+                <separator />
+                <filter name="stat" string="Priority: STAT" domain="[('priority', '=', '3')]" />
+                <filter name="asap" string="Priority: ASAP" domain="[('priority', '=', '2')]" />
+                <filter name="urgent" string="Priority: Urgent" domain="[('priority', '=', '1')]" />
+                <filter name="routing" string="Priority: Routine" domain="[('priority', '=', '0')]" />
+                <group name="Group by">
+                    <filter name="Primary Performer" context="{'group_by': 'performer_id'}" />
+                    <filter name="Secondary Performer" context="{'group_by': 'performer_id_2'}" />
+                    <filter name="Consultant" context="{'group_by': 'consultant_id'}" />
+                    <separator />
+                    <filter name="Priority" context="{'group_by': 'priority'}" />
+                    <filter name="Classification" context="{'group_by': 'class_id'}" />
+                    <filter name="Location" context="{'group_by': 'location_id'}" />
+                    <separator />
+                    <filter name="State" context="{'group_by': 'state'}" />
+                    <separator />
+                    <filter name="Since" context="{'group_by': 'period_start'}" />
+                    <filter name="Until" context="{'group_by': 'period_end'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="encounter_view_tree" model="ir.ui.view">
+        <field name="name">encounter.view.tree</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-danger="state == 'cancelled'"
+                decoration-info="state == 'planned'"
+                decoration-muted="state == 'draft'"
+                decoration-success="state == 'finished'"
+            >
+                <field name="name" />
+                <field name="patient_id" />
+                <field name="class_id" optional="show" />
+                <field name="priority" widget="priority" />
+                <field name="performer_id" optional="show" />
+                <field name="location_id" optional="show" />
+                <field name="period_start" optional="show" />
+                <field name="period_end" optional="hide" />
+                <field name="duration" optional="hide" />
+                <field name="state" />
+            </tree>
+        </field>
     </record>
     <record id="encounter_view_form" model="ir.ui.view">
         <field name="name">encounter.view.form</field>
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
             <form>
-                <header>
+                <header class="oe_read_only">
                     <button
                         name="action_confirm"
                         attrs="{'invisible': [('state', 'not in', ['draft'])]}"
@@ -23,48 +97,130 @@
                     <button
                         name="action_close"
                         attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
-                        string="Confirm"
+                        string="Discharge"
                         type="object"
                     />
-                    <field name="state" statusbar_visible="draft,planned,in-progress,finished" widget="statusbar" />
+                    <field name="state" statusbar_visible="draft,in-progress,finished" widget="statusbar" />
                 </header>
                 <sheet>
-                    <div name="button_box" class="oe_button_box" groups="base.group_user">
-
-                    </div>
-                    <field
-                        name="image_1920"
-                        class="oe_avatar"
-                        options='{"zoom": true, "preview_image":"image_128"}'
-                        widget='image'
+                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
+                    <field name="id" invisible="1" />
+                    <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'cancelled')]}"
+                        bg_color="bg-danger"
+                        title="Cancelled"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'finished')]}"
+                        bg_color="bg-success"
+                        title="Finished"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'entered-in-error')]}"
+                        bg_color="bg-danger"
+                        title="Entered in Error"
                     />
                     <div class="oe_title">
+                        <div>
+                            <!-- class align use for support responsive module -->
+                            <field
+                                class="align-bottom"
+                                name="class_id"
+                                options="{'no_open': True, 'no_create': True}"
+                                placeholder="Classification"
+                            />
+                            <b class='ml-1 align-top'>Encounter</b>
+                        </div>
                         <h1>
                             <field name="name" placeholder="AN. 0000X" />
                         </h1>
-                        <div groups="base.group_multi_company">
-                            <label for="company_id" string="Company" />
-                            <field name="company_id" />
-                        </div>
-                        <label for="patient_id" string="Patient" />
-                        <field
-                            name="patient_id"
-                            attrs="{'readonly': [('id','>', 0 )]}"
-                            placeholder="select patient..."
-                        />
                     </div>
+                    <field name="company_id" class="mr-2" groups="base.group_multi_company" placeholder="Company" />
+                    <span class="fa fa-clock-o" />
+                    <field name="duration" class="mx-1" />
                     <group>
-                        <field name="id" invisible="1" />
-                        <field name="period_start" />
-                        <field name="period_end" />
-                        <field name="duration_days" />
-                        <field name="duration" />
-                        <field name="location_id" />
-                        <field name="reason_ids" options="{'color_field': 'color'}" widget='many2many_tags' />
-                        <field name="origin_partner_id" />
+                        <group>
+                            <field name="patient_id" context="{'show_code': True}" />
+                            <field name="location_id" />
+                            <field name="priority" widget="priority" />
+                        </group>
+                        <group>
+                            <label name="period" for="">
+                                <b attrs="{'invisible':[('state', '=', 'finished')]}">Encounter Date</b>
+                                <b attrs="{'invisible':[('state', '!=', 'finished')]}">Period</b>
+                            </label>
+                            <div class="o_row">
+                                <field name="period_start" />
+                                <span attrs="{'invisible':[('state', '!=', 'finished')]}">-</span>
+                                <field name="period_end" attrs="{'invisible':[('state', '!=', 'finished')]}" />
+                            </div>
+                            <field name="reason_ids" options="{'color_field': 'color'}" widget='many2many_tags' />
+                        </group>
                     </group>
                     <notebook>
-                        <page string="Location">
+                        <page name="hospitalization" string="Hospitalization">
+                            <group>
+                                <group string="Admission">
+                                    <field name="admit_source_id" />
+                                    <field name="origin_partner_id" />
+                                    <field name="re_admit" />
+                                    <field name="pre_admit_identifier" />
+                                </group>
+                                <group string="Special">
+                                    <field
+                                        name="arrangement_ids"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="courtesy_ids"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="diet_ids"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                </group>
+                            </group>
+                            <group attrs="{'invisible': [('state', '!=', 'finished')]}">
+                                <group string="Discharge">
+                                    <field name="discharge_id" />
+                                    <field name="discharge_partner_id" />
+                                </group>
+                            </group>
+                        </page>
+                        <page name="participant" string="Participant">
+                            <group>
+                                <group name="performer" string="Performer">
+                                    <field name="performer_id" />
+                                    <field name="performer_id_2" />
+                                </group>
+                                <group name="performer_2" string="Consultant">
+                                    <field name="consultant_id" />
+                                </group>
+                                <group name="attendant" string="Attendants">
+                                    <field
+                                        name="attendant_ids"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                </group>
+                            </group>
+                        </page>
+                        <page name="diagnosis" string="Condition/Problem">
+                            <field
+                                name="condition_ids"
+                                context="{'default_encounter_id': active_id, 'default_patient_id': patient_id}"
+                                mode="tree"
+                            />
+                        </page>
+                        <page name="locations" string="Location History" groups="nirun_patient.group_manager">
                             <field
                                 name="location_history_ids"
                                 context="{'default_encounter_id': active_id, 'default_start': period_start, 'default_end': period_end}"
@@ -81,13 +237,6 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Diagnosis">
-                            <field
-                                name="diagnosis_id"
-                                context="{'default_encounter_id': active_id, 'default_patient_id': patient_id}"
-                                mode="tree"
-                            />
-                        </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
@@ -97,28 +246,23 @@
             </form>
         </field>
     </record>
-    <record id="encounter_view_tree" model="ir.ui.view">
-        <field name="name">encounter.view.tree</field>
+    <record id="encounter_view_pivot" model="ir.ui.view">
+        <field name="name">encounter.view.pivot</field>
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
-            <tree string="Patient Categories">
-                <field name="name" />
-                <field name="patient_id" />
-                <field name="period_start" />
-                <field name="period_end" />
-                <field name="duration_days" />
-                <field name="state" />
-            </tree>
+            <pivot>
+                <field name="performer_id" type="row" />
+                <field name="period_start" interval="month" type="col" />
+            </pivot>
         </field>
     </record>
-    <record id="encounter_view_search" model="ir.ui.view">
-        <field name="name">encounter.view.search</field>
+    <record id="encounter_view_graph" model="ir.ui.view">
+        <field name="name">encounter.view.graph</field>
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
-            <search>
-                <field name="patient_id" />
-                <field name="period_start" />
-            </search>
+            <graph>
+                <field name="performer_id" type="col" />
+            </graph>
         </field>
     </record>
 </odoo>

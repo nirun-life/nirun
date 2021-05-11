@@ -8,11 +8,11 @@
         <field name="model">ni.encounter.location.rel</field>
         <field name="arch" type="xml">
             <tree string="Patient Encounter Locations">
+                <field name="physical_type_id" optional="show" />
                 <field name="location_id" />
-                <field name="physical_type_id" />
                 <field name="period_start" />
-                <field name="period_end" />
-                <field name="duration_days" />
+                <field name="period_end" optional="show" />
+                <field name="duration_days" optional="hide" />
             </tree>
         </field>
     </record>
@@ -22,13 +22,20 @@
         <field name="arch" type="xml">
             <form string="Patient Encounter Locations">
                 <group>
-                    <field name="company_id" groups="base.group_multi_company" />
-                    <field name="encounter_id" invisible="1" />
-                    <field name="location_id" />
-                    <field name="physical_type_id" />
-                    <field name="period_start" />
-                    <field name="period_end" />
-                    <field name="duration_days" />
+                    <group>
+                        <field name="location_id" />
+                        <field name="physical_type_id" />
+                        <field name="company_id" groups="base.group_multi_company" />
+                    </group>
+                    <group>
+                        <label name="period" string="Peroid" for="" />
+                        <div class="o_row">
+                            <field name="period_start" />
+                            <span>-</span>
+                            <field name="period_end" />
+                        </div>
+                        <field name="duration" />
+                    </group>
                 </group>
             </form>
         </field>

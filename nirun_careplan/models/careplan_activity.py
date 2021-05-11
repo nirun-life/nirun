@@ -2,7 +2,7 @@
 
 import random
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class Activity(models.Model):
@@ -66,9 +66,8 @@ class Activity(models.Model):
         required=True,
     )
 
-    patient_id = fields.Many2one(
-        "ni.patient", related="careplan_id.patient_id", string="Patient", readonly=True,
-    )
+    patient_id = fields.Many2one("ni.patient", related="careplan_id.patient_id",)
+    encounter_id = fields.Many2one("ni.encounter", related="careplan_id.encounter_id",)
     manager_id = fields.Many2one(
         "hr.employee",
         string="Care Manager",
@@ -100,10 +99,22 @@ class Activity(models.Model):
     assign_date = fields.Datetime(copy=False, readonly=True)
     last_state_update = fields.Datetime(copy=False, readonly=True)
 
-    def name_get(self):
-        if self.env.context.get("show_id"):
-            return [(a.id, "%s #%d" % (a.name, a.id)) for a in self]
-        return super(Activity, self).name_get()
+    # Reference resource
+    res_id = fields.Many2oneReference("Reference Document ID", model_field="res_model")
+    res_model = fields.Selection(
+        [("ni.service.request", "Service Request")], required=False,
+    )
+    service_request_id = fields.Many2one("ni.service.request", "Service Request",)
+
+    def action_activity_reference_resource(self):
+        if self.res_model and self.res_id:
+            return self.env[self.res_model].browse(self.res_id).get_formview_action()
+        return False
+
+    # def name_get(self):
+    #     if self.env.context.get("show_id"):
+    #         return [(a.id, "%s #%d" % (a.name, a.id)) for a in self]
+    #     return super(Activity, self).name_get()
 
     def _compute_attachment_ids(self):
         for activity in self:
@@ -143,10 +154,10 @@ class Activity(models.Model):
             vals["assign_date"] = now
         return super().write(vals)
 
-    @api.returns("self", lambda value: value.id)
-    def copy(self, default=None):
-        if default is None:
-            default = {}
-        if not default.get("name"):
-            default["name"] = _("%s (copy)") % self.name
-        return super().copy(default)
+    # @api.returns("self", lambda value: value.id)
+    # def copy(self, default=None):
+    #     if default is None:
+    #         default = {}
+    #     if not default.get("name"):
+    #         default["name"] = _("%s (copy)") % self.name
+    #     return super().copy(default)

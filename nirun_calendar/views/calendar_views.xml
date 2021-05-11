@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="action_calendar_event_service" model="ir.actions.act_window">
+        <field name="name">Healthcare Services</field>
+        <field name="res_model">calendar.event</field>
+        <field name="view_mode">calendar,tree,form</field>
+        <field name="view_id" ref="calendar.view_calendar_event_calendar" />
+        <field name="search_view_id" ref="calendar.view_calendar_event_search" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Schedule a event of healthcare service</p>
+            <p>
+                The calendar is shared between employees and fully integrated with
+            other applications such as the employee leaves or the business
+            opportunities.
+            </p>
+        </field>
+    </record>
+    <record id="calendar_event_view_form_inherit" model="ir.ui.view">
+        <field name="name">calendar.event.view.form.inherit</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form" />
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="service_id" />
+            </field>
+        </field>
+    </record>
+    <record id="calendar_event_view_search_inherit" model="ir.ui.view">
+        <field name="name">calendar.event.search</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_search" />
+        <field name="arch" type="xml">
+            <field name="privacy" position="after">
+                <field name="service_id" />
+                <filter name="service" string="Healthcare Service" domain="[('service_id', '!=', False)]" />
+            </field>
+        </field>
+    </record>
+</odoo>

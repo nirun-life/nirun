@@ -32,7 +32,7 @@ class PatientRes(models.AbstractModel):
         index=True,
         check_company=True,
         domain="""[
-              ('patient_id', '=', patient_id),
+              ('patient_id', '=?', patient_id),
               ('state', 'in', ['draft','planned','in-progress'])
           ]""",
     )

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="service_action" model="ir.actions.act_window">
+        <field name="name">Healthcare Services</field>
+        <field name="res_model">ni.service</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="service_view_form" model="ir.ui.view">
+        <field name="name">service.view.form</field>
+        <field name="model">ni.service</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="active" invisible="1" />
+                <header class="oe_read_only" />
+                <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <field name="id" invisible="1" />
+                    <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Service Name" />
+                        </h1>
+                    </div>
+                    <field name="company_id" groups="base.group_multi_company" placeholder="Company" />
+                    <group>
+                        <field name="code" placeholder="Internal Reference" />
+                        <field
+                            name="category_ids"
+                            options="{'color_field': 'color', 'no_create_edit': True}"
+                            widget="many2many_tags"
+                        />
+                        <field name="location_ids" widget="many2many_tags" />
+                    </group>
+                    <notebook>
+                        <page string="Available Time">
+                            <field name="available_type" options="{'horizontal': True}" widget="radio" />
+                            <group
+                                name="available_time_ids"
+                                attrs="{'invisible': [('available_type', '!=', 'routine')]}"
+                            >
+                                <field name="available_time_ids" context="{'default_service_id': id}" nolabel="1">
+                                    <tree>
+                                        <field name="display_day" />
+                                        <field name="display_time" />
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="everyday" />
+                                                <field name="day_of_week" widget="many2many_checkboxes" />
+                                            </group>
+                                            <group>
+                                                <field name="all_day" />
+                                                <field
+                                                    name="start_time"
+                                                    attrs="{'invisible': [('all_day', '=', True)]}"
+                                                    widget="float_time"
+                                                />
+                                                <field
+                                                    name="end_time"
+                                                    attrs="{'invisible': [('all_day', '=', True)]}"
+                                                    widget="float_time"
+                                                />
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </group>
+                            <group
+                                name="available_timing_ids"
+                                attrs="{'invisible': [('available_type', '!=', 'event')]}"
+                            >
+                                <field name="available_timing_ids" context="{'default_service_id': id}" nolabel="1">
+                                    <tree>
+                                        <field name="name" string="Recurrent" />
+                                        <field name="bound_start" />
+                                        <field name="bound_end" />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Suggestion">
+                            <group name="condition_ids" string="For Condition/Problem">
+                                <field name="condition_ids" nolabel="1" />
+                            </group>
+                        </page>
+                        <page string="Internal Note">
+                            <field name="comment" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user" widget="mail_followers" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="service_view_tree" model="ir.ui.view">
+        <field name="name">service.view.tree</field>
+        <field name="model">ni.service</field>
+        <field name="arch" type="xml">
+            <tree string="Healthcare Service">
+                <field name="name" />
+                <field name="code" />
+                <field name="location_ids" widget="many2many_tags" />
+                <field name="available_time_ids" widget="many2many_tags" />
+            </tree>
+        </field>
+    </record>
+    <record id="service_view_search" model="ir.ui.view">
+        <field name="name">service.view.search</field>
+        <field name="model">ni.service</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+            </search>
+        </field>
+    </record>
+</odoo>

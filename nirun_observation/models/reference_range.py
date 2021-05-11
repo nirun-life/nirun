@@ -1,6 +1,7 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class ReferenceRange(models.Model):
@@ -19,3 +20,9 @@ class ReferenceRange(models.Model):
             (ref.id, "%s [%d-%d]" % (ref.observation, ref.low, ref.high))
             for ref in self
         ]
+
+    @api.constrains("low", "high")
+    def _validate_low_high(self):
+        for rec in self:
+            if rec.low > rec.high:
+                raise ValidationError(_("low value must not be more than high value"))

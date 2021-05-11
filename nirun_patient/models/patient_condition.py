@@ -14,9 +14,11 @@ class PatientCondition(models.Model):
         ]
     )
     patient_id = fields.Many2one("ni.patient", required=True, index=True)
-    condition_id = fields.Many2one("ni.condition", required=True, index=True)
+    condition_id = fields.Many2one(
+        "ni.condition", required=True, ondelete="restrict", index=True
+    )
     condition_category_id = fields.Many2one(
-        related="condition_id.category_id", required=False
+        related="condition_id.category_id", string="Condition Category", required=False
     )
     encounter_id = fields.Many2one(
         "ni.encounter",
@@ -26,8 +28,7 @@ class PatientCondition(models.Model):
     )
     severity = fields.Selection(
         [("mild", "Mild"), ("moderate", "Moderate"), ("severe", "Severe")],
-        default="moderate",
-        widget="radio",
+        default="mild",
         tracking=1,
     )
     state = fields.Selection(

@@ -7,6 +7,7 @@
         <field name="name">Activities</field>
         <field name="res_model">ni.careplan.activity</field>
         <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'search_default_my_act': True}</field>
     </record>
     <record id="careplan_activity_view_search" model="ir.ui.view">
         <field name="name">careplan_activity_view_search</field>
@@ -19,7 +20,7 @@
                 <field name="patient_id" />
                 <field name="state" />
                 <field name="careplan_id" />
-                <filter name="my_tasks" domain="[('assignee_id', '=', uid)]" string="My Activities" />
+                <filter name="my_act" string="My Activities" domain="[('assignee_id', '=', uid)]" />
                 <filter
                     name="my_followed_tasks"
                     domain="[('message_is_follower', '=', True)]"
@@ -55,7 +56,7 @@
     <record id="careplan_activity_action_from_careplan" model="ir.actions.act_window">
         <field name="name">Activities</field>
         <field name="res_model">ni.careplan.activity</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">tree,kanban,form</field>
         <field name="context">
             {
                 'pivot_row_groupby': ['assignee_id'],
@@ -70,11 +71,7 @@
                 <i>Create</i>
                 to add a new activity.
             </p>
-            <p>
-                To get things done, use activities and status on tasks.
-                <br />
-                Chat in real time or by email to collaborate efficiently.
-            </p>
+            <p>To get things done, use activities and status on tasks.</p>
         </field>
     </record>
     <record id="careplan_activity_view_form_quick_create" model="ir.ui.view">
@@ -85,7 +82,12 @@
             <form>
                 <group>
                     <field name="company_id" invisible="1" />
-                    <field name="careplan_id" invisible="context.get('default_careplan_id', False)" />
+                    <field
+                        name="careplan_id"
+                        context="{'show_patient': True }"
+                        invisible="context.get('default_careplan_id', False)"
+                        options='{"always_reload": True}'
+                    />
                     <field name="name" string="Activity" />
                     <field name="assignee_id" options="{'no_open': True,'no_create': True}" />
                 </group>
@@ -214,10 +216,11 @@
             <tree decoration-bf="message_needaction==True" string="Activities">
                 <field name="message_needaction" invisible="1" />
                 <field name="sequence" invisible="not context.get('seq_visible', False)" widget="handle" />
+                <field name="name" />
                 <field name="careplan_id" invisible="context.get('default_careplan_id', False)" optional="show" />
+                <field name="patient_id" invisible="context.get('default_careplan_id', False)" optional="show" />
                 <field name="category_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
                 <field name="reason" optional="hide" />
-                <field name="name" />
                 <field name="period_start" optional="show" />
                 <field name="period_end" optional="hide" />
                 <field name="assignee_id" optional="show" />
@@ -256,11 +259,22 @@
                         <group>
                             <field
                                 name="careplan_id"
+                                context="{'show_patient': True}"
+                                options='{"always_reload": True}'
                                 domain="[('active', '=', True), ('company_id', '=', company_id)]"
                             />
                             <field name="category_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
-                            <field name="period_start" />
-                            <field name="period_end" />
+                            <label for="period_start" />
+                            <div class="o_row">
+                                <field name="period_start" />
+                                <span class="mx-1">-</span>
+                                <field name="period_end" />
+                            </div>
+                            <label for="res_model" />
+                            <div class="o_row">
+                                <field name="res_model" />
+                                <field name="service_request_id" />
+                            </div>
                         </group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />

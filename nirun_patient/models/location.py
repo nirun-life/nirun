@@ -32,10 +32,22 @@ class Location(models.Model):
     child_ids = fields.One2many(
         "ni.location",
         "parent_id",
-        string="Inner Location",
+        string="Locations Inside",
         domain=[("active", "=", True)],
     )
     active = fields.Boolean("Active", default=True)
+
+    encounter_ids = fields.One2many("ni.encounter", "location_id")
+    patient_ids = fields.One2many("ni.patient", compute="_compute_patient_count")
+    patient_count = fields.Integer(
+        "Total", compute="_compute_patient_count", store=True
+    )
+    patient_male_count = fields.Integer(
+        "Male", compute="_compute_patient_count", store=True
+    )
+    patient_female_count = fields.Integer(
+        "Female", compute="_compute_patient_count", store=True
+    )
 
     _sql_constraints = [
         (
@@ -44,6 +56,18 @@ class Location(models.Model):
             "Name is this location already exists !",
         ),
     ]
+
+    @api.depends("encounter_ids")
+    def _compute_patient_count(self):
+        for rec in self:
+            rec.patient_ids = rec.encounter_ids.mapped("patient_id")
+            rec.patient_count = len(rec.patient_ids)
+            rec.patient_male_count = len(
+                rec.patient_ids.filtered(lambda p: p.gender == "male")
+            )
+            rec.patient_female_count = len(
+                rec.patient_ids.filtered(lambda p: p.gender == "female")
+            )
 
     @api.constrains("parent_id")
     def _check_hierarchy(self):

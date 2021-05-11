@@ -14,6 +14,7 @@ class EncounterLocation(models.Model):
         "Company",
         tracking=True,
         required=True,
+        ondelete="cascade",
         index=True,
         default=lambda self: self.env.company,
     )

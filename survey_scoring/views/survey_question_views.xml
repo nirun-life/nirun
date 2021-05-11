@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="survey_question_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.question.view.form.inherit</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form" />
+        <field name="arch" type="xml">
+            <field name="is_correct" position="attributes">
+                <attribute name="invisible">0</attribute>
+                <attribute name="attrs">{'column_invisible': [('parent.scoring_type', '=', 'no_scoring')]}</attribute>
+            </field>
+            <field name="answer_score" position="attributes">
+                <attribute name="invisible">0</attribute>
+                <attribute name="attrs">{'column_invisible': [('parent.scoring_type', '=', 'no_scoring')]}</attribute>
+            </field>
+            <field name="scoring_type" position="after">
+                <field name="score" invisible="True" />
+            </field>
+        </field>
+    </record>
+</odoo>

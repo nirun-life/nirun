@@ -9,7 +9,7 @@ from odoo.exceptions import UserError
 class CarePlan(models.Model):
     _name = "ni.careplan"
     _description = "Care Plan"
-    _inherit = ["period.mixin", "mail.thread"]
+    _inherit = ["period.mixin", "mail.thread", "ni.patient.res"]
     _check_company_auto = True
     _order = "sequence, id DESC"
 
@@ -26,28 +26,9 @@ class CarePlan(models.Model):
         "Sequence", help="Determine the display order", index=True, default=16
     )
     description = fields.Text(copy=True, help="Summary of nature of plan")
-    patient_id = fields.Many2one(
-        "ni.patient",
-        "Patient",
-        store=True,
-        index=True,
-        ondelete="cascade",
-        required=True,
-        check_company=True,
-    )
+
     patient_avatar = fields.Image(
         related="patient_id.image_512", attactment=False, store=False
-    )
-    encounter_id = fields.Many2one(
-        "ni.encounter",
-        "Encounter",
-        ondelete="restrict",
-        index=True,
-        check_company=True,
-        domain="""[
-            ('patient_id', '=', patient_id),
-            ('state', 'in', ['draft','planned','in-progress'])
-        ]""",
     )
     category_ids = fields.Many2many(
         "ni.careplan.category",
@@ -106,9 +87,18 @@ class CarePlan(models.Model):
     activity_count = fields.Integer(compute="_compute_activities_count")
 
     def name_get(self):
-        if self.env.context.get("no_patient_name"):
-            return super(CarePlan, self).name_get()
-        return [(p.id, "%s #%d" % (p.patient_id.name, p.id)) for p in self]
+        res = []
+        for plan in self:
+            name = plan._get_name()
+            res.append((plan.id, name))
+        return res
+
+    def _get_name(self):
+        plan = self
+        name = "#%d" % plan.id if plan.id else ""
+        if self.env.context.get("show_patient"):
+            name = "{} {}".format(plan.patient_id.name, name)
+        return name
 
     @api.depends("activity_ids")
     def _compute_activities_count(self):

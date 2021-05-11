@@ -1,3 +1,3 @@
-from . import patient
-from . import patient_contact
-from . import patient_relationship
+#  Copyright (c) 2021 Piruin P.
+
+from . import res_partner

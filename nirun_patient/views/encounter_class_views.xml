@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="encounter_class_action" model="ir.actions.act_window">
+        <field name="name">Encounter Classification</field>
+        <field name="res_model">ni.encounter.cls</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="encounter_class_view_search" model="ir.ui.view">
+        <field name="name">encounter.class.view.search</field>
+        <field name="model">ni.encounter.cls</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="code" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+            </search>
+        </field>
+    </record>
+    <record id="encounter_class_view_tree" model="ir.ui.view">
+        <field name="name">encounter.class.view.tree</field>
+        <field name="model">ni.encounter.cls</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" optional="show" />
+                <field name="color" optional="hide" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="encounter_class_view_form" model="ir.ui.view">
+        <field name="name">encounter.class.view.form</field>
+        <field name="model">ni.encounter.cls</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="name" />
+                        </group>
+                        <group>
+                            <field name="code" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Definition">
+                            <field name="definition" />
+                        </page>
+                        <page string="Extra Info">
+                            <group>
+                                <group>
+                                    <field name="color" />
+                                    <field name="sequence" />
+                                </group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

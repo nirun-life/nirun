@@ -15,6 +15,7 @@
             <search>
                 <field name="name" />
                 <field name="code" />
+                <field name="category_id" />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
             </search>
         </field>
@@ -25,8 +26,9 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="sequence" widget="handle" />
-                <field name="name" />
                 <field name="code" optional="show" />
+                <field name="name" />
+                <field name="category_id" />
                 <field name="color" optional="hide" />
                 <field name="active" optional="hide" />
             </tree>
@@ -49,6 +51,7 @@
                     <group>
                         <group>
                             <field name="name" />
+                            <field name="category_id" />
                         </group>
                         <group>
                             <field name="code" />

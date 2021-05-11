@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  ~ HL7 https://www.hl7.org/fhir/valueset-encounter-admit-source.html
+  -->
+<odoo noupdate="1">
+    <!-- prettier-ignore-start -->
+    <record id="admit_outp" model="ni.encounter.admit">
+        <field name="code">outp</field>
+        <field name="name">From outpatient department</field>
+        <field name="definition">The patient has been transferred from an outpatient department within the hospital.</field>
+    </record>
+    <record id="admit_hosp_trans" model="ni.encounter.admit">
+        <field name="code">hosp-trans</field>
+        <field name="name">Transferred from other hospital</field>
+        <field name="definition">The Patient has been transferred from another hospital for this encounter.</field>
+    </record>
+    <record id="admit_emd" model="ni.encounter.admit">
+        <field name="code">emd</field>
+        <field name="name">From accident/emergency department</field>
+        <field name="definition">The patient has been transferred from the emergency department within the hospital. This is typically used in the transition to an inpatient encounter</field>
+    </record>
+    <record id="admit_born" model="ni.encounter.admit">
+        <field name="code">born</field>
+        <field name="name">Born in hospital</field>
+        <field name="definition">The patient is a newborn and the encounter will track the baby related activities (as opposed to the Mothers encounter - that may be associated using the newborn encounters partof property)</field>
+    </record>
+    <record id="admit_gp" model="ni.encounter.admit">
+        <field name="code">gp</field>
+        <field name="name">General Practitioner referral</field>
+        <field name="definition">The patient has been admitted due to a referred from a General Practitioner.</field>
+    </record>
+    <record id="admit_mp" model="ni.encounter.admit">
+        <field name="code">mp</field>
+        <field name="name">Medical Practitioner/physician referral</field>
+        <field name="definition">The patient has been admitted due to a referred from a Specialist (as opposed to a General Practitioner).</field>
+    </record>
+    <record id="admit_nursing" model="ni.encounter.admit">
+        <field name="code">nursing</field>
+        <field name="name">From nursing home</field>
+        <field name="definition">The patient has been transferred from a nursing home.</field>
+    </record>
+    <record id="admit_psych" model="ni.encounter.admit">
+        <field name="code">psych</field>
+        <field name="name">From psychiatric hospital</field>
+        <field name="definition">The patient has been transferred from a psychiatric facility.</field>
+    </record>
+    <record id="admit_rehab" model="ni.encounter.admit">
+        <field name="code">rehab</field>
+        <field name="name">From rehabilitation facility</field>
+        <field name="definition">The patient has been transferred from a rehabilitation facility or clinic.</field>
+    </record>
+    <record id="admit_other" model="ni.encounter.admit">
+        <field name="code">other</field>
+        <field name="name">Other</field>
+        <field name="definition">The patient has been admitted from a source otherwise not specified here.</field>
+    </record>
+    <!-- prettier-ignore-end -->
+</odoo>

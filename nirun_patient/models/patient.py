@@ -1,12 +1,34 @@
 #  Copyright (c) 2021 Piruin P.
 
-import base64
-
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.modules.module import get_module_resource
+
+ENCOUNTER_INACTIVE_STATE = ["entered-in-error", "draft", "cancelled"]
+
+
+class Partner(models.Model):
+    _inherit = "res.partner"
+
+    patient = fields.Boolean(
+        compute="_compute_patient",
+        store=True,
+        help="Check this box if this contact is an Patient.",
+        compute_sudo=True,
+    )
+    patient_ids = fields.One2many("ni.patient", "partner_id", "Patient Records")
+    patient_id = fields.Many2one(
+        "ni.patient", "Patient Record", compute="_compute_patient", compute_sudo=True
+    )
+
+    @api.depends("patient_ids")
+    def _compute_patient(self):
+        for rec in self:
+            rec.patient = bool(rec.patient_ids)
+            rec.patient_id = rec.patient_ids.filtered(
+                lambda p: p.company_id == self.env.company
+            )
 
 
 class Patient(models.Model):
@@ -14,6 +36,7 @@ class Patient(models.Model):
     _description = "Patient"
     _inherit = ["mail.thread", "mail.activity.mixin", "image.mixin"]
     _check_company_auto = True
+    _order = "name"
 
     company_id = fields.Many2one(
         "res.company",
@@ -23,20 +46,75 @@ class Patient(models.Model):
         index=True,
         default=lambda self: self.env.company,
     )
-    identifier_number = fields.Char(
-        "HN", copy=False, tracking=True, help="Hospital Identification Number"
+
+    partner_id = fields.Many2one(
+        "res.partner",
+        "Patient",
+        copy=False,
+        check_company=True,
+        required=True,
+        ondelete="restrict",
+        index=True,
+        tracking=True,
+        domain="[('type', '=', 'contact'), ('is_company', '=', False)]",
+        help="Contact information of patient",
     )
-    name = fields.Char("Name", require=True, compute="_compute_name", store=True)
-    title = fields.Many2one("res.partner.title", "Title", tracking=True)
-    firstname = fields.Char("Firstname", copy=False, require=True, tracking=True)
-    lastname = fields.Char("Lastname", copy=False, tracking=True)
-    country_id = fields.Many2one("res.country", "Nationality (Country)", tracking=True)
+    image_1920 = fields.Image(related="partner_id.image_1920", readonly=False)
+    image_1024 = fields.Image(related="partner_id.image_1024", readonly=False)
+    image_512 = fields.Image(related="partner_id.image_512", readonly=False)
+    image_256 = fields.Image(related="partner_id.image_256", readonly=False)
+    image_128 = fields.Image(related="partner_id.image_128", readonly=False)
+    name = fields.Char(
+        related="partner_id.name", readonly=False, store=True, index=True
+    )
+    phone = fields.Char(related="partner_id.phone", readonly=False)
+    mobile = fields.Char(related="partner_id.mobile", readonly=False)
+    email = fields.Char(related="partner_id.email", readonly=False)
+
+    code = fields.Char("Internal Reference", copy=False, tracking=True)
+
+    country_id = fields.Many2one(
+        "res.country",
+        "Nationality (Country)",
+        tracking=True,
+        default=lambda self: self.env.company.country_id,
+    )
     identification_id = fields.Char(
         string="Identification No",
         copy=False,
         tracking=True,
         help="ID related to patient's nationality",
     )
+    gender = fields.Selection(
+        [("male", "Male"), ("female", "Female"), ("other", "Other")], tracking=True,
+    )
+    birthdate = fields.Date("Date of Birth", tracking=True)
+    age = fields.Char("Age", compute="_compute_age")
+    age_years = fields.Integer(
+        "Age (years)", compute="_compute_age", inverse="_inverse_age", store=True
+    )
+    deceased_date = fields.Date("Deceased Date", tracking=True, copy=False)
+    deceased = fields.Boolean("Deceased", compute="_compute_is_deceased")
+
+    marital_status = fields.Selection(
+        [
+            ("single", "Single"),
+            ("married", "Married"),
+            ("cohabitant", "Legal Cohabitant"),
+            ("widower", "Widower"),
+            ("divorced", "Divorced"),
+        ],
+        string="Marital Status",
+        default="single",
+        tracking=True,
+    )
+    father_name = fields.Char("Father Complete Name")
+    mother_name = fields.Char("Mother Complete Name")
+    spouse_name = fields.Char("Spouse Complete Name")
+    sibling_count = fields.Integer("Number of Sibling")
+    birth_order = fields.Integer("Birth Order")
+    children_count = fields.Integer("Number of Children")
+
     education_level = fields.Selection(
         [
             ("0", "Early Childhood"),
@@ -57,166 +135,136 @@ class Patient(models.Model):
     study_field = fields.Char()
     study_school = fields.Char()
 
-    gender = fields.Selection(
-        [("male", "Male"), ("female", "Female"), ("other", "Other")],
-        default="male",
-        tracking=True,
-    )
-    marital_status = fields.Selection(
-        [
-            ("single", "Single"),
-            ("married", "Married"),
-            ("cohabitant", "Legal Cohabitant"),
-            ("widower", "Widower"),
-            ("divorced", "Divorced"),
-        ],
-        string="Marital Status",
-        default="single",
-        copy=False,
-        tracking=True,
-    )
-    birthdate = fields.Date("Date of Birth", tracking=True, copy=False)
-    age = fields.Char("Age", compute="_compute_age")
-    age_years = fields.Integer("Age (years)", compute="_compute_age")
-    deceased_date = fields.Date("Deceased Date", tracking=True, copy=False)
-    deceased = fields.Boolean("Deceased", compute="_compute_is_deceased")
-
-    private_mobile = fields.Char(
-        related="home_address_id.mobile",
-        related_sudo=False,
-        readonly=False,
-        tracking=True,
-        string="Private Phone",
-        groups="hr.group_hr_user",
-    )
-    home_address_id = fields.Many2one(
-        "res.partner",
-        "Home Address",
-        help="the private address of the Patient",
-        tracking=True,
-        check_company=True,
-        copy=False,
-    )
-    home_phone = fields.Char(
-        related="home_address_id.phone",
-        related_sudo=False,
-        readonly=False,
-        tracking=True,
-        string="Home Phone",
-        groups="hr.group_hr_user",
-    )
-    work_address_id = fields.Many2one(
-        "res.partner",
-        "Work Address",
-        help="Work contract of Patient",
-        tracking=True,
-        check_company=True,
-        copy=False,
-        domain=[("is_company", "=", True)],
-    )
-    work_phone = fields.Char(
-        related="work_address_id.phone",
-        related_sudo=False,
-        readonly=False,
-        tracking=True,
-        string="Work Phone",
-        groups="hr.group_hr_user",
-    )
-    job_title = fields.Char(tracking=True)
-
-    hometown_address_id = fields.Many2one(
-        "res.partner",
-        "Hometown Address",
-        domain=[("type", "=", "private")],
-        help="hometown address of the Patient",
-        tracking=True,
-        check_company=True,
-        copy=False,
-    )
-    category_ids = fields.Many2many(
-        "ni.patient.category",
-        "ni_patient_category_rel",
-        "patient_id",
-        "category_id",
-        string="Category",
-    )
     encounter_ids = fields.One2many(
         "ni.encounter", "patient_id", readonly=True, string="Encounter"
     )
-    encounter_count = fields.Integer(compute="_compute_encounter_count")
-    encountering_id = fields.Many2one(
+    encounter_count = fields.Integer(compute="_compute_encounter", compute_sudo=True)
+    last_encounter_id = fields.Many2one(
         "ni.encounter",
-        compute="_compute_encountering",
+        "Encounter",
+        compute="_compute_encounter",
         require=False,
         compute_sudo=True,
         store=True,
     )
+    encountering_id = fields.Many2one(
+        "ni.encounter",
+        "Present Encounter",
+        compute="_compute_encounter",
+        require=False,
+        compute_sudo=True,
+        store=True,
+    )
+    performer_id = fields.Many2one(related="encountering_id.performer_id")
+
     encountering_start = fields.Date(
-        compute="_compute_encountering", require=False, compute_sudo=True
+        compute="_compute_encounter", require=False, compute_sudo=True
     )
     is_encountering = fields.Boolean(
-        compute="_compute_encountering", default=False, store=True, compute_sudo=True
+        compute="_compute_encounter", default=False, store=True, compute_sudo=True
     )
-
-    diagnosis_ids = fields.One2many(
-        "ni.patient.condition.latest", "patient_id", string="Diagnosis", readonly=True
+    presence_state = fields.Selection(
+        [
+            ("in-progress", "Treating"),
+            ("planned", "Waiting"),
+            ("finished", "Treated"),
+            ("deceased", "Deceased"),
+            ("unknown", "Unknown"),
+        ],
+        compute="_compute_encounter",
+        default="unknown",
+        store=True,
+        compute_sudo=True,
     )
+    condition_ids = fields.One2many(
+        "ni.patient.condition.latest", "patient_id", string="Problem", readonly=True
+    )
+    location_id = fields.Many2one(related="encountering_id.location_id")
 
     _sql_constraints = [
+        ("code_uniq", "unique (company_id, code)", _("Code must be unique !"),),
         (
-            "identifier_number_uniq",
-            "unique (company_id, identifier_number)",
-            _("Identifier must be unique !"),
-        )
+            "partner_uniq",
+            "unique (company_id, partner_id)",
+            _("This contact have already registered as patient!"),
+        ),
     ]
 
-    def _compute_encounter_count(self):
+    def name_get(self):
+        return [(patient.id, patient._name_get()) for patient in self]
+
+    def _name_get(self):
+        patient = self
+        name = patient.name or ""
+        if self._context.get("show_address"):
+            name = patient.partner_id.with_context(show_address=True).name_get()
+        if self._context.get("show_code") and patient.code:
+            name = "[{}] {}".format(patient.code, name)
+
+        return name
+
+    def _name_search(
+        self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
+        args = list(args or [])
+        if not (name == "" and operator == "ilike"):
+            args += ["|", ("name", operator, name), ("code", operator, name)]
+        ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
+        return models.lazy_name_get(self.browse(ids).with_user(name_get_uid))
+
+    @api.onchange("partner_id")
+    def onchange_partner_id(self):
         for rec in self:
-            rec.encounter_count = len(rec.encounter_ids)
+            if rec.partner_id:
+                rec.country_id = rec.partner_id.country_id
+                if not rec._origin.identification_id:
+                    rec.identification_id = rec.partner_id.vat
 
     @api.depends("encounter_ids")
-    def _compute_encountering(self):
-        enc = (
-            self.env["ni.encounter"]
-            .search([("patient_id", "in", self.ids)], order="patient_id, id DESC")
-            .filtered(lambda en: en.is_present)
+    def _compute_encounter(self):
+        enc = self.env["ni.encounter"].search(
+            [
+                ("patient_id", "in", self.ids),
+                ("state", "not in", ENCOUNTER_INACTIVE_STATE),
+            ],
+            order="patient_id, id DESC",
         )
         for rec in self:
             enc_ids = enc.filtered(lambda en: en.patient_id.id == rec.id)
-            if enc_ids:
+            rec.encounter_count = len(enc_ids)
+            last_enc = enc_ids[0] if enc_ids else None
+            if last_enc and last_enc.state == "in-progress":
                 rec.update(
                     {
-                        "encountering_id": enc_ids[0].id,
-                        "encountering_start": enc_ids[0].period_start,
+                        "last_encounter_id": last_enc.id,
+                        "encountering_id": last_enc.id,
+                        "encountering_start": last_enc.period_start,
                         "is_encountering": True,
+                        "presence_state": last_enc.state,
+                    }
+                )
+            elif last_enc and last_enc.state in ["finished", "planned"]:
+                rec.update(
+                    {
+                        "last_encounter_id": last_enc.id,
+                        "encountering_id": None,
+                        "encountering_start": None,
+                        "is_encountering": False,
+                        "presence_state": last_enc.state,
                     }
                 )
             else:
-                # encountering_start must have value before it used to show at
-                # 'statinfo' button and will be error if none. 'invisible' can't
-                # help to prevent error
                 rec.update(
                     {
+                        "last_encounter_id": None,
                         "encountering_id": None,
-                        "encountering_start": fields.Date.today(),
+                        "encountering_start": None,
                         "is_encountering": False,
+                        "presence_state": "unknown",
                     }
                 )
-
-    @api.model
-    def _default_image(self):
-        image_path = get_module_resource(
-            "nirun_patient", "static/src/img", "default_patient.png"
-        )
-        return base64.b64encode(open(image_path, "rb").read())
-
-    image_1920 = fields.Image(default=_default_image, copy=False)
-
-    @api.constrains("firstname", "lastname")
-    def _check_name(self):
-        for record in self:
-            if not (record.firstname or record.lastname):
-                raise ValidationError(_("No name set."))
+            if rec.deceased:
+                rec.presence_state = "deceased"
 
     @api.constrains("birthdate")
     def _check_birthdate(self):
@@ -238,16 +286,6 @@ class Patient(models.Model):
                 )
             if record.birthdate and record.deceased_date < record.birthdate:
                 raise ValidationError(_("Patient cannot die before they was born!",))
-
-    @api.depends("title", "firstname", "lastname")
-    def _compute_name(self):
-        for record in self:
-            names = [
-                name.strip() if name else None
-                for name in [record.title.shortcut, record.firstname, record.lastname]
-            ]
-            computed_name = " ".join(filter(None, names))
-            record.name = computed_name if computed_name else _("New Patient")
 
     @api.model
     def _compute_is_deceased(self):
@@ -283,7 +321,7 @@ class Patient(models.Model):
     def _inverse_age(self):
         today = fields.date.today()
         for record in self.filtered(lambda r: not (r.deceased_date and r.birthdate)):
-            record.birthdate = today - relativedelta(years=record.age)
+            record.birthdate = today - relativedelta(years=record.age_years)
 
     def action_encounter(self):
         action_rec = self.env.ref("nirun_patient.encounter_action")

@@ -6,35 +6,78 @@
     <record id="patient_action" model="ir.actions.act_window">
         <field name="name">Patients</field>
         <field name="res_model">ni.patient</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="context">{'search_default_treating': True}</field>
+    </record>
+    <record id="patient_view_search" model="ir.ui.view">
+        <field name="name">patient.view.search</field>
+        <field name="model">ni.patient</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
+                <field name="phone" filter_domain="['|' ,('phone', 'ilike', self), ('mobile', 'ilike', self)]" />
+                <separator />
+                <filter name="treating" string='Treating' domain="[('presence_state', '=', 'in-progress')]" />
+                <filter name="waiting" string='Waiting' domain="[('presence_state', '=', 'waiting')]" />
+                <filter
+                    name="discharged"
+                    string='Discharged'
+                    domain="[('presence_state', 'in', ['finished', 'deceased'])]"
+                />
+                <group name="group_by" string="Group by">
+                    <filter name="Gender" context="{'group_by': 'gender'}" />
+                    <filter name="Presence State" context="{'group_by': 'presence_state'}" />
+                    <filter name="Education Level" context="{'group_by': 'education_level'}" />
+                    <filter name="Date of Birth" context="{'group_by': 'birthdate'}" />
+                </group>
+                <searchpanel>
+                    <field name="gender" icon="fa-venus-mars" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="patient_view_tree" model="ir.ui.view">
+        <field name="name">patient.view.tree</field>
+        <field name="model">ni.patient</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="company_id" groups="base.group_multi_company" />
+                <field name="code" optional="show" />
+                <field name="name" />
+                <field name="last_encounter_id" optional="show" />
+                <field name="performer_id" optional="show" />
+                <field name="gender" optional="show" />
+                <field name="age_years" string="Age" optional="show" />
+                <field name="birthdate" optional="hide" />
+                <field name="phone" optional="show" widget="phone" />
+                <field name="mobile" optional="show" widget="phone" />
+                <field name="presence_state" />
+            </tree>
+        </field>
     </record>
     <record id="patient_view_form" model="ir.ui.view">
         <field name="name">patient.view.form</field>
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <form>
+                <field name="id" invisible="1" />
+                <field name="is_encountering" invisible="1" />
+                <header class="oe_read_only">
+                    <button
+                        name="%(encounter_action_from_patient)d"
+                        string="Admission"
+                        attrs="{'invisible': [('is_encountering', '=', True)]}"
+                        class="btn-primary"
+                        type="action"
+                    />
+                </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box" groups="base.group_user">
                         <button name="action_encounter" class="oe_stat_button" icon="fa-hospital-o" type="object">
                             <field name="encounter_count" string="Encounter" widget="statinfo" />
                         </button>
-                        <button
-                            name="action_current_encounter"
-                            attrs='{"invisible": [("is_encountering", "=", False)]}'
-                            class="oe_stat_button"
-                            icon="fa-bed"
-                            type="object"
-                        >
-                            <field name="encountering_start" string="since" widget="statinfo" />
-                        </button>
                     </div>
-                    <field name="deceased" invisible="1" />
-                    <field
-                        name="image_1920"
-                        class="oe_avatar"
-                        options='{"zoom": true, "preview_image":"image_128"}'
-                        widget='image'
-                    />
+                    <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('deceased', '=', False)]}"
@@ -42,82 +85,88 @@
                         title="Deceased"
                     />
                     <div class="oe_title">
-                        <label for="health_patient_name" string="Patient" />
                         <h1>
-                            <field id="health_patient_name" name="name" placeholder="Patient's Name" required="True" />
+                            <div attrs="{'invisible': [('id', '!=', False)]}">New Patient</div>
+                            <field
+                                name="name"
+                                attrs="{'invisible': [('id', '=', False)]}"
+                                placeholder="Patient's Name"
+                                required="True"
+                            />
                         </h1>
-                        <field
-                            name="category_ids"
-                            options="{'color_field': 'color', 'no_create_edit': True}"
-                            placeholder="Categories"
-                            widget="many2many_tags"
-                        />
+                        <div class="oe_read_only">
+                            <!-- align-top use for support responsive module-->
+                            <label class="align-top" for="age" />
+                            <field name="age" />
+                        </div>
+                    </div>
+                    <div class="oe_read_only mt-1" attrs="{'invisible': [('is_encountering', '=', False)]}">
+                        <span class="fa fa-hospital-o" />
+                        <field name="encountering_id" class="ml-2" />
+                        <span attrs="{'invisible':[('location_id', '=', False)]}" class="fa fa-bed ml-3" />
+                        <field name="location_id" attrs="{'invisible':[('location_id', '=', False)]}" class="ml-2" />
+                        <span class="ml-3 o_form_label">Since</span>
+                        <field name="encountering_start" />
                     </div>
                     <group>
-                        <group>
-                            <field name="company_id" groups="base.group_multi_company" />
-                            <field name="identifier_number" placeholder="HN." />
-                            <field name="title" />
-                            <field name="firstname" attrs="{'required': [('lastname', '=', False)]}" />
-                            <field name="lastname" attrs="{'required': [('firstname', '=', False)]}" />
+                        <group name="partner">
+                            <field
+                                name="partner_id"
+                                context="{'show_address': True, 'default_type': 'contact', 'default_is_company': False, 'default_country_id': country_id}"
+                                options='{"always_reload": True}'
+                            />
+                            <field name="phone" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="phone" />
+                            <field name="mobile" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="phone" />
+                            <field name="email" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="email" />
                         </group>
-                        <group>
-                            <field name="birthdate" />
-                            <field name="deceased_date" />
-                            <field name="age" attrs="{'invisible': [('birthdate', '=', False)]}" />
+                        <group name="internal">
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="code" placeholder="ex. HN-001204" />
                         </group>
                     </group>
                     <notebook name="notebook">
-                        <page name="private" accesskey="P" string="Private Information">
+                        <page name="private" string="Private Information" accesskey="P">
                             <group>
                                 <group string="Citizenship">
-                                    <field name="identification_id" />
                                     <field name="country_id" />
-                                    <newline />
-                                    <field name="gender" />
-                                    <field name="marital_status" />
+                                    <field name="identification_id" placeholder="ex. 1104740100001" />
+                                    <field name="gender" options="{'horizontal': True}" widget="radio" />
+                                    <field name="birthdate" placeholder="ex. 31/01/1950" />
+                                    <label class="oe_edit_only" for="age_years" />
+                                    <div class="o_row oe_edit_only">
+                                        <field
+                                            name="age_years"
+                                            attrs="{'readonly': [('deceased_date', '!=', False)]}"
+                                        />
+                                    </div>
                                 </group>
-                                <group aria-hidden="true" icon="fa-flag" string="Contact">
-                                    <field name="private_mobile" icon="fa-flag" />
+                                <group string="Marital Status">
+                                    <field name="marital_status" />
                                     <field
-                                        name="home_address_id"
-                                        context="{'show_address': 2, 'default_name': name,'default_type': 'private', 'default_country_id': country_id, 'default_image_1920': image_1920,'form_view_ref': 'patient.res_partner_view_form_private' }"
-                                        domain="[('type', '=', 'private')]"
-                                        options='{"always_reload": True, "highlight_first_line": True}'
+                                        name="spouse_name"
+                                        attrs="{'invisible':[('marital_status', '=', 'single')]}"
                                     />
-                                    <field name="home_phone" />
-                                    <field
-                                        name="hometown_address_id"
-                                        context="{'show_address': 2, 'default_name': name,'default_type': 'private', 'default_country_id': country_id, 'default_image_1920': image_1920,'form_view_ref': 'patient.res_partner_view_form_private' }"
-                                        domain="[('type', '=', 'private')]"
-                                        options='{"always_reload": True, "highlight_first_line": True}'
-                                    />
+                                </group>
+                                <group string="Family">
+                                    <field name="father_name" />
+                                    <field name="mother_name" />
+                                    <field name="sibling_count" />
+                                    <field name="birth_order" attrs="{'invisible': [('sibling_count', '=', 0)]}" />
+                                    <field name="children_count" />
                                 </group>
                                 <group string="Education">
                                     <field name="education_level" />
-                                    <field name="study_field" />
-                                    <field name="study_school" />
+                                    <field name="study_field" placeholder="ex. Public Health" />
+                                    <field name="study_school" placeholder="ex. Health Science" />
                                 </group>
-                                <group string="Working">
-                                    <field name="job_title" />
-                                    <field
-                                        name="work_address_id"
-                                        context="{'show_address': 1, 'default_type': 'contact', 'default_is_company': True, 'default_country_id': country_id }"
-                                        options='{"always_reload": True, "highlight_first_line": True}'
-                                    />
-                                    <field name="work_phone" />
+                                <group string="Decease">
+                                    <field name="deceased" invisible="1" />
+                                    <field name="deceased_date" />
                                 </group>
                             </group>
                         </page>
-                        <page accesskey="D" string="Diagnosis/Problem">
-                            <field name="diagnosis_ids" />
-                        </page>
-                        <page string="Encounter" groups="nirun.group_manager">
-                            <field name="encounter_ids" />
-                            <group>
-                                <field name="encountering_id" />
-                            </group>
-                            <field name="is_encountering" invisible="1" />
+                        <page string="Condition / Problem" accesskey="D">
+                            <field name="condition_ids" />
                         </page>
                     </notebook>
                 </sheet>
@@ -129,77 +178,141 @@
             </form>
         </field>
     </record>
-    <record id="patient_view_tree" model="ir.ui.view">
-        <field name="name">patient.view.tree</field>
-        <field name="model">ni.patient</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name" />
-                <field name="gender" />
-                <field name="birthdate" />
-                <field name="encountering_id" optional="show" />
-                <field name="company_id" groups="base.group_multi_company" />
-            </tree>
-        </field>
-    </record>
-    <record id="patient_view_search" model="ir.ui.view">
-        <field name="name">patient.view.search</field>
-        <field name="model">ni.patient</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name" />
-                <field name="category_ids" />
-            </search>
-        </field>
-    </record>
     <record id="patient_view_kanban" model="ir.ui.view">
         <field name="name">patient.view.kanban</field>
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <kanban class="o_res_partner_kanban">
                 <field name="name" />
-                <field name="category_ids" />
+                <field name="code" />
                 <field name="age" />
+                <field name="age_years" />
                 <field name="deceased" />
+                <field name="performer_id" />
+                <field name="partner_id" />
+                <field name="presence_state" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_global_click o_kanban_record_has_image_fill o_hr_kanban_record">
-                            <field
-                                name="image_128"
-                                class="o_kanban_image_fill_left"
-                                options="{'zoom': true, 'zoom_delay': 1000, 'background': true, 'preventClicks': false}"
-                                widget="image"
-                            />
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <div
+                                class="o_kanban_image_fill_left d-none d-md-block"
+                                t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.partner_id.raw_value,  placeholder)}')"
+                            >
+                                <img
+                                    class="o_kanban_image_inner_pic"
+                                    t-att-alt="record.performer_id.value"
+                                    t-att-src="kanban_image('res.partner', 'image_128', record.performer_id.raw_value)"
+                                    t-if="record.performer_id.raw_value"
+                                />
+                            </div>
+                            <div
+                                class="o_kanban_image d-md-none"
+                                t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.partner_id.raw_value,  placeholder)}')"
+                            >
+                                <img
+                                    class="o_kanban_image_inner_pic"
+                                    t-att-alt="record.performer_id.value"
+                                    t-att-src="kanban_image('res.partner', 'image_128', record.performer_id.raw_value)"
+                                    t-if="record.performer_id.raw_value"
+                                />
+                            </div>
                             <div class="oe_kanban_details">
-                                <div class="o_kanban_record_top">
+                                <div name="kanban_top" class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
-                                        <div class="float-right" t-if="record.deceased.raw_value">
+                                        <div class="float-right" t-if="record.presence_state.raw_value == 'unknown'">
                                             <span
-                                                name="deceased"
+                                                name="presence_to_define"
+                                                aria-label="Unknown"
+                                                class="fa fa-circle text-secondary"
+                                                role="img"
+                                                title="Unknown"
+                                            />
+                                        </div>
+                                        <div class="float-right" t-if="record.presence_state.raw_value == 'planned'">
+                                            <span
+                                                name="presence_planned"
+                                                aria-label="Waiting"
+                                                class="fa fa-circle text-info"
+                                                role="img"
+                                                title="Waiting"
+                                            />
+                                        </div>
+                                        <div
+                                            class="float-right"
+                                            t-if="record.presence_state.raw_value == 'in-progress'"
+                                        >
+                                            <span
+                                                name="presence_in_progress"
+                                                aria-label="Treating"
+                                                class="fa fa-circle text-success"
+                                                role="img"
+                                                title="Treating"
+                                            />
+                                        </div>
+                                        <div class="float-right" t-if="record.presence_state.raw_value == 'finished'">
+                                            <span
+                                                name="presence_finished"
+                                                aria-label="Treated"
+                                                class="fa fa-circle text-primary"
+                                                role="img"
+                                                title="Treated"
+                                            />
+                                        </div>
+                                        <div class="float-right" t-if="record.presence_state.raw_value == 'deceased'">
+                                            <span
+                                                name="presence_deceased"
                                                 aria-label="Deceased"
                                                 class="fa fa-circle"
                                                 role="img"
                                                 title="Deceased"
                                             />
                                         </div>
-                                        <strong class="o_kanban_record_title">
-                                            <field name="name" />
-                                        </strong>
+                                        <field name="name" class="o_kanban_record_title" />
+                                        <t t-if="record.code.value">
+                                            <small>
+                                                [
+                                                <t t-esc="record.code.value" />
+                                                ]
+                                            </small>
+                                        </t>
                                     </div>
                                 </div>
-                                <field name="category_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
-                                <field name="gender" />
-                                <div t-if="record.age.value">
-                                    <span>
-                                        <field name="age_years" />
-                                        years
-                                    </span>
+                                <div t-if="record.gender.value">
+                                    <small>
+                                        <field name="gender" />
+                                        <t t-if="record.age_years.value > 0">
+                                            ,
+                                            <field name="age_years" class="ml-3" />
+                                        </t>
+                                    </small>
                                 </div>
+                                <small>
+                                    <field name="location_id" />
+                                </small>
                             </div>
                         </div>
                     </t>
                 </templates>
             </kanban>
+        </field>
+    </record>
+    <record id="patient_view_pivot" model="ir.ui.view">
+        <field name="name">patient.view.pivot</field>
+        <field name="model">ni.patient</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="gender" type="row" />
+                <field name="birthdate" interval="year" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="patient_view_graph" model="ir.ui.view">
+        <field name="name">patient.view.graph</field>
+        <field name="model">ni.patient</field>
+        <field name="arch" type="xml">
+            <graph stacked="False" type="pie">
+                <field name="gender" type="col" />
+            </graph>
         </field>
     </record>
 </odoo>
