@@ -22,7 +22,7 @@
                     domain="[('is_section','=', False), ('active', '=', False)]"
                 />
                 <group>
-                    <filter name="group_by_parent" string="Parent" context="{'group_by': 'parent_id'}" />
+                    <filter name="group_by_parent" string="Section" context="{'group_by': 'parent_id'}" />
                 </group>
             </search>
         </field>
@@ -34,7 +34,7 @@
             <form>
                 <sheet>
                     <div name="button_box" class="oe_button_box" groups="base.group_user">
-                        <button name="action_patient" class="oe_stat_button" icon="fa-hospital-o" type="object">
+                        <button name="action_patient" class="oe_stat_button" icon="fa-bed" type="object">
                             <field name="patient_count" string="Members" widget="statinfo" />
                         </button>
                     </div>
@@ -102,11 +102,14 @@
         <field name="arch" type="xml">
             <tree string="Patient Categories">
                 <field name="sequence" widget="handle" />
-                <field name="display_name" />
-                <field name="patient_ids" />
+                <field name="name" optional="show" />
+                <field name="display_name" optional="hide" />
                 <field name="parent_id" optional="show" />
-                <field name="select" optional="show" />
-                <field name="user_select" optional="show" />
+                <field name="patient_count" />
+                <field name="patient_male_count" />
+                <field name="patient_female_count" />
+                <field name="select" optional="hide" />
+                <field name="user_select" optional="hide" />
                 <field name="definition" optional="hide" />
                 <field name="company_id" groups="base.group_multi_company" />
             </tree>

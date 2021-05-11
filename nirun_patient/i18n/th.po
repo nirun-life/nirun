@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-10 09:32+0000\n"
-"PO-Revision-Date: 2021-05-11 06:58+0700\n"
+"POT-Creation-Date: 2021-05-11 00:56+0000\n"
+"PO-Revision-Date: 2021-05-11 08:00+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -50,16 +50,17 @@ msgstr "24 ชั่วโมง"
 #. module: nirun_patient
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
 msgid ""
-"<b attrs=\"{'invisible':[('state', '=', 'finished')]}\">Since</b>\n"
+"<b attrs=\"{'invisible':[('state', '=', 'finished')]}\">Encounter Date</b>\n"
 "                                <b attrs=\"{'invisible':[('state', '!=', 'finished')]}\">Period</b>"
 msgstr ""
-"<b attrs=\"{'invisible':[('state', '=', 'finished')]}\">วันเข้ารับบริการ</b>\n"
-"                                <b attrs=\"{'invisible':[('state', '!=', 'finished')]}\">ช่วงเวลารับบริการ</b>"
+"<b attrs=\"{'invisible':[('state', '=', 'finished')]}\">วันที่เข้ารับบริการ</b>\n"
+"                                <b attrs=\"{'invisible':[('state', '!=', "
+"'finished')]}\">ช่วงเวลาเข้ารับบริการ</b>"
 
 #. module: nirun_patient
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
-msgid "<b class=\"ml-1\">Encounter</b>"
-msgstr "<b class=\"ml-1\"></b>"
+msgid "<b class=\"ml-1 align-top\">Encounter</b>"
+msgstr "<b class=\"ml-1 align-top\"></b>"
 
 #. module: nirun_patient
 #: model_terms:ir.ui.view,arch_db:nirun_patient.patient_view_form
@@ -259,13 +260,13 @@ msgstr "เข้ารับบริการ"
 
 #. module: nirun_patient
 #: model:ir.actions.act_window,name:nirun_patient.encounter_admit_action
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__admit_source_id
 #: model:ir.ui.menu,name:nirun_patient.encounter_admit_menu
 msgid "Admission Source"
 msgstr "วิธีติดต่อเข้ารับบริการ"
 
 #. module: nirun_patient
 #: model:ir.model,name:nirun_patient.model_ni_encounter_admit
-#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__admit_source_id
 msgid "Admit Source"
 msgstr "วิธีติดต่อเข้ารับบริการ"
 
@@ -2150,11 +2151,6 @@ msgid "Pre-admission identifier"
 msgstr ""
 
 #. module: nirun_patient
-#: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
-msgid "Preferences"
-msgstr "ตั้งค่า"
-
-#. module: nirun_patient
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__presence_state
 msgid "Presence State"
 msgstr "สถานะปัจจุบัน"
@@ -2834,7 +2830,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:nirun_patient.selection__ni_patient__presence_state__planned
 #: model_terms:ir.ui.view,arch_db:nirun_patient.patient_view_search
 msgid "Waiting"
-msgstr ""
+msgstr "รอรับบริการ"
 
 #. module: nirun_patient
 #: model:ni.location.type,name:nirun_patient.wa
@@ -2846,22 +2842,6 @@ msgstr "หวอด"
 #, python-format
 msgid "Warning!"
 msgstr "คำเตือน!"
-
-#. module: nirun_patient
-#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__website_message_ids
-#: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__website_message_ids
-#: model:ir.model.fields,field_description:nirun_patient.field_ni_patient_condition__website_message_ids
-#: model:ir.model.fields,field_description:nirun_patient.field_ni_service__website_message_ids
-msgid "Website Messages"
-msgstr ""
-
-#. module: nirun_patient
-#: model:ir.model.fields,help:nirun_patient.field_ni_encounter__website_message_ids
-#: model:ir.model.fields,help:nirun_patient.field_ni_patient__website_message_ids
-#: model:ir.model.fields,help:nirun_patient.field_ni_patient_condition__website_message_ids
-#: model:ir.model.fields,help:nirun_patient.field_ni_service__website_message_ids
-msgid "Website communication history"
-msgstr ""
 
 #. module: nirun_patient
 #: model:ni.encounter.arrangement,name:nirun_patient.arrg_wheel

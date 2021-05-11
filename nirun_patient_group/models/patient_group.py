@@ -17,7 +17,9 @@ class PatientGroup(models.Model):
         index=True,
         default=lambda self: self.env.company,
     )
-    display_name = fields.Char(compute="_compute_display_name", store=True, index=True)
+    display_name = fields.Char(
+        "Group Name", compute="_compute_display_name", store=True, index=True
+    )
     is_section = fields.Boolean(
         default=False, help="Is this group designed to be parent of other group"
     )
@@ -43,10 +45,27 @@ class PatientGroup(models.Model):
         "patient_id",
         string="Members",
     )
-    patient_count = fields.Integer(compute="_compute_patient_count", store=True)
+    patient_count = fields.Integer(
+        "Total", compute="_compute_patient_count", store=True
+    )
+    patient_male_count = fields.Integer(
+        "Male", compute="_compute_patient_count", store=True
+    )
+    patient_female_count = fields.Integer(
+        "Female", compute="_compute_patient_count", store=True
+    )
 
     def name_get(self):
         return [(rec.id, rec.display_name) for rec in self]
+
+    def get_group_in_same_section(self):
+        self.ensure_one()
+        if self.parent_id:
+            return self.browse()
+        return self.search([("parent_id", "=", self.parent_id.id)])
+
+    def get_sibling_ids(self):
+        return self.get_group_in_same_section().filtered(lambda g: g.id != self.id)
 
     @api.depends("name", "parent_id")
     def _compute_display_name(self):
@@ -66,6 +85,12 @@ class PatientGroup(models.Model):
     def _compute_patient_count(self):
         for rec in self:
             rec.patient_count = len(rec.patient_ids)
+            rec.patient_male_count = len(
+                rec.patient_ids.filtered(lambda p: p.gender == "male")
+            )
+            rec.patient_female_count = len(
+                rec.patient_ids.filtered(lambda p: p.gender == "female")
+            )
 
     @api.constrains("parent_id")
     def _check_hierarchy(self):

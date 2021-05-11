@@ -126,12 +126,14 @@
                     />
                     <div class="oe_title">
                         <div>
+                            <!-- class align use for support responsive module -->
                             <field
+                                class="align-bottom"
                                 name="class_id"
                                 options="{'no_open': True, 'no_create': True}"
                                 placeholder="Classification"
                             />
-                            <b class='ml-1'>Encounter</b>
+                            <b class='ml-1 align-top'>Encounter</b>
                         </div>
                         <h1>
                             <field name="name" placeholder="AN. 0000X" />
@@ -218,7 +220,7 @@
                                 mode="tree"
                             />
                         </page>
-                        <page name="locations" string="Location History">
+                        <page name="locations" string="Location History" groups="nirun_patient.group_manager">
                             <field
                                 name="location_history_ids"
                                 context="{'default_encounter_id': active_id, 'default_start': period_start, 'default_end': period_end}"
