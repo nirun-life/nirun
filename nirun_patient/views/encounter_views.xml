@@ -4,7 +4,7 @@
   -->
 <odoo>
     <record id="encounter_action" model="ir.actions.act_window">
-        <field name="name">Patient Encounter</field>
+        <field name="name">Encounter</field>
         <field name="res_model">ni.encounter</field>
         <field name="view_mode">tree,form,pivot,graph</field>
         <field name="context">{'search_default_in_progress': 1}</field>
@@ -212,13 +212,6 @@
                                     />
                                 </group>
                             </group>
-                        </page>
-                        <page name="diagnosis" string="Condition/Problem">
-                            <field
-                                name="condition_ids"
-                                context="{'default_encounter_id': active_id, 'default_patient_id': patient_id}"
-                                mode="tree"
-                            />
                         </page>
                         <page name="locations" string="Location History" groups="nirun_patient.group_manager">
                             <field

@@ -12,7 +12,9 @@ class Patient(models.Model):
         domain=[("state", "=", "done")],
         help="Completed survey's response",
     )
-    response_count = fields.Integer(compute="_compute_response_count")
+    response_count = fields.Integer(
+        compute="_compute_response_count", sudo_compute=True
+    )
 
     @api.depends("response_ids")
     def _compute_response_count(self):

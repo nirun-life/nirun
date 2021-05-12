@@ -20,8 +20,6 @@
         "security/nirun_group.xml",
         "security/ir.model.access.csv",
         "views/quantity_unit_views.xml",
-        "views/condition_views.xml",
-        "views/condition_category_views.xml",
         "views/timing_views.xml",
         "views/timing_template_views.xml",
     ],

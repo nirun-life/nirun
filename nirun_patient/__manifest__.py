@@ -27,8 +27,6 @@
         "views/service_category_views.xml",
         "views/service_timing_views.xml",
         "views/service_view.xml",
-        "views/patient_condition.xml",
-        "views/patient_condition_latest.xml",
         "views/encounter_views.xml",
         "views/encounter_location_views.xml",
         "views/encounter_reason_views.xml",

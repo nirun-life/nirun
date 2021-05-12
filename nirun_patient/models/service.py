@@ -167,16 +167,5 @@ class HealthcareService(models.Model):
         "Recurrent",
         help="When the Service is to occur",
     )
-    condition_ids = fields.Many2many(
-        "ni.condition", "ni_service_condition", "service_id", "condition_id"
-    )
 
     request_ids = fields.One2many("ni.service.request", "service_id")
-
-
-class Condition(models.Model):
-    _inherit = "ni.condition"
-
-    service_ids = fields.Many2many(
-        "ni.service", "ni_service_condition", "condition_id", "service_id"
-    )

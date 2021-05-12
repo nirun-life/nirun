@@ -9,13 +9,7 @@
         sequence="0"
         web_icon="nirun_patient,static/description/icon.png"
     />
-    <menuitem
-        id="patient_menu"
-        name="Patients Directory"
-        action="patient_action"
-        parent="patient_menu_root"
-        sequence="1"
-    />
+    <menuitem id="patient_menu" name="Patients" action="patient_action" parent="patient_menu_root" sequence="1" />
     <menuitem id="encounter_menu" name="Encounter" action="encounter_action" parent="patient_menu_root" sequence="2" />
     <menuitem id="configuration_menu" name="Configuration" parent="patient_menu_root" sequence="100" />
     <menuitem id="service_menu_section" name="Healthcare Service" parent="configuration_menu" />
@@ -66,18 +60,5 @@
         name="Discharge Disposition"
         action="encounter_discharge_action"
         parent="encounter_menu_section"
-    />
-    <menuitem id="condition_menu_section" name="Condition/Problem" parent="configuration_menu" />
-    <menuitem
-        id="condition_menu"
-        name="Condition/Problem"
-        action="nirun.condition_action"
-        parent="condition_menu_section"
-    />
-    <menuitem
-        id="condition_category_menu"
-        name="Category"
-        action="nirun.condition_category_action"
-        parent="condition_menu_section"
     />
 </odoo>
