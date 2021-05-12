@@ -38,15 +38,17 @@ class Location(models.Model):
     active = fields.Boolean("Active", default=True)
 
     encounter_ids = fields.One2many("ni.encounter", "location_id")
-    patient_ids = fields.One2many("ni.patient", compute="_compute_patient_count")
+    patient_ids = fields.One2many(
+        "ni.patient", compute="_compute_patient_count", compute_sudo=True
+    )
     patient_count = fields.Integer(
-        "Total", compute="_compute_patient_count", store=True
+        "Total", compute="_compute_patient_count", store=True, compute_sudo=True
     )
     patient_male_count = fields.Integer(
-        "Male", compute="_compute_patient_count", store=True
+        "Male", compute="_compute_patient_count", store=True, compute_sudo=True
     )
     patient_female_count = fields.Integer(
-        "Female", compute="_compute_patient_count", store=True
+        "Female", compute="_compute_patient_count", store=True, compute_sudo=True
     )
 
     _sql_constraints = [

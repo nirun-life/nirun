@@ -110,13 +110,9 @@ class Encounter(models.Model):
         "encounter_id",
         "reason_id",
         readonly=True,
-        states={"draft": [("readonly", False)]},
+        states=LOCK_STATE_DICT,
         copy=True,
         help="Reason the encounter takes place",
-    )
-
-    condition_ids = fields.One2many(
-        "ni.patient.condition", "encounter_id", states=LOCK_STATE_DICT, tracking=True,
     )
 
     # Hospitalization
@@ -125,8 +121,9 @@ class Encounter(models.Model):
         "res.partner",
         string="Transfer from",
         readonly=True,
-        states={"draft": [("readonly", False)]},
+        states=LOCK_STATE_DICT,
         domain=[("is_company", "=", True)],
+        tracking=True,
         help="The organization from which the patient came before admission",
         copy=True,
     )
@@ -134,13 +131,15 @@ class Encounter(models.Model):
         "ni.encounter.admit",
         "Admission Source",
         readonly=True,
-        states={"draft": [("readonly", False)]},
+        states=LOCK_STATE_DICT,
+        tracking=True,
         help="From where patient was admitted (physician referral, transfer)",
     )
     re_admit = fields.Boolean(
         "Re-Admission",
         readonly=True,
-        states={"draft": [("readonly", False)]},
+        states=LOCK_STATE_DICT,
+        tracking=True,
         help="The type of hospital re-admission that has occurred (if any). "
         "If the value is absent, then this is not identified as a readmission",
     )
@@ -172,12 +171,14 @@ class Encounter(models.Model):
         "ni.encounter.discharge",
         "Disposition",
         help="Category or kind of location after discharge",
+        tracking=True,
     )
     discharge_partner_id = fields.Many2one(
         "res.partner",
         "Refer to",
         domain="[('is_company', '=', True)]",
         help="Location/organization to which the patient is discharged",
+        tracking=True,
     )
 
     # Participant

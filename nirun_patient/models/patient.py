@@ -89,9 +89,13 @@ class Patient(models.Model):
         [("male", "Male"), ("female", "Female"), ("other", "Other")], tracking=True,
     )
     birthdate = fields.Date("Date of Birth", tracking=True)
-    age = fields.Char("Age", compute="_compute_age")
+    age = fields.Char("Age", compute="_compute_age", compute_sudo=True)
     age_years = fields.Integer(
-        "Age (years)", compute="_compute_age", inverse="_inverse_age", store=True
+        "Age (years)",
+        compute="_compute_age",
+        compute_sudo=True,
+        inverse="_inverse_age",
+        store=True,
     )
     deceased_date = fields.Date("Deceased Date", tracking=True, copy=False)
     deceased = fields.Boolean("Deceased", compute="_compute_is_deceased")
@@ -136,7 +140,7 @@ class Patient(models.Model):
     study_school = fields.Char()
 
     encounter_ids = fields.One2many(
-        "ni.encounter", "patient_id", readonly=True, string="Encounter"
+        "ni.encounter", "patient_id", "Encounters", readonly=True
     )
     encounter_count = fields.Integer(compute="_compute_encounter", compute_sudo=True)
     last_encounter_id = fields.Many2one(
@@ -175,9 +179,6 @@ class Patient(models.Model):
         default="unknown",
         store=True,
         compute_sudo=True,
-    )
-    condition_ids = fields.One2many(
-        "ni.patient.condition.latest", "patient_id", string="Problem", readonly=True
     )
     location_id = fields.Many2one(related="encountering_id.location_id")
 

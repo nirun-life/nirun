@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="condition_action" model="ir.actions.act_window">
+        <field name="name">Conditions</field>
+        <field name="res_model">ni.condition</field>
+        <field name="view_mode">pivot,graph,tree,form</field>
+    </record>
+    <record id="condition_view_search" model="ir.ui.view">
+        <field name="name">condition.view.search</field>
+        <field name="model">ni.condition</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <field name="code_id" />
+                <filter name="problem" string="Problem" domain="[('category', '=', 'problem-list-item')]" />
+                <filter name="diagnosis" string="Diagnosis" domain="[('category', '=', 'encounter-diagnosis')]" />
+                <separator />
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]" />
+                <filter name="remission" string="Remission" domain="[('state', '=', 'remission')]" />
+                <filter name="resolved" string="Resolved" domain="[('state', '=', 'resolved')]" />
+                <group name="Group By">
+                    <filter name="patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="condition" string="Condition / Problem" context="{'group_by': 'code_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="condition_view_tree" model="ir.ui.view">
+        <field name="name">condition.view.tree</field>
+        <field name="model">ni.condition</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="patient_id" />
+                <field name="category" />
+                <field name="code_id" />
+                <field name="type_id" optional="show" />
+                <field name="severity" optional="show" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+    <record id="condition_view_form" model="ir.ui.view">
+        <field name="name">condition.view.form</field>
+        <field name="model">ni.condition</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <header attrs="{'invisible': [('id', '=', False)]}">
+                    <field
+                        name="state"
+                        options="{'clickable': '1'}"
+                        statusbar_visible="active,remission,resolved"
+                        widget="statusbar"
+                    />
+                </header>
+                <sheet>
+                    <field
+                        name="category"
+                        invisible="context.get('default_category', False)"
+                        options="{'horizontal':True}"
+                        widget="radio"
+                    />
+                    <group>
+                        <h1>
+                            <field name="code_id" nolabel="1" placeholder="Condition / Problem" />
+                        </h1>
+                    </group>
+                    <group>
+                        <group>
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                readonly="context.get('default_patient_id', False)"
+                            />
+                            <field name="patient_id" readonly="context.get('default_patient_id', False)" />
+                            <field name="severity" widget="radio" />
+                        </group>
+                        <group>
+                            <field name="period_start" />
+                            <field name="period_end" />
+                            <field name="duration" class="oe_read_only" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="condition_view_pivot" model="ir.ui.view">
+        <field name="name">condition.view.pivot</field>
+        <field name="model">ni.condition</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="code_id" type="row" />
+                <field name="gender" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="condition_view_graph" model="ir.ui.view">
+        <field name="name">condition.view.graph</field>
+        <field name="model">ni.condition</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="code_id" type="col" />
+            </graph>
+        </field>
+    </record>
+</odoo>

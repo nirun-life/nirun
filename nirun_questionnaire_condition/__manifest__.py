@@ -9,10 +9,10 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun_questionnaire"],
+    "depends": ["nirun_questionnaire", "nirun_condition"],
     "data": ["views/survey_user_views.xml"],
     "demo": [],
     "application": False,
-    "auto_install": False,
+    "auto_install": True,
     "installable": True,
 }

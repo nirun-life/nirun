@@ -13,7 +13,7 @@ class SurveyUserInput(models.Model):
         return super().write(vals)
 
     def onchange_state_done(self):
-        condition = self.env["ni.patient.condition"].sudo()
+        condition = self.env["ni.condition"].sudo()
         for rec in self.filtered(lambda s: s.subject_model == "ni.patient"):
             grade = rec.quizz_grade_id
             if grade and grade.condition_id:
@@ -21,7 +21,7 @@ class SurveyUserInput(models.Model):
                     "patient_id": rec.patient_id.id,
                     "encounter_id": rec.encounter_id.id,
                     "category": "encounter-diagnosis",
-                    "condition_id": grade.condition_id.id,
+                    "code_id": grade.condition_id.id,
                     "severity": grade.condition_severity,
                 }
                 condition.create(vals)
