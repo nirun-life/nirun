@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.view.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='grade_ids']/tree" position="inside">
+                <field name="patient_group_id" attrs="{'invisible': [('parent.subject_type', '!=', 'ni.patient')]}" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

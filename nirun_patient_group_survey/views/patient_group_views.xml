@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_group_view_form_inherit" model="ir.ui.view">
+        <field name="name">patient.group.view.form.inherit</field>
+        <field name="model">ni.patient.group</field>
+        <field name="inherit_id" ref="nirun_patient_group.patient_group_view_form" />
+        <field name="arch" type="xml">
+            <field name="user_select" position="after">
+                <field name="survey_id" attrs="{'invisible': [('is_section', '=', False)]}" />
+                <field name="parent_survey_id" attrs="{'invisible': [('is_section', '=', True)]}" />
+            </field>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="%(survey_subject.survey_subject_action)d"
+                    attrs="{'invisible':['|', ('survey_id','=',False)]}"
+                    class="oe_stat_button"
+                    context="{'default_survey_id': survey_id}"
+                    help="Questionnaire relate to group"
+                    icon="fa-commenting-o"
+                    type="action"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Start</span>
+                        <span class="o_stat_text">Questionnaire</span>
+                    </div>
+                </button>
+                <button
+                    name="%(survey_subject.survey_subject_action)d"
+                    attrs="{'invisible':['|', ('parent_survey_id','=',False)]}"
+                    class="oe_stat_button"
+                    context="{'default_survey_id': parent_survey_id}"
+                    help="Questionnaire relate to group"
+                    icon="fa-commenting-o"
+                    type="action"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Start</span>
+                        <span class="o_stat_text">Questionnaire</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

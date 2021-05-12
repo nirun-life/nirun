@@ -14,7 +14,7 @@ class SurveyGrade(models.Model):
     )
     passing_score = fields.Float(related="survey_id.passing_score")
 
-    name = fields.Char("Grade", index=True, translate=True)
+    name = fields.Char("Grade", index=True, translate=True, required=True)
     low = fields.Float(
         "Low (%)", default=0.0, help="Lowest percentage of score (Inclusive)"
     )
@@ -24,7 +24,14 @@ class SurveyGrade(models.Model):
     passing_grade = fields.Boolean(compute="_compute_passing_grade", default=False)
 
     def name_get(self):
-        return [(rec.id, "%s [%d-%d]" % (rec.name, rec.low, rec.high)) for rec in self]
+        return [(rec.id, rec._name_get()) for rec in self]
+
+    def _name_get(self):
+        rec = self
+        name = rec.name or ""
+        if self._context.get("show_score_range"):
+            name = "%s [%d-%d]" % (name, rec.low, rec.high)
+        return name
 
     def is_cover(self, value):
         return self.low <= value <= self.high

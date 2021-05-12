@@ -22,10 +22,22 @@
         <field name="inherit_id" ref="survey.survey_user_input_view_tree" />
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
-                <field name="patient_id" optional="show" />
+                <field name="patient_id" optional="hide" />
                 <field name="encounter_id" optional="hide" />
             </field>
             <field name="subject_ref" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="input_type" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="attempt_number" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="deadline" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="email" position="attributes">
                 <attribute name="optional">hide</attribute>
             </field>
         </field>
