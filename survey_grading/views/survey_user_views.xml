@@ -4,11 +4,21 @@
   -->
 <odoo>
     <record id="survey_user_input_view_form_inherit" model="ir.ui.view">
-        <field name="name">survey.user_input.view.form.inherit</field>
+        <field name="name">survey.user.input.view.form.inherit</field>
         <field name="model">survey.user_input</field>
         <field name="inherit_id" ref="survey.survey_user_input_view_form" />
         <field name="arch" type="xml">
             <field name="quizz_passed" position="after">
+                <field name="quizz_grade_id" />
+            </field>
+        </field>
+    </record>
+    <record id="survey_user_input_view_tree_inherit" model="ir.ui.view">
+        <field name="name">survey.user.input.view.tree.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_tree" />
+        <field name="arch" type="xml">
+            <field name="quizz_score" position="before">
                 <field name="quizz_grade_id" />
             </field>
         </field>

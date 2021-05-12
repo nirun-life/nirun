@@ -6,8 +6,13 @@ from odoo import api, fields, models
 class SurveyUserInput(models.Model):
     _inherit = "survey.user_input"
 
+    quizz_score = fields.Float(group_operator="avg")
     quizz_score_raw = fields.Float(
-        "Score", compute="_compute_quizz_score", store=True, compute_sudo=True
+        "Score",
+        compute="_compute_quizz_score",
+        store=True,
+        compute_sudo=True,
+        group_operator="avg",
     )
     quizz_score_total = fields.Float(
         "Total Score", compute="_compute_quizz_score", store=False, compute_sudo=True
