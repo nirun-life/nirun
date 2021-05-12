@@ -8,7 +8,5 @@ class SurveyGrade(models.Model):
 
     condition_id = fields.Many2one("ni.condition")
     condition_severity = fields.Selection(
-        [("mild", "Mild"), ("moderate", "Moderate"), ("severe", "Severe")],
-        default="mild",
-        tracking=1,
+        [("mild", "Mild"), ("moderate", "Moderate"), ("severe", "Severe")], tracking=1,
     )

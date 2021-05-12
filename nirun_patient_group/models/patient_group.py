@@ -60,7 +60,7 @@ class PatientGroup(models.Model):
 
     def get_group_in_same_section(self):
         self.ensure_one()
-        if self.parent_id:
+        if not self.parent_id:
             return self.browse()
         return self.search([("parent_id", "=", self.parent_id.id)])
 

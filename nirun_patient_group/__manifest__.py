@@ -1,7 +1,7 @@
 #  Copyright (c) 2021 Piruin P.
 
 {
-    "name": "Patients - Group",
+    "name": "Patient Groups",
     "version": "13.0.0.1.0",
     "development_status": "Alpha",
     "category": "Healthcare",
