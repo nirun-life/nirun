@@ -22,6 +22,7 @@ class Religion(models.Model):
     child_ids = fields.One2many(
         "res.religion", "parent_id", string="Denominations", readonly=True
     )
+    active = fields.Boolean(default=True)
     _sql_constraints = [
         ("name_uniq", "unique (name)", _("Name of the religion must be unique !"))
     ]
@@ -41,5 +42,5 @@ class Religion(models.Model):
     def _check_hierarchy(self):
         if not self._check_recursion():
             raise models.ValidationError(
-                _("Error! You cannot create recursive locations.")
+                _("Error! You cannot create recursive religion.")
             )
