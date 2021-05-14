@@ -4,7 +4,7 @@
   -->
 <odoo>
     <record id="action_contacts_patient" model="ir.actions.act_window">
-        <field name="name">Contact</field>
+        <field name="name">Patients</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.partner</field>
         <field name="view_mode">kanban,tree,form,activity</field>
@@ -43,17 +43,13 @@
         </field>
     </record>
     <menuitem
-        id="res_partner_menu_all"
-        name="Contacts"
-        action="contacts.action_contacts"
-        parent="contacts.res_partner_menu_contacts"
-        sequence="1"
-    />
-    <menuitem
         id="res_partner_menu_patient"
-        name="Patient"
+        name="Patients"
         action="action_contacts_patient"
-        parent="contacts.res_partner_menu_contacts"
+        parent="contacts.menu_contacts"
         sequence="2"
     />
+    <record id="contacts.res_partner_menu_config" model="ir.ui.menu">
+        <field name="sequence">3</field>
+    </record>
 </odoo>
