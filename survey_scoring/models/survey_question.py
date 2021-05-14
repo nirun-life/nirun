@@ -8,7 +8,7 @@ class SurveyQuestion(models.Model):
 
     score = fields.Float(compute="_compute_score", store=True)
 
-    @api.depends("labels_ids.answer_score")
+    @api.depends("labels_ids", "labels_ids.answer_score", "labels_ids_2")
     def _compute_score(self):
         for rec in self:
             if not rec.labels_ids:
