@@ -3,14 +3,23 @@
   ~ Copyright (c) 2021 Piruin P.
   -->
 <odoo>
+    <record id="module_category_medical" model="ir.module.category">
+        <field name="name">Medical</field>
+        <field name="sequence">80</field>
+    </record>
+    <record id="module_category_medical_base" model="ir.module.category">
+        <field name="name">Coding</field>
+        <field name="sequence">80</field>
+        <field name="parent_id" ref="nirun.module_category_medical" />
+    </record>
     <record id="group_user" model="res.groups">
-        <field name="name">Nirun User</field>
-        <field name="category_id" ref="nirun.module_category_medical" />
+        <field name="name">User</field>
+        <field name="category_id" ref="nirun.module_category_medical_base" />
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
     </record>
     <record id="group_manager" model="res.groups">
-        <field name="name">Nirun Manager</field>
-        <field name="category_id" ref="nirun.module_category_medical" />
+        <field name="name">Manager</field>
+        <field name="category_id" ref="nirun.module_category_medical_base" />
         <field name="implied_ids" eval="[(4, ref('nirun.group_user'))]" />
         <field name="users" eval="[(4, ref('base.user_admin'))]" />
     </record>
