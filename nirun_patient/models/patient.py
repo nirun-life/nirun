@@ -140,12 +140,12 @@ class Patient(models.Model):
     study_school = fields.Char()
 
     encounter_ids = fields.One2many(
-        "ni.encounter", "patient_id", "Encounters", readonly=True
+        "ni.encounter", "patient_id", "Encounter(s)", readonly=True
     )
     encounter_count = fields.Integer(compute="_compute_encounter", compute_sudo=True)
     last_encounter_id = fields.Many2one(
         "ni.encounter",
-        "Encounter",
+        "Last Encounter ",
         compute="_compute_encounter",
         require=False,
         compute_sudo=True,
@@ -153,7 +153,7 @@ class Patient(models.Model):
     )
     encountering_id = fields.Many2one(
         "ni.encounter",
-        "Present Encounter",
+        "Encounter",
         compute="_compute_encounter",
         require=False,
         compute_sudo=True,
@@ -162,16 +162,19 @@ class Patient(models.Model):
     performer_id = fields.Many2one(related="encountering_id.performer_id")
 
     encountering_start = fields.Date(
-        compute="_compute_encounter", require=False, compute_sudo=True
+        "Encounter Start",
+        compute="_compute_encounter",
+        require=False,
+        compute_sudo=True,
     )
     is_encountering = fields.Boolean(
         compute="_compute_encounter", default=False, store=True, compute_sudo=True
     )
     presence_state = fields.Selection(
         [
-            ("in-progress", "Treating"),
             ("planned", "Waiting"),
-            ("finished", "Treated"),
+            ("in-progress", "In-Progress"),
+            ("finished", "Discharged"),
             ("deceased", "Deceased"),
             ("unknown", "Unknown"),
         ],
