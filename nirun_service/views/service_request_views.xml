@@ -4,7 +4,7 @@
   -->
 <odoo>
     <record id="service_request_action" model="ir.actions.act_window">
-        <field name="name">Services Request</field>
+        <field name="name">Service Requests</field>
         <field name="res_model">ni.service.request</field>
         <field name="view_mode">tree,form</field>
     </record>
@@ -14,6 +14,14 @@
         <field name="arch" type="xml">
             <form>
                 <header class="oe_read_only">
+                    <button
+                        name="action_approve"
+                        string="Approve"
+                        attrs="{'invisible': [('state', '!=', 'draft')]}"
+                        class="btn-primary"
+                        groups="nirun_service.group_manager"
+                        type="object"
+                    />
                     <field name="state" statusbar_visible="draft,active,completed" widget="statusbar" />
                 </header>
                 <sheet>
@@ -49,6 +57,10 @@
                         </page>
                         <page string="Extra Info">
                             <group>
+                                <group attrs="{'invisible': [('state', '=', 'draft')]}">
+                                    <field name="approve_date" />
+                                    <field name="approve_uid" />
+                                </group>
                                 <group>
                                     <field name="create_date" />
                                     <field name="create_uid" />
