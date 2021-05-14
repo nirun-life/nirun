@@ -16,12 +16,12 @@ class ServiceRequest(models.Model):
     )
     state = fields.Selection(
         [
-            ("draft", "Draft"),
-            ("active", "Active"),
+            ("draft", "Request"),
+            ("active", "In-Progress"),
             ("on-hold", "On-hold"),
             ("revoked", "Revoked"),
             ("completed", "Completed"),
-            ("entered-in-error", "Error"),
+            ("entered-in-error", "Error Entry"),
         ],
         default="draft",
         required=True,
@@ -30,3 +30,14 @@ class ServiceRequest(models.Model):
         "res.partner", "Requester", default=lambda self: self.env.user.partner_id
     )
     instruction = fields.Text(help="Patient oriented instructions")
+    approve_uid = fields.Many2one("res.users", "Approved by")
+    approve_date = fields.Datetime("Approved on")
+
+    def action_approve(self):
+        self.write(
+            {
+                "state": "active",
+                "approve_date": fields.Datetime.now(),
+                "approve_uid": self.env.uid,
+            }
+        )

@@ -1,10 +1,10 @@
 #  Copyright (c) 2021 Piruin P.
 
 {
-    "name": "Related person - Income",
+    "name": "Partner - Income",
     "version": "13.0.0.1.0",
     "development_status": "Alpha",
-    "category": "Healthcare",
+    "category": "Tools",
     "author": "Piruin P.",
     "website": "https://nirun.life/",
     "license": "LGPL-3",
