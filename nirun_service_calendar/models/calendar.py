@@ -10,7 +10,7 @@ class Meeting(models.Model):
 
     @api.onchange("service_id")
     def onchange_service_id(self):
-        service_tag = self.env.ref("nirun_calendar.calendar_categ_service")
+        service_tag = self.env.ref("nirun_service_calendar.calendar_categ_service")
         for rec in self:
             if rec.service_id:
                 rec.res_model = "ni.service"

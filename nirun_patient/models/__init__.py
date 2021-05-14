@@ -10,5 +10,3 @@ from . import encounter_reason
 from . import location
 from . import patient
 from . import patient_res
-from . import service
-from . import service_request

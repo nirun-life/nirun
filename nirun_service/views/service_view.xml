@@ -30,14 +30,15 @@
                             <field name="name" placeholder="Service Name" />
                         </h1>
                     </div>
-                    <field name="company_id" groups="base.group_multi_company" placeholder="Company" />
+                    <field
+                        name="category_ids"
+                        options="{'color_field': 'color', 'no_create_edit': True}"
+                        placeholder="Category..."
+                        widget="many2many_tags"
+                    />
                     <group>
+                        <field name="company_id" groups="base.group_multi_company" placeholder="Company" />
                         <field name="code" placeholder="Internal Reference" />
-                        <field
-                            name="category_ids"
-                            options="{'color_field': 'color', 'no_create_edit': True}"
-                            widget="many2many_tags"
-                        />
                         <field name="location_ids" widget="many2many_tags" />
                     </group>
                     <notebook>
@@ -118,6 +119,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" />
+                <field name="category_ids" />
             </search>
         </field>
     </record>

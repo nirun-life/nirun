@@ -1,7 +1,7 @@
 #  Copyright (c) 2021 Piruin P.
 
 {
-    "name": "Nirun - Calendar",
+    "name": "Healthcare Services - Calendar",
     "version": "13.0.0.1.0",
     "development_status": "Alpha",
     "category": "Healthcare",
@@ -9,11 +9,12 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["calendar", "nirun_patient"],
+    "depends": ["nirun_service", "calendar"],
     "data": [
         "data/calendar_data.xml",
-        "views/service_views.xml",
         "views/calendar_views.xml",
+        "views/service_views.xml",
+        "views/service_menus.xml",
     ],
     "demo": [],
     "application": False,
