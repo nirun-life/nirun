@@ -7,14 +7,18 @@
         <field name="name">Encounter</field>
         <field name="res_model">ni.encounter</field>
         <field name="view_mode">tree,form,pivot,graph</field>
-        <field name="context">{'search_default_in_progress': 1}</field>
     </record>
     <record id="encounter_action_from_patient" model="ir.actions.act_window">
         <field name="name">Encounter</field>
         <field name="res_model">ni.encounter</field>
         <field name="view_mode">form</field>
         <field name="target">current</field>
-        <field name="context">{'default_patient_id': active_id}</field>
+        <field name="context">
+            {
+            'default_patient_id': active_id,
+            'search_default_patient_id': active_id
+        }
+        </field>
     </record>
     <record id="encounter_view_search" model="ir.ui.view">
         <field name="name">encounter.view.search</field>
@@ -22,6 +26,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" filter_domain="['|', ('name', 'ilike', self), ('patient_id', 'ilike', self)]" />
+                <field name="patient_id" />
                 <field name="period_start" />
                 <field name="location_id" />
                 <field name="performer_id" />
@@ -31,9 +36,9 @@
                 <filter name="period_end" string="Until" date="period_start" />
                 <separator />
                 <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
-                <filter name="planned" string="Planned" domain="[('state', '=', 'planned')]" />
+                <filter name="planned" string="Waiting" domain="[('state', '=', 'planned')]" />
                 <filter name="in_progress" string="In-Progress" domain="[('state', '=', 'in-progress')]" />
-                <filter name="finished" string="Finished" domain="[('state', '=', 'finished')]" />
+                <filter name="finished" string="Discharged" domain="[('state', '=', 'finished')]" />
                 <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]" />
                 <separator />
                 <filter name="entered-in-error" string="Error Entry" domain="[('state', '=', 'entered-in-error')]" />
@@ -92,12 +97,14 @@
                         name="action_confirm"
                         attrs="{'invisible': [('state', 'not in', ['draft'])]}"
                         string="Confirm"
+                        class="btn-primary"
                         type="object"
                     />
                     <button
                         name="action_close"
                         attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
                         string="Discharge"
+                        class="btn-primary"
                         type="object"
                     />
                     <field name="state" statusbar_visible="draft,in-progress,finished" widget="statusbar" />

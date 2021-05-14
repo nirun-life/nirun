@@ -81,10 +81,10 @@ class Encounter(models.Model):
     state = fields.Selection(
         [
             ("draft", "Draft"),
-            ("planned", "Planned"),
+            ("planned", "Waiting"),
             ("cancelled", "Cancelled"),
             ("in-progress", "In-Progress"),
-            ("finished", "Finished"),
+            ("finished", "Discharged"),
             ("entered-in-error", "Error Entry"),
         ],
         string="Status",

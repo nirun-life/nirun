@@ -16,10 +16,10 @@
                 <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
                 <field name="phone" filter_domain="['|' ,('phone', 'ilike', self), ('mobile', 'ilike', self)]" />
                 <separator />
-                <filter name="treating" string='Treating' domain="[('presence_state', '=', 'in-progress')]" />
+                <filter name="in-progress" string='In-Progress' domain="[('presence_state', '=', 'in-progress')]" />
                 <filter name="waiting" string='Waiting' domain="[('presence_state', '=', 'waiting')]" />
                 <filter
-                    name="discharged"
+                    name="finished"
                     string='Discharged'
                     domain="[('presence_state', 'in', ['finished', 'deceased'])]"
                 />
@@ -72,8 +72,14 @@
                 </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box" groups="base.group_user">
-                        <button name="action_encounter" class="oe_stat_button" icon="fa-hospital-o" type="object">
-                            <field name="encounter_count" string="Encounter" widget="statinfo" />
+                        <button
+                            name="action_encounter"
+                            attrs="{'invisible': [('encounter_count', '&lt;=', 1)]}"
+                            class="oe_stat_button"
+                            icon="fa-hospital-o"
+                            type="object"
+                        >
+                            <field name="encounter_count" string="Encounter(s)" widget="statinfo" />
                         </button>
                     </div>
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
@@ -99,14 +105,6 @@
                             <field name="age" />
                         </div>
                     </div>
-                    <div class="oe_read_only mt-1" attrs="{'invisible': [('is_encountering', '=', False)]}">
-                        <span class="fa fa-hospital-o" />
-                        <field name="encountering_id" class="ml-2" />
-                        <span attrs="{'invisible':[('location_id', '=', False)]}" class="fa fa-bed ml-3" />
-                        <field name="location_id" attrs="{'invisible':[('location_id', '=', False)]}" class="ml-2" />
-                        <span class="ml-3 o_form_label">Since</span>
-                        <field name="encountering_start" />
-                    </div>
                     <group>
                         <group name="partner">
                             <field
@@ -117,10 +115,13 @@
                             <field name="phone" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="phone" />
                             <field name="mobile" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="phone" />
                             <field name="email" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="email" />
-                        </group>
-                        <group name="internal">
-                            <field name="company_id" groups="base.group_multi_company" />
                             <field name="code" placeholder="ex. HN-001204" />
+                            <field name="company_id" groups="base.group_multi_company" />
+                        </group>
+                        <group name="encountering" attrs="{'invisible': [('is_encountering', '=', False)]}">
+                            <field name="encountering_id" />
+                            <field name="location_id" />
+                            <field name="encountering_start" />
                         </group>
                     </group>
                     <notebook name="notebook">
