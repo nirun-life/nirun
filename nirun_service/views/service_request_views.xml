@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="service_request_action" model="ir.actions.act_window">
+        <field name="name">Services Request</field>
+        <field name="res_model">ni.service.request</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="service_request_view_form" model="ir.ui.view">
+        <field name="name">service.request.view.form</field>
+        <field name="model">ni.service.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header class="oe_read_only">
+                    <field name="state" statusbar_visible="draft,active,completed" widget="statusbar" />
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'completed')]}"
+                        bg_color="bg-success"
+                        title="Completed"
+                    />
+                    <field name="id" invisible="1" />
+                    <group>
+                        <h2>
+                            <field name="service_id" nolabel="1" placeholder="Healthcare Service" />
+                        </h2>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" placeholder="Company" />
+                            <field name="patient_id" />
+                            <field name="encounter_id" required="1" />
+                            <field name="requester_id" />
+                        </group>
+                        <group>
+                            <field name="priority" widget="priority" />
+                            <field name="period_start" required="1" />
+                            <field name="period_end" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Instruction">
+                            <field name="instruction" placeholder="Patient oriented instructions.." />
+                        </page>
+                        <page string="Extra Info">
+                            <group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="service_request_view_tree" model="ir.ui.view">
+        <field name="name">service.request.view.tree</field>
+        <field name="model">ni.service.request</field>
+        <field name="arch" type="xml">
+            <tree string="Healthcare Service">
+                <field name="service_id" />
+                <field name="patient_id" />
+                <field name="encounter_id" optional="hide" />
+                <field name="priority" optional="show" />
+                <field name="period_start" optional="hide" />
+                <field name="period_end" optional="hide" />
+                <field name="state" />
+                <field name="company_id" groups="base.group_multi_company" />
+            </tree>
+        </field>
+    </record>
+    <record id="service_request_view_search" model="ir.ui.view">
+        <field name="name">service.request.view.search</field>
+        <field name="model">ni.service.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <field name="service_id" />
+            </search>
+        </field>
+    </record>
+</odoo>

@@ -104,7 +104,6 @@ class Activity(models.Model):
     res_model = fields.Selection(
         [("ni.service.request", "Service Request")], required=False,
     )
-    service_request_id = fields.Many2one("ni.service.request", "Service Request",)
 
     def action_activity_reference_resource(self):
         if self.res_model and self.res_id:
