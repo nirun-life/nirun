@@ -5,7 +5,7 @@ from odoo import api, fields, models
 
 class ConditionType(models.Model):
     _name = "ni.condition.type"
-    _description = "Condition Category"
+    _description = "Condition Type"
     _inherit = ["coding.base"]
 
     code_ids = fields.One2many(

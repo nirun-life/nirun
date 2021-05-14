@@ -5,7 +5,7 @@ from odoo import fields, models, tools
 
 class ConditionLatest(models.Model):
     _name = "ni.condition.latest"
-    _description = "Patient latest known condition"
+    _description = "Patient Current Condition"
     _inherit = ["ni.condition", "period.mixin"]
     _auto = False
 
