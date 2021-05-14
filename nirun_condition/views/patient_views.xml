@@ -9,7 +9,7 @@
         <field name="inherit_id" ref="nirun_patient.patient_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//page[@name='private']" position="after">
-                <page name="condition" string="Condition / Problem">
+                <page name="condition" string="Problem list item">
                     <field
                         name="condition_ids"
                         context="{'default_category': 'problem-list-item', 'default_patient_id': active_id}"
@@ -17,9 +17,10 @@
                         mode="tree"
                     >
                         <tree editable="bottom">
-                            <field name="category" readonly="1" />
+                            <field name="category" invisible="1" />
                             <field name="code_id" />
                             <field name="severity" />
+                            <field name="period_start" />
                             <field name="state" />
                         </tree>
                     </field>

@@ -9,12 +9,18 @@ class Condition(models.Model):
     _inherit = ["period.mixin", "ni.patient.res"]
 
     category = fields.Selection(
-        [("problem-list-item", "Problem"), ("encounter-diagnosis", "Diagnosis")],
+        [
+            ("problem-list-item", "Problem list item"),
+            ("encounter-diagnosis", "Encounter Diagnosis"),
+        ],
         required=True,
-        default="problem-list-item",
     )
     code_id = fields.Many2one(
-        "ni.condition.code", required=True, ondelete="restrict", index=True
+        "ni.condition.code",
+        "Condition / Problem",
+        required=True,
+        ondelete="restrict",
+        index=True,
     )
     type_id = fields.Many2one(related="code_id.type_id", string="Type", store=True)
     severity = fields.Selection(
@@ -22,10 +28,10 @@ class Condition(models.Model):
         tracking=1,
         required=False,
     )
+    period_start = fields.Date(default=None)
     state = fields.Selection(
         [
-            ("active", "Active"),
-            ("inactive", "Inactive"),
+            ("active", "Suffering"),
             ("remission", "Remission"),
             ("resolved", "Resolved"),
         ],
