@@ -9,7 +9,11 @@
     "license": "LGPL-3",
     "maintainers": ["piruin"],
     "depends": ["base"],
-    "data": ["security/ir.model.access.csv", "data/res_religion_data.xml"],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/res_religion_data.xml",
+        "views/res_religion_views.xml",
+    ],
     "application": False,
     "auto_install": False,
     "installable": True,
