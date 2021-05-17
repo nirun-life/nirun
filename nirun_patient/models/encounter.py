@@ -120,7 +120,6 @@ class Encounter(models.Model):
     origin_partner_id = fields.Many2one(
         "res.partner",
         string="Transfer from",
-        readonly=True,
         states=LOCK_STATE_DICT,
         domain=[("is_company", "=", True)],
         tracking=True,
@@ -130,14 +129,12 @@ class Encounter(models.Model):
     admit_source_id = fields.Many2one(
         "ni.encounter.admit",
         "Admission Source",
-        readonly=True,
         states=LOCK_STATE_DICT,
         tracking=True,
         help="From where patient was admitted (physician referral, transfer)",
     )
     re_admit = fields.Boolean(
         "Re-Admission",
-        readonly=True,
         states=LOCK_STATE_DICT,
         tracking=True,
         help="The type of hospital re-admission that has occurred (if any). "
