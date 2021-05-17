@@ -9,7 +9,11 @@
         <field name="inherit_id" ref="survey.survey_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='grade_ids']/tree" position="inside">
-                <field name="patient_group_id" attrs="{'invisible': [('parent.subject_type', '!=', 'ni.patient')]}" />
+                <field
+                    name="patient_group_id"
+                    attrs="{'column_invisible': [('parent.subject_type', '!=', 'ni.patient')]}"
+                    readonly="0"
+                />
             </xpath>
         </field>
     </record>
