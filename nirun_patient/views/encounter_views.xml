@@ -3,6 +3,14 @@
   ~ Copyright (c) 2021 Piruin P.
   -->
 <odoo>
+    <record id="encounter_action_entered_in_error" model="ir.actions.server">
+        <field name="name">Error Entry</field>
+        <field name="model_id" ref="model_ni_encounter" />
+        <field name="binding_model_id" ref="model_ni_encounter" />
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_entered_in_error()</field>
+    </record>
     <record id="encounter_action" model="ir.actions.act_window">
         <field name="name">Encounter</field>
         <field name="res_model">ni.encounter</field>
@@ -129,7 +137,7 @@
                         name="web_ribbon"
                         attrs="{'invisible': [('state', '!=', 'entered-in-error')]}"
                         bg_color="bg-danger"
-                        title="Entered in Error"
+                        title="Error Entry"
                     />
                     <div class="oe_title">
                         <div>
