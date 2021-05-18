@@ -74,9 +74,7 @@ class Location(models.Model):
     @api.constrains("parent_id")
     def _check_hierarchy(self):
         if not self._check_recursion():
-            raise models.ValidationError(
-                _("Error! You cannot create recursive locations.")
-            )
+            raise models.ValidationError(_("Error! You cannot create recursive data."))
 
     def name_get(self):
         if self._context.get("location_display") == "short":

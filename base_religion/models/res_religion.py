@@ -41,6 +41,4 @@ class Religion(models.Model):
     @api.constrains("parent_id")
     def _check_hierarchy(self):
         if not self._check_recursion():
-            raise models.ValidationError(
-                _("Error! You cannot create recursive religion.")
-            )
+            raise models.ValidationError(_("Error! You cannot create recursive data."))
