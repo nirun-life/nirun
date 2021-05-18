@@ -29,7 +29,7 @@ class Encounter(models.Model):
         ondelete="cascade",
     )
     name = fields.Char(
-        "Identifier",
+        "Encounter No.",
         copy=False,
         readonly=True,
         states={"draft": [("readonly", False)]},
@@ -320,3 +320,6 @@ class Encounter(models.Model):
                 raise ValidationError(_("Must be in-progress state"))
             else:
                 enc.update({"state": "finished", "period_end": fields.date.today()})
+
+    def action_entered_in_error(self):
+        self.write({"state": "entered-in-error"})

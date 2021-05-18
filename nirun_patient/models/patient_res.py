@@ -27,7 +27,7 @@ class PatientRes(models.AbstractModel):
     )
     encounter_id = fields.Many2one(
         "ni.encounter",
-        "Encounter",
+        "Encounter No.",
         ondelete="restrict",
         index=True,
         check_company=True,

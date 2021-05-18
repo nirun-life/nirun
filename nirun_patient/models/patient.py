@@ -71,7 +71,7 @@ class Patient(models.Model):
     mobile = fields.Char(related="partner_id.mobile", readonly=False)
     email = fields.Char(related="partner_id.email", readonly=False)
 
-    code = fields.Char("Internal Reference", copy=False, tracking=True)
+    code = fields.Char("Patient No.", copy=False, tracking=True)
 
     country_id = fields.Many2one(
         "res.country",
@@ -153,7 +153,7 @@ class Patient(models.Model):
     )
     encountering_id = fields.Many2one(
         "ni.encounter",
-        "Encounter",
+        "Encounter No.",
         compute="_compute_encounter",
         require=False,
         compute_sudo=True,
