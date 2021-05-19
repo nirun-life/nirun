@@ -237,15 +237,27 @@
         <field name="arch" type="xml">
             <form class="o_form_project_tasks" string="Activities">
                 <field name="active" invisible="1" />
-                <header>
-                    <field name="state" options="{'clickable': '1'}" widget="statusbar" />
+                <header class="oe_read_only">
+                    <field name="state" statusbar_visible="scheduled,in-progress,completed" widget="statusbar" />
                 </header>
                 <sheet>
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('active', '=', True)]}"
-                        bg_color="bg-danger"
+                        bg_color="bg-warning"
                         title="Archived"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [(('state', '!=', 'cancelled'))]}"
+                        bg_color="bg-danger"
+                        title="Cancelled"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'completed')]}"
+                        bg_color="bg-success"
+                        title="Completed"
                     />
                     <div class="oe_title pr-0">
                         <h1 class="d-flex flex-row justify-content-between">

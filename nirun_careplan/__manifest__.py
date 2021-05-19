@@ -19,6 +19,7 @@
         "views/careplan_views.xml",
         "views/patient_views.xml",
         "views/careplan_menus.xml",
+        "wizard/careplan_activity_state.xml",
     ],
     "demo": ["data/category_demo.xml"],
     "application": True,
