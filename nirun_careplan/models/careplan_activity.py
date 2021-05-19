@@ -66,7 +66,9 @@ class Activity(models.Model):
         required=True,
     )
 
-    patient_id = fields.Many2one("ni.patient", related="careplan_id.patient_id",)
+    patient_id = fields.Many2one(
+        "ni.patient", related="careplan_id.patient_id", store=True
+    )
     encounter_id = fields.Many2one("ni.encounter", related="careplan_id.encounter_id",)
     manager_id = fields.Many2one(
         "hr.employee",

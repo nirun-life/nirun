@@ -25,7 +25,7 @@ class CarePlan(models.Model):
     sequence = fields.Integer(
         "Sequence", help="Determine the display order", index=True, default=16
     )
-    description = fields.Text(copy=True, help="Summary of nature of plan")
+    description = fields.Html(copy=True, help="Summary of nature of plan")
 
     patient_avatar = fields.Image(
         related="patient_id.image_512", attactment=False, store=False
@@ -129,9 +129,12 @@ class CarePlan(models.Model):
     # Actions
     # -------------
 
-    def open_activities(self):
+    def open_activity(self):
+        self.ensure_one()
         ctx = dict(self._context)
-        ctx.update({"search_default_careplan_id": self.id})
+        ctx.update(
+            {"search_default_careplan_id": self.id, "default_careplan_id": self.id}
+        )
         action = self.env["ir.actions.act_window"].for_xml_id(
             "nirun_careplan", "careplan_activity_action_from_careplan"
         )

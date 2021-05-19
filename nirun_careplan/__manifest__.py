@@ -17,6 +17,7 @@
         "views/careplan_activity_views.xml",
         "views/careplan_category_views.xml",
         "views/careplan_views.xml",
+        "views/patient_views.xml",
         "views/careplan_menus.xml",
     ],
     "demo": ["data/category_demo.xml"],
