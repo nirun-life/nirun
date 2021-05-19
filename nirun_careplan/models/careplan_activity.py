@@ -155,10 +155,13 @@ class Activity(models.Model):
             vals["assign_date"] = now
         return super().write(vals)
 
-    # @api.returns("self", lambda value: value.id)
-    # def copy(self, default=None):
-    #     if default is None:
-    #         default = {}
-    #     if not default.get("name"):
-    #         default["name"] = _("%s (copy)") % self.name
-    #     return super().copy(default)
+    @api.onchange("careplan_id")
+    def _onchange_careplan(self):
+        for rec in self:
+            if rec.careplan_id:
+                rec.write(
+                    {
+                        "period_start": rec.careplan_id.period_start,
+                        "period_end": rec.careplan_id.period_end,
+                    }
+                )

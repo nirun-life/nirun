@@ -237,6 +237,7 @@
         <field name="arch" type="xml">
             <form class="o_form_project_tasks" string="Activities">
                 <field name="active" invisible="1" />
+                <field name="patient_id" invisible="1" />
                 <header class="oe_read_only">
                     <field name="state" statusbar_visible="scheduled,in-progress,completed" widget="statusbar" />
                 </header>
@@ -266,6 +267,12 @@
                             <field name="kanban_state" class="ml-auto oe_read_only" widget="state_selection" />
                         </h1>
                     </div>
+                    <field
+                        name="category_ids"
+                        options="{'color_field': 'color'}"
+                        placeholder="Categories..."
+                        widget="many2many_tags"
+                    />
                     <group>
                         <group>
                             <field
@@ -274,21 +281,11 @@
                                 options='{"always_reload": True}'
                                 domain="[('active', '=', True), ('company_id', '=', company_id)]"
                             />
-                            <field name="category_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
-                            <label for="period_start" />
-                            <div class="o_row">
-                                <field name="period_start" />
-                                <span class="mx-1">-</span>
-                                <field name="period_end" />
-                            </div>
-                            <label for="res_model" />
-                            <div class="o_row">
-                                <field name="res_model" />
-                            </div>
+                            <field name="period_start" />
+                            <field name="period_end" />
                         </group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
-                            <field name="patient_id" invisible="1" />
                             <field name="manager_id" />
                             <field name="assignee_id" />
                         </group>

@@ -22,6 +22,10 @@ class CarePlan(models.Model):
         index=True,
         default=lambda self: self.env.company,
     )
+    patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
+    encounter_id = fields.Many2one(
+        readonly=True, states={"draft": [("readonly", False)]}
+    )
     sequence = fields.Integer(
         "Sequence", help="Determine the display order", index=True, default=16
     )
@@ -41,12 +45,13 @@ class CarePlan(models.Model):
     )
     intent = fields.Selection(
         [
-            ("plan", "Plan"),
             ("order", "Order"),
+            ("plan", "Plan"),
             ("proposal", "Proposal"),
             ("option", "Option"),
         ],
         default="plan",
+        help="Indicating the degree of authority/intentionality of care plan.",
     )
     author_id = fields.Many2one(
         "res.users", string="Author", default=lambda self: self.env.user, tracking=True
@@ -62,7 +67,7 @@ class CarePlan(models.Model):
     state = fields.Selection(
         [
             ("draft", "Draft"),
-            ("active", "Active"),
+            ("active", "In-Progress"),
             ("on-hold", "On-Hold"),
             ("revoked", "Revoked"),
             ("completed", "Completed"),
@@ -166,22 +171,19 @@ class CarePlan(models.Model):
         for enc in self:
             if enc.state != "active":
                 raise UserError(_("Must be active state"))
-            else:
-                enc.update({"state": "revoked"})
+        enc.write({"state": "revoked"})
 
     def action_hold_on(self):
         for enc in self:
             if enc.state != "active":
                 raise UserError(_("Must be active state"))
-            else:
-                enc.update({"state": "on-hold"})
+        enc.write({"state": "on-hold"})
 
     def action_resume(self):
         for enc in self:
             if enc.state != "on-hold":
                 raise UserError(_("Must be on-hold state"))
-            else:
-                enc.update({"state": "active"})
+        enc.write({"state": "active"})
 
     def action_confirm(self):
         self.write({"state": "active"})
@@ -192,3 +194,5 @@ class CarePlan(models.Model):
                 raise UserError(_("Must be active state"))
             else:
                 enc.update({"state": "completed"})
+                if not enc.period_end:
+                    enc.period_end = fields.Date.today()

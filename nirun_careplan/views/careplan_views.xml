@@ -21,6 +21,8 @@
                     <filter name="Manager" context="{'group_by': 'manager_id'}" string="Care Manager" />
                     <filter name="Patient" context="{'group_by': 'patient_id'}" string="Patient" />
                     <filter name="Author" context="{'group_by': 'author_id'}" string="Author" />
+                    <separator />
+                    <filter name="State" string="State" context="{'group_by': 'state'}" />
                 </group>
             </search>
         </field>
@@ -38,32 +40,38 @@
                         attrs="{'invisible': [('state', 'not in', ['draft'])]}"
                         class="btn-primary"
                         string="Confirm"
+                        icon="fa-check-circle-o"
                         type="object"
                     />
                     <button
                         name="action_close"
                         attrs="{'invisible': [('state', 'not in', ['active'])]}"
                         class="oe_highlight"
-                        string="Close"
+                        string="Complete"
+                        icon="fa-check-circle"
                         type="object"
                     />
                     <button
                         name="action_hold_on"
                         attrs="{'invisible': [('state', 'not in', ['active'])]}"
                         string="Hold on"
+                        icon="fa-pause-circle"
                         type="object"
                     />
                     <button
                         name="action_resume"
                         attrs="{'invisible': [('state', 'not in', ['on-hold'])]}"
                         string="Resume"
+                        class="btn-primary"
                         type="object"
+                        icon="fa-play-circle"
                     />
                     <button
                         name="action_revoked"
                         attrs="{'invisible': [('state', 'not in', ['active'])]}"
                         string="Revoke"
                         type="object"
+                        icon="fa-stop-circle"
                     />
                     <field name="state" statusbar_visible="draft,active,completed" widget="statusbar" />
                 </header>
@@ -85,6 +93,24 @@
                         bg_color="bg-danger"
                         title="Archived"
                     />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'revoked')]}"
+                        bg_color="bg-danger"
+                        title="Revoked"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'on-hold')]}"
+                        bg_color="bg-warning"
+                        title="On-Hold"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'completed')]}"
+                        bg_color="bg-success"
+                        title="Completed"
+                    />
                     <div class="oe_title">
                         <label for="patient_id" string="Care plan for" />
                         <h1>
@@ -103,18 +129,18 @@
                             <field
                                 name="category_ids"
                                 options="{ 'color_field': 'color'}"
-                                placeholder="Categories"
+                                placeholder="Categories..."
                                 widget="many2many_tags"
                             />
                         </group>
                     </group>
                     <notebook>
-                        <page string="Details">
+                        <page string="Summary">
                             <field name="description" placeholder="Summary of nature of plan" />
                         </page>
-                        <page string="Misc">
+                        <page string="Planning">
                             <group>
-                                <group string="Planning">
+                                <group string="Contribution">
                                     <field name="author_id" />
                                     <field
                                         name="contributor_ids"
@@ -157,42 +183,11 @@
             </tree>
         </field>
     </record>
-    <record id="careplan_view_form_simplified" model="ir.ui.view">
-        <field name="name">careplan.view.form.simplified</field>
-        <field name="model">ni.careplan</field>
-        <field name="arch" type="xml">
-            <form>
-                <group>
-                    <group>
-                        <field name="company_id" groups="base.group_multi_company" />
-                        <field name="patient_id" />
-                        <field name="encounter_id" context="{'default_patient_id': patient_id}" />
-                        <field name="manager_id" />
-                        <field name="author_id" invisible="1" />
-                    </group>
-                </group>
-                <footer>
-                    <button name="open_activity" string="Create" class="btn-primary" type="object" />
-                    <button class="btn-secondary" special="cancel" string="Discard" />
-                </footer>
-            </form>
-        </field>
-    </record>
-    <record id="open_create_careplan" model="ir.actions.act_window">
-        <field name="name">Create a Care plan</field>
-        <field name="res_model">ni.careplan</field>
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="careplan_view_form_simplified" />
-        <field name="target">new</field>
-    </record>
     <record id="careplan_view_kanban" model="ir.ui.view">
         <field name="name">project.project.kanban</field>
         <field name="model">ni.careplan</field>
         <field name="arch" type="xml">
-            <kanban
-                class="oe_background_grey o_kanban_dashboard o_emphasize_colors"
-                on_create="nirun_careplan.open_create_careplan"
-            >
+            <kanban class="oe_background_grey o_kanban_dashboard o_emphasize_colors">
                 <field name="id" />
                 <field name="description" />
                 <field name="patient_id" />
@@ -216,6 +211,30 @@
                                             </span>
                                             <span>
                                                 <small class="text-muted">
+                                                    <span
+                                                        class='badge badge-success'
+                                                        t-esc="record.state.value"
+                                                        t-if="record.state.raw_value == 'completed'"
+                                                    />
+                                                    <span
+                                                        class='badge badge-danger'
+                                                        t-esc="record.state.value"
+                                                        t-if="record.state.raw_value == 'revoked'"
+                                                    />
+                                                    <span
+                                                        class='badge badge-warning'
+                                                        t-esc="record.state.value"
+                                                        t-if="record.state.raw_value == 'on-hold'"
+                                                    />
+                                                    <span
+                                                        class='badge badge-primary'
+                                                        t-esc="record.state.value"
+                                                        t-if="record.state.raw_value == 'active'"
+                                                    />
+                                                    <span
+                                                        t-esc="record.state.value"
+                                                        t-if="record.state.raw_value == 'draft'"
+                                                    />
                                                     <t t-set="id_display" t-value="'#' + record.id.value" />
                                                     <span t-esc="id_display" />
                                                     <span>
@@ -228,7 +247,7 @@
                                                         <t t-esc="record.period_start.value" />
                                                         <t t-if="record.period_end.value">
                                                             -
-                                                            <t t-esc="record.end.value" />
+                                                            <t t-esc="record.period_end.value" />
                                                         </t>
                                                     </span>
                                                 </small>
