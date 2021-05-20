@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="careplan_activity_view_form_inherit" model="ir.ui.view">
+        <field name="name">careplan.activity.view.form.inherit</field>
+        <field name="model">ni.careplan.activity</field>
+        <field name="inherit_id" ref="nirun_careplan.careplan_activity_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='reference']" position="inside">
+                <group string="Healthcare Service">
+                    <field
+                        name="service_req_id"
+                        context="{
+                            'show_patient': True,
+                            'show_state': True,
+                            'default_patient_id': patient_id,
+                            'default_period_start': period_start,
+                            'default_period_end': period_end,
+                            }"
+                        domain="[('patient_id', '=?', patient_id), ('state', 'in', ['draft', 'active', 'on-hold'])]"
+                        options="{'always_reload': True}"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
