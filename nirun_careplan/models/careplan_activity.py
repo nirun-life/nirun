@@ -42,7 +42,7 @@ class Activity(models.Model):
     )
     careplan_id = fields.Many2one(
         "ni.careplan",
-        string="Care plan",
+        string="Care Plan",
         required=True,
         check_company=True,
         default=lambda self: self.env.context.get("default_careplan_id"),
@@ -101,17 +101,6 @@ class Activity(models.Model):
     assign_date = fields.Datetime(copy=False, readonly=True)
     last_state_update = fields.Datetime(copy=False, readonly=True)
 
-    # Reference resource
-    res_id = fields.Many2oneReference("Reference Document ID", model_field="res_model")
-    res_model = fields.Selection(
-        [("ni.service.request", "Service Request")], required=False,
-    )
-
-    def action_activity_reference_resource(self):
-        if self.res_model and self.res_id:
-            return self.env[self.res_model].browse(self.res_id).get_formview_action()
-        return False
-
     # def name_get(self):
     #     if self.env.context.get("show_id"):
     #         return [(a.id, "%s #%d" % (a.name, a.id)) for a in self]
@@ -143,6 +132,12 @@ class Activity(models.Model):
             vals["assign_date"] = now
         if vals.get("state"):
             vals["last_state_update"] = now
+        if (
+            vals.get("period_start")
+            and fields.Date.to_date(vals.get("period_start")) >= fields.Date.today()
+        ):
+            vals["state"] = "in-progress"
+
         return super().create(vals)
 
     def write(self, vals):
@@ -165,3 +160,9 @@ class Activity(models.Model):
                         "period_end": rec.careplan_id.period_end,
                     }
                 )
+
+    @api.onchange("category_ids")
+    def _onchange_category_ids(self):
+        for rec in self:
+            if rec.category_ids and not rec.id:
+                rec.color = rec.category_ids[0].color

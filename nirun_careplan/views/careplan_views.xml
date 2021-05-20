@@ -6,7 +6,7 @@
     <record id="careplan_action" model="ir.actions.act_window">
         <field name="name">Care Plans</field>
         <field name="res_model">ni.careplan</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
     </record>
     <record id="careplan_view_search" model="ir.ui.view">
         <field name="name">careplan.view.search</field>
@@ -167,17 +167,21 @@
         <field name="name">careplan.view.tree</field>
         <field name="model">ni.careplan</field>
         <field name="arch" type="xml">
-            <tree decoration-bf="message_needaction==True" decoration-muted="active == False" string="Care Plans">
+            <tree
+                decoration-bf="state in ['draft', 'on-hold']"
+                decoration-muted="active == False or state == 'revoked'"
+            >
                 <field name="sequence" widget="handle" />
-                <field name="message_needaction" invisible="1" />
                 <field name="active" invisible="1" />
-                <field name="id" optional="hide" />
+                <field name="id" string="#" optional="show" />
                 <field name="description" optional="hide" />
                 <field name="patient_id" />
-                <field name="category_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
+                <field name="category_ids" optional="show" options="{'color_field': 'color'}" widget="many2many_tags" />
                 <field name="manager_id" />
+                <field name="author_id" optional="hide" />
                 <field name="period_start" optional="show" />
                 <field name="period_end" optional="hide" />
+                <field name="duration" optional="hide" />
                 <field name="state" string="Status" />
                 <field name="company_id" groups="base.group_multi_company" />
             </tree>
@@ -293,6 +297,26 @@
                     </t>
                 </templates>
             </kanban>
+        </field>
+    </record>
+    <record id="careplan_view_pivot" model="ir.ui.view">
+        <field name="name">careplan.view.pivot</field>
+        <field name="model">ni.careplan</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="manager_id" type="row" />
+                <field name="state" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="careplan_view_graph" model="ir.ui.view">
+        <field name="name">careplan.view.graph</field>
+        <field name="model">ni.careplan</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="manager_id" type="col" />
+                <field name="state" type="col" />
+            </graph>
         </field>
     </record>
 </odoo>

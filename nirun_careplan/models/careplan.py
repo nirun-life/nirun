@@ -1,7 +1,5 @@
 #  Copyright (c) 2021 Piruin P.
 
-import random
-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -78,9 +76,7 @@ class CarePlan(models.Model):
         tracking=True,
         default="draft",
     )
-    color = fields.Integer(
-        string="Color Index", default=lambda _: random.randint(0, 10)
-    )
+    color = fields.Integer(string="Color Index")
     active = fields.Boolean(
         default=True,
         help="If the active field is set to False, it will allow you to"
@@ -168,31 +164,31 @@ class CarePlan(models.Model):
         return super().unlink()
 
     def action_revoked(self):
-        for enc in self:
-            if enc.state != "active":
+        for plan in self:
+            if plan.state != "active":
                 raise UserError(_("Must be active state"))
-        enc.write({"state": "revoked"})
+        self.write({"state": "revoked"})
 
     def action_hold_on(self):
-        for enc in self:
-            if enc.state != "active":
+        for plan in self:
+            if plan.state != "active":
                 raise UserError(_("Must be active state"))
-        enc.write({"state": "on-hold"})
+        self.write({"state": "on-hold"})
 
     def action_resume(self):
-        for enc in self:
-            if enc.state != "on-hold":
+        for plan in self:
+            if plan.state != "on-hold":
                 raise UserError(_("Must be on-hold state"))
-        enc.write({"state": "active"})
+        self.write({"state": "active"})
 
     def action_confirm(self):
         self.write({"state": "active"})
 
     def action_close(self):
-        for enc in self:
-            if enc.state != "active":
+        for plan in self:
+            if plan.state != "active":
                 raise UserError(_("Must be active state"))
             else:
-                enc.update({"state": "completed"})
-                if not enc.period_end:
-                    enc.period_end = fields.Date.today()
+                plan.update({"state": "completed"})
+                if not plan.period_end:
+                    plan.period_end = fields.Date.today()
