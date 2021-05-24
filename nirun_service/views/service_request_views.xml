@@ -3,10 +3,70 @@
   ~ Copyright (c) 2021 Piruin P.
   -->
 <odoo>
+    <record id="service_request_approve_action" model="ir.actions.server">
+        <field name="name">Approve</field>
+        <field name="model_id" ref="model_ni_service_request" />
+        <field name="binding_model_id" ref="model_ni_service_request" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="groups_id" eval="[(6, 0, [ref('nirun_service.group_manager')])]" />
+        <field name="code">action = records.action_approve()</field>
+    </record>
+    <record id="service_request_complete_action" model="ir.actions.server">
+        <field name="name">Complete</field>
+        <field name="model_id" ref="model_ni_service_request" />
+        <field name="binding_model_id" ref="model_ni_service_request" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="groups_id" eval="[(6, 0, [ref('nirun_service.group_manager')])]" />
+        <field name="code">action = records.action_complete()</field>
+    </record>
+    <record id="service_request_pause_action" model="ir.actions.server">
+        <field name="name">Pause</field>
+        <field name="model_id" ref="model_ni_service_request" />
+        <field name="binding_model_id" ref="model_ni_service_request" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="groups_id" eval="[(6, 0, [ref('nirun_service.group_manager')])]" />
+        <field name="code">action = records.action_pause()</field>
+    </record>
+    <record id="service_request_resume_action" model="ir.actions.server">
+        <field name="name">Resume</field>
+        <field name="model_id" ref="model_ni_service_request" />
+        <field name="binding_model_id" ref="model_ni_service_request" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="groups_id" eval="[(6, 0, [ref('nirun_service.group_manager')])]" />
+        <field name="code">action = records.action_resume()</field>
+    </record>
     <record id="service_request_action" model="ir.actions.act_window">
         <field name="name">Service Requests</field>
         <field name="res_model">ni.service.request</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="context">{'search_default_group_by_service': True}</field>
+    </record>
+    <record id="service_request_view_search" model="ir.ui.view">
+        <field name="name">service.request.view.search</field>
+        <field name="model">ni.service.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="patient_id"
+                    filter_domain="['|', ('patient_id', 'ilike', self), ('encounter_id', 'ilike', self)]"
+                />
+                <field name="service_id" />
+                <filter name="active" string="In-Progress" domain="[('state', '=', 'active')]" />
+                <filter name="draft" string="Request" domain="[('state', '=', 'draft')]" />
+                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
+                <group name="group_by" string="Group by">
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_encounter" string="Encounter" context="{'group_by': 'encounter_id'}" />
+                    <filter name="group_by_service" string="Healthcare Service" context="{'group_by': 'service_id'}" />
+                    <separator />
+                    <filter name="group_by_state" string="State" context="{'group_by': 'state'}" />
+                </group>
+            </search>
+        </field>
     </record>
     <record id="service_request_view_form" model="ir.ui.view">
         <field name="name">service.request.view.form</field>
@@ -19,7 +79,31 @@
                         string="Approve"
                         attrs="{'invisible': [('state', '!=', 'draft')]}"
                         class="btn-primary"
-                        groups="nirun_service.group_manager"
+                        type="object"
+                    />
+                    <button
+                        name="action_complete"
+                        string="Complete"
+                        attrs="{'invisible': [('state', '!=', 'active')]}"
+                        class="btn-primary"
+                        type="object"
+                    />
+                    <button
+                        name="action_pause"
+                        string="Pause"
+                        attrs="{'invisible': [('state', '!=', 'active')]}"
+                        type="object"
+                    />
+                    <button
+                        name="action_resume"
+                        string="Resume"
+                        attrs="{'invisible': [('state', '!=', 'on-hold')]}"
+                        type="object"
+                    />
+                    <button
+                        name="action_revoke"
+                        string="Revoke"
+                        attrs="{'invisible': [('state', 'not in', ['active', 'on-hold'])]}"
                         type="object"
                     />
                     <field name="state" statusbar_visible="draft,active,completed" widget="statusbar" />
@@ -40,7 +124,6 @@
                     </group>
                     <group>
                         <group>
-                            <field name="company_id" groups="base.group_multi_company" placeholder="Company" />
                             <field name="patient_id" />
                             <field name="encounter_id" required="1" />
                             <field name="requester_id" />
@@ -49,6 +132,7 @@
                             <field name="priority" widget="priority" />
                             <field name="period_start" required="1" />
                             <field name="period_end" />
+                            <field name="company_id" groups="base.group_multi_company" placeholder="Company" />
                         </group>
                     </group>
                     <notebook>
@@ -83,26 +167,45 @@
         <field name="name">service.request.view.tree</field>
         <field name="model">ni.service.request</field>
         <field name="arch" type="xml">
-            <tree string="Healthcare Service">
+            <tree
+                decoration-bf="state in ['draft','on-hold']"
+                decoration-muted="state in ['revoked','entered-in-error']"
+                decoration-success="state == 'completed'"
+                expand="True"
+            >
                 <field name="service_id" />
                 <field name="patient_id" />
-                <field name="encounter_id" optional="hide" />
-                <field name="priority" optional="show" />
-                <field name="period_start" optional="hide" />
+                <field name="encounter_id" optional="show" />
+                <field name="priority" optional="show" widget="priority" />
+                <field name="period_start" optional="show" />
                 <field name="period_end" optional="hide" />
+                <field name="duration" optional="hide" />
+                <field name="requester_id" optional="hide" />
+                <field name="approve_uid" optional="hide" />
                 <field name="state" />
                 <field name="company_id" groups="base.group_multi_company" />
             </tree>
         </field>
     </record>
-    <record id="service_request_view_search" model="ir.ui.view">
-        <field name="name">service.request.view.search</field>
+    <record id="service_request_view_pivot" model="ir.ui.view">
+        <field name="name">service.request.activity.view.pivot</field>
         <field name="model">ni.service.request</field>
         <field name="arch" type="xml">
-            <search>
-                <field name="patient_id" />
-                <field name="service_id" />
-            </search>
+            <pivot>
+                <field name="service_id" type="row" />
+                <field name="priority" type="row" />
+                <field name="state" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="service_request_view_graph" model="ir.ui.view">
+        <field name="name">service.request.view.graph</field>
+        <field name="model">ni.service.request</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="service_id" type="col" />
+                <field name="state" type="col" />
+            </graph>
         </field>
     </record>
 </odoo>

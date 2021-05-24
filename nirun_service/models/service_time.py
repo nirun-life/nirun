@@ -18,8 +18,8 @@ class HealthcareServiceAvailableTime(models.Model):
         "ni.timing.dow", "ni_service_time_dow", "timing_id", "dow_id"
     )
     all_day = fields.Boolean()
-    start_time = fields.Integer()
-    end_time = fields.Integer()
+    start_time = fields.Float()
+    end_time = fields.Float()
 
     display_day = fields.Char("Day", compute="_compute_dow_txt")
     display_time = fields.Char("Time", compute="_compute_time_txt")

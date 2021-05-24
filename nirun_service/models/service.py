@@ -2,7 +2,7 @@
 
 import math
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 def float_time_convert(float_val):
@@ -73,3 +73,32 @@ class HealthcareService(models.Model):
     )
 
     request_ids = fields.One2many("ni.service.request", "service_id")
+    request_count = fields.Integer("Participant", compute="_compute_request_count")
+
+    @api.depends("request_ids")
+    def _compute_request_count(self):
+        res = self._count_active_request()
+        for rec in self:
+            rec.request_count = res.get(rec.id, 0)
+
+    def _count_active_request(self):
+        _domain = [("service_id", "in", self.ids), ("state", "=", "active")]
+        req = self.env["ni.service.request"].read_group(
+            _domain, ["service_id"], ["service_id"],
+        )
+        return {data["service_id"][0]: data["service_id_count"] for data in req}
+
+    def open_request(self):
+        self.ensure_one()
+        ctx = dict(self._context)
+        ctx.update(
+            {
+                "search_default_service_id": self.id,
+                "search_default_active": True,
+                "default_service_id": self.id,
+            }
+        )
+        action = self.env["ir.actions.act_window"].for_xml_id(
+            "nirun_service", "service_request_action"
+        )
+        return dict(action, context=ctx)
