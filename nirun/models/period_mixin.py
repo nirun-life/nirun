@@ -116,3 +116,14 @@ class PeriodMixin(models.AbstractModel):
                     _("End date should not set before start date (%s)")
                     % self.period_start
                 )
+
+    def get_intercept_period(self, start, end, domain):
+        args = [
+            ("period_start", "<=", end),
+            "|",
+            ("period_end", "=", False),
+            ("period_end", ">=", start),
+        ]
+        if domain:
+            args += domain
+        return self.env[self._name].search(args)

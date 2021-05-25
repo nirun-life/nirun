@@ -8,11 +8,17 @@ class HealthcareService(models.Model):
 
     event_ids = fields.One2many("calendar.event", "service_id")
     event_count = fields.Integer(compute="_compute_event")
+    location = fields.Char(compute="_compute_location")
 
     @api.depends("event_ids")
     def _compute_event(self):
         for rec in self:
             rec.event_count = len(rec.event_ids)
+
+    @api.depends("location_ids")
+    def _compute_location(self):
+        for rec in self:
+            rec.location = ", ".join(rec.location_ids.mapped("name"))
 
     def action_calendar_event(self):
         action_rec = self.env.ref("calendar.action_calendar_event")

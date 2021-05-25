@@ -1,9 +1,20 @@
 #  Copyright (c) 2021 Piruin P.
 
+import pytz
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 from odoo.addons.nirun_service.models.service import float_time_format
+
+
+def _tz_get(self):
+    return [
+        (tz, tz)
+        for tz in sorted(
+            pytz.all_timezones, key=lambda tz: tz if not tz.startswith("Etc/") else "_"
+        )
+    ]
 
 
 class HealthcareServiceAvailableTime(models.Model):
@@ -11,6 +22,9 @@ class HealthcareServiceAvailableTime(models.Model):
     _description = "Healthcare Service Available Time"
 
     service_id = fields.Many2one("ni.service", ondelete="cascade")
+    tz = fields.Selection(
+        _tz_get, string="Timezone", default=lambda self: self._context.get("tz")
+    )
     name = fields.Char(compute="_compute_name", store=True)
 
     everyday = fields.Boolean(readonly=False, compute="_compute_everyday")
@@ -20,6 +34,8 @@ class HealthcareServiceAvailableTime(models.Model):
     all_day = fields.Boolean()
     start_time = fields.Float()
     end_time = fields.Float()
+    start = fields.Char(compute="_compute_start_end")
+    end = fields.Char(compute="_compute_start_end")
 
     display_day = fields.Char("Day", compute="_compute_dow_txt")
     display_time = fields.Char("Time", compute="_compute_time_txt")
@@ -29,6 +45,12 @@ class HealthcareServiceAvailableTime(models.Model):
         for rec in self:
             text = filter(None, [rec.display_day, rec.display_time])
             rec.name = (" ".join(text)).strip().capitalize()
+
+    @api.depends("start_time", "end_time")
+    def _compute_start_end(self):
+        for rec in self:
+            rec.start = float_time_format(rec.start_time)
+            rec.end = float_time_format(rec.end_time)
 
     @api.onchange("start_time")
     def _onchange_start_time(self):
@@ -51,9 +73,9 @@ class HealthcareServiceAvailableTime(models.Model):
                 continue
             res = []
             if rec.start_time:
-                res.append(float_time_format(rec.start_time))
+                res.append(rec.start)
                 if rec.end_time:
-                    res.append(float_time_format(rec.end_time))
+                    res.append(rec.end)
             rec.display_time = "-".join(res).strip()
 
     def check_end_time(self):

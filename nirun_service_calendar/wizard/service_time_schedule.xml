@@ -3,15 +3,15 @@
   ~ Copyright (c) 2021 Piruin P.
   -->
 <odoo>
-    <record id="service_request_bulk_wizard_action" model="ir.actions.act_window">
-        <field name="name">Service Request(s)</field>
-        <field name="res_model">ni.service.request.bulk</field>
+    <record id="service_time_schedule_wizard_action" model="ir.actions.act_window">
+        <field name="name">Schedule</field>
+        <field name="res_model">ni.service.time.schedule</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
-    <record id="service_request_bulk_view_form" model="ir.ui.view">
-        <field name="name">service.request.bulk.view.form</field>
-        <field name="model">ni.service.request.bulk</field>
+    <record id="service_time_schedule_view_form" model="ir.ui.view">
+        <field name="name">service.time.schedule.view.form</field>
+        <field name="model">ni.service.time.schedule</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -23,42 +23,41 @@
                             readonly="context.get('default_service_id', False)"
                         />
                     </h1>
-                    <group>
-                        <group>
+                    <group col="4">
+                        <group colspan="3">
+                            <field name="time_id" domain="[('service_id', '=?', service_id)]" />
                             <label string="Period" for="period_start" />
                             <div class="o_row">
-                                <field name="period_start" placeholder="Since" required="1" />
+                                <field name="period_start" placeholder="Since" />
                                 <field name="period_end" placeholder="Until" />
                             </div>
-                        </group>
-                        <group>
-                            <field name="state" />
+                            <field name="partner_ids" widget="many2many_tags" />
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Patients">
-                            <field name="patient_ids" mode="kanban" options="{'no_create_edit': True}" />
-                        </page>
-                    </notebook>
                 </sheet>
                 <footer>
-                    <button name="create_bulk_request" string="Confirm" class="oe_highlight" type="object" />
+                    <button
+                        name="schedule"
+                        string="Schedule"
+                        class="oe_highlight"
+                        icon="fa-calendar-plus-o"
+                        type="object"
+                    />
                     <button string="Cancel" class="btn-secondary" special="cancel" />
                 </footer>
             </form>
         </field>
     </record>
-    <record id="service_view_form_inherit" model="ir.ui.view">
-        <field name="name">service.view.form.inherit</field>
+    <record id="service_view_form_inherit_time_schedule" model="ir.ui.view">
+        <field name="name">service.view.form.inherit.time.schedule</field>
         <field name="model">ni.service</field>
         <field name="inherit_id" ref="nirun_service.service_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button
-                    name="%(service_request_bulk_wizard_action)d"
-                    string="Request(s)"
+                    name="%(service_time_schedule_wizard_action)d"
+                    string="Schedule"
                     context="{'default_service_id': active_id}"
-                    class="btn-primary"
                     type="action"
                 />
             </xpath>
