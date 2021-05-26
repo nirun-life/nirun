@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="service_request_view_form_inherit" model="ir.ui.view">
+        <field name="name">service.request.view.form.inherit</field>
+        <field name="model">ni.service.request</field>
+        <field name="inherit_id" ref="nirun_service.service_request_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[1]" position="after">
+                <page string="Careplan">
+                    <group>
+                        <field name="careplan_id" />
+                        <field name="careplan_activity_id" />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
