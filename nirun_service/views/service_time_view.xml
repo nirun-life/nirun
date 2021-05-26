@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="service_time_action" model="ir.actions.act_window">
+        <field name="name">Service Available Times</field>
+        <field name="res_model">ni.service.time</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="context">{'search_default_group_by_service': True}</field>
+    </record>
+    <record id="service_view_search" model="ir.ui.view">
+        <field name="name">service.view.search</field>
+        <field name="model">ni.service.time</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="service_id" />
+                <group name="group_by">
+                    <filter name="group_by_service" string="Healthcare Service" context="{'group_by': 'service_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="service_time_view_tree" model="ir.ui.view">
+        <field name="name">service.view.tree</field>
+        <field name="model">ni.service.time</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="service_id" />
+                <field name="display_day" />
+                <field name="display_time" />
+                <field name="tz" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="service_time_view_form" model="ir.ui.view">
+        <field name="name">service.view.form</field>
+        <field name="model">ni.service.time</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <h2>
+                        <field name="service_id" nolabel="1" options="{'no_create_edit': True}" />
+                    </h2>
+                </group>
+                <group>
+                    <group>
+                        <field name="everyday" />
+                        <field name="day_of_week" widget="many2many_checkboxes" />
+                    </group>
+                    <group>
+                        <field name="all_day" />
+                        <field name="start_time" attrs="{'invisible': [('all_day', '=', True)]}" widget="float_time" />
+                        <field name="end_time" attrs="{'invisible': [('all_day', '=', True)]}" widget="float_time" />
+                        <field name="tz" attrs="{'invisible': [('all_day', '=', True)]}" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>
