@@ -16,12 +16,23 @@ class Activity(models.Model):
                 rec.period_start = rec.service_request_id.period_start
                 rec.period_end = rec.service_request_id.period_end
 
+    def create(self, vals):
+        activity = super(Activity, self).create(vals)
+
+        if vals.get("service_request_id"):
+            activity._link_with_request(vals)
+
+        return activity
+
     def write(self, vals):
         result = super(Activity, self).write(vals)
 
         if vals.get("service_request_id"):
-            service_requests = self.env["ni.service.request"].sudo()
-            sr = service_requests.browse(vals.get("service_request_id"))
-            sr.write({"careplan_activity_id": self.ids[0]})
+            self._link_with_request(vals)
 
         return result
+
+    def _link_with_request(self, vals):
+        requests = self.env["ni.service.request"].sudo()
+        request = requests.browse(vals.get("service_request_id"))
+        return request.write({"careplan_activity_id": self.ids[0]})
