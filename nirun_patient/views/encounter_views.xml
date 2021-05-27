@@ -14,7 +14,8 @@
     <record id="encounter_action" model="ir.actions.act_window">
         <field name="name">Encounter</field>
         <field name="res_model">ni.encounter</field>
-        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph</field>
+        <field name="context">{'search_default_encounter': True}</field>
     </record>
     <record id="encounter_action_from_patient" model="ir.actions.act_window">
         <field name="name">Encounter</field>
@@ -34,21 +35,26 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" filter_domain="['|', ('name', 'ilike', self), ('patient_id', 'ilike', self)]" />
-                <field name="patient_id" />
-                <field name="period_start" />
+                <field
+                    name="performer_id"
+                    string="Performer"
+                    filter_domain="['|', ('performer_id', 'ilike', self), ('performer_id_2', 'ilike', self)]"
+                />
                 <field name="location_id" />
-                <field name="performer_id" />
                 <separator />
                 <filter name="period_start" string="Since" date="period_start" />
-                <separator />
                 <filter name="period_end" string="Until" date="period_start" />
                 <separator />
+                <filter
+                    name="encounter"
+                    string="Encounter"
+                    domain="[('state', 'in', ['draft', 'planned', 'in-progress'])]"
+                />
                 <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
                 <filter name="planned" string="Waiting" domain="[('state', '=', 'planned')]" />
                 <filter name="in_progress" string="In-Progress" domain="[('state', '=', 'in-progress')]" />
                 <filter name="finished" string="Discharged" domain="[('state', '=', 'finished')]" />
                 <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]" />
-                <separator />
                 <filter name="entered-in-error" string="Error Entry" domain="[('state', '=', 'entered-in-error')]" />
                 <separator />
                 <filter name="stat" string="Priority: STAT" domain="[('priority', '=', '3')]" />
@@ -77,9 +83,9 @@
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
             <tree
-                decoration-danger="state == 'cancelled'"
+                decoration-bf="state in ['draft','planned']"
                 decoration-info="state == 'planned'"
-                decoration-muted="state == 'draft'"
+                decoration-muted="state in ['cancelled', 'entered-in-error']"
                 decoration-success="state == 'finished'"
             >
                 <field name="name" />
@@ -92,7 +98,61 @@
                 <field name="period_end" optional="hide" />
                 <field name="duration" optional="hide" />
                 <field name="state" />
+                <field name="company_id" groups="base.group_multi_company" />
             </tree>
+        </field>
+    </record>
+    <record id="encounter_view_tree_discharged" model="ir.ui.view">
+        <field name="name">encounter.view.tree</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <tree
+                create="0"
+                decoration-info="state == 'planned'"
+                decoration-bf="state in ['draft','planned']"
+                decoration-success="state == 'finished'"
+                decoration-muted="state in ['cancelled', 'entered-in-error']"
+                edit="0"
+            >
+                <field name="name" />
+                <field name="patient_id" />
+                <field name="class_id" optional="show" />
+                <field name="priority" widget="priority" />
+                <field name="performer_id" optional="show" />
+                <field name="location_id" optional="show" />
+                <field name="period_start" optional="show" />
+                <field name="period_end" optional="hide" />
+                <field name="duration" optional="hide" />
+                <field name="state" />
+                <field name="company_id" groups="base.group_multi_company" />
+            </tree>
+        </field>
+    </record>
+    <record id="encounter_action_finished" model="ir.actions.act_window">
+        <field name="name">Encounter</field>
+        <field name="res_model">ni.encounter</field>
+        <field name="view_id" ref="encounter_view_tree_discharged" />
+        <field name="view_mode">tree,form,calendar,pivot,graph</field>
+        <field name="context">{'search_default_finished': True}</field>
+    </record>
+    <record id="encounter_view_calendar" model="ir.ui.view">
+        <field name="name">encounter.view.calendar</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <calendar
+                color="class_id"
+                date_start="period_start"
+                date_stop="period_end_calendar"
+                hide_time="true"
+                mode="month"
+                quick_add="False"
+            >
+                <field name="patient_id" />
+                <field name="class_id" />
+                <field name="state" />
+                <field name="performer_id" avatar_field="image_128" />
+                <field name="location_id" />
+            </calendar>
         </field>
     </record>
     <record id="encounter_view_form" model="ir.ui.view">

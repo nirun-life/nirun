@@ -1,7 +1,6 @@
 #  Copyright (c) 2021 Piruin P.
-from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class MedicationStatement(models.Model):
@@ -27,8 +26,6 @@ class MedicationStatement(models.Model):
     )
     state_reason = fields.Char(required=False)
     period_start = fields.Date(required=True)
-    period_end = fields.Date()
-    period_end_calendar = fields.Date(compute="_compute_period_end_calendar")
     active = fields.Boolean(default=True)
 
     reason_ref = fields.Reference(
@@ -52,11 +49,3 @@ class MedicationStatement(models.Model):
 
     def name_since(self):
         return "{} [{}]".format(self.name, self.period_start)
-
-    @api.depends("period_start", "period_end")
-    def _compute_period_end_calendar(self):
-        for rec in self:
-            # adding 1 days because calendar view's date_stop is exclusive date
-            rec.period_end_calendar = (
-                rec.period_end or fields.Date.context_today(self)
-            ) + relativedelta(days=1)

@@ -8,5 +8,6 @@ from . import encounter_discharge
 from . import encounter_location
 from . import encounter_reason
 from . import location
+from . import location_type
 from . import patient
 from . import patient_res

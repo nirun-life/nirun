@@ -29,9 +29,6 @@
                     <filter name="Education Level" context="{'group_by': 'education_level'}" />
                     <filter name="Date of Birth" context="{'group_by': 'birthdate'}" />
                 </group>
-                <searchpanel view_types="kanban">
-                    <field name="gender" icon="fa-venus-mars" />
-                </searchpanel>
             </search>
         </field>
     </record>
@@ -40,7 +37,6 @@
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="company_id" groups="base.group_multi_company" />
                 <field name="code" optional="show" />
                 <field name="name" />
                 <field name="last_encounter_id" optional="show" />
@@ -51,6 +47,7 @@
                 <field name="phone" optional="show" widget="phone" />
                 <field name="mobile" optional="show" widget="phone" />
                 <field name="presence_state" />
+                <field name="company_id" groups="base.group_multi_company" />
             </tree>
         </field>
     </record>
@@ -299,8 +296,8 @@
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <pivot>
-                <field name="gender" type="row" />
-                <field name="birthdate" interval="year" type="col" />
+                <field name="presence_state" type="row" />
+                <field name="gender" type="col" />
             </pivot>
         </field>
     </record>

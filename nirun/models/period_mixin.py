@@ -17,6 +17,7 @@ class PeriodMixin(models.AbstractModel):
         default=lambda self: fields.Date.context_today(self),
     )
     period_end = fields.Date("Until", tracking=True, index=True)
+    period_end_calendar = fields.Date(compute="_compute_period_end_calendar")
     duration = fields.Char("Duration", compute="_compute_duration", default="")
     duration_days = fields.Integer(
         "Duration (days)", compute="_compute_duration", default=0
@@ -127,3 +128,11 @@ class PeriodMixin(models.AbstractModel):
         if domain:
             args += domain
         return self.env[self._name].search(args)
+
+    @api.depends("period_start", "period_end")
+    def _compute_period_end_calendar(self):
+        for rec in self:
+            # adding 1 days because calendar view's date_stop is exclusive date
+            rec.period_end_calendar = (
+                rec.period_end or fields.Date.context_today(self)
+            ) + relativedelta(days=1)
