@@ -175,6 +175,18 @@
                         class="btn-primary"
                         type="object"
                     />
+                    <button
+                        name="action_cancel"
+                        string="Cancel"
+                        attrs="{'invisible': [('state', 'not in', ['planned', 'in-progress'])]}"
+                        type="object"
+                    />
+                    <button
+                        name="action_reset_to_draft"
+                        string="Reset To Draft"
+                        attrs="{'invisible': [('state', 'not in', ['cancelled', 'revoked', 'entered-in-error'])]}"
+                        type="object"
+                    />
                     <field name="state" statusbar_visible="draft,in-progress,finished" widget="statusbar" />
                 </header>
                 <sheet>
@@ -320,7 +332,7 @@
         <field name="arch" type="xml">
             <pivot>
                 <field name="performer_id" type="row" />
-                <field name="period_start" interval="month" type="col" />
+                <field name="class_id" type="col" />
             </pivot>
         </field>
     </record>

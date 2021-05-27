@@ -323,3 +323,9 @@ class Encounter(models.Model):
 
     def action_entered_in_error(self):
         self.write({"state": "entered-in-error"})
+
+    def action_reset_to_draft(self):
+        self.write({"state": "draft"})
+
+    def action_cancel(self):
+        self.write({"state": "cancelled"})
