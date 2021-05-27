@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='participant']" position="after">
+                <page name="condition" string="Encounter Diagnosis">
+                    <field
+                        name="condition_ids"
+                        context="{'default_category': 'encounter-diagnosis', 'default_patient_id': patient_id, 'default_encounter_id': active_id, 'default_period_start':period_start}"
+                        domain="[('category', '=', 'encounter-diagnosis')]"
+                        mode="tree"
+                    >
+                        <tree editable="bottom">
+                            <field name="category" invisible="1" />
+                            <field name="code_id" />
+                            <field name="severity" />
+                            <field name="period_start" />
+                            <field name="period_end" optional="hide" />
+                            <field name="state" />
+                            <field name="patient_id" invisible="1" />
+                            <field name="company_id" invisible="1" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

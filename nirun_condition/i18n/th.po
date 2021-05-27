@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-14 06:25+0000\n"
-"PO-Revision-Date: 2021-05-14 06:25+0000\n"
+"POT-Creation-Date: 2021-05-27 08:18+0000\n"
+"PO-Revision-Date: 2021-05-27 08:18+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr "เปิดใช้งาน"
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_type_category_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_type_category_view_search
 msgid "Archived"
-msgstr ""
+msgstr "ถูกเก็บ"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__category
@@ -57,7 +57,7 @@ msgstr "บริษัท"
 #. module: nirun_condition
 #: model:ir.model,name:nirun_condition.model_ni_condition
 msgid "Condition"
-msgstr "โรค / ปัญหา"
+msgstr "โรค/ปัญหา"
 
 #. module: nirun_condition
 #: model:ir.model,name:nirun_condition.model_ni_condition_code
@@ -69,29 +69,29 @@ msgstr "โรค / ปัญหา"
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_search
 msgid "Condition / Problem"
-msgstr "โรค / ปัญหา"
+msgstr "โรค/ปัญหา"
 
 #. module: nirun_condition
 #: model:ir.model,name:nirun_condition.model_ni_condition_type
 msgid "Condition Type"
-msgstr "ประเภทของโรค / ปัญหา"
+msgstr "ประเภทของโรค/ปัญหา"
 
 #. module: nirun_condition
 #: model:ir.actions.act_window,name:nirun_condition.condition_type_action
 msgid "Condition Types"
-msgstr "ประเภทของโรค / ปัญหา"
+msgstr "ประเภทของโรค/ปัญหา"
 
 #. module: nirun_condition
 #: model:ir.actions.act_window,name:nirun_condition.condition_action
 #: model:ir.actions.act_window,name:nirun_condition.condition_code_action
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__code_ids
 msgid "Conditions"
-msgstr "โรค / ปัญหา"
+msgstr "โรค/ปัญหา"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__code_count
 msgid "Conditions Count"
-msgstr "โรค / ปัญหา"
+msgstr "โรค/ปัญหา"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__create_uid
@@ -114,11 +114,6 @@ msgstr "สร้างเมื่อ"
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_type_category_view_form
 msgid "Definition"
 msgstr "คำนิยาม"
-
-#. module: nirun_condition
-#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_search
-msgid "Diagnosis"
-msgstr "วินิจฉัย"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__display_name
@@ -153,17 +148,25 @@ msgid "Duration (years)"
 msgstr "ระยะเวลา (ปี)"
 
 #. module: nirun_condition
+#: model:ir.model,name:nirun_condition.model_ni_encounter
+msgid "Encounter"
+msgstr "ข้อมูลรับบริการ"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_encounter__condition_ids
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__category__encounter-diagnosis
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_code__category__encounter-diagnosis
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__category__encounter-diagnosis
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_condition.encounter_view_form_inherit
+msgid "Encounter Diagnosis"
+msgstr "โรค/ปัญหาระหว่างรับบริการ"
+
+#. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__encounter_id
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__encounter_id
 msgid "Encounter No."
 msgstr "รหัสรับบริการ"
-
-#. module: nirun_condition
-#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__category__encounter-diagnosis
-#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_code__category__encounter-diagnosis
-#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__category__encounter-diagnosis
-msgid "Encounter Diagnosis"
-msgstr "โรค (ชั่วขณะ)"
 
 #. module: nirun_condition
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_code_view_form
@@ -259,26 +262,28 @@ msgstr "ผู้สูงอายุ"
 #. module: nirun_condition
 #: model:ir.model,name:nirun_condition.model_ni_condition_latest
 msgid "Patient Current Condition"
-msgstr "โรค / ปัญหา ปัจจุบันของผู้สูงอายุ"
+msgstr "โรค/ปัญหาปัจจุบันของผู้สูงอายุ"
 
 #. module: nirun_condition
 #: model:ir.model.constraint,message:nirun_condition.constraint_ni_condition_condition_encounter__uniq
 #: model:ir.model.constraint,message:nirun_condition.constraint_ni_condition_latest_condition_encounter__uniq
 msgid "Patient already have this condition!"
-msgstr "พบกาบระบุโรค / ปัญหา ซ้ำ"
+msgstr "พบการระบุโรค/ปัญหาซ้ำ"
 
 #. module: nirun_condition
-#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_search
-msgid "Problem"
-msgstr "ปัญหา"
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__period_end_calendar
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__period_end_calendar
+msgid "Period End Calendar"
+msgstr ""
 
 #. module: nirun_condition
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__category__problem-list-item
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_code__category__problem-list-item
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__category__problem-list-item
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_condition.patient_view_form_inherit
-msgid "Problem list item"
-msgstr "โรคประจำตัว"
+msgid "Problem List Item"
+msgstr "ประวัติการเจ็บป่วย/โรคประจำตัว"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__recurrence

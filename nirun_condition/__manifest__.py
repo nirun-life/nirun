@@ -16,6 +16,7 @@
         "views/condition_type_views.xml",
         "views/condition_views.xml",
         "views/patient_views.xml",
+        "views/encounter_views.xml",
         "views/condition_menu.xml",
     ],
     "application": False,
