@@ -7,34 +7,23 @@
         <field name="name">Activities</field>
         <field name="res_model">ni.careplan.activity</field>
         <field name="view_mode">tree,kanban,form,pivot,graph</field>
-        <field name="context">{'search_default_my_act': True}</field>
+        <field name="context">{'search_default_my_activity': True}</field>
     </record>
     <record id="careplan_activity_view_search" model="ir.ui.view">
         <field name="name">careplan_activity_view_search</field>
         <field name="model">ni.careplan.activity</field>
         <field name="arch" type="xml">
-            <search string="Tasks">
-                <field name="name" string="Task" />
+            <search>
+                <field name="name" string="Activity" />
                 <field name="category_ids" />
                 <field name="assignee_id" />
                 <field name="patient_id" />
                 <field name="state" />
                 <field name="careplan_id" />
-                <filter name="my_act" string="My Activities" domain="[('assignee_id', '=', uid)]" />
-                <filter
-                    name="my_followed_tasks"
-                    domain="[('message_is_follower', '=', True)]"
-                    string="Followed Tasks"
-                />
+                <filter name="my_activity" string="My Activities" domain="[('assignee_id', '=', uid)]" />
                 <filter name="unassigned" domain="[('assignee_id', '=', False)]" string="Unassigned" />
                 <separator />
                 <filter name="starred" domain="[('priority', 'in', [1, 2])]" string="Starred" />
-                <separator />
-                <filter
-                    name="message_needaction"
-                    domain="[('message_needaction', '=', True)]"
-                    string="Unread Messages"
-                />
                 <separator />
                 <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
                 <separator />
@@ -70,7 +59,6 @@
                 <i>Create</i>
                 to add a new activity.
             </p>
-            <p>To get things done, use activities and status on tasks.</p>
         </field>
     </record>
     <record id="careplan_activity_view_form_quick_create" model="ir.ui.view">
@@ -159,7 +147,7 @@
                                         </a>
                                         <div class="dropdown-menu" role="menu">
                                             <a class="dropdown-item" role="menuitem" t-if="widget.editable" type="edit">
-                                                Edit Task
+                                                Edit Activity
                                             </a>
                                             <a
                                                 class="dropdown-item"
@@ -270,7 +258,7 @@
                     <div class="oe_title pr-0">
                         <h1 class="d-flex flex-row justify-content-between">
                             <field name="priority" class="mr-3" widget="priority" />
-                            <field name="name" class="o_task_name text-truncate" placeholder="Task Title..." />
+                            <field name="name" class="o_task_name text-truncate" placeholder="Activity..." />
                             <field name="kanban_state" class="ml-auto oe_read_only" widget="state_selection" />
                         </h1>
                     </div>
