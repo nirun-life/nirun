@@ -4,6 +4,7 @@ from odoo import fields, models
 
 class ServiceBulkRequest(models.TransientModel):
     _name = "ni.service.request.bulk"
+    _description = "Service Request(s)"
     _inherit = ["period.mixin"]
 
     service_id = fields.Many2one("ni.service", required=True)

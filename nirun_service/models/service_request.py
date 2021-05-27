@@ -6,7 +6,7 @@ from odoo import api, fields, models
 class ServiceRequest(models.Model):
     _name = "ni.service.request"
     _description = "Service Request"
-    _inherit = ["ni.patient.res", "period.mixin", "mail.thread", "mail.activity.mixin"]
+    _inherit = ["ni.patient.res", "period.mixin", "mail.thread"]
     _order = "id DESC"
 
     patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
