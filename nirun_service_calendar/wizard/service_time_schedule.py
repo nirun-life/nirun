@@ -18,7 +18,14 @@ class HealthcareServiceTime(models.Model):
 
     def get_calendar_dict(self, start_date):
         self.ensure_one()
-        res = {"interval": 1, "rrule_type": "weekly", "allday": self.all_day}
+        start_datetime = fields.Datetime.to_datetime(start_date)
+        res = {
+            "interval": 1,
+            "rrule_type": "weekly",
+            "allday": self.all_day,
+            "start": start_datetime,
+            "stop": start_datetime,
+        }
 
         if not self.all_day:
             tz = self._get_timezone()
@@ -52,6 +59,7 @@ class HealthcareServiceTime(models.Model):
 
 class HealthcareServiceTimingCalendarWizard(models.TransientModel):
     _name = "ni.service.time.schedule"
+    _description = "Healthcare Service Schedule"
     _inherit = ["period.mixin"]
 
     service_id = fields.Many2one("ni.service", required=True)
@@ -74,7 +82,10 @@ class HealthcareServiceTimingCalendarWizard(models.TransientModel):
             request = self.env["ni.service.request"].get_intercept_period(
                 rec.period_start, rec.period_end, domain=[("state", "in", ["active"])]
             )
-            rec.partner_ids = request.mapped("partner_id")
+            if request:
+                rec.partner_ids = request.mapped("partner_id")
+            else:
+                rec.partner_ids = [(6, 0, [])]
 
     def schedule(self):
         val = self._get_calendar_dict()
