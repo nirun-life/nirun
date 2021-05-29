@@ -2,7 +2,7 @@
 
 {
     "name": "Religions",
-    "version": "13.0.0.1.0",
+    "version": "13.0.0.1.1",
     "development_status": "Alpha",
     "author": "Piruin P.",
     "website": "https://nirun.life/",
