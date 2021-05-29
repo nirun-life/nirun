@@ -11,7 +11,7 @@ class ConditionCode(models.Model):
     type_id = fields.Many2one("ni.condition.type", required=False)
     category = fields.Selection(
         [
-            ("problem-list-item", "Problem list item"),
+            ("problem-list-item", "Problem List Item"),
             ("encounter-diagnosis", "Encounter Diagnosis"),
         ],
         required=False,

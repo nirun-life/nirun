@@ -1,8 +1,8 @@
 #  Copyright (c) 2021 Piruin P.
 
 {
-    "name": "Patients - Contacts",
-    "version": "13.0.0.1.0",
+    "name": "Related Person",
+    "version": "13.0.0.2.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",

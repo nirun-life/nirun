@@ -29,7 +29,7 @@ class Encounter(models.Model):
         ondelete="cascade",
     )
     name = fields.Char(
-        "Identifier",
+        "Encounter No.",
         copy=False,
         readonly=True,
         states={"draft": [("readonly", False)]},
@@ -120,7 +120,6 @@ class Encounter(models.Model):
     origin_partner_id = fields.Many2one(
         "res.partner",
         string="Transfer from",
-        readonly=True,
         states=LOCK_STATE_DICT,
         domain=[("is_company", "=", True)],
         tracking=True,
@@ -130,14 +129,12 @@ class Encounter(models.Model):
     admit_source_id = fields.Many2one(
         "ni.encounter.admit",
         "Admission Source",
-        readonly=True,
         states=LOCK_STATE_DICT,
         tracking=True,
         help="From where patient was admitted (physician referral, transfer)",
     )
     re_admit = fields.Boolean(
         "Re-Admission",
-        readonly=True,
         states=LOCK_STATE_DICT,
         tracking=True,
         help="The type of hospital re-admission that has occurred (if any). "
@@ -323,3 +320,12 @@ class Encounter(models.Model):
                 raise ValidationError(_("Must be in-progress state"))
             else:
                 enc.update({"state": "finished", "period_end": fields.date.today()})
+
+    def action_entered_in_error(self):
+        self.write({"state": "entered-in-error"})
+
+    def action_reset_to_draft(self):
+        self.write({"state": "draft"})
+
+    def action_cancel(self):
+        self.write({"state": "cancelled"})

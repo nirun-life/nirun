@@ -6,35 +6,24 @@
     <record id="careplan_activity_action" model="ir.actions.act_window">
         <field name="name">Activities</field>
         <field name="res_model">ni.careplan.activity</field>
-        <field name="view_mode">kanban,tree,form</field>
-        <field name="context">{'search_default_my_act': True}</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="context">{'search_default_my_activity': True}</field>
     </record>
     <record id="careplan_activity_view_search" model="ir.ui.view">
         <field name="name">careplan_activity_view_search</field>
         <field name="model">ni.careplan.activity</field>
         <field name="arch" type="xml">
-            <search string="Tasks">
-                <field name="name" string="Task" />
+            <search>
+                <field name="name" string="Activity" />
                 <field name="category_ids" />
                 <field name="assignee_id" />
                 <field name="patient_id" />
                 <field name="state" />
                 <field name="careplan_id" />
-                <filter name="my_act" string="My Activities" domain="[('assignee_id', '=', uid)]" />
-                <filter
-                    name="my_followed_tasks"
-                    domain="[('message_is_follower', '=', True)]"
-                    string="Followed Tasks"
-                />
+                <filter name="my_activity" string="My Activities" domain="[('assignee_id', '=', uid)]" />
                 <filter name="unassigned" domain="[('assignee_id', '=', False)]" string="Unassigned" />
                 <separator />
                 <filter name="starred" domain="[('priority', 'in', [1, 2])]" string="Starred" />
-                <separator />
-                <filter
-                    name="message_needaction"
-                    domain="[('message_needaction', '=', True)]"
-                    string="Unread Messages"
-                />
                 <separator />
                 <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
                 <separator />
@@ -56,7 +45,7 @@
     <record id="careplan_activity_action_from_careplan" model="ir.actions.act_window">
         <field name="name">Activities</field>
         <field name="res_model">ni.careplan.activity</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
         <field name="context">
             {
                 'pivot_row_groupby': ['assignee_id'],
@@ -64,14 +53,12 @@
                 'default_careplan_id': active_id,
             }
         </field>
-        <field name="search_view_id" ref="careplan_activity_view_search" />
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Click
                 <i>Create</i>
                 to add a new activity.
             </p>
-            <p>To get things done, use activities and status on tasks.</p>
         </field>
     </record>
     <record id="careplan_activity_view_form_quick_create" model="ir.ui.view">
@@ -138,6 +125,7 @@
                                                 invisible="context.get('default_careplan_id', False) or context.get('fsm_mode', False)"
                                             >
                                                 <field name="careplan_id" />
+                                                <field name="patient_id" />
                                             </span>
                                         </small>
                                     </div>
@@ -159,7 +147,7 @@
                                         </a>
                                         <div class="dropdown-menu" role="menu">
                                             <a class="dropdown-item" role="menuitem" t-if="widget.editable" type="edit">
-                                                Edit Task
+                                                Edit Activity
                                             </a>
                                             <a
                                                 class="dropdown-item"
@@ -213,9 +201,14 @@
         <field name="name">careplan.activity.view.tree</field>
         <field name="model">ni.careplan.activity</field>
         <field name="arch" type="xml">
-            <tree decoration-bf="message_needaction==True" string="Activities">
-                <field name="message_needaction" invisible="1" />
+            <tree
+                decoration-bf="state == 'scheduled'"
+                decoration-danger="kanban_state == 'blocked'"
+                decoration-muted="active == False or state == 'cancelled'"
+                decoration-success="kanban_state == 'done'"
+            >
                 <field name="sequence" invisible="not context.get('seq_visible', False)" widget="handle" />
+                <field name="active" invisible="1" />
                 <field name="name" />
                 <field name="careplan_id" invisible="context.get('default_careplan_id', False)" optional="show" />
                 <field name="patient_id" invisible="context.get('default_careplan_id', False)" optional="show" />
@@ -228,6 +221,7 @@
                 <field name="description" optional="hide" />
                 <field name="company_id" groups="base.group_multi_company" />
                 <field name="state" optional="show" />
+                <field name="kanban_state" optional="show" />
                 <field name="activity_exception_decoration" widget="activity_exception" />
             </tree>
         </field>
@@ -238,23 +232,42 @@
         <field name="arch" type="xml">
             <form class="o_form_project_tasks" string="Activities">
                 <field name="active" invisible="1" />
-                <header>
-                    <field name="state" options="{'clickable': '1'}" widget="statusbar" />
+                <field name="patient_id" invisible="1" />
+                <header class="oe_read_only">
+                    <field name="state" statusbar_visible="scheduled,in-progress,completed" widget="statusbar" />
                 </header>
                 <sheet>
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('active', '=', True)]}"
-                        bg_color="bg-danger"
+                        bg_color="bg-warning"
                         title="Archived"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [(('state', '!=', 'cancelled'))]}"
+                        bg_color="bg-danger"
+                        title="Cancelled"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'completed')]}"
+                        bg_color="bg-success"
+                        title="Completed"
                     />
                     <div class="oe_title pr-0">
                         <h1 class="d-flex flex-row justify-content-between">
                             <field name="priority" class="mr-3" widget="priority" />
-                            <field name="name" class="o_task_name text-truncate" placeholder="Task Title..." />
+                            <field name="name" class="o_task_name text-truncate" placeholder="Activity..." />
                             <field name="kanban_state" class="ml-auto oe_read_only" widget="state_selection" />
                         </h1>
                     </div>
+                    <field
+                        name="category_ids"
+                        options="{'color_field': 'color'}"
+                        placeholder="Categories..."
+                        widget="many2many_tags"
+                    />
                     <group>
                         <group>
                             <field
@@ -263,27 +276,18 @@
                                 options='{"always_reload": True}'
                                 domain="[('active', '=', True), ('company_id', '=', company_id)]"
                             />
-                            <field name="category_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
-                            <label for="period_start" />
-                            <div class="o_row">
-                                <field name="period_start" />
-                                <span class="mx-1">-</span>
-                                <field name="period_end" />
-                            </div>
-                            <label for="res_model" />
-                            <div class="o_row">
-                                <field name="res_model" />
-                            </div>
+                            <field name="period_start" />
+                            <field name="period_end" />
                         </group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
-                            <field name="patient_id" invisible="1" />
                             <field name="manager_id" />
                             <field name="assignee_id" />
                         </group>
                     </group>
                     <notebook>
                         <page string="Description">
+                            <group name="reference" />
                             <p class="text-muted oe_edit_only">
                                 Add a description to help your coworkers understand the meaning and purpose of the
                                 stage.
@@ -320,6 +324,27 @@
                     <field name="message_ids" widget="mail_thread" />
                 </div>
             </form>
+        </field>
+    </record>
+    <record id="careplan_activity_view_pivot" model="ir.ui.view">
+        <field name="name">careplan.activity.view.pivot</field>
+        <field name="model">ni.careplan.activity</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="assignee_id" type="row" />
+                <field name="state" type="col" />
+                <field name="kanban_state" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="careplan_activity_view_graph" model="ir.ui.view">
+        <field name="name">careplan.activity.view.graph</field>
+        <field name="model">ni.careplan.activity</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="assignee_id" type="col" />
+                <field name="state" type="col" />
+            </graph>
         </field>
     </record>
 </odoo>

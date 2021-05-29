@@ -2,7 +2,7 @@
 
 {
     "name": "Care Plans",
-    "version": "13.0.0.1.0",
+    "version": "13.0.0.3.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -17,7 +17,9 @@
         "views/careplan_activity_views.xml",
         "views/careplan_category_views.xml",
         "views/careplan_views.xml",
+        "views/patient_views.xml",
         "views/careplan_menus.xml",
+        "wizard/careplan_activity_state.xml",
     ],
     "demo": ["data/category_demo.xml"],
     "application": True,

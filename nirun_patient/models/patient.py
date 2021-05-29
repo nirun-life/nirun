@@ -71,7 +71,7 @@ class Patient(models.Model):
     mobile = fields.Char(related="partner_id.mobile", readonly=False)
     email = fields.Char(related="partner_id.email", readonly=False)
 
-    code = fields.Char("Internal Reference", copy=False, tracking=True)
+    code = fields.Char("Patient No.", copy=False, tracking=True)
 
     country_id = fields.Many2one(
         "res.country",
@@ -98,18 +98,21 @@ class Patient(models.Model):
         store=True,
     )
     deceased_date = fields.Date("Deceased Date", tracking=True, copy=False)
-    deceased = fields.Boolean("Deceased", compute="_compute_is_deceased")
+    deceased = fields.Boolean("Deceased", compute="_compute_is_deceased", store=True)
 
     marital_status = fields.Selection(
         [
             ("single", "Single"),
             ("married", "Married"),
             ("cohabitant", "Legal Cohabitant"),
+            ("separated", "Separated"),
             ("widower", "Widower"),
             ("divorced", "Divorced"),
+            ("polygamous", "Polygamous"),
+            ("unknown", "Unknown"),
         ],
         string="Marital Status",
-        default="single",
+        default="unknown",
         tracking=True,
     )
     father_name = fields.Char("Father Complete Name")
@@ -132,7 +135,6 @@ class Patient(models.Model):
             ("8", "Doctor"),
         ],
         require=False,
-        groups="hr.group_hr_user",
         tracking=True,
         help="Education level according to ISCED",
     )
@@ -153,7 +155,7 @@ class Patient(models.Model):
     )
     encountering_id = fields.Many2one(
         "ni.encounter",
-        "Encounter",
+        "Encounter No.",
         compute="_compute_encounter",
         require=False,
         compute_sudo=True,

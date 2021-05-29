@@ -74,9 +74,7 @@ class Location(models.Model):
     @api.constrains("parent_id")
     def _check_hierarchy(self):
         if not self._check_recursion():
-            raise models.ValidationError(
-                _("Error! You cannot create recursive locations.")
-            )
+            raise models.ValidationError(_("Error! You cannot create recursive data."))
 
     def name_get(self):
         if self._context.get("location_display") == "short":
@@ -100,12 +98,6 @@ class Location(models.Model):
         if name:
             # Be sure name_search is symetric to name_get
             name = name.split(" / ")[-1]
-            args = [("name", operator, name)] + args
+            args = ["|", ("name", operator, name), ("alias", operator, name)] + args
         location_ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
         return models.lazy_name_get(self.browse(location_ids).with_user(name_get_uid))
-
-
-class LocationType(models.Model):
-    _name = "ni.location.type"
-    _description = "Location Types"
-    _inherit = ["coding.base"]

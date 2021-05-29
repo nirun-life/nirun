@@ -15,7 +15,6 @@
             <search>
                 <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
                 <field name="phone" filter_domain="['|' ,('phone', 'ilike', self), ('mobile', 'ilike', self)]" />
-                <separator />
                 <filter name="in-progress" string='In-Progress' domain="[('presence_state', '=', 'in-progress')]" />
                 <filter name="waiting" string='Waiting' domain="[('presence_state', '=', 'waiting')]" />
                 <filter
@@ -23,15 +22,19 @@
                     string='Discharged'
                     domain="[('presence_state', 'in', ['finished', 'deceased'])]"
                 />
+                <separator />
+                <filter name="alive" string='Alive' domain="[('deceased_date', '=', False)]" />
+                <filter name="deceased" string='Deceased' domain="[('deceased_date', '!=', False)]" />
                 <group name="group_by" string="Group by">
-                    <filter name="Gender" context="{'group_by': 'gender'}" />
-                    <filter name="Presence State" context="{'group_by': 'presence_state'}" />
-                    <filter name="Education Level" context="{'group_by': 'education_level'}" />
-                    <filter name="Date of Birth" context="{'group_by': 'birthdate'}" />
+                    <filter name="group_by_state" string="Presence State" context="{'group_by': 'presence_state'}" />
+                    <separator />
+                    <filter name="group_by_gender" string="Gender" context="{'group_by': 'gender'}" />
+                    <filter
+                        name="group_by_education"
+                        string="Education Level"
+                        context="{'group_by': 'education_level'}"
+                    />
                 </group>
-                <searchpanel>
-                    <field name="gender" icon="fa-venus-mars" />
-                </searchpanel>
             </search>
         </field>
     </record>
@@ -40,7 +43,6 @@
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="company_id" groups="base.group_multi_company" />
                 <field name="code" optional="show" />
                 <field name="name" />
                 <field name="last_encounter_id" optional="show" />
@@ -51,6 +53,7 @@
                 <field name="phone" optional="show" widget="phone" />
                 <field name="mobile" optional="show" widget="phone" />
                 <field name="presence_state" />
+                <field name="company_id" groups="base.group_multi_company" />
             </tree>
         </field>
     </record>
@@ -65,8 +68,9 @@
                     <button
                         name="%(encounter_action_from_patient)d"
                         string="Admission"
-                        attrs="{'invisible': [('is_encountering', '=', True)]}"
+                        attrs="{'invisible': ['|', ('is_encountering', '=', True), ('deceased', '=', True)]}"
                         class="btn-primary"
+                        icon="fa-sign-in"
                         type="action"
                     />
                 </header>
@@ -298,8 +302,8 @@
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <pivot>
-                <field name="gender" type="row" />
-                <field name="birthdate" interval="year" type="col" />
+                <field name="presence_state" type="row" />
+                <field name="gender" type="col" />
             </pivot>
         </field>
     </record>

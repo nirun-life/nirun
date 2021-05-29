@@ -13,16 +13,4 @@
     "application": False,
     "auto_install": False,
     "installable": True,
-    "init_xml": [
-        "data/ni.medication-001.csv",
-        "data/ni.medication-002.csv",
-        "data/ni.medication-003.csv",
-        "data/ni.medication-004.csv",
-        "data/ni.medication-005.csv",
-        "data/ni.medication-006.csv",
-        "data/ni.medication-007.csv",
-        "data/ni.medication-008.csv",
-        "data/ni.medication-009.csv",
-        "data/ni.medication-010.csv",
-    ],
 }

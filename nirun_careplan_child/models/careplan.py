@@ -44,9 +44,7 @@ class CarePlan(models.Model):
     @api.constrains("parent_id")
     def _check_hierarchy(self):
         if not self._check_recursion():
-            raise models.ValidationError(
-                _("Error! You cannot create recursive careplan.")
-            )
+            raise models.ValidationError(_("Error! You cannot create recursive data."))
         if self.parent_id.parent_id:
             raise models.ValidationError(
                 _("Error! You cannot create third deep careplan.")

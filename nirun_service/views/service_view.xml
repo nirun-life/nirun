@@ -8,6 +8,16 @@
         <field name="res_model">ni.service</field>
         <field name="view_mode">tree,form</field>
     </record>
+    <record id="service_view_search" model="ir.ui.view">
+        <field name="name">service.view.search</field>
+        <field name="model">ni.service</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="category_ids" />
+            </search>
+        </field>
+    </record>
     <record id="service_view_form" model="ir.ui.view">
         <field name="name">service.view.form</field>
         <field name="model">ni.service</field>
@@ -16,7 +26,11 @@
                 <field name="active" invisible="1" />
                 <header class="oe_read_only" />
                 <sheet>
-                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
+                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                        <button name="open_request" class="oe_stat_button" icon="fa-users" type="object">
+                            <field name="request_count" widget="statinfo" />
+                        </button>
+                    </div>
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('active', '=', True)]}"
@@ -37,13 +51,22 @@
                         widget="many2many_tags"
                     />
                     <group>
-                        <field name="company_id" groups="base.group_multi_company" placeholder="Company" />
-                        <field name="code" placeholder="Internal Reference" />
-                        <field name="location_ids" widget="many2many_tags" />
+                        <group>
+                            <field name="location_ids" widget="many2many_tags" />
+                        </group>
+                        <group>
+                            <field name="code" placeholder="Internal Reference" />
+                            <field name="company_id" groups="base.group_multi_company" placeholder="Company" />
+                        </group>
                     </group>
                     <notebook>
                         <page string="Available Time">
-                            <field name="available_type" options="{'horizontal': True}" widget="radio" />
+                            <field
+                                name="available_type"
+                                class="oe_edit_only"
+                                options="{'horizontal': True}"
+                                widget="radio"
+                            />
                             <group
                                 name="available_time_ids"
                                 attrs="{'invisible': [('available_type', '!=', 'routine')]}"
@@ -52,6 +75,7 @@
                                     <tree>
                                         <field name="display_day" />
                                         <field name="display_time" />
+                                        <field name="tz" />
                                     </tree>
                                     <form>
                                         <group>
@@ -71,6 +95,7 @@
                                                     attrs="{'invisible': [('all_day', '=', True)]}"
                                                     widget="float_time"
                                                 />
+                                                <field name="tz" attrs="{'invisible': [('all_day', '=', True)]}" />
                                             </group>
                                         </group>
                                     </form>
@@ -107,20 +132,12 @@
         <field name="arch" type="xml">
             <tree string="Healthcare Service">
                 <field name="name" />
-                <field name="code" />
-                <field name="location_ids" widget="many2many_tags" />
-                <field name="available_time_ids" widget="many2many_tags" />
+                <field name="code" optional="hide" />
+                <field name="category_ids" optional="show" options="{'color_field': 'color'}" widget="many2many_tags" />
+                <field name="available_time_ids" optional="show" widget="many2many_tags" />
+                <field name="location_ids" optional="hide" widget="many2many_tags" />
+                <field name="request_count" />
             </tree>
-        </field>
-    </record>
-    <record id="service_view_search" model="ir.ui.view">
-        <field name="name">service.view.search</field>
-        <field name="model">ni.service</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name" />
-                <field name="category_ids" />
-            </search>
         </field>
     </record>
 </odoo>

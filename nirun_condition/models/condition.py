@@ -10,7 +10,7 @@ class Condition(models.Model):
 
     category = fields.Selection(
         [
-            ("problem-list-item", "Problem list item"),
+            ("problem-list-item", "Problem List Item"),
             ("encounter-diagnosis", "Encounter Diagnosis"),
         ],
         required=True,

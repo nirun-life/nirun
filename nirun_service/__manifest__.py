@@ -2,7 +2,7 @@
 
 {
     "name": "Healthcare Services",
-    "version": "13.0.0.1.0",
+    "version": "13.0.0.2.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -16,9 +16,13 @@
         "data/service_category_data.xml",
         "views/service_category_views.xml",
         "views/service_timing_views.xml",
+        "views/service_time_view.xml",
         "views/service_request_views.xml",
         "views/service_view.xml",
+        "views/patient_views.xml",
+        "views/encounter_views.xml",
         "views/service_menus.xml",
+        "wizard/bulk_request_view.xml",
     ],
     "application": True,
     "auto_install": False,

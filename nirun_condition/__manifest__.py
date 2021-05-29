@@ -2,7 +2,7 @@
 
 {
     "name": "Condition",
-    "version": "13.0.0.1.0",
+    "version": "13.0.0.2.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -16,6 +16,7 @@
         "views/condition_type_views.xml",
         "views/condition_views.xml",
         "views/patient_views.xml",
+        "views/encounter_views.xml",
         "views/condition_menu.xml",
     ],
     "application": False,

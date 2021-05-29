@@ -1,7 +1,5 @@
 #  Copyright (c) 2021 Piruin P.
 
-import random
-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -22,10 +20,14 @@ class CarePlan(models.Model):
         index=True,
         default=lambda self: self.env.company,
     )
+    patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
+    encounter_id = fields.Many2one(
+        readonly=True, states={"draft": [("readonly", False)]}
+    )
     sequence = fields.Integer(
         "Sequence", help="Determine the display order", index=True, default=16
     )
-    description = fields.Text(copy=True, help="Summary of nature of plan")
+    description = fields.Html(copy=True, help="Summary of nature of plan")
 
     patient_avatar = fields.Image(
         related="patient_id.image_512", attactment=False, store=False
@@ -41,12 +43,13 @@ class CarePlan(models.Model):
     )
     intent = fields.Selection(
         [
-            ("plan", "Plan"),
             ("order", "Order"),
+            ("plan", "Plan"),
             ("proposal", "Proposal"),
             ("option", "Option"),
         ],
         default="plan",
+        help="Indicating the degree of authority/intentionality of care plan.",
     )
     author_id = fields.Many2one(
         "res.users", string="Author", default=lambda self: self.env.user, tracking=True
@@ -62,7 +65,7 @@ class CarePlan(models.Model):
     state = fields.Selection(
         [
             ("draft", "Draft"),
-            ("active", "Active"),
+            ("active", "In-Progress"),
             ("on-hold", "On-Hold"),
             ("revoked", "Revoked"),
             ("completed", "Completed"),
@@ -73,9 +76,7 @@ class CarePlan(models.Model):
         tracking=True,
         default="draft",
     )
-    color = fields.Integer(
-        string="Color Index", default=lambda _: random.randint(0, 10)
-    )
+    color = fields.Integer(string="Color Index")
     active = fields.Boolean(
         default=True,
         help="If the active field is set to False, it will allow you to"
@@ -129,9 +130,12 @@ class CarePlan(models.Model):
     # Actions
     # -------------
 
-    def open_activities(self):
+    def open_activity(self):
+        self.ensure_one()
         ctx = dict(self._context)
-        ctx.update({"search_default_careplan_id": self.id})
+        ctx.update(
+            {"search_default_careplan_id": self.id, "default_careplan_id": self.id}
+        )
         action = self.env["ir.actions.act_window"].for_xml_id(
             "nirun_careplan", "careplan_activity_action_from_careplan"
         )
@@ -160,32 +164,31 @@ class CarePlan(models.Model):
         return super().unlink()
 
     def action_revoked(self):
-        for enc in self:
-            if enc.state != "active":
+        for plan in self:
+            if plan.state != "active":
                 raise UserError(_("Must be active state"))
-            else:
-                enc.update({"state": "revoked"})
+        self.write({"state": "revoked"})
 
     def action_hold_on(self):
-        for enc in self:
-            if enc.state != "active":
+        for plan in self:
+            if plan.state != "active":
                 raise UserError(_("Must be active state"))
-            else:
-                enc.update({"state": "on-hold"})
+        self.write({"state": "on-hold"})
 
     def action_resume(self):
-        for enc in self:
-            if enc.state != "on-hold":
+        for plan in self:
+            if plan.state != "on-hold":
                 raise UserError(_("Must be on-hold state"))
-            else:
-                enc.update({"state": "active"})
+        self.write({"state": "active"})
 
     def action_confirm(self):
         self.write({"state": "active"})
 
     def action_close(self):
-        for enc in self:
-            if enc.state != "active":
+        for plan in self:
+            if plan.state != "active":
                 raise UserError(_("Must be active state"))
             else:
-                enc.update({"state": "completed"})
+                plan.update({"state": "completed"})
+                if not plan.period_end:
+                    plan.period_end = fields.Date.today()

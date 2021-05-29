@@ -9,48 +9,66 @@
         sequence="0"
         web_icon="nirun_patient,static/description/icon.png"
     />
-    <menuitem id="patient_menu" name="Patients" action="patient_action" parent="patient_menu_root" sequence="1" />
-    <menuitem id="encounter_menu" name="Encounter" action="encounter_action" parent="patient_menu_root" sequence="2" />
+    <!-- Patient -->
+    <menuitem id="patient_menu_section" name="Patients" parent="patient_menu_root" sequence="1" />
+    <menuitem id="patient_menu" name="Patients" action="patient_action" parent="patient_menu_section" />
+    <!-- Encounter -->
+    <menuitem id="encounter_menu_section" name="Encounter" parent="patient_menu_root" sequence="2" />
+    <menuitem id="encounter_menu" name="Encounter" action="encounter_action" parent="encounter_menu_section" />
+    <menuitem
+        id="encounter_menu_finished"
+        name="Discharged"
+        action="encounter_action_finished"
+        parent="encounter_menu_section"
+    />
+    <!-- Configuration -->
     <menuitem id="configuration_menu" name="Configuration" parent="patient_menu_root" sequence="100" />
+    <!-- Location Configuration-->
     <menuitem id="location_menu_section" name="Location" parent="configuration_menu" />
     <menuitem id="location_menu" name="Location" action="location_action" parent="location_menu_section" />
     <menuitem id="location_type_menu" name="Type" action="location_type_action" parent="location_menu_section" />
-    <menuitem id="encounter_menu_section" name="Encounter" parent="configuration_menu" />
+    <!-- Encounter Configuration-->
+    <menuitem id="encounter_configuration_menu_section" name="Encounter" parent="configuration_menu" />
     <menuitem
         id="encounter_class_menu"
         name="Classification"
         action="encounter_class_action"
-        parent="encounter_menu_section"
+        parent="encounter_configuration_menu_section"
     />
     <menuitem
         id="encounter_reason_menu"
         name="Reason"
         action="encounter_reason_action"
-        parent="encounter_menu_section"
+        parent="encounter_configuration_menu_section"
     />
     <menuitem
         id="encounter_admit_menu"
         name="Admission Source"
         action="encounter_admit_action"
-        parent="encounter_menu_section"
+        parent="encounter_configuration_menu_section"
     />
     <menuitem
         id="encounter_arrangement_menu"
         name="Arrangement"
         action="encounter_arrangement_action"
-        parent="encounter_menu_section"
+        parent="encounter_configuration_menu_section"
     />
     <menuitem
         id="encounter_courtesy_menu"
         name="Courtesy"
         action="encounter_courtesy_action"
-        parent="encounter_menu_section"
+        parent="encounter_configuration_menu_section"
     />
-    <menuitem id="encounter_diet_menu" name="Diet" action="encounter_diet_action" parent="encounter_menu_section" />
+    <menuitem
+        id="encounter_diet_menu"
+        name="Diet"
+        action="encounter_diet_action"
+        parent="encounter_configuration_menu_section"
+    />
     <menuitem
         id="encounter_discharge_menu"
         name="Discharge Disposition"
         action="encounter_discharge_action"
-        parent="encounter_menu_section"
+        parent="encounter_configuration_menu_section"
     />
 </odoo>
