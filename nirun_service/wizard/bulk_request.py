@@ -31,6 +31,7 @@ class ServiceBulkRequest(models.TransientModel):
                     "requester_id": self.env.user.partner_id.id,
                     "period_start": self.period_start,
                     "period_end": self.period_end,
+                    "state": self.state,
                 }
             )
         return self.service_id.open_request()
