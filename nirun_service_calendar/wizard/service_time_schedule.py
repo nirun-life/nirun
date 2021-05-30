@@ -65,7 +65,10 @@ class HealthcareServiceTimingCalendarWizard(models.TransientModel):
     service_id = fields.Many2one("ni.service", required=True)
     time_id = fields.Many2one("ni.service.time", required=True)
     partner_ids = fields.Many2many(
-        "res.partner", string="Participant", compute="_compute_partner_ids"
+        "res.partner",
+        string="Participant",
+        compute="_compute_partner_ids",
+        readonly=False,
     )
     period_start = fields.Date(required=True)
     period_end = fields.Date(required=True)
@@ -80,12 +83,16 @@ class HealthcareServiceTimingCalendarWizard(models.TransientModel):
         # FIXME remove participant from event that not on their request period
         for rec in self:
             request = self.env["ni.service.request"].get_intercept_period(
-                rec.period_start, rec.period_end, domain=[("state", "in", ["active"])]
+                rec.period_start,
+                rec.period_end,
+                domain=[
+                    ("service_id", "=", rec.service_id.id),
+                    ("state", "in", ["active"]),
+                ],
             )
-            if request:
-                rec.partner_ids = request.mapped("partner_id")
-            else:
-                rec.partner_ids = [(6, 0, [])]
+            rec.partner_ids = [
+                (6, 0, request.mapped("partner_id").ids if request else [])
+            ]
 
     def schedule(self):
         val = self._get_calendar_dict()

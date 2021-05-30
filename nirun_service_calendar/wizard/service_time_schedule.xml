@@ -25,13 +25,21 @@
                     </h1>
                     <group col="4">
                         <group colspan="3">
-                            <field name="time_id" domain="[('service_id', '=?', service_id)]" />
+                            <field
+                                name="time_id"
+                                context="{'default_service_id':service_id}"
+                                domain="[('service_id', '=', service_id)]"
+                            />
                             <label string="Period" for="period_start" />
                             <div class="o_row">
                                 <field name="period_start" placeholder="Since" />
                                 <field name="period_end" placeholder="Until" />
                             </div>
-                            <field name="partner_ids" widget="many2many_tags" />
+                            <field
+                                name="partner_ids"
+                                options="{'no_open':True, 'no_create':True, 'no_create_edit': True}"
+                                widget="many2many_tags"
+                            />
                         </group>
                     </group>
                 </sheet>
