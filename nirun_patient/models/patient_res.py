@@ -25,6 +25,7 @@ class PatientRes(models.AbstractModel):
         required=True,
         check_company=True,
     )
+    partner_id = fields.Many2one(related="patient_id.partner_id")
     encounter_id = fields.Many2one(
         "ni.encounter",
         "Encounter No.",
