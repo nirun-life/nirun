@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="careplan_activity_view_form_inherit" model="ir.ui.view">
+        <field name="name">careplan.activity.view.form.inherit</field>
+        <field name="model">ni.careplan.activity</field>
+        <field name="inherit_id" ref="nirun_careplan.careplan_activity_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='reason_reference']" position="inside">
+                <group name='reason_condition'>
+                    <field
+                        name="reason_condition_ids"
+                        context="{
+                            'show_state': True,
+                            'show_patient': True,
+                            'default_patient_id': patient_id,
+                            'default_encounter_id': encounter_id,
+                            'default_category': 'encounter-diagnosis'
+                            }"
+                        domain="[('patient_id', '=', patient_id), ('state', '!=', 'resolved')]"
+                        options="{'always_reload': True}"
+                        widget="many2many_tags"
+                    />
+                    <field
+                        name="reason_condition_id"
+                        context="{'show_state': True}"
+                        domain="[('id', 'in', reason_condition_ids)]"
+                        options="{'no_create_edit': True, 'no_create': True, 'no_edit': True, 'always_reload': True}"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="careplan_activity_view_tree_inherit" model="ir.ui.view">
+        <field name="name">careplan.activity.view.tree.inherit</field>
+        <field name="model">ni.careplan.activity</field>
+        <field name="inherit_id" ref="nirun_careplan.careplan_activity_view_tree" />
+        <field name="arch" type="xml">
+            <field name="reason" position="before">
+                <field name="reason_condition_id" optional="show" />
+                <field name="reason_condition_ids" optional="hide" widget="many2many_tags" />
+            </field>
+        </field>
+    </record>
+</odoo>
