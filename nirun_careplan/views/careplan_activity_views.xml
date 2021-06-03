@@ -233,6 +233,7 @@
             <form class="o_form_project_tasks" string="Activities">
                 <field name="active" invisible="1" />
                 <field name="patient_id" invisible="1" />
+                <field name="encounter_id" invisible="1" />
                 <header class="oe_read_only">
                     <field name="state" statusbar_visible="scheduled,in-progress,completed" widget="statusbar" />
                 </header>
@@ -286,7 +287,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Description">
+                        <page name='description' string="Description">
                             <group name="reference" />
                             <p class="text-muted oe_edit_only">
                                 Add a description to help your coworkers understand the meaning and purpose of the
@@ -294,11 +295,12 @@
                             </p>
                             <field name="description" nolabel="1" placeholder="Add a description..." />
                         </page>
-                        <page string="Reason">
+                        <page name='reason' string="Reason">
+                            <group name="reason_reference" />
                             <p class="text-muted oe_edit_only">Add a reason why this activity should be done!.</p>
                             <field name="reason" nolabel="1" placeholder="Add a reasons..." />
                         </page>
-                        <page string="Goal">
+                        <page name='goal' string="Goal">
                             <p class="text-muted oe_edit_only">Specify goals of this activity!.</p>
                             <field name="goal" nolabel="1" placeholder="Add a goals..." />
                         </page>
