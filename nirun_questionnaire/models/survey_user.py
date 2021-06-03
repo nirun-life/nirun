@@ -10,6 +10,9 @@ class SurveyUserInput(models.Model):
 
     patient_id = fields.Many2one(required=False)
 
+    # FIXME partner_id not set as store. need to find when/why it was changed
+    partner_id = fields.Many2one(store=True)
+
     @api.constrains("encounter_id")
     def check_encounter_id(self):
         for rec in self:
