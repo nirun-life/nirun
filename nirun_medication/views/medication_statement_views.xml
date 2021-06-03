@@ -120,18 +120,15 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Dosage">
+                        <page name="dosage" string="Dosage">
                             <field name="dosage" placeholder="How the medication is/was taken or should be taken" />
                             <group>
                                 <field name="dosage_timing" context="{'no_bound': True}" />
                                 <field name="dosage_as_need" />
                             </group>
                         </page>
-                        <page string="Detail">
+                        <page name="detail" string="Detail">
                             <group>
-                                <group>
-                                    <field name="reason_ref" string="Reference" />
-                                </group>
                                 <group attrs="{'invisible': [('state', '!=', 'stopped')]}">
                                     <field name="state_reason" attrs="{'required':[('state', '=', 'stopped')]}" />
                                 </group>

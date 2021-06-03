@@ -28,10 +28,6 @@ class MedicationStatement(models.Model):
     period_start = fields.Date(required=True)
     active = fields.Boolean(default=True)
 
-    reason_ref = fields.Reference(
-        [("ni.patient.condition", "Condition"), ("ni.observation", "Observation")],
-        required=False,
-    )
     dosage = fields.Text(help="How the medication is/was taken or should be taken")
     dosage_timing = fields.Many2one(
         "ni.timing",

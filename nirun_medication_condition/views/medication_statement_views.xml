@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="medication_statement_view_tree_inherit" model="ir.ui.view">
+        <field name="name">medication.statement.view.tree.inherit</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="inherit_id" ref="nirun_medication.medication_statement_view_tree" />
+        <field name="arch" type="xml">
+            <field name="dosage_as_need" position="before">
+                <field name="reason_condition_id" optional="show" />
+                <field name="reason_condition_ids" optional="hide" widget="many2many_tags" />
+            </field>
+        </field>
+    </record>
+    <record id="medication_statement_view_form_inherit" model="ir.ui.view">
+        <field name="name">medication.statement.view.form.inherit</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="inherit_id" ref="nirun_medication.medication_statement_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='detail']/group" position="inside">
+                <group name='reason_condition'>
+                    <field
+                        name="reason_condition_ids"
+                        context="{
+                            'show_state': True,
+                            'show_patient': True,
+                            'default_patient_id': patient_id,
+                            'default_encounter_id': encounter_id,
+                            'default_category': 'encounter-diagnosis'
+                            }"
+                        domain="[('patient_id', '=', patient_id), ('state', '!=', 'resolved')]"
+                        options="{'always_reload': True}"
+                        widget="many2many_tags"
+                    />
+                    <field
+                        name="reason_condition_id"
+                        context="{'show_state': True}"
+                        domain="[('id', 'in', reason_condition_ids)]"
+                        options="{'no_create_edit': True, 'no_create': True, 'no_edit': True, 'always_reload': True}"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

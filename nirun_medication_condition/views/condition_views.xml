@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="condition_view_form_inherit" model="ir.ui.view">
+        <field name="name">condition.view.form.inherit</field>
+        <field name="model">ni.condition</field>
+        <field name="inherit_id" ref="nirun_condition.condition_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="medication" string="Medication">
+                    <field name="medication_statement_ids">
+                        <tree>
+                            <field name="medication_id" />
+                            <field name="dosage_timing" />
+                            <field name="period_start" optional="show" />
+                            <field name="period_end" optional="show" />
+                            <field name="duration" optional="hide" />
+                            <field name="state" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
