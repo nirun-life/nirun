@@ -34,13 +34,14 @@
             <form>
                 <field name="active" invisible="1" />
                 <field name="id" invisible="1" />
-                <header class="oe_read_only">
+                <header>
                     <button
                         name="action_confirm"
                         attrs="{'invisible': [('state', 'not in', ['draft'])]}"
                         class="btn-primary"
                         string="Confirm"
                         type="object"
+                        groups="nirun_careplan.group_manager"
                     />
                     <button
                         name="action_close"
@@ -49,12 +50,14 @@
                         string="Complete"
                         icon="fa-check-circle"
                         type="object"
+                        groups="nirun_careplan.group_manager"
                     />
                     <button
                         name="action_hold_on"
                         attrs="{'invisible': [('state', 'not in', ['active'])]}"
                         string="Hold on"
                         type="object"
+                        groups="nirun_careplan.group_manager"
                     />
                     <button
                         name="action_resume"
@@ -63,12 +66,14 @@
                         class="btn-primary"
                         type="object"
                         icon="fa-play-circle"
+                        groups="nirun_careplan.group_manager"
                     />
                     <button
                         name="action_revoked"
                         attrs="{'invisible': [('state', 'not in', ['active'])]}"
                         string="Revoke"
                         type="object"
+                        groups="nirun_careplan.group_manager"
                     />
                     <field name="state" statusbar_visible="draft,active,completed" widget="statusbar" />
                 </header>
@@ -111,9 +116,15 @@
                     <div class="oe_title">
                         <label for="patient_id" string="Care plan for" />
                         <h1>
-                            <field name="patient_id" placeholder="Patient" />
+                            <field name="patient_id" class="w-90" placeholder="Patient" />
                         </h1>
-                        <field name="encounter_id" attrs="{'readonly': [('id','>', 0 )]}" placeholder="Encounter No." />
+                        <label for="encounter_id" />
+                        <field
+                            name="encounter_id"
+                            attrs="{'readonly': [('id','>', 0 )]}"
+                            class="mx-1"
+                            placeholder="Encounter No."
+                        />
                     </div>
                     <group>
                         <group>
