@@ -9,7 +9,7 @@
         <field name="inherit_id" ref="nirun_careplan.careplan_activity_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//group[@name='reference']" position="inside">
-                <group string="Healthcare Service">
+                <groups>
                     <field
                         name="service_request_id"
                         context="{
@@ -22,7 +22,7 @@
                         domain="[('patient_id', '=?', patient_id), ('state', 'in', ['draft', 'active', 'on-hold'])]"
                         options="{'always_reload': True}"
                     />
-                </group>
+                </groups>
             </xpath>
         </field>
     </record>
