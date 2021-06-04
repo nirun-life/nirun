@@ -10,7 +10,8 @@ class ServiceBulkRequest(models.TransientModel):
     service_id = fields.Many2one("ni.service", required=True)
     patient_ids = fields.Many2many(
         "ni.patient",
-        string="Patient(s)",
+        string="Patients",
+        store=False,
         required=True,
         domain=[("encountering_id", "!=", False)],
     )

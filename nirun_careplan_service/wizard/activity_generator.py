@@ -16,7 +16,9 @@ class ActivityGenerator(models.TransientModel):
     careplan_id = fields.Many2one("ni.careplan", required=True)
     patient_id = fields.Many2one(related="careplan_id.patient_id")
     encounter_id = fields.Many2one(related="careplan_id.encounter_id")
-    service_request_ids = fields.Many2many("ni.service.request", required=True)
+    service_request_ids = fields.Many2many(
+        "ni.service.request", store=False, required=True
+    )
 
     def generate_activity(self):
         activities = self.env["ni.careplan.activity"]
