@@ -8,7 +8,7 @@ class ActivityStateUpdate(models.TransientModel):
     _name = "ni.careplan.activity.state.wizard"
     _description = "State Update Wizard"
 
-    activity_ids = fields.Many2many("ni.careplan.activity")
+    activity_ids = fields.Many2many("ni.careplan.activity", store=False)
     state = fields.Selection(
         [
             ("scheduled", "Scheduled"),
