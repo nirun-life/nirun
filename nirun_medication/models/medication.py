@@ -35,6 +35,29 @@ class Medication(models.Model):
     amount_denominator = fields.Float(default=1.0)
     amount_denominator_unit = fields.Many2one("ni.quantity.unit")
 
+    statement_ids = fields.One2many("ni.medication.statement", "medication_id")
+
+    patient_ids = fields.Many2many(
+        "ni.patient",
+        "ni_medication_patient_rel",
+        compute="_compute_patient",
+        store=True,
+        sudo_compute=True,
+    )
+    patient_count = fields.Integer(
+        compute="_compute_patient", store=True, sudo_compute=True
+    )
+
+    @api.depends("statement_ids", "statement_ids.state")
+    def _compute_patient(self):
+        statement = self.env["ni.medication.statement"].search(
+            [("medication_id", "in", self.ids), ("state", "=", "active")]
+        )
+        for rec in self:
+            statement_active_ids = statement.filtered(lambda s: s.medication_id == rec)
+            rec.patient_ids = statement_active_ids.mapped("patient_id")
+            rec.patient_count = len(rec.patient_ids)
+
     @api.model
     def _name_search(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
@@ -67,24 +90,36 @@ class Medication(models.Model):
     def _compute_amount(self):
         for rec in self:
             res = []
-            if rec.amount_numerator:
+            if rec.amount_numerator and rec.amount_numerator_unit:
                 res.append(
                     "{} {}".format(rec.amount_numerator, rec.amount_numerator_unit.name)
                 )
-            if rec.amount_denominator != 1:
-                res.append(
-                    "{} {}".format(
-                        rec.amount_denominator, rec.amount_denominator_unit.name
-                    )
-                )
-            elif not rec.amount_numerator:
-                res.append("1 {}".format(rec.amount_denominator_unit.name))
-            else:
-                res.append(rec.amount_denominator_unit.name)
-            rec.amount = " ".join(res)
+
+            if rec.amount_denominator_unit:
+                denominator = []
+                if rec.amount_denominator > 1 or not rec.amount_numerator:
+                    denominator.append(str(rec.amount_denominator))
+                denominator.append(rec.amount_denominator_unit.name)
+                res.append(" ".join(denominator))
+
+            rec.amount = " / ".join(res) if res else None
 
     @api.onchange("manufacturer_id")
     def _onchange_manufacturer_id(self):
         for rec in self:
             if rec.manufacturer_id:
                 rec.manufacturer_name = rec.manufacturer_id.name
+
+    def open_statement(self):
+        ctx = dict(self._context)
+        ctx.update(
+            {
+                "search_default_medication_id": self.id,
+                "search_default_state_active": True,
+                "search_default_group_by_location": True,
+            }
+        )
+        action = self.env["ir.actions.act_window"].for_xml_id(
+            "nirun_medication", "medication_statement_action"
+        )
+        return dict(action, context=ctx)

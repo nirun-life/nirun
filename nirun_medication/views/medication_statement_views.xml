@@ -6,8 +6,14 @@
     <record id="medication_statement_action" model="ir.actions.act_window">
         <field name="name">Medications Statement</field>
         <field name="res_model">ni.medication.statement</field>
-        <field name="view_mode">tree,calendar,form,activity</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph,activity</field>
         <field name="context">{'search_default_period_today': True}</field>
+    </record>
+    <record id="medication_statement_action_completed" model="ir.actions.act_window">
+        <field name="name">Medications Statement</field>
+        <field name="res_model">ni.medication.statement</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph,activity</field>
+        <field name="context">{'search_default_state_completed': True}</field>
     </record>
     <record id="medication_statement_view_search" model="ir.ui.view">
         <field name="name">medication.statement.view.search</field>
@@ -55,8 +61,9 @@
                 <separator />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
                 <group string="Group by">
-                    <filter name="Patient" context="{'group_by': 'patient_id'}" />
-                    <filter name="Medication" context="{'group_by': 'medication_id'}" />
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_medication" string="Medication" context="{'group_by': 'medication_id'}" />
+                    <filter name="group_by_location" string="Location" context="{'group_by': 'location_id'}" />
                 </group>
             </search>
         </field>
@@ -93,20 +100,44 @@
             <form>
                 <field name="id" invisible="True" />
                 <field name="active" invisible="True" />
-                <header class="oe_read_only">
+                <header>
                     <field name="state" options="{'clickable': '1'}" widget="statusbar" />
                 </header>
                 <sheet>
+                    <field
+                        name="image_1920"
+                        class="oe_avatar"
+                        options="{'preview_image': 'image_128'}"
+                        widget="image"
+                    />
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('active', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
                     />
-                    <group>
-                        <field name="medication_id" />
-                        <field name="category_id" nolabel="True" options="{'horizontal': True}" widget="radio" />
-                    </group>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'completed')]}"
+                        bg_color="bg-success"
+                        title="Completed"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'stopped')]}"
+                        bg_color="bg-warning"
+                        title="Stopped"
+                    />
+                    <div class="oe_title" style="max-width:85%;">
+                        <label for="medication_id" />
+                        <h2>
+                            <field name="medication_id" class="w-100" nolabel="True" />
+                        </h2>
+                        <div>
+                            <span class="fa fa-clock-o ml-2" />
+                            <field name="duration" class="mx-1" />
+                        </div>
+                    </div>
                     <group>
                         <group>
                             <field name="patient_id" />
@@ -114,18 +145,19 @@
                             <field name="location_id" />
                         </group>
                         <group>
-                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="category_id" />
                             <field name="period_start" />
                             <field name="period_end" />
+                            <field name="company_id" groups="base.group_multi_company" />
                         </group>
                     </group>
                     <notebook>
                         <page name="dosage" string="Dosage">
-                            <field name="dosage" placeholder="How the medication is/was taken or should be taken" />
                             <group>
                                 <field name="dosage_timing" context="{'no_bound': True}" />
                                 <field name="dosage_as_need" />
                             </group>
+                            <field name="dosage" placeholder="How the medication is/was taken or should be taken" />
                         </page>
                         <page name="detail" string="Detail">
                             <group>
@@ -159,6 +191,8 @@
                 <field name="patient_id" />
                 <field name="medication_id" />
                 <field name="dosage_timing" />
+                <field name="location_id" />
+                <field name="state" />
             </calendar>
         </field>
     </record>
@@ -182,6 +216,26 @@
                     </div>
                 </templates>
             </activity>
+        </field>
+    </record>
+    <record id="medication_statement_view_pivot" model="ir.ui.view">
+        <field name="name">medication.statement.view.pivot</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="medication_id" type="row" />
+                <field name="location_id" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="medication_statement_view_graph" model="ir.ui.view">
+        <field name="name">medication.statement.view.graph</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="medication_id" type="col" />
+                <field name="location_id" type="col" />
+            </graph>
         </field>
     </record>
 </odoo>

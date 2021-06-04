@@ -9,48 +9,56 @@
         sequence="3"
         web_icon="nirun_medication,static/description/icon.png"
     />
+    <menuitem id="medication_statement_menu" name="Statement" parent="medication_menu_root" />
     <menuitem
-        id="medication_statement_menu"
-        name="Medication Statement"
+        id="medication_statement_menu_default"
+        name="Statement"
         action="medication_statement_action"
-        parent="medication_menu_root"
+        parent="medication_statement_menu"
     />
     <menuitem
-        id="medication_configuration_menu"
+        id="medication_statement_menu_completed"
+        name="Completed"
+        action="medication_statement_action_completed"
+        parent="medication_statement_menu"
+    />
+    <menuitem id="medication_menu" name="Medications" parent="medication_menu_root" />
+    <menuitem id="medication_menu_default" name="Medications" action="medication_action" parent="medication_menu" />
+    <menuitem
+        id="configuration_menu"
         name="Configuration"
         groups="nirun_medication.group_manager"
         parent="medication_menu_root"
         sequence="100"
     />
     <menuitem
-        id="medication_menu"
+        id="medication_configuration_menu_section"
         name="Medications"
         action="medication_action"
-        parent="medication_configuration_menu"
-        sequence="1"
+        parent="configuration_menu"
     />
     <menuitem
         id="medication_form_menu"
-        name="Medication Forms"
+        name="Forms"
         action="medication_form_action"
-        parent="medication_configuration_menu"
+        parent="medication_configuration_menu_section"
     />
-    <menuitem id="unit_menu" name="Units" action="nirun.unit_action" parent="medication_configuration_menu" />
+    <menuitem id="unit_menu" name="Units" action="nirun.unit_action" parent="medication_configuration_menu_section" />
     <menuitem
-        id="medication_statement_configuration_menu"
+        id="medication_statement_configuration_menu_section"
         name="Medication Statement"
-        parent="medication_configuration_menu"
+        parent="configuration_menu"
     />
     <menuitem
         id="medication_statement_category_menu"
-        name="Statement Category"
+        name="Category"
         action="medication_statement_category_action"
-        parent="medication_statement_configuration_menu"
+        parent="medication_statement_configuration_menu_section"
     />
     <menuitem
         id="timing_template_menu"
         name="Timing"
         action="nirun.timing_template_action"
-        parent="medication_statement_configuration_menu"
+        parent="medication_statement_configuration_menu_section"
     />
 </odoo>
