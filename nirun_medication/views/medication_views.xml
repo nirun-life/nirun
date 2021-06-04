@@ -6,7 +6,7 @@
     <record id="medication_action" model="ir.actions.act_window">
         <field name="name">Medications</field>
         <field name="res_model">ni.medication</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
         <field name="context" eval="{'default_categ_id': ref('product_category_medication')}" />
     </record>
     <record id="medication_view_search" model="ir.ui.view">
@@ -33,6 +33,7 @@
                 <field name="ingredient" optional="show" />
                 <field name="form" optional="show" />
                 <field name="amount" optional="show" />
+                <field name="patient_count" optional="show" />
                 <field name="active" optional="hide" />
             </tree>
         </field>
@@ -45,6 +46,11 @@
                 <field name="id" invisible="True" />
                 <field name="active" invisible="True" />
                 <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                        <button name="open_statement" class="oe_stat_button" icon="fa-users" type="object">
+                            <field name="patient_count" string="Patients" widget="statinfo" />
+                        </button>
+                    </div>
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('active', '=', True)]}"
@@ -69,17 +75,20 @@
                             <field name="form" />
                             <label string="Amount" for="amount_numerator" />
                             <div class="o_row">
-                                <field name="amount_numerator" />
+                                <field name="amount_numerator" class="oe_edit_only" />
                                 <field
                                     name="amount_numerator_unit"
+                                    class="oe_edit_only"
                                     options='{"create":False,"create_edit": False,"no_open": True}'
                                 />
-                                <span>/</span>
-                                <field name="amount_denominator" />
+                                <span class="oe_edit_only">/</span>
+                                <field name="amount_denominator" class="oe_edit_only" />
                                 <field
                                     name="amount_denominator_unit"
+                                    class="oe_edit_only"
                                     options='{"create":False,"create_edit": False,"no_open": True}'
                                 />
+                                <field name="amount" class="oe_read_only" />
                             </div>
                         </group>
                         <group>
@@ -137,6 +146,27 @@
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+    <record id="medication_view_pivot" model="ir.ui.view">
+        <field name="name">medication.view.pivot</field>
+        <field name="model">ni.medication</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="form" type="row" />
+                <field name="name" type="row" />
+                <field name="patient_count" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="medication_view_graph" model="ir.ui.view">
+        <field name="name">medication.view.graph</field>
+        <field name="model">ni.medication</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="name" type="col" />
+                <field name="patient_count" type="measure" />
+            </graph>
         </field>
     </record>
 </odoo>

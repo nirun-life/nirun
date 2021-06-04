@@ -26,6 +26,8 @@ class Patient(models.Model):
         ctx.update(
             {
                 "search_default_encounter_id": self.ids[0],
+                "search_default_state_active": True,
+                "search_default_state_completed": True,
                 "default_patient_id": self[0].patient_id.id,
                 "default_encounter_id": self.ids[0],
             }
