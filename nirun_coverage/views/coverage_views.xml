@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="coverage_action" model="ir.actions.act_window">
+        <field name="name">Coverage</field>
+        <field name="res_model">ni.coverage</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="context">{'search_default_group_by_name': True}</field>
+    </record>
+    <record id="coverage_view_search" model="ir.ui.view">
+        <field name="name">coverage.view.search</field>
+        <field name="model">ni.coverage</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="name"
+                    filter_domain="['|', ('name', 'ilike', self), ('insurance_plan_id', 'ilike', self)]"
+                />
+                <field name="patient_id" />
+                <field name="type_id" />
+                <group name="Group By">
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_type" string="Type" context="{'group_by': 'type_id'}" />
+                    <filter name="group_by_name" string="Coverage Name" context="{'group_by': 'name'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="coverage_view_tree" model="ir.ui.view">
+        <field name="name">coverage.view.tree</field>
+        <field name="model">ni.coverage</field>
+        <field name="arch" type="xml">
+            <tree decoration-bf="state == 'draft'" decoration-muted="state in ['cancelled', 'entered-in-error']">
+                <field name="name" invisible="context.get('search_default_group_by_name', False)" />
+                <field name="patient_id" />
+                <field name="type_id" />
+                <field name="insurance_plan_id" optional="hide" />
+                <field name="subscriber_id" />
+                <field name="policy_holder_id" optional="show" />
+                <field name="period_start" optional="show" />
+                <field name="period_end" optional="show" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+    <record id="coverage_view_form" model="ir.ui.view">
+        <field name="name">coverage.view.form</field>
+        <field name="model">ni.coverage</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <header>
+                    <field
+                        name="state"
+                        options="{'clickable': '1'}"
+                        statusbar_visible="draft,active"
+                        widget="statusbar"
+                    />
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'cancelled')]}"
+                        bg_color="bg-warning"
+                        title="Archived"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'entered-in-error')]}"
+                        bg_color="bg-danger"
+                        title="Error Entry"
+                    />
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Coverage's Name" />
+                        </h1>
+                        <label class="oe_read_only mr-1" for="identifier" />
+                        <field name="identifier" placeholder="Policy No." />
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id" />
+                            <field name="period_start" />
+                            <field name="period_end" />
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="type_id" />
+                            <field name="insurance_plan_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="benefit" string="Benefit">
+                            <field name="benefit_ids" attrs="{'invisible': [('insurance_plan_id', '!=', False)]}">
+                                <tree editable="Bottom">
+                                    <field name="coverage_id" invisible="1" />
+                                    <field name="sequence" widget="handle" />
+                                    <field name="type_id" />
+                                    <field name="value" sum="Total" />
+                                    <field name="value_percentage" avg="Average" />
+                                </tree>
+                            </field>
+                            <field
+                                name="insurance_plan_cost_ids"
+                                attrs="{'invisible': [('insurance_plan_id', '!=', True)]}"
+                            >
+                                <tree editable="Bottom">
+                                    <field name="plan_id" invisible="1" />
+                                    <field name="sequence" widget="handle" />
+                                    <field name="type_id" />
+                                    <field name="value" sum="Total" />
+                                    <field name="value_percentage" avg="Average" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="detail" string="Detail">
+                            <group>
+                                <group string="The Insured">
+                                    <field name="subscriber_id" />
+                                    <field name="subscriber_no" />
+                                    <field name="policy_holder_id" />
+                                </group>
+                                <group string="Beneficiary">
+                                    <field name="beneficiary_id" />
+                                    <field name="dependent_no" />
+                                </group>
+                                <group string="Payor">
+                                    <field name="payor_ids" widget="many2many_tags" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="coverage_view_pivot" model="ir.ui.view">
+        <field name="name">coverage.view.pivot</field>
+        <field name="model">ni.coverage</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="type_id" type="row" />
+            </pivot>
+        </field>
+    </record>
+    <record id="coverage_view_graph" model="ir.ui.view">
+        <field name="name">coverage.view.graph</field>
+        <field name="model">ni.coverage</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="type_id" type="col" />
+            </graph>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="insurance_plan_action" model="ir.actions.act_window">
+        <field name="name">Insurance Plan</field>
+        <field name="res_model">ni.insurance.plan</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+    </record>
+    <record id="insurance_plan_view_search" model="ir.ui.view">
+        <field name="name">insurance.plan.view.search</field>
+        <field name="model">ni.insurance.plan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="name"
+                    filter_domain="['|', '|', ('name', 'ilike', self), ('alias', 'ilike', self), ('code', 'ilike', self)]"
+                />
+                <field name="issuer_id" />
+                <group name="Group By">
+                    <filter name="group_by_type" string="Type" context="{'group_by': 'type_id'}" />
+                    <filter name="group_by_issuer" string="Issuer" context="{'group_by': 'issuer_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="insurance_plan_view_tree" model="ir.ui.view">
+        <field name="name">insurance.plan.view.tree</field>
+        <field name="model">ni.insurance.plan</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="alias" optional="show" />
+                <field name="code" optional="show" />
+                <field name="issuer_id" />
+                <field name="type_id" />
+                <field name="patient_count" />
+            </tree>
+        </field>
+    </record>
+    <record id="insurance_plan_view_form" model="ir.ui.view">
+        <field name="name">insurance.plan.view.form</field>
+        <field name="model">ni.insurance.plan</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <header />
+                <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                        <button
+                            name="%(coverage_action)d"
+                            class="oe_stat_button"
+                            context="{'search_default_name': name}"
+                            icon="fa-users"
+                            type="action"
+                        >
+                            <field name="patient_count" string="Patients" widget="statinfo" />
+                        </button>
+                    </div>
+                    <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1>
+                            <field name="name" placeholder="Plan's Name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="issuer_id" />
+                            <field name="type_id" />
+                        </group>
+                        <group>
+                            <field name="alias" />
+                            <field name="code" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="definition" string="Definition">
+                            <field name="definition" />
+                        </page>
+                        <page name="benefit" string="Benefit">
+                            <field name="benefit_ids">
+                                <tree editable="Bottom">
+                                    <field name="plan_id" invisible="1" />
+                                    <field name="sequence" widget="handle" />
+                                    <field name="type_id" />
+                                    <field name="value" sum="Total" />
+                                    <field name="value_percentage" avg="Average" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Extra Info">
+                            <group>
+                                <group>
+                                    <field name="color" />
+                                    <field name="sequence" />
+                                </group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="insurance_plan_view_pivot" model="ir.ui.view">
+        <field name="name">insurance.plan.view.pivot</field>
+        <field name="model">ni.insurance.plan</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="patient_count" type="measure" />
+                <field name="name" type="row" />
+            </pivot>
+        </field>
+    </record>
+    <record id="insurance_plan_view_graph" model="ir.ui.view">
+        <field name="name">insurance.plan.view.graph</field>
+        <field name="model">ni.insurance.plan</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="patient_count" type="measure" />
+                <field name="name" type="col" />
+            </graph>
+        </field>
+    </record>
+</odoo>
