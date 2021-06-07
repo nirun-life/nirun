@@ -52,6 +52,8 @@
                 <field name="birthdate" optional="hide" />
                 <field name="phone" optional="show" widget="phone" />
                 <field name="mobile" optional="show" widget="phone" />
+                <field name="gp_id" optional="hide" />
+                <field name="gp_hospital_id" optional="hide" />
                 <field name="presence_state" />
                 <field name="company_id" groups="base.group_multi_company" />
             </tree>
@@ -166,6 +168,14 @@
                                 <group string="Decease">
                                     <field name="deceased" invisible="1" />
                                     <field name="deceased_date" />
+                                </group>
+                            </group>
+                        </page>
+                        <page name="care" string="Care" accesskey="C">
+                            <group>
+                                <group string="Primary Care">
+                                    <field name="gp_id" />
+                                    <field name="gp_hospital_id" />
                                 </group>
                             </group>
                         </page>

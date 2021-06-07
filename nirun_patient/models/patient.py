@@ -187,6 +187,13 @@ class Patient(models.Model):
     )
     location_id = fields.Many2one(related="encountering_id.location_id")
 
+    gp_hospital_id = fields.Many2one(
+        "res.partner", "Hospital", domain=[("is_company", "=", True)]
+    )
+    gp_id = fields.Many2one(
+        "res.partner", "General Practitioner", domain=[("is_company", "=", False)]
+    )
+
     _sql_constraints = [
         ("code_uniq", "unique (company_id, code)", _("Code must be unique !"),),
         (
@@ -225,6 +232,12 @@ class Patient(models.Model):
                 rec.country_id = rec.partner_id.country_id
                 if not rec._origin.identification_id:
                     rec.identification_id = rec.partner_id.vat
+
+    @api.onchange("gp_id")
+    def onchange_gp_id(self):
+        for rec in self:
+            if rec.gp_id and rec.gp_id.parent_id:
+                rec.gp_hospital_id = rec.gp_id.parent_id
 
     @api.depends("encounter_ids")
     def _compute_encounter(self):
@@ -292,6 +305,19 @@ class Patient(models.Model):
                 )
             if record.birthdate and record.deceased_date < record.birthdate:
                 raise ValidationError(_("Patient cannot die before they was born!",))
+
+    @api.constrains("gp_id", "gp_hospital_id")
+    def _check_general_practitioner(self):
+        for rec in self:
+            if (
+                rec.gp_id
+                and rec.gp_id.parent_id
+                and rec.gp_hospital_id
+                and rec.gp_id.parent_id != rec.gp_hospital_id
+            ):
+                raise ValidationError(
+                    _("General Practitioner's Company and Hospital must be the same!")
+                )
 
     @api.model
     def _compute_is_deceased(self):
