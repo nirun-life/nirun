@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-27 07:01+0000\n"
-"PO-Revision-Date: 2021-05-27 14:11+0700\n"
+"POT-Creation-Date: 2021-06-08 08:19+0000\n"
+"PO-Revision-Date: 2021-06-08 08:19+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -402,6 +402,11 @@ msgid "Cancelled"
 msgstr "ถูกยกเลิก"
 
 #. module: nirun_patient
+#: model_terms:ir.ui.view,arch_db:nirun_patient.patient_view_form
+msgid "Care"
+msgstr "การรักษา"
+
+#. module: nirun_patient
 #: model:ir.model.fields,help:nirun_patient.field_ni_encounter__discharge_id
 msgid "Category or kind of location after discharge"
 msgstr ""
@@ -500,6 +505,7 @@ msgstr "ผู้ติดต่อ"
 #. module: nirun_patient
 #: model:ir.model.fields,help:nirun_patient.field_ni_encounter__partner_id
 #: model:ir.model.fields,help:nirun_patient.field_ni_patient__partner_id
+#: model:ir.model.fields,help:nirun_patient.field_ni_patient_res__partner_id
 msgid "Contact information of patient"
 msgstr "ข้อมูลสำหรับติดต่อผู้สูงอายุ"
 
@@ -601,7 +607,8 @@ msgstr "คำนิยาม"
 
 #. module: nirun_patient
 #: model:ir.actions.act_window,name:nirun_patient.encounter_diet_action
-#: model:ir.model,name:nirun_patient.model_ni_encounter_diet model:ir.ui.menu,name:nirun_patient.encounter_diet_menu
+#: model:ir.model,name:nirun_patient.model_ni_encounter_diet
+#: model:ir.ui.menu,name:nirun_patient.encounter_diet_menu
 msgid "Diet"
 msgstr "อาหาร"
 
@@ -733,7 +740,8 @@ msgstr "ฉุกเฉิน"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_reason__encounter_ids
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location__encounter_ids
 #: model:ir.ui.menu,name:nirun_patient.encounter_configuration_menu_section
-#: model:ir.ui.menu,name:nirun_patient.encounter_menu model:ir.ui.menu,name:nirun_patient.encounter_menu_section
+#: model:ir.ui.menu,name:nirun_patient.encounter_menu
+#: model:ir.ui.menu,name:nirun_patient.encounter_menu_section
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_search
 msgid "Encounter"
 msgstr "ข้อมูลรับบริการ"
@@ -782,7 +790,8 @@ msgid "Error Entry"
 msgstr "ข้อมูลผิดพลาด"
 
 #. module: nirun_patient
-#: code:addons/nirun_patient/models/encounter_class.py:0 code:addons/nirun_patient/models/location.py:0
+#: code:addons/nirun_patient/models/encounter_class.py:0
+#: code:addons/nirun_patient/models/location.py:0
 #, python-format
 msgid "Error! You cannot create recursive data."
 msgstr ""
@@ -916,9 +925,20 @@ msgid "Gender"
 msgstr "เพศ"
 
 #. module: nirun_patient
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__gp_id
+msgid "General Practitioner"
+msgstr "แพทย์ประจำ"
+
+#. module: nirun_patient
 #: model:ni.encounter.admit,name:nirun_patient.admit_gp
 msgid "General Practitioner referral"
 msgstr "ส่งตัวโดยผู้ดูแล"
+
+#. module: nirun_patient
+#: code:addons/nirun_patient/models/patient.py:0
+#, python-format
+msgid "General Practitioner's Company and Hospital must be the same!"
+msgstr "แพทย์ประจำ ต้องสังกัดอยู่ในโรงพยาบาลที่ระบุ"
 
 #. module: nirun_patient
 #: model:ni.encounter.diet,name:nirun_patient.diet_gluten_free
@@ -945,6 +965,11 @@ msgstr "ฮาลาล"
 #: model:ni.encounter.cls,name:nirun_patient.class_HH
 msgid "Home Health"
 msgstr "เยี่ยมบ้าน"
+
+#. module: nirun_patient
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__gp_hospital_id
+msgid "Hospital"
+msgstr "โรงพยาบาล"
 
 #. module: nirun_patient
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
@@ -1168,7 +1193,8 @@ msgstr "ระดับ"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__location_id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel__location_id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__location_id
-#: model:ir.ui.menu,name:nirun_patient.location_menu model:ir.ui.menu,name:nirun_patient.location_menu_section
+#: model:ir.ui.menu,name:nirun_patient.location_menu
+#: model:ir.ui.menu,name:nirun_patient.location_menu_section
 #: model_terms:ir.ui.view,arch_db:nirun_patient.location_view_form
 msgid "Location"
 msgstr "อาคาร"
@@ -1428,6 +1454,7 @@ msgstr "ผู้ดูแล"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__patient_id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location__patient_ids
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__partner_id
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_patient_res__partner_id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient_res__patient_id
 #: model:ir.model.fields,field_description:nirun_patient.field_res_partner__patient
 #: model:ir.model.fields,field_description:nirun_patient.field_res_users__patient
@@ -1483,7 +1510,8 @@ msgstr "ชื่อผู้สูงอายุ"
 #. module: nirun_patient
 #: model:ir.actions.act_window,name:nirun_patient.patient_action
 #: model:ir.module.category,name:nirun_patient.module_category_medical_patient
-#: model:ir.ui.menu,name:nirun_patient.patient_menu model:ir.ui.menu,name:nirun_patient.patient_menu_root
+#: model:ir.ui.menu,name:nirun_patient.patient_menu
+#: model:ir.ui.menu,name:nirun_patient.patient_menu_root
 #: model:ir.ui.menu,name:nirun_patient.patient_menu_section
 msgid "Patients"
 msgstr "ข้อมูลผู้สูงอายุ"
@@ -1545,6 +1573,11 @@ msgstr "สถานะปัจจุบัน"
 #: model:ir.model.fields.selection,name:nirun_patient.selection__ni_patient__education_level__1
 msgid "Primary"
 msgstr "ประถม"
+
+#. module: nirun_patient
+#: model_terms:ir.ui.view,arch_db:nirun_patient.patient_view_form
+msgid "Primary Care"
+msgstr "การรักษาเบื้องต้น"
 
 #. module: nirun_patient
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__performer_id
@@ -1611,7 +1644,7 @@ msgstr "ส่งต่อ"
 
 #. module: nirun_patient
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
-msgid "Reset to Draft"
+msgid "Reset To Draft"
 msgstr "กลับเป็นฉบับร่าง"
 
 #. module: nirun_patient
@@ -1966,6 +1999,18 @@ msgstr "หวอด"
 #, python-format
 msgid "Warning!"
 msgstr "คำเตือน!"
+
+#. module: nirun_patient
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__website_message_ids
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: nirun_patient
+#: model:ir.model.fields,help:nirun_patient.field_ni_encounter__website_message_ids
+#: model:ir.model.fields,help:nirun_patient.field_ni_patient__website_message_ids
+msgid "Website communication history"
+msgstr ""
 
 #. module: nirun_patient
 #: model:ni.encounter.arrangement,name:nirun_patient.arrg_wheel
