@@ -13,5 +13,5 @@
     "data": ["views/care_episode_views.xml"],
     "application": True,
     "auto_install": False,
-    "installable": True,
+    "installable": False,
 }
