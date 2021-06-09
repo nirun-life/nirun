@@ -24,14 +24,14 @@ class MedicationTest(common.TransactionCase):
 
         self.assertEqual(
             "RASILEZ HCT (NOVARTIS PHARMA, GERMANY) (aliskiren 300 mg + "
-            "hydrochlorothiazide 12.5 mg) film-coated tablet, 1 tablet",
+            "hydrochlorothiazide 12.5 mg) film-coated tablet, 1.0 tablet",
             med.fsn,
         )
 
         med.write({"active_ingredient": "aliskiren", "strength": "300 mg"})
         self.assertEqual(
             "RASILEZ HCT (NOVARTIS PHARMA, GERMANY) (aliskiren 300 mg) "
-            "film-coated tablet, 1 tablet",
+            "film-coated tablet, 1.0 tablet",
             med.fsn,
         )
 
@@ -51,6 +51,6 @@ class MedicationTest(common.TransactionCase):
             }
         )
         self.assertEqual(
-            "RASILEZ HCT (NOVARTIS PHARMA, GERMANY) film-coated tablet, 1 tablet",
+            "RASILEZ HCT (NOVARTIS PHARMA, GERMANY) film-coated tablet, 1.0 tablet",
             med.fsn,
         )
