@@ -16,8 +16,9 @@ class Activity(models.Model):
                 rec.period_start = rec.service_request_id.period_start
                 rec.period_end = rec.service_request_id.period_end
 
+    @api.model
     def create(self, vals):
-        activity = super(Activity, self).create(vals)
+        activity = super().create(vals)
 
         if vals.get("service_request_id"):
             activity._link_with_request(vals)
