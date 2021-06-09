@@ -13,5 +13,5 @@
     "data": ["views/careplan_views.xml"],
     "application": False,
     "auto_install": False,
-    "installable": True,
+    "installable": False,
 }
