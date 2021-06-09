@@ -1,0 +1,37 @@
+name: test
+
+on:
+  pull_request:
+    branches:
+      - "13.0*"
+  push:
+    branches:
+      - "13.0*"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - container: ghcr.io/oca/oca-ci/py3.6-odoo13.0:latest
+            makepot: "true"
+          - container: ghcr.io/oca/oca-ci/py3.6-ocb13.0:latest
+    services:
+      postgres:
+        image: postgres:9.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: odoo
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - run: oca_install_addons
+      - run: oca_init_test_database
+      - run: oca_run_tests
