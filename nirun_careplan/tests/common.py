@@ -12,7 +12,7 @@ class TestCareplanCommon(common.TransactionCase):
         self.care_manager = mail_new_test_user(
             self.env,
             login="care-manager",
-            groups="base.group_user,nirun_careplan.careplan_group_manager",
+            groups="base.group_user,nirun_careplan.group_manager",
             name="Chole Manager",
             email="p.admin@example.com",
         )
