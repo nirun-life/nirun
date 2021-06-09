@@ -319,7 +319,7 @@ class Patient(models.Model):
                     _("General Practitioner's Company and Hospital must be the same!")
                 )
 
-    @api.model
+    @api.depends("deceased_date")
     def _compute_is_deceased(self):
         for record in self:
             record.deceased = bool(record.deceased_date)
