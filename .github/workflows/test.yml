@@ -32,6 +32,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           persist-credentials: false
+      - run: pip install -r test-requirements.txt
       - run: oca_install_addons
       - run: oca_init_test_database
       - run: oca_run_tests
