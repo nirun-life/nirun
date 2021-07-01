@@ -34,4 +34,4 @@ class ServiceBulkRequest(models.TransientModel):
                     "state": self.state,
                 }
             )
-        return self.service_id.open_request()
+        return self.service_id.open_request(self.state)
