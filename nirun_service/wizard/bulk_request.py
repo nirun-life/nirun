@@ -11,7 +11,6 @@ class ServiceBulkRequest(models.TransientModel):
     patient_ids = fields.Many2many(
         "ni.patient",
         string="Patients",
-        store=False,
         required=True,
         domain=[("encountering_id", "!=", False)],
     )
