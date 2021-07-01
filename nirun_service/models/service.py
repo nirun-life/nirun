@@ -88,13 +88,13 @@ class HealthcareService(models.Model):
         )
         return {data["service_id"][0]: data["service_id_count"] for data in req}
 
-    def open_request(self):
+    def open_request(self, state="active"):
         self.ensure_one()
         ctx = dict(self._context)
         ctx.update(
             {
                 "search_default_service_id": self.id,
-                "search_default_active": True,
+                "search_default_%s" % state: True,
                 "default_service_id": self.id,
             }
         )
