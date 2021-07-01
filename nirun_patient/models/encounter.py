@@ -109,7 +109,6 @@ class Encounter(models.Model):
         "ni_encounter_reason_rel",
         "encounter_id",
         "reason_id",
-        readonly=True,
         states=LOCK_STATE_DICT,
         copy=True,
         help="Reason the encounter takes place",
