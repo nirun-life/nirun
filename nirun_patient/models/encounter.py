@@ -139,6 +139,9 @@ class Encounter(models.Model):
         help="The type of hospital re-admission that has occurred (if any). "
         "If the value is absent, then this is not identified as a readmission",
     )
+    re_admit_reason = fields.Text(
+        "Re-Admission Reason", states=LOCK_STATE_DICT, tracking=True,
+    )
     diet_ids = fields.Many2many(
         "ni.encounter.diet",
         "ni_encounter_diet_rel",
@@ -312,6 +315,7 @@ class Encounter(models.Model):
                 enc.update({"state": "planned"})
             else:
                 enc.update({"state": "in-progress"})
+                enc.patient_id._compute_encounter()
 
     def action_close(self):
         for enc in self:
