@@ -1,30 +1,34 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class Patient(models.Model):
     _inherit = "ni.patient"
 
     service_request_ids = fields.One2many(
-        "ni.service.request", "patient_id", "Service Requests",
+        "ni.service.request",
+        "patient_id",
+        "Service Requests",
+        groups="nirun_service.group_user",
     )
     service_request_count = fields.Integer(
         "Services", compute="_compute_service_request_count", sudo_compute=True
     )
 
-    @api.depends("service_request_ids", "service_request_ids.state")
     def _compute_service_request_count(self):
         count = self._count_active_service_request()
         for rec in self:
             rec.service_request_count = count.get(rec.id)
 
     def _count_active_service_request(self):
-        _domain = [("patient_id", "in", self.ids), ("state", "=", "active")]
-        req = self.env["ni.service.request"].read_group(
-            _domain, ["patient_id"], ["patient_id"],
+        domain = [("patient_id", "in", self.ids), ("state", "=", "active")]
+        read = (
+            self.env["ni.service.request"]
+            .sudo()
+            .read_group(domain, ["patient_id"], ["patient_id"])
         )
-        return {data["patient_id"][0]: data["patient_id_count"] for data in req}
+        return {res["patient_id"][0]: res["patient_id_count"] for res in read}
 
     def open_service_request(self):
         self.ensure_one()
