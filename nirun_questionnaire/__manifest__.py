@@ -11,6 +11,7 @@
     "maintainers": ["piruin"],
     "depends": ["nirun_patient", "survey_subject", "survey_scoring", "survey_grading"],
     "data": [
+        "security/security.xml",
         "wizard/survey_subject_views.xml",
         "views/survey_survey_views.xml",
         "views/survey_user_views.xml",
