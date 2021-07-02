@@ -1,20 +1,27 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
     observation_ids = fields.One2many(
-        "ni.observation", "encounter_id", domain=[("active", "=", True)]
+        "ni.observation",
+        "encounter_id",
+        domain=[("active", "=", True)],
+        groups="nirun_observation.group_user",
     )
     observation_count = fields.Integer(compute="_compute_observation_count")
 
-    @api.depends("observation_ids")
     def _compute_observation_count(self):
-        for rec in self:
-            rec.observation_count = len(rec.observation_ids)
+        observations = self.env["ni.observation"].sudo()
+        read = observations.read_group(
+            [("encounter_id", "in", self.ids)], ["encounter_id"], ["encounter_id"]
+        )
+        data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
+        for encounter in self:
+            encounter.observation_count = data.get(encounter.id, 0)
 
     def action_observation(self):
         action_rec = self.env.ref("nirun_observation.ob_action")
