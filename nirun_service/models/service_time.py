@@ -5,7 +5,7 @@ import pytz
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
-from odoo.addons.nirun_service.models.service import float_time_format
+from ..models.service import float_time_format
 
 
 def _tz_get(self):
