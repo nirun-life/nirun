@@ -5,30 +5,38 @@ from odoo import api, fields, models
 class Patient(models.Model):
     _inherit = "ni.patient"
 
-    careplan_ids = fields.One2many("ni.careplan", "patient_id", "Careplan(s)")
-    careplan_id = fields.Many2one(
-        "ni.careplan", "Careplan", compute="_compute_careplan_activity"
+    careplan_ids = fields.One2many(
+        "ni.careplan", "patient_id", "Careplan(s)", groups="nirun_careplan.group_user"
+    )
+    careplan_count = fields.Integer(
+        compute="_compute_careplan_count", groups="nirun_careplan.group_user"
     )
     careplan_activity_count = fields.Integer(
-        "Activities", compute="_compute_careplan_activity", sudo_compute=True
+        "Activities", compute="_compute_careplan_activity"
     )
 
     @api.depends("careplan_ids")
+    def _compute_careplan_count(self):
+        for rec in self:
+            rec.careplan_count = len(rec.careplan_ids)
+
     def _compute_careplan_activity(self):
-        activities = self.env["ni.careplan.activity"].read_group(
-            [("patient_id", "in", self.ids)], ["patient_id"], ["patient_id"]
+        activities = self.env["ni.careplan.activity"].sudo()
+        result = activities.read_group(
+            domain=[
+                ("patient_id", "in", self.ids),
+                ("state", "in", ["scheduled", "in-progress"]),
+            ],
+            fields=["patient_id"],
+            groupby=["patient_id"],
         )
-        result = {
-            data["patient_id"][0]: data["patient_id_count"] for data in activities
-        }
-        for plan in self:
-            plan.careplan_id = plan.careplan_ids[0] if plan.careplan_ids else None
-            plan.careplan_activity_count = result.get(plan.id, 0)
+        data = {res["patient_id"][0]: res["patient_id_count"] for res in result}
+        for patient in self:
+            patient.careplan_activity_count = data.get(patient.id, 0)
 
     # -------------
     # Actions
     # -------------
-
     def open_careplan_activity(self):
         self.ensure_one()
         patient = self[0]
