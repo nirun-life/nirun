@@ -17,38 +17,47 @@ class MedicationStatement(models.Model):
     name = fields.Char(related="medication_id.name", store=True)
     display_name = fields.Char(compute="_compute_display_name", store=True)
     location_id = fields.Many2one(
-        related="encounter_id.location_id", store=True, index=True,
+        related="encounter_id.location_id", store=True, index=True, tracking=True
     )
     category_id = fields.Many2one(
         "ni.medication.statement.category",
         "Category",
         required=True,
         ondelete="restrict",
+        tracking=True,
     )
-    medication_id = fields.Many2one("ni.medication", required=True, ondelete="restrict")
-    image_1920 = fields.Image(related="medication_id.image_1920", readonly=False)
-    image_1024 = fields.Image(related="medication_id.image_1024", readonly=False)
-    image_512 = fields.Image(related="medication_id.image_512", readonly=False)
-    image_256 = fields.Image(related="medication_id.image_256", readonly=False)
-    image_128 = fields.Image(related="medication_id.image_128", readonly=False)
+    medication_id = fields.Many2one(
+        "ni.medication", required=True, ondelete="restrict", tracking=True
+    )
+    image_1920 = fields.Image(related="medication_id.image_1920")
+    image_1024 = fields.Image(related="medication_id.image_1024")
+    image_512 = fields.Image(related="medication_id.image_512")
+    image_256 = fields.Image(related="medication_id.image_256")
+    image_128 = fields.Image(related="medication_id.image_128")
     state = fields.Selection(
         [("active", "Currently"), ("completed", "Completed"), ("stopped", "Stopped")],
         default="active",
         required=True,
+        tracking=True,
     )
-    state_reason = fields.Char(required=False)
-    period_start = fields.Date(required=True)
-    active = fields.Boolean(default=True)
+    state_reason = fields.Char(required=False, tracking=True)
+    period_start = fields.Date(required=True, tracking=True)
+    active = fields.Boolean(default=True, tracking=True)
 
-    dosage = fields.Text(help="How the medication is/was taken or should be taken")
+    dosage = fields.Text(
+        help="How the medication is/was taken or should be taken", tracking=True
+    )
     dosage_timing = fields.Many2one(
         "ni.timing",
         "Timing",
         help="When medication should be administered",
         auto_join=True,
+        tracking=True,
     )
-    dosage_when = fields.Many2many(string="Dosage (when)", related="dosage_timing.when")
-    dosage_as_need = fields.Boolean("As need?", default=False)
+    dosage_when = fields.Many2many(
+        string="Dosage (when)", related="dosage_timing.when", tracking=True
+    )
+    dosage_as_need = fields.Boolean("As need?", default=False, tracking=True)
 
     @api.depends("medication_id.name", "patient_id.name")
     def _compute_display_name(self):
