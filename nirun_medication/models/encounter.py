@@ -1,23 +1,28 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
-class Patient(models.Model):
+class Encounter(models.Model):
     _inherit = "ni.encounter"
 
     medication_ids = fields.One2many(
         "ni.medication.statement",
         "encounter_id",
         string="Medication Statements",
-        domain=[("state", "in", ["active", "completed"])],
+        domain=[("state", "in", ["active"])],
+        groups="nirun_medication.group_user",
     )
     medication_count = fields.Integer(compute="_compute_medication_count")
 
-    @api.depends("medication_ids")
     def _compute_medication_count(self):
-        for rec in self:
-            rec.medication_count = len(rec.medication_ids)
+        observations = self.env["ni.medication.statement"].sudo()
+        read = observations.read_group(
+            [("encounter_id", "in", self.ids)], ["encounter_id"], ["encounter_id"]
+        )
+        data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
+        for enc in self:
+            enc.medication_count = data.get(enc.id, 0)
 
     def action_medication_statement(self):
         action_rec = self.env.ref("nirun_medication.medication_statement_action")

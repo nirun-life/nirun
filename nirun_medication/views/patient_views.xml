@@ -7,6 +7,7 @@
         <field name="name">patient.view.form.inherit</field>
         <field name="model">ni.patient</field>
         <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="groups_id" eval="[(4, ref('nirun_medication.group_user'))]" />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_medication_statement" class="oe_stat_button" icon="fa-medkit" type="object">
