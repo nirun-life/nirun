@@ -5,6 +5,7 @@ from odoo import api, fields, models
 class Medication(models.Model):
     _name = "ni.medication"
     _description = "Medication"
+    _inherit = ["mail.thread"]
     _inherits = {"product.template": "product_tmpl_id"}
 
     product_tmpl_id = fields.Many2one(
@@ -14,29 +15,36 @@ class Medication(models.Model):
         index=True,
         ondelete="cascade",
         required=True,
+        tracking=True,
     )
-    manufacturer_name = fields.Char(index=True)
-    manufacturer_id = fields.Many2one("res.partner", domain=[("is_company", "=", True)])
-    form = fields.Many2one("ni.medication.form", index=True)
+    manufacturer_name = fields.Char(index=True, tracking=True)
+    manufacturer_id = fields.Many2one(
+        "res.partner", domain=[("is_company", "=", True)], tracking=True
+    )
+    form = fields.Many2one("ni.medication.form", index=True, tracking=True)
     ingredient = fields.Char(
-        "Ingredient", compute="_compute_ingredient", store=True, index=True
+        "Ingredient",
+        compute="_compute_ingredient",
+        store=True,
+        index=True,
+        tracking=True,
     )
     ingredient_ids = fields.One2many(
-        "ni.medication.ingredient", "medication_id", "Ingredient List"
+        "ni.medication.ingredient", "medication_id", "Ingredient List", tracking=True
     )
     amount = fields.Char(
         compute="_compute_amount",
         store=True,
         index=True,
         help="Amount of drug in package",
+        tracking=True,
     )
-    amount_numerator = fields.Float()
-    amount_numerator_unit = fields.Many2one("ni.quantity.unit")
-    amount_denominator = fields.Float(default=1.0)
-    amount_denominator_unit = fields.Many2one("ni.quantity.unit")
+    amount_numerator = fields.Float(tracking=True)
+    amount_numerator_unit = fields.Many2one("ni.quantity.unit", tracking=True)
+    amount_denominator = fields.Float(default=1.0, tracking=True)
+    amount_denominator_unit = fields.Many2one("ni.quantity.unit", tracking=True)
 
     statement_ids = fields.One2many("ni.medication.statement", "medication_id")
-
     patient_ids = fields.Many2many(
         "ni.patient",
         "ni_medication_patient_rel",
