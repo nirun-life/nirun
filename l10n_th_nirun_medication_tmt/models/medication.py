@@ -31,11 +31,11 @@ class Medication(models.Model):
     def _compute_ingredient_val(self, vals):
         try:
             if vals.get("active_ingredient") and "strength" in vals:
-                ing = vals.get("active_ingredient").split("+")
-                str = vals.get("strength").split("+")
+                ingredients = vals.get("active_ingredient").split("+")
+                strengths = vals.get("strength").split("+")
                 res = [
-                    "{} {}".format(ing[i].strip(), str[i].strip())
-                    for i in range(len(ing))
+                    "{} {}".format(ingredients[i].strip(), strengths[i].strip())
+                    for i in range(len(ingredients))
                 ]
                 vals["ingredient"] = " + ".join(res)
         finally:
