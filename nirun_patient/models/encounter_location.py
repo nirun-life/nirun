@@ -37,3 +37,4 @@ class EncounterLocation(models.Model):
     physical_type_id = fields.Many2one(
         related="location_id.physical_type_id", store=False
     )
+    note = fields.Text()
