@@ -44,6 +44,7 @@ class Condition(models.Model):
     )
     recurrence = fields.Boolean()
     gender = fields.Selection(related="patient_id.gender", store=True)
+    note = fields.Text()
 
     def name_get(self):
         return [(rec.id, rec._name_get()) for rec in self]
