@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='care']/group" position="inside">
+                <group string="Disability">
+                    <field name="disability_ids" widget="many2many_checkboxes" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="patient_view_tree_inherit" model="ir.ui.view">
+        <field name="name">patient.view.tree.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_tree" />
+        <field name="arch" type="xml">
+            <field name="mobile" position="after">
+                <field name="disability_display" optional="show" />
+            </field>
+        </field>
+    </record>
+</odoo>
