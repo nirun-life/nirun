@@ -19,7 +19,7 @@ class Activity(models.Model):
         string="Priority",
     )
     active = fields.Boolean(default=True)
-    name = fields.Char(string="Title", tracking=True, required=True, index=True)
+    name = fields.Char(string="Activity", tracking=True, required=True, index=True)
     description = fields.Html(string="Description")
     category_ids = fields.Many2many(
         "ni.careplan.category",
@@ -89,6 +89,9 @@ class Activity(models.Model):
         index=True,
         tracking=True,
         check_company=True,
+    )
+    assignee_uid = fields.Many2one(
+        related="assignee_id.user_id", string="Assigned User"
     )
     reason = fields.Html(
         copy=True, help="Reason why this activity should be done!", tracking=True,
