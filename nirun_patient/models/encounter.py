@@ -120,9 +120,8 @@ class Encounter(models.Model):
         "res.partner",
         string="Transfer from",
         states=LOCK_STATE_DICT,
-        domain=[("is_company", "=", True)],
         tracking=True,
-        help="The organization from which the patient came before admission",
+        help="organization which the patient came before admission",
         copy=True,
     )
     admit_source_id = fields.Many2one(
