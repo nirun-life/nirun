@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-27 08:41+0000\n"
-"PO-Revision-Date: 2021-05-27 08:41+0000\n"
+"POT-Creation-Date: 2021-07-06 06:55+0000\n"
+"PO-Revision-Date: 2021-07-06 06:55+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -36,6 +36,15 @@ msgid "<span class=\"o_label\">Activities</span>"
 msgstr "<span class=\"o_label\">กิจกรรม</span>"
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.patient_view_form_inherit
+msgid ""
+"<span class=\"o_stat_text\">Create</span>\n"
+"                        <span class=\"o_stat_text\">Careplan</span>"
+msgstr ""
+"<span class=\"o_stat_text\">สร้าง</span>\n"
+"                        <span class=\"o_stat_text\">แผนการดูแล</span>"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_needaction
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_needaction
 msgid "Action Needed"
@@ -62,6 +71,7 @@ msgstr "กิจกรรม"
 
 #. module: nirun_careplan
 #: model:ir.model,name:nirun_careplan.model_ni_careplan_activity
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__name
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_state_wizard__activity_ids
 #: model:ir.ui.menu,name:nirun_careplan.activity_menu
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form_quick_create
@@ -131,6 +141,11 @@ msgid "Assign Date"
 msgstr "มอบหมายเมื่อ"
 
 #. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__assignee_uid
+msgid "Assigned User"
+msgstr "ผู้รับมอบหมาย"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__assignee_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
 msgid "Assigned to"
@@ -197,11 +212,21 @@ msgid "Care plan for"
 msgstr "แผนการดูแลสำหรับ"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_patient__careplan_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.patient_view_form_inherit
 msgid "Careplan"
 msgstr "แผนการดูแล"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_patient__careplan_count
+msgid "Careplan Count"
+msgstr "จำนวนแผนการดูแล"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,help:nirun_careplan.field_ni_patient__careplan_activity_count
+msgid "Careplan's activity assigned to current user that still active"
+msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_patient__careplan_ids
@@ -284,6 +309,11 @@ msgstr "การกำหนดค่า"
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Confirm"
 msgstr "ยืนยัน"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__partner_id
+msgid "Contact information of patient"
+msgstr ""
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
@@ -723,6 +753,7 @@ msgstr "คำสั่ง"
 
 #. module: nirun_careplan
 #: model:ir.model,name:nirun_careplan.model_ni_patient
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__partner_id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__patient_id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__patient_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
@@ -782,6 +813,11 @@ msgstr "ระบุเหตุผลที่ทำให้เกิดกิ
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity__kanban_state__blocked
 msgid "Red"
 msgstr "มีปัญหา"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__assignee_uid
+msgid "Related user name for the resource to manage its access."
+msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__activity_user_id
@@ -898,11 +934,6 @@ msgid "Tense"
 msgstr "ช่วงเวลา"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__name
-msgid "Title"
-msgstr "ชื่อ"
-
-#. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr "พิมพ์กิจกรรมข้อยกเว้นบนบันทึก"
@@ -941,6 +972,18 @@ msgstr "ปรับปรุงสถานะ"
 #: model:res.groups,name:nirun_careplan.group_user
 msgid "User"
 msgstr "ผู้ใช้"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__website_message_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__website_message_ids
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__website_message_ids
+msgid "Website communication history"
+msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__patient_contribution
