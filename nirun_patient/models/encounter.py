@@ -291,7 +291,7 @@ class Encounter(models.Model):
             args=[("encounter_id", "=", self.id)], order="period_start DESC", limit=1
         )
 
-    def _create_location_hist(self, location, start):
+    def _create_location_hist(self, location, start=None):
         self.ensure_one()
         encounter_location = self.env["ni.encounter.location.rel"].sudo()
         encounter_location.create(
