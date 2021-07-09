@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="allergy_action" model="ir.actions.act_window">
+        <field name="name">Allergy / Intolerance</field>
+        <field name="res_model">ni.allergy</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+    </record>
+    <record id="allergy_view_search" model="ir.ui.view">
+        <field name="name">allergy.view.search</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <field name="code_id" />
+                <separator />
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]" />
+                <filter name="inactive" string="Inactive" domain="[('state', '=', 'inactive')]" />
+                <filter name="resolved" string="Resolved" domain="[('state', '=', 'resolved')]" />
+                <separator />
+                <filter name="criticality_high" string="High" domain="[('criticality', '=', 'high')]" />
+                <filter name="criticality_low" string="Low" domain="[('criticality', '=', 'low')]" />
+                <filter
+                    name="criticality_unable_to_assess"
+                    string="Unable to Access"
+                    domain="[('criticality', '=', 'unable-to-assess')]"
+                />
+                <group>
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_code" string="Allergy / Intolerance" context="{'group_by': 'code_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="allergy_view_tree" model="ir.ui.view">
+        <field name="name">allergy.view.tree</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="patient_id" invisible="context.get('default_patient_id', False)" />
+                <field name="code_id" optional="show" />
+                <field name="category" />
+                <field name="criticality" />
+                <field name="state" optional="show" />
+                <field name="company_id" groups="base.group_multi_company" />
+            </tree>
+        </field>
+    </record>
+    <record id="allergy_view_form" model="ir.ui.view">
+        <field name="name">allergy.view.form</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <header class="oe_read_only">
+                    <button
+                        name="action_inactive"
+                        string="Inactive"
+                        attrs="{'invisible': [('state', '!=', 'active')]}"
+                        type="object"
+                    />
+                    <button
+                        name="action_active"
+                        string="Active"
+                        attrs="{'invisible': [('state', '=', 'active')]}"
+                        type="object"
+                    />
+                    <field name="state" statusbar_visible="active,inactive" widget="statusbar" />
+                </header>
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'inactive')]}"
+                        bg_color="bg-success"
+                        title="Inactive"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'resolved')]}"
+                        bg_color="bg-success"
+                        title="Resolved"
+                    />
+                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
+                    <div>
+                        <label for="code_id" />
+                        <h2>
+                            <field name="code_id" nolabel="1" placeholder="Allergy / Intolerance" />
+                        </h2>
+                        <field
+                            name="category"
+                            class="oe_read_only"
+                            invisible="context.get('default_category', False)"
+                            options="{'horizontal':True}"
+                            widget="radio"
+                        />
+                    </div>
+                    <group>
+                        <group>
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                readonly="context.get('default_patient_id', False)"
+                            />
+                            <field name="patient_id" readonly="context.get('default_patient_id', False)" />
+                            <field name="asserter_id" />
+                            <field
+                                name="asserter_is_patient"
+                                attrs="{'invisible': [('asserter_id', '!=', False)]}"
+                                class="oe_edit_only"
+                            />
+                        </group>
+                        <group>
+                            <field name="criticality" />
+                            <field name="last_occurrence" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="note" string="Note">
+                            <field name="note" placeholder="Additional note" />
+                        </page>
+                        <page name="reaction" string="Event">
+                            <field name="reaction_ids" context="{'default_allergy_id': id}" mode="tree">
+                                <tree editable="top">
+                                    <field name="onset" />
+                                    <field name="description" placeholder="Description of the event as a whole" />
+                                    <field name="severity" optional="show" />
+                                    <field name="note" optional="hide" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Extra Info">
+                            <group>
+                                <group>
+                                    <label for="type" />
+                                    <div>
+                                        <field name="type" />
+                                        <i class="text-muted oe_edit_only">Underlying mechanism (if known)</i>
+                                    </div>
+                                    <label for="encounter_id" />
+                                    <div>
+                                        <field name="encounter_id" />
+                                        <i class="text-muted oe_edit_only">
+                                            Encounter when the allergy or intolerance was asserted
+                                        </i>
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="condition_view_pivot" model="ir.ui.view">
+        <field name="name">condition.view.pivot</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="category" type="row" />
+            </pivot>
+        </field>
+    </record>
+    <record id="condition_view_graph" model="ir.ui.view">
+        <field name="name">condition.view.graph</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="category" type="col" />
+            </graph>
+        </field>
+    </record>
+</odoo>

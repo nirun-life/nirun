@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='private']" position="after">
+                <page name="allergy" string="Allergy / Intolerance">
+                    <field name="allergy_ids" context="{'default_patient_id': active_id}" mode="tree">
+                        <tree editable="bottom">
+                            <field name="company_id" invisible="1" />
+                            <field name="patient_id" invisible="1" />
+                            <field name="code_id" />
+                            <field name="criticality" optional="hide" />
+                            <field name="state" />
+                            <field name="note" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
