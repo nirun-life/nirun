@@ -173,9 +173,20 @@
                         </page>
                         <page name="care" string="Care" accesskey="C">
                             <group>
-                                <group string="Primary Care">
-                                    <field name="gp_id" />
-                                    <field name="gp_hospital_id" />
+                                <group string="General Practitioner" colspan="4">
+                                    <field name="gp_ids" mode="tree" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="sequence" widget="handle" />
+                                            <field name="practitioner_id" />
+                                            <field name="note" />
+                                        </tree>
+                                        <form>
+                                            <group>
+                                                <field name="practitioner_id" />
+                                                <field name="note" />
+                                            </group>
+                                        </form>
+                                    </field>
                                 </group>
                             </group>
                         </page>
