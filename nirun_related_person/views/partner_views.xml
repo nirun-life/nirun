@@ -9,17 +9,16 @@
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
             <!--Relationship-->
-            <field name="type" position="after">
+            <field name="type" position="before">
+                <field name="relate_person" invisible="1" />
                 <field
                     name="relationship_id"
-                    attrs="{'invisible': [('type', '!=', 'relate')]}"
+                    attrs="{'invisible': [('relate_person', '!=', True)]}"
                     options="{'no_create':True, 'no_open':True}"
+                    readonly="context.get('default_relationship_id')"
                 />
             </field>
             <!--Address field -->
-            <label name="address_name" position="inside">
-                <b attrs="{'invisible': [('type', '!=', 'relate')]}">Address</b>
-            </label>
             <field name="street" position="before">
                 <button
                     name="action_copy_parent_address"
@@ -33,9 +32,10 @@
             </field>
             <!--Contacts & Address page, [child_ids] in-line form -->
             <xpath expr="//notebook/page[1]/field/form/sheet/group/group[1]/field[@name='title']" position="after">
+                <field name="relate_person" invisible="1" />
                 <field
                     name="relationship_id"
-                    attrs="{'invisible': [('type', '!=', 'relate')]}"
+                    attrs="{'invisible': [('relate_person', '!=', True)]}"
                     options="{'no_create':True, 'no_open':True}"
                 />
             </xpath>

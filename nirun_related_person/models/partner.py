@@ -6,7 +6,7 @@ from odoo import api, fields, models
 class Partner(models.Model):
     _inherit = "res.partner"
 
-    type = fields.Selection(selection_add=[("relate", "Related Person")])
+    relate_person = fields.Boolean(compute="_compute_relate_person", store=True)
 
     relationship_id = fields.Many2one(
         "res.partner.relationship",
@@ -14,25 +14,11 @@ class Partner(models.Model):
     )
 
     @api.onchange("parent_id")
-    def onchange_parent_id(self):
-        # return values in result, as this method is used by _fields_sync()
-        if not self.parent_id:
-            return
-        result = super(Partner, self).onchange_parent_id() or {}
-        partner = self._origin
-
-        if partner.type == "relate" or self.type == "relate":
-            # for other: it convenient for user to have some prepared address
-            address_fields = self._address_fields()
-            if any(self.parent_id[key] for key in address_fields):
-
-                def convert(value):
-                    return value.id if isinstance(value, models.BaseModel) else value
-
-                result["value"] = {
-                    key: convert(self.parent_id[key]) for key in address_fields
-                }
-        return result
+    @api.depends("parent_id.patient")
+    def _compute_relate_person(self):
+        for rec in self:
+            if rec.parent_id and rec.parent_id.patient:
+                rec.relate_person = True
 
     def action_copy_parent_address(self):
         self.ensure_one()
