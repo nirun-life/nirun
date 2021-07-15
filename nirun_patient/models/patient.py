@@ -63,7 +63,10 @@ class Patient(models.Model):
         help="ID related to patient's nationality",
     )
     gender = fields.Selection(
-        [("male", "Male"), ("female", "Female"), ("other", "Other")], tracking=True,
+        [("male", "Male"), ("female", "Female"), ("other", "Other")],
+        tracking=True,
+        related="partner_id.gender",
+        readonly=False,
     )
     birthdate = fields.Date("Date of Birth", tracking=True)
     age = fields.Char("Age", compute="_compute_age", compute_sudo=True)
@@ -300,19 +303,6 @@ class Patient(models.Model):
                 )
             if record.birthdate and record.deceased_date < record.birthdate:
                 raise ValidationError(_("Patient cannot die before they was born!",))
-
-    @api.constrains("gp_id", "gp_hospital_id")
-    def _check_general_practitioner(self):
-        for rec in self:
-            if (
-                rec.gp_id
-                and rec.gp_id.parent_id
-                and rec.gp_hospital_id
-                and rec.gp_id.parent_id != rec.gp_hospital_id
-            ):
-                raise ValidationError(
-                    _("General Practitioner's Company and Hospital must be the same!")
-                )
 
     @api.depends("deceased_date")
     def _compute_is_deceased(self):
