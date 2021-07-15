@@ -23,6 +23,9 @@ class Partner(models.Model):
         compute_sudo=True,
         groups="nirun_patient.group_user",
     )
+    gender = fields.Selection(
+        [("male", "Male"), ("female", "Female"), ("other", "Other")], tracking=True,
+    )
 
     @api.depends("patient_ids")
     def _compute_patient(self):
