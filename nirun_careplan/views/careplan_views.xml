@@ -18,11 +18,11 @@
                 <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
                 <separator />
                 <group expand="1" string="Group By">
-                    <filter name="Manager" context="{'group_by': 'manager_id'}" string="Care Manager" />
-                    <filter name="Patient" context="{'group_by': 'patient_id'}" string="Patient" />
-                    <filter name="Author" context="{'group_by': 'author_id'}" string="Author" />
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_manager" string="Care Manager" context="{'group_by': 'manager_id'}" />
+                    <filter name="group_by_author" string="Author" context="{'group_by': 'author_id'}" />
                     <separator />
-                    <filter name="State" string="State" context="{'group_by': 'state'}" />
+                    <filter name="group_by_state" string="State" context="{'group_by': 'state'}" />
                 </group>
             </search>
         </field>
@@ -119,12 +119,7 @@
                             <field name="patient_id" class="w-90" placeholder="Patient" />
                         </h1>
                         <label for="encounter_id" />
-                        <field
-                            name="encounter_id"
-                            attrs="{'readonly': [('id','>', 0 )]}"
-                            class="mx-1"
-                            placeholder="Encounter No."
-                        />
+                        <field name="encounter_id" class="mx-1" placeholder="Encounter No." />
                     </div>
                     <group>
                         <group>
@@ -143,7 +138,17 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Summary">
+                        <page string="Activity">
+                            <field name="activity_ids" context="{'default_careplan_id': active_id}" mode="kanban" />
+                            <button
+                                name="%(careplan_activity_action_category_graph)d"
+                                attrs="{'invisible': [('activity_count', '=', 0)]}"
+                                class="oe_read_only"
+                                icon="fa-pie-chart"
+                                type="action"
+                            />
+                        </page>
+                        <page string="Description">
                             <field name="description" placeholder="Summary of nature of plan" />
                         </page>
                         <page string="Planning">

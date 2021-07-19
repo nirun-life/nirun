@@ -83,9 +83,13 @@ class CarePlan(models.Model):
         " hide the care plan without removing it.",
     )
     activity_ids = fields.One2many(
-        "ni.careplan.activity", "careplan_id", string="Activities"
+        "ni.careplan.activity",
+        "careplan_id",
+        string="Activities",
+        readonly=True,
+        states={"draft": [("readonly", False)], "active": [("readonly", False)]},
     )
-    activity_count = fields.Integer(compute="_compute_activities_count")
+    activity_count = fields.Integer(compute="_compute_activities_count", store=True)
 
     def name_get(self):
         res = []
@@ -101,6 +105,13 @@ class CarePlan(models.Model):
             name = "{} {}".format(plan.patient_id.name, name)
         return name
 
+    @api.onchange("encounter_id")
+    def _onchange_encounter_id(self):
+        if self.encounter_id.period_start:
+            self.period_start = self.encounter_id.period_start
+        if self.encounter_id.period_end:
+            self.period_end = self.encounter_id.period_end
+
     @api.depends("activity_ids")
     def _compute_activities_count(self):
         activities = self.env["ni.careplan.activity"].read_group(
@@ -112,10 +123,10 @@ class CarePlan(models.Model):
         for plan in self:
             plan.activity_count = result.get(plan.id, 0)
 
-    @api.depends("activity_ids.category_ids")
+    @api.depends("category_ids", "activity_ids.category_id")
     def _compute_activity_category(self):
         for plan in self:
-            c1 = plan.mapped("activity_ids.category_ids.id")
+            c1 = plan.mapped("activity_ids.category_id.id")
             c2 = plan.mapped("category_ids.id")
             plan.category_ids = list(set().union(c1, c2))
 

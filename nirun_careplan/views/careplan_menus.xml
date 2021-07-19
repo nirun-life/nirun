@@ -10,7 +10,14 @@
         web_icon="nirun_careplan,static/description/icon.png"
     />
     <menuitem id="careplan_menu" name="Care Plans" action="careplan_action" parent="careplan_menu_root" />
-    <menuitem id="activity_menu" name="Activity" action="careplan_activity_action" parent="careplan_menu_root" />
+    <menuitem id="activity_menu_section" name="Activity" parent="careplan_menu_root" />
+    <menuitem
+        id="activity_menu_my"
+        name="My Activity"
+        action="careplan_activity_action_my"
+        parent="activity_menu_section"
+    />
+    <menuitem id="activity_menu" name="Activity" action="careplan_activity_action" parent="activity_menu_section" />
     <menuitem id="careplan_configuration_menu" name="Configuration" parent="careplan_menu_root" sequence="100" />
     <menuitem
         id="careplan_category_menu"
