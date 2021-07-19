@@ -6,8 +6,27 @@
     <record id="careplan_activity_action" model="ir.actions.act_window">
         <field name="name">Activities</field>
         <field name="res_model">ni.careplan.activity</field>
-        <field name="view_mode">tree,kanban,form,pivot,graph</field>
-        <field name="context">{'search_default_my_activity': True}</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="context">{'hide_state': True}</field>
+    </record>
+    <record id="careplan_activity_action_my" model="ir.actions.act_window">
+        <field name="name">Activities</field>
+        <field name="res_model">ni.careplan.activity</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="context">{'search_default_my_activity': True, 'hide_state': True}</field>
+    </record>
+    <record id="careplan_activity_action_from_careplan" model="ir.actions.act_window">
+        <field name="name">Activities</field>
+        <field name="res_model">ni.careplan.activity</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="context">
+            {
+                'pivot_row_groupby': ['assignee_id'],
+                'search_default_careplan_id': [active_id],
+                'default_careplan_id': active_id,
+                'hide_state': True,
+            }
+        </field>
     </record>
     <record id="careplan_activity_view_search" model="ir.ui.view">
         <field name="name">careplan_activity_view_search</field>
@@ -15,12 +34,14 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Activity" />
-                <field name="category_ids" />
+                <field
+                    name="patient_id"
+                    filter_domain="['|' ,('patient_id', 'ilike', self), ('encounter_id', 'ilike', self)]"
+                />
+                <field name="careplan_id" invisible="True" />
                 <field name="assignee_id" />
-                <field name="patient_id" />
-                <field name="state" />
-                <field name="careplan_id" />
-                <filter name="my_activity" string="My Activities" domain="[('assignee_id', '=', uid)]" />
+                <separator />
+                <filter name="my_activity" string="My Activity" domain="[('assignee_uid', '=', uid)]" />
                 <filter name="unassigned" domain="[('assignee_id', '=', False)]" string="Unassigned" />
                 <separator />
                 <filter name="starred" domain="[('priority', 'in', [1, 2])]" string="Starred" />
@@ -28,37 +49,22 @@
                 <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
                 <separator />
                 <group expand="0" string="Group By">
-                    <filter name="stage" context="{'group_by': 'state'}" string="Stage" />
-                    <filter name="user" context="{'group_by': 'assignee_id'}" string="Assigned to" />
-                    <filter name="careplan" context="{'group_by': 'careplan_id'}" string="Careplan" />
-                    <filter name="group_create_date" context="{'group_by': 'create_date'}" string="Creation Date" />
+                    <filter name="group_by_careplan" string="Careplan" context="{'group_by': 'careplan_id'}" />
+                    <filter name="group_by_category" string="Category" context="{'group_by': 'category_id'}" />
+                    <separator />
+                    <filter name="group_by_stage" string="Stage" context="{'group_by': 'state'}" />
+                    <separator />
+                    <filter name="group_by_assignee" string="Assigned to" context="{'group_by': 'assignee_id'}" />
+                    <separator />
+                    <filter name="group_by_create_date" string="Creation Date" context="{'group_by': 'create_date'}" />
                     <filter
-                        name="company"
+                        name="group_by_company"
                         context="{'group_by': 'company_id'}"
                         groups="base.group_multi_company"
                         string="Company"
                     />
                 </group>
             </search>
-        </field>
-    </record>
-    <record id="careplan_activity_action_from_careplan" model="ir.actions.act_window">
-        <field name="name">Activities</field>
-        <field name="res_model">ni.careplan.activity</field>
-        <field name="view_mode">tree,kanban,form,pivot,graph</field>
-        <field name="context">
-            {
-                'pivot_row_groupby': ['assignee_id'],
-                'search_default_careplan_id': [active_id],
-                'default_careplan_id': active_id,
-            }
-        </field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Click
-                <i>Create</i>
-                to add a new activity.
-            </p>
         </field>
     </record>
     <record id="careplan_activity_view_form_quick_create" model="ir.ui.view">
@@ -96,7 +102,6 @@
                 <field name="sequence" />
                 <field name="name" />
                 <field name="description" />
-                <field name="category_ids" />
                 <field name="assignee_id" />
                 <field name="manager_id" />
                 <field name="state" options='{"group_by_tooltip": {"description": "Description"}}' />
@@ -120,6 +125,28 @@
                                         </strong>
                                         <br />
                                         <small class="text-muted">
+                                            <t invisible="context.get('hide_state', False)">
+                                                <span
+                                                    class='badge badge-success'
+                                                    t-esc="record.state.value"
+                                                    t-if="record.state.raw_value == 'completed'"
+                                                />
+                                                <span
+                                                    class='badge badge-danger'
+                                                    t-esc="record.state.value"
+                                                    t-if="record.state.raw_value == 'cancelled'"
+                                                />
+                                                <span
+                                                    class='badge badge-primary'
+                                                    t-esc="record.state.value"
+                                                    t-if="record.state.raw_value == 'in-progress'"
+                                                />
+                                                <span
+                                                    class="badge badge-dark"
+                                                    t-esc="record.state.value"
+                                                    t-if="record.state.raw_value == 'scheduled'"
+                                                />
+                                            </t>
                                             <span
                                                 class="o-value"
                                                 invisible="context.get('default_careplan_id', False) or context.get('fsm_mode', False)"
@@ -128,47 +155,35 @@
                                                 <field name="patient_id" />
                                             </span>
                                         </small>
+                                        <small>
+                                            <field name="category_id" />
+                                        </small>
                                     </div>
-                                    <div
-                                        class="o_dropdown_kanban dropdown"
-                                        groups="base.group_user"
-                                        t-if="!selection_mode"
+                                </div>
+                                <div class="o_dropdown_kanban dropdown" groups="base.group_user" t-if="!selection_mode">
+                                    <a
+                                        aria-label="Dropdown menu"
+                                        class="dropdown-toggle o-no-caret btn"
+                                        data-display="static"
+                                        data-toggle="dropdown"
+                                        href="#"
+                                        role="button"
+                                        title="Dropdown menu"
                                     >
-                                        <a
-                                            aria-label="Dropdown menu"
-                                            class="dropdown-toggle o-no-caret btn"
-                                            data-display="static"
-                                            data-toggle="dropdown"
-                                            href="#"
-                                            role="button"
-                                            title="Dropdown menu"
-                                        >
-                                            <span class="fa fa-ellipsis-v" />
+                                        <span class="fa fa-ellipsis-v" />
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <a class="dropdown-item" role="menuitem" t-if="widget.editable" type="edit">
+                                            Edit Activity
                                         </a>
-                                        <div class="dropdown-menu" role="menu">
-                                            <a class="dropdown-item" role="menuitem" t-if="widget.editable" type="edit">
-                                                Edit Activity
-                                            </a>
-                                            <a
-                                                class="dropdown-item"
-                                                role="menuitem"
-                                                t-if="widget.deletable"
-                                                type="delete"
-                                            >
-                                                Delete
-                                            </a>
-                                            <div class="dropdown-divider" role="separator" />
-                                            <ul class="oe_kanban_colorpicker" data-field="color" />
-                                        </div>
+                                        <a class="dropdown-item" role="menuitem" t-if="widget.deletable" type="delete">
+                                            Delete
+                                        </a>
+                                        <div class="dropdown-divider" role="separator" />
+                                        <ul class="oe_kanban_colorpicker" data-field="color" />
                                     </div>
                                 </div>
-                                <div class="o_kanban_record_body">
-                                    <field
-                                        name="category_ids"
-                                        options="{'color_field': 'color'}"
-                                        widget="many2many_tags"
-                                    />
-                                </div>
+                                <div class="o_kanban_record_body" />
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left" t-if="!selection_mode">
                                         <field name="priority" widget="priority" />
@@ -206,13 +221,14 @@
                 decoration-danger="kanban_state == 'blocked'"
                 decoration-muted="active == False or state == 'cancelled'"
                 decoration-success="kanban_state == 'done'"
+                expand="True"
             >
                 <field name="sequence" invisible="not context.get('seq_visible', False)" widget="handle" />
                 <field name="active" invisible="1" />
                 <field name="name" />
                 <field name="careplan_id" invisible="context.get('default_careplan_id', False)" optional="show" />
                 <field name="patient_id" invisible="context.get('default_careplan_id', False)" optional="show" />
-                <field name="category_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
+                <field name="category_id" />
                 <field name="reason" optional="hide" />
                 <field name="period_start" optional="show" />
                 <field name="period_end" optional="hide" />
@@ -263,12 +279,8 @@
                             <field name="kanban_state" class="ml-auto oe_read_only" widget="state_selection" />
                         </h1>
                     </div>
-                    <field
-                        name="category_ids"
-                        options="{'color_field': 'color'}"
-                        placeholder="Categories..."
-                        widget="many2many_tags"
-                    />
+                    <label for="category_id" />
+                    <field name="category_id" />
                     <group>
                         <group>
                             <field
@@ -301,6 +313,7 @@
                             <field name="reason" nolabel="1" placeholder="Add a reasons..." />
                         </page>
                         <page name='goal' string="Goal">
+                            <group name="goal_reference" />
                             <p class="text-muted oe_edit_only">Specify goals of this activity!.</p>
                             <field name="goal" nolabel="1" placeholder="Add a goals..." />
                         </page>
@@ -347,6 +360,20 @@
                 <field name="assignee_id" type="col" />
                 <field name="state" type="col" />
             </graph>
+        </field>
+    </record>
+    <record id="careplan_activity_action_category_graph" model="ir.actions.act_window">
+        <field name="name">Activities</field>
+        <field name="res_model">ni.careplan.activity</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="view_id" ref="careplan_activity_view_graph" />
+        <field name="context">
+            {
+            'search_default_group_by_category': True,
+            'search_default_careplan_id': active_id,
+            'default_careplan_id': active_id,
+            'graph_mode': 'pie',
+        }
         </field>
     </record>
 </odoo>

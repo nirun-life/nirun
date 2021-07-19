@@ -24,22 +24,20 @@ class TestPatient(TestCareplanCommon):
 
         memory = self.ref("nirun_careplan.category_memory")
         self.activity.create(
-            {"name": "Activity 1", "careplan_id": plan.id, "category_ids": [memory]}
+            {"name": "Activity 1", "careplan_id": plan.id, "category_id": memory}
         )
-        self.assertEqual(1, plan.activity_count)
         self.assertTrue(memory in plan.mapped("category_ids.id"))
 
         act = self.activity.create(
             {
                 "name": "Activity 2",
                 "careplan_id": plan.id,
-                "category_ids": [self.ref("nirun_careplan.category_health")],
+                "category_id": self.ref("nirun_careplan.category_health"),
             }
         )
-        self.assertEqual(2, plan.activity_count)
 
-        act.category_ids = [self.ref("nirun_careplan.category_mental")]
+        act.category_id = self.ref("nirun_careplan.category_mental")
         self.assertEqual(4, len(plan.category_ids))
 
-        act.category_ids = []
+        act.category_id = None
         self.assertEqual(4, len(plan.category_ids))

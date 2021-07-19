@@ -1,7 +1,5 @@
 #  Copyright (c) 2021 Piruin P.
 
-import random
-
 from odoo import api, fields, models
 
 
@@ -21,17 +19,10 @@ class Activity(models.Model):
     active = fields.Boolean(default=True)
     name = fields.Char(string="Activity", tracking=True, required=True, index=True)
     description = fields.Html(string="Description")
-    category_ids = fields.Many2many(
-        "ni.careplan.category",
-        "ni_careplan_activity_category_rel",
-        "activity_id",
-        "category_id",
-        tracking=True,
-    )
+    category_id = fields.Many2one("ni.careplan.category", tracking=True)
+
     sequence = fields.Integer(help="Determine the display order", index=True)
-    color = fields.Integer(
-        string="Color Index", default=lambda _: random.randint(0, 10)
-    )
+    color = fields.Integer(string="Color Index")
     company_id = fields.Many2one(
         "res.company",
         "Company",
@@ -71,12 +62,8 @@ class Activity(models.Model):
     )
     encounter_id = fields.Many2one("ni.encounter", related="careplan_id.encounter_id",)
     manager_id = fields.Many2one(
-        "hr.employee",
-        string="Care Manager",
-        related="careplan_id.manager_id",
-        readonly=True,
+        string="Care Manager", related="careplan_id.manager_id", readonly=True,
     )
-    color = fields.Integer(string="Color Index")
     attachment_ids = fields.One2many(
         "ir.attachment",
         compute="_compute_attachment_ids",
@@ -91,7 +78,7 @@ class Activity(models.Model):
         check_company=True,
     )
     assignee_uid = fields.Many2one(
-        related="assignee_id.user_id", string="Assigned User"
+        related="assignee_id.user_id", string="Assigned User", store=True
     )
     reason = fields.Html(
         copy=True, help="Reason why this activity should be done!", tracking=True,
@@ -164,8 +151,8 @@ class Activity(models.Model):
                     }
                 )
 
-    @api.onchange("category_ids")
-    def _onchange_category_ids(self):
+    @api.onchange("category_id")
+    def _onchange_category_id(self):
         for rec in self:
-            if rec.category_ids and not rec.id:
-                rec.color = rec.category_ids[0].color
+            if rec.category_id and not rec.color:
+                rec.color = rec.category_id.color
