@@ -21,6 +21,7 @@ class ServiceRequest(models.Model):
         required=True,
         states={"draft": [("readonly", False)]},
     )
+    category_ids = fields.Many2many(related="service_id.category_ids")
     priority = fields.Selection(
         [("0", "Routine"), ("1", "Urgent"), ("2", "ASAP"), ("3", "STAT")],
         default="0",
