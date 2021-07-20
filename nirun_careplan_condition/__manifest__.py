@@ -10,7 +10,11 @@
     "license": "LGPL-3",
     "maintainers": ["piruin"],
     "depends": ["nirun_careplan", "nirun_condition"],
-    "data": ["views/careplan_activity_views.xml", "views/condition_views.xml"],
+    "data": [
+        "views/careplan_views.xml",
+        "views/careplan_activity_views.xml",
+        "views/condition_views.xml",
+    ],
     "application": False,
     "auto_install": True,
     "installable": True,
