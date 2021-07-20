@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="careplan_view_form_inherit" model="ir.ui.view">
+        <field name="name">careplan.view.form.inherit</field>
+        <field name="model">ni.careplan</field>
+        <field name="inherit_id" ref="nirun_careplan.careplan_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[1]" position="after">
+                <page name="condition" string="Condition">
+                    <field name="condition_ids" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
