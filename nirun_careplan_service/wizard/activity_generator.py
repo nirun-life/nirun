@@ -31,6 +31,9 @@ class ActivityGenerator(models.TransientModel):
                     request.state, "scheduled"
                 ),
             }
+            category = request.category_ids[0].careplan_category_id or None
+            if category:
+                vals.update({"category_id": category.id, "color": category.color})
             activities.create(vals)
 
         return self.careplan_id.open_activity()

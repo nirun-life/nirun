@@ -15,6 +15,9 @@ class Activity(models.Model):
                 rec.name = rec.service_request_id.service_id.name
                 rec.period_start = rec.service_request_id.period_start
                 rec.period_end = rec.service_request_id.period_end
+                rec.category_id = (
+                    rec.service_request_id.category_ids[0].careplan_category_id or None
+                )
 
     @api.model
     def create(self, vals):
