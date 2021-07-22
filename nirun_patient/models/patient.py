@@ -360,3 +360,8 @@ class Patient(models.Model):
             "views": [[False, "form"]],
             "res_id": self.encountering_id.id,
         }
+
+    @api.model
+    def cron_compute_age(self):
+        patient = self.search([("birthdate", "!=", False), ("deceased", "!=", True)])
+        patient._compute_age()
