@@ -34,12 +34,3 @@ class Partner(models.Model):
             rec.patient_id = rec.patient_ids.filtered(
                 lambda p: p.company_id == self.env.company
             )
-
-    def open_patient_record(self):
-        return {
-            "name": "Patient",
-            "type": "ir.actions.act_window",
-            "res_model": "ni.patient",
-            "res_id": self.patient_id.id,
-            "view_mode": "form",
-        }
