@@ -14,8 +14,7 @@
         <field name="model">coding.base</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" />
-                <field name="code" />
+                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
             </search>
         </field>
