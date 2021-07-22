@@ -19,11 +19,14 @@ class Partner(models.Model):
         for rec in self:
             if rec.parent_id and rec.parent_id.patient:
                 rec.relate_person = True
+            else:
+                rec.relate_person = False
 
     def action_copy_parent_address(self):
         self.ensure_one()
         if not self.parent_id:
             return
+
         address_fields = self._address_fields()
         if any(self.parent_id[key] for key in address_fields):
 
