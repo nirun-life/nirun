@@ -2,7 +2,7 @@
 
 {
     "name": "Patients",
-    "version": "13.0.0.5.1",
+    "version": "13.0.0.5.2",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -11,6 +11,7 @@
     "maintainers": ["piruin"],
     "depends": ["nirun", "hr", "mail"],
     "data": [
+        "data/cron.xml",
         "data/ir_sequence_data.xml",
         "data/location_type_data.xml",
         "data/encounter_admit_data.xml",
