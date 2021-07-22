@@ -24,27 +24,4 @@
             </field>
         </field>
     </record>
-    <record id="res_partner_view_form_inherit_patient" model="ir.ui.view">
-        <field name="name">res.partner.view.form.inherit.patient</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form" />
-        <field name="groups_id" eval="[(4, ref('nirun_patient.group_user'))]" />
-        <field name="arch" type="xml">
-            <xpath expr="//div[@name='button_box']" position="inside">
-                <field name="patient" invisible="1" />
-                <button
-                    name="open_patient_record"
-                    attrs="{'invisible': [('patient', '=', False)]}"
-                    class="oe_stat_button"
-                    icon="fa-bed"
-                    type="object"
-                >
-                    <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_text">Patient</span>
-                        <span class="o_stat_text">Record</span>
-                    </div>
-                </button>
-            </xpath>
-        </field>
-    </record>
 </odoo>
