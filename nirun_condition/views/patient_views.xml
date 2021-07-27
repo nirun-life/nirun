@@ -7,14 +7,16 @@
         <field name="name">patient.view.form.inherit</field>
         <field name="model">ni.patient</field>
         <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="priority">30</field>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='private']" position="after">
+            <xpath expr="//notebook" position="inside">
                 <page name="condition" string="Problem List Item">
                     <field
                         name="condition_ids"
                         context="{'default_category': 'problem-list-item', 'default_patient_id': active_id}"
                         domain="[('category', '=', 'problem-list-item')]"
                         mode="tree"
+                        nolabel="1"
                     >
                         <tree editable="bottom">
                             <field name="company_id" invisible="1" />
@@ -28,6 +30,7 @@
                             <field name="note" />
                         </tree>
                     </field>
+                    <group />
                 </page>
             </xpath>
         </field>
