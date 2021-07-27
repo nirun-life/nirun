@@ -38,7 +38,6 @@ class Observation(models.Model):
             {
                 "search_default_patient_id": self.patient_id.id,
                 "default_patient_id": self.patient_id.id,
-                "graph_mode": "line",
             }
         )
         action["context"] = ctx
