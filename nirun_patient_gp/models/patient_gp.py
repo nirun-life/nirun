@@ -1,6 +1,7 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class GeneralPractitioner(models.Model):
@@ -23,3 +24,9 @@ class GeneralPractitioner(models.Model):
             _("Duplicate practitioner!"),
         ),
     ]
+
+    @api.constrains("practitioner_id")
+    def check_practitioner_id(self):
+        for rec in self:
+            if rec.patient_id.partner_id == rec.practitioner_id:
+                raise UserError(_("Practitioner should not refer to patient"))
