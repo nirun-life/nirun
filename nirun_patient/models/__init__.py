@@ -11,5 +11,4 @@ from . import location
 from . import location_type
 from . import partner
 from . import patient
-from . import patient_gp
 from . import patient_res
