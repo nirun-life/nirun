@@ -24,9 +24,9 @@
         <field name="target">current</field>
         <field name="context">
             {
-            'default_patient_id': active_id,
-            'search_default_patient_id': active_id
-        }
+                'default_patient_id': active_id,
+                'search_default_patient_id': active_id
+            }
         </field>
     </record>
     <record id="encounter_view_search" model="ir.ui.view">
@@ -160,6 +160,7 @@
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
             <form>
+                <field name="id" invisible="1" />
                 <header class="oe_read_only">
                     <button
                         name="action_confirm"
@@ -195,6 +196,12 @@
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
                     <widget
                         name="web_ribbon"
+                        attrs="{'invisible': ['|',('state', '!=', 'draft'), ('id', '=', False)]}"
+                        bg_color="bg-warning"
+                        title="Draft"
+                    />
+                    <widget
+                        name="web_ribbon"
                         attrs="{'invisible': [('state', '!=', 'cancelled')]}"
                         bg_color="bg-danger"
                         title="Cancelled"
@@ -213,14 +220,7 @@
                     />
                     <div class="oe_title">
                         <div>
-                            <!-- class align use for support responsive module -->
-                            <field
-                                class="align-bottom"
-                                name="class_id"
-                                options="{'no_open': True, 'no_create': True}"
-                                placeholder="Classification"
-                            />
-                            <b class='ml-1 align-top'>Encounter</b>
+                            <label for="name" />
                         </div>
                         <h1>
                             <field name="name" placeholder="AN. 0000X" />
@@ -232,6 +232,7 @@
                     <group>
                         <group>
                             <field name="patient_id" context="{'show_code': True}" />
+                            <field name="class_id" options="{'no_create': True}" placeholder="Classification" />
                             <field name="location_id" />
                             <field name="priority" widget="priority" />
                         </group>
