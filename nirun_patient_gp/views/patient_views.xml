@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="priority">35</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="gp" string="General Practitioner" accesskey="G">
+                    <field name="gp_ids" mode="tree" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field name="practitioner_id" />
+                            <field name="note" optional="show" />
+                        </tree>
+                        <form>
+                            <group>
+                                <field name="practitioner_id" />
+                                <field name="note" />
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="patient_view_tree_inherit" model="ir.ui.view">
+        <field name="name">patient.view.tree.inherit</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_tree" />
+        <field name="model">ni.patient</field>
+        <field name="arch" type="xml">
+            <field name="mobile" position="after">
+                <field name="gp_id" optional="hide" />
+                <field name="gp_hospital_id" optional="hide" />
+            </field>
+        </field>
+    </record>
+</odoo>
