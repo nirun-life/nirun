@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="arch" type="xml">
+            <field name="encountering_start" position="after">
+                <field name="coverage_plan_id" />
+            </field>
+        </field>
+    </record>
+    <record id="patient_view_tree_inherit" model="ir.ui.view">
+        <field name="name">patient.view.tree.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_coverage.patient_view_tree_inherit" />
+        <field name="arch" type="xml">
+            <field name="mobile" position="after">
+                <field name="coverage_plan_id" optional="show" />
+            </field>
+            <field name="coverage_id" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
