@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_coverage.patient_view_form_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='coverage']" position="attribute">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="patient_view_tree_inherit" model="ir.ui.view">
+        <field name="name">patient.view.tree.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_coverage.patient_view_tree_inherit" />
+        <field name="arch" type="xml">
+            <field name="coverage_id" position="attribute">
+                <attribute name="invisible">True</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
