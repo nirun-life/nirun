@@ -7,12 +7,10 @@
         <field name="name">patient.view.form.inherit</field>
         <field name="model">ni.patient</field>
         <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="priority">40</field>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='care']" position="attributes">
-                <attribute name="string">Care &amp; Coverage</attribute>
-            </xpath>
-            <xpath expr="//page[@name='care']/group" position="after">
-                <group name="coverage" string="Coverage">
+            <xpath expr="//notebook" position="inside">
+                <page name="coverage" string="Coverage">
                     <field
                         name="coverage_ids"
                         context="{'default_patient_id': active_id, 'default_state': 'active', 'sub_view': True}"
@@ -31,7 +29,7 @@
                             <field name="state" />
                         </tree>
                     </field>
-                </group>
+                </page>
             </xpath>
         </field>
     </record>
