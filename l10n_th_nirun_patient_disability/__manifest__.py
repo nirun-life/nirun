@@ -2,14 +2,14 @@
 
 {
     "name": "Patients - Disability (Thai Localization)",
-    "version": "13.0.0.1.0",
+    "version": "13.0.0.1.1",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
     "website": "https://nirun.life/",
     "license": "OPL-1",
     "maintainers": ["piruin"],
-    "depends": ["nirun_patient"],
+    "depends": ["nirun_condition"],
     "data": [
         "security/ir.model.access.csv",
         "data/disability_data.xml",
