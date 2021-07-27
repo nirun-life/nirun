@@ -52,8 +52,6 @@
                 <field name="birthdate" optional="hide" />
                 <field name="phone" optional="show" widget="phone" />
                 <field name="mobile" optional="show" widget="phone" />
-                <field name="gp_id" optional="hide" />
-                <field name="gp_hospital_id" optional="hide" />
                 <field name="presence_state" />
                 <field name="company_id" groups="base.group_multi_company" />
             </tree>
@@ -124,10 +122,10 @@
                             <field name="code" placeholder="ex. HN-001204" />
                             <field name="company_id" groups="base.group_multi_company" />
                         </group>
-                        <group name="encountering" attrs="{'invisible': [('is_encountering', '=', False)]}">
-                            <field name="encountering_id" />
-                            <field name="location_id" />
-                            <field name="encountering_start" />
+                        <group name="encountering">
+                            <field name="encountering_id" attrs="{'invisible': [('is_encountering', '=', False)]}" />
+                            <field name="location_id" attrs="{'invisible': [('is_encountering', '=', False)]}" />
+                            <field name="encountering_start" attrs="{'invisible': [('is_encountering', '=', False)]}" />
                         </group>
                     </group>
                     <notebook name="notebook">
@@ -168,25 +166,6 @@
                                 <group string="Decease">
                                     <field name="deceased" invisible="1" />
                                     <field name="deceased_date" />
-                                </group>
-                            </group>
-                        </page>
-                        <page name="care" string="Care" accesskey="C">
-                            <group>
-                                <group string="General Practitioner" colspan="4">
-                                    <field name="gp_ids" mode="tree" nolabel="1">
-                                        <tree editable="bottom">
-                                            <field name="sequence" widget="handle" />
-                                            <field name="practitioner_id" />
-                                            <field name="note" />
-                                        </tree>
-                                        <form>
-                                            <group>
-                                                <field name="practitioner_id" />
-                                                <field name="note" />
-                                            </group>
-                                        </form>
-                                    </field>
                                 </group>
                             </group>
                         </page>

@@ -167,18 +167,6 @@ class Patient(models.Model):
     )
     location_id = fields.Many2one(related="encountering_id.location_id")
 
-    gp_hospital_id = fields.Many2one(
-        "res.partner",
-        "Hospital",
-        domain=[("is_company", "=", True)],
-        compute="_compute_gp",
-        store=True,
-    )
-    gp_id = fields.Many2one(
-        "res.partner", "General Practitioner", compute="_compute_gp", store=True
-    )
-    gp_ids = fields.One2many("ni.patient.gp", "patient_id")
-
     _sql_constraints = [
         ("code_uniq", "unique (company_id, code)", _("Code must be unique !"),),
         (
@@ -187,19 +175,6 @@ class Patient(models.Model):
             _("This contact have already registered as patient!"),
         ),
     ]
-
-    @api.depends("gp_ids.practitioner_id", "gp_ids.practitioner_company_id")
-    def _compute_gp(self):
-        for rec in self:
-            if len(rec.gp_ids) == 0:
-                continue
-            gp = rec.gp_ids[0]
-            rec.update(
-                {
-                    "gp_id": gp.practitioner_id,
-                    "gp_hospital_id": gp.practitioner_company_id,
-                }
-            )
 
     def name_get(self):
         return [(patient.id, patient._name_get()) for patient in self]
@@ -230,12 +205,6 @@ class Patient(models.Model):
                 rec.country_id = rec.partner_id.country_id
                 if not rec._origin.identification_id:
                     rec.identification_id = rec.partner_id.vat
-
-    @api.onchange("gp_id")
-    def onchange_gp_id(self):
-        for rec in self:
-            if rec.gp_id and rec.gp_id.parent_id:
-                rec.gp_hospital_id = rec.gp_id.parent_id
 
     @api.depends("encounter_ids")
     def _compute_encounter(self):
