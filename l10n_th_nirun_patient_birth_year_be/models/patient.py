@@ -26,7 +26,9 @@ class Patient(models.Model):
 
     @api.onchange("birth_year_be")
     def _onchange_birth_year_be(self):
-        if self.birth_year_be and self.birthdate.year != self.birth_year_be - 543:
+        if self.birth_year_be and (
+            not self.birthdate or self.birthdate.year != self.birth_year_be - 543
+        ):
             if self.birth_year_be < 1900 + 543:
                 return {
                     "warning": {
