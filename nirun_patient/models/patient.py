@@ -307,7 +307,16 @@ class Patient(models.Model):
     def _inverse_age(self):
         today = fields.date.today()
         for record in self.filtered(lambda r: not (r.deceased_date and r.birthdate)):
-            record.birthdate = today - relativedelta(years=record.age_years)
+            if record.birthdate:
+                if record.birthdate.year == (today.year - record.age_years):
+                    continue
+                bd = record.birthdate.replace(year=today.year)
+                if bd <= today:
+                    record.birthdate = bd - relativedelta(years=record.age_years)
+                else:
+                    record.birthdate = bd - relativedelta(years=record.age_years + 1)
+            else:
+                record.birthdate = today - relativedelta(years=record.age_years)
 
     def action_encounter(self):
         action_rec = self.env.ref("nirun_patient.encounter_action")
