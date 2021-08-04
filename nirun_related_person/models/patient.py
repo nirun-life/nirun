@@ -5,17 +5,33 @@ from odoo import api, fields, models
 class Patient(models.Model):
     _inherit = "ni.patient"
 
-    spouse_id = fields.Many2one("res.partner", domain=[("is_company", "=", False)],)
+    spouse_id = fields.Many2one(
+        "res.partner",
+        domain=[("is_company", "=", False)],
+        tracking=True,
+        ondelete="set null",
+    )
     spouse_name = fields.Char(compute="_compute_spouse_name")
     child_ids = fields.Many2many(
         "res.partner",
         "ni_patient_child_rel",
         string="Children",
         domain=[("is_company", "=", False)],
+        tracking=True,
     )
-    father_id = fields.Many2one("res.partner", domain=[("is_company", "=", False)])
+    father_id = fields.Many2one(
+        "res.partner",
+        domain=[("is_company", "=", False)],
+        tracking=True,
+        ondelete="set null",
+    )
     father_name = fields.Char(compute="_compute_father_name")
-    mother_id = fields.Many2one("res.partner", domain=[("is_company", "=", False)])
+    mother_id = fields.Many2one(
+        "res.partner",
+        domain=[("is_company", "=", False)],
+        tracking=True,
+        ondelete="set null",
+    )
     mother_name = fields.Char(compute="_compute_mother_name")
 
     @api.onchange("child_ids")
