@@ -281,8 +281,6 @@ class Patient(models.Model):
     @api.depends("birthdate", "deceased_date")
     def _compute_age(self):
         for rec in self:
-            rec.age = None
-            rec.age_years = 0
             if rec.birthdate:
                 dt = (
                     rec.deceased_date
@@ -291,7 +289,12 @@ class Patient(models.Model):
                 )
                 rd = relativedelta(dt, rec.birthdate)
                 rec.age = self._format_age(rd)
-                rec.age_years = rd.years
+                if rec.age_years != rd.years:
+                    # check this for reduce chance to call `_inverse_age()`
+                    rec.age_years = rd.years
+            else:
+                rec.age = None
+                rec.age_years = 0
 
     @api.model
     def _format_age(self, delta):
@@ -307,6 +310,9 @@ class Patient(models.Model):
     def _inverse_age(self):
         today = fields.date.today()
         for record in self.filtered(lambda r: not (r.deceased_date and r.birthdate)):
+            if not record.age_years:
+                continue
+
             if record.birthdate:
                 if record.birthdate.year == (today.year - record.age_years):
                     continue
