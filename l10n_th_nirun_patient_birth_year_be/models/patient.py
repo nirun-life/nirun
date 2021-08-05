@@ -40,7 +40,7 @@ class Patient(models.Model):
             self._inverse_birth_year_be()
 
     def _inverse_birth_year_be(self):
-        today = fields.date.today()
+        today = fields.date.today().replace(month=1, day=1)
         for rec in self:
             if not rec.birth_year_be:
                 continue
