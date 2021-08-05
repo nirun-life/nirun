@@ -181,12 +181,14 @@
                         string="Cancel"
                         attrs="{'invisible': [('state', 'not in', ['planned', 'in-progress'])]}"
                         type="object"
+                        confirm="Are you sure you want to cancel this?"
                     />
                     <button
                         name="action_reset_to_draft"
                         string="Reset To Draft"
                         attrs="{'invisible': [('state', 'not in', ['cancelled', 'revoked', 'entered-in-error'])]}"
                         type="object"
+                        confirm="Are you sure you want to reset this to draft?"
                     />
                     <field name="state" statusbar_visible="draft,in-progress,finished" widget="statusbar" />
                 </header>
