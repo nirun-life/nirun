@@ -17,7 +17,8 @@ class Patient(models.Model):
     @api.onchange("birthdate_estimate")
     def onchange_birthdate_estimate(self):
         if self.birthdate_estimate:
-            self.birthdate = self.birthdate.replace(month=1, day=1)
+            date = self.birthdate or fields.Date.today()
+            self.birthdate = date.replace(month=1, day=1)
 
     @api.constrains("birthdate", "birthdate_estimate")
     def _check_birthdate(self):
