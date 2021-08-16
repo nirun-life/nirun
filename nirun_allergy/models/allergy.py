@@ -39,7 +39,7 @@ class AllergyIntolerance(models.Model):
         required=False,
     )
     state = fields.Selection(
-        [("active", "Active"), ("inactive", "Inactive"), ("resolved", "Resolved")],
+        [("active", "Suffering"), ("inactive", "Not Active"), ("resolved", "Resolved")],
         required=True,
         default="active",
     )
