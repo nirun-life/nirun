@@ -27,6 +27,20 @@ class Partner(models.Model):
         [("male", "Male"), ("female", "Female"), ("other", "Other")], tracking=True,
     )
 
+    @api.model
+    def default_get(self, default_fields):
+        """
+        We Found that 'default_parent_id' for res.partner have a
+        chance to mess up with mail.message's parent_id
+        make user unable to create partner.
+
+        So, Workaround solution is use `default_partner_parent_id` instead
+        """
+        values = super().default_get(default_fields)
+        if self._context.get("default_partner_parent_id"):
+            values["parent_id"] = self._context.get("default_partner_parent_id")
+        return values
+
     @api.depends("patient_ids")
     def _compute_patient(self):
         for rec in self:
