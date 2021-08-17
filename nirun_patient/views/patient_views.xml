@@ -25,6 +25,8 @@
                 <separator />
                 <filter name="alive" string='Alive' domain="[('deceased_date', '=', False)]" />
                 <filter name="deceased" string='Deceased' domain="[('deceased_date', '!=', False)]" />
+                <separator />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
                 <group name="group_by" string="Group by">
                     <filter name="group_by_state" string="Presence State" context="{'group_by': 'presence_state'}" />
                     <separator />
@@ -64,6 +66,7 @@
             <form duplicate="0">
                 <field name="id" invisible="1" />
                 <field name="is_encountering" invisible="1" />
+                <field name="active" invisible="1" />
                 <header class="oe_read_only">
                     <button
                         name="%(encounter_action_from_patient)d"
@@ -89,9 +92,15 @@
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('deceased', '=', False)]}"
+                        attrs="{'invisible': ['|',('deceased', '=', False), ('active', '=', False)]}"
                         bg_color="bg-dark"
                         title="Deceased"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
                     />
                     <div class="oe_title">
                         <h1>

@@ -166,6 +166,7 @@ class Patient(models.Model):
         compute_sudo=True,
     )
     location_id = fields.Many2one(related="encountering_id.location_id")
+    active = fields.Boolean(default=True)
 
     _sql_constraints = [
         ("code_uniq", "unique (company_id, code)", _("Code must be unique !"),),
