@@ -139,7 +139,22 @@
                     </group>
                     <notebook>
                         <page string="Activity">
-                            <field name="activity_ids" context="{'default_careplan_id': active_id}" mode="kanban" />
+                            <field
+                                name="activity_ids"
+                                context="{'default_careplan_id': id, 'default_period_start': period_start, 'default_period_end': period_end}"
+                                mode="tree"
+                            >
+                                <tree editable="bottom">
+                                    <field name="careplan_id" invisible="1" />
+                                    <field name="company_id" invisible="1" />
+                                    <field name="name" />
+                                    <field name="category_id" />
+                                    <field name="assignee_id" />
+                                    <field name="period_start" />
+                                    <field name="period_end" />
+                                    <field name="state" />
+                                </tree>
+                            </field>
                             <button
                                 name="%(careplan_activity_action_category_graph)d"
                                 attrs="{'invisible': [('activity_count', '=', 0)]}"

@@ -140,7 +140,6 @@ class CarePlan(models.Model):
     # -------------
     # Actions
     # -------------
-
     def open_activity(self):
         self.ensure_one()
         ctx = dict(self._context)
@@ -160,19 +159,6 @@ class CarePlan(models.Model):
             "nirun_careplan", "careplan_activity_action_from_careplan"
         )
         return dict(action, context=ctx)
-
-    def unlink(self):
-        # Check plan is empty
-        for plan in self.with_context(active_test=False):
-            if plan.activity_ids:
-                raise UserError(
-                    _(
-                        "You cannot delete a careplan containing activities."
-                        " You can either archive it or first delete "
-                        "all of its activities."
-                    )
-                )
-        return super().unlink()
 
     def action_revoked(self):
         for plan in self:
