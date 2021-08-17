@@ -2,7 +2,7 @@
 
 {
     "name": "Care Plans",
-    "version": "13.0.0.3.0",
+    "version": "13.0.0.3.1",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",

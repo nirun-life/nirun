@@ -36,6 +36,7 @@ class Activity(models.Model):
         string="Care Plan",
         required=True,
         check_company=True,
+        ondelete="cascade",
         default=lambda self: self.env.context.get("default_careplan_id"),
     )
     state = fields.Selection(
