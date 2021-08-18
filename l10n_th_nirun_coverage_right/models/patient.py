@@ -11,3 +11,9 @@ class Patient(models.Model):
         ondelete="set null",
         help="Base coverage (Insurance) plan for patient",
     )
+    coverage_partner_id = fields.Many2one(
+        "res.partner",
+        "Coverage Network",
+        ondelete="set null",
+        help="Organization that provide health coverage",
+    )

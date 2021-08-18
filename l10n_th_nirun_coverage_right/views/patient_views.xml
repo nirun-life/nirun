@@ -10,6 +10,11 @@
         <field name="arch" type="xml">
             <field name="encountering_start" position="after">
                 <field name="coverage_plan_id" />
+                <field
+                    name="coverage_partner_id"
+                    context="{'default_is_company': True}"
+                    domain="[('is_company', '=', True)]"
+                />
             </field>
         </field>
     </record>
@@ -20,6 +25,7 @@
         <field name="arch" type="xml">
             <field name="mobile" position="after">
                 <field name="coverage_plan_id" optional="show" />
+                <field name="coverage_partner_id" optional="show" />
             </field>
             <field name="coverage_id" position="attributes">
                 <attribute name="optional">hide</attribute>
