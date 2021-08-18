@@ -8,12 +8,14 @@ class Patient(models.Model):
 
     coverage_plan_id = fields.Many2one(
         "ni.insurance.plan",
+        tracking=True,
         ondelete="set null",
         help="Base coverage (Insurance) plan for patient",
     )
     coverage_partner_id = fields.Many2one(
         "res.partner",
         "Coverage Network",
+        tracking=True,
         ondelete="set null",
         help="Organization that provide health coverage",
     )
