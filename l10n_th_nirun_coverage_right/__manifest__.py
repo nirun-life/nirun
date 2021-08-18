@@ -1,7 +1,7 @@
 #  Copyright (c) 2021 Piruin P.
 
 {
-    "name": "Thailand Health Coverage Right",
+    "name": "Coverage - Health Right",
     "version": "13.0.0.1.0",
     "development_status": "Alpha",
     "category": "Healthcare",
