@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <field name="period_start" position="replace">
+                <label for="period_start" />
+                <div class="o_row">
+                    <field name="period_start" />
+                    <span class="ml-2 font-weight-bold">BE</span>
+                    <field name="period_start_year_be" placeholder="EX. 2499" />
+                </div>
+            </field>
+        </field>
+    </record>
+</odoo>
