@@ -10,7 +10,7 @@
     "license": "OPL-1",
     "maintainers": ["piruin"],
     "depends": ["nirun_patient"],
-    "data": ["views/patient_views.xml"],
+    "data": ["views/encounter_views.xml", "views/patient_views.xml"],
     "application": False,
     "auto_install": False,
     "installable": True,

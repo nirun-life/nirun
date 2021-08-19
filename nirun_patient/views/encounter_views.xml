@@ -239,15 +239,8 @@
                             <field name="priority" widget="priority" />
                         </group>
                         <group>
-                            <label name="period" for="">
-                                <b attrs="{'invisible':[('state', '=', 'finished')]}">Encounter Date</b>
-                                <b attrs="{'invisible':[('state', '!=', 'finished')]}">Period</b>
-                            </label>
-                            <div class="o_row">
-                                <field name="period_start" />
-                                <span attrs="{'invisible':[('state', '!=', 'finished')]}">-</span>
-                                <field name="period_end" attrs="{'invisible':[('state', '!=', 'finished')]}" />
-                            </div>
+                            <field name="period_start" />
+                            <field name="period_end" attrs="{'invisible':[('state', '!=', 'finished')]}" />
                             <field name="reason_ids" options="{'color_field': 'color'}" widget='many2many_tags' />
                         </group>
                     </group>
