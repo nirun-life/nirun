@@ -11,6 +11,25 @@
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page name="contact" string="Contact">
+                    <group>
+                        <group>
+                            <field
+                                name="contact_id"
+                                context="{'show_address': True,'default_partner_parent_id': partner_id, 'default_country_id': country_id, 'default_type': 'other'}"
+                                domain="[('parent_id', '=', partner_id)]"
+                                options='{"always_reload": True}'
+                            />
+                        </group>
+                        <group>
+                            <field
+                                name="contact_id_2"
+                                context="{'show_address': True,'default_partner_parent_id': partner_id, 'default_country_id': country_id, 'default_type': 'other'}"
+                                domain="[('parent_id', '=', partner_id)]"
+                                options='{"always_reload": True}'
+                            />
+                        </group>
+                    </group>
+                    <separator string="Contacts" />
                     <field
                         name="contact_ids"
                         context="{'default_partner_parent_id': partner_id, 'default_country_id': country_id, 'default_user_id': uid, 'default_type': 'other'}"
