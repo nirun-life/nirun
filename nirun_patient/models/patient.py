@@ -67,6 +67,7 @@ class Patient(models.Model):
         tracking=True,
         related="partner_id.gender",
         readonly=False,
+        store=True,
     )
     birthdate = fields.Date("Date of Birth", tracking=True)
     age = fields.Char("Age", compute="_compute_age", compute_sudo=True)
