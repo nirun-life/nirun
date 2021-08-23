@@ -17,7 +17,7 @@ class Patient(models.Model):
     @api.constrains("contact_id", "contact_id_2")
     def check_contact_id(self):
         for rec in self:
-            if rec.contact_id == rec.contact_id_2:
+            if rec.contact_id and rec.contact_id == rec.contact_id_2:
                 raise UserError(
                     _("Primary Contact and secondary should not be same person")
                 )
