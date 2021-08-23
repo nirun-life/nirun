@@ -221,6 +221,43 @@ class Encounter(models.Model):
         ),
     ]
 
+    @api.onchange("patient_id")
+    def onchange_patient(self):
+        if self.patient_id:
+            self.pre_admit_identifier = self.patient_id.code
+
+            encounter = (
+                self.env["ni.encounter"]
+                .sudo()
+                .search(
+                    [
+                        ("patient_id", "=", self.patient_id.id),
+                        ("name", "!=", self.name),
+                        ("state", "in", ["draft", "planned", "in-progress"]),
+                    ],
+                    order="id DESC",
+                    limit=1,
+                )
+            )
+            if encounter:
+                return {
+                    "warning": {
+                        "title": _("Warning!"),
+                        "message": _(
+                            "%s was already registered as Encounter No. %s (%s)."
+                        )
+                        % (
+                            self.patient_id.name,
+                            encounter.name,
+                            encounter._get_state_label(),
+                        ),
+                    }
+                }
+
+    def _get_state_label(self):
+        self.ensure_one()
+        return dict(self._fields["state"].selection).get(self.state)
+
     @api.constrains("performer_id", "performer_id_2")
     def _check_performer_id(self):
         for rec in self:
@@ -241,12 +278,6 @@ class Encounter(models.Model):
                 or rec.consultant_id == rec.performer_id_2
             ):
                 raise ValidationError(_("Consultant should not be performer"))
-
-    @api.onchange("partner_id")
-    def onchange_patient(self):
-        for rec in self:
-            if self.patient_id:
-                self.pre_admit_identifier = rec.patient_id.code
 
     def name_get(self):
         if self._context.get("show_patient_name"):
