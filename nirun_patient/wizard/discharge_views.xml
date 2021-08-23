@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="encounter_discharge_wizard_action" model="ir.actions.act_window">
+        <field name="name">Discharge</field>
+        <field name="res_model">ni.encounter.discharge.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="encounter_discharge_wizard_view_form" model="ir.ui.view">
+        <field name="name">encounter.discharge.wizard.view.form</field>
+        <field name="model">ni.encounter.discharge.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="patient_id" readonly="1" />
+                    </group>
+                    <group>
+                        <field name="encounter_id" readonly="1" />
+                    </group>
+                </group>
+                <group>
+                    <field name="discharge_id" />
+                    <field name="discharge_partner_id" />
+                    <field name="discharge_date" />
+                    <field name="deceased" invisible="1" />
+                    <field
+                        name="decease_date"
+                        attrs="{'invisible': [('deceased', '=', False)], 'required': [('deceased', '=', True)]}"
+                    />
+                </group>
+                <field name="note" placeholder="Note..." />
+                <footer>
+                    <button name="discharge" string="Discharge" class="oe_highlight" type="object" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

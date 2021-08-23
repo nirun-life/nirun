@@ -171,11 +171,12 @@
                         type="object"
                     />
                     <button
-                        name="action_close"
+                        name="%(encounter_discharge_wizard_action)d"
                         attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
                         string="Discharge"
                         class="btn-primary"
-                        type="object"
+                        context="{'default_encounter_id': id}"
+                        type="action"
                     />
                     <button
                         name="action_cancel"
@@ -281,6 +282,7 @@
                                 <group string="Discharge">
                                     <field name="discharge_id" />
                                     <field name="discharge_partner_id" />
+                                    <field name="discharge_note" />
                                 </group>
                             </group>
                         </page>

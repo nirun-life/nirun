@@ -22,6 +22,7 @@
         "security/patient_group.xml",
         "security/patient_security.xml",
         "security/ir.model.access.csv",
+        "wizard/discharge_views.xml",
         "views/location_views.xml",
         "views/location_type_views.xml",
         "views/encounter_views.xml",

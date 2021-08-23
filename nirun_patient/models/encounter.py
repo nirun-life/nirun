@@ -173,11 +173,12 @@ class Encounter(models.Model):
     )
     discharge_partner_id = fields.Many2one(
         "res.partner",
-        "Refer to",
+        "Destination",
         domain="[('is_company', '=', True)]",
         help="Location/organization to which the patient is discharged",
         tracking=True,
     )
+    discharge_note = fields.Text("Note", tracking=True)
 
     # Participant
     performer_id = fields.Many2one(
