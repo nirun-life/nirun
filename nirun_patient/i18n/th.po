@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-23 06:59+0000\n"
-"PO-Revision-Date: 2021-08-23 06:59+0000\n"
+"POT-Creation-Date: 2021-08-23 09:11+0000\n"
+"PO-Revision-Date: 2021-08-23 09:11+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -418,6 +418,7 @@ msgid "Cabinet"
 msgstr "ตู้เก็บของ"
 
 #. module: nirun_patient
+#: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_discharge_wizard_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
 msgid "Cancel"
 msgstr "ยกเลิก"
@@ -555,6 +556,7 @@ msgstr "การดูแล"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_courtesy__create_uid
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_diet__create_uid
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge__create_uid
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__create_uid
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel__create_uid
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_reason__create_uid
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location__create_uid
@@ -571,6 +573,7 @@ msgstr "สร้างโดย"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_courtesy__create_date
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_diet__create_date
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge__create_date
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__create_date
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel__create_date
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_reason__create_date
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location__create_date
@@ -593,6 +596,29 @@ msgstr "วัน/เดือน/ปี เกิด"
 #: model_terms:ir.ui.view,arch_db:nirun_patient.patient_view_form
 msgid "Decease"
 msgstr "เสียชีวิต"
+
+#. module: nirun_patient
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__decease_date
+msgid "Decease Date"
+msgstr "วันที่เสียชีวิต"
+
+#. module: nirun_patient
+#: code:addons/nirun_patient/wizard/discharge.py:0
+#, python-format
+msgid "Decease date should not be in the future"
+msgstr "วันที่เสียชีวิตไม่สามารถเป็นวันในอนาคตได้"
+
+#. module: nirun_patient
+#: code:addons/nirun_patient/wizard/discharge.py:0
+#, python-format
+msgid "Decease date should not be null"
+msgstr "กรุณาระบุวันเสียชีวิต"
+
+#. module: nirun_patient
+#: code:addons/nirun_patient/wizard/discharge.py:0
+#, python-format
+msgid "Decease date should not before encounter start"
+msgstr "วันเสียชีวิตไม่สามารถเป็นวันก่อนวันเข้ารับบริการได้"
 
 #. module: nirun_patient
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__deceased
@@ -628,6 +654,12 @@ msgid "Definition"
 msgstr "คำนิยาม"
 
 #. module: nirun_patient
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__discharge_partner_id
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__discharge_partner_id
+msgid "Destination"
+msgstr "ส่งต่อหน่วยงาน/ผู้รับตัว"
+
+#. module: nirun_patient
 #: model:ir.actions.act_window,name:nirun_patient.encounter_diet_action
 #: model:ir.model,name:nirun_patient.model_ni_encounter_diet
 #: model:ir.ui.menu,name:nirun_patient.encounter_diet_menu
@@ -640,16 +672,36 @@ msgid "Diet Preferences"
 msgstr "อาหาร"
 
 #. module: nirun_patient
+#: model:ir.actions.act_window,name:nirun_patient.encounter_discharge_wizard_action
+#: model:ir.model,name:nirun_patient.model_ni_encounter_discharge_wizard
+#: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_discharge_wizard_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
 msgid "Discharge"
 msgstr "จำหน่าย"
+
+#. module: nirun_patient
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__discharge_date
+msgid "Discharge Date"
+msgstr "วันที่จำหน่าย"
 
 #. module: nirun_patient
 #: model:ir.actions.act_window,name:nirun_patient.encounter_discharge_action
 #: model:ir.model,name:nirun_patient.model_ni_encounter_discharge
 #: model:ir.ui.menu,name:nirun_patient.encounter_discharge_menu
 msgid "Discharge Disposition"
-msgstr "สาเหตุ"
+msgstr "สาเหตุการจำหน่าย"
+
+#. module: nirun_patient
+#: code:addons/nirun_patient/wizard/discharge.py:0
+#, python-format
+msgid "Discharge date should not be in the future"
+msgstr "วันที่จำหน่ายไม่สามารถเป็นวันในอนาคตได้"
+
+#. module: nirun_patient
+#: code:addons/nirun_patient/wizard/discharge.py:0
+#, python-format
+msgid "Discharge date should not before encounter start"
+msgstr "วันที่จำหน่ายไม่สามารถเป็นวันก่อนเข้ารับบริการได้"
 
 #. module: nirun_patient
 #: model:ir.model.fields.selection,name:nirun_patient.selection__ni_encounter__state__finished
@@ -668,6 +720,7 @@ msgstr "จำหน่ายแล้ว"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_courtesy__display_name
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_diet__display_name
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge__display_name
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__display_name
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel__display_name
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_reason__display_name
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location__display_name
@@ -679,8 +732,9 @@ msgstr "ชื่อที่ใช้แสดง"
 
 #. module: nirun_patient
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__discharge_id
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__discharge_id
 msgid "Disposition"
-msgstr "สาเหตุ"
+msgstr "สาเหตุการจำหน่าย"
 
 #. module: nirun_patient
 #: model:ir.model.fields.selection,name:nirun_patient.selection__ni_patient__marital_status__divorced
@@ -759,6 +813,7 @@ msgstr "ฉุกเฉิน"
 #: model:ir.actions.act_window,name:nirun_patient.encounter_action_finished
 #: model:ir.actions.act_window,name:nirun_patient.encounter_action_from_patient
 #: model:ir.model,name:nirun_patient.model_ni_encounter
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__encounter_id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel__encounter_id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_reason__encounter_ids
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location__encounter_ids
@@ -999,6 +1054,7 @@ msgstr "บ้าน"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_courtesy__id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_diet__id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge__id
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel__id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_reason__id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location__id
@@ -1083,6 +1139,12 @@ msgid "In-Progress"
 msgstr "รับบริการ"
 
 #. module: nirun_patient
+#: model:ir.model.fields,help:nirun_patient.field_ni_encounter_discharge__deceased
+#: model:ir.model.fields,help:nirun_patient.field_ni_encounter_discharge_wizard__deceased
+msgid "Indicate whether discharged patient was deceased or not"
+msgstr ""
+
+#. module: nirun_patient
 #: model:ni.encounter.cls,name:nirun_patient.class_IMP
 msgid "Inpatient"
 msgstr "ผู้ป่วยใน"
@@ -1144,6 +1206,7 @@ msgstr "การรับบริการครั้งล่าสุด "
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_courtesy____last_update
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_diet____last_update
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge____last_update
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard____last_update
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel____last_update
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_reason____last_update
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location____last_update
@@ -1161,6 +1224,7 @@ msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_courtesy__write_uid
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_diet__write_uid
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge__write_uid
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__write_uid
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel__write_uid
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_reason__write_uid
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location__write_uid
@@ -1177,6 +1241,7 @@ msgstr "อัพเดทครั้งสุดท้ายโดย"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_courtesy__write_date
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_diet__write_date
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge__write_date
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__write_date
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel__write_date
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_reason__write_date
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location__write_date
@@ -1378,11 +1443,14 @@ msgid "Non-Acute"
 msgstr "ไม่ฉุกเฉิน"
 
 #. module: nirun_patient
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__discharge_note
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__note
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel__note
 msgid "Note"
 msgstr "หมายเหตุ"
 
 #. module: nirun_patient
+#: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_discharge_wizard_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_location_view_form
 msgid "Note..."
 msgstr "หมายเหตุ..."
@@ -1472,6 +1540,7 @@ msgstr "ผู้ดูแล"
 #. module: nirun_patient
 #: model:ir.model,name:nirun_patient.model_ni_patient
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__patient_id
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__patient_id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_location__patient_ids
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__partner_id
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient_res__partner_id
@@ -1486,6 +1555,12 @@ msgstr "ผู้สูงอายุ"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__partner_id
 msgid "Patient Contact"
 msgstr "ผู้สูงอายุ"
+
+#. module: nirun_patient
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge__deceased
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__deceased
+msgid "Patient Deceased?"
+msgstr "ผู้สูงอายุเสียชีวิต?"
 
 #. module: nirun_patient
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__code
@@ -1665,11 +1740,6 @@ msgid "Reason the encounter takes place"
 msgstr "สาเหตุที่เข้ารับบริการครั้งนั้น"
 
 #. module: nirun_patient
-#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__discharge_partner_id
-msgid "Refer to"
-msgstr "ส่งต่อ"
-
-#. module: nirun_patient
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
 msgid "Reset To Draft"
 msgstr "กลับเป็นฉบับร่าง"
@@ -1743,6 +1813,7 @@ msgstr "อนุปริญญา"
 
 #. module: nirun_patient
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__period_start
+#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_discharge_wizard__encounter_start
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter_location_rel__period_start
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_search
 msgid "Since"
