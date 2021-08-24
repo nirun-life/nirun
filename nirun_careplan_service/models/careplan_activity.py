@@ -6,7 +6,9 @@ from odoo import api, fields, models
 class Activity(models.Model):
     _inherit = "ni.careplan.activity"
 
-    service_request_id = fields.Many2one("ni.service.request", "Relate Service")
+    service_request_id = fields.Many2one(
+        "ni.service.request", "Relate Service", tracking=True, check_company=True
+    )
 
     @api.onchange("service_request_id")
     def _onchange_service_request(self):
@@ -15,9 +17,10 @@ class Activity(models.Model):
                 rec.name = rec.service_request_id.service_id.name
                 rec.period_start = rec.service_request_id.period_start
                 rec.period_end = rec.service_request_id.period_end
-                rec.category_id = (
-                    rec.service_request_id.category_ids[0].careplan_category_id or None
-                )
+                if rec.service_request_id.category_ids:
+                    rec.category_id = rec.service_request_id.category_ids[
+                        0
+                    ].careplan_category_id
 
     @api.model
     def create(self, vals):
