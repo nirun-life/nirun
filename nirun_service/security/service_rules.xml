@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="service_rule_company" model="ir.rule">
+        <field name="name">Service: multi-company</field>
+        <field name="model_id" ref="model_ni_service" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="service_request_rule_company" model="ir.rule">
+        <field name="name">Service/Request: multi-company</field>
+        <field name="model_id" ref="model_ni_service_request" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

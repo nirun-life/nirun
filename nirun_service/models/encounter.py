@@ -10,6 +10,7 @@ class Encounter(models.Model):
         "ni.service.request",
         "encounter_id",
         "Service Requests",
+        check_company=True,
         groups="nirun_service.group_user",
     )
     service_request_count = fields.Integer(

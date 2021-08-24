@@ -2,7 +2,7 @@
 
 {
     "name": "Healthcare Services",
-    "version": "13.0.0.3.0",
+    "version": "13.0.0.4.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -12,6 +12,7 @@
     "depends": ["nirun_patient"],
     "data": [
         "security/service_group.xml",
+        "security/service_rules.xml",
         "security/ir.model.access.csv",
         "data/service_category_data.xml",
         "views/service_category_views.xml",
