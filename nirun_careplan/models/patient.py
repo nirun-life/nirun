@@ -11,6 +11,7 @@ class Patient(models.Model):
         "Careplan(s)",
         groups="nirun_careplan.group_user",
         domain=[("state", "in", ["draft", "active", "on-hold"])],
+        check_company=True,
     )
     careplan_count = fields.Integer(
         compute="_compute_careplan_count", groups="nirun_careplan.group_user", default=0

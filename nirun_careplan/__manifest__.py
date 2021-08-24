@@ -2,7 +2,7 @@
 
 {
     "name": "Care Plans",
-    "version": "13.0.0.3.1",
+    "version": "13.0.0.4.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -12,7 +12,7 @@
     "depends": ["nirun_patient"],
     "data": [
         "security/careplan_group.xml",
-        "security/careplan_security.xml",
+        "security/careplan_rule.xml",
         "security/ir.model.access.csv",
         "views/careplan_activity_views.xml",
         "views/careplan_category_views.xml",

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo noupdate="1">
+    <record id="careplan_company_rule" model="ir.rule">
+        <field name="name">Careplan: multi-company</field>
+        <field name="model_id" ref="nirun_careplan.model_ni_careplan" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="careplan_activity_company_rule" model="ir.rule">
+        <field name="name">Careplan/Activity: multi-company</field>
+        <field name="model_id" ref="nirun_careplan.model_ni_careplan_activity" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
