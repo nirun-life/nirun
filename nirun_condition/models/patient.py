@@ -7,5 +7,5 @@ class Patient(models.Model):
     _inherit = "ni.patient"
 
     condition_ids = fields.One2many(
-        "ni.condition", "patient_id", string="Condition / Problem"
+        "ni.condition", "patient_id", string="Condition / Problem", check_company=True
     )

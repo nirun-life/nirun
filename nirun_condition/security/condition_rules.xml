@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo noupdate="1">
+    <!-- This file only intent use as scaffold for security rule -->
+    <record id="condition_company_rule" model="ir.rule">
+        <field name="name">Condition: multi-company</field>
+        <field name="model_id" ref="nirun_condition.model_ni_condition" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="condition_latest_company_rule" model="ir.rule">
+        <field name="name">Condition/Latest: multi-company</field>
+        <field name="model_id" ref="nirun_condition.model_ni_condition_latest" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
