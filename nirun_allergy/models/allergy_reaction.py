@@ -8,6 +8,9 @@ class AllergyReaction(models.Model):
     _description = "Allergy Reaction Event"
     _order = "onset DESC"
 
+    company_id = fields.Many2one(
+        related="allergy_id.company_id", store=True, readonly=True, index=True
+    )
     allergy_id = fields.Many2one(
         "ni.allergy",
         "Allergy / Intolerance",
