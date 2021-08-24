@@ -9,12 +9,7 @@ class PatientRes(models.AbstractModel):
     _check_company_auto = True
 
     company_id = fields.Many2one(
-        "res.company",
-        "Company",
-        tracking=True,
-        required=True,
-        index=True,
-        default=lambda self: self.env.company,
+        related="patient_id.company_id", store=True, readonly=True, index=True
     )
     patient_id = fields.Many2one(
         "ni.patient",
