@@ -12,8 +12,12 @@ class Activity(models.Model):
         "activity_id",
         "condition_id",
         "Conditions",
+        check_company=True,
         help="Why activity is needed",
     )
     reason_condition_id = fields.Many2one(
-        "ni.condition", "Condition (Main)", help="Main reason of this activity",
+        "ni.condition",
+        "Condition (Main)",
+        check_company=True,
+        help="Main reason of this activity",
     )
