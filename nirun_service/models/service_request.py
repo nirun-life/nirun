@@ -19,6 +19,7 @@ class ServiceRequest(models.Model):
         ondelete="restrict",
         readonly=True,
         required=True,
+        check_company=True,
         states={"draft": [("readonly", False)]},
     )
     category_ids = fields.Many2many(related="service_id.category_ids")

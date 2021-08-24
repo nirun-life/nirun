@@ -10,6 +10,7 @@ class Patient(models.Model):
         "ni.service.request",
         "patient_id",
         "Service Requests",
+        check_company=True,
         groups="nirun_service.group_user",
     )
     service_request_count = fields.Integer(
