@@ -13,6 +13,7 @@ class Careplan(models.Model):
         "condition_id",
         store=True,
         readonly=False,
+        check_company=True,
         compute="_compute_condition",
     )
 

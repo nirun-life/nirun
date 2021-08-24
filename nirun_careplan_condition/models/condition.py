@@ -12,5 +12,6 @@ class Condition(models.Model):
         "condition_id",
         "activity_id",
         "Activities",
+        check_company=True,
         readonly=True,
     )
