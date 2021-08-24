@@ -23,14 +23,6 @@ class Activity(models.Model):
 
     sequence = fields.Integer(help="Determine the display order", index=True)
     color = fields.Integer(string="Color Index")
-    company_id = fields.Many2one(
-        "res.company",
-        "Company",
-        tracking=True,
-        required=True,
-        index=True,
-        default=lambda self: self.env.company,
-    )
     careplan_id = fields.Many2one(
         "ni.careplan",
         string="Care Plan",
@@ -38,6 +30,9 @@ class Activity(models.Model):
         check_company=True,
         ondelete="cascade",
         default=lambda self: self.env.context.get("default_careplan_id"),
+    )
+    company_id = fields.Many2one(
+        related="careplan_id.company_id", store=True, readonly=True, index=True
     )
     state = fields.Selection(
         [

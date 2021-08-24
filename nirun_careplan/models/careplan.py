@@ -12,14 +12,7 @@ class CarePlan(models.Model):
     _order = "sequence, id DESC"
 
     _rec_name = "id"
-    company_id = fields.Many2one(
-        "res.company",
-        "Company",
-        tracking=True,
-        required=True,
-        index=True,
-        default=lambda self: self.env.company,
-    )
+
     patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
     encounter_id = fields.Many2one(
         readonly=True, states={"draft": [("readonly", False)]}
@@ -87,6 +80,7 @@ class CarePlan(models.Model):
         "careplan_id",
         string="Activities",
         readonly=True,
+        check_company=True,
         states={"draft": [("readonly", False)], "active": [("readonly", False)]},
     )
     activity_count = fields.Integer(compute="_compute_activities_count", store=True)
