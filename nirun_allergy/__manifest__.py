@@ -2,7 +2,7 @@
 
 {
     "name": "Allergy & Intolerance",
-    "version": "13.0.0.1.0",
+    "version": "13.0.0.2.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -12,6 +12,7 @@
     "depends": ["nirun_patient", "nirun_medication"],
     "data": [
         "security/ir.model.access.csv",
+        "security/allergy_rule.xml",
         "views/patient_views.xml",
         "views/allergy_views.xml",
         "views/allergy_code_views.xml",

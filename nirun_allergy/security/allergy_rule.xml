@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo noupdate="1">
+    <!-- This file only intent use as scaffold for security rule -->
+    <record id="allergy_company_rule" model="ir.rule">
+        <field name="name">Allergy: multi-company</field>
+        <field name="model_id" ref="nirun_allergy.model_ni_allergy" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="allergy_reaction_company_rule" model="ir.rule">
+        <field name="name">Allergy/Reaction: multi-company</field>
+        <field name="model_id" ref="nirun_allergy.model_ni_allergy_reaction" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
