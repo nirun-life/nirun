@@ -2,7 +2,7 @@
 
 {
     "name": "Condition",
-    "version": "13.0.0.2.1",
+    "version": "13.0.0.3.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -12,6 +12,7 @@
     "depends": ["nirun_patient"],
     "data": [
         "security/ir.model.access.csv",
+        "security/condition_rules.xml",
         "views/condition_code_views.xml",
         "views/condition_type_views.xml",
         "views/condition_views.xml",
