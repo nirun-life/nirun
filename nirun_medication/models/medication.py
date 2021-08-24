@@ -59,7 +59,11 @@ class Medication(models.Model):
     @api.depends("statement_ids", "statement_ids.state")
     def _compute_patient(self):
         statement = self.env["ni.medication.statement"].search(
-            [("medication_id", "in", self.ids), ("state", "=", "active")]
+            [
+                ("medication_id", "in", self.ids),
+                ("state", "=", "active"),
+                ("company_id", "in", self.env.company.ids),
+            ]
         )
         for rec in self:
             statement_active_ids = statement.filtered(lambda s: s.medication_id == rec)

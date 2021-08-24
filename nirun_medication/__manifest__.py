@@ -12,6 +12,7 @@
     "depends": ["nirun_patient", "product"],
     "data": [
         "security/medication_group.xml",
+        "security/medication_rules.xml",
         "security/ir.model.access.csv",
         "data/medication_data.xml",
         "data/ni.medication.form.csv",
