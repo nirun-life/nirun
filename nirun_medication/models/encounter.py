@@ -11,6 +11,7 @@ class Encounter(models.Model):
         "encounter_id",
         string="Medication Statements",
         domain=[("state", "in", ["active"])],
+        check_company=True,
         groups="nirun_medication.group_user",
     )
     medication_count = fields.Integer(compute="_compute_medication_count")

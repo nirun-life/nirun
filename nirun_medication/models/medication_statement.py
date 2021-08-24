@@ -27,7 +27,11 @@ class MedicationStatement(models.Model):
         tracking=True,
     )
     medication_id = fields.Many2one(
-        "ni.medication", required=True, ondelete="restrict", tracking=True
+        "ni.medication",
+        required=True,
+        ondelete="restrict",
+        tracking=True,
+        check_company=True,
     )
     image_1920 = fields.Image(related="medication_id.image_1920")
     image_1024 = fields.Image(related="medication_id.image_1024")
