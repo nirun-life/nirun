@@ -20,7 +20,7 @@
         "data/encounter_courtesy_data.xml",
         "data/encounter_diet_data.xml",
         "security/patient_group.xml",
-        "security/patient_security.xml",
+        "security/patient_rules.xml",
         "security/ir.model.access.csv",
         "wizard/discharge_views.xml",
         "views/location_views.xml",
