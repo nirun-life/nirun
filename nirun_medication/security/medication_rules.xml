@@ -6,11 +6,13 @@
     <record id="medication_company_rule" model="ir.rule">
         <field name="name">Medication: multi-company</field>
         <field name="model_id" ref="model_ni_medication" />
+        <field name="global" eval="True" />
         <field name="domain_force">['|', ('company_id', 'in', company_ids), ('company_id', '=', False)]</field>
     </record>
     <record id="medication_statement_company_rule" model="ir.rule">
         <field name="name">Medication/Statement: multi-company</field>
         <field name="model_id" ref="model_ni_medication_statement" />
+        <field name="global" eval="True" />
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 </odoo>
