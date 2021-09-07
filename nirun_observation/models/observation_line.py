@@ -11,6 +11,9 @@ class ObservationLine(models.Model):
     observation_id = fields.Many2one(
         "ni.observation", required=True, readonly=True, index=True, ondelete="cascade",
     )
+    company_id = fields.Many2one(
+        related="observation_id.company_id", store=True, readonly=True
+    )
     patient_id = fields.Many2one(
         related="observation_id.patient_id", store=True, readonly=True
     )

@@ -3,9 +3,16 @@
   ~ Copyright (c) 2021 Piruin P.
   -->
 <odoo>
-    <record id="observation_rule_company" model="ir.rule">
-        <field name="name">Observation multi-company</field>
+    <record id="observation_company_rule" model="ir.rule">
+        <field name="name">Observation: multi-company</field>
         <field name="model_id" ref="model_ni_observation" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="observation_line_company_rule" model="ir.rule">
+        <field name="name">Observation/Line: multi-company</field>
+        <field name="model_id" ref="model_ni_observation_line" />
+        <field name="global" eval="True" />
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 </odoo>
