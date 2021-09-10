@@ -31,8 +31,7 @@ class Encounter(models.Model):
     name = fields.Char(
         "Encounter No.",
         copy=False,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
+        states=LOCK_STATE_DICT,
         index=True,
         default=lambda self: self._sequence_default,
     )
@@ -41,8 +40,7 @@ class Encounter(models.Model):
         "Classification",
         index=True,
         required=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
+        states=LOCK_STATE_DICT,
         help="Classification of patient encounter",
         ondelete="restrict",
         tracking=True,
@@ -115,7 +113,9 @@ class Encounter(models.Model):
     )
 
     # Hospitalization
-    pre_admit_identifier = fields.Char(help="Pre-admission identifier", tracking=True)
+    pre_admit_identifier = fields.Char(
+        states=LOCK_STATE_DICT, tracking=True, help="Pre-admission identifier"
+    )
     origin_partner_id = fields.Many2one(
         "res.partner",
         string="Transfer from",
