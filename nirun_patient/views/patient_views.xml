@@ -190,11 +190,15 @@
                 <field name="name" />
                 <field name="code" />
                 <field name="age" />
+                <field name="gender" />
                 <field name="age_years" />
                 <field name="deceased" />
                 <field name="performer_id" />
                 <field name="partner_id" />
                 <field name="presence_state" />
+                <field name="encountering_id" />
+                <field name="is_encountering" />
+                <field name="location_id" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
@@ -222,7 +226,7 @@
                             </div>
                             <div class="oe_kanban_details">
                                 <div name="kanban_top" class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings o_kanban_record_title">
+                                    <div class="o_kanban_record_headings">
                                         <div class="float-right" t-if="record.presence_state.raw_value == 'unknown'">
                                             <span
                                                 name="presence_to_define"
@@ -271,7 +275,9 @@
                                                 title="Deceased"
                                             />
                                         </div>
-                                        <field name="name" placeholder="Patient's Name" />
+                                        <span class="o_kanban_record_title">
+                                            <field name="name" placeholder="Patient's Name" />
+                                        </span>
                                         <t t-if="record.code.value">
                                             <small>
                                                 [
@@ -279,20 +285,35 @@
                                                 ]
                                             </small>
                                         </t>
+                                        <span class="o_kanban_record_subtitle" t-if="record.encountering_id.value">
+                                            <t t-esc="record.encountering_id.value" />
+                                        </span>
                                     </div>
                                 </div>
-                                <div t-if="record.gender.value">
-                                    <small>
+                                <ul class="my-2">
+                                    <li class="o_force_ltr" t-if="record.gender.value or record.age_years.value &gt; 0">
                                         <field name="gender" />
-                                        <t t-if="record.age_years.value > 0">
-                                            ,
-                                            <field name="age_years" class="ml-3" />
+                                        <t t-if="record.age_years.value &gt; 0">
+                                            <t t-if="record.gender.value">,</t>
+                                            <field name="age_years" class="mx-3" />
+                                            ปี
                                         </t>
-                                    </small>
+                                    </li>
+                                    <li class="o_text_overflow" t-if="record.location_id.value">
+                                        <field name="location_id" />
+                                    </li>
+                                </ul>
+                                <div class="oe_kanban_partner_links" />
+                                <div class="o_kanban_card_actions" t-if="!selection_mode">
+                                    <button
+                                        name="%(encounter_action_from_patient)d"
+                                        attrs="{'invisible': ['|', ('is_encountering', '=', True), ('deceased', '=', True)]}"
+                                        class="btn btn-primary"
+                                        type="action"
+                                    >
+                                        Admission
+                                    </button>
                                 </div>
-                                <small>
-                                    <field name="location_id" />
-                                </small>
                             </div>
                         </div>
                     </t>
