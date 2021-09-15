@@ -35,6 +35,7 @@ class Encounter(models.Model):
         index=True,
         default=lambda self: self._sequence_default,
     )
+    color = fields.Integer()
     class_id = fields.Many2one(
         "ni.encounter.cls",
         "Classification",
