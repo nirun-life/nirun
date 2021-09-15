@@ -105,6 +105,7 @@ class Patient(models.Model):
 
     education_level = fields.Selection(
         [
+            ("-", "Uneducated"),
             ("0", "Early Childhood"),
             ("1", "Primary"),
             ("2", "Lower Secondary"),
