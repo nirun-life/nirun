@@ -78,7 +78,12 @@
                     />
                 </header>
                 <sheet>
-                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                    <div
+                        name="button_box"
+                        attrs="{'invisible': [('id', '!=', False)]}"
+                        class="oe_button_box"
+                        groups="base.group_user"
+                    >
                         <button
                             name="action_encounter"
                             attrs="{'invisible': [('encounter_count', '&lt;=', 1)]}"
@@ -109,12 +114,13 @@
                                 name="name"
                                 attrs="{'invisible': [('id', '=', False)]}"
                                 placeholder="Patient's Name"
+                                readonly="True"
                                 required="True"
                             />
                         </h1>
                         <div class="oe_read_only">
                             <!-- align-top use for support responsive module-->
-                            <label class="align-top" for="age" />
+                            <label attrs="{'invisible': [('age', '=', False)]}" class="align-top" for="age" />
                             <field name="age" />
                         </div>
                     </div>
