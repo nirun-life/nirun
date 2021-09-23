@@ -138,9 +138,9 @@
                             <field name="company_id" groups="base.group_multi_company" />
                         </group>
                         <group name="encountering">
-                            <field name="encountering_id" attrs="{'invisible': [('is_encountering', '=', False)]}" />
+                            <field name="encounter_id" attrs="{'invisible': [('is_encountering', '=', False)]}" />
                             <field name="location_id" attrs="{'invisible': [('is_encountering', '=', False)]}" />
-                            <field name="encountering_start" attrs="{'invisible': [('is_encountering', '=', False)]}" />
+                            <field name="encounter_start" attrs="{'invisible': [('is_encountering', '=', False)]}" />
                         </group>
                     </group>
                     <notebook name="notebook">
@@ -202,7 +202,7 @@
                 <field name="performer_id" />
                 <field name="partner_id" />
                 <field name="presence_state" />
-                <field name="encountering_id" />
+                <field name="encounter_id" />
                 <field name="is_encountering" />
                 <field name="location_id" />
                 <templates>
@@ -291,8 +291,8 @@
                                                 ]
                                             </small>
                                         </t>
-                                        <span class="o_kanban_record_subtitle" t-if="record.encountering_id.value">
-                                            <t t-esc="record.encountering_id.value" />
+                                        <span class="o_kanban_record_subtitle" t-if="record.encounter_id.value">
+                                            <t t-esc="record.encounter_id.value" />
                                         </span>
                                     </div>
                                 </div>

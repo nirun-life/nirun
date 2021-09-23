@@ -12,7 +12,7 @@ class ServiceBulkRequest(models.TransientModel):
         "ni.patient",
         string="Patients",
         required=True,
-        domain=[("encountering_id", "!=", False)],
+        domain=[("encounter_id", "!=", False)],
     )
     state = fields.Selection(
         [("draft", "Request"), ("active", "In-Progress")],
@@ -26,7 +26,7 @@ class ServiceBulkRequest(models.TransientModel):
             req.create(
                 {
                     "patient_id": patient.id,
-                    "encounter_id": patient.encountering_id.id,
+                    "encounter_id": patient.encounter_id.id,
                     "service_id": self.service_id.id,
                     "requester_id": self.env.user.partner_id.id,
                     "period_start": self.period_start,
