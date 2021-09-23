@@ -135,7 +135,7 @@ class Patient(models.Model):
         compute_sudo=True,
         store=True,
     )
-    encountering_id = fields.Many2one(
+    encounter_id = fields.Many2one(
         "ni.encounter",
         "Encounter No.",
         compute="_compute_encounter",
@@ -143,9 +143,9 @@ class Patient(models.Model):
         compute_sudo=True,
         store=True,
     )
-    performer_id = fields.Many2one(related="encountering_id.performer_id")
+    performer_id = fields.Many2one(related="encounter_id.performer_id")
 
-    encountering_start = fields.Date(
+    encounter_start = fields.Date(
         "Encounter Start",
         compute="_compute_encounter",
         require=False,
@@ -167,7 +167,7 @@ class Patient(models.Model):
         store=True,
         compute_sudo=True,
     )
-    location_id = fields.Many2one(related="encountering_id.location_id")
+    location_id = fields.Many2one(related="encounter_id.location_id")
     active = fields.Boolean(default=True)
 
     _sql_constraints = [
@@ -216,7 +216,7 @@ class Patient(models.Model):
                 ("patient_id", "in", self.ids),
                 ("state", "not in", ENCOUNTER_INACTIVE_STATE),
             ],
-            order="patient_id, id DESC",
+            order="id DESC",
         )
         for rec in self:
             enc_ids = enc.filtered(lambda en: en.patient_id.id == rec.id)
@@ -226,8 +226,8 @@ class Patient(models.Model):
                 rec.update(
                     {
                         "last_encounter_id": last_enc.id,
-                        "encountering_id": last_enc.id,
-                        "encountering_start": last_enc.period_start,
+                        "encounter_id": last_enc.id,
+                        "encounter_start": last_enc.period_start,
                         "is_encountering": True,
                         "presence_state": last_enc.state,
                     }
@@ -236,8 +236,8 @@ class Patient(models.Model):
                 rec.update(
                     {
                         "last_encounter_id": last_enc.id,
-                        "encountering_id": None,
-                        "encountering_start": None,
+                        "encounter_id": None,
+                        "encounter_start": None,
                         "is_encountering": False,
                         "presence_state": last_enc.state,
                     }
@@ -246,8 +246,8 @@ class Patient(models.Model):
                 rec.update(
                     {
                         "last_encounter_id": None,
-                        "encountering_id": None,
-                        "encountering_start": None,
+                        "encounter_id": None,
+                        "encounter_start": None,
                         "is_encountering": False,
                         "presence_state": "unknown",
                     }
@@ -345,7 +345,7 @@ class Patient(models.Model):
             "type": "ir.actions.act_window",
             "res_model": "ni.encounter",
             "views": [[False, "form"]],
-            "res_id": self.encountering_id.id,
+            "res_id": self.encounter_id.id,
         }
 
     @api.model
