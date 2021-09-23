@@ -2,7 +2,7 @@
 
 {
     "name": "Patients",
-    "version": "13.0.0.5.3",
+    "version": "13.0.0.6.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",

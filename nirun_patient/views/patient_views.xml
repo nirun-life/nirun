@@ -128,7 +128,7 @@
                         <group name="partner">
                             <field
                                 name="partner_id"
-                                context="{'show_address': True, 'default_type': 'contact','company_type': 'person', 'default_is_company': False, 'default_country_id': country_id}"
+                                context="{'default_type': 'contact','company_type': 'person', 'default_is_company': False }"
                                 options='{"always_reload": True}'
                             />
                             <field name="phone" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="phone" />
@@ -139,7 +139,11 @@
                         </group>
                         <group name="encountering">
                             <field name="encounter_id" attrs="{'invisible': [('is_encountering', '=', False)]}" />
-                            <field name="location_id" attrs="{'invisible': [('is_encountering', '=', False)]}" />
+                            <field
+                                name="location_id"
+                                attrs="{'invisible': [('is_encountering', '=', False)]}"
+                                options='{"no_open": True}'
+                            />
                             <field name="encounter_start" attrs="{'invisible': [('is_encountering', '=', False)]}" />
                         </group>
                     </group>
@@ -147,7 +151,7 @@
                         <page name="private" string="Private Information" accesskey="P">
                             <group>
                                 <group string="Citizenship">
-                                    <field name="country_id" />
+                                    <field name="nationality_id" options='{"no_open": True}' />
                                     <field name="identification_id" placeholder="ex. 1104740100001" />
                                     <field name="gender" options="{'horizontal': True}" widget="radio" />
                                     <field name="age_years" />

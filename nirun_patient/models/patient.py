@@ -50,7 +50,7 @@ class Patient(models.Model):
 
     code = fields.Char("Patient No.", copy=False, tracking=True)
 
-    country_id = fields.Many2one(
+    nationality_id = fields.Many2one(
         "res.country",
         "Nationality (Country)",
         tracking=True,
@@ -205,7 +205,7 @@ class Patient(models.Model):
     def onchange_partner_id(self):
         for rec in self:
             if rec.partner_id:
-                rec.country_id = rec.partner_id.country_id
+                rec.nationality_id = rec.partner_id.country_id
                 if not rec._origin.identification_id:
                     rec.identification_id = rec.partner_id.vat
 
