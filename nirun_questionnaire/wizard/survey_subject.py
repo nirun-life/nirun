@@ -23,7 +23,7 @@ class SurveySubjectWizard(models.TransientModel):
     @api.onchange("subject_ni_patient")
     def onchange_patient(self):
         if self.subject_ni_encounter.patient_id != self.subject_ni_patient:
-            self.subject_ni_encounter = self.subject_ni_patient.encountering_id
+            self.subject_ni_encounter = self.subject_ni_patient.encounter_id
 
         if self.subject_ni_patient.deceased:
             warning = {
