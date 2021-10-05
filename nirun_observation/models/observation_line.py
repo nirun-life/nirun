@@ -88,3 +88,17 @@ class ObservationLine(models.Model):
                     _("%s %s is out of acceptable range [%d-%d]")
                     % (rec.type_id.name, rec.value, rec.type_id.min, rec.type_id.max)
                 )
+
+    def view_graph(self):
+        action_rec = self.env.ref("nirun_observation.ob_line_action")
+        action = action_rec.read()[0]
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "search_default_patient_id": self.patient_id.id,
+                "search_default_type_id": self.type_id.id,
+                "default_patient_id": self.patient_id.id,
+            }
+        )
+        action["context"] = ctx
+        return action

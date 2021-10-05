@@ -15,6 +15,7 @@
             <search>
                 <field name="observation_id" />
                 <field name="patient_id" />
+                <field name="type_id" />
                 <field name="interpretation_id" operator="child_of" />
                 <filter
                     name="effective_today"
@@ -37,6 +38,7 @@
                 <group string="Group By">
                     <filter name="Patient" context="{'group_by': 'patient_id'}" />
                     <filter name="Task" context="{'group_by': 'observation_id'}" />
+                    <filter name="Type" context="{'group_by': 'type_id'}" />
                 </group>
             </search>
         </field>
@@ -85,6 +87,7 @@
                 <field name="unit" />
                 <field name="interpretation_id" />
                 <field name="display_class" invisible="True" />
+                <button name="view_graph" string="View Graph" icon="fa-bar-chart" type="object" />
             </tree>
         </field>
     </record>
