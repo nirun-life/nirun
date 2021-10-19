@@ -109,13 +109,7 @@
                     <div class="oe_title">
                         <h1>
                             <div attrs="{'invisible': [('id', '!=', False)]}">New Patient</div>
-                            <field
-                                name="name"
-                                attrs="{'invisible': [('id', '=', False)]}"
-                                placeholder="Patient's Name"
-                                readonly="True"
-                                required="True"
-                            />
+                            <field name="name" placeholder="Patient's Name" readonly="False" required="True" />
                         </h1>
                         <div class="oe_read_only">
                             <!-- align-top use for support responsive module-->
@@ -129,14 +123,16 @@
                                 name="partner_id"
                                 context="{'default_type': 'contact','company_type': 'person', 'default_is_company': False }"
                                 options='{"always_reload": True}'
+                                attrs="{'invisible':[('id', '!=', False)]}"
+                                required="False"
                             />
-                            <field name="phone" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="phone" />
-                            <field name="mobile" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="phone" />
-                            <field name="email" attrs="{'invisible':[('partner_id', '=', False) ]}" widget="email" />
+                            <field name="phone" widget="phone" />
+                            <field name="mobile" widget="phone" />
+                            <field name="email" widget="email" />
                             <field name="code" placeholder="ex. HN-001204" />
-                            <field name="company_id" groups="base.group_multi_company" />
                         </group>
                         <group name="encounter">
+                            <field name="company_id" groups="base.group_multi_company" />
                             <field
                                 name="encounter_id"
                                 attrs="{'invisible': [('is_encountering', '=', False)]}"
