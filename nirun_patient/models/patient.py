@@ -12,6 +12,7 @@ class Patient(models.Model):
     _name = "ni.patient"
     _description = "Patient"
     _inherit = ["mail.thread", "mail.activity.mixin", "image.mixin"]
+    _inherits = {"res.partner": "partner_id"}
     _check_company_auto = True
     _order = "name"
 
@@ -26,27 +27,24 @@ class Patient(models.Model):
 
     partner_id = fields.Many2one(
         "res.partner",
-        "Patient",
-        copy=False,
+        "Related Partner",
         check_company=True,
         required=True,
         ondelete="restrict",
-        index=True,
-        tracking=True,
         domain="[('type', '=', 'contact'), ('is_company', '=', False)]",
-        help="Contact information of patient",
+        auto_join=True,
+        help="Partner-related data of patient",
     )
     image_1920 = fields.Image(related="partner_id.image_1920", readonly=False)
     image_1024 = fields.Image(related="partner_id.image_1024", readonly=False)
     image_512 = fields.Image(related="partner_id.image_512", readonly=False)
     image_256 = fields.Image(related="partner_id.image_256", readonly=False)
     image_128 = fields.Image(related="partner_id.image_128", readonly=False)
-    name = fields.Char(
-        related="partner_id.name", readonly=False, store=True, index=True
-    )
-    phone = fields.Char(related="partner_id.phone", readonly=False)
-    mobile = fields.Char(related="partner_id.mobile", readonly=False)
-    email = fields.Char(related="partner_id.email", readonly=False)
+
+    name = fields.Char(related="partner_id.name", inherited=True, readonly=False)
+    phone = fields.Char(related="partner_id.phone", inherited=True, readonly=False)
+    mobile = fields.Char(related="partner_id.mobile", inherited=True, readonly=False)
+    email = fields.Char(related="partner_id.email", inherited=True, readonly=False)
 
     code = fields.Char("Patient No.", copy=False, tracking=True)
 
