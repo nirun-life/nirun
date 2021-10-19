@@ -300,6 +300,7 @@ class Encounter(models.Model):
             result._create_location_hist(
                 location=result.location_id.id, start=result.period_start
             )
+        result.patient_id._compute_encounter()
         return result
 
     def write(self, vals):
