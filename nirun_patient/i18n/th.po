@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-15 01:27+0000\n"
-"PO-Revision-Date: 2021-09-15 01:27+0000\n"
+"POT-Creation-Date: 2021-10-19 08:40+0000\n"
+"PO-Revision-Date: 2021-10-19 08:40+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -473,6 +473,7 @@ msgstr "รหัส"
 
 #. module: nirun_patient
 #: code:addons/nirun_patient/models/patient.py:0
+#: model:ir.model.constraint,message:nirun_patient.constraint_ni_patient_code_uniq
 #, python-format
 msgid "Code must be unique !"
 msgstr "รหัสต้องไม่ซ้ำกัน"
@@ -750,6 +751,7 @@ msgstr "ปริญญา เอก"
 
 #. module: nirun_patient
 #: model:ir.model.fields.selection,name:nirun_patient.selection__ni_encounter__state__draft
+#: model:ir.model.fields.selection,name:nirun_patient.selection__ni_patient__presence_state__draft
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_search
 msgid "Draft"
@@ -1204,11 +1206,6 @@ msgstr "เขตการปกครอง"
 #: model:ni.encounter.diet,name:nirun_patient.diet_kosher
 msgid "Kosher"
 msgstr "อาหารโคเชอร์"
-
-#. module: nirun_patient
-#: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__last_encounter_id
-msgid "Last Encounter "
-msgstr "การรับบริการครั้งล่าสุด "
 
 #. module: nirun_patient
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter____last_update
@@ -1994,6 +1991,7 @@ msgstr ""
 
 #. module: nirun_patient
 #: code:addons/nirun_patient/models/patient.py:0
+#: model:ir.model.constraint,message:nirun_patient.constraint_ni_patient_partner_uniq
 #, python-format
 msgid "This contact have already registered as patient!"
 msgstr "รายชื่อนี้ถูกขึ้นทะเบียนเป็นผู้สูงอายุแล้ว"
@@ -2076,6 +2074,11 @@ msgid "User"
 msgstr "ผู้ใช้งาน"
 
 #. module: nirun_patient
+#: model_terms:ir.ui.view,arch_db:nirun_patient.patient_view_kanban
+msgid "Validate"
+msgstr "ทำต่อ"
+
+#. module: nirun_patient
 #: model:ni.encounter.diet,name:nirun_patient.diet_vegan
 msgid "Vegan"
 msgstr "วีแกน"
@@ -2120,18 +2123,6 @@ msgstr "หวอด"
 #, python-format
 msgid "Warning!"
 msgstr "คำเตือน!"
-
-#. module: nirun_patient
-#: model:ir.model.fields,field_description:nirun_patient.field_ni_encounter__website_message_ids
-#: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__website_message_ids
-msgid "Website Messages"
-msgstr ""
-
-#. module: nirun_patient
-#: model:ir.model.fields,help:nirun_patient.field_ni_encounter__website_message_ids
-#: model:ir.model.fields,help:nirun_patient.field_ni_patient__website_message_ids
-msgid "Website communication history"
-msgstr ""
 
 #. module: nirun_patient
 #: model:ni.encounter.arrangement,name:nirun_patient.arrg_wheel

@@ -47,7 +47,6 @@
             <tree>
                 <field name="code" optional="show" />
                 <field name="name" />
-                <field name="last_encounter_id" optional="show" />
                 <field name="performer_id" optional="show" />
                 <field name="gender" optional="show" />
                 <field name="age_years" string="Age" optional="show" />
@@ -138,13 +137,18 @@
                             <field name="company_id" groups="base.group_multi_company" />
                         </group>
                         <group name="encounter">
-                            <field name="encounter_id" attrs="{'invisible': [('is_encountering', '=', False)]}" />
+                            <field
+                                name="encounter_id"
+                                attrs="{'invisible': [('is_encountering', '=', False)]}"
+                                context="{'show_state': True}"
+                                options='{"always_reload": True}'
+                            />
+                            <field name="encounter_start" attrs="{'invisible': [('is_encountering', '=', False)]}" />
                             <field
                                 name="location_id"
                                 attrs="{'invisible': [('is_encountering', '=', False)]}"
                                 options='{"no_open": True}'
                             />
-                            <field name="encounter_start" attrs="{'invisible': [('is_encountering', '=', False)]}" />
                         </group>
                     </group>
                     <notebook name="notebook">
@@ -288,19 +292,24 @@
                                         <span class="o_kanban_record_title">
                                             <field name="name" placeholder="Patient's Name" />
                                         </span>
-                                        <t t-if="record.code.value">
-                                            <small>
-                                                [
-                                                <t t-esc="record.code.value" />
-                                                ]
-                                            </small>
-                                        </t>
+                                        <span class="o_kanban_record_subtitle" t-if="record.code.value">
+                                            <t t-esc="record.code.value" />
+                                        </span>
                                         <span class="o_kanban_record_subtitle" t-if="record.encounter_id.value">
                                             <t t-esc="record.encounter_id.value" />
+                                            <t
+                                                t-if="record.presence_state.raw_value == 'draft' or record.presence_state.raw_value == 'planned'"
+                                            >
+                                                <small>
+                                                    [
+                                                    <t t-esc="record.presence_state.value" />
+                                                    ]
+                                                </small>
+                                            </t>
                                         </span>
                                     </div>
                                 </div>
-                                <ul class="my-2">
+                                <ul>
                                     <li class="o_force_ltr" t-if="record.gender.value or record.age_years.value &gt; 0">
                                         <field name="gender" />
                                         <t t-if="record.age_years.value &gt; 0">
@@ -314,14 +323,26 @@
                                     </li>
                                 </ul>
                                 <div class="oe_kanban_partner_links" />
-                                <div class="o_kanban_card_actions" t-if="!selection_mode">
+                                <div class="o_kanban_card_actions mt-1" t-if="!selection_mode">
                                     <button
                                         name="%(encounter_action_from_patient)d"
-                                        attrs="{'invisible': ['|', ('is_encountering', '=', True), ('deceased', '=', True)]}"
+                                        attrs="{'invisible': [('presence_state', 'not in', ['unknown', 'finished'])]}"
                                         class="btn btn-primary"
+                                        icon="fa-sign-in"
                                         type="action"
                                     >
                                         Admission
+                                    </button>
+                                    <button
+                                        name="%(encounter_action)d"
+                                        string="Validate"
+                                        attrs="{'invisible': [('presence_state', 'not in', ['draft'])]}"
+                                        class="btn btn-info"
+                                        context="{'search_default_patient_id': active_id}"
+                                        icon="fa-file-o"
+                                        type="action"
+                                    >
+                                        Validate
                                     </button>
                                 </div>
                             </div>

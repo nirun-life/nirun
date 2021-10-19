@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
-ENCOUNTER_INACTIVE_STATE = ["entered-in-error", "draft", "cancelled"]
+ENCOUNTER_INACTIVE_STATE = ["entered-in-error", "cancelled"]
 
 
 class Patient(models.Model):
@@ -127,14 +127,6 @@ class Patient(models.Model):
         "ni.encounter", "patient_id", "Encounter(s)", readonly=True
     )
     encounter_count = fields.Integer(compute="_compute_encounter", compute_sudo=True)
-    last_encounter_id = fields.Many2one(
-        "ni.encounter",
-        "Last Encounter ",
-        compute="_compute_encounter",
-        require=False,
-        compute_sudo=True,
-        store=True,
-    )
     encounter_id = fields.Many2one(
         "ni.encounter",
         "Encounter No.",
@@ -156,6 +148,7 @@ class Patient(models.Model):
     )
     presence_state = fields.Selection(
         [
+            ("draft", "Draft"),
             ("planned", "Waiting"),
             ("in-progress", "In-Progress"),
             ("finished", "Discharged"),
@@ -221,31 +214,28 @@ class Patient(models.Model):
         for rec in self:
             enc_ids = enc.filtered(lambda en: en.patient_id.id == rec.id)
             rec.encounter_count = len(enc_ids)
-            last_enc = enc_ids[0] if enc_ids else None
-            if last_enc and last_enc.state == "in-progress":
+            latest_enc = enc_ids[0] if enc_ids else None
+            if latest_enc and latest_enc.state in ["draft", "planned", "in-progress"]:
                 rec.update(
                     {
-                        "last_encounter_id": last_enc.id,
-                        "encounter_id": last_enc.id,
-                        "encounter_start": last_enc.period_start,
+                        "encounter_id": latest_enc.id,
+                        "encounter_start": latest_enc.period_start,
                         "is_encountering": True,
-                        "presence_state": last_enc.state,
+                        "presence_state": latest_enc.state,
                     }
                 )
-            elif last_enc and last_enc.state in ["finished", "planned"]:
+            elif latest_enc and latest_enc.state in ["finished"]:
                 rec.update(
                     {
-                        "last_encounter_id": last_enc.id,
                         "encounter_id": None,
                         "encounter_start": None,
                         "is_encountering": False,
-                        "presence_state": last_enc.state,
+                        "presence_state": latest_enc.state,
                     }
                 )
             else:
                 rec.update(
                     {
-                        "last_encounter_id": None,
                         "encounter_id": None,
                         "encounter_start": None,
                         "is_encountering": False,
