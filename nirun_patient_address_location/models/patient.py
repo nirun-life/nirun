@@ -42,7 +42,7 @@ class Patient(models.Model):
             if self.zip_id.city_id.state_id:
                 vals.update({"state_id": self.zip_id.city_id.state_id})
             self.update(vals)
-        elif not self.country_enforce_cities:
+        elif not self.partner_id or not self.partner_id.country_enforce_cities:
             self.city_id = False
 
     @api.constrains("zip_id", "country_id", "city_id", "state_id")
