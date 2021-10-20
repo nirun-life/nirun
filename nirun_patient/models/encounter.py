@@ -317,7 +317,12 @@ class Encounter(models.Model):
                 )
             else:
                 last_location.update({"location_id": new_location})
-        super().write(vals)
+
+        res = super().write(vals)
+        if "state" in vals:
+            for enc in self:
+                enc.patient_id._compute_encounter()
+        return res
 
     def get_last_location(self):
         enc_location = self.env["ni.encounter.location.rel"].sudo()
@@ -348,7 +353,6 @@ class Encounter(models.Model):
                 enc.update({"state": "planned"})
             else:
                 enc.update({"state": "in-progress"})
-                enc.patient_id._compute_encounter()
 
     def action_close(self):
         for enc in self:

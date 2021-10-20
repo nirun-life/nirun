@@ -44,8 +44,9 @@
         <field name="name">patient.view.tree</field>
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree default_order="encounter_id, name">
                 <field name="code" optional="show" />
+                <field name="encounter_id" optional="show" />
                 <field name="name" />
                 <field name="performer_id" optional="show" />
                 <field name="gender" optional="show" />
@@ -245,11 +246,20 @@
                                                 title="Unknown"
                                             />
                                         </div>
+                                        <div class="float-right" t-if="record.presence_state.raw_value == 'draft'">
+                                            <span
+                                                name="presence_draft"
+                                                aria-label="Draft"
+                                                class="fa fa-circle text-info"
+                                                role="img"
+                                                title="Draft"
+                                            />
+                                        </div>
                                         <div class="float-right" t-if="record.presence_state.raw_value == 'planned'">
                                             <span
                                                 name="presence_planned"
                                                 aria-label="Waiting"
-                                                class="fa fa-circle text-info"
+                                                class="fa fa-circle text-warning"
                                                 role="img"
                                                 title="Waiting"
                                             />
@@ -331,7 +341,7 @@
                                     <button
                                         name="%(encounter_action)d"
                                         string="Validate"
-                                        attrs="{'invisible': [('presence_state', 'not in', ['draft'])]}"
+                                        attrs="{'invisible': [('presence_state', 'not in', ['draft', 'planned'])]}"
                                         class="btn btn-info"
                                         context="{'search_default_patient_id': active_id}"
                                         icon="fa-file-o"
