@@ -1,14 +1,17 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import fields, models
+from odoo import api, models
 
 
 class Patient(models.Model):
     _inherit = "ni.patient"
 
-    street = fields.Char(related="partner_id.street", readonly=False)
-    street2 = fields.Char(related="partner_id.street2", readonly=False)
-    zip = fields.Char(related="partner_id.zip", readonly=False)
-    city = fields.Char(related="partner_id.city", readonly=False)
-    state_id = fields.Many2one(related="partner_id.state_id", readonly=False)
-    country_id = fields.Many2one(related="partner_id.country_id", readonly=False)
+    @api.onchange("country_id")
+    def _onchange_country_id(self):
+        if self.country_id and self.country_id != self.state_id.country_id:
+            self.state_id = False
+
+    @api.onchange("state_id")
+    def _onchange_state(self):
+        if self.state_id.country_id:
+            self.country_id = self.state_id.country_id

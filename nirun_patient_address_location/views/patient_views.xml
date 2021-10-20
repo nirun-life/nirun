@@ -8,13 +8,34 @@
         <field name="model">ni.patient</field>
         <field name="inherit_id" ref="nirun_patient.patient_view_form" />
         <field name="arch" type="xml">
-            <field name="city" position="before">
+            <field name="city" position="replace">
+                <field name="country_enforce_cities" invisible="1" />
                 <field
                     name="zip_id"
-                    attrs="{'readonly': [('partner_id', '=', False)]}"
                     class="oe_edit_only"
                     options="{'create_name_field': 'city', 'no_open': True, 'no_create': True}"
                     placeholder="Location completion"
+                />
+                <field
+                    name='city'
+                    attrs="{
+                        'invisible': [('country_enforce_cities', '=', True), '|', ('city_id', '!=', False), ('city', 'in', ['', False ])],
+                    }"
+                    class="o_address_city"
+                    placeholder="City"
+                />
+                <field
+                    name='city_id'
+                    attrs="{
+                        'invisible': [('country_enforce_cities', '=', False)],
+                    }"
+                    class="o_address_city"
+                    context="{'default_country_id': country_id,
+                              'default_name': city,
+                              'default_zipcode': zip,
+                              'default_state_id': state_id}"
+                    domain="[('country_id', '=', country_id)]"
+                    placeholder="City"
                 />
             </field>
         </field>
