@@ -119,19 +119,18 @@
                     </div>
                     <group>
                         <group name="partner">
-                            <field
-                                name="partner_id"
-                                context="{'default_type': 'contact','company_type': 'person', 'default_is_company': False }"
-                                options='{"always_reload": True}'
-                                attrs="{'invisible':[('id', '!=', False)]}"
-                                required="False"
-                            />
                             <field name="phone" widget="phone" />
                             <field name="mobile" widget="phone" />
                             <field name="email" widget="email" />
                             <field name="code" placeholder="ex. HN-001204" />
                         </group>
                         <group name="encounter">
+                            <field
+                                name="partner_id"
+                                attrs="{'invisible':[('id', '!=', False)]}"
+                                options='{"always_reload": True, "no_create": True, "no_open":True}'
+                                required="False"
+                            />
                             <field name="company_id" groups="base.group_multi_company" />
                             <field
                                 name="encounter_id"
@@ -196,7 +195,7 @@
         <field name="name">patient.view.kanban</field>
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
-            <kanban class="o_res_partner_kanban">
+            <kanban class="o_res_partner_kanban" default_order="encounter_id, name">
                 <field name="name" />
                 <field name="code" />
                 <field name="age" />
