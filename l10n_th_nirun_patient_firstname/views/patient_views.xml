@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient_firstname.patient_view_form_inherit" />
+        <field name="arch" type="xml">
+            <field name="lastname" position="before">
+                <field name="title" options="{'no_open': True}" />
+            </field>
+            <!-- swap firstname and lastname position -->
+            <field name="firstname" position="after">
+                <field name="lastname" position="move" />
+            </field>
+        </field>
+    </record>
+</odoo>
