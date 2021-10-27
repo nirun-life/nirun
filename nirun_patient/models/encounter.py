@@ -20,13 +20,7 @@ class Encounter(models.Model):
     _order = "name DESC"
 
     company_id = fields.Many2one(
-        "res.company",
-        "Company",
-        tracking=True,
-        required=True,
-        index=True,
-        default=lambda self: self.env.company,
-        ondelete="cascade",
+        related="patient_id.company_id", index=True, store=True,
     )
     name = fields.Char(
         "Encounter No.",
