@@ -18,7 +18,6 @@ class PatientRes(models.AbstractModel):
         index=True,
         ondelete="cascade",
         required=True,
-        check_company=True,
     )
     partner_id = fields.Many2one(related="patient_id.partner_id")
     encounter_id = fields.Many2one(
