@@ -11,8 +11,7 @@ class PartnerNewApiService(Component):
     _usage = "patient"
     _collection = "ni.rest.services"
     _description = """
-        Partner New API Services
-        Services developed with the new api provided by base_rest
+        Partner API Services
     """
 
     @restapi.method(
@@ -29,29 +28,22 @@ class PartnerNewApiService(Component):
     @restapi.method(
         [(["/", "/search"], "GET")],
         input_param=Datamodel("ni.rest.patient.search"),
-        output_param=Datamodel("ni.rest.patient.short", is_list=True),
+        output_param=Datamodel("ni.rest.patient", is_list=True),
     )
-    def search(self, partner_search_param):
+    def search(self, params):
         """
         Search for partners
-        :param partner_search_param: An instance of partner.search.param
-        :return: List of partner.short.info
         """
         domain = []
-        if partner_search_param.name:
-            domain.append(("name", "like", partner_search_param.name))
-        if partner_search_param.id:
-            domain.append(("id", "=", partner_search_param.id))
-        if partner_search_param.identification_id:
-            domain.append(
-                ("identification_id", "=", partner_search_param.identification_id)
-            )
+        if params.name:
+            domain.append(("name", "ilike", params.name))
+        if params.id:
+            domain.append(("id", "=", params.id))
+        if params.identification_id:
+            domain.append(("identification_id", "=", params.identification_id))
 
-        res = self.env["ni.patient"].search(domain)
-        return res.datamodel(mode="short")
-
-    # The following method are 'private' and should be never never NEVER call
-    # from the controller.
+        res = self.env["ni.patient"].search(domain, limit=params.limit)
+        return res.datamodels()
 
     def _get(self, _id: int):
         return self.env["ni.patient"].browse(_id)

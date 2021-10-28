@@ -51,6 +51,7 @@ class CodingSearchSchema(Datamodel):
     id = fields.Integer()
     name = fields.String()
     code = fields.String()
+    limit = fields.Integer(missing=64)
 
 
 class MetaSchema(Datamodel):

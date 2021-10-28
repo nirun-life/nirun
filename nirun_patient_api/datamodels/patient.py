@@ -15,11 +15,10 @@ class Patient(models.Model):
         res = self.env.datamodels["ni.rest.patient"]
         if mode == "short":
             res = self.env.datamodels["ni.rest.patient.short"]
+        return res(partial=True)._from(self)
 
-        if len(self) > 1:
-            return [res(partial=True)._from(rec) for rec in self]
-        else:
-            return res(partial=True)._from(self)
+    def datamodels(self, mode=None):
+        return [rec.datamodel(mode=mode) for rec in self]
 
 
 class PatientSearchParam(Datamodel):
@@ -28,6 +27,7 @@ class PatientSearchParam(Datamodel):
     id = fields.Integer()
     name = fields.String()
     identification_id = fields.String()
+    limit = fields.Integer(missing=64)
 
 
 class PatientShortInfo(Datamodel):
@@ -62,8 +62,10 @@ class PatientInfo(Datamodel):
     def _from(self, patient: Patient):
         super()._from(patient)
 
-        self.gender = patient.gender
-        self.age = patient.age_years
+        if patient.gender:
+            self.gender = patient.gender
+        if patient.age_years:
+            self.age = patient.age_years
         if patient.birthdate:
             self.birthdate = patient.birthdate
         if patient.deceased:
