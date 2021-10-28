@@ -36,18 +36,18 @@ class ObservationService(Component):
         input_param=Datamodel("ni.rest.coding.search"),
         output_param=Datamodel("ni.rest.coding", is_list=True),
     )
-    def search(self, ob_search_param):
+    def search(self, params):
         """
         Search types of Observation
         """
         domain = []
-        if ob_search_param.code:
-            domain.append(("code", "=", ob_search_param.patient_id))
-        if ob_search_param.name:
-            domain.append(("name", "ilike", ob_search_param.patient_id))
-        if ob_search_param.id:
-            domain.append(("id", "=", ob_search_param.id))
-        res = self.env["ni.observation.type"].search(domain)
+        if params.code:
+            domain.append(("code", "=", params.code))
+        if params.name:
+            domain.append(("name", "ilike", params.name))
+        if params.id:
+            domain.append(("id", "=", params.id))
+        res = self.env["ni.observation.type"].search(domain, limit=params.limit)
         schema = self.env.datamodels["ni.rest.coding"]
         return [schema(id=rec.id, name=rec.name, code=rec.code) for rec in res]
 
