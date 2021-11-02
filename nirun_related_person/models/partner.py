@@ -18,7 +18,11 @@ class Partner(models.Model):
     @api.depends("parent_id.patient")
     def _compute_relate_person(self):
         for rec in self:
-            if rec.parent_id and rec.parent_id.patient:
+            # need context relate_person when creating new patient
+            # (not have `partner_id` yet)
+            if self._context.get("related_person") or (
+                rec.parent_id and rec.parent_id.patient
+            ):
                 rec.relate_person = True
             else:
                 rec.relate_person = False
