@@ -27,6 +27,7 @@ class Encounter(models.Model):
         copy=False,
         states=LOCK_STATE_DICT,
         index=True,
+        required=True,
         default=lambda self: self._sequence_default,
     )
     color = fields.Integer()
@@ -213,7 +214,7 @@ class Encounter(models.Model):
         (
             "company_id__name__uniq",
             "unique (company_id, name)",
-            "Name already exists !",
+            "This Encounter No. already exists!",
         ),
     ]
 
