@@ -41,10 +41,18 @@ class Patient(models.Model):
     image_256 = fields.Image(related="partner_id.image_256", readonly=False)
     image_128 = fields.Image(related="partner_id.image_128", readonly=False)
 
-    name = fields.Char(related="partner_id.name", inherited=True, readonly=False)
-    phone = fields.Char(related="partner_id.phone", inherited=True, readonly=False)
-    mobile = fields.Char(related="partner_id.mobile", inherited=True, readonly=False)
-    email = fields.Char(related="partner_id.email", inherited=True, readonly=False)
+    name = fields.Char(
+        related="partner_id.name", inherited=True, readonly=False, tracking=True
+    )
+    phone = fields.Char(
+        related="partner_id.phone", inherited=True, readonly=False, tracking=True
+    )
+    mobile = fields.Char(
+        related="partner_id.mobile", inherited=True, readonly=False, tracking=True
+    )
+    email = fields.Char(
+        related="partner_id.email", inherited=True, readonly=False, tracking=True
+    )
 
     code = fields.Char("Patient No.", copy=False, tracking=True)
 
