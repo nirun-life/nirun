@@ -22,7 +22,7 @@
                 <field
                     name="spouse_id"
                     attrs="{'invisible':[('marital_status', '=', 'single')]}"
-                    context="{'show_address': True, 'default_type': 'other','default_partner_parent_id': partner_id, 'default_relationship_id':%(nirun_related_person.SPS)d}"
+                    context="{'show_address':True, 'related_person':True, 'default_type': 'other', 'default_partner_parent_id':partner_id, 'default_relationship_id':%(nirun_related_person.SPS)d}"
                     domain="[('is_company', '=', False), ('id', 'not in', [partner_id, mother_id, father_id])]"
                     options='{"always_reload": True}'
                 />
@@ -30,7 +30,7 @@
             <field name="father_name" position="after">
                 <field
                     name="father_id"
-                    context="{'show_address': True,'default_type': 'other','default_partner_parent_id': partner_id,  'default_gender': 'male', 'default_relationship_id':%(nirun_related_person.FTH)d }"
+                    context="{'show_address':True, 'related_person':True, 'default_type': 'other', 'default_partner_parent_id':partner_id, 'default_gender':'male', 'default_relationship_id':%(nirun_related_person.FTH)d }"
                     domain="[ ('is_company', '=', False), ('id', 'not in', [partner_id, mother_id, spouse_id])]"
                     options='{"always_reload": True}'
                 />
@@ -38,7 +38,7 @@
             <field name="mother_name" position="after">
                 <field
                     name="mother_id"
-                    context="{'show_address': True,'default_type': 'other','default_partner_parent_id': partner_id,  'default_gender': 'female', 'default_relationship_id':%(nirun_related_person.MTH)d }"
+                    context="{'show_address':True, 'related_person':True, 'default_type': 'other', 'default_partner_parent_id':partner_id, 'default_gender':'female', 'default_relationship_id':%(nirun_related_person.MTH)d }"
                     domain="[ ('is_company', '=', False), ('id', 'not in', [partner_id, father_id, spouse_id])]"
                     options='{"always_reload": True}'
                 />
@@ -47,7 +47,7 @@
                 <field
                     name="child_ids"
                     widget="many2many_tags"
-                    context="{'default_type': 'other','default_partner_parent_id': partner_id, 'default_relationship_id':%(nirun_related_person.CHILD)d }"
+                    context="{'default_type':'other', 'related_person':True, 'default_partner_parent_id':partner_id, 'default_relationship_id':%(nirun_related_person.CHILD)d }"
                     domain="[ ('is_company', '=', False), ('id', 'not in', [partner_id, mother_id, father_id, spouse_id])]"
                     options="{'color_field': 'color'}"
                 />

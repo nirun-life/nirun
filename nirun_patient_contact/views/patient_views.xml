@@ -15,7 +15,7 @@
                         <group>
                             <field
                                 name="contact_id"
-                                context="{'show_address': True,'default_partner_parent_id': partner_id, 'default_type': 'other'}"
+                                context="{'show_address': True,'default_partner_parent_id': partner_id, 'default_type': 'other', 'related_person': True}"
                                 domain="[('parent_id', '=', partner_id)]"
                                 options='{"always_reload": True}'
                             />
@@ -23,9 +23,10 @@
                         <group>
                             <field
                                 name="contact_id_2"
-                                context="{'show_address': True,'default_partner_parent_id': partner_id, 'default_type': 'other'}"
+                                attrs="{'readonly': [('contact_id', '=', False)]}"
                                 domain="[('parent_id', '=', partner_id)]"
                                 options='{"always_reload": True}'
+                                context="{'show_address': True,'default_partner_parent_id': partner_id, 'default_type': 'other', 'related_person':True}"
                             />
                         </group>
                     </group>
