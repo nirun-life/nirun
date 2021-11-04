@@ -1,14 +1,11 @@
 #  Copyright (c) 2021 Piruin P.
 
 from dateutil.relativedelta import relativedelta
-from psycopg2 import errors
 
 from odoo import fields
 from odoo.tests import Form
 
 from .common import TestPatientCommon
-
-UniqueViolation = errors.lookup("23505")
 
 
 class TestPatient(TestPatientCommon):
@@ -30,7 +27,7 @@ class TestPatient(TestPatientCommon):
         form2.partner_id = madam_glenda
         try:
             form2.save()
-        except UniqueViolation:
+        except Exception:
             self.assertEqual(True, True, "Raised UniqueViolation")
         else:
             self.assertEqual(True, False, "Not raise UniqueViolation")
