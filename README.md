@@ -5,7 +5,7 @@
 
 > **Nirun** means **"Eternity"** in Thai.
 
-This is odoo module for new generation Health care provider.
+This is odoo modules for new generation Health care provider.
 
 [//]: # (addons)
 
@@ -22,7 +22,7 @@ addon | version | maintainers | summary
 [l10n_th_nirun_patient_disability](l10n_th_nirun_patient_disability/) | 13.0.0.1.1 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Disability (Thai Localization)
 [l10n_th_nirun_patient_name](l10n_th_nirun_patient_name/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Name (Thai Localization)
 [nirun](nirun/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Nirun
-[nirun_allergy](nirun_allergy/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Allergy & Intolerance
+[nirun_allergy](nirun_allergy/) | 13.0.0.2.1 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Allergy & Intolerance
 [nirun_careplan](nirun_careplan/) | 13.0.0.4.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Care Plans
 [nirun_careplan_condition](nirun_careplan_condition/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Care Plans - Conditions
 [nirun_careplan_service](nirun_careplan_service/) | 13.0.0.3.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Care Plans - Healthcare Services
@@ -43,6 +43,7 @@ addon | version | maintainers | summary
 [nirun_patient_gp](nirun_patient_gp/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - General Practitioner
 [nirun_patient_group](nirun_patient_group/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patient Groups
 [nirun_patient_group_survey](nirun_patient_group_survey/) | 13.0.0.1.1 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patient Groups - Survey
+[nirun_patient_identification_id_na](nirun_patient_identification_id_na/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Identification ID N/A
 [nirun_patient_income](nirun_patient_income/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Income
 [nirun_patient_personality](nirun_patient_personality/) | 13.0.0.1.1 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Personality
 [nirun_patient_religion](nirun_patient_religion/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Religion

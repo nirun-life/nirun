@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="priority">120</field>
+        <field name="arch" type="xml">
+            <field name="identification_id" position="replace">
+                <label for="identification_id" />
+                <div class="o_row">
+                    <field name="identification_id" />
+                    <field name="identification_id_na" class="oe_edit_only" />
+                    <label class="oe_edit_only" for="identification_id_na" />
+                    <label
+                        attrs="{'invisible': [('identification_id_na', '!=', True)]}"
+                        class="oe_read_only"
+                        for="identification_id_na"
+                    />
+                </div>
+            </field>
+        </field>
+    </record>
+</odoo>
