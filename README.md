@@ -38,7 +38,7 @@ addon | version | maintainers | summary
 [nirun_patient_address_location](nirun_patient_address_location/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Address Location
 [nirun_patient_api](nirun_patient_api/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patient - RESTful API
 [nirun_patient_birthdate_estimate](nirun_patient_birthdate_estimate/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Birthdate Estimate
-[nirun_patient_contact](nirun_patient_contact/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Contacts
+[nirun_patient_contact](nirun_patient_contact/) | 13.0.0.3.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Contacts
 [nirun_patient_firstname](nirun_patient_firstname/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Firstname
 [nirun_patient_gp](nirun_patient_gp/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - General Practitioner
 [nirun_patient_group](nirun_patient_group/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patient Groups
