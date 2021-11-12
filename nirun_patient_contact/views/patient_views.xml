@@ -19,14 +19,17 @@
                                 domain="[('parent_id', '=', partner_id)]"
                                 options='{"always_reload": True}'
                             />
+                            <field
+                                name="contact_id_2"
+                                context="{'show_address': True,'default_partner_parent_id': partner_id, 'default_type': 'other', 'related_person':True}"
+                                domain="[('parent_id', '=', partner_id)]"
+                                options='{"always_reload": True}'
+                            />
                         </group>
                         <group>
                             <field
-                                name="contact_id_2"
-                                attrs="{'readonly': [('contact_id', '=', False)]}"
-                                domain="[('parent_id', '=', partner_id)]"
-                                options='{"always_reload": True}'
-                                context="{'show_address': True,'default_partner_parent_id': partner_id, 'default_type': 'other', 'related_person':True}"
+                                name="contact_na"
+                                attrs="{'invisible':['|', ('contact_id','!=', False), ('contact_id_2','!=',False)]}"
                             />
                         </group>
                     </group>

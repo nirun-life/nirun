@@ -13,10 +13,20 @@ class Patient(models.Model):
     contact_ids = fields.One2many(
         related="partner_id.child_ids", string="Contacts", readonly=False
     )
+    contact_na = fields.Boolean("Contact N/A", default=False)
 
-    @api.constrains("contact_id", "contact_id_2")
+    @api.onchange("contact_id", "contact_id_2")
+    def _onchange_contact_id_1_id_2(self):
+        if self.contact_id or self.contact_id_2:
+            self.contact_na = False
+
+    @api.constrains("contact_id", "contact_id_2", "contact_na")
     def check_contact_id(self):
         for rec in self:
+            if rec.contact_na and (rec.contact_id or rec.contact_id_2):
+                raise UserError(
+                    _("Primary & Secondary contact must be empty if N/A is checked")
+                )
             if rec.contact_id and rec.contact_id == rec.contact_id_2:
                 raise UserError(
                     _("Primary Contact and secondary should not be same person")
