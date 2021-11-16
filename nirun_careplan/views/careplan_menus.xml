@@ -18,11 +18,17 @@
         parent="activity_menu_section"
     />
     <menuitem id="activity_menu" name="Activity" action="careplan_activity_action" parent="activity_menu_section" />
-    <menuitem id="careplan_configuration_menu" name="Configuration" parent="careplan_menu_root" sequence="100" />
+    <menuitem
+        id="configuration_menu"
+        name="Configuration"
+        groups="nirun_careplan.group_manager"
+        parent="careplan_menu_root"
+        sequence="100"
+    />
     <menuitem
         id="careplan_category_menu"
         name="Categories"
         action="careplan_category_action"
-        parent="careplan_configuration_menu"
+        parent="configuration_menu"
     />
 </odoo>
