@@ -7,6 +7,7 @@
         <field name="name">careplan.activity.view.form.inherit</field>
         <field name="model">ni.careplan.activity</field>
         <field name="inherit_id" ref="nirun_careplan.careplan_activity_view_form" />
+        <field name="groups_id" eval="[(4, ref('nirun_service.group_user'))]" />
         <field name="arch" type="xml">
             <xpath expr="//group[@name='reference']" position="inside">
                 <group>

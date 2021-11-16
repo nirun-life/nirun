@@ -5,8 +5,9 @@
 <odoo>
     <record id="service_category_view_form_inherit" model="ir.ui.view">
         <field name="name">service.category.view.form.inherit</field>
-        <field name="inherit_id" ref="nirun_service.service_category_view_form" />
         <field name="model">ni.service.category</field>
+        <field name="inherit_id" ref="nirun_service.service_category_view_form" />
+        <field name="groups_id" eval="[(4, ref('nirun_careplan.group_manager'))]" />
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[2]/group" position="inside">
                 <group string="Care Plan">
