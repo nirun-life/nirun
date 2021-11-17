@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-03 08:45+0000\n"
-"PO-Revision-Date: 2021-11-03 08:45+0000\n"
+"POT-Creation-Date: 2021-11-17 09:10+0000\n"
+"PO-Revision-Date: 2021-11-17 09:10+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -48,6 +48,15 @@ msgstr ""
 #, python-format
 msgid "%s was already registered as Encounter No. %s (%s)."
 msgstr "%s ถูกบันทึกว่าเข้ารับบริการแล้ว รหัสรับบริการ %s (%s)"
+
+#. module: nirun_patient
+#: model_terms:ir.ui.view,arch_db:nirun_patient.patient_view_kanban
+msgid ""
+"(\n"
+"                                            <span name=\"deceased_date\" aria-label=\"Deceased Date\" class=\"fa fa-calendar-times-o ml-1\" role=\"img\" title=\"Deceased Date\"/>"
+msgstr ""
+"(\n"
+"                                            <span name=\"deceased_date\" aria-label=\"วันที่เสียชีวิต\" class=\"fa fa-calendar-times-o ml-1\" role=\"img\" title=\"วันที่เสียชีวิต\"/>"
 
 #. module: nirun_patient
 #: model_terms:ir.ui.view,arch_db:nirun_patient.patient_view_kanban
@@ -357,8 +366,19 @@ msgstr "คุณแน่ใจหรือไม่ว่าต้องกา
 
 #. module: nirun_patient
 #: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
+msgid "Are you sure you want to confirm this?"
+msgstr "คุณแน่ใจหรือไม่ว่าต้องการยืนยันข้อมูลข้างต้น?"
+
+#. module: nirun_patient
+#: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
 msgid "Are you sure you want to reset this to draft?"
 msgstr "คุณแน่ใจหรือไม่ว่าต้องการแก้ไขเป็นฉบับร่าง?"
+
+#. module: nirun_patient
+#: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
+msgid ""
+"Are you sure you want to start this?"
+msgstr "คุณแน่ใจหรือไม่ว่าต้องการเริ่มให้บริการในวันนี้?"
 
 #. module: nirun_patient
 #: model:ni.location.type,name:nirun_patient.area
@@ -1205,6 +1225,12 @@ msgid "Interpreter"
 msgstr "ล่ามแปลภาษา"
 
 #. module: nirun_patient
+#: code:addons/nirun_patient/models/encounter.py:0
+#, python-format
+msgid "Invalid State!, Please contact your system administrator"
+msgstr "สถานะข้อมูลไม่ถูกต้อง กรุณาติดต่อผู้ดูแลระบบของคุณ"
+
+#. module: nirun_patient
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__is_encountering
 msgid "Is Encountering"
 msgstr "รับบริการอยู่?"
@@ -1926,6 +1952,11 @@ msgstr "ความต้องการเพิ่มเติม"
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__spouse_name
 msgid "Spouse Complete Name"
 msgstr "ชื่อ-นามสกุลคู่สมรส"
+
+#. module: nirun_patient
+#: model_terms:ir.ui.view,arch_db:nirun_patient.encounter_view_form
+msgid "Start"
+msgstr "เริ่มรับบริการ"
 
 #. module: nirun_patient
 #: model:ir.model.fields,field_description:nirun_patient.field_ni_patient__state_id
