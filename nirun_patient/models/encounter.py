@@ -344,10 +344,19 @@ class Encounter(models.Model):
                 raise ValidationError(
                     _("Verified encounter must defined start date (since)")
                 )
-            if today < enc.period_start:
-                enc.update({"state": "planned"})
+            if enc.state == "draft":
+                if today < enc.period_start:
+                    enc.update({"state": "planned"})
+                else:
+                    enc.update({"state": "in-progress"})
+            elif enc.state == "planned":
+                enc.update(
+                    {"state": "in-progress", "period_start": fields.Date.today()}
+                )
             else:
-                enc.update({"state": "in-progress"})
+                raise ValidationError(
+                    _("Invalid State!, Please contact your system administrator")
+                )
 
     def action_close(self):
         for enc in self:
