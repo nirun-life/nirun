@@ -206,6 +206,7 @@
                 <field name="gender" />
                 <field name="age_years" />
                 <field name="deceased" />
+                <field name="deceased_date" />
                 <field name="performer_id" />
                 <field name="partner_id" />
                 <field name="presence_state" />
@@ -318,6 +319,9 @@
                                     </div>
                                 </div>
                                 <ul>
+                                    <li>
+                                        <field name="company_id" groups="base.group_multi_company" />
+                                    </li>
                                     <li class="o_force_ltr" t-if="record.gender.value or record.age_years.value &gt; 0">
                                         <field name="gender" />
                                         <t t-if="record.age_years.value &gt; 0">
@@ -325,9 +329,18 @@
                                             <field name="age_years" class="mx-3" />
                                             ปี
                                         </t>
-                                    </li>
-                                    <li>
-                                        <field name="company_id" groups="base.group_multi_company" />
+                                        <t t-if="record.deceased_date.value">
+                                            (
+                                            <span
+                                                name="deceased_date"
+                                                aria-label="Deceased Date"
+                                                class="fa fa-calendar-times-o ml-1"
+                                                role="img"
+                                                title="Deceased Date"
+                                            />
+                                            <field name="deceased_date" />
+                                            )
+                                        </t>
                                     </li>
                                     <li class="o_text_overflow" t-if="record.location_id.value">
                                         <field name="location_id" />
