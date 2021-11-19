@@ -42,6 +42,7 @@
     <record id="careplan_view_form_inherit_service_request" model="ir.ui.view">
         <field name="name">careplan.view.form.inherit.service.request</field>
         <field name="model">ni.careplan</field>
+        <field name="groups_id" eval="[(4, ref('nirun_service.group_user'))]" />
         <field name="inherit_id" ref="nirun_careplan.careplan_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//form/header" position="inside">
