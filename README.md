@@ -40,6 +40,7 @@ addon | version | maintainers | summary
 [nirun_patient_birthdate_estimate](nirun_patient_birthdate_estimate/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Birthdate Estimate
 [nirun_patient_contact](nirun_patient_contact/) | 13.0.0.3.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Contacts
 [nirun_patient_firstname](nirun_patient_firstname/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - Firstname
+[nirun_patient_gender](nirun_patient_gender/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Auto fill patient gender by selected Title
 [nirun_patient_gp](nirun_patient_gp/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patients - General Practitioner
 [nirun_patient_group](nirun_patient_group/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patient Groups
 [nirun_patient_group_survey](nirun_patient_group_survey/) | 13.0.0.1.1 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Patient Groups - Survey
@@ -53,6 +54,8 @@ addon | version | maintainers | summary
 [nirun_service](nirun_service/) | 13.0.0.4.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Healthcare Services
 [nirun_service_calendar](nirun_service_calendar/) | 13.0.0.2.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Healthcare Services - Calendar
 [nirun_theme](nirun_theme/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Nirun - Theme
+[partner_age](partner_age/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Add age, birthdate and deceased_date fields for partner
+[partner_gender](partner_gender/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Add gender field to partner also default gender by selected title
 [partner_income](partner_income/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Partner - Income
 [partner_title_order](partner_title_order/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Partner Title Order
 [partner_title_unique](partner_title_unique/) | 13.0.0.1.0 | [![piruin](https://github.com/piruin.png?size=30px)](https://github.com/piruin) | Partner Title Unique
