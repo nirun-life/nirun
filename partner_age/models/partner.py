@@ -118,7 +118,7 @@ class Partner(models.Model):
     def _check_age(self):
         for rec in self:
             if rec.age_years < 0:
-                raise ValidationError(_("Age (years) must be more than 0"))
+                raise ValidationError(_("Age (years) must not be less than 0"))
 
     @api.depends("deceased_date")
     def _compute_is_deceased(self):
