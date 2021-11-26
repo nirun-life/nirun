@@ -8,7 +8,8 @@ class SurveyUserInput(models.Model):
     _name = "survey.user_input"
     _inherit = ["survey.user_input", "ni.patient.res"]
 
-    patient_id = fields.Many2one(required=False)
+    patient_id = fields.Many2one(required=False, groups="nirun_patient.group_user")
+    encounter_id = fields.Many2one(required=False, groups="nirun_patient.group_user")
 
     # FIXME partner_id not set as store. need to find when/why it was changed
     partner_id = fields.Many2one(store=True)

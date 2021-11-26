@@ -6,6 +6,7 @@
     <record id="encounter_view_form_inherit" model="ir.ui.view">
         <field name="name">encounter.view.form.inherit</field>
         <field name="model">ni.encounter</field>
+        <field name="groups_id" eval="[(4, ref('survey.group_survey_user'))]" />
         <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
@@ -47,6 +48,7 @@
         <field name="name">encounter.class.view.form.inherit</field>
         <field name="model">ni.encounter.cls</field>
         <field name="inherit_id" ref="nirun_patient.encounter_class_view_form" />
+        <field name="groups_id" eval="[(4, ref('survey.group_survey_user'))]" />
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <field name="survey_id" context="{'default_category': 'ni_encounter'}" />

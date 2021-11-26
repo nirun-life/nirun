@@ -10,6 +10,7 @@ class EncounterClassification(models.Model):
         "survey.survey",
         "Questionnaire",
         help="Questionnaire relate for this class of encounter",
+        groups="survey.group_survey_user",
     )
 
 
@@ -17,7 +18,9 @@ class Encounter(models.Model):
     _inherit = "ni.encounter"
 
     survey_id = fields.Many2one(related="class_id.survey_id")
-    response_id = fields.Many2one("survey.user_input", store=True)
+    response_id = fields.Many2one(
+        "survey.user_input", store=True, groups="survey.group_survey_user"
+    )
 
     def action_survey_user_input_completed(self):
         action_rec = self.env.ref("survey.action_survey_user_input")
