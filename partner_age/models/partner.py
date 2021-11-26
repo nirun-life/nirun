@@ -13,7 +13,9 @@ class Partner(models.Model):
     deceased = fields.Boolean(
         "Deceased", compute="_compute_is_deceased", store=True, tracking=True
     )
-    age = fields.Char("Age", compute="_compute_age", compute_sudo=True, readonly=True)
+    display_age = fields.Char(
+        "Age", compute="_compute_age", compute_sudo=True, readonly=True
+    )
     age_years = fields.Integer(
         "Age (years)",
         compute="_compute_age",
@@ -64,7 +66,7 @@ class Partner(models.Model):
                 rec._compute_age_from_init()
             else:
                 rec.age_years = 0
-                rec.age = None
+                rec.display_age = None
 
     def _compute_age_from_init(self):
         for rec in self:
@@ -76,7 +78,7 @@ class Partner(models.Model):
                 )
                 year_diff = dt.year - rec.age_init_date.year
                 year = rec.age_init + year_diff
-                rec.age = _("%s Years") % year
+                rec.display_age = _("%s Years") % year
                 if rec.age_years != year:
                     # check this for reduce chance to call `_inverse_age()`
                     rec.age_years = year
@@ -90,7 +92,7 @@ class Partner(models.Model):
                     else fields.Date.context_today(self)
                 )
                 rd = relativedelta(dt, rec.birthdate)
-                rec.age = self._format_age(rd)
+                rec.display_age = self._format_age(rd)
                 if rec.age_years != rd.years:
                     # check this for reduce chance to call `_inverse_age()`
                     rec.age_years = rd.years
