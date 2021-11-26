@@ -6,6 +6,7 @@
     <record id="survey_user_input_view_search_inherit" model="ir.ui.view">
         <field name="name">survey.user_input.view.search.inherit</field>
         <field name="model">survey.user_input</field>
+        <field name="groups_id" eval="[(4, ref('nirun_patient.group_user'))]" />
         <field name="inherit_id" ref="survey.survey_user_input_view_search" />
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
@@ -19,6 +20,7 @@
     <record id="survey_user_input_view_tree_inherit" model="ir.ui.view">
         <field name="name">survey.user_input.view.tree.inherit</field>
         <field name="model">survey.user_input</field>
+        <field name="groups_id" eval="[(4, ref('nirun_patient.group_user'))]" />
         <field name="inherit_id" ref="survey.survey_user_input_view_tree" />
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
@@ -40,11 +42,15 @@
             <field name="email" position="attributes">
                 <attribute name="optional">hide</attribute>
             </field>
+            <field name="quizz_score" position="after">
+                <field name="company_id" groups="base.group_multi_company" optional="show" />
+            </field>
         </field>
     </record>
     <record id="survey_user_input_view_form_inherit" model="ir.ui.view">
         <field name="name">survey.user_input.view.form.inherit</field>
         <field name="model">survey.user_input</field>
+        <field name="groups_id" eval="[(4, ref('nirun_patient.group_user'))]" />
         <field name="inherit_id" ref="survey.survey_user_input_view_form" />
         <field name="arch" type="xml">
             <field name="subject_ref" position="attributes">

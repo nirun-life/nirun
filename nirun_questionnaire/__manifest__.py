@@ -2,7 +2,7 @@
 
 {
     "name": "Questionnaire",
-    "version": "13.0.0.1.0",
+    "version": "13.0.0.2.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -12,6 +12,7 @@
     "depends": ["nirun_patient", "survey_subject", "survey_scoring", "survey_grading"],
     "data": [
         "security/security.xml",
+        "security/rules.xml",
         "wizard/survey_subject_views.xml",
         "views/survey_survey_views.xml",
         "views/survey_user_views.xml",
