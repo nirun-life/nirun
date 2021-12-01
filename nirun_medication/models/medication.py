@@ -55,6 +55,13 @@ class Medication(models.Model):
     patient_count = fields.Integer(
         compute="_compute_patient", store=True, sudo_compute=True
     )
+    dosage_ids = fields.Many2many(
+        "ni.medication.dosage",
+        "ni_medication_dosage_rel",
+        "medication_id",
+        "dosage_id",
+        help="dosages available for this medication",
+    )
 
     @api.depends("statement_ids", "statement_ids.state")
     def _compute_patient(self):
