@@ -23,6 +23,7 @@
         "views/medication_views.xml",
         "views/medication_statement_category_views.xml",
         "views/medication_statement_views.xml",
+        "views/medication_dosage_views.xml",
         "views/medication_menus.xml",
         "views/patient_views.xml",
         "views/encounter_views.xml",

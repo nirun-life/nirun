@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="medication_dosage_action" model="ir.actions.act_window">
+        <field name="name">Medication Forms</field>
+        <field name="res_model">ni.medication.dosage</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+    <record id="medication_dosage_view_search" model="ir.ui.view">
+        <field name="name">medication.dosage.view.search</field>
+        <field name="model">ni.medication.dosage</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="timing_id" />
+            </search>
+        </field>
+    </record>
+    <record id="medication_dosage_view_kanban" model="ir.ui.view">
+        <field name="name">medication.dosage.view.kanban</field>
+        <field name="model">ni.medication.dosage</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="sequence" widget="handle" />
+                <field name="color" />
+                <field name="timing_id" />
+                <field name="timing_tmpl_id" />
+                <field name="additional_ids" />
+                <field name="site_id" />
+                <field name="method_id" />
+                <field name="text" />
+                <field name="route_id" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''} oe_kanban_global_click"
+                        >
+                            <div class="o_dropdown_kanban dropdown" t-if="widget.editable">
+                                <a
+                                    aria-label="Dropdown menu"
+                                    class="dropdown-toggle o-no-caret btn"
+                                    data-display="static"
+                                    data-toggle="dropdown"
+                                    href="#"
+                                    role="button"
+                                    title="Dropdown menu"
+                                >
+                                    <span class="fa fa-ellipsis-v" />
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <t t-if="widget.editable">
+                                        <a class="dropdown-item" role="menuitem" type="edit">Edit</a>
+                                    </t>
+                                    <ul class="oe_kanban_colorpicker" data-field="color" />
+                                </div>
+                            </div>
+                            <div t-attf-class="oe_kanban_record">
+                                <div>
+                                    <strong class="o_kanban_record_title">
+                                        <span>
+                                            <field name="timing_id" />
+                                            <field name="timing_tmpl_id" />
+                                        </span>
+                                    </strong>
+                                </div>
+                                <div>
+                                    <small class="o_kanban_record_subtitle">
+                                        <field name="text" />
+                                    </small>
+                                </div>
+                                <div class="my-2">
+                                    <field
+                                        name="additional_ids"
+                                        options="{'color_field': 'color'}"
+                                        widget="many2many_tags"
+                                    />
+                                </div>
+                            </div>
+                            <div class="oe_clear" />
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="medication_dosage_view_tree" model="ir.ui.view">
+        <field name="name">medication.dosage.view.tree</field>
+        <field name="model">ni.medication.dosage</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="sequence" widget="handle" />
+                <field name="timing_tmpl_id" class="oe_edit_only" />
+                <field name="timing_id" />
+                <field
+                    name="additional_ids"
+                    optional="show"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                />
+                <field name="text" optional="hide" />
+                <field name="as_need" optional="hide" />
+                <field name="site_id" optional="hide" />
+                <field name="method_id" optional="hide" />
+                <field name="route_id" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="medication_dosage_view_form" model="ir.ui.view">
+        <field name="name">medication.dosage.view.form</field>
+        <field name="model">ni.medication.dosage</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <label for="timing_id" />
+                    <div class="o_row">
+                        <field
+                            name="timing_tmpl_id"
+                            options="{'no_create':True, 'no_open':True, 'no_create_edit':True}"
+                            attrs="{'invisible': [('timing_id', '!=', False)], 'required':[('timing_id', '=', False)]}"
+                            placeholder="choose from pre-defined"
+                        />
+                        <span
+                            class="oe_edit_only"
+                            attrs="{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}"
+                        >
+                            or
+                        </span>
+                        <field
+                            name="timing_id"
+                            domain="[('id', '=', False)]"
+                            options="{'no_quick_create':True}"
+                            attrs="{'invisible': [('timing_tmpl_id', '!=', False)], 'required':[('timing_tmpl_id', '=', False)]}"
+                            placeholder="create new"
+                        />
+                    </div>
+                </group>
+                <group>
+                    <group>
+                        <field name="additional_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                    </group>
+                    <group>
+                        <field name="method_id" />
+                        <field name="route_id" />
+                        <field name="site_id" />
+                    </group>
+                </group>
+                <field name="text" placeholder="Describe more additional dosage here..." />
+            </form>
+        </field>
+    </record>
+</odoo>
