@@ -358,3 +358,23 @@ class TimingTemplate(models.Model):
     day_of_week = fields.Many2many(
         "ni.timing.dow", "ni_timing_template_dow_rel", "template_id", "dow_id"
     )
+
+    def to_timing(self):
+        self.ensure_one()
+        return self.env["ni.timing"].create(
+            {
+                "frequency": self.frequency,
+                "frequency_max": self.frequency_max,
+                "duration": self.duration,
+                "duration_max": self.duration_max,
+                "duration_unit": self.duration_unit,
+                "period": self.period,
+                "period_max": self.period_max,
+                "period_unit": self.period_unit,
+                "when": [(6, 0, self.when.ids)],
+                "day_of_week": [(6, 0, self.day_of_week.ids)],
+                "offset": self.offset,
+                "time_of_day": [(6, 0, self.time_of_day.ids)],
+                "name": self.name,
+            }
+        )
