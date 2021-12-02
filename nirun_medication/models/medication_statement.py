@@ -33,6 +33,12 @@ class MedicationStatement(models.Model):
         tracking=True,
         check_company=True,
     )
+    medication_dosage_ids = fields.Many2many(
+        related="medication_id.dosage_ids",
+        store=False,
+        help="Internal: use as domain filter of dosage_tmpl_id",
+    )
+
     image_1920 = fields.Image(related="medication_id.image_1920")
     image_1024 = fields.Image(related="medication_id.image_1024")
     image_512 = fields.Image(related="medication_id.image_512")
@@ -48,20 +54,14 @@ class MedicationStatement(models.Model):
     period_start = fields.Date(required=True, tracking=True)
     active = fields.Boolean(default=True, tracking=True)
 
-    dosage = fields.Text(
-        help="How the medication is/was taken or should be taken", tracking=True
+    dosage_id = fields.Many2one("ni.medication.dosage")
+    dosage_tmpl_id = fields.Many2one(
+        "ni.medication.dosage",
+        store=False,
+        help="Internal: only use to choose from medication's dosage choices",
     )
-    dosage_timing = fields.Many2one(
-        "ni.timing",
-        "Timing",
-        help="When medication should be administered",
-        auto_join=True,
-        tracking=True,
-    )
-    dosage_when = fields.Many2many(
-        string="Dosage (when)", related="dosage_timing.when", tracking=True
-    )
-    dosage_as_need = fields.Boolean("As need?", default=False, tracking=True)
+    dosage_when = fields.Many2many(related="dosage_id.timing_when")
+    note = fields.Text(help="Further information about the statement")
 
     @api.depends("medication_id.name", "patient_id.name")
     def _compute_display_name(self):
@@ -90,3 +90,19 @@ class MedicationStatement(models.Model):
     def get_state_label(self):
         self.ensure_one()
         return dict(self._fields["state"].selection).get(self.state)
+
+    @api.onchange("medication_id")
+    def _onchange_medication(self):
+        if self.dosage_tmpl_id:
+            self.dosage_tmpl_id = False
+
+    @api.model
+    def create(self, vals):
+        if vals.get("dosage_tmpl_id") and not vals.get("dosage_id"):
+            vals["dosage_id"] = vals.get("dosage_tmpl_id")
+        return super(MedicationStatement, self).create(vals)
+
+    def update(self, vals):
+        if vals.get("dosage_tmpl_id") and not vals.get("dosage_id"):
+            vals["dosage_id"] = vals.get("dosage_tmpl_id")
+        return super(MedicationStatement, self).update(vals)
