@@ -80,9 +80,7 @@
                 <field name="patient_id" invisible="context.get('default_patient_id', False)" optional="show" />
                 <field name="encounter_id" optional="hide" />
                 <field name="medication_id" />
-                <field name="dosage" optional="hide" />
-                <field name="dosage_timing" optional="show" />
-                <field name="dosage_as_need" optional="hide" />
+                <field name="dosage_id" optional="show" />
                 <field name="category_id" optional="hide" />
                 <field name="period_start" optional="show" />
                 <field name="period_end" optional="hide" />
@@ -90,6 +88,7 @@
                 <field name="state" />
                 <field name="active" optional="hide" />
                 <field name="message_needaction" invisible="1" />
+                <field name="company_id" groups="base.group_multi_company" optional="show" />
             </tree>
         </field>
     </record>
@@ -152,19 +151,42 @@
                         </group>
                     </group>
                     <notebook>
-                        <page name="dosage" string="Dosage">
-                            <group>
-                                <field name="dosage_timing" context="{'no_bound': True}" />
-                                <field name="dosage_as_need" />
-                            </group>
-                            <field name="dosage" placeholder="How the medication is/was taken or should be taken" />
-                        </page>
                         <page name="detail" string="Detail">
+                            <group string="Dosage">
+                                <field name="medication_dosage_ids" invisible="1" />
+                                <label for="dosage_id" />
+                                <div class="o_row">
+                                    <field
+                                        name="dosage_tmpl_id"
+                                        domain="[('id', 'in', medication_dosage_ids)]"
+                                        context="{'show_text': True, 'show_additional':True}"
+                                        attrs="{'invisible': [('dosage_id', '!=', False)]}"
+                                        options="{'no_create':True, 'always_reload':True}"
+                                        placeholder="choose from..."
+                                    />
+                                    <span
+                                        attrs="{'invisible': ['|', '|',  ('medication_dosage_ids', '=', False), ('dosage_tmpl_id', '!=', False), ('dosage_id', '!=', False)]}"
+                                    >
+                                        or
+                                    </span>
+                                    <field
+                                        name="dosage_id"
+                                        domain="[('id', '=', False)]"
+                                        context="{'show_text': True, 'show_additional':True}"
+                                        placeholder="create new..."
+                                        attrs="{'invisible': [('dosage_tmpl_id', '!=', False)]}"
+                                        options="{'no_quick_create':True, 'always_reload':True}"
+                                    />
+                                </div>
+                            </group>
                             <group>
                                 <group attrs="{'invisible': [('state', '!=', 'stopped')]}">
                                     <field name="state_reason" attrs="{'required':[('state', '=', 'stopped')]}" />
                                 </group>
                             </group>
+                        </page>
+                        <page name="note" string="Note">
+                            <field name="note" placeholder="Further information about the statement" />
                         </page>
                     </notebook>
                 </sheet>
@@ -190,7 +212,7 @@
             >
                 <field name="patient_id" />
                 <field name="medication_id" />
-                <field name="dosage_timing" />
+                <field name="dosage_id" />
                 <field name="location_id" />
                 <field name="state" />
             </calendar>
