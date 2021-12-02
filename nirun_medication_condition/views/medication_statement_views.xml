@@ -8,8 +8,8 @@
         <field name="model">ni.medication.statement</field>
         <field name="inherit_id" ref="nirun_medication.medication_statement_view_tree" />
         <field name="arch" type="xml">
-            <field name="dosage_as_need" position="before">
-                <field name="reason_condition_id" optional="show" />
+            <field name="category_id" position="before">
+                <field name="reason_condition_id" optional="hide" />
                 <field name="reason_condition_ids" optional="hide" widget="many2many_tags" />
             </field>
         </field>
@@ -19,8 +19,8 @@
         <field name="model">ni.medication.statement</field>
         <field name="inherit_id" ref="nirun_medication.medication_statement_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//notebook/page[@name='detail']/group" position="inside">
-                <group name='reason_condition'>
+            <xpath expr="//notebook/page[@name='detail']/group[2]" position="inside">
+                <group name='reason_condition' string="Condition">
                     <field
                         name="reason_condition_ids"
                         context="{
