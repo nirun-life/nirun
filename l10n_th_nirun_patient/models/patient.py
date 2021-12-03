@@ -11,6 +11,14 @@ class Patient(models.Model):
 
     nationality_id = fields.Many2one(default=lambda self: self.env.ref("base.th"),)
 
+    _sql_constraints = [
+        (
+            "identification_id_unique",
+            "unique (company_id, nationality_id, identification_id)",
+            _("This Identification No. was already exist"),
+        ),
+    ]
+
     @api.onchange("identification_id", "nationality_id")
     def _preprocess_identification_id(self):
         if "TH" == self.nationality_id.code and self.identification_id:
