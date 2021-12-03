@@ -204,6 +204,7 @@ class Patient(models.Model):
     def onchange_partner_id(self):
         for rec in self:
             if rec.partner_id:
+                rec.name = rec.partner_id.name
                 rec.nationality_id = rec.partner_id.country_id
                 if not rec._origin.identification_id:
                     rec.identification_id = rec.partner_id.vat
