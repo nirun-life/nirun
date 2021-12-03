@@ -75,17 +75,36 @@ class Patient(models.Model):
         readonly=False,
         store=True,
     )
-    birthdate = fields.Date("Date of Birth", tracking=True)
-    age = fields.Char("Age", compute="_compute_age", compute_sudo=True)
-    age_years = fields.Integer(
-        "Age (years)",
+    birthdate = fields.Date(
+        "Date of Birth", related="partner_id.birthdate", readonly=False, tracking=True
+    )
+    age = fields.Char(
+        "Age",
+        related="partner_id.display_age",
         compute="_compute_age",
         compute_sudo=True,
+    )
+    age_years = fields.Integer(
+        "Age (years)",
+        related="partner_id.age_years",
+        compute="_compute_age",
+        compute_sudo=True,
+        readonly=False,
         inverse="_inverse_age",
         store=True,
     )
-    deceased_date = fields.Date("Deceased Date", tracking=True, copy=False)
-    deceased = fields.Boolean("Deceased", compute="_compute_is_deceased", store=True)
+    deceased_date = fields.Date(
+        "Deceased Date",
+        related="partner_id.deceased_date",
+        readonly=False,
+        tracking=True,
+    )
+    deceased = fields.Boolean(
+        "Deceased",
+        related="partner_id.deceased",
+        compute="_compute_is_deceased",
+        store=True,
+    )
 
     marital_status = fields.Selection(
         [
@@ -344,8 +363,3 @@ class Patient(models.Model):
             "views": [[False, "form"]],
             "res_id": self.encounter_id.id,
         }
-
-    @api.model
-    def cron_compute_age(self):
-        patient = self.search([("birthdate", "!=", False), ("deceased", "!=", True)])
-        patient._compute_age()
