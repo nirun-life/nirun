@@ -54,15 +54,3 @@ class TestPatient(TestPatientCommon):
 
         self.assertEqual(patient.age, "60 Years")
         self.assertEqual(patient.deceased, True)
-
-    def test_inverse_age(self):
-        patient = self.env["ni.patient"].with_user(self.patient_admin)
-        form = Form(patient)
-        form.partner_id = self.env["res.partner"].create({"name": "Eunice"})
-        form.age_years = 62
-
-        patient = form.save()
-
-        self.assertEqual(
-            patient.birthdate, fields.date.today() - relativedelta(years=62)
-        )
