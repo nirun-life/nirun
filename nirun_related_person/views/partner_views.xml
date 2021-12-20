@@ -8,7 +8,10 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
-            <!--Relationship-->
+            <field name="parent_id" position="attributes">
+                <attribute name="readonly">context.get('related_person')</attribute>
+            </field>
+            <!--Relationship field-->
             <field name="type" position="before">
                 <field name="relate_person" invisible="1" />
                 <field
