@@ -24,7 +24,12 @@
                 />
                 <separator />
                 <filter name="alive" string='Alive' domain="[('deceased_date', '=', False)]" />
-                <filter name="deceased" string='Deceased' domain="[('deceased_date', '!=', False)]" />
+                <filter
+                    name="deceased"
+                    string='Deceased'
+                    domain="[('deceased_date', '!=', False)]"
+                    context="{'show_deceased': True}"
+                />
                 <separator />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
                 <group name="group_by" string="Group by">
@@ -328,20 +333,12 @@
                                         <t t-if="record.age_years.value &gt; 0">
                                             <t t-if="record.gender.value">,</t>
                                             <field name="age_years" class="mx-3" />
-                                            ปี
+                                            years old
                                         </t>
-                                        <t t-if="record.deceased_date.value">
-                                            (
-                                            <span
-                                                name="deceased_date"
-                                                aria-label="Deceased Date"
-                                                class="fa fa-calendar-times-o ml-1"
-                                                role="img"
-                                                title="Deceased Date"
-                                            />
-                                            <field name="deceased_date" />
-                                            )
-                                        </t>
+                                    </li>
+                                    <li t-if="context.show_deceased and record.deceased_date.value">
+                                        <span>Deceased:</span>
+                                        <field name="deceased_date" />
                                     </li>
                                     <li class="o_text_overflow" t-if="record.location_id.value">
                                         <field name="location_id" />
