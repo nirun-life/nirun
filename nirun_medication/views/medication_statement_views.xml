@@ -164,11 +164,12 @@
                                         options="{'no_create':True, 'always_reload':True}"
                                         placeholder="choose from..."
                                     />
-                                    <span
+                                    <label
+                                        class="oe_edit_only"
+                                        for="dosage_id"
+                                        string="or"
                                         attrs="{'invisible': ['|', '|',  ('medication_dosage_ids', '=', False), ('dosage_tmpl_id', '!=', False), ('dosage_id', '!=', False)]}"
-                                    >
-                                        or
-                                    </span>
+                                    />
                                     <field
                                         name="dosage_id"
                                         domain="[('id', '=', False)]"
