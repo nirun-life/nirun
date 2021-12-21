@@ -49,7 +49,9 @@ class SurveySubjectWizard(models.TransientModel):
             return {"subject_model": self.type, "subject_id": subject.id}
 
     def action_survey(self):
-        answer = self.survey_id._create_answer(user=self.env.user, **self.subject_get())
+        answer = self.sudo().survey_id._create_answer(
+            user=self.env.user, **self.subject_get()
+        )
         return {
             "type": "ir.actions.act_url",
             "target": "self",
