@@ -67,6 +67,9 @@ class ObservationLine(models.Model):
             rec.interpretation_id = rec._interpretation_for()
 
     def _interpretation_for(self):
+        if self.type_id.ref_range_count == 0:
+            return None
+
         ranges = self.env["ni.observation.reference.range"].search(
             [
                 ("type_id", "=", self.type_id.id),
