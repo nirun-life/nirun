@@ -9,6 +9,7 @@ class ServiceRequest(models.Model):
     _inherit = ["ni.patient.res", "period.mixin", "mail.thread"]
     _order = "id DESC"
 
+    _check_period_start = True
     patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
     encounter_id = fields.Many2one(
         readonly=True, states={"draft": [("readonly", False)]}
