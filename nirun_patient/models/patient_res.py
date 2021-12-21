@@ -77,3 +77,25 @@ class PatientRes(models.AbstractModel):
                     % (enc_start, self._description, res_start)
                 )
         return super().create(vals)
+
+    def write(self, vals):
+        if (
+            self._check_period_start
+            and (vals.get("period_start"))
+            and (vals.get("encounter_id") or self.encounter_id)
+            and not ("encounter_id" in vals and not vals.get("encounter_id"))
+        ):
+            res_start = fields.Date.to_date(vals.get("period_start"))
+            encounters = self.encounter_id or self.env["ni.encounter"].browse(
+                vals.get("encounter_id")
+            )
+            if res_start < encounters.period_start:
+                raise ValidationError(
+                    _(
+                        "Since date must not before the encounter start date\n"
+                        "\n\tEncounter Since: %s"
+                        "\n\t%s Since: %s"
+                    )
+                    % (encounters.period_start, self._description, res_start)
+                )
+        return super().write(vals)
