@@ -8,10 +8,10 @@ class CarePlan(models.Model):
     _name = "ni.careplan"
     _description = "Care Plan"
     _inherit = ["period.mixin", "mail.thread", "ni.patient.res"]
-    _check_company_auto = True
     _order = "sequence, id DESC"
-
     _rec_name = "id"
+    _check_company_auto = True
+    _check_period_start = True
 
     patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
     encounter_id = fields.Many2one(
