@@ -17,7 +17,7 @@ class ReferenceRange(models.Model):
 
     def name_get(self):
         return [
-            (ref.id, "%s [%d-%d]" % (ref.observation, ref.low, ref.high))
+            (ref.id, "%s [%d-%d]" % (ref.type_id.name, ref.low, ref.high))
             for ref in self
         ]
 
