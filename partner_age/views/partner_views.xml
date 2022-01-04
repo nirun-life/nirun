@@ -19,12 +19,15 @@
                 </div>
                 <label attrs="{'invisible': [('birthdate', '!=', False)]}" class="oe_edit_only" for="age_years" />
                 <div class="oe_edit_only">
-                    <field name="age_years" attrs="{'invisible': [('birthdate', '!=', False)]}" />
+                    <field name="age" attrs="{'invisible': [('birthdate', '!=', False)]}" />
                 </div>
-                <field name="age_init" invisible="1" />
-                <field name="age_init_date" invisible="1" />
                 <field name="birthdate" />
                 <field name="deceased_date" />
+            </field>
+            <field name="active" position="after">
+                <!-- invisible fields -->
+                <field name="age_init" invisible="1" />
+                <field name="age_init_date" invisible="1" />
                 <field name="deceased" invisible="1" />
             </field>
         </field>
