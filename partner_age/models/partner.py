@@ -16,12 +16,21 @@ class Partner(models.Model):
     display_age = fields.Char(
         "Age", compute="_compute_age", compute_sudo=True, readonly=True
     )
+    age = fields.Integer(
+        "Age (years)",
+        compute="_compute_age",
+        compute_sudo=True,
+        store=True,
+        readonly=False,
+        help="Deprecated field",
+    )
     age_years = fields.Integer(
         "Age (years)",
         compute="_compute_age",
         compute_sudo=True,
         store=True,
         readonly=False,
+        help="Deprecated field",
     )
     age_init = fields.Integer(
         "Age (Years) Input", help="Internal: Age (years) input value", readonly=True
@@ -31,14 +40,20 @@ class Partner(models.Model):
         help="Internal: Date when Age (years) input value was provided",
         readonly=True,
     )
+    age_range_id = fields.Many2one(
+        "res.partner.age.range",
+        "Age Range",
+        compute="_compute_age_range_id",
+        store=True,
+    )
 
     @api.model
     def create(self, vals):
-        if vals.get("age_years") and not vals.get("birthdate"):
+        if vals.get("age") and not vals.get("birthdate"):
             vals.update(
                 {
                     "birthdate": None,
-                    "age_init": vals.get("age_years"),
+                    "age_init": vals.get("age"),
                     "age_init_date": fields.Date.context_today(self),
                 }
             )
@@ -47,11 +62,11 @@ class Partner(models.Model):
     def write(self, vals):
         if vals.get("birthdate"):
             vals.update({"age_init": None, "age_init_date": None})
-        elif vals.get("age_years"):
+        elif vals.get("age"):
             vals.update(
                 {
                     "birthdate": None,
-                    "age_init": vals.get("age_years"),
+                    "age_init": vals.get("age"),
                     "age_init_date": fields.Date.context_today(self),
                 }
             )
@@ -65,8 +80,7 @@ class Partner(models.Model):
             elif rec.age_init:
                 rec._compute_age_from_init()
             else:
-                rec.age_years = 0
-                rec.display_age = None
+                rec.update({"age_years": 0, "age": 0, "display_age": None})
 
     def _compute_age_from_init(self):
         for rec in self:
@@ -79,8 +93,9 @@ class Partner(models.Model):
                 year_diff = dt.year - rec.age_init_date.year
                 year = rec.age_init + year_diff
                 rec.display_age = _("%s Years") % year
-                if rec.age_years != year:
+                if rec.age != year:
                     # check this for reduce chance to call `_inverse_age()`
+                    rec.age = year
                     rec.age_years = year
 
     def _compute_age_from_birthdate(self):
@@ -93,9 +108,39 @@ class Partner(models.Model):
                 )
                 rd = relativedelta(dt, rec.birthdate)
                 rec.display_age = self._format_age(rd)
-                if rec.age_years != rd.years:
+                if rec.age != rd.years:
                     # check this for reduce chance to call `_inverse_age()`
+                    rec.age = rd.years
                     rec.age_years = rd.years
+
+    @api.model
+    def _format_age(self, delta):
+        result = []
+        if delta.years > 0:
+            result.append(_("%s Years") % delta.years)
+        if delta.months > 0:
+            result.append(_("%s Months") % delta.months)
+        if delta.days > 0:
+            result.append(_("%s Days") % delta.days)
+        return " ".join(result) or None
+
+    @api.depends("age")
+    def _compute_age_range_id(self):
+        age_ranges = self.env["res.partner.age.range"].search([])
+        for record in self:
+            if not record.age:
+                age_range = False
+            else:
+                age_range = (
+                    age_ranges.filtered(
+                        lambda age_range: age_range.age_from
+                        <= record.age
+                        <= age_range.age_to
+                    )
+                    or False
+                )
+            if record.age_range_id != age_range:
+                record.age_range_id = age_range and age_range.id or age_range
 
     @api.constrains("birthdate")
     def _check_birthdate(self):
@@ -116,27 +161,16 @@ class Partner(models.Model):
             if record.birthdate and record.deceased_date < record.birthdate:
                 raise ValidationError(_("Deceased date must not before birthdate",))
 
-    @api.constrains("age_years")
+    @api.constrains("age")
     def _check_age(self):
         for rec in self:
-            if rec.age_years < 0:
+            if rec.age < 0:
                 raise ValidationError(_("Age (years) must not be less than 0"))
 
     @api.depends("deceased_date")
     def _compute_is_deceased(self):
         for record in self:
             record.deceased = bool(record.deceased_date)
-
-    @api.model
-    def _format_age(self, delta):
-        result = []
-        if delta.years > 0:
-            result.append(_("%s Years") % delta.years)
-        if delta.months > 0:
-            result.append(_("%s Months") % delta.months)
-        if delta.days > 0:
-            result.append(_("%s Days") % delta.days)
-        return " ".join(result) or None
 
     @api.model
     def cron_compute_age(self):
