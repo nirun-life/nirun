@@ -8,7 +8,11 @@ class Patient(models.Model):
 
     coverage_ids = fields.One2many("ni.coverage", "patient_id", string="Coverages")
     coverage_id = fields.Many2one(
-        "ni.coverage", string="Coverage (Main)", compute="_compute_coverage", store=True
+        "ni.coverage",
+        string="Coverage (Main)",
+        compute="_compute_coverage",
+        store=True,
+        sudo_compute=True,
     )
 
     @api.depends("coverage_ids")
@@ -17,3 +21,5 @@ class Patient(models.Model):
             if rec.coverage_ids:
                 coverages = rec.coverage_ids.sorted("sequence")
                 rec.coverage_id = coverages[0]
+            else:
+                rec.coverage_id = None
