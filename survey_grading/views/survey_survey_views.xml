@@ -9,12 +9,28 @@
         <field name="inherit_id" ref="survey.survey_form" />
         <field name="arch" type="xml">
             <xpath expr="//group[@name='scoring']" position="after">
-                <group name="grading" string="Grading" attrs="{'invisible': [('scoring_type', '=', 'no_scoring')]}">
+                <group
+                    name="grading"
+                    string="Grading"
+                    attrs="{'invisible': [('scoring_type', '=', 'no_scoring')]}"
+                    colspan="12"
+                >
                     <field name="grade_ids" nolabel="1">
-                        <tree decoration-success="passing_grade == True" editable="bottom">
+                        <tree
+                            decoration-primary="color_class == 'primary'"
+                            decoration-secondary="color_class == 'secondary'"
+                            decoration-success="color_class == 'success'"
+                            decoration-danger="color_class == 'danger'"
+                            decoration-warning="color_class == 'warning'"
+                            decoration-info="color_class == 'info'"
+                            decoration-light="color_class == 'light'"
+                            decoration-dark="color_class == 'dark'"
+                            editable="bottom"
+                        >
                             <field name="name" />
                             <field name="low" widget="float_factor" />
                             <field name="high" />
+                            <field name="color_class" />
                             <field name="passing_grade" invisible="1" />
                         </tree>
                     </field>
