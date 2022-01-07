@@ -6,7 +6,7 @@
     <template id="sfinished_inherit" name="Survey Finished" inherit_id="survey.sfinished">
         <xpath expr="//t/div/div[1]/div/div[2]/div[1]/t[1]/div" position="before">
             <t t-if="answer.quizz_grade_id">
-                <div class="badge badge-primary text-wrap">
+                <div t-attf-class="badge badge-#{answer.quizz_grade_id.color_class or 'primary'} text-wrap">
                     <t t-esc="answer.quizz_grade" />
                 </div>
             </t>
