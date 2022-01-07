@@ -8,15 +8,20 @@
         <field name="sequence">86</field>
         <field name="parent_id" ref="nirun.module_category_medical" />
     </record>
+    <record id="group_viewer" model="res.groups">
+        <field name="name">Viewer</field>
+        <field name="category_id" ref="module_category_medical_service" />
+        <field name="implied_ids" eval="[(4, ref('nirun_patient.group_viewer'))]" />
+    </record>
     <record id="group_user" model="res.groups">
         <field name="name">User</field>
-        <field name="implied_ids" eval="[(6, 0, [ref('base.group_user'), ref('nirun_patient.group_user')])]" />
         <field name="category_id" ref="module_category_medical_service" />
+        <field name="implied_ids" eval="[(4, ref('group_viewer'))]" />
     </record>
     <record id="group_manager" model="res.groups">
         <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_medical_service" />
         <field name="implied_ids" eval="[(4, ref('group_user'))]" />
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]" />
-        <field name="category_id" ref="module_category_medical_service" />
     </record>
 </odoo>
