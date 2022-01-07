@@ -40,7 +40,7 @@ class TestPatient(TestPatientCommon):
 
         patient = form.save()
 
-        self.assertEqual(patient.age, "62 Years")
+        self.assertEqual(patient.display_age, "62 Years")
         self.assertEqual(patient.deceased, False)
 
     def test_deceased(self):
@@ -52,5 +52,5 @@ class TestPatient(TestPatientCommon):
 
         patient = form.save()
 
-        self.assertEqual(patient.age, "60 Years")
+        self.assertEqual(patient.display_age, "60 Years")
         self.assertEqual(patient.deceased, True)

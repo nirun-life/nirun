@@ -55,7 +55,7 @@
                 <field name="name" />
                 <field name="performer_id" optional="show" />
                 <field name="gender" optional="show" />
-                <field name="age_years" string="Age" optional="show" />
+                <field name="age" string="Age" optional="show" />
                 <field name="birthdate" optional="hide" />
                 <field name="phone" optional="show" widget="phone" />
                 <field name="mobile" optional="show" widget="phone" />
@@ -80,6 +80,7 @@
                         class="btn-primary"
                         icon="fa-sign-in"
                         type="action"
+                        groups="nirun_patient.group_user"
                     />
                 </header>
                 <sheet>
@@ -87,7 +88,7 @@
                         name="button_box"
                         attrs="{'invisible': [('id', '=', False)]}"
                         class="oe_button_box"
-                        groups="base.group_user"
+                        groups="nirun_patient.group_user"
                     >
                         <button
                             name="action_encounter"
@@ -119,8 +120,12 @@
                         </h1>
                         <div class="oe_read_only">
                             <!-- align-top use for support responsive module-->
-                            <label attrs="{'invisible': [('age', '=', False)]}" class="align-top" for="age" />
-                            <field name="age" />
+                            <label
+                                attrs="{'invisible': [('display_age', '=', False)]}"
+                                class="align-top"
+                                for="display_age"
+                            />
+                            <field name="display_age" />
                         </div>
                     </div>
                     <group>
@@ -160,7 +165,7 @@
                                     <field name="nationality_id" options='{"no_open": True}' />
                                     <field name="identification_id" placeholder="ex. 1104740100001" />
                                     <field name="gender" options="{'horizontal': True}" widget="radio" />
-                                    <field name="age_years" attrs="{'invisible': [('birthdate', '!=', False)]}" />
+                                    <field name="age" attrs="{'invisible': [('birthdate', '!=', False)]}" />
                                     <field name="birthdate" placeholder="ex. 31/01/1950" />
                                 </group>
                                 <group string="Marital Status">
@@ -210,7 +215,6 @@
                 <field name="code" />
                 <field name="age" />
                 <field name="gender" />
-                <field name="age_years" />
                 <field name="deceased" />
                 <field name="deceased_date" />
                 <field name="performer_id" />
@@ -328,11 +332,11 @@
                                     <li>
                                         <field name="company_id" groups="base.group_multi_company" />
                                     </li>
-                                    <li class="o_force_ltr" t-if="record.gender.value or record.age_years.value &gt; 0">
+                                    <li class="o_force_ltr" t-if="record.gender.value or record.age.value &gt; 0">
                                         <field name="gender" />
-                                        <t t-if="record.age_years.value &gt; 0">
+                                        <t t-if="record.age.value &gt; 0">
                                             <t t-if="record.gender.value">,</t>
-                                            <field name="age_years" class="mx-3" />
+                                            <field name="age" class="mx-3" />
                                             years old
                                         </t>
                                     </li>
@@ -352,6 +356,7 @@
                                         class="btn btn-primary"
                                         icon="fa-sign-in"
                                         type="action"
+                                        groups="nirun_patient.group_user"
                                     >
                                         Admission
                                     </button>
@@ -363,6 +368,7 @@
                                         context="{'search_default_patient_id': active_id}"
                                         icon="fa-file-o"
                                         type="action"
+                                        groups="nirun_patient.group_user"
                                     >
                                         Validate
                                     </button>
