@@ -1,9 +1,6 @@
 #  Copyright (c) 2021 Piruin P.
 
-from dateutil.relativedelta import relativedelta
-
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
 
 ENCOUNTER_INACTIVE_STATE = ["entered-in-error", "cancelled"]
 
@@ -78,32 +75,11 @@ class Patient(models.Model):
     birthdate = fields.Date(
         "Date of Birth", related="partner_id.birthdate", readonly=False, tracking=True
     )
-    age = fields.Char(
-        "Age",
-        related="partner_id.display_age",
-        compute="_compute_age",
-        compute_sudo=True,
-    )
-    age_years = fields.Integer(
-        "Age (years)",
-        related="partner_id.age_years",
-        compute="_compute_age",
-        compute_sudo=True,
-        readonly=False,
-        inverse="_inverse_age",
-        store=True,
-    )
     deceased_date = fields.Date(
         "Deceased Date",
         related="partner_id.deceased_date",
         readonly=False,
         tracking=True,
-    )
-    deceased = fields.Boolean(
-        "Deceased",
-        related="partner_id.deceased",
-        compute="_compute_is_deceased",
-        store=True,
     )
 
     marital_status = fields.Selection(
@@ -270,78 +246,6 @@ class Patient(models.Model):
                 )
             if rec.deceased:
                 rec.presence_state = "deceased"
-
-    @api.constrains("birthdate")
-    def _check_birthdate(self):
-        """ Not allow birthdates in the future. """
-        for record in self:
-            if not record.birthdate:
-                continue
-            if record.birthdate > fields.date.today():
-                raise ValidationError(_("Patient cannot be born in the future.",))
-
-    @api.constrains("deceased_date")
-    def _check_deceased_date(self):
-        for record in self:
-            if not record.deceased_date:
-                continue
-            if record.deceased_date > fields.date.today():
-                raise ValidationError(
-                    _("You should not forecast that Patient will die!",)
-                )
-            if record.birthdate and record.deceased_date < record.birthdate:
-                raise ValidationError(_("Patient cannot die before they was born!",))
-
-    @api.depends("deceased_date")
-    def _compute_is_deceased(self):
-        for record in self:
-            record.deceased = bool(record.deceased_date)
-
-    @api.depends("birthdate", "deceased_date")
-    def _compute_age(self):
-        for rec in self:
-            if rec.birthdate:
-                dt = (
-                    rec.deceased_date
-                    if rec.deceased_date
-                    else fields.Date.context_today(self)
-                )
-                rd = relativedelta(dt, rec.birthdate)
-                rec.age = self._format_age(rd)
-                if rec.age_years != rd.years:
-                    # check this for reduce chance to call `_inverse_age()`
-                    rec.age_years = rd.years
-            else:
-                rec.age = None
-                rec.age_years = 0
-
-    @api.model
-    def _format_age(self, delta):
-        result = []
-        if delta.years > 0:
-            result.append(_("%s Years") % delta.years)
-        if delta.months > 0:
-            result.append(_("%s Months") % delta.months)
-        if delta.days > 0:
-            result.append(_("%s Days") % delta.days)
-        return " ".join(result) or None
-
-    def _inverse_age(self):
-        today = fields.date.today()
-        for record in self.filtered(lambda r: not (r.deceased_date and r.birthdate)):
-            if not record.age_years:
-                continue
-
-            if record.birthdate:
-                if record.birthdate.year == (today.year - record.age_years):
-                    continue
-                bd = record.birthdate.replace(year=today.year)
-                if bd <= today:
-                    record.birthdate = bd - relativedelta(years=record.age_years)
-                else:
-                    record.birthdate = bd - relativedelta(years=record.age_years + 1)
-            else:
-                record.birthdate = today - relativedelta(years=record.age_years)
 
     def action_encounter(self):
         action_rec = self.env.ref("nirun_patient.encounter_action")

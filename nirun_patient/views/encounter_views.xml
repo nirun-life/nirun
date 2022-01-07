@@ -171,6 +171,7 @@
                         class="btn-primary"
                         type="object"
                         confirm="Are you sure you want to confirm this?"
+                        groups="nirun_patient.group_user"
                     />
                     <button
                         name="action_confirm"
@@ -179,6 +180,7 @@
                         class="btn-primary"
                         confirm="Are you sure you want to start this?"
                         type="object"
+                        groups="nirun_patient.group_user"
                     />
                     <button
                         name="%(encounter_discharge_wizard_action)d"
@@ -187,6 +189,7 @@
                         class="btn-primary"
                         context="{'default_encounter_id': id}"
                         type="action"
+                        groups="nirun_patient.group_user"
                     />
                     <button
                         name="action_cancel"
@@ -194,6 +197,7 @@
                         attrs="{'invisible': [('state', 'not in', ['planned', 'in-progress'])]}"
                         type="object"
                         confirm="Are you sure you want to cancel this?"
+                        groups="nirun_patient.group_user"
                     />
                     <button
                         name="action_reset_to_draft"
@@ -201,6 +205,7 @@
                         attrs="{'invisible': [('state', 'not in', ['cancelled', 'revoked', 'entered-in-error'])]}"
                         type="object"
                         confirm="Are you sure you want to reset this to draft?"
+                        groups="nirun_patient.group_admin"
                     />
                     <field name="state" statusbar_visible="draft,in-progress,finished" widget="statusbar" />
                 </header>
@@ -209,7 +214,7 @@
                         name="button_box"
                         attrs="{'invisible': [('id', '=', False)]}"
                         class="oe_button_box"
-                        groups="base.group_user"
+                        groups="nirun_patient.group_user"
                     />
                     <field name="id" invisible="1" />
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
