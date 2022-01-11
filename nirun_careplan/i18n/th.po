@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-20 04:44+0000\n"
-"PO-Revision-Date: 2021-07-20 04:44+0000\n"
+"POT-Creation-Date: 2022-01-21 07:34+0000\n"
+"PO-Revision-Date: 2022-01-21 07:34+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -22,6 +22,11 @@ msgstr "<i aria-label=\"Activity\" class=\"fa fa-tasks\" role=\"img\" title=\"�
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_kanban
+msgid "<i aria-label=\"Goal\" class=\"fa fa-flag\" role=\"img\" title=\"Goal\"/>"
+msgstr "<i aria-label=\"เป้าหมาย\" class=\"fa fa-flag\" role=\"img\" title=\"เป้าหมาย\"/>"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_kanban
 msgid "<i aria-label=\"Manage\" class=\"fa fa-ellipsis-v\" role=\"img\" title=\"Manage\"/>"
 msgstr ""
 
@@ -31,9 +36,34 @@ msgid "<i aria-label=\"period\" class=\"fa fa-calendar\" role=\"img\" title=\"Pe
 msgstr ""
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid ""
+"<i class=\"text-muted\" attrs=\"{'invisible': [('state','=', 'completed')]}\">\n"
+"                        Achievement of careplan can record when careplan is completed\n"
+"                    </i>"
+msgstr ""
+"<i class=\"text-muted\" attrs=\"{'invisible': [('state','=', 'completed')]}\">\n"
+"                                สามารถบันทึกผลลัพธ์ของแผนการดูแลได้เมื่อ \"เสร็จสิ้น\" แล้ว\n"
+"                            </i>"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_view_form
+msgid ""
+"<i class=\"text-muted\">Leave this field empty if you want to share across "
+"companies</i>"
+msgstr ""
+"<i class=\"text-muted\">ทิ้งไว้เป็นค่าว่าง "
+"หากต้องการให้หน่วยงานอื่นสามารถเรียกใช้แผนการดูแลนี้ได้ด้วย</i>"
+
+#. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_kanban
 msgid "<span class=\"o_label\">Activities</span>"
 msgstr "<span class=\"o_label\">กิจกรรม</span>"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_kanban
+msgid "<span class=\"o_label\">Goals</span>"
+msgstr "เป้าหมาย"
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.patient_view_form_inherit
@@ -45,15 +75,73 @@ msgstr ""
 "                        <span class=\"o_stat_text\">แผนการดูแล</span>"
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
+msgid ""
+"<span class=\"oe_edit_only\" attrs=\"{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}\">\n"
+"                                    or\n"
+"                                </span>"
+msgstr ""
+"<span class=\"oe_edit_only\" attrs=\"{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}\">\n"
+"                                    หรือ\n"
+"                                </span>"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_search
+#: model:ni.goal.achievement,name:nirun_careplan.goal_achieved
+msgid "Achieved"
+msgstr "บรรลุเป้าหมาย"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__goal_achieved
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__goal_achieved
+msgid "Achieved (%)"
+msgstr "บรรลุเป้าหมาย (%)"
+
+#. module: nirun_careplan
+#: model:ir.actions.act_window,name:nirun_careplan.goal_achievement_action
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__achievement_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__achievement_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__achievement_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__achievement_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__achievement_id
+#: model:ir.ui.menu,name:nirun_careplan.goal_achievement_menu
+msgid "Achievement"
+msgstr "ความก้าวหน้า"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__achievement_note
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__achievement_note
+msgid "Achievement Note"
+msgstr "หมายเหตุความก้าวหน้า"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__display_name
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_search
+msgid "Achievement Status"
+msgstr "ความก้าวหน้า"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_needaction
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_needaction
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_needaction
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_needaction
 msgid "Action Needed"
 msgstr "ต้องดำเนินการ"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__active
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__active
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__active
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__active
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__active
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__active
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__active
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__active
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_goal__state__active
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_goal__state__active
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_goal__state__active
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_goal_achievement__goal_state__active
 msgid "Active"
 msgstr "เปิดใช้งาน"
 
@@ -62,44 +150,69 @@ msgstr "เปิดใช้งาน"
 #: model:ir.actions.act_window,name:nirun_careplan.careplan_activity_action_category_graph
 #: model:ir.actions.act_window,name:nirun_careplan.careplan_activity_action_from_careplan
 #: model:ir.actions.act_window,name:nirun_careplan.careplan_activity_action_my
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__activity_ids
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__activity_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__activity_ids
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_patient__careplan_activity_count
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.patient_view_form_inherit
 msgid "Activities"
 msgstr "กิจกรรม"
 
 #. module: nirun_careplan
-#: model:ir.model,name:nirun_careplan.model_ni_careplan_activity
+#: model:ir.actions.act_window,name:nirun_careplan.careplan_activity_code_action
+#: model:ir.actions.act_window,name:nirun_careplan.goal_code_action
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__activity_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__code_id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__code_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__name
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_state_wizard__activity_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__activity_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__code_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__name
 #: model:ir.ui.menu,name:nirun_careplan.activity_menu
 #: model:ir.ui.menu,name:nirun_careplan.activity_menu_section
+#: model:ir.ui.menu,name:nirun_careplan.careplan_activity_code_menu
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form_quick_create
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Activity"
 msgstr "กิจกรรม"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__activity_count
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__activity_count
 msgid "Activity Count"
 msgstr "จำนวนกิจกรรม"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__activity_exception_decoration
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__activity_exception_decoration
 msgid "Activity Exception Decoration"
 msgstr "การตกแต่งข้อยกเว้นกิจกรรม"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__activity_state
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__activity_state
 msgid "Activity State"
 msgstr "สถานะกิจกรรม"
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_activity_view_form
+msgid "Activity description in detail..."
+msgstr "อธิบายเพิ่มเติมเกี่ยวกับกิจกรรม... (ุถ้ามี)"
+
+#. module: nirun_careplan
+#: model:ir.model.constraint,message:nirun_careplan.constraint_ni_careplan_activity_base_code__uniq
+#: model:ir.model.constraint,message:nirun_careplan.constraint_ni_careplan_activity_code__uniq
+#: model:ir.model.constraint,message:nirun_careplan.constraint_ni_careplan_template_activity_code__uniq
+msgid "Activity must be unqiue!"
+msgstr "กิจกรรมของแผนต้องไม่ซ้ำกัน!"
+
+#. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_activity_view_form
 msgid "Activity..."
 msgstr "กิจกรรม..."
 
@@ -118,26 +231,59 @@ msgstr "ระบุรายละเอียดกิจกรรม"
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
-msgid "Add a goals..."
-msgstr "ระบุเป้าหมายของกิจกรรม..."
-
-#. module: nirun_careplan
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
 msgid "Add a reason why this activity should be done!."
 msgstr "ระบุเหตุผลที่ทำให้เกิดกิจกรรม"
 
 #. module: nirun_careplan
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
-msgid "Add a reasons..."
-msgstr "ระบุเหตุผล..."
+#: code:addons/nirun_careplan/models/careplan.py:0
+#, python-format
+msgid "All goals must be in completed state before close careplan"
+msgstr ""
+"ทุกเป้าหมายของแผนการดูแลต้องมีสถานะเป็น \"เสร็จสิ้น\"  จึงจะทำการสรุปแผนได้"
 
 #. module: nirun_careplan
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_code_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_code_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_outcome_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_outcome_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.goal_achievement_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.goal_achievement_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.goal_code_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.goal_code_view_search
 msgid "Archived"
 msgstr "ถูกเก็บ"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "Are you sure you want to close this?"
+msgstr "คุณแน่ใจนะว่าต้องการ \"สรุป\" แผนการดูแลนี้"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid ""
+"Are you sure you want to confirm this? Some field will not able to edit "
+"after confirmed"
+msgstr ""
+"คุณแน่ใจนะว่าต้องการ \"ยืนยัน\" แผนการดูแลนี้? "
+"ข้อมูลบางส่วนจะไม่สามารถแก้ไขได้หลังทำการยืนยันแล้ว"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "Are you sure you want to hold this?"
+msgstr "คุณแน่ใจนะว่าต้องการ \"หยุด\" แผนการดูแลนี้?"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "Are you sure you want to resume this?"
+msgstr "คุณแน่ใจนะว่าต้องการ \"ทำต่อ\" แผนการดูแลนี้?"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "Are you sure you want to revoke this?"
+msgstr "คุณแน่ใจนะว่าต้องการ \"ยกเลิก\" แผนการดูแลนี้?"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__assign_date
@@ -147,27 +293,25 @@ msgstr "มอบหมายเมื่อ"
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__assignee_uid
 msgid "Assigned User"
-msgstr "ผู้รับมอบหมาย"
+msgstr "ผู้รับผิดชอบ"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__assignee_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
 msgid "Assigned to"
-msgstr "มอบหมายให้"
+msgstr "ผู้รับผิดชอบ"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_attachment_count
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_attachment_count
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_attachment_count
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_attachment_count
 msgid "Attachment Count"
 msgstr "จำนวนไฟล์แนบ"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__attachment_ids
-msgid "Attachment that don't come from message."
-msgstr ""
-
-#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__author_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__author_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_search
 msgid "Author"
 msgstr "ผู้จัดทำแผน"
@@ -175,11 +319,13 @@ msgstr "ผู้จัดทำแผน"
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_state_wizard_view_form
 msgid "Cancel"
-msgstr ""
+msgstr "ยกเลิก"
 
 #. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity__state__cancelled
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity_base__state__cancelled
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity_state_wizard__state__cancelled
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_activity__state__cancelled
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
 msgid "Cancelled"
 msgstr "ถูกยกเลิก"
@@ -187,20 +333,17 @@ msgstr "ถูกยกเลิก"
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__manager_id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__manager_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__manager_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_search
 msgid "Care Manager"
 msgstr "ผู้จัดการแผน"
 
 #. module: nirun_careplan
-#: model:ir.model,name:nirun_careplan.model_ni_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__careplan_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__careplan_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__careplan_id
 msgid "Care Plan"
 msgstr "แผนการดูแล"
-
-#. module: nirun_careplan
-#: model:ir.model,name:nirun_careplan.model_ni_careplan_category
-msgid "Care Plan Category"
-msgstr "ประเภทแผนการดูแล"
 
 #. module: nirun_careplan
 #: model:ir.actions.act_window,name:nirun_careplan.careplan_action
@@ -211,21 +354,83 @@ msgid "Care Plans"
 msgstr "แผนการดูแล"
 
 #. module: nirun_careplan
+#: model:ir.actions.act_window,name:nirun_careplan.careplan_template_action
+msgid "Care Plans Templates"
+msgstr "แผนการดูแลแบบกลุ่ม"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_view_form
+msgid "Care plan"
+msgstr "แผนการดูแล"
+
+#. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Care plan for"
 msgstr "แผนการดูแลสำหรับ"
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_view_form
+msgid "Care plan name..."
+msgstr "ชื่อแผนการดูแล..."
+
+#. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__careplan_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__careplan_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.patient_view_form_inherit
 msgid "Careplan"
 msgstr "แผนการดูแล"
 
 #. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_careplan_activity
+#: model:ir.model,name:nirun_careplan.model_ni_careplan_activity_base
+msgid "Careplan Activity"
+msgstr "กิจกรรมแผนการดูแล"
+
+#. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_careplan_activity_code
+msgid "Careplan Activity Code"
+msgstr "ตัวเลือกกิจกรรมแผนการดูแล"
+
+#. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_careplan_category
+msgid "Careplan Category"
+msgstr "หมวดแผนการดูแล"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_patient__careplan_count
 msgid "Careplan Count"
 msgstr "จำนวนแผนการดูแล"
+
+#. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_careplan_goal
+msgid "Careplan Goal"
+msgstr "เป้าหมายแผนการดูแล"
+
+#. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_careplan_outcome
+msgid "Careplan Outcome"
+msgstr "ผลลัพธ์แผนการดูแล"
+
+#. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_careplan_template
+msgid "Careplan Template"
+msgstr "แผนการดูแลแบบกลุ่ม"
+
+#. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_careplan_template_activity
+msgid "Careplan Template Activity"
+msgstr "กิจกรรมแผนการดูแลแบบกลุ่ม"
+
+#. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_careplan_template_goal
+msgid "Careplan Template Goal"
+msgstr "เป้าหมายแผนการดูแลแบบกลุ่ม"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_patient__careplan_activity_count
@@ -244,47 +449,58 @@ msgid "Categories"
 msgstr "หมวด"
 
 #. module: nirun_careplan
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_view_form
 msgid "Categories..."
 msgstr "หมวด..."
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__category_ids
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__category_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__category_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__category_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__category_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
 msgid "Category"
 msgstr "หมวด"
 
 #. module: nirun_careplan
-#: model_terms:ir.actions.act_window,help:nirun_careplan.careplan_activity_action_from_careplan
-msgid ""
-"Click\n"
-"                <i>Create</i>\n"
-"                to add a new activity."
-msgstr ""
-"กด\n"
-"                <i>สร้าง</i>\n"
-"                เพื่อเพิ่มกิจกรรม."
-
-#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__code
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__code
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__code
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__code
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__code
 msgid "Code"
 msgstr "รหัส"
 
 #. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__color
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__color
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__color
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__color
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__color
 msgid "Color"
 msgstr "สี"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__color
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__color
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__color
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__color
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__color
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__color
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__color
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__color
 msgid "Color Index"
 msgstr "ดัชนีสี"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__company_id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__company_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__company_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__company_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__company_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__company_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__company_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
 msgid "Company"
 msgstr "บริษัท"
@@ -297,16 +513,37 @@ msgstr "เสร็จสิ้น"
 #. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan__state__completed
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity__state__completed
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity_base__state__completed
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity_state_wizard__state__completed
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_goal__state__completed
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template__state__completed
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_activity__state__completed
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_goal__state__completed
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_goal__state__completed
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_goal_achievement__goal_state__completed
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Completed"
 msgstr "เสร็จสิ้น"
 
 #. module: nirun_careplan
-#: model:ir.ui.menu,name:nirun_careplan.careplan_configuration_menu
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__condition_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__careplan_condition_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__condition_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__condition_ids
+msgid "Condition"
+msgstr "ปัญหา / อาการ"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__condition_count
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__condition_count
+msgid "Condition Count"
+msgstr "ปัญหา / อาการ"
+
+#. module: nirun_careplan
+#: model:ir.ui.menu,name:nirun_careplan.configuration_menu
 msgid "Configuration"
-msgstr "การกำหนดค่า"
+msgstr "กำหนดค่า"
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_state_wizard_view_form
@@ -315,37 +552,40 @@ msgid "Confirm"
 msgstr "ยืนยัน"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__partner_id
-msgid "Contact information of patient"
-msgstr ""
-
-#. module: nirun_careplan
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
-msgid "Contribution"
-msgstr "การมีส่วนร่วม"
-
-#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__contributor_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__contributor_ids
 msgid "Contributor"
 msgstr "ผู้มีส่วนร่วม"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__create_date
-msgid "Created On"
-msgstr "สร้างเมื่อ"
-
-#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__create_uid
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__create_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__create_uid
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_state_wizard__create_uid
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__create_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__create_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__create_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__create_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__create_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__create_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__create_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__create_uid
 msgid "Created by"
 msgstr "สร้างโดย"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__create_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__create_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__create_date
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_state_wizard__create_date
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__create_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__create_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__create_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__create_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__create_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__create_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__create_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__create_date
 msgid "Created on"
 msgstr "สร้างเมื่อ"
 
@@ -355,68 +595,101 @@ msgid "Creation Date"
 msgstr "วันที่สร้าง"
 
 #. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__definition
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__definition
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__definition
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__definition
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__definition
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_outcome_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.goal_achievement_view_form
 msgid "Definition"
 msgstr "คำนิยาม"
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_kanban
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_kanban
 msgid "Delete"
 msgstr "ลบ"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__description
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__description
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__description
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__description
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__description
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__description
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__description
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__description
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Description"
 msgstr "รายละเอียด"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__sequence
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__sequence
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity_base__sequence
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__sequence
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__sequence
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template_activity__sequence
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template_goal__sequence
+#: model:ir.model.fields,help:nirun_careplan.field_ni_goal__sequence
 msgid "Determine the display order"
 msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__display_name
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__display_name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__display_name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__display_name
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_state_wizard__display_name
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__display_name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__display_name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__display_name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__display_name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__display_name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__display_name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__display_name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__display_name
 msgid "Display Name"
 msgstr "ชื่อที่ใช้แสดง"
 
 #. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan__state__draft
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template__state__draft
 msgid "Draft"
 msgstr "ร่าง"
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_kanban
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_kanban
 msgid "Dropdown menu"
 msgstr "เมนูแบบดรอปดาว์น"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__duration
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__duration
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__duration
 msgid "Duration"
 msgstr "ระยะเวลา"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__duration_days
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__duration_days
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__duration_days
 msgid "Duration (days)"
 msgstr "ระยะเวลา (วัน)"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__duration_months
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__duration_months
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__duration_months
 msgid "Duration (months)"
 msgstr "ระยะเวลา (เดือน)"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__duration_years
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__duration_years
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__duration_years
 msgid "Duration (years)"
 msgstr "ระยะเวลา (ปี)"
 
@@ -431,44 +704,149 @@ msgid "Edit Activity"
 msgstr "แก้ไขกิจกรรม"
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_kanban
+msgid "Edit Goal"
+msgstr "แก้ไขเป้าหมาย"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__encounter_id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__encounter_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__encounter_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__encounter_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Encounter No."
 msgstr "รหัสรับบริการ"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__goal
-msgid "Expressed desired health state to be achieved"
-msgstr "แจกแจงเป้าหมายที่ต้องการให้บรรลุผล"
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "End"
+msgstr "สิ้นสุด"
 
 #. module: nirun_careplan
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
+#: code:addons/nirun_careplan/models/goal_achievement.py:0
+#, python-format
+msgid "Error! You cannot create recursive data."
+msgstr ""
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_outcome_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.goal_achievement_view_form
 msgid "Extra Info"
-msgstr "ข้อมูลอื่นๆ"
+msgstr "ข้อมูลเพิ่มเติม"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_follower_ids
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_follower_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_follower_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_follower_ids
 msgid "Followers"
 msgstr "ผู้ติดตาม"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_channel_ids
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_channel_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_channel_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_channel_ids
 msgid "Followers (Channels)"
 msgstr "ผู้ติดตาม (ช่องทาง)"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_partner_ids
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_partner_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_partner_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_partner_ids
 msgid "Followers (Partners)"
 msgstr "ผู้ติดตาม (คู่ค้า)"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__goal
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
+#: code:addons/nirun_careplan/models/goal.py:0
+#, python-format
+msgid ""
+"Following goals not in valid state to active!\n"
+"\t{} ({})\n"
+msgstr ""
+"เป้าหมายต่อไปนี้ ไม่อยู่ในสถานะที่จะดำเนินการต่อได้!\n"
+"\t{} ({})\n"
+
+#. module: nirun_careplan
+#: model:ir.actions.act_window,name:nirun_careplan.careplan_goal_action
+#: model:ir.actions.act_window,name:nirun_careplan.careplan_goal_action_from_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_goal
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__goal_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__careplan_goal_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__goal_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__code_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__goal_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__code_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__code_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__name
+#: model:ir.ui.menu,name:nirun_careplan.goal_code_menu
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_goal_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Goal"
+msgstr "เป้าหมาย"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__achieved
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__achieved
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__achieved
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__goal_achieved
+msgid "Goal Achieved"
+msgstr "บรรลุเป้าหมาย"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__goal_achieved_count
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__goal_achieved_count
+msgid "Goal Achieved Count"
+msgstr "บรรลุเป้าหมาย"
+
+#. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_goal_achievement
+msgid "Goal Achievements Status"
+msgstr "ความก้าวหน้า"
+
+#. module: nirun_careplan
+#: model:ir.model,name:nirun_careplan.model_ni_goal_code
+msgid "Goal Code"
+msgstr "ตัวเลือกเป้าหมาย"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__goal_count
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__goal_count
+msgid "Goal Count"
+msgstr "จำนวนเป้าหมาย"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__goal_state
+msgid "Goal State"
+msgstr "สถานะเป้าหมาย"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_goal_view_form
+msgid "Goal description in detail..."
+msgstr "รายละเอียดเพิ่มเติมเกี่ยวกับเป้าหมาย... (ถ้ามี)"
+
+#. module: nirun_careplan
+#: model:ir.model.constraint,message:nirun_careplan.constraint_ni_careplan_goal_code__uniq
+#: model:ir.model.constraint,message:nirun_careplan.constraint_ni_careplan_template_goal_code__uniq
+msgid "Goal must be unqiue!"
+msgstr "เป้าหมายต้องไม่ซ้ำกัน"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_goal_view_form
+msgid "Goal..."
+msgstr "เป้าหมาย..."
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "Goals"
 msgstr "เป้าหมาย"
 
 #. module: nirun_careplan
@@ -483,6 +861,7 @@ msgstr "ไม่ระบุ"
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_search
 msgid "Group By"
 msgstr "จัดกลุ่มโดย"
@@ -493,6 +872,13 @@ msgid "Health"
 msgstr "สุขภาพ"
 
 #. module: nirun_careplan
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_goal__priority__3
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_goal__priority__3
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_goal__priority__3
+msgid "High"
+msgstr "สูง"
+
+#. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Hold on"
 msgstr "หยุดไว้ชั่วคราว"
@@ -500,18 +886,30 @@ msgstr "หยุดไว้ชั่วคราว"
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_state_wizard__id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__id
 msgid "ID"
 msgstr "รหัส"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__activity_exception_icon
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__activity_exception_icon
 msgid "Icon"
 msgstr "ไอคอน"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__activity_exception_icon
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__activity_exception_icon
 msgid "Icon to indicate an exception activity."
 msgstr "ไอคอนเพื่อระบุกิจกรรมข้อยกเว้น"
 
@@ -520,6 +918,10 @@ msgstr "ไอคอนเพื่อระบุกิจกรรมข้อ
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__message_unread
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__message_needaction
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__message_unread
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__message_needaction
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__message_unread
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__message_needaction
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__message_unread
 msgid "If checked, new messages require your attention."
 msgstr "ถ้าเลือก ข้อความใหม่จะต้องการความสนใจจากคุณ"
 
@@ -528,11 +930,16 @@ msgstr "ถ้าเลือก ข้อความใหม่จะต้�
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__message_has_sms_error
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__message_has_error
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__message_has_sms_error
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__message_has_error
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__message_has_sms_error
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__message_has_error
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "หากเลือกข้อความบางข้อความมีข้อผิดพลาดในการจัดส่ง"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__active
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__active
 msgid ""
 "If the active field is set to False, it will allow you to hide the care plan"
 " without removing it."
@@ -540,53 +947,84 @@ msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__patient_avatar
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__patient_avatar
 msgid "Image 512"
 msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity__priority__1
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity_base__priority__1
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_activity__priority__1
 msgid "Important"
 msgstr "ความสำคัญ"
 
 #. module: nirun_careplan
+#: model:ni.goal.achievement,name:nirun_careplan.goal_improving
+msgid "Improving"
+msgstr "ดีขึ้น"
+
+#. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan__state__active
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity__state__in-progress
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity_base__state__in-progress
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity_state_wizard__state__in-progress
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template__state__active
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_activity__state__in-progress
+#: model:ni.goal.achievement,name:nirun_careplan.goal_in_progress
 msgid "In-Progress"
 msgstr "กำลังดำเนินการ"
 
 #. module: nirun_careplan
+#: model:ir.model.fields,help:nirun_careplan.field_ni_goal_achievement__goal_state
+msgid "Indicate goal's life-cycle imply by this achievements status"
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__achieved
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template_goal__achieved
+#: model:ir.model.fields,help:nirun_careplan.field_ni_goal__achieved
+#: model:ir.model.fields,help:nirun_careplan.field_ni_goal_achievement__goal_achieved
+msgid "Indicate whether this achievement means that goal is achieved or not"
+msgstr ""
+
+#. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__intent
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__intent
 msgid "Indicating the degree of authority/intentionality of care plan."
 msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__intent
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__intent
 msgid "Intent"
 msgstr "รูปแบบ"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_is_follower
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_is_follower
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_is_follower
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_is_follower
 msgid "Is Follower"
 msgstr "เป็นผู้ติดตาม"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__is_future
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__is_future
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__is_future
 msgid "Is Future"
 msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__is_past
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__is_past
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__is_past
 msgid "Is Past"
 msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__is_present
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__is_present
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__is_present
 msgid "Is Present"
 msgstr ""
 
@@ -598,51 +1036,79 @@ msgstr "สถานะย่อย"
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan____last_update
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity____last_update
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base____last_update
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code____last_update
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_state_wizard____last_update
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category____last_update
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal____last_update
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome____last_update
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template____last_update
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity____last_update
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal____last_update
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal____last_update
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement____last_update
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code____last_update
 msgid "Last Modified on"
 msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__last_state_update
-msgid "Last State Update"
-msgstr "เปลี่ยนสถานะครั้งสุดท้าย"
-
-#. module: nirun_careplan
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__write_date
-msgid "Last Updated On"
-msgstr "อัพเดทครั้งสุดท้ายเมื่อ"
-
-#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__write_uid
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__write_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__write_uid
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_state_wizard__write_uid
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__write_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__write_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__write_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__write_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__write_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__write_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__write_uid
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__write_uid
 msgid "Last Updated by"
 msgstr "อัพเดทครั้งสุดท้ายโดย"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__write_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__write_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__write_date
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_state_wizard__write_date
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__write_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__write_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__write_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__write_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__write_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__write_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__write_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__write_date
 msgid "Last Updated on"
 msgstr "อัพเดทครั้งสุดท้ายเมื่อ"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_main_attachment_id
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_main_attachment_id
-msgid "Main Attachment"
-msgstr "ไฟล์แนบหลัก"
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_goal__priority__1
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_goal__priority__1
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_goal__priority__1
+msgid "Low"
+msgstr "ต่ำ"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__attachment_ids
-msgid "Main Attachments"
-msgstr ""
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_main_attachment_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_main_attachment_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_main_attachment_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "ไฟล์แนบหลัก"
 
 #. module: nirun_careplan
 #: model:res.groups,name:nirun_careplan.group_manager
 msgid "Manager"
 msgstr "ผู้จัดการ"
+
+#. module: nirun_careplan
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_goal__priority__2
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_goal__priority__2
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_goal__priority__2
+msgid "Medium"
+msgstr "ปานกลาง"
 
 #. module: nirun_careplan
 #: model:ni.careplan.category,name:nirun_careplan.category_memory
@@ -657,12 +1123,16 @@ msgstr "สมอง"
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_has_error
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_has_error
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_has_error
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_has_error
 msgid "Message Delivery error"
 msgstr "ส่งข้อความผิดพลาด"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_ids
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_ids
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_ids
 msgid "Messages"
 msgstr "ข้อความ"
 
@@ -672,13 +1142,13 @@ msgstr "ข้อความ"
 #: code:addons/nirun_careplan/models/careplan.py:0
 #, python-format
 msgid "Must be active state"
-msgstr ""
+msgstr "ต้องอยู่ในสถานะ กำลังดำเนินการ"
 
 #. module: nirun_careplan
 #: code:addons/nirun_careplan/models/careplan.py:0
 #, python-format
 msgid "Must be on-hold state"
-msgstr ""
+msgstr "ต้องอยู่ในสถานะ หยุดชั่วคราว"
 
 #. module: nirun_careplan
 #: model:ir.ui.menu,name:nirun_careplan.activity_menu_my
@@ -687,81 +1157,146 @@ msgid "My Activity"
 msgstr "กิจกรรมของฉัน"
 
 #. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__name
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__name
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__name
 msgid "Name"
 msgstr "ชื่อ"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__activity_date_deadline
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__activity_date_deadline
 msgid "Next Activity Deadline"
 msgstr "วันที่สิ้นสุดกิจกรรมถัดไป"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__activity_summary
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__activity_summary
 msgid "Next Activity Summary"
 msgstr "สรุปกิจกรรมถัดไป"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__activity_type_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__activity_type_id
 msgid "Next Activity Type"
 msgstr "ประเภทกิจกรรมถัดไป"
 
 #. module: nirun_careplan
+#: model:ni.goal.achievement,name:nirun_careplan.goal_no_change
+msgid "No Change"
+msgstr "ไม่เปลี่ยนแปลง"
+
+#. module: nirun_careplan
+#: model:ni.goal.achievement,name:nirun_careplan.goal_no_progress
+msgid "No Progress"
+msgstr "ไม่มีความก้าวหน้า"
+
+#. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity__priority__0
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity_base__priority__0
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_activity__priority__0
 msgid "Normal"
 msgstr "ปกติ"
 
 #. module: nirun_careplan
+#: model:ni.goal.achievement,name:nirun_careplan.goal_not_achieved
+msgid "Not Achieved"
+msgstr "ไม่บรรลุเป้าหมาย"
+
+#. module: nirun_careplan
+#: model:ni.goal.achievement,name:nirun_careplan.goal_not_attainable
+msgid "Not Attainable"
+msgstr "ไม่สามารถบรรลุเป้าหมายได้"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "Note..."
+msgstr "หมายเหตุ..."
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_needaction_counter
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_needaction_counter
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_needaction_counter
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_needaction_counter
 msgid "Number of Actions"
 msgstr "จำนวนกิจกรรม"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_has_error_counter
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_has_error_counter
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_has_error_counter
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_has_error_counter
 msgid "Number of errors"
 msgstr "จำนวนข้อผิดพลาด"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__message_needaction_counter
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__message_needaction_counter
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__message_needaction_counter
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__message_needaction_counter
 msgid "Number of messages which requires an action"
 msgstr "จํานวนข้อความที่ต้องการการดําเนินการ"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__message_has_error_counter
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__message_has_error_counter
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__message_has_error_counter
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__message_has_error_counter
 msgid "Number of messages with delivery error"
 msgstr "จํานวนข้อความที่มีข้อผิดพลาดในการส่ง"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__message_unread_counter
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__message_unread_counter
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__message_unread_counter
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__message_unread_counter
 msgid "Number of unread messages"
 msgstr "จํานวนข้อความที่ยังไม่ได้อ่าน"
 
 #. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan__state__on-hold
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template__state__on-hold
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "On-Hold"
 msgstr "หยุดไว้ชั่วคราว"
 
 #. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan__intent__option
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template__intent__option
 msgid "Option"
 msgstr "ทางเลือก"
 
 #. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan__intent__order
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template__intent__order
 msgid "Order"
 msgstr "คำสั่ง"
 
 #. module: nirun_careplan
+#: model:ir.actions.act_window,name:nirun_careplan.careplan_outcome_action
+#: model:ir.ui.menu,name:nirun_careplan.careplan_outcome_menu
+msgid "Outcome"
+msgstr "ผลลัพธ์"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__parent_id
+msgid "Parent"
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__partner_id
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__partner_id
+msgid "Partner-related data of patient"
+msgstr ""
+
+#. module: nirun_careplan
 #: model:ir.model,name:nirun_careplan.model_ni_patient
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__partner_id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__patient_id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__patient_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__patient_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__patient_id
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_search
 msgid "Patient"
@@ -769,24 +1304,27 @@ msgstr "ผู้สูงอายุ"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__patient_contribution
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__patient_contribution
 msgid "Patient Contribution"
 msgstr "ผู้สูงอายุมีส่วนร่วม"
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "Period"
+msgstr "ระยะเวลา"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__period_end_calendar
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__period_end_calendar
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__period_end_calendar
 msgid "Period End Calendar"
 msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan__intent__plan
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template__intent__plan
 msgid "Plan"
 msgstr "แผน"
-
-#. module: nirun_careplan
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
-msgid "Planning"
-msgstr "การวางแผน"
 
 #. module: nirun_careplan
 #: code:addons/nirun_careplan/wizard/careplan_activity_state.py:0
@@ -795,30 +1333,55 @@ msgid "Please select some activity to change state!"
 msgstr "กรุณาระบุกิจกรรมที่ต้องการเปลี่ยนสถานะ"
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_search
+msgid "Prioritized"
+msgstr "จัดลำดับความสำคัญแล้ว"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__priority
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__priority
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__priority
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__priority
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__priority
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__priority
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_search
 msgid "Priority"
 msgstr "ระดับความสำคัญ"
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "Problem"
+msgstr "ปัญหา"
+
+#. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan__intent__proposal
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template__intent__proposal
 msgid "Proposal"
 msgstr "ข้อเสนอแนะ"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__reason
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_goal__state__proposed
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_goal__state__proposed
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_goal__state__proposed
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_goal_achievement__goal_state__proposed
+msgid "Proposed"
+msgstr "เสนอ"
+
+#. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
 msgid "Reason"
 msgstr "สภาพปัญหา"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__reason
-msgid "Reason why this activity should be done!"
-msgstr "ระบุเหตุผลที่ทำให้เกิดกิจกรรมนี้"
-
-#. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity__kanban_state__blocked
 msgid "Red"
 msgstr "มีปัญหา"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__partner_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__partner_id
+msgid "Related Partner"
+msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__assignee_uid
@@ -827,8 +1390,14 @@ msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__activity_user_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__activity_user_id
 msgid "Responsible User"
 msgstr "ผู้ใช้ที่รับผิดชอบ"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "Result"
+msgstr "ผลลัพธ์"
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
@@ -842,6 +1411,7 @@ msgstr "ยกเลิก"
 
 #. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan__state__revoked
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template__state__revoked
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Revoked"
 msgstr "ยกเลิก"
@@ -849,25 +1419,45 @@ msgstr "ยกเลิก"
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_has_sms_error
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_has_sms_error
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_has_sms_error
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_has_sms_error
 msgid "SMS Delivery error"
 msgstr "ข้อผิดพลาดในการส่ง SMS"
 
 #. module: nirun_careplan
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity__state__scheduled
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity_base__state__scheduled
 #: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity_state_wizard__state__scheduled
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_activity__state__scheduled
 msgid "Scheduled"
 msgstr "กำหนดการ"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__sequence
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__sequence
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__sequence
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__sequence
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_category__sequence
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__sequence
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_outcome__sequence
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__sequence
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__sequence
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__sequence
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__sequence
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_achievement__sequence
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal_code__sequence
 msgid "Sequence"
 msgstr "ลำดับ"
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.goal_achievement_view_form
+msgid "Settings"
+msgstr "ตัวค่า"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__period_start
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__period_start
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__period_start
 msgid "Since"
 msgstr "ตั้งแต่"
 
@@ -875,11 +1465,6 @@ msgstr "ตั้งแต่"
 #: model:ni.careplan.category,name:nirun_careplan.category_social
 msgid "Social"
 msgstr "สังคม"
-
-#. module: nirun_careplan
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
-msgid "Specify goals of this activity!."
-msgstr "ระบุเป้าหมายของกิจกรรม..."
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
@@ -892,9 +1477,21 @@ msgid "Starred"
 msgstr "ติดดาว"
 
 #. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+msgid "Start"
+msgstr "เริ่ม"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__state
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__state
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_base__state
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_state_wizard__state
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__state
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__state
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__state
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__state
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_goal__state
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_goal_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_search
 msgid "State"
 msgstr "สถานะ"
@@ -902,7 +1499,7 @@ msgstr "สถานะ"
 #. module: nirun_careplan
 #: model:ir.model,name:nirun_careplan.model_ni_careplan_activity_state_wizard
 msgid "State Update Wizard"
-msgstr ""
+msgstr "ปรับปรุงถานะ"
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_tree
@@ -911,6 +1508,7 @@ msgstr "สถานะ"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__activity_state
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__activity_state
 msgid ""
 "Status based on activities\n"
 "Overdue: Due date is already passed\n"
@@ -924,18 +1522,96 @@ msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__description
-#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__description
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_template_view_form
 msgid "Summary of nature of plan"
 msgstr "สรุปภาพรวมของแผนการดูแล"
 
 #. module: nirun_careplan
+#: model:ni.goal.achievement,name:nirun_careplan.goal_sustaining
+msgid "Sustaining"
+msgstr "อาการคงที่"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__template_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__template_id
+#: model:ir.ui.menu,name:nirun_careplan.careplan_template_menu
+msgid "Template"
+msgstr "แผนการดูแลแบบกลุ่ม"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__tense
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__tense
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__tense
 msgid "Tense"
 msgstr "ช่วงเวลา"
 
 #. module: nirun_careplan
+#: model:ni.goal.achievement,definition:nirun_careplan.goal_sustaining
+msgid ""
+"The goal has been met, but ongoing activity is needed to sustain the goal "
+"objective."
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ni.goal.achievement,definition:nirun_careplan.goal_achieved
+msgid "The goal has been met."
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ni.goal.achievement,definition:nirun_careplan.goal_no_progress
+msgid "The goal has not been met and little to no progress towards target."
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ni.goal.achievement,definition:nirun_careplan.goal_not_achieved
+msgid ""
+"The goal has not been met and there might or might not have been progress "
+"towards target."
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ni.goal.achievement,definition:nirun_careplan.goal_in_progress
+msgid ""
+"The goal is being sought but has not yet been reached. (Also applies if the "
+"goal was reached in the past but there has been regression and the goal is "
+"again being sought)."
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ni.goal.achievement,definition:nirun_careplan.goal_improving
+msgid "The goal is being sought, and is progressing."
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ni.goal.achievement,definition:nirun_careplan.goal_worsening
+msgid "The goal is being sought, but is regressing."
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ni.goal.achievement,definition:nirun_careplan.goal_no_change
+msgid "The goal is being sought, but the trend is flat."
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ni.goal.achievement,definition:nirun_careplan.goal_not_attainable
+msgid "The goal is not possible to be met."
+msgstr ""
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__timing_id
+msgid "Timing"
+msgstr "ความถี่"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__timing_tmpl_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__timing_tmpl_id
+msgid "Timing Tmpl"
+msgstr "แม่แบบความถี่"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__activity_exception_decoration
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_goal__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr "พิมพ์กิจกรรมข้อยกเว้นบนบันทึก"
 
@@ -945,20 +1621,32 @@ msgid "Unassigned"
 msgstr "ยังไม่ได้มอบหมาย"
 
 #. module: nirun_careplan
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_goal__priority__0
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_template_goal__priority__0
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_goal__priority__0
+msgid "Undefined"
+msgstr "ไม่ระบุ"
+
+#. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_unread
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_unread
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_unread
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_unread
 msgid "Unread Messages"
 msgstr "ข้อความที่ยังไม่ได้อ่าน"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__message_unread_counter
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__message_unread_counter
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_goal__message_unread_counter
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__message_unread_counter
 msgid "Unread Messages Counter"
 msgstr "จำนวนข้อความที่ยังไม่ได้อ่าน"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__period_end
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__period_end
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__period_end
 msgid "Until"
 msgstr "สิ้นสุด"
 
@@ -975,26 +1663,32 @@ msgid "User"
 msgstr "ผู้ใช้"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__website_message_ids
-#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__website_message_ids
-msgid "Website Messages"
-msgstr ""
+#: model:res.groups,name:nirun_careplan.group_viewer
+msgid "Viewer"
+msgstr "ผู้ดูข้อมูล"
 
 #. module: nirun_careplan
-#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__website_message_ids
-#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_activity__website_message_ids
-msgid "Website communication history"
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__timing_when
+msgid "When"
 msgstr ""
 
 #. module: nirun_careplan
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan__patient_contribution
+#: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template__patient_contribution
 msgid "Whether patient have contribution in this care plan"
 msgstr "ผู้สูงอายุได้มีสวนร่วมในการทำแผนดูแลนี้หรือไม่"
 
 #. module: nirun_careplan
-#: code:addons/nirun_careplan/models/careplan.py:0
-#, python-format
-msgid ""
-"You cannot delete a careplan containing activities. You can either archive "
-"it or first delete all of its activities."
-msgstr ""
+#: model:ni.goal.achievement,name:nirun_careplan.goal_worsening
+msgid "Worsening"
+msgstr "แย่ลง"
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
+msgid "choose from..."
+msgstr "เลือกจาก..."
+
+#. module: nirun_careplan
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_form
+msgid "create new..."
+msgstr "สร้างใหม่..."

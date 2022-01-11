@@ -8,6 +8,9 @@ class TestPatient(TestCareplanCommon):
         super(TestPatient, self).setUp()
         self.careplan = self.env["ni.careplan"].with_user(self.care_manager)
         self.activity = self.env["ni.careplan.activity"].with_user(self.care_manager)
+        self.activity_code = self.env["ni.careplan.activity.code"].with_user(
+            self.caregiver
+        )
 
     def test_category(self):
         self.miss_glenda = self.ref("nirun_patient.mrs_glenda")
@@ -24,13 +27,17 @@ class TestPatient(TestCareplanCommon):
 
         memory = self.ref("nirun_careplan.category_memory")
         self.activity.create(
-            {"name": "Activity 1", "careplan_id": plan.id, "category_id": memory}
+            {
+                "code_id": self.activity_code.create({"name": "Activity 1"}).id,
+                "careplan_id": plan.id,
+                "category_id": memory,
+            }
         )
         self.assertTrue(memory in plan.mapped("category_ids.id"))
 
         act = self.activity.create(
             {
-                "name": "Activity 2",
+                "code_id": self.activity_code.create({"name": "Activity 2"}).id,
                 "careplan_id": plan.id,
                 "category_id": self.ref("nirun_careplan.category_health"),
             }

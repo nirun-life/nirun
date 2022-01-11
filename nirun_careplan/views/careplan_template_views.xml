@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="careplan_template_action" model="ir.actions.act_window">
+        <field name="name">Care Plans Templates</field>
+        <field name="res_model">ni.careplan.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="careplan_template_view_search" model="ir.ui.view">
+        <field name="name">careplan.view.search</field>
+        <field name="model">ni.careplan.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <separator />
+                <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
+            </search>
+        </field>
+    </record>
+    <record id="careplan_template_view_form" model="ir.ui.view">
+        <field name="name">careplan.view.form</field>
+        <field name="model">ni.careplan.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="active" invisible="1" />
+                <field name="id" invisible="1" />
+                <field name="state" invisible="1" />
+                <sheet string="Careplan">
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="name" string="Care plan" />
+                        <h1>
+                            <field name="name" class="w-90" placeholder="Care plan name..." />
+                        </h1>
+                        <field
+                            name="category_ids"
+                            options="{ 'color_field': 'color'}"
+                            placeholder="Categories..."
+                            widget="many2many_tags"
+                        />
+                        <field name="description" placeholder="Summary of nature of plan" />
+                    </div>
+                    <group>
+                        <group>
+                            <label for="company_id" />
+                            <div>
+                                <field name="company_id" />
+                                <i class="text-muted">Leave this field empty if you want to share across companies</i>
+                            </div>
+                        </group>
+                        <group string="Goal" colspan="10">
+                            <field name="goal_ids" mode="tree" context="{'default_careplan_id': id}" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle" class="oe_edit_only" />
+                                    <field name="careplan_id" invisible="1" />
+                                    <field name="company_id" invisible="1" />
+                                    <field name="code_id" width="3" />
+                                    <field name="priority" widget="priority" optional="hide" />
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Activity" colspan="10">
+                            <field name="activity_ids" context="{'default_careplan_id': id}" mode="tree" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle" class="oe_edit_only" />
+                                    <field name="careplan_id" invisible="1" />
+                                    <field name="company_id" invisible="1" />
+                                    <field name="code_id" width="3" />
+                                    <field name="category_id" />
+                                    <field name="timing_tmpl_id" options="{'no_open':True}" />
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                    <group groups="base.group_system">
+                        <group>
+                            <field name="create_date" />
+                            <field name="create_uid" />
+                        </group>
+                        <group>
+                            <field name="write_date" />
+                            <field name="write_uid" />
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user" widget="mail_followers" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="careplan_template_view_tree" model="ir.ui.view">
+        <field name="name">careplan.view.tree</field>
+        <field name="model">ni.careplan.template</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="active == False">
+                <field name="sequence" widget="handle" />
+                <field name="active" invisible="1" />
+                <field name="name" />
+                <field name="description" optional="hide" />
+                <field name="category_ids" optional="show" options="{'color_field': 'color'}" widget="many2many_tags" />
+                <field name="goal_count" />
+                <field name="activity_count" />
+                <field name="company_id" groups="base.group_multi_company" />
+            </tree>
+        </field>
+    </record>
+    <record id="careplan_template_goal_view_form" model="ir.ui.view">
+        <field name="name">careplan.template.goal.view.form</field>
+        <field name="model">ni.careplan.template.goal</field>
+        <field name="arch" type="xml">
+            <form class="o_form_project_tasks" string="Goal">
+                <field name="achieved" invisible="1" />
+                <header />
+                <sheet>
+                    <div class="oe_title pr-0" style="max-width:85%;">
+                        <h1 class="d-flex flex-row justify-content-between">
+                            <field name="code_id" class="o_task_name text-truncate w-100" placeholder="Goal..." />
+                        </h1>
+                        <div>
+                            <field name="description" placeholder="Goal description in detail..." />
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="priority" widget="priority" />
+                        </group>
+                        <group>
+                            <field
+                                name="careplan_id"
+                                context="{'show_patient': True}"
+                                options='{"always_reload": True}'
+                                invisible="context.get('default_careplan_id', False)"
+                                domain="[('active', '=', True)]"
+                            />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="careplan_template_activity_view_form" model="ir.ui.view">
+        <field name="name">careplan.template.activity.view.form</field>
+        <field name="model">ni.careplan.template.activity</field>
+        <field name="arch" type="xml">
+            <form>
+                <header />
+                <sheet>
+                    <div class="oe_title pr-0">
+                        <h1 class="d-flex flex-row justify-content-between">
+                            <field name="priority" class="mr-3" widget="priority" />
+                            <field name="code_id" class="o_task_name text-truncate w-100" placeholder="Activity..." />
+                        </h1>
+                    </div>
+                    <div>
+                        <label for="category_id" />
+                        <field name="category_id" />
+                    </div>
+                    <div>
+                        <field name="description" placeholder="Activity description in detail..." />
+                    </div>
+                    <group>
+                        <group>
+                            <field
+                                name="careplan_id"
+                                context="{'show_patient': True}"
+                                options='{"always_reload": True}'
+                                invisible="context.get('default_careplan_id', False)"
+                                domain="[('active', '=', True)]"
+                            />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -5,5 +5,5 @@ from odoo import models
 
 class CarePlanCategory(models.Model):
     _name = "ni.careplan.category"
-    _description = "Care Plan Category"
+    _description = "Careplan Category"
     _inherit = ["coding.base"]
