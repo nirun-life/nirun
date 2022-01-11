@@ -6,19 +6,19 @@
     <record id="careplan_activity_action" model="ir.actions.act_window">
         <field name="name">Activities</field>
         <field name="res_model">ni.careplan.activity</field>
-        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
         <field name="context">{'hide_state': True}</field>
     </record>
     <record id="careplan_activity_action_my" model="ir.actions.act_window">
         <field name="name">Activities</field>
         <field name="res_model">ni.careplan.activity</field>
-        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
         <field name="context">{'search_default_my_activity': True, 'hide_state': True}</field>
     </record>
     <record id="careplan_activity_action_from_careplan" model="ir.actions.act_window">
         <field name="name">Activities</field>
         <field name="res_model">ni.careplan.activity</field>
-        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
         <field name="context">
             {
                 'pivot_row_groupby': ['assignee_id'],
@@ -33,7 +33,7 @@
         <field name="model">ni.careplan.activity</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" string="Activity" />
+                <field name="code_id" string="Activity" />
                 <field
                     name="patient_id"
                     filter_domain="['|' ,('patient_id', 'ilike', self), ('encounter_id', 'ilike', self)]"
@@ -45,8 +45,6 @@
                 <filter name="unassigned" domain="[('assignee_id', '=', False)]" string="Unassigned" />
                 <separator />
                 <filter name="starred" domain="[('priority', 'in', [1, 2])]" string="Starred" />
-                <separator />
-                <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
                 <separator />
                 <group expand="0" string="Group By">
                     <filter name="group_by_careplan" string="Careplan" context="{'group_by': 'careplan_id'}" />
@@ -79,9 +77,9 @@
                         name="careplan_id"
                         context="{'show_patient': True }"
                         invisible="context.get('default_careplan_id', False)"
-                        options='{"always_reload": True}'
+                        options="{'always_reload': True, 'no_open': True,'no_create': True}"
                     />
-                    <field name="name" string="Activity" />
+                    <field name="code_id" string="Activity" options="{'no_open': True, 'no_create_edit': True}" />
                     <field name="assignee_id" options="{'no_open': True,'no_create': True}" />
                 </group>
             </form>
@@ -219,21 +217,18 @@
             <tree
                 decoration-bf="state == 'scheduled'"
                 decoration-danger="kanban_state == 'blocked'"
-                decoration-muted="active == False or state == 'cancelled'"
                 decoration-success="kanban_state == 'done'"
                 expand="True"
             >
                 <field name="sequence" invisible="not context.get('seq_visible', False)" widget="handle" />
-                <field name="active" invisible="1" />
-                <field name="name" />
+                <field name="code_id" />
                 <field name="careplan_id" invisible="context.get('default_careplan_id', False)" optional="show" />
                 <field name="patient_id" invisible="context.get('default_careplan_id', False)" optional="show" />
                 <field name="category_id" />
-                <field name="reason" optional="hide" />
+                <field name="timing_id" />
                 <field name="period_start" optional="show" />
                 <field name="period_end" optional="hide" />
                 <field name="assignee_id" optional="show" />
-                <field name="goal" optional="hide" />
                 <field name="description" optional="hide" />
                 <field name="company_id" groups="base.group_multi_company" />
                 <field name="state" optional="show" />
@@ -246,7 +241,7 @@
         <field name="name">careplan.activity.view.form</field>
         <field name="model">ni.careplan.activity</field>
         <field name="arch" type="xml">
-            <form class="o_form_project_tasks" string="Activities">
+            <form>
                 <field name="active" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
@@ -254,12 +249,6 @@
                     <field name="state" statusbar_visible="scheduled,in-progress,completed" widget="statusbar" />
                 </header>
                 <sheet>
-                    <widget
-                        name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
-                        bg_color="bg-warning"
-                        title="Archived"
-                    />
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [(('state', '!=', 'cancelled'))]}"
@@ -275,7 +264,7 @@
                     <div class="oe_title pr-0">
                         <h1 class="d-flex flex-row justify-content-between">
                             <field name="priority" class="mr-3" widget="priority" />
-                            <field name="name" class="o_task_name text-truncate" placeholder="Activity..." />
+                            <field name="code_id" class="o_task_name text-truncate w-100" placeholder="Activity..." />
                             <field name="kanban_state" class="ml-auto oe_read_only" widget="state_selection" />
                         </h1>
                     </div>
@@ -287,10 +276,31 @@
                                 name="careplan_id"
                                 context="{'show_patient': True}"
                                 options='{"always_reload": True}'
-                                domain="[('active', '=', True), ('company_id', '=', company_id)]"
                             />
                             <field name="period_start" />
                             <field name="period_end" />
+                            <label for="timing_id" />
+                            <div class="o_row">
+                                <field
+                                    name="timing_tmpl_id"
+                                    options="{'no_create':True, 'no_create_edit':True}"
+                                    attrs="{'invisible': [('timing_id', '!=', False)], 'required':[('timing_id', '=', False)]}"
+                                    placeholder="choose from..."
+                                />
+                                <span
+                                    class="oe_edit_only"
+                                    attrs="{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}"
+                                >
+                                    or
+                                </span>
+                                <field
+                                    name="timing_id"
+                                    domain="[('id', '=', False)]"
+                                    options="{'no_quick_create':True}"
+                                    attrs="{'invisible': [('timing_tmpl_id', '!=', False)], 'required':[('timing_tmpl_id', '=', False)]}"
+                                    placeholder="create new..."
+                                />
+                            </div>
                         </group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
@@ -310,26 +320,6 @@
                         <page name='reason' string="Reason">
                             <group name="reason_reference" />
                             <p class="text-muted oe_edit_only">Add a reason why this activity should be done!.</p>
-                            <field name="reason" nolabel="1" placeholder="Add a reasons..." />
-                        </page>
-                        <page name='goal' string="Goal">
-                            <group name="goal_reference" />
-                            <p class="text-muted oe_edit_only">Specify goals of this activity!.</p>
-                            <field name="goal" nolabel="1" placeholder="Add a goals..." />
-                        </page>
-                        <page string="Extra Info">
-                            <group>
-                                <group>
-                                    <field name="sequence" />
-                                    <field name="color" />
-                                </group>
-                                <group>
-                                    <field name="assign_date" />
-                                    <field name="last_state_update" />
-                                    <field name="create_date" />
-                                    <field name="write_date" />
-                                </group>
-                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -369,11 +359,11 @@
         <field name="view_id" ref="careplan_activity_view_graph" />
         <field name="context">
             {
-            'search_default_group_by_category': True,
-            'search_default_careplan_id': active_id,
-            'default_careplan_id': active_id,
-            'graph_mode': 'pie',
-        }
+                'search_default_group_by_category': True,
+                'search_default_careplan_id': active_id,
+                'default_careplan_id': active_id,
+                'graph_mode': 'pie',
+            }
         </field>
     </record>
 </odoo>
