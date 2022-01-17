@@ -24,12 +24,18 @@ time_unit_plural = {
     "second": _lt("seconds"),
 }
 
+# TODO: migrate to nirun_timing on version 14.0
+
 
 class Timing(models.Model):
     _name = "ni.timing"
     _description = "Timing"
 
     name = fields.Char(compute="_compute_name", readonly=False, store=True)
+    res_model = fields.Char("Related Document Model", copy=False)
+    res_id = fields.Many2oneReference(
+        "Related Document ID", model_field="res_model", copy=False
+    )
     template_id = fields.Many2one(
         "ni.timing.template", string="Template", required=False, index=True
     )
@@ -95,6 +101,18 @@ class Timing(models.Model):
         auto_join=True,
     )
     time_of_day = fields.One2many("ni.timing.tod", "timing_id")
+
+    def init(self):
+        self._cr.execute(
+            """SELECT indexname
+            FROM pg_indexes
+            WHERE indexname = 'ni_timing_res_model_id_idx'"""
+        )
+        if not self._cr.fetchone():
+            self._cr.execute(
+                """CREATE INDEX ni_timing_res_model_id_idx
+                ON ni_timing (res_model, res_id)"""
+            )
 
     @api.depends(
         "frequency",
@@ -326,6 +344,21 @@ class Timing(models.Model):
                     _("period max must be more than min [%s]") % rec.period
                 )
 
+    @api.model
+    def garbage_collect(self):
+        from odoo.tools.date_utils import get_timedelta
+
+        limit_date = fields.datetime.utcnow() - get_timedelta(1, "day")
+
+        return self.search(
+            [
+                ("res_model", "=", False),
+                ("res_id", "=", False),
+                ("create_date", "<", limit_date),
+                ("write_date", "<", limit_date),
+            ]
+        ).unlink()
+
 
 class TimingTimeOfDay(models.Model):
     _name = "ni.timing.tod"
@@ -351,7 +384,12 @@ class TimingTemplate(models.Model):
     _description = "Timing Template"
     _inherit = ["coding.base", "ni.timing"]
 
-    name = fields.Char("Template Name", compute=None, store=True)
+    sequence = fields.Integer(copy=False)
+    definition = fields.Text(copy=False)
+    color = fields.Integer(copy=False)
+    active = fields.Boolean(copy=False)
+
+    name = fields.Char("Template Name", compute=None, store=True, copy=False)
     when = fields.Many2many(
         "ni.timing.event", "ni_timing_template_event_rel", "template_id", "event_id"
     )
@@ -359,22 +397,60 @@ class TimingTemplate(models.Model):
         "ni.timing.dow", "ni_timing_template_dow_rel", "template_id", "dow_id"
     )
 
-    def to_timing(self):
+    def to_timing(self, default=None):
         self.ensure_one()
-        return self.env["ni.timing"].create(
-            {
-                "frequency": self.frequency,
-                "frequency_max": self.frequency_max,
-                "duration": self.duration,
-                "duration_max": self.duration_max,
-                "duration_unit": self.duration_unit,
-                "period": self.period,
-                "period_max": self.period_max,
-                "period_unit": self.period_unit,
-                "when": [(6, 0, self.when.ids)],
-                "day_of_week": [(6, 0, self.day_of_week.ids)],
-                "offset": self.offset,
-                "time_of_day": [(6, 0, self.time_of_day.ids)],
-                "name": self.name,
-            }
-        )
+        vals = self.copy_data(default)
+        return self.env["ni.timing"].create(vals)
+
+
+class TimingMixin(models.AbstractModel):
+    _name = "ni.timing.mixin"
+    _description = "Timing"
+
+    timing_id = fields.Many2one(
+        "ni.timing",
+        auto_join=True,
+        ondelete="set null",
+        tracking=True,
+        domain=[
+            ("res_model", "=", lambda self: self._name),
+            ("res_id", "=", lambda self: self.id),
+        ],
+    )
+    timing_tmpl_id = fields.Many2one("ni.timing.template", store=False)
+    timing_when = fields.Many2many(related="timing_id.when")
+
+    @api.model
+    def create(self, vals):
+        if vals.get("timing_tmpl_id") and not vals.get("timing_id"):
+            tmpl = self._get_timing_tmpl(vals.get("timing_tmpl_id"))
+            vals["timing_id"] = tmpl.to_timing().ids[0]
+
+        record = super(TimingMixin, self).create(vals)
+
+        if record.timing_id:
+            record.timing_id.write({"res_model": record._name, "res_id": record.id})
+        return record
+
+    def write(self, vals):
+        timing_tmpl = vals.get("timing_tmpl_id") and not vals.get("timing_id")
+        if len(self) == 1 and timing_tmpl:
+            # if update only one record it easily done
+            tmpl = self._get_timing_tmpl(vals.get("timing_tmpl_id"))
+            vals["timing_id"] = tmpl.to_timing(
+                {"res_model": self._name, "res_id": self.id}
+            ).ids[0]
+            return super(TimingMixin, self).write(vals)
+
+        success = super(TimingMixin, self).write(vals)
+        if timing_tmpl:
+            # create timing record for each record that were write
+            tmpl = self._get_timing_tmpl(vals.get("timing_tmpl_id"))
+            for rec in self:
+                rec.timing_id = tmpl.to_timing(
+                    {"res_model": rec._name, "res_id": rec.id}
+                ).ids[0]
+        return success
+
+    def _get_timing_tmpl(self, ids):
+        return self.env["ni.timing.template"].browse(ids)
