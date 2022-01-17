@@ -9,10 +9,11 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["base"],
+    "depends": ["base", "mail"],
     "data": [
         "security/nirun_group.xml",
         "security/ir.model.access.csv",
+        "data/cron.xml",
         "data/res_company_data.xml",
         "data/ni.quantity.unit.csv",
         "data/ni.timing.event.csv",

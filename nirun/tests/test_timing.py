@@ -1,6 +1,7 @@
 #  Copyright (c) 2021 Piruin P.
 from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase
+from odoo.tools.date_utils import datetime, get_timedelta
 
 _timing_name = [
     ("Every 8 hours", 1, 0, 8, 0, "hour", 0, 0, 0),
@@ -90,3 +91,15 @@ class TestTiming(TransactionCase):
             }
         )
         self.assertEqual("3 times every day 30 min before a meal", time.name)
+
+    def test_garbage_collect(self):
+        timing = self.timing.create(
+            {
+                "name": "3 times a day",
+                "create_date": datetime.utcnow() - get_timedelta(2, "day"),
+                "write_date": datetime.utcnow() - get_timedelta(2, "day"),
+            }
+        )
+        self.timing.garbage_collect()
+
+        self.assertFalse(self.timing.search([("id", "=", timing.id)]))

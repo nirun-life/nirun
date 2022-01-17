@@ -11,7 +11,7 @@ class CodingBase(models.AbstractModel):
     _order = "sequence, id"
 
     sequence = fields.Integer(index=True, default=0,)
-    name = fields.Char(required=True, index=True, translate=True, copy=False)
+    name = fields.Char(required=True, index=True, translate=True)
     code = fields.Char(index=True, copy=False, limit=16)
     definition = fields.Text(translate=True)
     color = fields.Integer(default=lambda _: random.randint(0, 10))
@@ -43,3 +43,9 @@ class CodingBase(models.AbstractModel):
         ("name__uniq", "unique (name)", "This name already exists!",),
         ("code__uniq", "unique (code)", "This code already exists!",),
     ]
+
+    def copy(self, default=None):
+        default = default or {}
+        if "name" not in default:
+            default["name"] = "%s (copy)" % self.name
+        return super(CodingBase, self).copy(default)
