@@ -7,12 +7,12 @@ from odoo.exceptions import UserError
 class CarePlan(models.Model):
     _name = "ni.careplan"
     _description = "Careplan"
-    _inherit = ["period.mixin", "mail.thread", "ni.patient.res"]
+    _inherit = ["period.mixin", "mail.thread", "ni.patient.res", "ir.sequence.mixin"]
     _order = "period_start DESC, id DESC"
-    _rec_name = "id"
     _check_company_auto = True
     _check_period_start = True
 
+    name = fields.Char("Plan No.", default="New")
     patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
     encounter_id = fields.Many2one(
         readonly=True, states={"draft": [("readonly", False)]}
@@ -130,7 +130,7 @@ class CarePlan(models.Model):
 
     def _get_name(self):
         plan = self
-        name = "#%d" % plan.id if plan.id else ""
+        name = plan.name
         if self.env.context.get("show_patient"):
             name = "{} {}".format(plan.patient_id.name, name)
         return name
