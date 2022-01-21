@@ -19,7 +19,6 @@
         "views/patient_views.xml",
         "views/encounter_views.xml",
     ],
-    "demo": [],
     "application": True,
     "auto_install": False,
     "installable": True,
