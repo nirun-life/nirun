@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2022 Piruin P.
+  -->
+<odoo>
+    <record id="careplan_view_form_inherit" model="ir.ui.view">
+        <field name="name">careplan.view.form.inherit</field>
+        <field name="model">ni.careplan</field>
+        <field name="inherit_id" ref="nirun_careplan.careplan_view_form" />
+        <field name="arch" type="xml">
+            <field name="condition_ids" position="after">
+                <field
+                    name="survey_pre_response_ids"
+                    context="{'show_grade': True}"
+                    domain="[('patient_id', '=', patient_id)]"
+                    options="{'no_create': True}"
+                    widget="many2many_tags"
+                />
+                <field name="survey_ids" invisible="1" widget="many2many_tags" />
+            </field>
+            <xpath expr="//group[@name='result']" position="inside">
+                <field
+                    name="survey_post_response_ids"
+                    context="{'show_grade': True}"
+                    domain="[
+                       ('patient_id', '=', patient_id),
+                       ('survey_id', 'in', survey_ids),
+                       ('id', 'not in', survey_pre_response_ids)
+                       ]"
+                    options="{'no_create': True}"
+                    widget="many2many_tags"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
