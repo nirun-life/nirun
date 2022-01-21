@@ -179,6 +179,7 @@
                     <field name="state" statusbar_visible="proposed,active,completed" widget="statusbar" />
                 </header>
                 <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('achieved', '!=', True)]}"
@@ -209,6 +210,10 @@
                                 invisible="context.get('default_careplan_id', False)"
                                 domain="[('active', '=', True), ('company_id', '=', company_id)]"
                             />
+                        </group>
+                        <group>
+                            <group name="target" />
+                            <group name="result" />
                         </group>
                     </group>
                 </sheet>
