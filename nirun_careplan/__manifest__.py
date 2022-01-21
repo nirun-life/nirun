@@ -2,7 +2,7 @@
 
 {
     "name": "Care Plans",
-    "version": "13.0.0.4.0",
+    "version": "13.0.0.5.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -15,6 +15,7 @@
         "security/careplan_rule.xml",
         "security/ir.model.access.csv",
         "data/goal_achievement_data.xml",
+        "data/ir_sequence_data.xml",
         "views/goal_achievement_views.xml",
         "views/goal_code_views.xml",
         "views/careplan_activity_views.xml",

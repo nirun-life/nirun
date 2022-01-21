@@ -153,6 +153,12 @@
                             <label for="period_start" string="Period" />
                             <div class="o_row">
                                 <field name="period_start" placeholder="Start" />
+                                <label
+                                    for="period_end"
+                                    string="-"
+                                    class="oe_read_only"
+                                    attrs="{'invisible':[('period_end', '=', False)]}"
+                                />
                                 <field name="period_end" placeholder="End" />
                             </div>
                             <field name="template_id" attrs="{'invisible': [('state', '!=', 'draft')]}" />
@@ -161,8 +167,9 @@
                     <group name="problem" string="Problem">
                         <field
                             name="condition_ids"
+                            context="{'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_category': 'problem-list-item'}"
                             widget="many2many_tags"
-                            domain="[('patient_id', '=', patient_id)]"
+                            domain="[('patient_id', '=', patient_id), ('state', 'in', ['active', 'remission'])]"
                             attrs="{'readonly': [('patient_id', '=', False)]}"
                         />
                     </group>
@@ -178,16 +185,18 @@
                             <field name="patient_id" invisible="1" />
                             <field name="encounter_id" invisible="1" />
                             <field name="careplan_condition_ids" invisible="1" />
-                            <field name="code_id" width="3" options="{'no_create_edit': True}" />
-                            <field name="priority" widget="priority" optional="hide" />
                             <field
                                 name="condition_id"
                                 domain="[('id', 'in', careplan_condition_ids)]"
                                 optional="hide"
+                                options="{'no_create': True}"
                             />
+                            <field name="code_id" width="3" options="{'no_create_edit': True}" />
+                            <field name="priority" widget="priority" optional="hide" />
                             <field
                                 name="achievement_id"
                                 attrs="{'column_invisible': [('parent.state', '=', 'draft')]}"
+                                options="{'no_create': True}"
                             />
                             <field
                                 name="state"
@@ -208,6 +217,12 @@
                             <field name="careplan_id" invisible="1" />
                             <field name="company_id" invisible="1" />
                             <field name="careplan_goal_ids" invisible="1" />
+                            <field
+                                name="goal_id"
+                                optional="hide"
+                                domain="[('id', 'in', careplan_goal_ids)]"
+                                options="{'no_create': True}"
+                            />
                             <field name="code_id" width="3" options="{'no_create_edit': True}" />
                             <field name="category_id" optional="hide" />
                             <field
@@ -218,7 +233,6 @@
                             />
                             <field name="timing_tmpl_id" invisible="1" />
                             <field name="assignee_id" />
-                            <field name="goal_id" optional="hide" domain="[('id', 'in', careplan_goal_ids)]" />
                             <field
                                 name="state"
                                 attrs="{'column_invisible': [('parent.state', '=', 'draft')]}"
@@ -240,7 +254,11 @@
                         Achievement of careplan can record when careplan is completed
                     </i>
                     <group name="result" colspan="10">
-                        <field name="achievement_id" domain="[('goal_state', '=', 'completed')]" />
+                        <field
+                            name="achievement_id"
+                            domain="[('goal_state', '=', 'completed')]"
+                            options="{'no_create': True }"
+                        />
                         <field name="achievement_note" string="" placeholder="Note..." />
                     </group>
                 </sheet>
@@ -256,12 +274,14 @@
         <field name="model">ni.careplan</field>
         <field name="arch" type="xml">
             <tree
-                decoration-bf="state in ['draft', 'on-hold']"
+                decoration-bf="state in ['draft']"
                 decoration-muted="active == False or state == 'revoked'"
+                decoration-success="state in ['completed']"
+                decoration-warning="state in ['on-hold']"
             >
                 <field name="sequence" widget="handle" />
                 <field name="active" invisible="1" />
-                <field name="id" string="#" optional="show" />
+                <field name="name" optional="show" />
                 <field name="description" optional="hide" />
                 <field name="patient_id" />
                 <field name="category_ids" optional="show" options="{'color_field': 'color'}" widget="many2many_tags" />
@@ -283,6 +303,7 @@
         <field name="arch" type="xml">
             <kanban class="oe_background_grey o_kanban_dashboard o_emphasize_colors">
                 <field name="id" />
+                <field name="name" />
                 <field name="description" />
                 <field name="patient_id" />
                 <field name="manager_id" />
@@ -304,35 +325,35 @@
                                                 <strong>
                                                     <t t-esc="record.patient_id.value" />
                                                 </strong>
+                                                <span
+                                                    class='badge badge-success'
+                                                    t-esc="record.state.value"
+                                                    t-if="record.state.raw_value == 'completed'"
+                                                />
+                                                <span
+                                                    class='badge badge-danger'
+                                                    t-esc="record.state.value"
+                                                    t-if="record.state.raw_value == 'revoked'"
+                                                />
+                                                <span
+                                                    class='badge badge-warning'
+                                                    t-esc="record.state.value"
+                                                    t-if="record.state.raw_value == 'on-hold'"
+                                                />
+                                                <span
+                                                    class='badge badge-primary'
+                                                    t-esc="record.state.value"
+                                                    t-if="record.state.raw_value == 'active'"
+                                                />
+                                                <span
+                                                    class='badge badge-info'
+                                                    t-esc="record.state.value"
+                                                    t-if="record.state.raw_value == 'draft'"
+                                                />
                                             </span>
                                             <span>
                                                 <small class="text-muted">
-                                                    <span
-                                                        class='badge badge-success'
-                                                        t-esc="record.state.value"
-                                                        t-if="record.state.raw_value == 'completed'"
-                                                    />
-                                                    <span
-                                                        class='badge badge-danger'
-                                                        t-esc="record.state.value"
-                                                        t-if="record.state.raw_value == 'revoked'"
-                                                    />
-                                                    <span
-                                                        class='badge badge-warning'
-                                                        t-esc="record.state.value"
-                                                        t-if="record.state.raw_value == 'on-hold'"
-                                                    />
-                                                    <span
-                                                        class='badge badge-primary'
-                                                        t-esc="record.state.value"
-                                                        t-if="record.state.raw_value == 'active'"
-                                                    />
-                                                    <span
-                                                        t-esc="record.state.value"
-                                                        t-if="record.state.raw_value == 'draft'"
-                                                    />
-                                                    <t t-set="id_display" t-value="'#' + record.id.value" />
-                                                    <span t-esc="id_display" />
+                                                    <span t-esc="record.name.value" class="mr-1" />
                                                     <span>
                                                         <i
                                                             aria-label="period"
@@ -348,11 +369,6 @@
                                                     </span>
                                                 </small>
                                             </span>
-                                            <field
-                                                name="category_ids"
-                                                options="{'color_field': 'color', 'no_create_edit': True}"
-                                                widget="many2many_tags"
-                                            />
                                         </div>
                                     </div>
                                 </div>
