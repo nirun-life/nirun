@@ -76,6 +76,12 @@ class PatientRes(models.AbstractModel):
                     )
                     % (enc_start, self._description, res_start)
                 )
+        if self.env.user.has_group("base.group_multi_company"):
+            # we need to explicit company_id for multi_company user to make sure
+            # ir.sequence.mixin work as expected
+            patient = self.env["ni.patient"].browse(vals.get("patient_id"))
+            vals["company_id"] = patient.company_id.id
+
         return super().create(vals)
 
     def write(self, vals):

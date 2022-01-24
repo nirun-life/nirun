@@ -221,21 +221,7 @@ class Encounter(models.Model):
     @api.onchange("patient_id")
     def onchange_patient(self):
         if self.patient_id:
-            self.pre_admit_identifier = self.patient_id.code
-
-            encounter = (
-                self.env["ni.encounter"]
-                .sudo()
-                .search(
-                    [
-                        ("patient_id", "=", self.patient_id.id),
-                        ("name", "!=", self.name),
-                        ("state", "in", ["draft", "planned", "in-progress"]),
-                    ],
-                    order="id DESC",
-                    limit=1,
-                )
-            )
+            encounter = self._get_another_active_encounter()
             if encounter:
                 return {
                     "warning": {
@@ -250,6 +236,34 @@ class Encounter(models.Model):
                         ),
                     }
                 }
+
+            if self.patient_id.deceased:
+                warning = {
+                    "title": _("Warning!"),
+                    "message": _(
+                        "%s is already deceased. Reference to this patient may "
+                        "cause database inconsistency!"
+                    )
+                    % self.patient_id.name,
+                }
+                return {"warning": warning}
+            self.pre_admit_identifier = self.patient_id.code
+
+    def _get_another_active_encounter(self):
+        self.ensure_one()
+        return (
+            self.env["ni.encounter"]
+            .sudo()
+            .search(
+                [
+                    ("patient_id", "=", self.patient_id.id),
+                    ("name", "!=", self.name),
+                    ("state", "in", ["draft", "planned", "in-progress"]),
+                ],
+                order="id DESC",
+                limit=1,
+            )
+        )
 
     def _get_state_label(self):
         self.ensure_one()
