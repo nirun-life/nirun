@@ -165,8 +165,13 @@
                                     <field name="nationality_id" options='{"no_open": True}' />
                                     <field name="identification_id" placeholder="ex. 1104740100001" />
                                     <field name="gender" options="{'horizontal': True}" widget="radio" />
-                                    <field name="age" attrs="{'invisible': [('birthdate', '!=', False)]}" />
                                     <field name="birthdate" placeholder="ex. 31/01/1950" />
+                                    <field name="age" attrs="{'readonly': [('birthdate', '!=', False)]}" />
+                                    <field
+                                        name="age_range_id"
+                                        attrs="{'readonly': ['|', ('birthdate', '!=', False), ('age', '!=', 0)]}"
+                                        groups="nirun_patient.group_admin"
+                                    />
                                 </group>
                                 <group string="Marital Status">
                                     <field name="marital_status" />
