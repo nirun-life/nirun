@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import _, _lt, api, fields, models
+from odoo import _, _lt, api, fields, models, tools
 from odoo.exceptions import ValidationError
 from odoo.tools import date_utils
 
@@ -23,6 +23,7 @@ time_unit_plural = {
     "minute": _lt("minutes"),
     "second": _lt("seconds"),
 }
+
 
 # TODO: migrate to nirun_timing on version 14.0
 
@@ -103,16 +104,9 @@ class Timing(models.Model):
     time_of_day = fields.One2many("ni.timing.tod", "timing_id")
 
     def init(self):
-        self._cr.execute(
-            """SELECT indexname
-            FROM pg_indexes
-            WHERE indexname = 'ni_timing_res_model_id_idx'"""
+        tools.create_index(
+            self._cr, "ni_timing_res_model_id_idx", self._table, ["res_model", "res_id"]
         )
-        if not self._cr.fetchone():
-            self._cr.execute(
-                """CREATE INDEX ni_timing_res_model_id_idx
-                ON ni_timing (res_model, res_id)"""
-            )
 
     @api.depends(
         "frequency",
@@ -454,3 +448,13 @@ class TimingMixin(models.AbstractModel):
 
     def _get_timing_tmpl(self, ids):
         return self.env["ni.timing.template"].browse(ids)
+
+    def unlink(self):
+        """ Override unlink to delete timing. This cannot be
+            cascaded, because link is done through (res_model, res_id). """
+        if not self:
+            return True
+        self.env["ni.timing"].search(
+            [("res_model", "=", self._name), ("res_id", "in", self.ids)]
+        ).sudo().unlink()
+        return super(TimingMixin, self).unlink()
