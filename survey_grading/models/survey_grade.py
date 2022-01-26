@@ -81,7 +81,12 @@ class SurveyGrade(models.Model):
                 )
 
             grade_id = rec.search(
-                [("low", "<", rec.high), ("high", ">", rec.low), ("id", "!=", rec.id)],
+                [
+                    ("survey_id", "in", [rec.survey_id.id, False]),
+                    ("low", "<", rec.high),
+                    ("high", ">", rec.low),
+                    ("id", "!=", rec.id),
+                ],
                 limit=1,
             )
             if grade_id:
