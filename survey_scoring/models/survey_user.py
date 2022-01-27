@@ -15,7 +15,7 @@ class SurveyUserInput(models.Model):
         group_operator="avg",
     )
     quizz_score_total = fields.Float(
-        "Total Score", compute="_compute_quizz_score", store=False, compute_sudo=True
+        "Total Score", compute="_compute_quizz_score", store=True, compute_sudo=True
     )
 
     @api.depends("user_input_line_ids.answer_score", "user_input_line_ids.question_id")
