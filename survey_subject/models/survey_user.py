@@ -46,3 +46,6 @@ class SurveyUserInput(models.Model):
                 if rec.subject_model and rec.subject_id
                 else None
             )
+
+    def action_survey_subject_wizard(self):
+        return self.survey_id.action_survey_subject_wizard()

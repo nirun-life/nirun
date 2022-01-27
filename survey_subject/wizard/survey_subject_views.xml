@@ -41,4 +41,21 @@
             </button>
         </field>
     </record>
+    <record id="survey_user_input_view_tree_inherit_wizard" model="ir.ui.view">
+        <field name="name">survey.user_input.view.tree.inherit.wizard</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_tree" />
+        <field name="arch" type="xml">
+            <field name="survey_id" position="after">
+                <groupby name="survey_id">
+                    <button
+                        type="object"
+                        name="action_survey_subject_wizard"
+                        string="Answer Survey"
+                        icon="fa-file-text"
+                    />
+                </groupby>
+            </field>
+        </field>
+    </record>
 </odoo>
