@@ -3,4 +3,5 @@
 from . import survey_survey
 from . import survey_user
 from . import patient
+from . import patient_survey
 from . import encounter

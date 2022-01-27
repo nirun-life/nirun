@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, tools
 from odoo.exceptions import ValidationError
 
 
@@ -13,6 +13,14 @@ class SurveyUserInput(models.Model):
 
     # FIXME partner_id not set as store. need to find when/why it was changed
     partner_id = fields.Many2one(store=True)
+
+    def init(self):
+        tools.create_index(
+            self._cr,
+            "survey_user_input__patient_survey__idx",
+            self._table,
+            ["patient_id", "survey_id"],
+        )
 
     def name_get(self):
         res = []
@@ -37,3 +45,14 @@ class SurveyUserInput(models.Model):
                 raise ValidationError(
                     _("The referencing encounter is not belong to patient")
                 )
+
+    def action_survey_subject_wizard(self):
+        res = super(SurveyUserInput, self).action_survey_subject_wizard()
+        if self.survey_id.category in ["ni_patient", "ni_encounter"]:
+            res["context"].update(
+                {
+                    "default_subject_ni_patient": self.patient_id.id,
+                    "default_subject_ni_encounter": self.patient_id.encounter_id.id,
+                }
+            )
+        return res

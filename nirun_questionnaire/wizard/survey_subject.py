@@ -16,25 +16,26 @@ class SurveySubjectWizard(models.TransientModel):
 
     @api.onchange("subject_ni_encounter")
     def onchange_encounter(self):
-        for rec in self:
+        for rec in self.filtered(lambda r: r.subject_ni_encounter):
             if rec.subject_ni_patient != rec.subject_ni_encounter.patient_id:
                 rec.subject_ni_patient = rec.subject_ni_encounter.patient_id
 
     @api.onchange("subject_ni_patient")
     def onchange_patient(self):
-        if self.subject_ni_encounter.patient_id != self.subject_ni_patient:
-            self.subject_ni_encounter = self.subject_ni_patient.encounter_id
+        for rec in self.filtered(lambda r: r.subject_ni_patient):
+            if rec.subject_ni_encounter.patient_id != rec.subject_ni_patient:
+                rec.subject_ni_encounter = rec.subject_ni_patient.encounter_id
 
-        if self.subject_ni_patient.deceased:
-            warning = {
-                "title": _("Warning!"),
-                "message": _(
-                    "%s is already deceased. Reference to this patient may "
-                    "cause database inconsistency!"
-                )
-                % self.subject_ni_patient.name,
-            }
-            return {"warning": warning}
+            if rec.subject_ni_patient.deceased:
+                warning = {
+                    "title": _("Warning!"),
+                    "message": _(
+                        "%s is already deceased. Reference to this patient may "
+                        "cause database inconsistency!"
+                    )
+                    % rec.subject_ni_patient.name,
+                }
+                return {"warning": warning}
 
     def subject_get(self):
         result = super(SurveySubjectWizard, self).subject_get()
