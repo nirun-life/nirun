@@ -18,6 +18,7 @@ class Patient(models.Model):
         sudo_compute=True,
         groups="survey.group_survey_user",
     )
+    response_latest_ids = fields.One2many("ni.patient.survey_latest", "patient_id")
 
     @api.depends("response_ids")
     def _compute_response_count(self):
@@ -34,6 +35,7 @@ class Patient(models.Model):
                 "search_default_completed": 1,
                 "search_default_not_test": 1,
                 "search_default_group_by_survey": 1,
+                "default_subject_ni_patient": self.id,
             }
         )
         action["context"] = ctx

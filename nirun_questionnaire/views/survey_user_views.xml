@@ -66,4 +66,16 @@
             </field>
         </field>
     </record>
+    <record id="survey_user_input_view_graph" model="ir.ui.view">
+        <field name="name">survey.user_input.view.graph</field>
+        <field name="model">survey.user_input</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <graph stacked="False">
+                <field name="create_date" type="col" interval="day" />
+                <field name="survey_id" type="row" />
+                <field name="quizz_score" type="measure" />
+            </graph>
+        </field>
+    </record>
 </odoo>

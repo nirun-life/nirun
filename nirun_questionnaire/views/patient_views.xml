@@ -19,6 +19,40 @@
                     <field name="response_count" string="Answers" widget="statinfo" />
                 </button>
             </xpath>
+            <xpath expr="//notebook/page[@name='private']" position="before">
+                <page name="overview" string="Overview" attrs="{'invisible': [('id', '=', False)]}">
+                    <separator string="Questionnaire" />
+                    <field
+                        name="response_latest_ids"
+                        mode="tree"
+                        attrs="{'invisible': [('response_latest_ids', '=', False)]}"
+                    >
+                        <tree>
+                            <field name="survey_id" />
+                            <field name="quizz_grade_id" />
+                            <field name="quizz_score" widget="progressbar" />
+                            <field name="create_date" />
+                            <button name="action_print_survey" string="Answers" type="object" icon="fa-file-text-o" />
+                            <button name="action_graph_view" string="See results" type="object" icon="fa-bar-chart" />
+                            <button
+                                name="action_survey_subject_wizard"
+                                string="Answer Survey"
+                                type="object"
+                                icon="fa-commenting"
+                                attrs="{'column_invisible': [('parent.deceased', '=', True)]}"
+                            />
+                        </tree>
+                        <form>
+                            <group>
+                                <field name="survey_id" />
+                                <field name="quizz_grade_id" />
+                                <field name="quizz_score" widget="progressbar" />
+                                <field name="partner_id" />
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
         </field>
     </record>
 </odoo>

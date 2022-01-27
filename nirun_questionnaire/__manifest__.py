@@ -13,6 +13,7 @@
     "data": [
         "security/security.xml",
         "security/rules.xml",
+        "security/ir.model.access.csv",
         "wizard/survey_subject_views.xml",
         "views/survey_survey_views.xml",
         "views/survey_user_views.xml",
