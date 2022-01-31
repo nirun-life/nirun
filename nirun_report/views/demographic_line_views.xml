@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022 Piruin P.
+  -->
+<odoo>
+    <record id="demographic_line_action" model="ir.actions.act_window">
+        <field name="name">Demographic Detail</field>
+        <field name="res_model">ni.report.demographic.line</field>
+        <field name="view_mode">pivot,tree</field>
+    </record>
+    <record id="demographic_line_view_search" model="ir.ui.view">
+        <field name="name">demographic.line.view.search</field>
+        <field name="model">ni.report.demographic.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code_id" operator="child_of" />
+                <field name="company_id" />
+                <filter name="my_company" string="My Company" domain="[('company_id','=', allowed_company_ids[0])]" />
+                <filter
+                    name="my_companies"
+                    string="My Companies"
+                    domain="[('company_id','in', allowed_company_ids)]"
+                    groups="base.group_multi_company"
+                />
+                <separator />
+                <filter name="active" string="Published" domain="[('state', '=', 'active')]" />
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
+                <separator />
+                <filter
+                    name="this_month"
+                    string="This Month"
+                    domain="[('date','&gt;=',time.strftime('%%Y-%%m-01')), ('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')),]"
+                />
+                <filter
+                    name="last_month"
+                    string="Last Month"
+                    domain="[('date','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date','&lt;',time.strftime('%%Y-%%m-01'))]"
+                />
+                <filter name="date" string="Date" date="date" default_period="antepenultimate_month" />
+                <group>
+                    <filter name="groupby_company_id" string="Company" context="{'group_by': 'company_id'}" />
+                    <filter name="groupby_date" string="Date" context="{'group_by': 'date:month'}" />
+                    <filter name="groupby_report_id" string="Report" context="{'group_by': 'report_id'}" />
+                    <separator />
+                    <filter
+                        name="groupby_code_parent_id"
+                        string="Subject Group"
+                        context="{'group_by': 'code_parent_id'}"
+                    />
+                    <filter name="groupby_code_id" string="Subject" context="{'group_by': 'code_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="demographic_line_view_pivot" model="ir.ui.view">
+        <field name="name">demographic.line.view.pivot</field>
+        <field name="model">ni.report.demographic.line</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="code_id" type="row" />
+                <field name="date" interval="month" type="col" />
+                <field name="total" type="measure" />
+                <field name="male" type="measure" />
+                <field name="female" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="demographic_line_view_pivot_all_company" model="ir.ui.view">
+        <field name="name">demographic.line.view.pivot</field>
+        <field name="model">ni.report.demographic.line</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="company_id" type="row" />
+                <field name="code_parent_id" type="col" />
+                <field name="code_id" type="col" />
+                <field name="total" type="measure" />
+                <field name="male" type="measure" />
+                <field name="female" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="demographic_line_view_tree" model="ir.ui.view">
+        <field name="name">demographic.line.view.tree</field>
+        <field name="model">ni.report.demographic.line</field>
+        <field name="arch" type="xml">
+            <tree create="0" default_order="report_id desc,code_id">
+                <field name="company_id" groups="base.group_multi_company" />
+                <field name="report_id" invisible="context.get('default_report_id', False)" />
+                <field name="code_id" />
+                <field name="male" />
+                <field name="female" />
+                <field name="other" optional="show" />
+                <field name="total" />
+            </tree>
+        </field>
+    </record>
+    <record id="demographic_line_action_my_company" model="ir.actions.act_window">
+        <field name="name">Demographic</field>
+        <field name="res_model">ni.report.demographic.line</field>
+        <field name="view_mode">pivot,tree</field>
+        <field name="domain">[('company_id', '=', allowed_company_ids[0])]</field>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+    <record id="demographic_line_action_all_company" model="ir.actions.act_window">
+        <field name="name">Demographic</field>
+        <field name="res_model">ni.report.demographic.line</field>
+        <field name="view_mode">pivot,tree</field>
+        <field name="context">
+            {
+                'search_default_last_month': 1,
+                'search_default_active': 1,
+                'pivot_view_ref': 'nirun_report.demographic_line_view_pivot_all_company'}
+        </field>
+    </record>
+</odoo>

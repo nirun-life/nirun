@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022 Piruin P.
+  -->
+<odoo>
+    <menuitem id="report_menu_root" name="Report" sequence="5" parent="nirun_patient.patient_menu_root" />
+    <menuitem id="demographic_menu_section" name="Demographic" parent="report_menu_root" />
+    <menuitem
+        id="demographic_menu_my_company"
+        name="My Company"
+        parent="demographic_menu_section"
+        action="demographic_line_action_my_company"
+    />
+    <menuitem
+        id="demographic_menu_all_company"
+        name="All Company"
+        parent="demographic_menu_section"
+        action="demographic_line_action_all_company"
+    />
+    <menuitem
+        id="demographic_menu_to_approve"
+        name="To Approve"
+        parent="demographic_menu_section"
+        groups="nirun_patient.group_manager"
+        action="demographic_action_to_approve"
+    />
+    <menuitem
+        id="demographic_menu"
+        name="Demographic"
+        parent="demographic_menu_section"
+        groups="nirun_patient.group_manager"
+        action="demographic_action"
+    />
+    <menuitem
+        id="configuration_report_menu_section"
+        name="Report"
+        parent="nirun_patient.configuration_menu"
+        sequence="100"
+    />
+    <menuitem
+        id="demographic_code_menu"
+        name="Demographic Topic"
+        parent="configuration_report_menu_section"
+        action="demographic_code_action"
+    />
+</odoo>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <!-- This file only intent use as scaffold for coding model -->
+    <record id="demographic_code_action" model="ir.actions.act_window">
+        <field name="name">Demographic Subject</field>
+        <field name="res_model">ni.report.demographic.code</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="demographic_code_view_search" model="ir.ui.view">
+        <field name="name">demographic.code.view.search</field>
+        <field name="model">ni.report.demographic.code</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+            </search>
+        </field>
+    </record>
+    <record id="demographic_code_view_tree" model="ir.ui.view">
+        <field name="name">demographic.code.view.tree</field>
+        <field name="model">ni.report.demographic.code</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="display_name" />
+                <field name="parent_id" />
+                <field name="code" optional="show" />
+                <field name="color" optional="hide" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="demographic_code_view_form" model="ir.ui.view">
+        <field name="name">demographic.code.view.form</field>
+        <field name="model">ni.report.demographic.code</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="code" />
+                            <field name="parent_id" />
+                        </group>
+                        <group>
+                            <field name="type" widget="radio" />
+                            <field name="res_model" />
+                            <field name="domain" />
+                            <field name="filter" attrs="{'readonly': [('type', '=', 'read_group')]}" />
+                        </group>
+                    </group>
+                    <field name="definition" placeholder="Definition" />
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
