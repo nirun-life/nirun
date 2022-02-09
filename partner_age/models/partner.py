@@ -22,6 +22,7 @@ class Partner(models.Model):
         compute_sudo=True,
         store=True,
         readonly=False,
+        group_operator="avg",
         help="Deprecated field",
     )
     age_years = fields.Integer(
@@ -126,21 +127,17 @@ class Partner(models.Model):
 
     @api.depends("age")
     def _compute_age_range_id(self):
-        age_ranges = self.env["res.partner.age.range"].search([])
+        range_ids = self.env["res.partner.age.range"].search([])
         for record in self:
             if not record.age:
-                age_range = False
+                range_id = False
             else:
-                age_range = (
-                    age_ranges.filtered(
-                        lambda age_range: age_range.age_from
-                        <= record.age
-                        <= age_range.age_to
-                    )
+                range_id = (
+                    range_ids.filtered(lambda r: r.age_from <= record.age <= r.age_to)
                     or False
                 )
-            if record.age_range_id != age_range:
-                record.age_range_id = age_range and age_range.id or age_range
+            if record.age_range_id != range_id:
+                record.age_range_id = range_id
 
     @api.constrains("birthdate")
     def _check_birthdate(self):
@@ -183,3 +180,8 @@ class Partner(models.Model):
             ]
         )
         partner._compute_age()
+
+    @api.model
+    def cron_compute_age_range(self):
+        partner = self.search([("age", "!=", False)])
+        partner._compute_age_range_id()
