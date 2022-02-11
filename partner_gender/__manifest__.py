@@ -3,7 +3,7 @@
 {
     "name": "Partner Gender",
     "summary": "Add gender field to partner also default gender by selected title",
-    "version": "13.0.0.1.0",
+    "version": "13.0.0.2.0",
     "development_status": "Alpha",
     "category": "Tools",
     "author": "Piruin P.",
@@ -15,4 +15,5 @@
     "application": False,
     "auto_install": False,
     "installable": True,
+    "post_init_hook": "post_init_hook",
 }
