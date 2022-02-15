@@ -3,25 +3,28 @@
   ~ Copyright (c) 2022 Piruin P.
   -->
 <odoo>
-    <menuitem id="report_menu_root" name="Report" sequence="5" parent="nirun_patient.patient_menu_root" />
+    <menuitem id="report_menu_root" name="Reporting" sequence="5" parent="nirun_patient.patient_menu_root" />
     <menuitem id="demographic_menu_section" name="Demographic" parent="report_menu_root" />
-    <menuitem
-        id="demographic_menu_my_company"
-        name="My Company"
-        parent="demographic_menu_section"
-        action="demographic_line_action_my_company"
-    />
     <menuitem
         id="demographic_menu_all_company"
         name="All Company"
         parent="demographic_menu_section"
+        sequence="1"
         action="demographic_line_action_all_company"
+    />
+    <menuitem
+        id="demographic_menu_my_company"
+        name="My Company"
+        parent="demographic_menu_section"
+        sequence="2"
+        action="demographic_line_action_my_company"
     />
     <menuitem
         id="demographic_menu_to_approve"
         name="To Approve"
         parent="demographic_menu_section"
         groups="nirun_patient.group_manager"
+        sequence="9"
         action="demographic_action_to_approve"
     />
     <menuitem
@@ -29,6 +32,7 @@
         name="Demographic"
         parent="demographic_menu_section"
         groups="nirun_patient.group_manager"
+        sequence="10"
         action="demographic_action"
     />
     <menuitem
