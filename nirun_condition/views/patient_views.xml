@@ -24,10 +24,16 @@
                             <field name="category" invisible="1" />
                             <field name="code_id" />
                             <field name="severity" />
-                            <field name="period_start" />
-                            <field name="period_end" optional="show" />
-                            <field name="state" />
+                            <field name="period_start" optional="hide" />
+                            <field name="period_end" optional="hide" />
+                            <field name="state" optional="hide" />
                             <field name="note" />
+                            <button
+                                name="action_edit"
+                                attrs="{'column_invisible': [('parent.id', '=', False)]}"
+                                icon="fa-pencil-square-o"
+                                type="object"
+                            />
                         </tree>
                     </field>
                     <group />

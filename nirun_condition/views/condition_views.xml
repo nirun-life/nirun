@@ -37,11 +37,14 @@
         <field name="model">ni.condition</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="patient_id" />
-                <field name="category" />
+                <field name="patient_id" invisible="context.get('default_patient_id', False)" />
+                <field name="category" invisible="context.get('default_category', False)" />
                 <field name="code_id" />
                 <field name="type_id" optional="show" />
                 <field name="severity" optional="show" />
+                <field name="note" optional="show" />
+                <field name="create_uid" optional="hide" />
+                <field name="create_date" optional="hide" />
                 <field name="state" />
             </tree>
         </field>
@@ -53,6 +56,18 @@
             <form>
                 <field name="id" invisible="True" />
                 <header attrs="{'invisible': [('id', '=', False)]}">
+                    <button
+                        name="action_remission"
+                        string="Remission"
+                        attrs="{'invisible': [('state', 'in', ['remission', 'resolved'])]}"
+                        type="object"
+                    />
+                    <button
+                        name="action_resolve"
+                        string="Resolve"
+                        attrs="{'invisible': [('state', '=', 'resolved')]}"
+                        type="object"
+                    />
                     <field
                         name="state"
                         options="{'clickable': '1'}"
@@ -68,11 +83,15 @@
                         options="{'horizontal':True}"
                         widget="radio"
                     />
-                    <group>
+                    <div>
                         <h1>
                             <field name="code_id" nolabel="1" placeholder="Condition / Problem" />
                         </h1>
-                    </group>
+                        <div attrs="{'invisible': [('period_start', '=', False)]}">
+                            <i class="fa fa-clock-o" aria-hidden="true" />
+                            <field name="duration" />
+                        </div>
+                    </div>
                     <group>
                         <group>
                             <field
@@ -81,12 +100,13 @@
                                 readonly="context.get('default_patient_id', False)"
                             />
                             <field name="patient_id" readonly="context.get('default_patient_id', False)" />
-                            <field name="severity" widget="radio" />
+                            <field name="severity" />
                         </group>
                         <group>
                             <field name="period_start" />
                             <field name="period_end" />
-                            <field name="duration" class="oe_read_only" />
+                            <field name="create_date" readonly="1" />
+                            <field name="create_uid" readonly="1" />
                         </group>
                     </group>
                     <notebook invisible="1" />
@@ -100,7 +120,6 @@
         <field name="arch" type="xml">
             <pivot>
                 <field name="code_id" type="row" />
-                <field name="gender" type="col" />
             </pivot>
         </field>
     </record>
