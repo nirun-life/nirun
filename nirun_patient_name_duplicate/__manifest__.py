@@ -10,7 +10,7 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun_patient", "partner_gender"],
+    "depends": ["nirun_patient"],
     "application": False,
     "auto_install": True,
     "installable": True,
