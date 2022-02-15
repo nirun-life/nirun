@@ -29,7 +29,8 @@ class Condition(models.Model):
         tracking=1,
         required=False,
     )
-    period_start = fields.Date(default=None)
+    period_start = fields.Date("Onset Date", default=None)
+    period_end = fields.Date("Abatement Date")
     state = fields.Selection(
         [
             ("active", "Suffering"),
@@ -43,8 +44,11 @@ class Condition(models.Model):
         default="active",
     )
     recurrence = fields.Boolean()
-    gender = fields.Selection(related="patient_id.gender", store=True)
+    gender = fields.Selection(related="patient_id.gender")
     note = fields.Text()
+
+    create_date = fields.Datetime("Recorded", readonly=True)
+    create_uid = fields.Many2one("res.users", "Recorder", readonly=True)
 
     def name_get(self):
         return [(rec.id, rec._name_get()) for rec in self]
@@ -82,3 +86,25 @@ class Condition(models.Model):
             "Patient already have this condition!",
         ),
     ]
+
+    def action_edit(self):
+        self.ensure_one()
+        view = {
+            "name": self.name,
+            "res_model": self._name,
+            "type": "ir.actions.act_window",
+            "target": "current",
+            "res_id": self.id,
+            "view_type": "form",
+            "views": [[False, "form"]],
+            "context": self.env.context,
+        }
+        return view
+
+    def action_remission(self):
+        self.write({"state": "remission", "period_end": fields.Date.today()})
+        return True
+
+    def action_resolve(self):
+        self.write({"state": "resolved", "period_end": fields.Date.today()})
+        return True
