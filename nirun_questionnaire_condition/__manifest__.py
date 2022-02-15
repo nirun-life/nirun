@@ -10,7 +10,11 @@
     "license": "LGPL-3",
     "maintainers": ["piruin"],
     "depends": ["nirun_questionnaire", "nirun_condition"],
-    "data": ["views/survey_user_views.xml"],
+    "data": [
+        "views/survey_user_views.xml",
+        "views/condition_views.xml",
+        "views/condition_code_views.xml",
+    ],
     "demo": [],
     "application": False,
     "auto_install": True,

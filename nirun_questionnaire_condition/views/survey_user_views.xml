@@ -10,12 +10,16 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='grade_ids']/tree" position="inside">
                 <field
-                    name="condition_id"
+                    name="condition_code_id"
                     attrs="{'column_invisible': [('parent.subject_type', '!=', 'ni.patient')]}"
                 />
                 <field
                     name="condition_severity"
                     attrs="{'column_invisible': [('parent.subject_type', '!=', 'ni.patient')]}"
+                />
+                <field
+                    name="condition_state"
+                    attrs="{'column_invisible': [('parent.subject_type', '!=', 'ni.patient')], 'required': [('condition_code_id', '!=', False)]}"
                 />
             </xpath>
         </field>

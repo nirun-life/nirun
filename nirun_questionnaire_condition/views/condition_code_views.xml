@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="condition_code_view_form_inherit" model="ir.ui.view">
+        <field name="name">condition.code.view.form.inherit</field>
+        <field name="model">ni.condition.code</field>
+        <field name="inherit_id" ref="nirun_condition.condition_code_view_form" />
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="survey_id" domain="[('state', 'in', ['draft', 'open'])]" />
+            </field>
+        </field>
+    </record>
+</odoo>

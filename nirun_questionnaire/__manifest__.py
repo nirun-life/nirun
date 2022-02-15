@@ -15,6 +15,7 @@
         "security/rules.xml",
         "security/ir.model.access.csv",
         "wizard/survey_subject_views.xml",
+        "report/patient_survey_latest_views.xml",
         "views/survey_survey_views.xml",
         "views/survey_user_views.xml",
         "views/patient_views.xml",

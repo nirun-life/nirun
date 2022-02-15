@@ -1,7 +1,6 @@
 #  Copyright (c) 2021 Piruin P.
 
 from . import survey_survey
-from . import survey_user
+from . import survey_user_input
 from . import patient
-from . import patient_survey
 from . import encounter
