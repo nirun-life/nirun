@@ -31,11 +31,13 @@ class SurveyUserInput(models.Model):
 
     def _get_name(self):
         survey_input = self
-        name = "%s" % survey_input.survey_id.display_name
-        if self.env.context.get("show_grade") and survey_input.quizz_grade_id:
-            name = "{}/{}".format(name, survey_input.quizz_grade_id.display_name)
-        if self.env.context.get("show_patient") and survey_input.patient_id:
-            name = "{}: {}".format(survey_input.patient_id.display_name, name)
+        name = "%s" % survey_input.create_date.strftime("%Y-%m-%d")
+        if survey_input.survey_id.scoring_type != "no_scoring":
+            name = "{} | {}%".format(name, survey_input.quizz_score)
+        if survey_input.quizz_grade_id:
+            name = "{} ({})".format(name, survey_input.quizz_grade_id.display_name,)
+        if self.env.context.get("show_survey"):
+            name = "{}: {}".format(survey_input.survey_id.display_name, name)
         return name
 
     @api.constrains("encounter_id")
@@ -56,3 +58,22 @@ class SurveyUserInput(models.Model):
                 }
             )
         return res
+
+    def action_graph_view(self):
+        self.ensure_one()
+        domain = [("survey_id", "=", self.survey_id.id)]
+        if self.survey_id.category in ["ni_patient", "ni_encounter"]:
+            domain.append(("patient_id", "=", self.patient_id.id))
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.survey_id.title,
+            "res_model": "survey.user_input",
+            "view_mode": "graph",
+            "target": "current",
+            "domain": domain,
+            "context": {
+                "search_default_completed": 1,
+                "graph_view_ref": "nirun_questionnaire.survey_user_input_view_graph",
+            },
+            "views": [[False, "graph"]],
+        }
