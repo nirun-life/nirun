@@ -2,14 +2,14 @@
 
 {
     "name": "Patients",
-    "version": "13.0.1.2.0",
+    "version": "13.0.1.2.1",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun", "hr", "mail", "partner_age"],
+    "depends": ["nirun", "hr", "mail", "partner_age", "partner_gender"],
     "data": [
         "data/ir_sequence_data.xml",
         "data/location_type_data.xml",

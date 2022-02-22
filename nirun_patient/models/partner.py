@@ -23,9 +23,6 @@ class Partner(models.Model):
         compute_sudo=True,
         groups="nirun_patient.group_user",
     )
-    gender = fields.Selection(
-        [("male", "Male"), ("female", "Female"), ("other", "Other")], tracking=True,
-    )
 
     @api.model
     def default_get(self, default_fields):

@@ -66,11 +66,7 @@ class Patient(models.Model):
         help="ID related to patient's nationality",
     )
     gender = fields.Selection(
-        [("male", "Male"), ("female", "Female"), ("other", "Other")],
-        tracking=True,
-        related="partner_id.gender",
-        readonly=False,
-        store=True,
+        tracking=True, related="partner_id.gender", readonly=False, store=True,
     )
     birthdate = fields.Date(
         "Date of Birth", related="partner_id.birthdate", readonly=False, tracking=True
