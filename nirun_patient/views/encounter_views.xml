@@ -475,14 +475,15 @@
     <record id="encounter_action_discharged" model="ir.actions.act_window">
         <field name="name">Discharged</field>
         <field name="res_model">ni.encounter</field>
-        <field name="view_mode">tree,pivot,graph,calendar</field>
+        <field name="view_mode">pivot,graph,tree,calendar</field>
         <field name="domain">[('state', '=', 'finished')]</field>
         <field name="context">
             {
-            'pivot_view_ref': 'nirun_patient.encounter_view_pivot_discharged',
-            'graph_view_ref': 'nirun_patient.encounter_view_graph_discharged',
-            'calendar_view_ref': 'nirun_patient.encounter_view_calendar_discharged',
-        }
+                'create': False,
+                'pivot_view_ref': 'nirun_patient.encounter_view_pivot_discharged',
+                'graph_view_ref': 'nirun_patient.encounter_view_graph_discharged',
+                'calendar_view_ref': 'nirun_patient.encounter_view_calendar_discharged',
+            }
         </field>
     </record>
 </odoo>

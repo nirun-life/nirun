@@ -6,7 +6,36 @@
     <record id="patient_action" model="ir.actions.act_window">
         <field name="name">Patients</field>
         <field name="res_model">ni.patient</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a new patient record</p>
+        </field>
+    </record>
+    <record id="patient_action_in_progress" model="ir.actions.act_window">
+        <field name="name">Patients</field>
+        <field name="res_model">ni.patient</field>
         <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No patients found</p>
+            <p>
+                You may try to remove some filter,
+                <br />
+                or new one by click at
+                <b>create</b>
+                button.
+            </p>
+        </field>
+    </record>
+    <record id="patient_action_deceased" model="ir.actions.act_window">
+        <field name="name">Deceased</field>
+        <field name="res_model">ni.patient</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="domain">[('deceased_date', '!=', False)]</field>
+        <field name="context">{'show_deceased': 1, 'create':False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No deceased patients found</p>
+        </field>
     </record>
     <record id="patient_view_search" model="ir.ui.view">
         <field name="name">patient.view.search</field>
@@ -15,7 +44,7 @@
             <search>
                 <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
                 <field name="phone" filter_domain="['|' ,('phone', 'ilike', self), ('mobile', 'ilike', self)]" />
-                <filter name="in-progress" string='In-Progress' domain="[('presence_state', '=', 'in-progress')]" />
+                <filter name="in_progress" string='In-Progress' domain="[('presence_state', '=', 'in-progress')]" />
                 <filter name="waiting" string='Waiting' domain="[('presence_state', '=', 'waiting')]" />
                 <filter
                     name="finished"
@@ -159,6 +188,7 @@
                         </group>
                     </group>
                     <notebook name="notebook">
+                        <page name="overview" string="Overview" invisible="1" />
                         <page name="private" string="Private Information" accesskey="P">
                             <group>
                                 <group string="Citizenship">
