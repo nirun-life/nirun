@@ -9,7 +9,11 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun_careplan", "nirun_questionnaire"],
+    "depends": [
+        "nirun_careplan",
+        "nirun_questionnaire",
+        "nirun_questionnaire_condition",
+    ],
     "data": ["views/careplan_views.xml"],
     "application": False,
     "auto_install": True,

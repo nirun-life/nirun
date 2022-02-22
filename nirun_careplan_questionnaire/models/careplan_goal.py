@@ -10,6 +10,7 @@ class CareplanGoal(models.Model):
     target_survey_id = fields.Many2one(
         "survey.survey",
         "Target Questionnaire",
+        related="condition_id.survey_id",
         domain=[("state", "=", "open"), ("scoring_type", "!=", "no_scoring")],
     )
     target_survey_grade_id = fields.Many2one("survey.grade", "Target Grade")
