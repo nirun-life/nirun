@@ -22,7 +22,6 @@ class CareplanActivity(models.Model):
     manager_id = fields.Many2one(
         string="Care Manager", related="careplan_id.manager_id", readonly=True,
     )
-    careplan_goal_ids = fields.One2many(related="careplan_id.goal_ids")
     goal_id = fields.Many2one("ni.careplan.goal", index=True, ondelete="set null")
 
     kanban_state = fields.Selection(
