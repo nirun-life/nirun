@@ -21,7 +21,6 @@ class CareplanGoal(models.Model):
     company_id = fields.Many2one(
         "res.company", related="careplan_id.company_id", copy=False, store=True,
     )
-    careplan_condition_ids = fields.Many2many(related="careplan_id.condition_ids")
     condition_id = fields.Many2one("ni.condition", index=True, ondelete="set null")
     _sql_constraints = [
         ("code__uniq", "unique (careplan_id, code_id)", "Goal must be unqiue!"),

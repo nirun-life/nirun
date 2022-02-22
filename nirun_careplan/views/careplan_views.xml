@@ -6,7 +6,7 @@
     <record id="careplan_action" model="ir.actions.act_window">
         <field name="name">Care Plans</field>
         <field name="res_model">ni.careplan</field>
-        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
     </record>
     <record id="careplan_view_search" model="ir.ui.view">
         <field name="name">careplan.view.search</field>
@@ -168,10 +168,24 @@
                         <field
                             name="condition_ids"
                             context="{'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_category': 'problem-list-item'}"
-                            widget="many2many_tags"
                             domain="[('patient_id', '=', patient_id), ('state', 'in', ['active', 'remission'])]"
-                            attrs="{'readonly': [('patient_id', '=', False)]}"
-                        />
+                            nolabel="1"
+                        >
+                            <tree editable="bottom" edit="0">
+                                <field name="code_id" readonly="1" />
+                                <field name="type_id" readonly="1" optional="show" />
+                                <field name="severity" readonly="1" optional="hide" />
+                                <field name="period_start" readonly="1" optional="hide" />
+                                <field name="period_end" readonly="1" optional="hide" />
+                                <field name="note" />
+                                <button
+                                    name="action_edit"
+                                    attrs="{'column_invisible': [('parent.id', '=', False)]}"
+                                    icon="fa-pencil-square-o"
+                                    type="object"
+                                />
+                            </tree>
+                        </field>
                     </group>
                     <separator string="Goal" />
                     <field
@@ -184,10 +198,9 @@
                             <field name="sequence" widget="handle" class="oe_edit_only" />
                             <field name="patient_id" invisible="1" />
                             <field name="encounter_id" invisible="1" />
-                            <field name="careplan_condition_ids" invisible="1" />
                             <field
                                 name="condition_id"
-                                domain="[('id', 'in', careplan_condition_ids)]"
+                                domain="[('id', 'in', parent.condition_ids)]"
                                 optional="hide"
                                 options="{'no_create': True}"
                             />
@@ -216,11 +229,10 @@
                             <field name="sequence" widget="handle" class="oe_edit_only" />
                             <field name="careplan_id" invisible="1" />
                             <field name="company_id" invisible="1" />
-                            <field name="careplan_goal_ids" invisible="1" />
                             <field
                                 name="goal_id"
                                 optional="hide"
-                                domain="[('id', 'in', careplan_goal_ids)]"
+                                domain="[('id', 'in', parent.goal_ids)]"
                                 options="{'no_create': True}"
                             />
                             <field name="code_id" width="3" options="{'no_create_edit': True}" />
