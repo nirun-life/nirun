@@ -52,7 +52,7 @@
                     domain="[('state', 'in', ['draft', 'planned', 'in-progress'])]"
                 />
                 <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
-                <filter name="planned" string="Waiting" domain="[('state', '=', 'planned')]" />
+                <filter name="planned" string="Planned" domain="[('state', '=', 'planned')]" />
                 <filter name="in_progress" string="In-Progress" domain="[('state', '=', 'in-progress')]" />
                 <filter name="discharged" string="Discharged" domain="[('state', '=', 'finished')]" />
                 <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]" />
@@ -91,7 +91,7 @@
                 <field name="name" />
                 <field name="patient_id" />
                 <field name="class_id" optional="show" />
-                <field name="priority" widget="priority" />
+                <field name="priority" />
                 <field name="performer_id" optional="show" />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
@@ -117,7 +117,7 @@
                 <field name="name" />
                 <field name="patient_id" />
                 <field name="class_id" optional="show" />
-                <field name="priority" widget="priority" />
+                <field name="priority" />
                 <field name="performer_id" optional="show" />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
@@ -148,7 +148,7 @@
             <form>
                 <field name="id" invisible="1" />
                 <field name="partner_id" invisible="1" />
-                <header class="oe_read_only">
+                <header>
                     <button
                         name="action_confirm"
                         attrs="{'invisible': [('state', 'not in', ['draft'])]}"
@@ -200,11 +200,29 @@
                         attrs="{'invisible': [('id', '=', False)]}"
                         class="oe_button_box"
                         groups="nirun_patient.group_user"
-                    />
+                    >
+                        <button
+                            name="%(encounter_location_action)d"
+                            class="oe_stat_button"
+                            icon="fa-building"
+                            type="action"
+                            attrs="{'invisible': [('location_history_count', '&lt;=', 1)]}"
+                            context="{'default_encounter_id': id}"
+                        >
+                            <field name="location_history_count" widget="statinfo" />
+                        </button>
+                    </div>
                     <field name="id" invisible="1" />
-                    <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
+                    <field
+                        name="image_1920"
+                        class="oe_avatar"
+                        options='{"preview_image":"image_128"}'
+                        widget='image'
+                        attrs="{'invisible': [('patient_id', '=', False)]}"
+                    />
                     <widget
                         name="web_ribbon"
+                        class="oe_read_only"
                         attrs="{'invisible': ['|',('state', '!=', 'draft'), ('id', '=', False)]}"
                         bg_color="bg-warning"
                         title="Draft"
@@ -241,9 +259,14 @@
                     <group>
                         <group>
                             <field name="patient_id" context="{'show_code': True}" />
-                            <field name="class_id" options="{'no_create': True}" />
-                            <field name="location_id" domain="[('company_id', '=', company_id)]" />
-                            <field name="priority" widget="priority" />
+                            <field name="class_id" options="{'no_create': True, 'no_open':True}" />
+                            <field name="hospitalization" invisible="1" />
+                            <field
+                                name="location_id"
+                                domain="[('company_id', '=', company_id)]"
+                                options="{'no_create': True}"
+                            />
+                            <field name="priority" />
                         </group>
                         <group>
                             <field name="period_start" />
@@ -251,8 +274,12 @@
                             <field name="reason_ids" options="{'color_field': 'color'}" widget='many2many_tags' />
                         </group>
                     </group>
-                    <notebook>
-                        <page name="hospitalization" string="Hospitalization">
+                    <notebook attrs="{'invisible': [('id', '=', False)]}">
+                        <page
+                            name="hospitalization"
+                            string="Hospitalization"
+                            attrs="{'invisible': [('hospitalization', '=', False)]}"
+                        >
                             <group>
                                 <group string="Admission">
                                     <field name="admit_source_id" />
@@ -308,25 +335,6 @@
                                     />
                                 </group>
                             </group>
-                        </page>
-                        <page name="locations" string="Location History" groups="nirun_patient.group_manager">
-                            <field
-                                name="location_history_ids"
-                                context="{'default_encounter_id': id, 'default_start': period_start, 'default_end': period_end}"
-                                mode="tree"
-                            >
-                                <tree editable="top" string="Locations History List">
-                                    <control>
-                                        <create string="Add Location" />
-                                    </control>
-                                    <field name="location_id" />
-                                    <field name="period_start" />
-                                    <field name="period_end" />
-                                    <field name="duration" optional="hide" />
-                                    <field name="note" />
-                                    <field name="company_id" groups="base.group_multi_company" />
-                                </tree>
-                            </field>
                         </page>
                     </notebook>
                 </sheet>
@@ -398,7 +406,7 @@
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
-                                        <field name="priority" widget="priority" />
+                                        <field name="priority" />
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <img

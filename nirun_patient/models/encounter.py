@@ -60,11 +60,11 @@ class Encounter(models.Model):
         store=True,
         index=True,
     )
-    image_1920 = fields.Image(related="patient_id.image_1920")
-    image_1024 = fields.Image(related="patient_id.image_1024")
-    image_512 = fields.Image(related="patient_id.image_512")
-    image_256 = fields.Image(related="patient_id.image_256")
-    image_128 = fields.Image(related="patient_id.image_128")
+    image_1920 = fields.Image(related="patient_id.image_1920", readonly=False)
+    image_1024 = fields.Image(related="patient_id.image_1024", readonly=False)
+    image_512 = fields.Image(related="patient_id.image_512", readonly=False)
+    image_256 = fields.Image(related="patient_id.image_256", readonly=False)
+    image_128 = fields.Image(related="patient_id.image_128", readonly=False)
 
     priority = fields.Selection(
         [("0", "Routine"), ("1", "Urgent"), ("2", "ASAP"), ("3", "STAT")],
@@ -75,7 +75,7 @@ class Encounter(models.Model):
     state = fields.Selection(
         [
             ("draft", "Draft"),
-            ("planned", "Waiting"),
+            ("planned", "Planned"),
             ("cancelled", "Cancelled"),
             ("in-progress", "In-Progress"),
             ("finished", "Discharged"),
@@ -98,6 +98,9 @@ class Encounter(models.Model):
     location_history_ids = fields.One2many(
         "ni.encounter.location.rel", "encounter_id", states=LOCK_STATE_DICT, copy=True,
     )
+    location_history_count = fields.Integer(
+        string="Location", compute="_compute_location_history_count", store=True
+    )
     reason_ids = fields.Many2many(
         "ni.encounter.reason",
         "ni_encounter_reason_rel",
@@ -109,6 +112,7 @@ class Encounter(models.Model):
     )
 
     # Hospitalization
+    hospitalization = fields.Boolean(related="class_id.hospitalization", store=True)
     pre_admit_identifier = fields.Char(
         states=LOCK_STATE_DICT, tracking=True, help="Pre-admission identifier"
     )
@@ -218,6 +222,11 @@ class Encounter(models.Model):
         ),
     ]
 
+    @api.depends("location_history_ids")
+    def _compute_location_history_count(self):
+        for rec in self:
+            rec.location_history_count = len(rec.location_history_ids)
+
     @api.onchange("patient_id")
     def onchange_patient(self):
         if self.patient_id:
@@ -291,16 +300,40 @@ class Encounter(models.Model):
                 raise ValidationError(_("Consultant should not be performer"))
 
     def name_get(self):
-        if self._context.get("show_patient_name"):
-            return [
-                (en.id, "{} [{}]".format(en.name, en.patient_id.name)) for en in self
-            ]
+        res = []
+        for rec in self:
+            name = rec._get_name()
+            res.append((rec.id, name))
+        return res
+
+    def _get_name(self):
+        self.ensure_one()
+        rec = self
+        name = rec.name
+        if self._context.get("show_class"):
+            name = "{}/{}".format(name, rec.class_id.code or rec.class_id.name)
+        if self._context.get("show_patient") or self._context.get("show_patient_name"):
+            name = "{}: {}".format(name, rec.patient_id.name)
         if self._context.get("show_state"):
-            state = dict(self._fields["state"].selection)
-            return [
-                (en.id, "{} [{}]".format(en.name, state.get(en.state))) for en in self
-            ]
-        return super(Encounter, self).name_get()
+            name = "{} [{}]".format(name, rec._get_state_label())
+        if self._context.get("show_location"):
+            name = "{}\n{}".format(name, rec.location_id.display_name)
+        return name
+
+    @api.model
+    def _name_search(
+        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
+        args = args or []
+        if name:
+            # Also search for patient name
+            args = [
+                "|",
+                ("name", operator, name),
+                ("patient_id", operator, name),
+            ] + args
+        location_ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
+        return models.lazy_name_get(self.browse(location_ids).with_user(name_get_uid))
 
     @api.model
     def create(self, vals):

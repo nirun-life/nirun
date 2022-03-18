@@ -8,21 +8,36 @@
         <field name="res_model">ni.location</field>
         <field name="view_mode">tree,form,pivot,graph</field>
     </record>
+    <record id="location_view_search" model="ir.ui.view">
+        <field name="name">location.view.search</field>
+        <field name="model">ni.location</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="name"
+                    string="Name"
+                    filter_domain="['|', ('name', 'ilike', self), ('alias', 'ilike', self)]"
+                />
+                <separator />
+                <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
+                <group string="Group by">
+                    <filter name="Type" context="{'group_by': 'physical_type_id'}" />
+                    <filter name="Parent Location" context="{'group_by': 'parent_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
     <record id="location_view_tree" model="ir.ui.view">
         <field name="name">location.view.tree</field>
         <field name="model">ni.location</field>
         <field name="arch" type="xml">
             <tree name="Locations">
-                <field name="company_id" groups="base.group_multi_company" />
                 <field name="physical_type_id" optional="hide" />
-                <field name="name" />
-                <field name="alias" optional="show" />
-                <field name="patient_count" />
-                <field name="patient_male_count" />
-                <field name="patient_female_count" />
-                <field name="child_ids" optional="hide" />
+                <field name="display_name" />
                 <field name="parent_id" optional="hide" />
+                <field name="encounter_active_count" optional="show" />
                 <field name="active" optional="hide" />
+                <field name="company_id" groups="base.group_multi_company" />
             </tree>
         </field>
     </record>
@@ -31,8 +46,9 @@
         <field name="model">ni.location</field>
         <field name="arch" type="xml">
             <form string="Location">
-                <field name="id" invisible="True" />
-                <field name="active" invisible="True" />
+                <field name="id" invisible="1" />
+                <field name="active" invisible="1" />
+                <field name="child_count" invisible="1" />
                 <field name="parent_path" invisible="1" />
                 <sheet>
                     <widget
@@ -57,6 +73,20 @@
                         </group>
                     </group>
                     <notebook>
+                        <page string="Encounter">
+                            <field name="encounter_active_ids">
+                                <tree>
+                                    <field name="name" />
+                                    <field name="class_id" optional="show" />
+                                    <field name="patient_id" />
+                                    <field
+                                        name="location_id"
+                                        attrs="{'column_invisible': [('parent.child_count', '=', 0)]}"
+                                    />
+                                    <field name="state" invisible="1" />
+                                </tree>
+                            </field>
+                        </page>
                         <page string="Locations Inside">
                             <field name="child_ids" context="{'default_parent_id': id}">
                                 <tree create="0" edit="0">
@@ -69,25 +99,6 @@
                     </notebook>
                 </sheet>
             </form>
-        </field>
-    </record>
-    <record id="location_view_search" model="ir.ui.view">
-        <field name="name">location.view.search</field>
-        <field name="model">ni.location</field>
-        <field name="arch" type="xml">
-            <search>
-                <field
-                    name="name"
-                    string="Name"
-                    filter_domain="['|', ('name', 'ilike', self), ('alias', 'ilike', self)]"
-                />
-                <separator />
-                <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
-                <group string="Group by">
-                    <filter name="Type" context="{'group_by': 'physical_type_id'}" />
-                    <filter name="Parent Location" context="{'group_by': 'parent_id'}" />
-                </group>
-            </search>
         </field>
     </record>
 </odoo>

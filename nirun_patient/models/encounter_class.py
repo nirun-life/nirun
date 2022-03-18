@@ -11,6 +11,8 @@ class EncounterClassification(models.Model):
 
     parent_id = fields.Many2one("ni.encounter.cls", string="Parent Class", index=True)
     parent_path = fields.Char(index=True, readonly=True)
+    hospitalization = fields.Boolean(help="Is hospitalization classification?")
+    company_id = fields.Many2one("res.company", required=False)
 
     @api.constrains("parent_id")
     def _check_hierarchy(self):

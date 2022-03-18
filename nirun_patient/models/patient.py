@@ -1,6 +1,9 @@
 #  Copyright (c) 2021 Piruin P.
 
+import base64
+
 from odoo import _, api, fields, models
+from odoo.modules.module import get_module_resource
 
 ENCOUNTER_INACTIVE_STATE = ["entered-in-error", "cancelled"]
 
@@ -8,10 +11,23 @@ ENCOUNTER_INACTIVE_STATE = ["entered-in-error", "cancelled"]
 class Patient(models.Model):
     _name = "ni.patient"
     _description = "Patient"
-    _inherit = ["mail.thread", "mail.activity.mixin", "image.mixin"]
+    _inherit = [
+        "mail.thread",
+        "mail.activity.mixin",
+        "image.mixin",
+        "ir.sequence.mixin",
+    ]
     _inherits = {"res.partner": "partner_id"}
     _check_company_auto = True
     _order = "name"
+    _sequence_field = "code"
+
+    @api.model
+    def _default_image(self):
+        image_path = get_module_resource(
+            "nirun_patient", "static/src/img", "default_image.png"
+        )
+        return base64.b64encode(open(image_path, "rb").read())
 
     company_id = fields.Many2one(
         "res.company",
@@ -32,7 +48,9 @@ class Patient(models.Model):
         auto_join=True,
         help="Partner-related data of patient",
     )
-    image_1920 = fields.Image(related="partner_id.image_1920", readonly=False)
+    image_1920 = fields.Image(
+        related="partner_id.image_1920", readonly=False, default=_default_image
+    )
     image_1024 = fields.Image(related="partner_id.image_1024", readonly=False)
     image_512 = fields.Image(related="partner_id.image_512", readonly=False)
     image_256 = fields.Image(related="partner_id.image_256", readonly=False)
@@ -51,7 +69,12 @@ class Patient(models.Model):
         related="partner_id.email", inherited=True, readonly=False, tracking=True
     )
 
-    code = fields.Char("Patient No.", copy=False, tracking=True)
+    code = fields.Char(
+        "Patient No.",
+        default=lambda self: self._sequence_default,
+        copy=False,
+        tracking=True,
+    )
 
     nationality_id = fields.Many2one(
         "res.country",
@@ -146,7 +169,7 @@ class Patient(models.Model):
     presence_state = fields.Selection(
         [
             ("draft", "Draft"),
-            ("planned", "Waiting"),
+            ("planned", "Planned"),
             ("in-progress", "In-Progress"),
             ("finished", "Discharged"),
             ("deceased", "Deceased"),
