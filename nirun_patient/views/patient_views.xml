@@ -32,7 +32,7 @@
         <field name="res_model">ni.patient</field>
         <field name="view_mode">kanban,tree,form,pivot,graph</field>
         <field name="domain">[('deceased_date', '!=', False)]</field>
-        <field name="context">{'show_deceased': 1, 'create':False}</field>
+        <field name="context">{'show_deceased': 1, 'create': False}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No deceased patients found</p>
         </field>
@@ -45,7 +45,7 @@
                 <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
                 <field name="phone" filter_domain="['|' ,('phone', 'ilike', self), ('mobile', 'ilike', self)]" />
                 <filter name="in_progress" string='In-Progress' domain="[('presence_state', '=', 'in-progress')]" />
-                <filter name="waiting" string='Waiting' domain="[('presence_state', '=', 'waiting')]" />
+                <filter name="planned" string='Planned' domain="[('presence_state', '=', 'planned')]" />
                 <filter
                     name="finished"
                     string='Discharged'
@@ -101,6 +101,7 @@
                 <field name="id" invisible="1" />
                 <field name="is_encountering" invisible="1" />
                 <field name="active" invisible="1" />
+                <field name="presence_state" invisible="1" />
                 <header class="oe_read_only">
                     <button
                         name="%(encounter_action_from_patient)d"
@@ -121,7 +122,7 @@
                     >
                         <button
                             name="action_encounter"
-                            attrs="{'invisible': [('encounter_count', '&lt;=', 1)]}"
+                            attrs="{'invisible': [('presence_state', 'not in', ['deceased', 'finished'])]}"
                             class="oe_stat_button"
                             icon="fa-hospital-o"
                             type="object"
@@ -143,8 +144,15 @@
                         title="Archived"
                     />
                     <div class="oe_title">
+                        <b>
+                            <field
+                                name="code"
+                                placeholder="ex. HN-001204"
+                                attrs="{'invisible': [('id', '=', False)], 'readonly': [('id', '!=', False)]}"
+                            />
+                            <div class="mb-1" attrs="{'invisible': [('id', '!=', False)]}">New Patient</div>
+                        </b>
                         <h1>
-                            <div attrs="{'invisible': [('id', '!=', False)]}">New Patient</div>
                             <field name="name" placeholder="Patient's Name" readonly="False" required="True" />
                         </h1>
                         <div class="oe_read_only">
@@ -162,7 +170,6 @@
                             <field name="phone" widget="phone" />
                             <field name="mobile" widget="phone" />
                             <field name="email" widget="email" />
-                            <field name="code" placeholder="ex. HN-001204" />
                         </group>
                         <group name="encounter">
                             <field
@@ -176,18 +183,12 @@
                             <field
                                 name="encounter_id"
                                 attrs="{'invisible': [('is_encountering', '=', False)]}"
-                                context="{'show_state': True}"
+                                context="{'show_state': True, 'show_location': True}"
                                 options='{"always_reload": True}'
-                            />
-                            <field name="encounter_start" attrs="{'invisible': [('is_encountering', '=', False)]}" />
-                            <field
-                                name="location_id"
-                                attrs="{'invisible': [('is_encountering', '=', False)]}"
-                                options='{"no_open": True}'
                             />
                         </group>
                     </group>
-                    <notebook name="notebook">
+                    <notebook name="notebook" attrs="{'invisible': [('id', '=', False)]}">
                         <page name="overview" string="Overview" invisible="1" />
                         <page name="private" string="Private Information" accesskey="P">
                             <group>
@@ -261,6 +262,7 @@
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <t t-set="placeholder" t-value="'/nirun_patient/static/src/img/default_image.png'" />
                             <div
                                 class="o_kanban_image_fill_left d-none d-md-block"
                                 t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.partner_id.raw_value,  placeholder)}')"
@@ -307,10 +309,10 @@
                                         <div class="float-right" t-if="record.presence_state.raw_value == 'planned'">
                                             <span
                                                 name="presence_planned"
-                                                aria-label="Waiting"
+                                                aria-label="Planned"
                                                 class="fa fa-circle text-warning"
                                                 role="img"
-                                                title="Waiting"
+                                                title="Planned"
                                             />
                                         </div>
                                         <div

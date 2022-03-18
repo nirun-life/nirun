@@ -59,6 +59,10 @@ class PatientRes(models.AbstractModel):
 
     @api.model
     def create(self, vals):
+        # Because ni.patient.res may not inherit period.mixin.
+        # So, we can't use @api.constraints to check this and have to manual
+        # check it on create() and write()
+
         if (
             self._check_period_start
             and vals.get("period_start")
@@ -85,6 +89,9 @@ class PatientRes(models.AbstractModel):
         return super().create(vals)
 
     def write(self, vals):
+        # Because ni.patient.res may not inherit period.mixin.
+        # So, we can't use @api.constraints to check this and have to manual
+        # check it on create() and write()
         if (
             self._check_period_start
             and (vals.get("period_start"))
@@ -105,3 +112,13 @@ class PatientRes(models.AbstractModel):
                     % (encounters.period_start, self._description, res_start)
                 )
         return super().write(vals)
+
+    @api.constrains("patient_id", "encounter_id")
+    def _check_patient_encounter(self):
+        for rec in self:
+            if (rec.patient_id and rec.encounter_id) and (
+                rec.encounter_id.patient_id != rec.patient_id
+            ):
+                raise ValidationError(
+                    _("Inconsistent patient and encounter references")
+                )

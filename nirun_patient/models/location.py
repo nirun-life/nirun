@@ -7,7 +7,7 @@ class Location(models.Model):
     _name = "ni.location"
     _description = "Location"
     _check_company_auto = True
-    _order = "parent_path"
+    _order = "display_name"
     _parent_store = True
 
     company_id = fields.Many2one(
@@ -19,6 +19,7 @@ class Location(models.Model):
         default=lambda self: self.env.company,
     )
     name = fields.Char("Location Name", require=True, copy=False, index=True)
+    display_name = fields.Char(compute="_compute_display_name", store=True, index=True)
     alias = fields.Char("Alias Name", index=True)
     physical_type_id = fields.Many2one("ni.location.type", "Type", index=True)
     physical_type_name = fields.Char(
@@ -35,9 +36,20 @@ class Location(models.Model):
         string="Locations Inside",
         domain=[("active", "=", True)],
     )
+    child_count = fields.Integer(compute="_compute_child_count", store=True)
     active = fields.Boolean("Active", default=True)
 
     encounter_ids = fields.One2many("ni.encounter", "location_id")
+    encounter_active_ids = fields.One2many(
+        "ni.encounter",
+        "location_id",
+        string="Encounter",
+        compute="_compute_patient_count",
+        compute_sudo=True,
+    )
+    encounter_active_count = fields.Integer(
+        compute="_compute_patient_count", string="Encounter", compute_sudo=True
+    )
     patient_ids = fields.One2many(
         "ni.patient", compute="_compute_patient_count", compute_sudo=True
     )
@@ -59,10 +71,25 @@ class Location(models.Model):
         ),
     ]
 
-    @api.depends("encounter_ids")
+    @api.depends("child_ids", "child_ids.parent_path")
+    def _compute_child_count(self):
+        for rec in self:
+            rec.child_count = rec._get_child_count()
+
+    def _get_child_count(self):
+        self.ensure_one()
+        count = 0
+        for child in self.child_ids:
+            count += child._get_child_count()
+        count += len(self.child_ids)
+        return count
+
+    @api.depends("encounter_ids", "encounter_ids.state")
     def _compute_patient_count(self):
         for rec in self:
-            rec.patient_ids = rec.encounter_ids.mapped("patient_id")
+            rec.encounter_active_ids = rec._get_encounter_active_ids()
+            rec.encounter_active_count = len(rec.encounter_active_ids)
+            rec.patient_ids = rec.encounter_active_ids.mapped("patient_id")
             rec.patient_count = len(rec.patient_ids)
             rec.patient_male_count = len(
                 rec.patient_ids.filtered(lambda p: p.gender == "male")
@@ -71,24 +98,49 @@ class Location(models.Model):
                 rec.patient_ids.filtered(lambda p: p.gender == "female")
             )
 
+    def _get_encounter_active_ids(self):
+        self.ensure_one()
+        enc_ids = []
+        for child in self.child_ids:
+            enc_ids += child._get_encounter_active_ids()
+        enc_ids += self.encounter_ids.filtered_domain(
+            [("state", "=", "in-progress")]
+        ).ids
+        return enc_ids
+
     @api.constrains("parent_id")
     def _check_hierarchy(self):
         if not self._check_recursion():
             raise models.ValidationError(_("Error! You cannot create recursive data."))
 
-    def name_get(self):
-        if self._context.get("location_display") == "short":
-            return super(Location, self).name_get()
+    @api.depends("parent_name", "parent_id", "name")
+    def _compute_display_name(self):
+        diff = dict(location_display=None, show_alias=True)
+        names = dict(self.with_context(**diff).name_get())
+        for rec in self:
+            rec.display_name = names.get(rec.id)
 
+    def name_get(self):
         res = []
-        for location in self:
-            names = []
-            current = location
-            while current:
-                names.append(current.name)
-                current = current.parent_id
-            res.append((location.id, ", ".join(reversed(names))))
+        for rec in self:
+            name = rec._get_name()
+            res.append((rec.id, name))
         return res
+
+    def _get_name(self):
+        self.ensure_one()
+        if self._context.get("location_display") == "short":
+            return self.name
+
+        names = []
+        current = self
+        while current:
+            names.append(current.name)
+            current = current.parent_id
+        name = ", ".join(reversed(names))
+        if self._context.get("show_alias", True) and self.alias:
+            name = "{} ({})".format(name, self.alias)
+        return name
 
     @api.model
     def _name_search(
@@ -96,8 +148,10 @@ class Location(models.Model):
     ):
         args = args or []
         if name:
-            # Be sure name_search is symetric to name_get
-            name = name.split(" / ")[-1]
-            args = ["|", ("name", operator, name), ("alias", operator, name)] + args
+            args = [
+                "|",
+                ("display_name", operator, name),
+                ("alias", operator, name),
+            ] + args
         location_ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
         return models.lazy_name_get(self.browse(location_ids).with_user(name_get_uid))

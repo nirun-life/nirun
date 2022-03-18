@@ -2,7 +2,7 @@
 
 {
     "name": "Patients",
-    "version": "13.0.1.2.1",
+    "version": "13.0.1.3.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "Piruin P.",
@@ -24,7 +24,6 @@
         "wizard/discharge_views.xml",
         "views/location_views.xml",
         "views/location_type_views.xml",
-        "views/encounter_views.xml",
         "views/encounter_location_views.xml",
         "views/encounter_reason_views.xml",
         "views/encounter_admit_views.xml",
@@ -33,6 +32,7 @@
         "views/encounter_courtesy_views.xml",
         "views/encounter_diet_views.xml",
         "views/encounter_discharge_views.xml",
+        "views/encounter_views.xml",
         "views/partner_views.xml",
         "views/patient_views.xml",
         "views/patient_menus.xml",
