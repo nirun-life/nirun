@@ -38,9 +38,11 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="patient_id" invisible="context.get('default_patient_id', False)" />
+                <field name="encounter_id" invisible="context.get('default_encounter_id', False)" />
                 <field name="category" invisible="context.get('default_category', False)" />
                 <field name="code_id" />
-                <field name="type_id" optional="show" />
+                <field name="classification_id" optional="show" />
+                <field name="verification" optional="show" />
                 <field name="severity" optional="show" />
                 <field name="note" optional="show" />
                 <field name="create_uid" optional="hide" />
@@ -57,23 +59,19 @@
                 <field name="id" invisible="True" />
                 <header attrs="{'invisible': [('id', '=', False)]}">
                     <button
+                        name="action_resolve"
+                        class="btn-primary"
+                        string="Resolve"
+                        attrs="{'invisible': [('state', '=', 'resolved')]}"
+                        type="object"
+                    />
+                    <button
                         name="action_remission"
                         string="Remission"
                         attrs="{'invisible': [('state', 'in', ['remission', 'resolved'])]}"
                         type="object"
                     />
-                    <button
-                        name="action_resolve"
-                        string="Resolve"
-                        attrs="{'invisible': [('state', '=', 'resolved')]}"
-                        type="object"
-                    />
-                    <field
-                        name="state"
-                        options="{'clickable': '1'}"
-                        statusbar_visible="active,remission,resolved"
-                        widget="statusbar"
-                    />
+                    <field name="state" statusbar_visible="active,remission,resolved" widget="statusbar" />
                 </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box" groups="base.group_user" />
@@ -83,33 +81,56 @@
                         options="{'horizontal':True}"
                         widget="radio"
                     />
-                    <div>
+                    <div class="oe_title" style="max-width:85%;">
                         <h1>
-                            <field name="code_id" nolabel="1" placeholder="Condition / Problem" />
+                            <field
+                                name="code_id"
+                                class="w-100"
+                                nolabel="1"
+                                placeholder="Condition / Problem"
+                                options="{'no_open': True}"
+                            />
                         </h1>
                         <div attrs="{'invisible': [('period_start', '=', False)]}">
-                            <i class="fa fa-clock-o" aria-hidden="true" />
-                            <field name="duration" />
+                            <span class="fa fa-clock-o ml-2" />
+                            <field name="duration" class="mx-1" />
                         </div>
                     </div>
                     <group>
+                        <group>
+                            <field name="patient_id" invisible="context.get('default_patient_id', False)" />
+                            <field name="encounter_id" invisible="context.get('default_encounter_id', False)" />
+                            <field name="period_start" />
+                            <field name="period_end" />
+                        </group>
                         <group>
                             <field
                                 name="company_id"
                                 groups="base.group_multi_company"
                                 readonly="context.get('default_patient_id', False)"
                             />
-                            <field name="patient_id" readonly="context.get('default_patient_id', False)" />
+                            <field name="verification" />
+                            <field name="classification_id" options="{'no_open': True, 'no_create': True}" />
                             <field name="severity" />
                         </group>
-                        <group>
-                            <field name="period_start" />
-                            <field name="period_end" />
-                            <field name="create_date" readonly="1" />
-                            <field name="create_uid" readonly="1" />
-                        </group>
                     </group>
-                    <notebook invisible="1" />
+                    <notebook attrs="{'invisible': [('id', '=', False)]}">
+                        <page name="note" string="Note">
+                            <field name="note" />
+                        </page>
+                        <page name="extra_info" string="Extra Info" groups="base.group_system">
+                            <group>
+                                <group>
+                                    <field name="create_date" readonly="1" />
+                                    <field name="create_uid" readonly="1" />
+                                </group>
+                                <group>
+                                    <field name="write_date" readonly="1" />
+                                    <field name="write_uid" readonly="1" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

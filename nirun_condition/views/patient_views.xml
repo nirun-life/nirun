@@ -10,33 +10,32 @@
         <field name="priority">30</field>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page name="condition" string="Problem List Item">
+                <page name="condition" string="Problem List">
                     <field
-                        name="condition_ids"
+                        name="condition_problem_ids"
                         context="{'default_category': 'problem-list-item', 'default_patient_id': id}"
-                        domain="[('category', '=', 'problem-list-item')]"
                         mode="tree"
                         nolabel="1"
                     >
-                        <tree editable="bottom">
+                        <tree decoration-muted="state in ['remission', 'resolved']">
+                            <field name="id" invisible="1" />
                             <field name="company_id" invisible="1" />
                             <field name="patient_id" invisible="1" />
                             <field name="category" invisible="1" />
                             <field name="code_id" />
-                            <field name="severity" />
+                            <field name="severity" optional="hide" />
                             <field name="period_start" optional="hide" />
                             <field name="period_end" optional="hide" />
                             <field name="state" optional="hide" />
-                            <field name="note" />
+                            <field name="note" optional="hide" />
                             <button
                                 name="action_edit"
-                                attrs="{'column_invisible': [('parent.id', '=', False)]}"
+                                attrs="{'column_invisible': [('parent.id', '=', False)], 'invisible': [('id', '=', False)]}"
                                 icon="fa-pencil-square-o"
                                 type="object"
                             />
                         </tree>
                     </field>
-                    <group />
                 </page>
             </xpath>
         </field>

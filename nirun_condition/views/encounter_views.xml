@@ -7,28 +7,59 @@
         <field name="name">encounter.view.form.inherit</field>
         <field name="model">ni.encounter</field>
         <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="priority">3</field>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='participant']" position="after">
-                <page name="condition" string="Encounter Diagnosis">
+            <xpath expr="//notebook" position="inside">
+                <page name="condition" string="Diagnosis">
                     <field
                         name="condition_ids"
-                        context="{'default_category': 'encounter-diagnosis', 'default_patient_id': patient_id, 'default_encounter_id': id, 'default_period_start':period_start}"
+                        class="x-sheet-fill"
+                        context="{'default_category': 'encounter-diagnosis', 'default_patient_id': patient_id, 'default_encounter_id': id}"
                         domain="[('category', '=', 'encounter-diagnosis')]"
                         mode="tree"
                     >
-                        <tree editable="bottom">
+                        <tree decoration-success="state in ['remission', 'resolved']">
                             <field name="company_id" invisible="1" />
                             <field name="patient_id" invisible="1" />
                             <field name="encounter_id" invisible="1" />
                             <field name="category" invisible="1" />
-                            <field name="code_id" />
-                            <field name="severity" />
-                            <field name="period_start" />
-                            <field name="period_end" optional="show" />
-                            <field name="state" />
-                            <field name="note" />
+                            <field name="code_id" width="5" />
+                            <field name="classification_id" width="2" optional="show" />
+                            <field name="severity" optional="hide" />
+                            <field name="period_start" optional="hide" />
+                            <field name="period_end" optional="hide" />
+                            <field name="state" optional="hide" />
+                            <field name="note" optional="hide" />
                         </tree>
                     </field>
+                    <br />
+                    <div class="o_group" attrs="{'invisible': [('state', 'in', ['cancelled', 'entered-in-error'])]}">
+                        <field name="condition_ref" widget="selection_badge" options="{'horizontal': True}" />
+                        <field
+                            name="condition_problem_ids"
+                            class="x-sheet-fill"
+                            context="{'default_category': 'problem-list-item', 'default_patient_id': patient_id}"
+                            attrs="{'invisible': [ ('condition_ref', '!=', 'problem')]}"
+                        >
+                            <tree editable="bottom" decoration-muted="state in ['remission', 'resolved']">
+                                <field name="partner_id" invisible="1" />
+                                <field name="category" invisible="1" />
+                                <field name="code_id" />
+                                <field name="state" optional="hide" />
+                            </tree>
+                        </field>
+                        <field
+                            name="condition_prev_ids"
+                            class="x-sheet-fill"
+                            attrs="{'invisible': [ ('condition_ref', '!=', 'previous')]}"
+                        >
+                            <tree decoration-muted="state in ['remission', 'resolved']">
+                                <field name="code_id" />
+                                <field name="encounter_id" />
+                                <field name="state" optional="hide" />
+                            </tree>
+                        </field>
+                    </div>
                 </page>
             </xpath>
         </field>

@@ -8,6 +8,12 @@ class Condition(models.Model):
     _description = "Condition"
     _inherit = ["period.mixin", "ni.patient.res"]
 
+    def _get_default_condition_class(self):
+        return (
+            self.env["ni.condition.cls"].search([], order="sequence", limit=1).id
+            or None
+        )
+
     name = fields.Char(related="code_id.name", store=True)
     category = fields.Selection(
         [
@@ -17,13 +23,13 @@ class Condition(models.Model):
         required=True,
     )
     code_id = fields.Many2one(
-        "ni.condition.code",
-        "Condition / Problem",
-        required=True,
-        ondelete="restrict",
-        index=True,
+        "ni.condition.code", "Name", required=True, ondelete="restrict", index=True,
     )
-    type_id = fields.Many2one(related="code_id.type_id", string="Type", store=True)
+    classification_id = fields.Many2one(
+        "ni.condition.cls",
+        default=lambda self: self._get_default_condition_class(),
+        required=True,
+    )
     severity = fields.Selection(
         [("mild", "Mild"), ("moderate", "Moderate"), ("severe", "Severe")],
         tracking=1,
@@ -34,6 +40,9 @@ class Condition(models.Model):
     state = fields.Selection(
         [
             ("active", "Suffering"),
+            ("recurrence", "Recurrence "),
+            ("relapse", "Relapse"),
+            ("inactive", "Inactive"),
             ("remission", "Remission"),
             ("resolved", "Resolved"),
         ],
@@ -42,6 +51,20 @@ class Condition(models.Model):
         index=True,
         tracking=1,
         default="active",
+    )
+    verification = fields.Selection(
+        [
+            ("unconfirmed", "Unconfirmed"),
+            ("provisional", "Provisional"),
+            ("differential", "Differential"),
+            ("confirmed", "Confirmed"),
+            ("refuted", "Refuted"),
+        ],
+        tracking=1,
+        copy=False,
+        required=True,
+        default="provisional",
+        index=True,
     )
     recurrence = fields.Boolean()
     gender = fields.Selection(related="patient_id.gender")
@@ -108,3 +131,8 @@ class Condition(models.Model):
     def action_resolve(self):
         self.write({"state": "resolved", "period_end": fields.Date.today()})
         return True
+
+    @api.onchange("code_id")
+    def onchange_code_id(self):
+        if self.code_id.classification_id:
+            self.classification_id = self.code_id.classification_id

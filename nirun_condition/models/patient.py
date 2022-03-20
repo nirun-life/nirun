@@ -1,11 +1,44 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class Patient(models.Model):
     _inherit = "ni.patient"
 
     condition_ids = fields.One2many(
-        "ni.condition", "patient_id", string="Condition / Problem", check_company=True
+        "ni.condition", "patient_id", string="Problem", check_company=True
     )
+    condition_report_ids = fields.One2many("ni.condition.latest", "patient_id")
+    condition_problem_ids = fields.One2many(
+        "ni.condition",
+        "patient_id",
+        "Problem",
+        compute="_compute_condition_problem_ids",
+        inverse="_inverse_condition_problem_ids",
+        readonly=False,
+    )
+
+    @api.depends("condition_ids")
+    def _compute_condition_problem_ids(self):
+        problem = self.env["ni.condition"].search(
+            [("patient_id", "in", self.ids), ("category", "=", "problem-list-item")]
+        )
+        for rec in self:
+            rec.condition_problem_ids = problem.filtered_domain(
+                [("patient_id", "=", rec.id)]
+            )
+
+    def _inverse_condition_problem_ids(self):
+        for rec in self:
+            cmd = [
+                (2, c.id, 0)
+                for c in rec.condition_ids
+                if c not in rec.condition_problem_ids
+            ]
+            cmd = cmd + [
+                (0, 0, p.copy_data()[0])
+                for p in rec.condition_problem_ids
+                if p not in rec.condition_ids
+            ]
+            rec.write({"condition_ids": cmd})
