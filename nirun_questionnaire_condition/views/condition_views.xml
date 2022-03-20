@@ -9,11 +9,8 @@
         <field name="inherit_id" ref="nirun_condition.condition_view_form" />
         <field name="priority">5</field>
         <field name="arch" type="xml">
-            <xpath expr="//notebook" position="attributes">
-                <attribute name="invisible">0</attribute>
-            </xpath>
             <xpath expr="//notebook" position="inside">
-                <page name="survey" string="Survey">
+                <page name="survey" string="Survey" attrs="{'invisible': [('survey_id', 'in', [False, 0])]}">
                     <field
                         name="response_ids"
                         domain="[('patient_id', '=', patient_id), ('survey_id', '=?', survey_id),('state', '=', 'done'),('test_entry', '=', False)]"

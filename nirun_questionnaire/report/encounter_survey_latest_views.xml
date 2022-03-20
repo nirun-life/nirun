@@ -3,26 +3,9 @@
   ~ Copyright (c) 2022 Piruin P.
   -->
 <odoo>
-    <record id="patient_survey_latest_action" model="ir.actions.act_window">
-        <field name="name">Questionnaire</field>
-        <field name="res_model">ni.patient.survey_latest</field>
-        <field name="view_mode">tree</field>
-    </record>
-    <record id="patient_survey_latest_view_search" model="ir.ui.view">
-        <field name="name">patient.survey.latest.view.search</field>
-        <field name="model">ni.patient.survey_latest</field>
-        <field name="arch" type="xml">
-            <search>
-                <field
-                    name="patient_id"
-                    filter_domain="['|' ,('patient_id', 'ilike', self), ('encounter_id', 'ilike', self)]"
-                />
-            </search>
-        </field>
-    </record>
-    <record id="patient_survey_latest_view_form" model="ir.ui.view">
-        <field name="name">patient.survey.latest.view.form</field>
-        <field name="model">ni.patient.survey_latest</field>
+    <record id="encounter_survey_latest_view_form" model="ir.ui.view">
+        <field name="name">encounter.survey.latest.view.form</field>
+        <field name="model">ni.encounter.survey_latest</field>
         <field name="arch" type="xml">
             <form>
                 <field name="deceased" invisible="1" />
@@ -70,17 +53,14 @@
                             <field name="create_uid" />
                             <field name="create_date" />
                         </group>
-                        <group>
-
-                        </group>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
-    <record id="patient_survey_latest_view_tree" model="ir.ui.view">
-        <field name="name">patient.survey.latest.view.tree</field>
-        <field name="model">ni.patient.survey_latest</field>
+    <record id="encounter_survey_latest_view_tree" model="ir.ui.view">
+        <field name="name">encounter.survey.latest.view.tree</field>
+        <field name="model">ni.encounter.survey_latest</field>
         <field name="arch" type="xml">
             <tree create="0">
                 <field name="deceased" invisible="1" />
@@ -102,32 +82,39 @@
             </tree>
         </field>
     </record>
-    <record id="patient_view_form_inherit_overview" model="ir.ui.view">
-        <field name="name">patient.view.form.inherit</field>
-        <field name="model">ni.patient</field>
+    <record id="encounter_view_form_inherit_overview" model="ir.ui.view">
+        <field name="name">encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
         <field name="groups_id" eval="[(4, ref('survey.group_survey_user'))]" />
-        <field name="inherit_id" ref="nirun_patient.patient_view_form" />
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//notebook/page[@name='overview']" position="inside">
-                <separator string="Questionnaire" />
-                <field name="response_latest_ids" mode="tree">
-                    <tree>
-                        <field name="survey_id" />
-                        <field name="quizz_grade_id" />
-                        <field name="quizz_score" widget="progressbar" />
-                        <field name="create_date" />
-                        <field name="create_uid" optional="hide" />
-                        <button name="action_print_answers" string="Print" type="object" icon="fa-print" />
-                        <button name="action_graph_view" string="See results" type="object" icon="fa-bar-chart" />
-                        <button
-                            name="action_survey_subject_wizard"
-                            string="Answer Survey"
-                            type="object"
-                            icon="fa-commenting"
-                            attrs="{'column_invisible': [('parent.deceased', '=', True)]}"
-                        />
-                    </tree>
-                </field>
+            <xpath expr="//notebook" position="inside">
+                <page string="Questionnaire">
+                    <field name="response_latest_ids" mode="tree">
+                        <tree>
+                            <field name="survey_id" />
+                            <field name="quizz_grade_id" />
+                            <field name="quizz_score" widget="progressbar" />
+                            <field name="create_date" />
+                            <field name="create_uid" optional="hide" />
+                            <button name="action_print_answers" string="Print" type="object" icon="fa-print" />
+                            <button name="action_graph_view" string="See results" type="object" icon="fa-bar-chart" />
+                            <button
+                                name="action_survey_subject_wizard"
+                                string="Answer Survey"
+                                type="object"
+                                icon="fa-commenting"
+                                attrs="{'column_invisible': [('parent.state', 'not in', ['in-progress'])]}"
+                            />
+                        </tree>
+                    </field>
+                    <button
+                        type="object"
+                        name="action_survey_user_input_completed"
+                        string="See More"
+                        context="{'search_default_patient_id': patient_id}"
+                    />
+                </page>
             </xpath>
         </field>
     </record>

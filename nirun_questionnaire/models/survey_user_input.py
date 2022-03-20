@@ -22,6 +22,13 @@ class SurveyUserInput(models.Model):
             ["patient_id", "survey_id"],
         )
 
+        tools.create_index(
+            self._cr,
+            "survey_user_input__encounter_survey__idx",
+            self._table,
+            ["encounter_id", "survey_id"],
+        )
+
     def name_get(self):
         res = []
         for survey_input in self:
@@ -61,7 +68,7 @@ class SurveyUserInput(models.Model):
 
     def action_graph_view(self):
         self.ensure_one()
-        domain = [("survey_id", "=", self.survey_id.id)]
+        domain = [("test_entry", "=", False)]
         if self.survey_id.category in ["ni_patient", "ni_encounter"]:
             domain.append(("patient_id", "=", self.patient_id.id))
         return {
@@ -72,6 +79,7 @@ class SurveyUserInput(models.Model):
             "target": "current",
             "domain": domain,
             "context": {
+                "search_default_survey_id": self.survey_id.id,
                 "search_default_completed": 1,
                 "graph_view_ref": "nirun_questionnaire.survey_user_input_view_graph",
             },
