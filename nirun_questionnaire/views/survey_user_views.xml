@@ -23,6 +23,9 @@
         <field name="groups_id" eval="[(4, ref('nirun_patient.group_user'))]" />
         <field name="inherit_id" ref="survey.survey_user_input_view_tree" />
         <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="default_order">create_date desc</attribute>
+            </xpath>
             <field name="partner_id" position="after">
                 <field name="patient_id" optional="hide" />
                 <field name="encounter_id" optional="hide" />

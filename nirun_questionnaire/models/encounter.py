@@ -21,21 +21,10 @@ class Encounter(models.Model):
     response_id = fields.Many2one(
         "survey.user_input", store=True, groups="survey.group_survey_user"
     )
+    response_latest_ids = fields.One2many("ni.encounter.survey_latest", "encounter_id")
 
     def action_survey_user_input_completed(self):
-        action_rec = self.env.ref("survey.action_survey_user_input")
-        action = action_rec.read()[0]
-        ctx = dict(self.env.context)
-        ctx.update(
-            {
-                "search_default_encounter_id": self.ids[0],
-                "search_default_completed": 1,
-                "search_default_not_test": 1,
-                "search_default_group_by_survey": 1,
-            }
-        )
-        action["context"] = ctx
-        return action
+        return self.patient_id.action_survey_user_input_completed()
 
     def action_start_survey(self):
         self.ensure_one()
