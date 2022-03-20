@@ -1,5 +1,6 @@
 #  Copyright (c) 2021 Piruin P.
 
+from . import condition_class
 from . import condition
 from . import condition_type
 from . import condition_code

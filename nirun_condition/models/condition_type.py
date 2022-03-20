@@ -3,6 +3,8 @@
 from odoo import api, fields, models
 
 
+# TODO remove this after every instance updated to have ni.condition.cls
+# Deprecated
 class ConditionType(models.Model):
     _name = "ni.condition.type"
     _description = "Condition Type"

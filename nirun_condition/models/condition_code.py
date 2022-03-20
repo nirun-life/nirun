@@ -9,6 +9,7 @@ class ConditionCode(models.Model):
     _inherit = ["coding.base"]
 
     type_id = fields.Many2one("ni.condition.type", required=False)
+    classification_id = fields.Many2one("ni.condition.cls", required=False)
     category = fields.Selection(
         [
             ("problem-list-item", "Problem List Item"),

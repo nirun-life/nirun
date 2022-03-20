@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-27 08:18+0000\n"
-"PO-Revision-Date: 2021-05-27 08:18+0000\n"
+"POT-Creation-Date: 2022-03-27 08:19+0000\n"
+"PO-Revision-Date: 2022-03-27 08:19+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,12 +16,21 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__period_end
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__period_end
+msgid "Abatement Date"
+msgstr "หายเมื่อ"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__active
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__active
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__active
 msgid "Active"
 msgstr "เปิดใช้งาน"
 
 #. module: nirun_condition
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_class_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_class_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_code_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_code_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_type_category_view_form
@@ -37,12 +46,22 @@ msgid "Category"
 msgstr "หมวด"
 
 #. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__classification_id
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__classification_id
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__classification_id
+#: model:ir.ui.menu,name:nirun_condition.condition_class_menu
+msgid "Classification"
+msgstr "ประเภท"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__code
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__code
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__code
 msgid "Code"
 msgstr "รหัส"
 
 #. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__color
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__color
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__color
 msgid "Color"
@@ -61,15 +80,32 @@ msgstr "โรค/ปัญหา"
 
 #. module: nirun_condition
 #: model:ir.model,name:nirun_condition.model_ni_condition_code
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__code_id
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__code_id
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_patient__condition_ids
 #: model:ir.ui.menu,name:nirun_condition.condition_code_menu
 #: model:ir.ui.menu,name:nirun_condition.condition_menu_section
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_search
 msgid "Condition / Problem"
 msgstr "โรค/ปัญหา"
+
+#. module: nirun_condition
+#: model:ir.model,name:nirun_condition.model_ni_condition_cls
+msgid "Condition / Problem Classification"
+msgstr "ประเภทโรค/ปัญหา"
+
+#. module: nirun_condition
+#: model:ir.actions.act_window,name:nirun_condition.condition_class_action
+msgid "Condition Classification"
+msgstr "ประเภท"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_encounter__condition_ref
+msgid "Condition Ref"
+msgstr "อ้างอิง"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_patient__condition_report_ids
+msgid "Condition Report"
+msgstr "รายงานโรค/ปัญหา"
 
 #. module: nirun_condition
 #: model:ir.model,name:nirun_condition.model_ni_condition_type
@@ -94,29 +130,50 @@ msgid "Conditions Count"
 msgstr "โรค/ปัญหา"
 
 #. module: nirun_condition
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__create_uid
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__verification__confirmed
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__verification__confirmed
+msgid "Confirmed"
+msgstr "ยืนยัน"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__create_uid
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__create_uid
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__create_uid
 msgid "Created by"
 msgstr "สร้างโดย"
 
 #. module: nirun_condition
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__create_date
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__create_date
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__create_date
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__create_date
 msgid "Created on"
 msgstr "สร้างเมื่อ"
 
 #. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__definition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__definition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__definition
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_class_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_code_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_type_category_view_form
 msgid "Definition"
 msgstr "คำนิยาม"
 
 #. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_encounter__condition_ids
+#: model_terms:ir.ui.view,arch_db:nirun_condition.encounter_view_form_inherit
+msgid "Diagnosis"
+msgstr "วินิจฉัย"
+
+#. module: nirun_condition
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__verification__differential
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__verification__differential
+msgid "Differential"
+msgstr "วินิจฉัยเบื้องต้น(อื่นๆ)"
+
+#. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__display_name
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__display_name
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__display_name
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__display_name
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__display_name
@@ -153,12 +210,10 @@ msgid "Encounter"
 msgstr "ข้อมูลรับบริการ"
 
 #. module: nirun_condition
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_encounter__condition_ids
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__category__encounter-diagnosis
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_code__category__encounter-diagnosis
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__category__encounter-diagnosis
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_search
-#: model_terms:ir.ui.view,arch_db:nirun_condition.encounter_view_form_inherit
 msgid "Encounter Diagnosis"
 msgstr "โรค/ปัญหาระหว่างรับบริการ"
 
@@ -169,8 +224,10 @@ msgid "Encounter No."
 msgstr "รหัสรับบริการ"
 
 #. module: nirun_condition
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_class_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_code_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_type_category_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
 msgid "Extra Info"
 msgstr "ข้อมูลอื่นๆ"
 
@@ -182,11 +239,18 @@ msgstr "เพศ"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__id
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__id
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__id
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__id
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__id
 msgid "ID"
 msgstr "รหัส"
+
+#. module: nirun_condition
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__state__inactive
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__state__inactive
+msgid "Inactive"
+msgstr "ไม่เป็น"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__is_future
@@ -208,6 +272,7 @@ msgstr "ปัจจุบัน"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition____last_update
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls____last_update
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code____last_update
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest____last_update
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type____last_update
@@ -216,6 +281,7 @@ msgstr "แก้ไขล่าสุดเมื่อ"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__write_uid
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__write_uid
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__write_uid
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__write_uid
 msgid "Last Updated by"
@@ -223,6 +289,7 @@ msgstr "แก้ไขล่าสุดโดย"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__write_date
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__write_date
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__write_date
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__write_date
 msgid "Last Updated on"
@@ -232,6 +299,11 @@ msgstr "แก้ไขล่าสุดเมื่อ"
 #: model:ir.model.fields,help:nirun_condition.field_ni_condition_code__category
 msgid "Make this condition selectable for category "
 msgstr ""
+
+#. module: nirun_condition
+#: model:ni.condition.cls,name:nirun_condition.class_medical
+msgid "Medical"
+msgstr "ทางการแพทย์"
 
 #. module: nirun_condition
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__severity__mild
@@ -246,10 +318,39 @@ msgid "Moderate"
 msgstr "ปานกลาง"
 
 #. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__code_id
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__name
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__name
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__name
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__code_id
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__name
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__name
 msgid "Name"
 msgstr "ชื่อ"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__note
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__note
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
+msgid "Note"
+msgstr "หมายเหตุ"
+
+#. module: nirun_condition
+#: model:ni.condition.cls,name:nirun_condition.class_nursing
+msgid "Nursing"
+msgstr "การพยาบาล"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__period_start
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__period_start
+msgid "Onset Date"
+msgstr "เริ่มเป็นเมื่อ"
+
+#. module: nirun_condition
+#: model:ir.model.fields,help:nirun_condition.field_ni_condition__partner_id
+#: model:ir.model.fields,help:nirun_condition.field_ni_condition_latest__partner_id
+msgid "Partner-related data of patient"
+msgstr ""
 
 #. module: nirun_condition
 #: model:ir.model,name:nirun_condition.model_ni_patient
@@ -265,6 +366,11 @@ msgid "Patient Current Condition"
 msgstr "โรค/ปัญหาปัจจุบันของผู้สูงอายุ"
 
 #. module: nirun_condition
+#: model:ni.condition.cls,name:nirun_condition.class_patient_state
+msgid "Patient Stated"
+msgstr "ผู้ป่วยระบุ"
+
+#. module: nirun_condition
 #: model:ir.model.constraint,message:nirun_condition.constraint_ni_condition_condition_encounter__uniq
 #: model:ir.model.constraint,message:nirun_condition.constraint_ni_condition_latest_condition_encounter__uniq
 msgid "Patient already have this condition!"
@@ -277,13 +383,49 @@ msgid "Period End Calendar"
 msgstr ""
 
 #. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_encounter__condition_prev_ids
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_encounter__condition_ref__previous
+msgid "Previous Diagnosis"
+msgstr "ผลวินิจฉัยที่ผ่านมา"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_encounter__condition_problem_ids
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_patient__condition_ids
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_patient__condition_problem_ids
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_encounter__condition_ref__problem
+msgid "Problem"
+msgstr "ปัญหา"
+
+#. module: nirun_condition
+#: model_terms:ir.ui.view,arch_db:nirun_condition.patient_view_form_inherit
+msgid "Problem List"
+msgstr "รายการปัญหา"
+
+#. module: nirun_condition
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__category__problem-list-item
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_code__category__problem-list-item
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__category__problem-list-item
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_search
-#: model_terms:ir.ui.view,arch_db:nirun_condition.patient_view_form_inherit
 msgid "Problem List Item"
 msgstr "ประวัติการเจ็บป่วย/โรคประจำตัว"
+
+#. module: nirun_condition
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__verification__provisional
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__verification__provisional
+msgid "Provisional"
+msgstr "วินิจฉัยเบื้องต้น"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__create_date
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__create_date
+msgid "Recorded"
+msgstr "บันทึกเมื่อ"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__create_uid
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__create_uid
+msgid "Recorder"
+msgstr "ผู้บันทึก"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__recurrence
@@ -292,11 +434,41 @@ msgid "Recurrence"
 msgstr "กลับมาเป็นซ้ำ"
 
 #. module: nirun_condition
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__state__recurrence
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__state__recurrence
+msgid "Recurrence "
+msgstr "เป็นซ้ำ"
+
+#. module: nirun_condition
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__verification__refuted
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__verification__refuted
+msgid "Refuted"
+msgstr "ถูกหักล้าง"
+
+#. module: nirun_condition
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__state__relapse
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__state__relapse
+msgid "Relapse"
+msgstr "ทรุดลง"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__partner_id
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__partner_id
+msgid "Related Partner"
+msgstr "คุ่ค้าที่เกี่ยวข้อง"
+
+#. module: nirun_condition
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__state__remission
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__state__remission
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_search
 msgid "Remission"
 msgstr "ทุเลาลง"
+
+#. module: nirun_condition
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
+msgid "Resolve"
+msgstr "หาย"
 
 #. module: nirun_condition
 #: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__state__resolved
@@ -306,6 +478,7 @@ msgid "Resolved"
 msgstr "หายดี"
 
 #. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_cls__sequence
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__sequence
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__sequence
 msgid "Sequence"
@@ -322,17 +495,6 @@ msgstr "รุนแรง"
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__severity
 msgid "Severity"
 msgstr "ระดับความรุนแรง"
-
-#. module: nirun_condition
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__period_start
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__period_start
-msgid "Since"
-msgstr "ตั้งแต่"
-
-#. module: nirun_condition
-#: model:ir.ui.menu,name:nirun_condition.condition_menu
-msgid "Statistic"
-msgstr "สถิติ"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__state
@@ -354,15 +516,19 @@ msgid "Tense"
 msgstr "ช่วงเวลา"
 
 #. module: nirun_condition
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__type_id
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_code__type_id
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__type_id
-#: model:ir.ui.menu,name:nirun_condition.condition_type_menu
 msgid "Type"
 msgstr "ประเภท"
 
 #. module: nirun_condition
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__period_end
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__period_end
-msgid "Until"
-msgstr "สิ้นสุด"
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition__verification__unconfirmed
+#: model:ir.model.fields.selection,name:nirun_condition.selection__ni_condition_latest__verification__unconfirmed
+msgid "Unconfirmed"
+msgstr "ไม่มีการยืนยัน"
+
+#. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__verification
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__verification
+msgid "Verification"
+msgstr "การยืนยัน"
