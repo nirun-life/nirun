@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-02 06:09+0000\n"
-"PO-Revision-Date: 2021-12-02 06:09+0000\n"
+"POT-Creation-Date: 2022-03-27 09:19+0000\n"
+"PO-Revision-Date: 2022-03-27 09:19+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -28,17 +28,6 @@ msgid ""
 "                                            submitting by email.\n"
 "                                        </i>"
 msgstr ""
-
-#. module: nirun_medication
-#: model_terms:ir.ui.view,arch_db:nirun_medication.medication_statement_view_form
-msgid ""
-"<span attrs=\"{'invisible': ['|', '|',  ('medication_dosage_ids', '=', False), ('dosage_tmpl_id', '!=', False), ('dosage_id', '!=', False)]}\">\n"
-"                                        or\n"
-"                                    </span>"
-msgstr ""
-"<span attrs=\"{'invisible': ['|', '|',  ('medication_dosage_ids', '=', False), ('dosage_tmpl_id', '!=', False), ('dosage_id', '!=', False)]}\">\n"
-"                                        หรือ\n"
-"                                    </span>"
 
 #. module: nirun_medication
 #: model_terms:ir.ui.view,arch_db:nirun_medication.medication_dosage_view_form
@@ -334,6 +323,21 @@ msgid "Currently"
 msgstr "ปัจจุบัน"
 
 #. module: nirun_medication
+#: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__taxes_id
+msgid "Customer Taxes"
+msgstr ""
+
+#. module: nirun_medication
+#: model:ir.model.fields,help:nirun_medication.field_ni_medication__supplier_taxes_id
+msgid "Default taxes used when buying the product."
+msgstr ""
+
+#. module: nirun_medication
+#: model:ir.model.fields,help:nirun_medication.field_ni_medication__taxes_id
+msgid "Default taxes used when selling the product."
+msgstr ""
+
+#. module: nirun_medication
 #: model:ir.model.fields,help:nirun_medication.field_ni_medication__uom_id
 msgid "Default unit of measure used for all stock operations."
 msgstr ""
@@ -457,6 +461,11 @@ msgid "Encounter No."
 msgstr "รหัสรับบริการ"
 
 #. module: nirun_medication
+#: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__property_account_expense_id
+msgid "Expense Account"
+msgstr ""
+
+#. module: nirun_medication
 #: model_terms:ir.ui.view,arch_db:nirun_medication.medication_form_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_medication.medication_statement_category_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_medication.medication_view_form
@@ -492,8 +501,8 @@ msgid "Forms"
 msgstr "รูปแบบยา"
 
 #. module: nirun_medication
-#: model_terms:ir.ui.view,arch_db:nirun_medication.medication_statement_view_form
 #: model:ir.model.fields,help:nirun_medication.field_ni_medication_statement__note
+#: model_terms:ir.ui.view,arch_db:nirun_medication.medication_statement_view_form
 msgid "Further information about the statement"
 msgstr "ข้อมูลเพิ่มเติมที่เกี่ยวของกับการใช้ยานี้"
 
@@ -645,6 +654,11 @@ msgid ""
 msgstr ""
 
 #. module: nirun_medication
+#: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__property_account_income_id
+msgid "Income Account"
+msgstr ""
+
+#. module: nirun_medication
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__ingredient
 #: model_terms:ir.ui.view,arch_db:nirun_medication.medication_ingredient_view_tree
 #: model_terms:ir.ui.view,arch_db:nirun_medication.medication_view_form
@@ -720,6 +734,20 @@ msgid "Is a product variant"
 msgstr "เป็นแบบที่ต่างกันของสินค้า"
 
 #. module: nirun_medication
+#: model:ir.model.fields,help:nirun_medication.field_ni_medication__property_account_income_id
+msgid ""
+"Keep this field empty to use the default value from the product category."
+msgstr ""
+
+#. module: nirun_medication
+#: model:ir.model.fields,help:nirun_medication.field_ni_medication__property_account_expense_id
+msgid ""
+"Keep this field empty to use the default value from the product category. If"
+" anglo-saxon accounting with automated valuation method is configured, the "
+"expense account on the product category will be used."
+msgstr ""
+
+#. module: nirun_medication
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication____last_update
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication_dosage____last_update
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication_dosage_additional____last_update
@@ -792,6 +820,7 @@ msgstr "ชื่อผู้ผลิต"
 #: model:ir.model,name:nirun_medication.model_ni_medication
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication_ingredient__medication_id
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication_statement__medication_id
+#: model_terms:ir.ui.view,arch_db:nirun_medication.encounter_view_form_inherit
 #: model_terms:ir.ui.view,arch_db:nirun_medication.medication_statement_view_search
 msgid "Medication"
 msgstr "ยารักษาโรค"
@@ -1076,7 +1105,7 @@ msgstr ""
 #. module: nirun_medication
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication_statement__partner_id
 msgid "Related Partner"
-msgstr ""
+msgstr "คู่ค้าที่เกี่ยวข้อง"
 
 #. module: nirun_medication
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__activity_user_id
@@ -1104,6 +1133,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__list_price
 msgid "Sales Price"
 msgstr "ราคาขาย"
+
+#. module: nirun_medication
+#: model_terms:ir.ui.view,arch_db:nirun_medication.encounter_view_form_inherit
+msgid "See More"
+msgstr "ดูเพิ่มเติม"
 
 #. module: nirun_medication
 #: model:ir.model.fields,help:nirun_medication.field_ni_medication__categ_id
@@ -1301,9 +1335,19 @@ msgid "Variant Seller"
 msgstr ""
 
 #. module: nirun_medication
+#: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__supplier_taxes_id
+msgid "Vendor Taxes"
+msgstr ""
+
+#. module: nirun_medication
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__seller_ids
 msgid "Vendors"
 msgstr "ผู้ขาย"
+
+#. module: nirun_medication
+#: model:res.groups,name:nirun_medication.group_viewer
+msgid "Viewer"
+msgstr "ผู้ดูข้อมูล"
 
 #. module: nirun_medication
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__volume
@@ -1314,6 +1358,18 @@ msgstr "ปริมาตร"
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__volume_uom_name
 msgid "Volume unit of measure label"
 msgstr "หน่วยวัดปริมาตร"
+
+#. module: nirun_medication
+#: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__website_message_ids
+#: model:ir.model.fields,field_description:nirun_medication.field_ni_medication_statement__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: nirun_medication
+#: model:ir.model.fields,help:nirun_medication.field_ni_medication__website_message_ids
+#: model:ir.model.fields,help:nirun_medication.field_ni_medication_statement__website_message_ids
+msgid "Website communication history"
+msgstr ""
 
 #. module: nirun_medication
 #: model:ir.model.fields,field_description:nirun_medication.field_ni_medication__weight
@@ -1978,6 +2034,11 @@ msgstr ""
 #. module: nirun_medication
 #: model:ni.medication.form,name:nirun_medication.form_ointment
 msgid "ointment"
+msgstr ""
+
+#. module: nirun_medication
+#: model_terms:ir.ui.view,arch_db:nirun_medication.medication_statement_view_form
+msgid "or"
 msgstr ""
 
 #. module: nirun_medication
