@@ -8,11 +8,38 @@
         <field name="model">ni.encounter</field>
         <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
         <field name="groups_id" eval="[(4, ref('nirun_medication.group_user'))]" />
+        <field name="priority">4</field>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_medication_statement" class="oe_stat_button" icon="fa-medkit" type="object">
                     <field name="medication_count" string="Medications" widget="statinfo" />
                 </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="medication" string="Medication">
+                    <field
+                        name="medication_ids"
+                        context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
+                    >
+                        <tree>
+                            <field name="patient_id" invisible="1" />
+                            <field name="encounter_id" invisible="1" />
+                            <field name="medication_id" />
+                            <field name="dosage_id" optional="show" />
+                            <field name="category_id" optional="hide" />
+                            <field name="period_start" optional="hide" />
+                            <field name="period_end" optional="hide" />
+                            <field name="duration" optional="hide" />
+                            <field name="state" />
+                        </tree>
+                    </field>
+                    <button
+                        name="%(medication_statement_action)d"
+                        type="action"
+                        string="See More"
+                        context="{'search_default_encounter_id': id, 'search_default_period_today': 0, 'default_patient_id': patient_id, 'default_encounter_id': id}"
+                    />
+                </page>
             </xpath>
         </field>
     </record>
