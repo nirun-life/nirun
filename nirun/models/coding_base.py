@@ -10,7 +10,13 @@ class CodingBase(models.AbstractModel):
     _description = "Coding"
     _order = "sequence, id"
 
-    sequence = fields.Integer(index=True, default=0,)
+    def _get_default_sequence(self):
+        last_sequence = self.env[self._name].search([], order="sequence desc", limit=1)
+        return last_sequence.sequence + 1 if last_sequence else 0
+
+    sequence = fields.Integer(
+        index=True, default=lambda self: self._get_default_sequence(),
+    )
     name = fields.Char(required=True, index=True, translate=True)
     code = fields.Char(index=True, copy=False, limit=16)
     definition = fields.Text(translate=True)
