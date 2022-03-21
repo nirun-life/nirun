@@ -28,6 +28,7 @@
         "views/observation_menu.xml",
         "views/patient_views.xml",
         "views/encounter_views.xml",
+        "report/observation_report_view.xml",
     ],
     "demo": [],
     "application": True,

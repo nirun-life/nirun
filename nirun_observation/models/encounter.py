@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 Piruin P.
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class Encounter(models.Model):
@@ -12,6 +12,14 @@ class Encounter(models.Model):
         domain=[("active", "=", True)],
         groups="nirun_observation.group_user",
     )
+    observation_line_ids = fields.One2many(
+        "ni.encounter.observation.line", "encounter_id"
+    )
+    observation_line_vital_sign_ids = fields.One2many(
+        "ni.encounter.observation.line",
+        "encounter_id",
+        compute="_compute_observation_line_vital_sign_ids",
+    )
     observation_count = fields.Integer(compute="_compute_observation_count")
 
     def _compute_observation_count(self):
@@ -22,6 +30,16 @@ class Encounter(models.Model):
         data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
         for encounter in self:
             encounter.observation_count = data.get(encounter.id, 0)
+
+    @api.depends("observation_line_ids")
+    def _compute_observation_line_vital_sign_ids(self):
+        ob_lines = self.env["ni.encounter.observation.line"].search(
+            [("encounter_id", "in", self.ids), ("category_id.code", "=", "vital-signs")]
+        )
+        for rec in self:
+            rec.observation_line_vital_sign_ids = ob_lines.filtered_domain(
+                [("encounter_id", "=", rec.id)]
+            )
 
     def action_observation(self):
         action_rec = self.env.ref("nirun_observation.ob_action")

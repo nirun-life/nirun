@@ -1,5 +1,5 @@
 #  Copyright (c) 2021 Piruin P.
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, tools
 from odoo.exceptions import ValidationError
 
 
@@ -16,6 +16,9 @@ class ObservationLine(models.Model):
     )
     patient_id = fields.Many2one(
         related="observation_id.patient_id", store=True, readonly=True
+    )
+    encounter_id = fields.Many2one(
+        related="observation_id.encounter_id", store=True, readonly=True
     )
     effective_date = fields.Datetime(
         related="observation_id.effective_date", store=True, readonly=True
@@ -55,6 +58,20 @@ class ObservationLine(models.Model):
             "Duplication observation type!",
         ),
     ]
+
+    def init(self):
+        tools.create_index(
+            self._cr,
+            "ni_observation_line__patient__ob_type__idx",
+            self._table,
+            ["patient_id", "type_id"],
+        )
+        tools.create_index(
+            self._cr,
+            "ni_observation_line__encounter__ob_type__idx",
+            self._table,
+            ["encounter_id", "type_id"],
+        )
 
     @api.onchange("type_id")
     def _onchange_type(self):
