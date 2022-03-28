@@ -7,12 +7,57 @@
         <field name="name">encounter.view.form.inherit</field>
         <field name="model">ni.encounter</field>
         <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
-        <field name="groups_id" eval="[(4, ref('nirun_service.group_user'))]" />
+        <field name="groups_id" eval="[(4, ref('nirun_service.group_viewer'))]" />
+        <field name="priority">5</field>
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="open_service_request" class="oe_stat_button" icon="fa-wheelchair-alt" type="object">
-                    <field name="service_request_count" widget="statinfo" />
-                </button>
+            <xpath expr="//notebook" position="inside">
+                <page string="Order">
+                    <field
+                        name="service_request_ids"
+                        context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
+                    >
+                        <tree
+                            default_order="intent, state, service_id"
+                            decoration-bf="state in ['draft','on-hold']"
+                            decoration-muted="state in ['revoked']"
+                            decoration-success="state == 'completed'"
+                        >
+                            <field name="id" invisible="1" />
+                            <field name="patient_id" invisible="1" />
+                            <field name="encounter_id" invisible="1" />
+                            <field name="intent" width="0" optional="show" />
+                            <field name="display_name" width="10" class="oe_read_only" />
+                            <field name="service_id" width="10" class="oe_edit_only" />
+                            <field name="priority" optional="hide" />
+                            <field name="state" optional="show" />
+                            <button
+                                type="object"
+                                name="action_approve"
+                                icon="fa-play"
+                                class="text-primary"
+                                width="0"
+                                attrs="{'invisible': ['|', ('id', '=', False), ('state', 'not in', ['draft'])]}"
+                            />
+                            <button
+                                type="object"
+                                name="action_complete"
+                                icon="fa-check"
+                                class="text-success"
+                                width="0"
+                                attrs="{'invisible': ['|', ('id', '=', False), ('state', 'not in', ['active', 'on-hold'])]}"
+                            />
+                            <button
+                                type="object"
+                                name="action_revoke"
+                                icon="fa-times"
+                                class="text-danger"
+                                width="0"
+                                attrs="{'invisible': ['|', ('id', '=', False), ('state', 'not in', ['active', 'on-hold'])]}"
+                            />
+                        </tree>
+                    </field>
+                    <button name="open_service_request" string="See More" type="object" />
+                </page>
             </xpath>
         </field>
     </record>

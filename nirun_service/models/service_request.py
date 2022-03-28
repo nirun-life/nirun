@@ -30,6 +30,17 @@ class ServiceRequest(models.Model):
         required=True,
         tracking=True,
     )
+    intent = fields.Selection(
+        [
+            ("order", "Order"),
+            ("plan", "Plan"),
+            ("proposal", "Proposal"),
+            ("option", "Option"),
+        ],
+        default="order",
+        required=True,
+        tracking=True,
+    )
     state = fields.Selection(
         [
             ("draft", "Request"),
@@ -70,7 +81,9 @@ class ServiceRequest(models.Model):
     def _get_name(self):
         self.ensure_one()
         rec = self
-        name = "#{} - {}".format(rec.id, rec.service_id.name)
+        name = rec.service_id.name
+        if self._context.get("show_id"):
+            name = "#{} - {}".format(rec.id, name)
         if self._context.get("show_state"):
             name = "{} [{}]".format(name, rec._get_state_label())
         if self._context.get("show_patient"):
