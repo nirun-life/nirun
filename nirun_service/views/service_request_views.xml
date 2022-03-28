@@ -43,6 +43,11 @@
         <field name="name">Service Requests</field>
         <field name="res_model">ni.service.request</field>
         <field name="view_mode">tree,form,pivot,graph</field>
+    </record>
+    <record id="service_request_action_by_service" model="ir.actions.act_window">
+        <field name="name">Service Requests</field>
+        <field name="res_model">ni.service.request</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
         <field name="context">{'search_default_group_by_service': True}</field>
     </record>
     <record id="service_request_view_search" model="ir.ui.view">
@@ -63,6 +68,7 @@
                     <filter name="group_by_encounter" string="Encounter" context="{'group_by': 'encounter_id'}" />
                     <filter name="group_by_service" string="Healthcare Service" context="{'group_by': 'service_id'}" />
                     <separator />
+                    <filter name="group_by_intent" string="Intent" context="{'group_by': 'intent'}" />
                     <filter name="group_by_state" string="State" context="{'group_by': 'state'}" />
                 </group>
             </search>
@@ -117,22 +123,37 @@
                         title="Completed"
                     />
                     <field name="id" invisible="1" />
-                    <group>
+                    <div class="oe_title" style="max-width:85%;">
+                        <label for="service_id" />
                         <h2>
-                            <field name="service_id" nolabel="1" placeholder="Healthcare Service" />
+                            <field name="service_id" class="w-100" nolabel="True" placeholder="Healthcare Service" />
                         </h2>
-                    </group>
+                        <div>
+                            <span class="fa fa-clock-o ml-2" />
+                            <field name="duration" class="mx-1" />
+                        </div>
+                    </div>
                     <group>
                         <group>
-                            <field name="patient_id" />
-                            <field name="encounter_id" required="1" />
-                            <field name="requester_id" />
-                        </group>
-                        <group>
-                            <field name="priority" widget="priority" />
+                            <field name="patient_id" invisible="context.get('default_patient_id', False)" />
+                            <field
+                                name="encounter_id"
+                                required="1"
+                                invisible="context.get('default_encounter_id', False)"
+                                context="{'show_patient': True}"
+                            />
                             <field name="period_start" required="1" />
                             <field name="period_end" />
-                            <field name="company_id" groups="base.group_multi_company" placeholder="Company" />
+                        </group>
+                        <group>
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                invisible="context.get('default_patient_id', False)"
+                            />
+                            <field name="priority" />
+                            <field name="intent" />
+                            <field name="requester_id" />
                         </group>
                     </group>
                     <notebook>
@@ -168,21 +189,50 @@
         <field name="arch" type="xml">
             <tree
                 decoration-bf="state in ['draft','on-hold']"
-                decoration-muted="state in ['revoked','entered-in-error']"
+                decoration-muted="state in ['revoked']"
                 decoration-success="state == 'completed'"
                 expand="True"
             >
+                <field name="id" invisible="1" />
+                <field name="patient_id" invisible="context.get('default_patient_id', False)" />
+                <field name="encounter_id" invisible="context.get('default_encounter_id', False)" optional="show" />
                 <field name="service_id" />
-                <field name="patient_id" />
-                <field name="encounter_id" optional="show" />
-                <field name="priority" optional="show" widget="priority" />
-                <field name="period_start" optional="show" />
+                <field
+                    name="category_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color', 'limit':3}"
+                    optional="show"
+                />
+                <field name="intent" invisible="context.get('search_default_group_by_intent', False)" optional="show" />
+                <field name="priority" optional="show" />
+                <field name="period_start" optional="hide" />
                 <field name="period_end" optional="hide" />
-                <field name="duration" optional="hide" />
+                <field name="duration" optional="show" />
                 <field name="requester_id" optional="hide" />
                 <field name="approve_uid" optional="hide" />
-                <field name="state" />
+                <field name="state" optional="show" />
                 <field name="company_id" groups="base.group_multi_company" />
+                <button
+                    type="object"
+                    name="action_approve"
+                    icon="fa-play"
+                    class="text-primary"
+                    attrs="{'invisible': ['|', ('id', '=', False), ('state', 'not in', ['draft'])]}"
+                />
+                <button
+                    type="object"
+                    name="action_complete"
+                    icon="fa-check"
+                    class="text-success"
+                    attrs="{'invisible': ['|', ('id', '=', False), ('state', 'not in', ['active', 'on-hold'])]}"
+                />
+                <button
+                    type="object"
+                    name="action_revoke"
+                    icon="fa-times"
+                    class="text-danger"
+                    attrs="{'invisible': ['|', ('id', '=', False), ('state', 'not in', ['active', 'on-hold'])]}"
+                />
             </tree>
         </field>
     </record>

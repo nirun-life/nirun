@@ -37,10 +37,7 @@ class Encounter(models.Model):
         ctx = dict(self.env.context)
         ctx.update(
             {
-                "search_default_patient_id": enc.patient_id.id,
-                "search_default_active": True,
-                "search_default_group_by_patient": True,
-                "search_default_group_by_encounter": True,
+                "search_default_group_by_intent": True,
                 "default_patient_id": enc.patient_id.id,
                 "default_encounter_id": enc.id,
             }
@@ -48,4 +45,4 @@ class Encounter(models.Model):
         action = self.env["ir.actions.act_window"].for_xml_id(
             "nirun_service", "service_request_action"
         )
-        return dict(action, context=ctx)
+        return dict(action, context=ctx, domain=[("encounter_id", "=", enc.id)])
