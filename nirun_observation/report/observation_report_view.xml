@@ -5,15 +5,15 @@
 <odoo>
     <record id="encounter_ob_line_action" model="ir.actions.act_window">
         <field name="name">Observation Detail</field>
-        <field name="res_model">ni.encounter.observation.line</field>
+        <field name="res_model">ni.encounter.observation</field>
         <field name="view_mode">graph,pivot</field>
     </record>
     <record id="encounter_ob_line_view_search" model="ir.ui.view">
         <field name="name">encounter.ob.line.view.search</field>
-        <field name="model">ni.encounter.observation.line</field>
+        <field name="model">ni.encounter.observation</field>
         <field name="arch" type="xml">
             <search>
-                <field name="observation_id" />
+                <field name="sheet_id" />
                 <field name="patient_id" />
                 <field name="type_id" />
                 <field name="interpretation_id" operator="child_of" />
@@ -39,7 +39,7 @@
                     <filter name="Patient" context="{'group_by': 'patient_id'}" />
                     <filter name="Encounter" context="{'group_by': 'encounter_id'}" />
                     <separator />
-                    <filter name="Task" context="{'group_by': 'observation_id'}" />
+                    <filter name="Task" context="{'group_by': 'sheet_id'}" />
                     <filter name="Type" context="{'group_by': 'type_id'}" />
                 </group>
             </search>
@@ -47,7 +47,7 @@
     </record>
     <record id="encounter_ob_line_view_graph" model="ir.ui.view">
         <field name="name">encounter.ob.line.view.graph</field>
-        <field name="model">ni.encounter.observation.line</field>
+        <field name="model">ni.encounter.observation</field>
         <field name="arch" type="xml">
             <graph stacked="False" type="bar">
                 <field name="effective_date" interval="day" />
@@ -58,7 +58,7 @@
     </record>
     <record id="encounter_ob_line_view_tree" model="ir.ui.view">
         <field name="name">encounter.ob.line.view.tree</field>
-        <field name="model">ni.encounter.observation.line</field>
+        <field name="model">ni.encounter.observation</field>
         <field name="arch" type="xml">
             <tree
                 decoration-danger="display_class == 'danger'"
@@ -77,20 +77,19 @@
                 <field name="value" />
                 <field name="unit" />
                 <field name="interpretation_id" />
-                <field name="effective_date" optional="show" />
-                <field name="display_class" invisible="True" />
+                <field name="display_class" invisible="1" />
                 <button name="action_graph_view" string="View Graph" icon="fa-bar-chart" type="object" />
             </tree>
         </field>
     </record>
     <record id="encounter_ob_line_view_form" model="ir.ui.view">
         <field name="name">encounter.ob.line.view.form</field>
-        <field name="model">ni.encounter.observation.line</field>
+        <field name="model">ni.encounter.observation</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
                     <group>
-                        <field name="observation_id" />
+                        <field name="sheet_id" />
                         <field name="patient_id" />
                         <group>
                             <field name="type_id" widget="radio" />
