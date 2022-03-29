@@ -3,7 +3,7 @@
 from odoo import _, api, fields, models
 
 
-class Interpretation(models.Model):
+class ObservationInterpretation(models.Model):
     _name = "ni.observation.interpretation"
     _description = "Interpretation"
     _inherit = ["coding.base"]
