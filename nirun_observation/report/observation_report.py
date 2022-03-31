@@ -19,8 +19,13 @@ class EncounterObservationLatest(models.Model):
     category_id = fields.Many2one(related="type_id.category_id", readonly=True)
     value = fields.Float(group_operator="avg", readonly=True)
     unit = fields.Many2one(related="type_id.unit")
-    interpretation_id = fields.Many2one("ni.observation.interpretation", readonly=True,)
-    display_class = fields.Selection(related="interpretation_id.display_class",)
+    interpretation_id = fields.Many2one(
+        "ni.observation.interpretation",
+        readonly=True,
+    )
+    display_class = fields.Selection(
+        related="interpretation_id.display_class",
+    )
 
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)

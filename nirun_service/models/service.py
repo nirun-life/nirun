@@ -84,7 +84,9 @@ class HealthcareService(models.Model):
     def _count_active_request(self):
         _domain = [("service_id", "in", self.ids), ("state", "=", "active")]
         req = self.env["ni.service.request"].read_group(
-            _domain, ["service_id"], ["service_id"],
+            _domain,
+            ["service_id"],
+            ["service_id"],
         )
         return {data["service_id"][0]: data["service_id_count"] for data in req}
 

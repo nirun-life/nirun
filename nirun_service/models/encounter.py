@@ -27,7 +27,11 @@ class Encounter(models.Model):
         read = (
             self.env["ni.service.request"]
             .sudo()
-            .read_group(domain, ["encounter_id"], ["encounter_id"],)
+            .read_group(
+                domain,
+                ["encounter_id"],
+                ["encounter_id"],
+            )
         )
         return {data["encounter_id"][0]: data["encounter_id_count"] for data in read}
 

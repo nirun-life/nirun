@@ -20,7 +20,9 @@ class Encounter(models.Model):
     _order = "name DESC"
 
     company_id = fields.Many2one(
-        related="patient_id.company_id", index=True, store=True,
+        related="patient_id.company_id",
+        index=True,
+        store=True,
     )
     name = fields.Char(
         "Encounter No.",
@@ -96,7 +98,10 @@ class Encounter(models.Model):
         tracking=True,
     )
     location_history_ids = fields.One2many(
-        "ni.encounter.location.rel", "encounter_id", states=LOCK_STATE_DICT, copy=True,
+        "ni.encounter.location.rel",
+        "encounter_id",
+        states=LOCK_STATE_DICT,
+        copy=True,
     )
     location_history_count = fields.Integer(
         string="Location", compute="_compute_location_history_count", store=True
@@ -139,7 +144,9 @@ class Encounter(models.Model):
         "If the value is absent, then this is not identified as a readmission",
     )
     re_admit_reason = fields.Text(
-        "Re-Admission Reason", states=LOCK_STATE_DICT, tracking=True,
+        "Re-Admission Reason",
+        states=LOCK_STATE_DICT,
+        tracking=True,
     )
     diet_ids = fields.Many2many(
         "ni.encounter.diet",
@@ -288,7 +295,9 @@ class Encounter(models.Model):
                     _("Primary and Secondary performer should not be the same person")
                 )
 
-    @api.constrains("consultant_id",)
+    @api.constrains(
+        "consultant_id",
+    )
     def _check_consultant_id(self):
         for rec in self:
             if not rec.consultant_id:

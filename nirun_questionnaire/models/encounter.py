@@ -46,8 +46,8 @@ class Encounter(models.Model):
         return action
 
     def action_print_survey(self):
-        """ If response is available then print this response otherwise print
-        survey form (print template of the survey) """
+        """If response is available then print this response otherwise print
+        survey form (print template of the survey)"""
         self.ensure_one()
         if not self.response_id:
             return self.survey_id.action_print_survey()

@@ -42,7 +42,10 @@ class SurveyUserInput(models.Model):
         if survey_input.survey_id.scoring_type != "no_scoring":
             name = "{} | {}%".format(name, survey_input.quizz_score)
         if survey_input.quizz_grade_id:
-            name = "{} ({})".format(name, survey_input.quizz_grade_id.display_name,)
+            name = "{} ({})".format(
+                name,
+                survey_input.quizz_grade_id.display_name,
+            )
         if self.env.context.get("show_survey"):
             name = "{}: {}".format(survey_input.survey_id.display_name, name)
         return name

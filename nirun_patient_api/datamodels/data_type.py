@@ -9,7 +9,10 @@ from odoo.addons.datamodel.fields import NestedModel
 class ResourceSchema(Datamodel):
     _name = "ni.rest.resource"
 
-    id = fields.Integer(required=True, allow_none=False,)
+    id = fields.Integer(
+        required=True,
+        allow_none=False,
+    )
     meta = NestedModel("ni.rest.meta")
 
     def _from(self, rec):

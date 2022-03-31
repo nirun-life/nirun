@@ -26,7 +26,11 @@ class CareplanTemplateGoal(models.Model):
     company_id = fields.Many2one(related="careplan_id.company_id", store=True)
     state = fields.Selection(default="proposed", compute=False)
     _sql_constraints = [
-        ("code__uniq", "unique (careplan_id, code_id)", "Goal must be unqiue!",),
+        (
+            "code__uniq",
+            "unique (careplan_id, code_id)",
+            "Goal must be unqiue!",
+        ),
     ]
 
     def copy_data(self, default=None):
@@ -80,7 +84,8 @@ class CareplanTemplate(models.Model):
     period_end = fields.Date(copy=False)
 
     category_ids = fields.Many2many(
-        "ni.careplan.category", "ni_careplan_template_category_rel",
+        "ni.careplan.category",
+        "ni_careplan_template_category_rel",
     )
     condition_ids = fields.Many2many(
         "ni.condition",
@@ -90,10 +95,16 @@ class CareplanTemplate(models.Model):
         copy=False,
     )
     activity_ids = fields.One2many(
-        "ni.careplan.template.activity", "careplan_id", readonly=False, states={},
+        "ni.careplan.template.activity",
+        "careplan_id",
+        readonly=False,
+        states={},
     )
     goal_ids = fields.One2many(
-        "ni.careplan.template.goal", "careplan_id", readonly=False, states={},
+        "ni.careplan.template.goal",
+        "careplan_id",
+        readonly=False,
+        states={},
     )
 
     def name_get(self):

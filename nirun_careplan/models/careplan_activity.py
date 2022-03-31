@@ -18,9 +18,14 @@ class CareplanActivity(models.Model):
     patient_id = fields.Many2one(
         "ni.patient", related="careplan_id.patient_id", store=True
     )
-    encounter_id = fields.Many2one("ni.encounter", related="careplan_id.encounter_id",)
+    encounter_id = fields.Many2one(
+        "ni.encounter",
+        related="careplan_id.encounter_id",
+    )
     manager_id = fields.Many2one(
-        string="Care Manager", related="careplan_id.manager_id", readonly=True,
+        string="Care Manager",
+        related="careplan_id.manager_id",
+        readonly=True,
     )
     goal_id = fields.Many2one("ni.careplan.goal", index=True, ondelete="set null")
 

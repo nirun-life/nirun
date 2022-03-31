@@ -53,7 +53,11 @@ class Activity(models.AbstractModel):
         group_expand="_group_expand_state",
     )
     _sql_constraints = [
-        ("code__uniq", "unique (careplan_id, code_id)", "Activity must be unqiue!",),
+        (
+            "code__uniq",
+            "unique (careplan_id, code_id)",
+            "Activity must be unqiue!",
+        ),
     ]
 
     @api.model

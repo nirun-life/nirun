@@ -450,8 +450,8 @@ class TimingMixin(models.AbstractModel):
         return self.env["ni.timing.template"].browse(ids)
 
     def unlink(self):
-        """ Override unlink to delete timing. This cannot be
-            cascaded, because link is done through (res_model, res_id). """
+        """Override unlink to delete timing. This cannot be
+        cascaded, because link is done through (res_model, res_id)."""
         if not self:
             return True
         self.env["ni.timing"].search(

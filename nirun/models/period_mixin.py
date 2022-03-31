@@ -115,7 +115,7 @@ class PeriodMixin(models.AbstractModel):
             if record.period_end < record.period_start:
                 raise ValidationError(
                     _("(%s), End date (%s) should not set before start date (%s)")
-                    % (self._description, self.period_end, self.period_start,)
+                    % (self._description, self.period_end, self.period_start)
                 )
 
     def get_intercept_period(self, start, end, domain):
