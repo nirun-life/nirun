@@ -9,7 +9,9 @@ from odoo.exceptions import UserError
 class Patient(models.Model):
     _inherit = "ni.patient"
 
-    nationality_id = fields.Many2one(default=lambda self: self.env.ref("base.th"),)
+    nationality_id = fields.Many2one(
+        default=lambda self: self.env.ref("base.th"),
+    )
 
     _sql_constraints = [
         (

@@ -23,7 +23,11 @@ class Condition(models.Model):
         required=True,
     )
     code_id = fields.Many2one(
-        "ni.condition.code", "Name", required=True, ondelete="restrict", index=True,
+        "ni.condition.code",
+        "Name",
+        required=True,
+        ondelete="restrict",
+        index=True,
     )
     classification_id = fields.Many2one(
         "ni.condition.cls",

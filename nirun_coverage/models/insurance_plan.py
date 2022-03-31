@@ -44,7 +44,8 @@ class InsurancePlan(models.Model):
         return [(rec.id, rec._name_get()) for rec in self]
 
     @api.depends(
-        "name", "issuer_id",
+        "name",
+        "issuer_id",
     )
     def _compute_display_name(self):
         diff = dict(show_issuer=True, show_alias=None, show_code=None)

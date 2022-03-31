@@ -89,7 +89,10 @@ class Patient(models.Model):
         help="ID related to patient's nationality",
     )
     gender = fields.Selection(
-        tracking=True, related="partner_id.gender", readonly=False, store=True,
+        tracking=True,
+        related="partner_id.gender",
+        readonly=False,
+        store=True,
     )
     birthdate = fields.Date(
         "Date of Birth", related="partner_id.birthdate", readonly=False, tracking=True
@@ -184,7 +187,11 @@ class Patient(models.Model):
     active = fields.Boolean(default=True)
 
     _sql_constraints = [
-        ("code_uniq", "unique (company_id, code)", _("Code must be unique !"),),
+        (
+            "code_uniq",
+            "unique (company_id, code)",
+            _("Code must be unique !"),
+        ),
         (
             "partner_uniq",
             "unique (company_id, partner_id)",

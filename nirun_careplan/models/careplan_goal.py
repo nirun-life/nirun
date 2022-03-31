@@ -19,7 +19,10 @@ class CareplanGoal(models.Model):
         "ni.encounter", related="careplan_id.encounter_id", copy=False
     )
     company_id = fields.Many2one(
-        "res.company", related="careplan_id.company_id", copy=False, store=True,
+        "res.company",
+        related="careplan_id.company_id",
+        copy=False,
+        store=True,
     )
     condition_id = fields.Many2one("ni.condition", index=True, ondelete="set null")
     _sql_constraints = [

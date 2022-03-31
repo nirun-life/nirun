@@ -141,12 +141,16 @@ class Partner(models.Model):
 
     @api.constrains("birthdate")
     def _check_birthdate(self):
-        """ Not allow birthdates in the future. """
+        """Not allow birthdates in the future."""
         for record in self:
             if not record.birthdate:
                 continue
             if record.birthdate > fields.date.today():
-                raise ValidationError(_("Birthdate must not be in the future",))
+                raise ValidationError(
+                    _(
+                        "Birthdate must not be in the future",
+                    )
+                )
 
     @api.constrains("deceased_date")
     def _check_deceased_date(self):
@@ -154,9 +158,17 @@ class Partner(models.Model):
             if not record.deceased_date:
                 continue
             if record.deceased_date > fields.date.today():
-                raise ValidationError(_("Deceased date must not be in the future",))
+                raise ValidationError(
+                    _(
+                        "Deceased date must not be in the future",
+                    )
+                )
             if record.birthdate and record.deceased_date < record.birthdate:
-                raise ValidationError(_("Deceased date must not before birthdate",))
+                raise ValidationError(
+                    _(
+                        "Deceased date must not before birthdate",
+                    )
+                )
 
     @api.constrains("age")
     def _check_age(self):
