@@ -9,28 +9,28 @@ from odoo.addons.datamodel.fields import NestedModel
 
 
 class Observation(models.Model):
-    _inherit = "ni.observation"
+    _inherit = "ni.observation.sheet"
 
     def datamodel(self):
-        ob = self.env.datamodels["ni.rest.observation"]
+        ob = self.env.datamodels["ni.rest.observation.sheet"]
         rec = self[0] if len(self) > 1 else self
         return ob(partial=True)._from(rec)
 
     def datamodels(self):
-        ob = self.env.datamodels["ni.rest.observation"]
+        ob = self.env.datamodels["ni.rest.observation.sheet"]
         return [ob(partial=True)._from(rec) for rec in self]
 
 
 class ObservationSearchSchema(Datamodel):
-    _name = "ni.rest.observation.search"
+    _name = "ni.rest.observation.sheet.search"
 
     id = fields.Integer()
     patient_id = fields.Integer()
     limit = fields.Integer(missing=64)
 
 
-class ObservationSchema(Datamodel):
-    _name = "ni.rest.observation"
+class ObservationSheetSchema(Datamodel):
+    _name = "ni.rest.observation.sheet"
     _inherit = "ni.rest.resource"
 
     identifier = fields.String()
@@ -38,7 +38,7 @@ class ObservationSchema(Datamodel):
     encounter = NestedModel("ni.rest.reference")
     effective_date = fields.DateTime(required=True)
     self_perform = fields.Boolean()
-    lines = fields.List(NestedModel("ni.rest.observation.line"))
+    lines = fields.List(NestedModel("ni.rest.observation.sheet.line"))
     company = NestedModel("ni.rest.reference")
     note = fields.String()
 
@@ -53,15 +53,15 @@ class ObservationSchema(Datamodel):
         self.company = ref(id=rec.company_id.id, name=rec.company_id.name)
         if rec.encounter_id:
             self.encounter = ref(id=rec.encounter_id.id, name=rec.encounter_id.name)
-        if rec.lines:
-            line = self.env.datamodels["ni.rest.observation.line"]
-            self.lines = [line(partial=True)._from(l) for l in rec.lines]
+        if rec.observation_ids:
+            line = self.env.datamodels["ni.rest.observation.sheet.line"]
+            self.lines = [line(partial=True)._from(l) for l in rec.observation_ids]
 
         return self
 
 
-class ObservationLineSchema(Datamodel):
-    _name = "ni.rest.observation.line"
+class ObservationSheetLineSchema(Datamodel):
+    _name = "ni.rest.observation.sheet.line"
 
     id = fields.Integer()
     type = NestedModel("ni.rest.coding", require=True)

@@ -5,9 +5,9 @@ from odoo.addons.base_rest_datamodel.restapi import Datamodel
 from odoo.addons.component.core import Component
 
 
-class ObservationService(Component):
+class ObservationSheetService(Component):
     _inherit = "base.rest.service"
-    _name = "ni.rest.services.observation"
+    _name = "ni.rest.services.observation.sheet"
     _usage = "observation"
     _collection = "ni.rest.services"
     _description = """
@@ -16,7 +16,7 @@ class ObservationService(Component):
 
     @restapi.method(
         [(["/<int:id>/get", "/<int:id>"], "GET")],
-        output_param=Datamodel("ni.rest.observation"),
+        output_param=Datamodel("ni.rest.observation.sheet"),
     )
     def get(self, _id):
         """
@@ -27,8 +27,8 @@ class ObservationService(Component):
 
     @restapi.method(
         [(["/", "/search"], "GET")],
-        input_param=Datamodel("ni.rest.observation.search"),
-        output_param=Datamodel("ni.rest.observation", is_list=True),
+        input_param=Datamodel("ni.rest.observation.sheet.search"),
+        output_param=Datamodel("ni.rest.observation.sheet", is_list=True),
     )
     def search(self, ob_search_param):
         """
@@ -39,24 +39,28 @@ class ObservationService(Component):
             domain.append(("patient_id", "=", ob_search_param.patient_id))
         if ob_search_param.id:
             domain.append(("id", "=", ob_search_param.id))
-        res = self.env["ni.observation"].search(domain, limit=ob_search_param.limit)
+        res = self.env["ni.observation.sheet"].search(
+            domain, limit=ob_search_param.limit
+        )
         return res.datamodels()
 
     @restapi.method(
         [(["/"], "POST")],
-        input_param=Datamodel("ni.rest.observation"),
-        output_param=Datamodel("ni.rest.observation"),
+        input_param=Datamodel("ni.rest.observation.sheet"),
+        output_param=Datamodel("ni.rest.observation.sheet"),
     )
     # pylint:disable=method-required-super
     def create(self, params):
         """
         Create a new observation
         """
-        ob = self.env["ni.observation"].create(self._prepare_params(params.dump()))
+        ob = self.env["ni.observation.sheet"].create(
+            self._prepare_params(params.dump())
+        )
         return ob.datamodel()
 
     def _get(self, _id: int):
-        return self.env["ni.observation"].browse(_id)
+        return self.env["ni.observation.sheet"].browse(_id)
 
     def _prepare_params(self, params):
         for key in ["patient", "encounter"]:
@@ -67,18 +71,22 @@ class ObservationService(Component):
         if "identifier" in params:
             params["name"] = params.pop("identifier")
         params["effective_date"] = params.get("effective_date").replace("T", " ", 1)
-        params["lines"] = [
-            (0, 0, self._prepare_line_params(l)) for l in params.get("lines")
+        params["observation_ids"] = [
+            (0, 0, self._prepare_line_params(l, params)) for l in params.get("lines")
         ]
+        del params["lines"]
         return params
 
-    def _prepare_line_params(self, params):
+    def _prepare_line_params(self, line, params):
         for ref in ["type"]:
-            if ref in params:
-                val = params.pop(ref)
+            if ref in line:
+                val = line.pop(ref)
                 if val.get("id"):
-                    params["%s_id" % ref] = val["id"]
-        for rm in ["unit", "interpretation"]:
-            if rm in params:
-                params.pop(rm)
-        return params
+                    line["%s_id" % ref] = val["id"]
+        for rmv in ["unit", "interpretation"]:
+            if rmv in line:
+                line.pop(rmv)
+        line["patient_id"] = params["patient_id"]
+        if "encounter_id" in params:
+            line["encounter_id"] = params["encounter_id"]
+        return line
