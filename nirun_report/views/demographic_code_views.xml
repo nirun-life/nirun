@@ -54,13 +54,40 @@
                             <field name="parent_id" />
                         </group>
                         <group>
-                            <field name="type" widget="radio" />
-                            <field name="res_model" />
-                            <field name="domain" />
-                            <field name="filter" attrs="{'readonly': [('type', '=', 'read_group')]}" />
+                            <field name="company_ids" widget="many2many_tags" />
                         </group>
                     </group>
-                    <field name="definition" placeholder="Definition" />
+                    <notebook>
+                        <page string="Settings">
+                            <group>
+                                <group string="Query">
+                                    <label for="res_model_id" />
+                                    <div>
+                                        <field
+                                            name="res_model_id"
+                                            attrs="{'required':[('res_model','=', False)]}"
+                                            placeholder="Partner"
+                                        />
+                                        <br />
+                                        <field
+                                            name="res_model"
+                                            attrs="{'required':[('res_model_id','=', False)]}"
+                                            placeholder="res.partner"
+                                            class="oe_edit_only"
+                                        />
+                                    </div>
+                                    <field name="domain" widget="domain" options="{'model': 'res_model'}" />
+                                </group>
+                                <group string="Result">
+                                    <field name="type" widget="radio" />
+                                    <field name="filter" attrs="{'readonly': [('type', '=', 'read_group')]}" />
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Definication">
+                            <field name="definition" placeholder="Definition" />
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
