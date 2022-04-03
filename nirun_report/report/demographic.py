@@ -154,7 +154,7 @@ class DemographicCode(models.Model):
     _name = "ni.report.demographic.code"
     _description = "Demographic Topic"
     _inherit = ["coding.base"]
-    _order = "parent_path"
+    _order = "sequence"
     _parent_store = True
 
     name = fields.Char("Topic")
@@ -164,6 +164,10 @@ class DemographicCode(models.Model):
     parent_id = fields.Many2one(
         "ni.report.demographic.code", "Subject", domain="[('parent_id', '=', False)]"
     )
+    company_ids = fields.Many2many(
+        "res.company",
+        help="Companies can use this topic, when left empty the topic is public",
+    )
     parent_path = fields.Char(index=True)
     type = fields.Selection(
         [("read_group", "Group"), ("search", "Search")],
@@ -171,13 +175,33 @@ class DemographicCode(models.Model):
         help="""'Group' use GROUP BY gender,
         Search slower than Group by but provide mode flexibility""",
     )
-    res_model = fields.Char(required=True)
+    res_model = fields.Char(
+        "Model",
+        compute="_compute_res_model",
+        required=True,
+        inverse="_inverse_res_model",
+    )
+    res_model_id = fields.Many2one("ir.model", "Model", required=True)
     domain = fields.Text(default="[]", help="Use to query on database")
     filter = fields.Text(
         default="[]",
         help="domain pattern for filter retrieved records with python "
         "(after 'domain' was used)",
     )
+
+    @api.onchange("res_model_id")
+    @api.depends("res_model_id")
+    def _compute_res_model(self):
+        for rec in self:
+            rec.res_model = rec.res_model_id.model if rec.res_model_id else False
+
+    def _inverse_res_model(self):
+        for rec in self:
+            if rec.res_model and not rec.res_model_id:
+                model = self.env["ir.model"].search(
+                    [("model", "=", rec.res_model)], limit=1
+                )
+                rec.res_model_id = model if model else False
 
     @api.constrains("domain")
     def check_domain(self):
