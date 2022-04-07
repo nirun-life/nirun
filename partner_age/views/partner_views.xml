@@ -10,14 +10,14 @@
         <field name="priority">1</field>
         <field name="arch" type="xml">
             <field name="title" position="after">
-                <!-- <field> for  `display_age` and `age_years` with class oe_read|edit_only not hide label
+                <!-- <field> for  `display_age` and `age` with class oe_read|edit_only not hide label
                 ~ so we separate it to `label > div > field`
                 -->
                 <label class="oe_read_only" for="display_age" />
                 <div class="oe_read_only">
                     <field name="display_age" />
                 </div>
-                <label attrs="{'invisible': [('birthdate', '!=', False)]}" class="oe_edit_only" for="age_years" />
+                <label attrs="{'invisible': [('birthdate', '!=', False)]}" class="oe_edit_only" for="age" />
                 <div class="oe_edit_only">
                     <field name="age" attrs="{'invisible': [('birthdate', '!=', False)]}" />
                 </div>
