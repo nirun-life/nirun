@@ -23,15 +23,6 @@ class Partner(models.Model):
         store=True,
         readonly=False,
         group_operator="avg",
-        help="Deprecated field",
-    )
-    age_years = fields.Integer(
-        "Age (years)",
-        compute="_compute_age",
-        compute_sudo=True,
-        store=True,
-        readonly=False,
-        help="Deprecated field",
     )
     age_init = fields.Integer(
         "Age (Years) Input", help="Internal: Age (years) input value", readonly=True
@@ -81,7 +72,7 @@ class Partner(models.Model):
             elif rec.age_init:
                 rec._compute_age_from_init()
             else:
-                rec.update({"age_years": 0, "age": 0, "display_age": None})
+                rec.update({"age": 0, "display_age": None})
 
     def _compute_age_from_init(self):
         for rec in self:
@@ -97,7 +88,6 @@ class Partner(models.Model):
                 if rec.age != year:
                     # check this for reduce chance to call `_inverse_age()`
                     rec.age = year
-                    rec.age_years = year
 
     def _compute_age_from_birthdate(self):
         for rec in self:
@@ -112,7 +102,6 @@ class Partner(models.Model):
                 if rec.age != rd.years:
                     # check this for reduce chance to call `_inverse_age()`
                     rec.age = rd.years
-                    rec.age_years = rd.years
 
     @api.model
     def _format_age(self, delta):

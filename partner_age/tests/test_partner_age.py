@@ -22,14 +22,14 @@ class TestPartnerAge(common.TransactionCase):
         self.assertEqual(partner.age, 34)
         self.assertEqual(partner.deceased, False)
 
-    def test_age_from_age_years(self):
+    def test_age_from_age(self):
         partner = self.partners.create({"name": "partner", "age": 34})
 
         self.assertEqual(partner.display_age, "34 Years")
         self.assertEqual(partner.age_init, 34)
         self.assertEqual(partner.age_init_date, self.today)
 
-    def test_update_from_age_years_to_birthdate(self):
+    def test_update_from_age_to_birthdate(self):
         partner = self.partners.create({"name": "partner", "age": 34})
 
         partner.update({"birthdate": self.today - relativedelta(years=36)})
@@ -38,7 +38,7 @@ class TestPartnerAge(common.TransactionCase):
         self.assertFalse(partner.age_init)
         self.assertFalse(partner.age_init_date)
 
-    def test_update_from_birthdate_to_age_years(self):
+    def test_update_from_birthdate_to_age(self):
         partner = self.partners.create(
             {"name": "partner", "birthdate": self.today - relativedelta(years=36)}
         )
