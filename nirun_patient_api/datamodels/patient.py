@@ -64,8 +64,8 @@ class PatientInfo(Datamodel):
 
         if patient.gender:
             self.gender = patient.gender
-        if patient.age_years:
-            self.age = patient.age_years
+        if patient.age:
+            self.age = patient.age
         if patient.birthdate:
             self.birthdate = patient.birthdate
         if patient.deceased:

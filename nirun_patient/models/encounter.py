@@ -54,7 +54,7 @@ class Encounter(models.Model):
         auto_join=True,
     )
     patient_gender = fields.Selection(related="patient_id.gender", store=True)
-    patient_age = fields.Integer(related="patient_id.age_years", store=True)
+    patient_age = fields.Integer(related="patient_id.age", store=True)
 
     partner_id = fields.Many2one(
         related="patient_id.partner_id",
