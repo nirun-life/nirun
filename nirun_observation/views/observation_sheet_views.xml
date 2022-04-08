@@ -130,10 +130,30 @@
                             <field
                                 name="observation_ids"
                                 context="{'default_sheet_id':id, 'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_effective_date': effective_date}"
-                            />
+                            >
+                                <tree
+                                    decoration-danger="display_class == 'danger'"
+                                    decoration-info="display_class == 'info'"
+                                    decoration-muted="display_class == 'muted'"
+                                    decoration-primary="display_class == 'primary'"
+                                    decoration-success="display_class == 'success'"
+                                    decoration-warning="display_class == 'warning'"
+                                    editable="bottom"
+                                    default_order="sequence"
+                                >
+                                    <field name="sequence" widget="handle" />
+                                    <field name="category_id" optional="hide" />
+                                    <field name="type_id" />
+                                    <field name="value" />
+                                    <field name="unit" />
+                                    <field name="interpretation_id" />
+                                    <field name="display_class" invisible="True" />
+                                    <button name="view_graph" string="View Graph" icon="fa-bar-chart" type="object" />
+                                </tree>
+                            </field>
                         </page>
                         <page string="Note">
-                            <field name="note" />
+                            <field name="note" placeholder="Additional Note..." />
                         </page>
                     </notebook>
                 </sheet>

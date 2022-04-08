@@ -16,7 +16,6 @@ class ObservationSheet(models.Model):
         index=True,
         default=lambda self: self._sequence_default,
     )
-    patient_age_years = fields.Integer(related="patient_id.age_years")
     performer_ref = fields.Reference(
         [("ni.patient", "Patient"), ("hr.employee", "Practitioner")],
         string="Performer",
@@ -70,4 +69,6 @@ class ObservationSheet(models.Model):
         return {
             "sheet_id": self.id,
             "type_id": type_id.id,
+            "patient_id": self.patient_id.id,
+            "encounter_id": self.encounter_id.id,
         }
