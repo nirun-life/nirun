@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-27 08:55+0000\n"
-"PO-Revision-Date: 2022-03-27 08:55+0000\n"
+"POT-Creation-Date: 2022-04-11 04:45+0000\n"
+"PO-Revision-Date: 2022-04-11 04:45+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -108,7 +108,7 @@ msgid ""
 msgstr ""
 
 #. module: nirun_observation
-#: code:addons/nirun_observation/models/observation_line.py:0
+#: code:addons/nirun_observation/models/observation.py:0
 #, python-format
 msgid "%s %s is out of acceptable range [%d-%d]"
 msgstr "%s %s มีค่าเกินขอบเขตที่ควรจะเป็น [%d-%d]"
@@ -124,30 +124,35 @@ msgid "Above high threshold"
 msgstr "สูงกว่าเกณฑ์"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__active
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_category__active
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_interpretation__active
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__active
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__active
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type__active
 msgid "Active"
 msgstr "เปิดใช้งาน"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__patient_age_years
-msgid "Age (years)"
-msgstr "อายุ (ปี)"
+#: model:ni.observation.category,name:nirun_observation.category_activity
+msgid "Activity"
+msgstr "กิจกรรม"
 
 #. module: nirun_observation
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_form
+msgid "Additional Note..."
+msgstr "เพิ่มเติมรายละเอียด..."
+
+#. module: nirun_observation
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_form
 msgid "Apply"
 msgstr "นำไปใช้"
 
 #. module: nirun_observation
 #: model_terms:ir.ui.view,arch_db:nirun_observation.interpretation_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_observation.ob_category_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_observation.ob_type_view_form
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_form
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_observation.reference_range_view_form
 msgid "Archived"
 msgstr "ถูกเก็บ"
@@ -173,9 +178,9 @@ msgid "Body Weight"
 msgstr "น้ําหนักตัว"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__category_id
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__category_ids
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__category_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__category_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__category_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__category_ids
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type__category_id
 #: model:ir.ui.menu,name:nirun_observation.observation_category_menu
 msgid "Category"
@@ -196,9 +201,9 @@ msgid "Color"
 msgstr "สี"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__company_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__company_id
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__company_id
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__company_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__company_id
 msgid "Company"
 msgstr "บริษัท"
 
@@ -211,8 +216,8 @@ msgstr "การตั้งค่า"
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__create_uid
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_category__create_uid
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_interpretation__create_uid
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__create_uid
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__create_uid
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__create_uid
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type__create_uid
 msgid "Created by"
 msgstr "สร้างโดย"
@@ -221,8 +226,8 @@ msgstr "สร้างโดย"
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__create_date
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_category__create_date
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_interpretation__create_date
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__create_date
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__create_date
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__create_date
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type__create_date
 msgid "Created on"
 msgstr "สร้างเมื่อ"
@@ -258,7 +263,7 @@ msgid "Definition"
 msgstr "คำนิยาม"
 
 #. module: nirun_observation
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_form
 msgid "Detail"
 msgstr "รายละเอียด"
 
@@ -268,49 +273,49 @@ msgid "Diastolic blood pressure (DIA)"
 msgstr "ความดันโลหิตตัวล่าง (DIA)"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__display_class
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__display_class
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__display_class
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_interpretation__display_class
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__display_class
 msgid "Display Class"
 msgstr ""
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__display_name
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__display_name
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__display_name
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_category__display_name
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_interpretation__display_name
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__display_name
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__display_name
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__display_name
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type__display_name
 msgid "Display Name"
 msgstr "ชื่อที่ใช้แสดง"
 
 #. module: nirun_observation
-#: model:ir.model.constraint,message:nirun_observation.constraint_ni_observation_line_type__uniq
+#: model:ir.model.constraint,message:nirun_observation.constraint_ni_observation_type__uniq
 msgid "Duplication observation type!"
-msgstr "รายการข้อมูลซ้ำ"
+msgstr "ประเภทการตรวจซ้ำ!"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__effective_date
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__effective_date
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__effective_date
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__effective_date
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__effective_date
 msgid "Effective Date"
 msgstr "วันเวลาที่ตรวจวัด"
 
 #. module: nirun_observation
 #: model:ir.model,name:nirun_observation.model_ni_encounter
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__encounter_id
 msgid "Encounter"
 msgstr "ข้อมูลรับบริการ"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__encounter_id
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__encounter_id
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__encounter_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__encounter_id
 msgid "Encounter No."
 msgstr "รหัสรับบริการ"
 
 #. module: nirun_observation
-#: code:addons/nirun_observation/models/interpretation.py:0
+#: code:addons/nirun_observation/models/observation_interpretation.py:0
 #, python-format
 msgid "Error! You cannot create recursive data."
 msgstr ""
@@ -333,14 +338,18 @@ msgid "Extra Info"
 msgstr "ข้อมูลอื่นๆ"
 
 #. module: nirun_observation
-#: model:ir.ui.menu,name:nirun_observation.observation_line_menu
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_form
+#: model:ni.observation.type,name:nirun_observation.type_fbs
+msgid "Fasting Blood Sugar"
+msgstr "น้ำตาลในเลือด (FBS)"
+
+#. module: nirun_observation
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_form
 msgid "Graph"
-msgstr "กราฟ"
+msgstr "แนวโน้ม"
 
 #. module: nirun_observation
 #: model_terms:ir.ui.view,arch_db:nirun_observation.encounter_ob_line_view_search
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_line_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_search
 msgid "Group By"
 msgstr "จัดกลุ่มโดย"
@@ -351,26 +360,31 @@ msgid "Heart Rate (Pulse)"
 msgstr "อัตราการเต้นหัวใจ (ชีพจร)"
 
 #. module: nirun_observation
+#: model:ni.observation.type,name:nirun_observation.type_hba1c
+msgid "Hemoglobin A1C"
+msgstr "HbA1C"
+
+#. module: nirun_observation
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__high
 #: model:ni.observation.interpretation,name:nirun_observation.interpretation_H
 msgid "High"
 msgstr "สูง"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__id
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__id
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_category__id
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_interpretation__id
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__id
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__id
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type__id
 msgid "ID"
 msgstr "รหัส"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__name
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__name
 msgid "Identifier"
-msgstr "รหัส"
+msgstr ""
 
 #. module: nirun_observation
 #: model:ni.observation.category,name:nirun_observation.category_imaging
@@ -394,8 +408,8 @@ msgstr "ข้อมูลรายละเอียด"
 
 #. module: nirun_observation
 #: model:ir.model,name:nirun_observation.model_ni_observation_interpretation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__interpretation_id
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__interpretation_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__interpretation_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__interpretation_id
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__interpretation_id
 #: model:ir.ui.menu,name:nirun_observation.interpretation_menu
 msgid "Interpretation"
@@ -412,12 +426,12 @@ msgid "Laboratory"
 msgstr "ผลแล็ป"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line____last_update
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation____last_update
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation____last_update
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_category____last_update
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_interpretation____last_update
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line____last_update
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range____last_update
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet____last_update
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type____last_update
 msgid "Last Modified on"
 msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
@@ -426,8 +440,8 @@ msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__write_uid
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_category__write_uid
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_interpretation__write_uid
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__write_uid
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__write_uid
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__write_uid
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type__write_uid
 msgid "Last Updated by"
 msgstr "อัพเดทครั้งสุดท้ายโดย"
@@ -436,16 +450,11 @@ msgstr "อัพเดทครั้งสุดท้ายโดย"
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__write_date
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_category__write_date
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_interpretation__write_date
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__write_date
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__write_date
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__write_date
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type__write_date
 msgid "Last Updated on"
 msgstr "อัพเดทครั้งสุดท้ายเมื่อ"
-
-#. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__lines
-msgid "Lines"
-msgstr "เส้น"
 
 #. module: nirun_observation
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__low
@@ -502,20 +511,20 @@ msgid "Not found observation!"
 msgstr "ไม่พบการบันทึก"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__note
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_form
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__note
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_form
 msgid "Note"
-msgstr "โน้ต"
+msgstr "หมายเหตุ"
 
 #. module: nirun_observation
+#: model:ir.actions.act_window,name:nirun_observation.ob_action
+#: model:ir.actions.act_window,name:nirun_observation.ob_action_pivot_from_encounter
 #: model:ir.model,name:nirun_observation.model_ni_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter__observation_sheet_ids
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__observation_sheet_id
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__observation_sheet_id
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_patient__observation_sheet_ids
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter__observation_ids
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__observation_ids
 #: model:ir.module.category,name:nirun_observation.module_category_medical_observation
 #: model:ir.ui.menu,name:nirun_observation.configuration_ob_menu
-#: model:ir.ui.menu,name:nirun_observation.observation_menu
+#: model:ir.ui.menu,name:nirun_observation.observation_line_menu
 #: model:ir.ui.menu,name:nirun_observation.observation_menu_main
 msgid "Observation"
 msgstr "การตรวจร่างกาย"
@@ -531,29 +540,33 @@ msgid "Observation Category"
 msgstr "หมวดการตรวจร่างกาย"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter__observation_sheet_count
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_patient__observation_sheet_count
-msgid "Observation Count"
-msgstr "การตรวจร่างกาย"
-
-#. module: nirun_observation
 #: model:ir.actions.act_window,name:nirun_observation.encounter_ob_line_action
-#: model:ir.actions.act_window,name:nirun_observation.ob_line_action
-#: model:ir.actions.act_window,name:nirun_observation.ob_line_action_pivot_from_encounter
 msgid "Observation Detail"
 msgstr "รายละเอียดการตรวจร่างกาย"
 
 #. module: nirun_observation
-#: model:ir.model,name:nirun_observation.model_ni_observation_line
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter__observation_ids
-msgid "Observation Line"
-msgstr "รายละเอียดการตรวจร่างกาย"
-
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter__observation_line_vital_sign_ids
+msgid "Observation Line Vital Sign"
+msgstr "ค่าสัญญาณชีพระหว่างรับบริการ"
 
 #. module: nirun_observation
 #: model:ir.model,name:nirun_observation.model_ni_observation_reference_range
 msgid "Observation Reference Range"
 msgstr "ค่าอ้างอิงการตรวจร่างกาย"
+
+#. module: nirun_observation
+#: model:ir.model,name:nirun_observation.model_ni_observation_sheet
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter__observation_sheet_ids
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_patient__observation_sheet_ids
+#: model:ir.ui.menu,name:nirun_observation.observation_menu
+msgid "Observation Sheet"
+msgstr "บันทึกผลการตรวจร่างกาย"
+
+#. module: nirun_observation
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter__observation_sheet_count
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_patient__observation_sheet_count
+msgid "Observation Sheet Count"
+msgstr "จำนวนผลการตรวจร่ายกาย"
 
 #. module: nirun_observation
 #: model:ir.model,name:nirun_observation.model_ni_observation_type
@@ -566,8 +579,8 @@ msgid "Observation Types"
 msgstr "ประภทการตรวจร่างกาย"
 
 #. module: nirun_observation
-#: model:ir.actions.act_window,name:nirun_observation.ob_action
-#: model:ir.actions.act_window,name:nirun_observation.ob_action_form
+#: model:ir.actions.act_window,name:nirun_observation.ob_sheet_action
+#: model:ir.actions.act_window,name:nirun_observation.ob_sheet_action_form
 #: model:ir.ui.menu,name:nirun_observation.observation_menu_root
 #: model_terms:ir.ui.view,arch_db:nirun_observation.encounter_view_form_inherit
 #: model_terms:ir.ui.view,arch_db:nirun_observation.patient_view_form_inherit
@@ -586,26 +599,27 @@ msgstr "แม่"
 
 #. module: nirun_observation
 #: model:ir.model.fields,help:nirun_observation.field_ni_observation__partner_id
+#: model:ir.model.fields,help:nirun_observation.field_ni_observation_sheet__partner_id
 msgid "Partner-related data of patient"
-msgstr ""
+msgstr "คู่ค้าที่เกี่ยวข้อง"
 
 #. module: nirun_observation
 #: model:ir.model,name:nirun_observation.model_ni_patient
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__patient_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__patient_id
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__patient_id
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__patient_id
-#: model:ir.model.fields.selection,name:nirun_observation.selection__ni_observation__performer_ref__ni_patient
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__patient_id
+#: model:ir.model.fields.selection,name:nirun_observation.selection__ni_observation_sheet__performer_ref__ni_patient
 msgid "Patient"
 msgstr "ผู้สูงอายุ"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__performer_ref
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__performer_ref
 msgid "Performer"
-msgstr "ผู้วัด"
+msgstr "ผู้ตรวจ"
 
 #. module: nirun_observation
 #: model_terms:ir.ui.view,arch_db:nirun_observation.encounter_ob_line_view_search
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_line_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_search
 msgid "Period"
 msgstr "ช่วงเวลา"
@@ -616,7 +630,7 @@ msgid "Positive"
 msgstr "บวก"
 
 #. module: nirun_observation
-#: model:ir.model.fields.selection,name:nirun_observation.selection__ni_observation__performer_ref__hr_employee
+#: model:ir.model.fields.selection,name:nirun_observation.selection__ni_observation_sheet__performer_ref__hr_employee
 msgid "Practitioner"
 msgstr "บุคคลกร"
 
@@ -649,6 +663,7 @@ msgstr "ค่าอ้างอิง"
 
 #. module: nirun_observation
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__partner_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_sheet__partner_id
 msgid "Related Partner"
 msgstr "คู่ค้าที่เกี่ยวข้อง"
 
@@ -663,13 +678,19 @@ msgid "See More"
 msgstr "ดูเพิ่มเติม"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__sequence
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__sequence
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__sequence
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_category__sequence
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_interpretation__sequence
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__sequence
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type__sequence
 msgid "Sequence"
 msgstr "ลำดับ"
+
+#. module: nirun_observation
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__sheet_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__sheet_id
+msgid "Sheet"
+msgstr "แบบบันทึก"
 
 #. module: nirun_observation
 #: model:ni.observation.interpretation,name:nirun_observation.interpretation_HU
@@ -718,22 +739,22 @@ msgstr "การบำบัด"
 
 #. module: nirun_observation
 #: model_terms:ir.ui.view,arch_db:nirun_observation.encounter_ob_line_view_search
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_line_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_search
 msgid "Today"
 msgstr "วันนี้"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__type_id
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__type_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__type_id
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__type_id
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_reference_range__type_id
 #: model:ir.ui.menu,name:nirun_observation.observation_type_menu
 msgid "Type"
 msgstr "ประเภท"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__unit
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__unit
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__unit
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__unit
 #: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_type__unit
 msgid "Unit"
 msgstr "หน่วย"
@@ -744,14 +765,15 @@ msgid "User"
 msgstr "ผู้ใช้"
 
 #. module: nirun_observation
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation_line__value
-#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation_line__value
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_encounter_observation__value
+#: model:ir.model.fields,field_description:nirun_observation.field_ni_observation__value
 msgid "Value"
 msgstr "ค่า"
 
 #. module: nirun_observation
 #: model_terms:ir.ui.view,arch_db:nirun_observation.encounter_ob_line_view_tree
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_line_view_tree
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_tree
 msgid "View Graph"
 msgstr "ดูแนวโน้ม"
 
@@ -777,7 +799,7 @@ msgstr "คำเตือน"
 
 #. module: nirun_observation
 #: model_terms:ir.ui.view,arch_db:nirun_observation.encounter_ob_line_view_search
-#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_line_view_search
+#: model_terms:ir.ui.view,arch_db:nirun_observation.ob_sheet_view_search
 #: model_terms:ir.ui.view,arch_db:nirun_observation.ob_view_search
 msgid "Yesterday"
 msgstr "เมื่อวาน"
@@ -787,3 +809,8 @@ msgstr "เมื่อวาน"
 #, python-format
 msgid "low value must not be more than high value"
 msgstr "ค่าต่ำสุดต้องน้อยกว่าค่าสูงสุด"
+
+#. module: nirun_observation
+#: model:ir.model,name:nirun_observation.model_ni_encounter_observation
+msgid "ni.encounter.observation"
+msgstr ""
