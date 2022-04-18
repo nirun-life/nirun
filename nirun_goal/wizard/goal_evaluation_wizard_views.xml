@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="goal_evaluation_wizard_action" model="ir.actions.act_window">
+        <field name="name">Goal Evaluate</field>
+        <field name="res_model">ni.goal.evaluation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_goal_id': active_id}</field>
+    </record>
+    <record id="goal_evaluation_wizard_view_form" model="ir.ui.view">
+        <field name="name">goal.evaluation.wizard.view.form</field>
+        <field name="model">ni.goal.evaluation.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="goal_id" readonly="1" />
+                </group>
+                <group>
+                    <group string="Evaluate">
+                        <field name="achievement_date" />
+                        <field name="achievement_id" />
+                        <field name="achievement_note" string="" />
+                    </group>
+                    <group string="Last Evaluation" attrs="{'invisible': [('goal_achievement_id', '=', False)]}">
+                        <field name="goal_achievement_date" />
+                        <field name="goal_achievement_id" />
+                        <field name="goal_achievement_note" string="" />
+                        <field name="goal_achievement_uid" />
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_evaluation_save" string="Save" class="oe_highlight" type="object" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
