@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022 Piruin P.
+  -->
+<odoo>
+    <record id="encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="goal" string="Goal">
+                    <field name="goal_ids" context="{'default_encounter_id': id, 'default_patient_id': patient_id}">
+                        <tree
+                            decoration-success="achieved == True"
+                            decoration-muted="state == 'cancelled'"
+                            decoration-bf="state == 'proposed'"
+                        >
+                            <field name="id" invisible="1" />
+                            <field name="patient_id" invisible="1" />
+                            <field name="encounter_id" invisible="1" />
+                            <field name="achieved" invisible="1" />
+                            <field name="sequence" widget="handle" />
+                            <field name="code_id" />
+                            <field name="achievement_id" optional="show" />
+                            <field
+                                name="achievement_date"
+                                attrs="{'invisible': [('state', 'in', ['proposed', 'active', 'cancelled'])]}"
+                                optional="show"
+                            />
+                            <field name="state" optional="hide" />
+                            <button
+                                name="action_evaluation_wizard"
+                                type="object"
+                                string="Evaluate"
+                                icon="fa-legal"
+                                attrs="{'invisible':[('state', 'in', ['proposed', 'cancelled'])]}"
+                            />
+                            <button
+                                name="action_edit"
+                                class="oe_read_only"
+                                type="object"
+                                string="Edit"
+                                icon="fa-external-link"
+                            />
+                            <control>
+                                <create string="Add Short-Term Goal" context="{'default_term': 'short'}" />
+                                <create string="Add Long-Term Goal" context="{'default_term': 'long'}" />
+                            </control>
+                        </tree>
+                    </field>
+                    <button
+                        name="goal_confirm"
+                        class="btn-primary"
+                        type="object"
+                        string="Confirm"
+                        attrs="{'invisible': [('goal_need_confirm', '=', False)]}"
+                    />
+                    <button
+                        name="open_goal"
+                        type="object"
+                        string="See More"
+                        context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
+                    />
+                    <group>
+                        <group>
+                            <field name="goal_achieved" widget="progressbar" />
+                            <field name="goal_need_confirm" invisible="1" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
