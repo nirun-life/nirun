@@ -16,7 +16,8 @@ class CareplanActivity(models.Model):
     _check_company_auto = True
 
     patient_id = fields.Many2one(
-        "ni.patient", related="careplan_id.patient_id", store=True
+        "ni.patient",
+        related="careplan_id.patient_id",
     )
     encounter_id = fields.Many2one(
         "ni.encounter",
@@ -27,7 +28,6 @@ class CareplanActivity(models.Model):
         related="careplan_id.manager_id",
         readonly=True,
     )
-    goal_id = fields.Many2one("ni.careplan.goal", index=True, ondelete="set null")
 
     kanban_state = fields.Selection(
         [("normal", "Grey"), ("done", "Green"), ("blocked", "Red")],
@@ -48,6 +48,20 @@ class CareplanActivity(models.Model):
     )
     assign_date = fields.Datetime(copy=False, readonly=True)
     active = fields.Boolean(default=True)
+
+    def _name_get(self):
+        goal = self
+        name = super(CareplanActivity, self)._name_get()
+        if self._context.get("show_timing") and self.timing_id:
+            name = "{} {}".format(name, goal.timing_id.name)
+        return name
+
+    @api.depends("name", "timing_id")
+    def _compute_display_name(self):
+        diff = dict(show_timing=True, show_patient=None, show_state=None)
+        names = dict(self.with_context(**diff).name_get())
+        for rec in self:
+            rec.display_name = names.get(rec.id)
 
     @api.model
     def create(self, vals):

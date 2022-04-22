@@ -35,7 +35,7 @@
                         </h1>
                         <field
                             name="category_ids"
-                            options="{ 'color_field': 'color'}"
+                            options="{'color_field': 'color'}"
                             placeholder="Categories..."
                             widget="many2many_tags"
                         />
@@ -43,27 +43,32 @@
                     </div>
                     <group>
                         <group>
+                            <field name="condition_code_ids" widget="many2many_tags" />
+                        </group>
+                        <group>
                             <label for="company_id" />
                             <div>
                                 <field name="company_id" />
                                 <i class="text-muted">Leave this field empty if you want to share across companies</i>
                             </div>
                         </group>
-                        <group string="Goal" colspan="10">
+                    </group>
+                    <notebook>
+                        <page name="goal" string="Goal">
                             <field name="goal_ids" mode="tree" context="{'default_careplan_id': id}" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name="sequence" widget="handle" class="oe_edit_only" />
+                                    <field name="sequence" widget="handle" />
                                     <field name="careplan_id" invisible="1" />
                                     <field name="company_id" invisible="1" />
                                     <field name="code_id" width="3" />
                                     <field name="priority" widget="priority" optional="hide" />
                                 </tree>
                             </field>
-                        </group>
-                        <group string="Activity" colspan="10">
+                        </page>
+                        <page name="activity" string="Activity">
                             <field name="activity_ids" context="{'default_careplan_id': id}" mode="tree" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name="sequence" widget="handle" class="oe_edit_only" />
+                                    <field name="sequence" widget="handle" />
                                     <field name="careplan_id" invisible="1" />
                                     <field name="company_id" invisible="1" />
                                     <field name="code_id" width="3" />
@@ -71,18 +76,20 @@
                                     <field name="timing_tmpl_id" options="{'no_open':True}" />
                                 </tree>
                             </field>
-                        </group>
-                    </group>
-                    <group groups="base.group_system">
-                        <group>
-                            <field name="create_date" />
-                            <field name="create_uid" />
-                        </group>
-                        <group>
-                            <field name="write_date" />
-                            <field name="write_uid" />
-                        </group>
-                    </group>
+                        </page>
+                        <page name="extra" string="Extra Info" groups="base.group_erp_manager">
+                            <group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                </group>
+                                <group>
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" groups="base.group_user" widget="mail_followers" />
