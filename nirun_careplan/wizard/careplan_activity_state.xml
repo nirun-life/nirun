@@ -22,7 +22,7 @@
                 <group>
                     <field
                         name="activity_ids"
-                        options="{ 'color_field': 'color'}"
+                        options="{'color_field': 'color'}"
                         required="1"
                         widget="many2many_tags"
                     />
@@ -33,16 +33,6 @@
                     <button string="Cancel" class="btn-secondary" special="cancel" />
                 </footer>
             </form>
-        </field>
-    </record>
-    <record id="careplan_activity_view_form_inherit" model="ir.ui.view">
-        <field name="name">careplan.activity.view.form.inherit</field>
-        <field name="model">ni.careplan.activity</field>
-        <field name="inherit_id" ref="nirun_careplan.careplan_activity_view_form" />
-        <field name="arch" type="xml">
-            <xpath expr="//form/header" position="inside">
-                <button name="open_state_change_wizard" string="Update State" class="oe_highlight" type="object" />
-            </xpath>
         </field>
     </record>
 </odoo>

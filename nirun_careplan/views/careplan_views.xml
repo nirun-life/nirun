@@ -14,13 +14,14 @@
         <field name="arch" type="xml">
             <search>
                 <field name="patient_id" />
+                <field name="encounter_id" />
                 <separator />
                 <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
                 <separator />
                 <group expand="1" string="Group By">
                     <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
                     <filter name="group_by_manager" string="Care Manager" context="{'group_by': 'manager_id'}" />
-                    <filter name="group_by_author" string="Author" context="{'group_by': 'author_id'}" />
+                    <filter name="group_by_author" string="Author" context="{'group_by': 'create_uid'}" />
                     <separator />
                     <filter name="group_by_state" string="State" context="{'group_by': 'state'}" />
                 </group>
@@ -34,7 +35,7 @@
             <form>
                 <field name="active" invisible="1" />
                 <field name="id" invisible="1" />
-                <header>
+                <header invisible="context.get('no_header')">
                     <button
                         name="action_confirm"
                         attrs="{'invisible': [('state', 'not in', ['draft'])]}"
@@ -83,13 +84,13 @@
                     <field name="state" statusbar_visible="draft,active,completed" widget="statusbar" />
                 </header>
                 <sheet string="Careplan">
-                    <div name="button_box" class="oe_button_box" groups="base.group_user">
-                        <button
-                            name="%(careplan_goal_action_from_careplan)d"
-                            class="oe_stat_button"
-                            icon="fa-flag"
-                            type="action"
-                        >
+                    <div
+                        name="button_box"
+                        class="oe_button_box"
+                        groups="base.group_user"
+                        invisible="context.get('no_button_box')"
+                    >
+                        <button name="%(nirun_goal.goal_action)d" class="oe_stat_button" icon="fa-flag" type="action">
                             <field name="goal_count" string="Goals" widget="statinfo" />
                         </button>
                         <button
@@ -101,7 +102,6 @@
                             <field name="activity_count" string="Activities" widget="statinfo" />
                         </button>
                     </div>
-                    <field name="patient_avatar" class="oe_avatar" widget='image' />
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('active', '=', True)]}"
@@ -126,26 +126,42 @@
                         bg_color="bg-success"
                         title="Completed"
                     />
-                    <div class="oe_title">
-                        <label for="patient_id" string="Care plan for" />
+                    <div class="oe_title" invisible="context.get('no_title')">
+                        <label for="name" class="oe_edit_only" />
                         <h1>
-                            <field name="patient_id" class="w-90" placeholder="Patient" />
+                            <field name="name" placeholder="Plan name..." />
                         </h1>
-                        <label
-                            for="encounter_id"
-                            class="oe_read_only mr-1"
-                            attrs="{'invisible': [('encounter_id', '=', False)]}"
+                        <field
+                            name="category_ids"
+                            options="{'color_field': 'color'}"
+                            placeholder="Categories..."
+                            widget="many2many_tags"
                         />
-                        <field name="encounter_id" placeholder="Encounter No." />
                     </div>
                     <group>
                         <group>
-                            <field name="intent" />
-                            <field name="author_id" />
                             <field
-                                name="contributor_ids"
-                                options="{'color_field': 'color', 'no_create_edit': True}"
+                                name="patient_id"
+                                placeholder="Patient"
+                                invisible="context.get('default_patient_id')"
+                            />
+                            <field
+                                name="encounter_id"
+                                placeholder="Encounter No."
+                                invisible="context.get('default_encounter_id')"
+                            />
+                            <field name="intent" invisible="context.get('default_intent')" />
+                            <field
+                                name="condition_ids"
                                 widget="many2many_tags"
+                                context="{'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_category': 'problem-list-item'}"
+                                domain="[('patient_id', '=', patient_id), ('state', 'in', ['active', 'remission'])]"
+                                options="{'no_quick_create': True}"
+                            />
+                            <field
+                                name="template_id"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                placeholder="Create plan from template.."
                             />
                         </group>
                         <group>
@@ -161,118 +177,112 @@
                                 />
                                 <field name="period_end" placeholder="End" />
                             </div>
-                            <field name="template_id" attrs="{'invisible': [('state', '!=', 'draft')]}" />
                         </group>
                     </group>
-                    <group name="problem" string="Problem">
-                        <field
-                            name="condition_ids"
-                            context="{'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_category': 'problem-list-item'}"
-                            domain="[('patient_id', '=', patient_id), ('state', 'in', ['active', 'remission'])]"
-                            nolabel="1"
-                        >
-                            <tree editable="bottom" edit="0">
-                                <field name="code_id" readonly="1" />
-                                <field name="classification_id" readonly="1" optional="show" />
-                                <field name="severity" readonly="1" optional="hide" />
-                                <field name="period_start" readonly="1" optional="hide" />
-                                <field name="period_end" readonly="1" optional="hide" />
-                                <field name="note" />
+                    <notebook>
+                        <page name="goal" string="Goal">
+                            <field
+                                name="goal_ids"
+                                context="{'default_encounter_id': encounter_id, 'default_patient_id': patient_id, 'default_careplan_id': id}"
+                            >
+                                <tree
+                                    decoration-success="achieved == True"
+                                    decoration-muted="state == 'cancelled'"
+                                    decoration-bf="state == 'proposed'"
+                                >
+                                    <field name="careplan_id" invisible="1" />
+                                    <field name="patient_id" invisible="1" />
+                                    <field name="encounter_id" invisible="1" />
+                                    <field name="achieved" invisible="1" />
+                                    <field name="sequence" widget="handle" />
+                                    <field name="code_id" />
+                                    <field name="achievement_id" optional="show" />
+                                    <field
+                                        name="achievement_date"
+                                        attrs="{'invisible': [('state', 'in', ['proposed', 'active', 'cancelled'])]}"
+                                        optional="show"
+                                    />
+                                    <field name="state" optional="hide" />
+                                    <button
+                                        name="action_evaluation_wizard"
+                                        type="object"
+                                        class="text-primary"
+                                        string="Evaluate"
+                                        icon="fa-legal"
+                                        attrs="{'invisible':[('state', 'in', ['proposed', 'cancelled'])]}"
+                                    />
+                                    <control>
+                                        <create string="Add Short-Term Goal" context="{'default_term': 'short'}" />
+                                        <create string="Add Long-Term Goal" context="{'default_term': 'long'}" />
+                                    </control>
+                                </tree>
+                            </field>
+                            <group attrs="{'invisible': [('state', '=', 'draft')]}">
+                                <field name="goal_achieved" widget="progressbar" />
+                            </group>
+                        </page>
+                        <page name="activity" string="Activity">
+                            <field
+                                name="activity_ids"
+                                context="{'default_encounter_id': encounter_id, 'default_patient_id': patient_id, 'default_careplan_id': id, 'default_period_start': period_start, 'default_period_end': period_end}"
+                                mode="tree"
+                                nolabel="1"
+                            >
+                                <tree
+                                    editable="bottom"
+                                    decoration-success="state == 'completed'"
+                                    decoration-muted="state == 'cancelled'"
+                                    decoration-bf="state == 'scheduled'"
+                                >
+                                    <field name="sequence" widget="handle" />
+                                    <field name="careplan_id" invisible="1" />
+                                    <field name="patient_id" invisible="1" />
+                                    <field name="encounter_id" invisible="1" />
+                                    <field name="company_id" invisible="1" />
+                                    <field name="code_id" width="3" options="{'no_create_edit': True}" />
+                                    <field name="category_id" optional="hide" />
+                                    <field
+                                        name="timing_id"
+                                        context="{'form_view_ref': 'nirun.timing_view_form_quick'}"
+                                        domain="[('id', '=', False)]"
+                                        options="{'no_quick_create':True}"
+                                    />
+                                    <field name="timing_tmpl_id" invisible="1" />
+                                    <field name="assignee_id" optional="show" />
+                                    <field
+                                        name="state"
+                                        attrs="{'column_invisible': [('parent.state', '=', 'draft')]}"
+                                        optional="show"
+                                    />
+                                    <button
+                                        name="action_complete"
+                                        class="text-success"
+                                        type="object"
+                                        string="Complete"
+                                        icon="fa-check"
+                                        attrs="{'invisible': [('state', 'in', ['completed', 'cancelled'])], 'column_invisible': [('parent.state', '=', 'draft')]}"
+                                    />
+                                    <button
+                                        name="action_cancel"
+                                        class="text-danger"
+                                        type="object"
+                                        string="Cancel"
+                                        icon="fa-ban"
+                                        attrs="{'invisible': [('state', 'in', ['completed', 'cancelled'])], 'column_invisible': [('parent.state', '=', 'draft')]}"
+                                    />
+                                </tree>
+                            </field>
+                            <div class="o_row">
                                 <button
-                                    name="action_edit"
-                                    attrs="{'column_invisible': [('parent.id', '=', False)]}"
-                                    icon="fa-pencil-square-o"
-                                    type="object"
+                                    name="%(careplan_activity_action_category_graph)d"
+                                    attrs="{'invisible': [('activity_count', '=', 0)]}"
+                                    class="oe_read_only"
+                                    string="See More"
+                                    type="action"
                                 />
-                            </tree>
-                        </field>
-                    </group>
-                    <separator string="Goal" />
-                    <field
-                        name="goal_ids"
-                        mode="tree"
-                        context="{'default_careplan_id': id, 'default_patient_id': patient_id}"
-                        nolabel="1"
-                    >
-                        <tree editable="bottom if state == 'draft' else False">
-                            <field name="sequence" widget="handle" class="oe_edit_only" />
-                            <field name="patient_id" invisible="1" />
-                            <field name="encounter_id" invisible="1" />
-                            <field
-                                name="condition_id"
-                                domain="[('id', 'in', parent.condition_ids)]"
-                                optional="hide"
-                                options="{'no_create': True}"
-                            />
-                            <field name="code_id" width="3" options="{'no_create_edit': True}" />
-                            <field name="priority" widget="priority" optional="hide" />
-                            <field
-                                name="achievement_id"
-                                attrs="{'column_invisible': [('parent.state', '=', 'draft')]}"
-                                options="{'no_create': True}"
-                            />
-                            <field
-                                name="state"
-                                attrs="{'column_invisible': [('parent.state', '=', 'draft')]}"
-                                optional="hide"
-                            />
-                        </tree>
-                    </field>
-                    <separator string="Activity" />
-                    <field
-                        name="activity_ids"
-                        context="{'default_careplan_id': id, 'default_period_start': period_start, 'default_period_end': period_end}"
-                        mode="tree"
-                        nolabel="1"
-                    >
-                        <tree editable="bottom">
-                            <field name="sequence" widget="handle" class="oe_edit_only" />
-                            <field name="careplan_id" invisible="1" />
-                            <field name="company_id" invisible="1" />
-                            <field
-                                name="goal_id"
-                                optional="hide"
-                                domain="[('id', 'in', parent.goal_ids)]"
-                                options="{'no_create': True}"
-                            />
-                            <field name="code_id" width="3" options="{'no_create_edit': True}" />
-                            <field name="category_id" optional="hide" />
-                            <field
-                                name="timing_id"
-                                context="{'form_view_ref': 'nirun.timing_view_form_quick'}"
-                                domain="[('id', '=', False)]"
-                                options="{'no_quick_create':True}"
-                            />
-                            <field name="timing_tmpl_id" invisible="1" />
-                            <field name="assignee_id" />
-                            <field
-                                name="state"
-                                attrs="{'column_invisible': [('parent.state', '=', 'draft')]}"
-                                optional="hide"
-                            />
-                        </tree>
-                    </field>
-                    <div class="o_row">
-                        <button
-                            name="%(careplan_activity_action_category_graph)d"
-                            attrs="{'invisible': [('activity_count', '=', 0)]}"
-                            class="oe_read_only"
-                            icon="fa-pie-chart"
-                            type="action"
-                        />
-                    </div>
-                    <separator string="Result" />
-                    <i class="text-muted" attrs="{'invisible': [('state','=', 'completed')]}">
-                        Achievement of careplan can record when careplan is completed
-                    </i>
-                    <group name="result" colspan="10">
-                        <field
-                            name="achievement_id"
-                            domain="[('goal_state', '=', 'completed')]"
-                            options="{'no_create': True }"
-                        />
-                        <field name="achievement_note" string="" placeholder="Note..." />
-                    </group>
+                            </div>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" groups="base.group_user" widget="mail_followers" />
@@ -286,26 +296,59 @@
         <field name="model">ni.careplan</field>
         <field name="arch" type="xml">
             <tree
-                decoration-bf="state in ['draft']"
+                decoration-bf="state in ['draft', 'on-hold']"
                 decoration-muted="active == False or state == 'revoked'"
                 decoration-success="state in ['completed']"
-                decoration-warning="state in ['on-hold']"
             >
                 <field name="sequence" widget="handle" />
                 <field name="active" invisible="1" />
+                <field name="patient_id" invisible="context.get('default_patient_id')" />
+                <field name="encounter_id" invisible="context.get('default_encounter_id')" />
                 <field name="name" optional="show" />
                 <field name="description" optional="hide" />
-                <field name="patient_id" />
                 <field name="category_ids" optional="show" options="{'color_field': 'color'}" widget="many2many_tags" />
-                <field name="manager_id" />
-                <field name="author_id" optional="hide" />
+                <field name="condition_ids" widget="many2many_tags" />
+                <field name="activity_ids" widget="many2many_tags" />
+                <field name="goal_ids" widget="many2many_tags" />
+                <field name="goal_achieved" widget="progressbar" />
                 <field name="period_start" optional="show" />
                 <field name="period_end" optional="hide" />
                 <field name="duration" optional="hide" />
-                <field name="goal_count" />
-                <field name="goal_achieved" widget="progressbar" />
+                <field name="manager_id" />
                 <field name="state" string="Status" />
                 <field name="company_id" groups="base.group_multi_company" />
+                <button
+                    name="action_play"
+                    class="text-success"
+                    type="object"
+                    string="Complete"
+                    icon="fa-play"
+                    attrs="{'invisible': [('state', 'not in', ['draft', 'on-hold'])]}"
+                />
+                <button
+                    name="action_close"
+                    class="text-success"
+                    type="object"
+                    string="Complete"
+                    icon="fa-check"
+                    attrs="{'invisible': [('state', '!=', 'active')]}"
+                />
+                <button
+                    name="action_hold_on"
+                    type="object"
+                    string="Hold On"
+                    icon="fa-pause"
+                    attrs="{'invisible': [('state', '!=', 'active')]}"
+                />
+                <button
+                    name="action_revoked"
+                    class="text-danger"
+                    type="object"
+                    string="Revoke"
+                    icon="fa-ban"
+                    attrs="{'invisible': [('state', '!=', 'active')]}"
+                    confirm="Are you sure for revoke this plan?"
+                />
             </tree>
         </field>
     </record>
@@ -399,11 +442,7 @@
                                 </a>
                             </div>
                             <div class="o_project_kanban_boxes">
-                                <a
-                                    name="%(careplan_goal_action_from_careplan)d"
-                                    class="o_project_kanban_box"
-                                    type="action"
-                                >
+                                <a name="%(nirun_goal.goal_action)d" class="o_project_kanban_box" type="action">
                                     <div>
                                         <span class="o_value">
                                             <i aria-label="Goal" class="fa fa-flag" role="img" title="Goal" />

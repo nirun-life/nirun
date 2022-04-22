@@ -1,5 +1,4 @@
 #  Copyright (c) 2021 Piruin P.
-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -8,23 +7,33 @@ class CarePlan(models.Model):
     _name = "ni.careplan"
     _description = "Careplan"
     _inherit = ["period.mixin", "mail.thread", "ni.patient.res", "ir.sequence.mixin"]
-    _order = "period_start DESC, id DESC"
+    _order = "sequence"
     _check_company_auto = True
     _check_period_start = True
+    _sequence_field = "identifier"
 
-    name = fields.Char("Plan No.", default="New")
+    name = fields.Char(
+        "Plan",
+    )
+    identifier = fields.Char(default="New")
+    template_id = fields.Many2one("ni.careplan.template")
     patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
     encounter_id = fields.Many2one(
         readonly=True, states={"draft": [("readonly", False)]}
     )
+
+    def _get_default_sequence(self):
+        last_sequence = self.env[self._name].search([], order="sequence desc", limit=1)
+        return last_sequence.sequence + 1 if last_sequence else 0
+
     sequence = fields.Integer(
-        "Sequence", help="Determine the display order", index=True, default=16
+        "Sequence",
+        help="Determine the display order",
+        index=True,
+        copy=False,
+        default=lambda self: self._get_default_sequence(),
     )
     description = fields.Text(copy=True, help="Summary of nature of plan")
-
-    patient_avatar = fields.Image(
-        related="patient_id.image_512", attactment=False, store=False
-    )
     category_ids = fields.Many2many(
         "ni.careplan.category",
         "ni_careplan_category_rel",
@@ -33,6 +42,7 @@ class CarePlan(models.Model):
         store=True,
         readonly=False,
         compute="_compute_activity_category",
+        copy=True,
     )
     intent = fields.Selection(
         [
@@ -44,28 +54,8 @@ class CarePlan(models.Model):
         default="plan",
         help="Indicating the degree of authority/intentionality of care plan.",
     )
-    author_id = fields.Many2one(
-        "res.users",
-        string="Author",
-        default=lambda self: self.env.user,
-        tracking=True,
-        copy=False,
-    )
     manager_id = fields.Many2one("hr.employee", string="Care Manager", tracking=True)
-    contributor_ids = fields.Many2many(
-        "hr.employee",
-        "ni_careplan_contributor",
-        "careplan_id",
-        "contributor_id",
-        copy=False,
-    )
-    patient_contribution = fields.Boolean(
-        default=False,
-        help="Whether patient have contribution in this care plan",
-        copy=False,
-    )
     period_start = fields.Date(copy=False)
-
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -91,17 +81,8 @@ class CarePlan(models.Model):
     )
     condition_count = fields.Integer(compute="_compute_condition_count", store=True)
 
-    activity_ids = fields.One2many(
-        "ni.careplan.activity",
-        "careplan_id",
-        string="Activity",
-        readonly=True,
-        states={"draft": [("readonly", False)], "active": [("readonly", False)]},
-    )
-    activity_count = fields.Integer(compute="_compute_activities_count", store=True)
-
     goal_ids = fields.One2many(
-        "ni.careplan.goal",
+        "ni.goal",
         "careplan_id",
         readonly=True,
         states={"draft": [("readonly", False)], "active": [("readonly", False)]},
@@ -110,16 +91,16 @@ class CarePlan(models.Model):
     goal_achieved_count = fields.Integer(compute="_compute_goal_count")
     goal_achieved = fields.Float("Achieved (%)", compute="_compute_goal_count")
 
-    achievement_id = fields.Many2one(
-        "ni.goal.achievement",
+    activity_ids = fields.One2many(
+        "ni.careplan.activity",
+        "careplan_id",
+        string="Activity",
         readonly=True,
-        copy=False,
-        states={"completed": [("readonly", False)]},
+        states={"draft": [("readonly", False)], "active": [("readonly", False)]},
     )
-    achievement_note = fields.Text(
-        readonly=True, copy=False, states={"completed": [("readonly", False)]}
-    )
-    template_id = fields.Many2one("ni.careplan.template", copy=False)
+    activity_count = fields.Integer(compute="_compute_activities_count", store=True)
+    create_date = fields.Datetime("Authored", readonly=True)
+    create_uid = fields.Many2one("res.users", "Author", readonly=True)
 
     def name_get(self):
         res = []
@@ -138,10 +119,23 @@ class CarePlan(models.Model):
     @api.onchange("template_id")
     def _onchange_template_id(self):
         if self.template_id:
-            data = self.template_id.copy_data()
-            self.update(data[0])
+            data = self.template_id.copy_data(
+                {
+                    "patient_id": self.patient_id.id,
+                    "encounter_id": self.encounter_id.id,
+                }
+            )[0]
+            data["template_id"] = self.template_id.id
+            if self.template_id.condition_code_ids:
+                con = self.env["ni.condition.latest"].search(
+                    [
+                        ("patient_id", "=", self.patient_id.id),
+                        ("code_id", "in", self.template_id.condition_code_ids.ids),
+                    ]
+                )
+                data["condition_ids"] = [(4, c.id, 0) for c in con]
+            self.update(data)
             self.activity_ids.copy_timing_form_template()
-            self.template_id = False
 
     @api.onchange("encounter_id")
     def _onchange_encounter_id(self):
@@ -149,6 +143,13 @@ class CarePlan(models.Model):
             self.period_start = self.encounter_id.period_start
         if self.encounter_id.period_end:
             self.period_end = self.encounter_id.period_end
+
+    @api.depends("category_ids", "activity_ids.category_id")
+    def _compute_activity_category(self):
+        for plan in self:
+            c1 = plan.mapped("activity_ids.category_id.id")
+            c2 = plan.mapped("category_ids.id")
+            plan.category_ids = list(set().union(c1, c2))
 
     @api.depends("condition_count")
     def _compute_condition_count(self):
@@ -159,13 +160,6 @@ class CarePlan(models.Model):
     def _compute_activities_count(self):
         for plan in self:
             plan.activity_count = len(plan.activity_ids)
-
-    @api.depends("category_ids", "activity_ids.category_id")
-    def _compute_activity_category(self):
-        for plan in self:
-            c1 = plan.mapped("activity_ids.category_id.id")
-            c2 = plan.mapped("category_ids.id")
-            plan.category_ids = list(set().union(c1, c2))
 
     @api.depends("goal_ids", "goal_ids.achievement_id")
     def _compute_goal_count(self):
@@ -182,13 +176,14 @@ class CarePlan(models.Model):
     def copy_data(self, default=None):
         if default is None:
             default = {}
+        _default = dict(default)
         if "activity_ids" not in default:
             default["activity_ids"] = [
-                (0, 0, act.copy_data()[0]) for act in self.activity_ids
+                (0, 0, act.copy_data(dict(_default))[0]) for act in self.activity_ids
             ]
         if "goal_ids" not in default:
             default["goal_ids"] = [
-                (0, 0, goal.copy_data()[0]) for goal in self.goal_ids
+                (0, 0, goal.copy_data(dict(_default))[0]) for goal in self.goal_ids
             ]
         return super().copy_data(default)
 
@@ -213,16 +208,7 @@ class CarePlan(models.Model):
             {"search_default_careplan_id": self.id, "default_careplan_id": self.id}
         )
         action = self.env["ir.actions.act_window"].for_xml_id(
-            "nirun_careplan", "careplan_goal_action_from_careplan"
-        )
-        return dict(action, context=ctx)
-
-    @api.model
-    def open_sub_careplan(self):
-        ctx = dict(self._context)
-        ctx.update({"search_default_parent_id": self.id})
-        action = self.env["ir.actions.act_window"].for_xml_id(
-            "nirun_careplan", "careplan_activity_action_from_careplan"
+            "nirun_goal", "goal_action"
         )
         return dict(action, context=ctx)
 
@@ -244,10 +230,14 @@ class CarePlan(models.Model):
                 raise UserError(_("Must be on-hold state"))
         self.write({"state": "active"})
 
+    def action_play(self):
+        self.filtered(lambda plan: plan.state == "draft").action_confirm()
+        self.filtered(lambda plan: plan.state == "on-hold").action_resume()
+
     def action_confirm(self):
         draft_plan = self.filtered(lambda plan: plan.state == "draft")
-
         draft_plan.mapped("goal_ids").action_confirm(force=True)
+        draft_plan.mapped("activity_ids").action_start(force=True)
         draft_plan.write({"state": "active"})
 
     def action_close(self):
@@ -259,7 +249,17 @@ class CarePlan(models.Model):
                 raise UserError(
                     _("All goals must be in completed state before close careplan")
                 )
-
             plan.update({"state": "completed"})
             if not plan.period_end:
                 plan.period_end = fields.Date.today()
+
+    @api.constrains("goal_ids", "encounter_id")
+    def check_goal_encounter_id(self):
+        # need this when create careplan in encounter page and use template
+        for rec in self:
+            if rec.encounter_id:
+                enc = rec.goal_ids.filtered_domain(
+                    [("encounter_id", "!=", rec.encounter_id.id)]
+                )
+                if enc:
+                    enc.write({"encounter_id": rec.encounter_id.id})

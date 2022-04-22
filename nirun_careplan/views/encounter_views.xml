@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 Piruin P.
+  -->
+<odoo>
+    <record id="encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="priority">3</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="careplan" string="Careplan">
+                    <field
+                        name="careplan_ids"
+                        context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'default_intent': 'plan', 'no_header': True, 'no_button_box': True}"
+                    >
+                        <tree decoration-bf="state in ['draft', 'on-hold']" decoration-muted="state in ['revoked']">
+                            <field name="sequence" widget="handle" />
+                            <field name="patient_id" invisible="1" />
+                            <field name="encounter_id" invisible="1" />
+                            <field name="name" optional="hide" />
+                            <field
+                                name="category_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color'}"
+                                optional="show"
+                            />
+                            <field name="condition_ids" widget="many2many_tags" />
+                            <field name="activity_ids" widget="many2many_tags" />
+                            <field name="goal_ids" widget="many2many_tags" />
+                            <field name="goal_achieved" widget="progressbar" />
+                            <field name="manager_id" />
+                            <field name="create_uid" optional="hide" />
+                            <field name="create_date" optional="hide" />
+                            <field name="state" optional="hide" />
+                            <button
+                                name="action_play"
+                                class="text-success"
+                                type="object"
+                                string="Complete"
+                                icon="fa-play"
+                                attrs="{'invisible': [('state', 'not in', ['draft', 'on-hold'])]}"
+                            />
+                            <button
+                                name="action_close"
+                                class="text-success"
+                                type="object"
+                                string="Complete"
+                                icon="fa-check"
+                                attrs="{'invisible': [('state', '!=', 'active')]}"
+                            />
+                            <button
+                                name="action_hold_on"
+                                type="object"
+                                string="Hold On"
+                                icon="fa-pause"
+                                attrs="{'invisible': [('state', '!=', 'active')]}"
+                            />
+                            <button
+                                name="action_revoked"
+                                class="text-danger"
+                                type="object"
+                                string="Revoke"
+                                icon="fa-ban"
+                                attrs="{'invisible': [('state', '!=', 'active')]}"
+                                confirm="Are you sure for revoke this plan?"
+                            />
+                            <control>
+                                <create string="Add Plan" />
+                            </control>
+                        </tree>
+                    </field>
+                    <field name="careplan_need_confirm" invisible="1" />
+                    <button
+                        name="action_careplan_confirm"
+                        class="btn-primary"
+                        type="object"
+                        string="Confirm"
+                        attrs="{'invisible': [('careplan_need_confirm', '=', False)]}"
+                    />
+                    <button
+                        name="%(nirun_careplan.careplan_action)d"
+                        type="action"
+                        string="See More"
+                        context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'search_default_encounter_id': id}"
+                    />
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

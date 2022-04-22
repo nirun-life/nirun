@@ -23,6 +23,9 @@ class CareplanTemplateGoal(models.Model):
     careplan_id = fields.Many2one(
         "ni.careplan.template", copy=False, ondelete="cascade"
     )
+    patient_id = fields.Many2one(
+        required=False, store=False, check_company=False, copy=False
+    )
     company_id = fields.Many2one(related="careplan_id.company_id", store=True)
     state = fields.Selection(default="proposed", compute=False)
     _sql_constraints = [
@@ -75,7 +78,7 @@ class CareplanTemplate(models.Model):
         copy=False,
     )
 
-    name = fields.Char("Careplan", required=True, copy=False)
+    name = fields.Char("Careplan", required=True)
     description = fields.Text(copy=True, help="Summary of nature of plan")
     sequence = fields.Integer(
         "Sequence", help="Determine the display order", index=True, default=100
@@ -93,6 +96,9 @@ class CareplanTemplate(models.Model):
         readonly=True,
         store=False,
         copy=False,
+    )
+    condition_code_ids = fields.Many2many(
+        "ni.condition.code", readonly=False, store=True, copy=False, compute=False
     )
     activity_ids = fields.One2many(
         "ni.careplan.template.activity",
