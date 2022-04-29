@@ -5,7 +5,7 @@ from odoo.exceptions import ValidationError
 
 
 class CareplanGoal(models.Model):
-    _inherit = "ni.careplan.goal"
+    _inherit = "ni.goal"
 
     target_survey_id = fields.Many2one(
         "survey.survey",
