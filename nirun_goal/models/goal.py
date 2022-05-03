@@ -167,5 +167,6 @@ class Goal(models.Model):
             {
                 "state": "active",
                 "achievement_id": self.env.ref("nirun_goal.goal_in_progress"),
+                "achievement_date": None,
             }
         )
