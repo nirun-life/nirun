@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-02 08:00+0000\n"
-"PO-Revision-Date: 2022-05-02 08:00+0000\n"
+"POT-Creation-Date: 2022-05-17 08:08+0000\n"
+"PO-Revision-Date: 2022-05-17 08:08+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -132,6 +132,7 @@ msgstr "กิจกรรม"
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__activity_ids
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__code_id
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_activity__name
+#: model:ir.model.fields.selection,name:nirun_careplan.selection__ni_careplan_activity__kind__activity
 #: model:ir.ui.menu,name:nirun_careplan.activity_menu
 #: model:ir.ui.menu,name:nirun_careplan.activity_menu_section
 #: model:ir.ui.menu,name:nirun_careplan.careplan_activity_code_menu
@@ -275,7 +276,9 @@ msgid "Assigned User"
 msgstr "ผู้รับผิดชอบ"
 
 #. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__employee_ids
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__assignee_id
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__employee_ids
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
 msgid "Assigned to"
 msgstr "ผู้รับผิดชอบ"
@@ -299,7 +302,7 @@ msgstr "ผู้จัดทำแผน"
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__create_date
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__create_date
 msgid "Authored"
-msgstr "ผู้จัดทำ"
+msgstr "จัดทำเมื่อ"
 
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_state_wizard_view_form
@@ -527,6 +530,7 @@ msgstr "กำหนดค่า"
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_state_wizard_view_form
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
+#: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_tree
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.encounter_view_form_inherit
 msgid "Confirm"
 msgstr "ยืนยัน"
@@ -567,6 +571,11 @@ msgstr "สร้างเมื่อ"
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_activity_view_search
 msgid "Creation Date"
 msgstr "วันที่สร้าง"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__timing_dow
+msgid "Day Of Week"
+msgstr "วันในสัปดาห์"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity_code__definition
@@ -804,7 +813,7 @@ msgstr "ระงับชั่วคราว"
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Hold on"
-msgstr "หยุดไว้ชั่วคราว"
+msgstr "หยุดชั่วคราว"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__id
@@ -939,6 +948,13 @@ msgid "Kanban State"
 msgstr "สถานะย่อย"
 
 #. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__kind
+msgid "Kind"
+msgstr "ประเภท"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__achievement_date
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template__achievement_date
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_template_goal__achievement_date
 msgid "Last Evaluation"
 msgstr "ประเมินล่าสุด"
@@ -1183,7 +1199,7 @@ msgstr "ผู้สูงอายุ"
 #. module: nirun_careplan
 #: model_terms:ir.ui.view,arch_db:nirun_careplan.careplan_view_form
 msgid "Period"
-msgstr "ระยะเวลา"
+msgstr "ช่วงเวลา"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan__period_end_calendar
@@ -1399,6 +1415,11 @@ msgstr "ระยะเวลา"
 #: model:ir.model.fields,help:nirun_careplan.field_ni_careplan_template_goal__condition_id
 msgid "The Problem this goal aim to solve"
 msgstr "ปํญหาที่เป้าหมายนี้ต้องการแก้ไข"
+
+#. module: nirun_careplan
+#: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__timing_tod
+msgid "Time Of Day"
+msgstr "เวลา"
 
 #. module: nirun_careplan
 #: model:ir.model.fields,field_description:nirun_careplan.field_ni_careplan_activity__timing_id

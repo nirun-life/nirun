@@ -7,7 +7,7 @@
         <field name="name">ni.encounter.view.form.inherit</field>
         <field name="model">ni.encounter</field>
         <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
-        <field name="priority">3</field>
+        <field name="priority">4</field>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page name="careplan" string="Careplan">
@@ -27,20 +27,23 @@
                                 optional="show"
                             />
                             <field name="condition_ids" widget="many2many_tags" />
-                            <field name="activity_ids" widget="many2many_tags" />
                             <field name="goal_ids" widget="many2many_tags" />
-                            <field name="goal_achieved" widget="progressbar" />
-                            <field name="manager_id" />
+                            <field name="activity_ids" widget="many2many_tags" />
+                            <field name="employee_ids" widget="many2many_tags_avatar" />
+                            <field name="period_start" optional="show" />
+                            <field name="period_end" optional="show" />
+                            <field name="achievement_date" optional="show" />
+                            <field name="goal_achieved" widget="progressbar" optional="show" />
+                            <field name="state" optional="show" />
                             <field name="create_uid" optional="hide" />
                             <field name="create_date" optional="hide" />
-                            <field name="state" optional="hide" />
                             <button
                                 name="action_play"
                                 class="text-success"
                                 type="object"
-                                string="Complete"
+                                string="Confirm"
                                 icon="fa-play"
-                                attrs="{'invisible': [('state', 'not in', ['draft', 'on-hold'])]}"
+                                attrs="{'invisible': [('state', 'not in', ['draft', 'on-hold'])], 'column_invisible': [('parent.state', '!=', 'in-progress')]}"
                             />
                             <button
                                 name="action_close"
@@ -48,14 +51,14 @@
                                 type="object"
                                 string="Complete"
                                 icon="fa-check"
-                                attrs="{'invisible': [('state', '!=', 'active')]}"
+                                attrs="{'invisible': [('state', '!=', 'active')], 'column_invisible': [('parent.state', '!=', 'in-progress')]}"
                             />
                             <button
                                 name="action_hold_on"
                                 type="object"
                                 string="Hold On"
                                 icon="fa-pause"
-                                attrs="{'invisible': [('state', '!=', 'active')]}"
+                                attrs="{'invisible': [('state', '!=', 'active')],  'column_invisible': [('parent.state', '!=', 'in-progress')]}"
                             />
                             <button
                                 name="action_revoked"
@@ -63,7 +66,7 @@
                                 type="object"
                                 string="Revoke"
                                 icon="fa-ban"
-                                attrs="{'invisible': [('state', '!=', 'active')]}"
+                                attrs="{'invisible': [('state', '!=', 'active')], 'column_invisible': [('parent.state', '!=', 'in-progress')]}"
                                 confirm="Are you sure for revoke this plan?"
                             />
                             <control>
