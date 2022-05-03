@@ -268,17 +268,35 @@
                             <field name="kanban_state" class="ml-auto oe_read_only" widget="state_selection" />
                         </h1>
                     </div>
-                    <label for="category_id" />
-                    <field name="category_id" />
+                    <field name="category_id" placeholder="Category" />
                     <group>
                         <group>
                             <field
                                 name="careplan_id"
                                 context="{'show_patient': True}"
                                 options='{"always_reload": True}'
+                                invisible="context.get('default_careplan_id')"
                             />
-                            <field name="period_start" />
-                            <field name="period_end" />
+                            <field name="manager_id" invisible="context.get('default_careplan_id')" />
+                            <field name="assignee_id" />
+                        </group>
+                        <group>
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                invisible="context.get('default_careplan_id')"
+                            />
+                            <label for="period_start" string="Period" />
+                            <div class="o_row">
+                                <field name="period_start" placeholder="Start" />
+                                <label
+                                    for="period_end"
+                                    string="-"
+                                    class="oe_read_only"
+                                    attrs="{'invisible':[('period_end', '=', False)]}"
+                                />
+                                <field name="period_end" placeholder="End" />
+                            </div>
                             <label for="timing_id" />
                             <div class="o_row">
                                 <field
@@ -301,11 +319,6 @@
                                     placeholder="create new..."
                                 />
                             </div>
-                        </group>
-                        <group>
-                            <field name="company_id" groups="base.group_multi_company" />
-                            <field name="manager_id" />
-                            <field name="assignee_id" />
                         </group>
                     </group>
                     <notebook>

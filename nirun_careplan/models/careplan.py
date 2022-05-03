@@ -54,7 +54,6 @@ class CarePlan(models.Model):
         default="plan",
         help="Indicating the degree of authority/intentionality of care plan.",
     )
-    manager_id = fields.Many2one("hr.employee", string="Care Manager", tracking=True)
     period_start = fields.Date(copy=False)
     state = fields.Selection(
         [
@@ -90,6 +89,9 @@ class CarePlan(models.Model):
     goal_count = fields.Integer(compute="_compute_goal_count")
     goal_achieved_count = fields.Integer(compute="_compute_goal_count")
     goal_achieved = fields.Float("Achieved (%)", compute="_compute_goal_count")
+    achievement_date = fields.Datetime(
+        "Last Evaluation", compute="_compute_achievement_date"
+    )
 
     activity_ids = fields.One2many(
         "ni.careplan.activity",
@@ -99,6 +101,13 @@ class CarePlan(models.Model):
         states={"draft": [("readonly", False)], "active": [("readonly", False)]},
     )
     activity_count = fields.Integer(compute="_compute_activities_count", store=True)
+    manager_id = fields.Many2one(
+        "hr.employee",
+        string="Care Manager",
+        tracking=True,
+        compute="_compute_manager_id",
+    )
+    employee_ids = fields.Many2many("hr.employee", string="Assigned to")
     create_date = fields.Datetime("Authored", readonly=True)
     create_uid = fields.Many2one("res.users", "Author", readonly=True)
 
@@ -137,12 +146,10 @@ class CarePlan(models.Model):
             self.update(data)
             self.activity_ids.copy_timing_form_template()
 
-    @api.onchange("encounter_id")
-    def _onchange_encounter_id(self):
-        if self.encounter_id.period_start:
-            self.period_start = self.encounter_id.period_start
-        if self.encounter_id.period_end:
-            self.period_end = self.encounter_id.period_end
+    @api.depends("employee_ids")
+    def _compute_manager_id(self):
+        for rec in self:
+            rec.manager_id = rec.employee_ids[0] if len(rec.employee_ids) > 0 else None
 
     @api.depends("category_ids", "activity_ids.category_id")
     def _compute_activity_category(self):
@@ -172,6 +179,20 @@ class CarePlan(models.Model):
                 ) * 100.0
             else:
                 plan.goal_achieved = 0.0
+
+    @api.depends("goal_ids.achievement_date")
+    def _compute_achievement_date(self):
+        goals = self.env["ni.goal"]
+        for rec in self:
+            goal = goals.search(
+                [
+                    ("careplan_id", "=", rec.id),
+                    ("state", "not in", ["proposed", "cancelled"]),
+                ],
+                order="achievement_date desc",
+                limit=1,
+            )
+            rec.achievement_date = goal[0].achievement_date if goal else None
 
     def copy_data(self, default=None):
         if default is None:
@@ -216,6 +237,9 @@ class CarePlan(models.Model):
         for plan in self:
             if plan.state != "active":
                 raise UserError(_("Must be active state"))
+        self.env["ni.careplan.activity"].search(
+            [("careplan_id", "in", self.ids), ("state", "=", "in-progress")]
+        ).action_cancel()
         self.write({"state": "revoked"})
 
     def action_hold_on(self):
@@ -244,12 +268,15 @@ class CarePlan(models.Model):
         for plan in self:
             if plan.state != "active":
                 raise UserError(_("Must be active state"))
-            active_goal = plan.goal_ids.filtered(lambda g: g.state != "completed")
-            if active_goal:
+            goal = plan.goal_ids.filtered(lambda g: g.state != "completed")
+            if goal:
                 raise UserError(
                     _("All goals must be in completed state before close careplan")
                 )
-            plan.update({"state": "completed"})
+            plan.activity_ids.filtered(
+                lambda a: a.state == "in-progress"
+            ).action_complete()
+            plan.write({"state": "completed"})
             if not plan.period_end:
                 plan.period_end = fields.Date.today()
 
