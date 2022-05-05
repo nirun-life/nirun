@@ -78,8 +78,29 @@
                             </group>
                             <group attrs="{'invisible': [('time_type', '!=', 'tod')]}">
                                 <field name="time_of_day" context="{'default_timing_id': id}" nolabel="1">
-                                    <tree default_order="value" editable="bottom">
-                                        <field name="value" widget="float_time" />
+                                    <tree default_order="start_time">
+                                        <field name="name" string="time" />
+                                        <field name="all_day" width="1" optional="hide" />
+                                        <field
+                                            name="start_time"
+                                            width="2"
+                                            widget="float_time"
+                                            optional="hide"
+                                            attrs="{'invisible': [('all_day', '=', True)]}"
+                                        />
+                                        <field
+                                            name="end_time"
+                                            width="2"
+                                            widget="float_time"
+                                            optional="hide"
+                                            attrs="{'invisible': [('all_day', '=', True)]}"
+                                        />
+                                        <field
+                                            name="tz"
+                                            width="2"
+                                            optional="hide"
+                                            attrs="{'invisible': [('all_day', '=', True)]}"
+                                        />
                                     </tree>
                                 </field>
                             </group>
@@ -112,6 +133,81 @@
                 <sheet>
                     <group>
                         <field name="template_id" string="Timing" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_timing_tod_view_form" model="ir.ui.view">
+        <field name="name">ni.timing.tod.view.form</field>
+        <field name="model">ni.timing.tod</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="all_day" />
+                            <field
+                                name="start_time"
+                                attrs="{'invisible': [('all_day', '=', True)]}"
+                                widget="float_time"
+                            />
+                            <field
+                                name="end_time"
+                                attrs="{'invisible': [('all_day', '=', True)]}"
+                                widget="float_time"
+                            />
+                            <field name="tz" attrs="{'invisible': [('all_day', '=', True)]}" />
+                        </group>
+                        <group>
+                            <field name="code_id" placeholder="Choose form..." />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="timing_tod_code_action" model="ir.actions.act_window">
+        <field name="name">Time of day</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.timing.tod.code</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="timing_tod_code_view_tree" model="ir.ui.view">
+        <field name="name">timing.tod.code.view.tree</field>
+        <field name="model">ni.timing.tod.code</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" />
+            </tree>
+        </field>
+    </record>
+    <record id="timing_tod_code_view_form" model="ir.ui.view">
+        <field name="name">timing.tod.code.view.form</field>
+        <field name="model">ni.timing.tod.code</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="0" />
+                            <field name="code" />
+                        </group>
+                        <group>
+                            <field name="all_day" />
+                            <field
+                                name="start_time"
+                                attrs="{'invisible': [('all_day', '=', True)]}"
+                                widget="float_time"
+                            />
+                            <field
+                                name="end_time"
+                                attrs="{'invisible': [('all_day', '=', True)]}"
+                                widget="float_time"
+                            />
+                        </group>
                     </group>
                 </sheet>
             </form>

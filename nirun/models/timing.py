@@ -1,5 +1,9 @@
 #  Copyright (c) 2021 Piruin P.
 
+import math
+
+import pytz
+
 from odoo import _, _lt, api, fields, models, tools
 from odoo.exceptions import ValidationError
 from odoo.tools import date_utils
@@ -23,6 +27,26 @@ time_unit_plural = {
     "minute": _lt("minutes"),
     "second": _lt("seconds"),
 }
+
+
+def float_time_convert(float_val):
+    factor = float_val < 0 and -1 or 1
+    val = abs(float_val)
+    return factor * int(math.floor(val)), int(round((val % 1) * 60))
+
+
+def float_time_format(float_val):
+    h, m = float_time_convert(float_val)
+    return "%0d:%02d" % (h, m)
+
+
+def _tz_get(self):
+    return [
+        (tz, tz)
+        for tz in sorted(
+            pytz.all_timezones, key=lambda tz: tz if not tz.startswith("Etc/") else "_"
+        )
+    ]
 
 
 # TODO: migrate to nirun_timing on version 14.0
@@ -87,6 +111,7 @@ class Timing(models.Model):
         required=False,
         default="day",
     )
+    everyday = fields.Boolean(readonly=False, compute="_compute_everyday")
     day_of_week = fields.Many2many(
         "ni.timing.dow", "ni_timing_dow_rel", "timing_id", "dow_id"
     )
@@ -173,6 +198,20 @@ class Timing(models.Model):
                     "name": self.template_id.name,
                 }
             )
+
+    @api.onchange("everyday")
+    def _onchange_everyday(self):
+        all_dow = self.env["ni.timing.dow"].search([]).mapped("id")
+        for rec in self:
+            org = rec._origin
+            if not org.everyday and rec.everyday:
+                rec.day_of_week = [(6, 0, all_dow)]
+
+    @api.onchange("day_of_week")
+    @api.depends("day_of_week")
+    def _compute_everyday(self):
+        for rec in self:
+            rec.everyday = len(rec.day_of_week) == 7
 
     @property
     def frequency_text(self):
@@ -358,7 +397,52 @@ class TimingTimeOfDay(models.Model):
     _name = "ni.timing.tod"
     _description = "Time of Day"
     timing_id = fields.Many2one("ni.timing", required=True)
-    value = fields.Float("Time")
+
+    name = fields.Char(store=True, compute="_compute_name")
+    code_id = fields.Many2one("ni.timing.tod.code", store=False)
+    all_day = fields.Boolean()
+    start_time = fields.Float()
+    end_time = fields.Float()
+    tz = fields.Selection(
+        _tz_get, string="Timezone", default=lambda self: self._context.get("tz")
+    )
+    start = fields.Char(compute="_compute_start_end")
+    end = fields.Char(compute="_compute_start_end")
+
+    @api.depends("start_time", "end_time")
+    def _compute_start_end(self):
+        for rec in self:
+            rec.start = float_time_format(rec.start_time)
+            rec.end = float_time_format(rec.end_time)
+
+    @api.onchange("all_day", "start_time", "end_time")
+    @api.depends("all_day", "start_time", "end_time")
+    def _compute_name(self):
+        for rec in self:
+            if rec.all_day:
+                rec.name = _("24 hrs")
+                continue
+            res = []
+            if rec.start_time:
+                res.append(rec.start)
+                if rec.end_time:
+                    res.append(rec.end)
+            rec.name = "-".join(res).strip()
+
+    @api.onchange("code_id")
+    def onchange_code_id(self):
+        if self.code_id:
+            data = self.code_id.copy_data()[0]
+            field = ["all_day", "start_time", "end_time"]
+            self.write({f: data[f] for f in field})
+
+
+class TimingTimeOfDayCode(models.Model):
+    _name = "ni.timing.tod.code"
+    _description = "Time of Day Coding"
+    _inherit = ["ni.timing.tod", "coding.base"]
+
+    timing_id = fields.Many2one("ni.timing", required=False, store=False)
 
 
 class TimingDayOfWeek(models.Model):
@@ -413,6 +497,8 @@ class TimingMixin(models.AbstractModel):
     )
     timing_tmpl_id = fields.Many2one("ni.timing.template", store=False)
     timing_when = fields.Many2many(related="timing_id.when")
+    timing_dow = fields.Many2many(related="timing_id.day_of_week")
+    timing_tod = fields.One2many(related="timing_id.time_of_day")
 
     @api.model
     def create(self, vals):

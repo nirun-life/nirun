@@ -22,6 +22,7 @@
         "views/quantity_unit_views.xml",
         "views/timing_views.xml",
         "views/timing_template_views.xml",
+        "views/timing_menu.xml",
     ],
     "demo": ["security/nirun_group_demo.xml"],
     "application": False,
