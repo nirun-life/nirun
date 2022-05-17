@@ -325,7 +325,7 @@ class Encounter(models.Model):
             name = "{}: {}".format(name, rec.patient_id.name)
         if self._context.get("show_state"):
             name = "{} [{}]".format(name, rec._get_state_label())
-        if self._context.get("show_location"):
+        if self._context.get("show_location") and rec.location_id:
             name = "{}\n{}".format(name, rec.location_id.display_name)
         return name
 
