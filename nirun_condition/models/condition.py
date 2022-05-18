@@ -136,6 +136,10 @@ class Condition(models.Model):
         self.write({"state": "resolved", "period_end": fields.Date.today()})
         return True
 
+    def action_active(self):
+        self.write({"state": "active", "period_end": False})
+        return True
+
     @api.onchange("code_id")
     def onchange_code_id(self):
         if self.code_id.classification_id:

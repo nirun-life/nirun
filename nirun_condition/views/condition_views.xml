@@ -59,16 +59,28 @@
                 <field name="id" invisible="True" />
                 <header attrs="{'invisible': [('id', '=', False)]}">
                     <button
-                        name="action_resolve"
-                        class="btn-primary"
-                        string="Resolve"
-                        attrs="{'invisible': [('state', '=', 'resolved')]}"
+                        name="action_active"
                         type="object"
+                        string="Recurrence"
+                        attrs="{'invisible': [('state', 'not in', ['resolved'])]}"
+                    />
+                    <button
+                        name="action_active"
+                        type="object"
+                        string="Relapse"
+                        attrs="{'invisible': [('state', 'not in', ['remission'])]}"
                     />
                     <button
                         name="action_remission"
                         string="Remission"
                         attrs="{'invisible': [('state', 'in', ['remission', 'resolved'])]}"
+                        type="object"
+                    />
+                    <button
+                        name="action_resolve"
+                        class="btn-primary"
+                        string="Resolve"
+                        attrs="{'invisible': [('state', '=', 'resolved')]}"
                         type="object"
                     />
                     <field name="state" statusbar_visible="active,remission,resolved" widget="statusbar" />
