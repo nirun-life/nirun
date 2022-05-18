@@ -78,8 +78,29 @@
                             </group>
                             <group attrs="{'invisible': [('time_type', '!=', 'tod')]}">
                                 <field name="time_of_day" context="{'default_timing_id': id}" nolabel="1">
-                                    <tree default_order="value" editable="bottom">
-                                        <field name="value" widget="float_time" />
+                                    <tree default_order="start_time">
+                                        <field name="name" string="time" />
+                                        <field name="all_day" width="1" optional="hide" />
+                                        <field
+                                            name="start_time"
+                                            width="2"
+                                            widget="float_time"
+                                            optional="hide"
+                                            attrs="{'invisible': [('all_day', '=', True)]}"
+                                        />
+                                        <field
+                                            name="end_time"
+                                            width="2"
+                                            widget="float_time"
+                                            optional="hide"
+                                            attrs="{'invisible': [('all_day', '=', True)]}"
+                                        />
+                                        <field
+                                            name="tz"
+                                            width="2"
+                                            optional="hide"
+                                            attrs="{'invisible': [('all_day', '=', True)]}"
+                                        />
                                     </tree>
                                 </field>
                             </group>
