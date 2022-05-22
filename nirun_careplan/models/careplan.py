@@ -12,9 +12,7 @@ class CarePlan(models.Model):
     _check_period_start = True
     _sequence_field = "identifier"
 
-    name = fields.Char(
-        "Plan",
-    )
+    name = fields.Char()
     identifier = fields.Char(default="New")
     template_id = fields.Many2one("ni.careplan.template")
     patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
@@ -39,9 +37,6 @@ class CarePlan(models.Model):
         "ni_careplan_category_rel",
         "careplan_id",
         "category_id",
-        store=True,
-        readonly=False,
-        compute="_compute_activity_category",
         copy=True,
     )
     intent = fields.Selection(
@@ -122,8 +117,26 @@ class CarePlan(models.Model):
         plan = self
         name = plan.name
         if self.env.context.get("show_patient"):
-            name = "{} {}".format(plan.patient_id.name, name)
+            name = "{} : {}".format(plan.patient_id.name, name)
         return name
+
+    @api.model
+    def create(self, vals):
+        plans = super(CarePlan, self).create(vals)
+        plans._generate_name()
+        return plans
+
+    def _generate_name(self):
+        for plan in self:
+            if not plan.name:
+                name = _("{} for".format(plan.intent.capitalize()))
+                if plan.condition_ids:
+                    problem = plan.condition_ids.mapped("name")
+                    name = "{} {}".format(name, ", ".join(problem))
+                else:
+                    name = "{} {}".format(name, plan.patient_id.name)
+                plan.name = name
+        return self
 
     @api.onchange("template_id")
     def _onchange_template_id(self):
@@ -150,13 +163,6 @@ class CarePlan(models.Model):
     def _compute_manager_id(self):
         for rec in self:
             rec.manager_id = rec.employee_ids[0] if len(rec.employee_ids) > 0 else None
-
-    @api.depends("category_ids", "activity_ids.category_id")
-    def _compute_activity_category(self):
-        for plan in self:
-            c1 = plan.mapped("activity_ids.category_id.id")
-            c2 = plan.mapped("category_ids.id")
-            plan.category_ids = list(set().union(c1, c2))
 
     @api.depends("condition_count")
     def _compute_condition_count(self):
