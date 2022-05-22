@@ -396,7 +396,7 @@ class Timing(models.Model):
 class TimingTimeOfDay(models.Model):
     _name = "ni.timing.tod"
     _description = "Time of Day"
-    timing_id = fields.Many2one("ni.timing", required=True)
+    timing_id = fields.Many2one("ni.timing", required=True, ondelete="cascade")
 
     name = fields.Char(store=True, compute="_compute_name")
     code_id = fields.Many2one("ni.timing.tod.code", store=False)
