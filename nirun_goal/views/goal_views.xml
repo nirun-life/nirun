@@ -151,6 +151,18 @@
                 <field name="state" optional="show" />
                 <field name="company_id" groups="base.group_multi_company" optional="hide" />
                 <field name="achieved" invisible="1" />
+                <button
+                    name="action_evaluation_wizard"
+                    type="object"
+                    class="text-primary"
+                    string="Evaluate"
+                    icon="fa-legal"
+                    attrs="{'invisible':[('state', 'in', ['proposed', 'cancelled'])]}"
+                />
+                <control>
+                    <create string="Add Short-Term Goal" context="{'default_term': 'short'}" />
+                    <create string="Add Long-Term Goal" context="{'default_term': 'long'}" />
+                </control>
             </tree>
         </field>
     </record>

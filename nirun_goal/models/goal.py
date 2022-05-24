@@ -26,7 +26,6 @@ class Goal(models.Model):
     sequence = fields.Integer(help="Determine the display order", index=True)
     color = fields.Integer(string="Color Index")
 
-    name = fields.Char("Goal", related="code_id.name")
     code_id = fields.Many2one(
         "ni.goal.code",
         "Goal",
@@ -92,7 +91,7 @@ class Goal(models.Model):
 
     def _name_get(self):
         goal = self
-        name = goal.name or goal.code_id.name
+        name = goal.code_id.name
         if self._context.get("show_term") and self.term:
             "{}: {}".format(_term_code[self.term], name)
         if self._context.get("show_patient"):
@@ -132,7 +131,7 @@ class Goal(models.Model):
     def action_edit(self):
         self.ensure_one()
         view = {
-            "name": self.name,
+            "name": self.code_id.name,
             "res_model": self._name,
             "type": "ir.actions.act_window",
             "target": "current",
