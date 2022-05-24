@@ -69,11 +69,6 @@ class CareplanActivity(models.Model):
         if vals.get("careplan_id") and not context.get("default_careplan_id"):
             # set default_careplan_id for create next activity
             context["default_careplan_id"] = vals.get("careplan_id")
-        if (
-            vals.get("period_start")
-            and fields.Date.to_date(vals.get("period_start")) >= fields.Date.today()
-        ):
-            vals["state"] = "in-progress"
         return super().create(vals)
 
     def write(self, vals):
