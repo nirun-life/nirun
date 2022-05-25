@@ -41,6 +41,25 @@
             </button>
         </field>
     </record>
+    <record id="survey_view_tree_inherit_wizard" model="ir.ui.view">
+        <field name="name">survey.survey.view.tree.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='certificate']" position="after">
+                <field name="subject_type" invisible="1" />
+                <button
+                    name="%(survey_subject.survey_subject_action)d"
+                    string="Answer Survey"
+                    attrs="{'invisible': ['|', '|', ('subject_type', '=', False), ('state', '=', 'draft'), ('id', '=', False)]}"
+                    class="text-primary"
+                    icon="fa-commenting"
+                    context="{'default_survey_id': id}"
+                    type="action"
+                />
+            </xpath>
+        </field>
+    </record>
     <record id="survey_user_input_view_tree_inherit_wizard" model="ir.ui.view">
         <field name="name">survey.user_input.view.tree.inherit.wizard</field>
         <field name="model">survey.user_input</field>
