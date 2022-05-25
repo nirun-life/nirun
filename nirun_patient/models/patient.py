@@ -209,7 +209,14 @@ class Patient(models.Model):
             name = patient.partner_id.with_context(show_address=True).name_get()
         if self._context.get("show_code") and patient.code:
             name = "[{}] {}".format(patient.code, name)
-
+        if self._context.get("show_gender_age"):
+            gender_age = []
+            if patient.gender in ["male", "female"]:
+                gender_age.append(patient.gender.capitalize())
+            if patient.age:
+                gender_age.append("{} years old".format(patient.age))
+            if gender_age:
+                name = "{}\n{}".format(name, ", ".join(gender_age))
         return name
 
     def _name_search(
