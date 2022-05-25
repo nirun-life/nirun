@@ -5,6 +5,7 @@ from odoo import models, tools
 
 class EncounterSurveyLatest(models.Model):
     _name = "ni.encounter.survey_latest"
+    _description = "Encounter's latest survey result"
     _inherit = ["ni.patient.survey_latest"]
     _auto = False
 

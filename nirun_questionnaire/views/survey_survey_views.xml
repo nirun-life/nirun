@@ -3,16 +3,52 @@
 ~ Copyright (c) 2021 Piruin P.
 -->
 <odoo>
-    <data>
-        <record id="survey_view_form_inherit" model="ir.ui.view">
-            <field name="name">survey.view.form.inherit</field>
-            <field name="model">survey.survey</field>
-            <field name="inherit_id" ref="survey.survey_form" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='category']" position="attributes">
-                    <attribute name="invisible">0</attribute>
-                </xpath>
-            </field>
-        </record>
-    </data>
+    <record id="survey_view_search_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.search</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_search" />
+        <field name="arch" type="xml">
+            <!-- position values: after|before|replace|attributes|inside -->
+            <xpath expr="//filter[@name='certificate']" position="after">
+                <separator />
+                <filter string="Patient Questionnaire" name="patient" domain="[('category', '=', 'ni_patient')]" />
+                <filter
+                    string="Encounter Questionnaire"
+                    name="encounter"
+                    domain="[('category', '=', 'ni_encounter')]"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.view.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_view_tree_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.tree.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='certificate']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='answer_count']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_action_patient" model="ir.actions.act_window">
+        <field name="name">Surveys</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">survey.survey</field>
+        <field name="view_mode">tree,kanban,form,activity</field>
+        <field name="domain">[('state', '=', 'open')]</field>
+        <field name="context">{'search_default_patient': 1}</field>
+    </record>
 </odoo>
