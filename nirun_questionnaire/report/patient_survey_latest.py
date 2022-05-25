@@ -6,6 +6,7 @@ from odoo.exceptions import ValidationError
 
 class PatientSurveyLatest(models.Model):
     _name = "ni.patient.survey_latest"
+    _description = "Patient's latest survey result"
     _auto = False
 
     company_id = fields.Many2one("res.company", readonly=True)
