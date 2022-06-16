@@ -51,7 +51,6 @@ class HealthcareService(models.Model):
         "Internal Notes",
         help="Additional description and/or any specific issues not covered elsewhere",
     )
-
     available_type = fields.Selection(
         [("routine", "Routine "), ("event", "Event")],
         default="routine",
@@ -71,6 +70,7 @@ class HealthcareService(models.Model):
         "Recurrent",
         help="When the Service is to occur",
     )
+    availability_exceptions = fields.Text()
 
     request_ids = fields.One2many("ni.service.request", "service_id")
     request_count = fields.Integer("Participant", compute="_compute_request_count")

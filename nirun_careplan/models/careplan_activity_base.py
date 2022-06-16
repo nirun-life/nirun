@@ -21,13 +21,14 @@ class Activity(models.AbstractModel):
         copy=False,
         default=lambda self: self.env.context.get("default_careplan_id"),
     )
+    patient_id = fields.Many2one(related="careplan_id.patient_id")
     company_id = fields.Many2one(
         related="careplan_id.company_id", store=True, readonly=True, index=True
     )
     code_id = fields.Many2one(
         "ni.careplan.activity.code",
         "Activity",
-        required=True,
+        required=False,
         tracking=True,
         index=True,
         ondelete="restrict",
@@ -54,6 +55,16 @@ class Activity(models.AbstractModel):
         copy=False,
         group_expand="_group_expand_state",
     )
+    kind = fields.Selection(
+        [
+            ("ni.careplan.activity.code", "General Activity"),
+            ("ni.service.request", "Service Request"),
+            ("ni.medication.request", "Medication Request"),
+        ],
+        default="ni.careplan.activity.code",
+    )
+    service_request_id = fields.Many2one("ni.service.request")
+
     _sql_constraints = [
         (
             "code__uniq",

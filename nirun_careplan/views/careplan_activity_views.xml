@@ -288,9 +288,22 @@
                         title="Completed"
                     />
                     <div class="oe_title pr-0">
+                        <field name="kind" widget="radio" options="{'horizontal': True}" />
                         <h1 class="d-flex flex-row justify-content-between">
                             <field name="priority" class="mr-3" widget="priority" />
-                            <field name="code_id" class="o_task_name text-truncate w-100" placeholder="Activity..." />
+                            <field
+                                name="code_id"
+                                class="o_task_name text-truncate w-100"
+                                placeholder="Activity..."
+                                attrs="{'invisible': [('kind', '!=', 'ni.careplan.activity.code')]}"
+                            />
+                            <field
+                                name="service_request_id"
+                                class="o_task_name text-truncate w-100"
+                                placeholder="Service..."
+                                attrs="{'invisible': [('kind', '!=', 'ni.service.request')]}"
+                                domain="[('patient_id','=', patient_id)]"
+                            />
                             <field name="kanban_state" class="ml-auto oe_read_only" widget="state_selection" />
                         </h1>
                     </div>
