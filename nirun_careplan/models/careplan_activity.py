@@ -95,3 +95,9 @@ class CareplanActivity(models.Model):
         for rec in self:
             if rec.timing_tmpl_id:
                 rec.timing_id = rec.timing_tmpl_id.to_timing().id
+
+    @api.onchange("service_request_id")
+    def _onchange_service_request_id(self):
+        for rec in self:
+            if rec.service_request_id:
+                rec.timing_id = rec.service_request_id.timing_id.id

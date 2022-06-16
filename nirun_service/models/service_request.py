@@ -22,8 +22,22 @@ class ServiceRequest(models.Model):
         required=True,
         check_company=True,
         states={"draft": [("readonly", False)]},
+        help="Requested performer",
     )
-    service_timing_ids = fields.One2many(related="service_id.available_timing_ids")
+    service_timing_id = fields.Many2one(
+        "ni.service.timing",
+        ondelete="set null",
+        domain="[('service_id', '=', service_id)]",
+        help="When service should occur",
+    )
+    timing_id = fields.Many2one(
+        "ni.timing",
+        related="service_timing_id.timing_id",
+        index=True,
+        store=True,
+        ondelete="set null",
+        help="Internal: to directly refer to ni.timing",
+    )
     category_ids = fields.Many2many(related="service_id.category_ids")
     priority = fields.Selection(
         [("0", "Routine"), ("1", "Urgent"), ("2", "ASAP"), ("3", "STAT")],
@@ -64,12 +78,6 @@ class ServiceRequest(models.Model):
     instruction = fields.Text(help="Patient oriented instructions")
     approve_uid = fields.Many2one("res.users", "Approved by", readonly=True)
     approve_date = fields.Datetime("Approved on", readonly=True)
-    timing_id = fields.Many2one(
-        "ni.timing",
-        ondelete="set null",
-        domain="[('res_model', '=', 'ni.service.timing'),"
-        "('res_id', 'in', service_timing_ids)]",
-    )
 
     @api.depends("service_id", "patient_id", "state")
     def _compute_display_name(self):
@@ -90,7 +98,9 @@ class ServiceRequest(models.Model):
         rec = self
         name = rec.service_id.name
         if self._context.get("show_id"):
-            name = "#{} - {}".format(rec.id, name)
+            name = "#{}-{}".format(rec.id, name)
+        if self._context.get("show_timing") and rec.timing_id:
+            name = "{}: {}".format(name, rec.timing_id.name)
         if self._context.get("show_state"):
             name = "{} [{}]".format(name, rec._get_state_label())
         if self._context.get("show_patient"):

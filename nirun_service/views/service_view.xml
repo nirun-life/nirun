@@ -52,9 +52,6 @@
                     />
                     <group>
                         <group>
-                            <field name="location_ids" widget="many2many_tags" />
-                        </group>
-                        <group>
                             <field name="code" placeholder="Internal Reference" />
                             <field name="company_id" groups="base.group_multi_company" placeholder="Company" />
                         </group>
@@ -114,6 +111,15 @@
                                     </tree>
                                 </field>
                             </group>
+                            <label for="availability_exceptions" />
+                            <field name="availability_exceptions" />
+                        </page>
+                        <page name="location" string="Location">
+                            <field name="location_ids">
+                                <tree editable="bottom">
+                                    <field name="display_name" />
+                                </tree>
+                            </field>
                         </page>
                         <page string="Internal Note">
                             <field name="comment" />

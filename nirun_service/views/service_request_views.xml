@@ -79,7 +79,6 @@
         <field name="model">ni.service.request</field>
         <field name="arch" type="xml">
             <form>
-                <field name="service_timing_ids" invisible="1" />
                 <header class="oe_read_only">
                     <button
                         name="action_approve"
@@ -156,7 +155,8 @@
                                     options="{'related_start_date': 'period_start'}"
                                 />
                             </div>
-                            <field name="timing_id" options="{'no_create': True}" />
+                            <field name="service_timing_id" options="{'no_create': True}" widget="radio" />
+                            <field name="timing_id" options="{'no_create': True}" invisible="1" />
                         </group>
                         <group>
                             <field

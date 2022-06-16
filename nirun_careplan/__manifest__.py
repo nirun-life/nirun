@@ -9,7 +9,13 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun_patient", "nirun_condition", "nirun_goal", "mail"],
+    "depends": [
+        "nirun_patient",
+        "nirun_condition",
+        "nirun_goal",
+        "mail",
+        "nirun_service",
+    ],
     "data": [
         "security/careplan_group.xml",
         "security/careplan_rule.xml",
