@@ -79,6 +79,7 @@
         <field name="model">ni.service.request</field>
         <field name="arch" type="xml">
             <form>
+                <field name="service_timing_ids" invisible="1" />
                 <header class="oe_read_only">
                     <button
                         name="action_approve"
@@ -142,8 +143,20 @@
                                 invisible="context.get('default_encounter_id', False)"
                                 context="{'show_patient': True}"
                             />
-                            <field name="period_start" required="1" />
-                            <field name="period_end" />
+                            <label for="period_start" />
+                            <div class="o_row">
+                                <field
+                                    name="period_start"
+                                    widget="daterange"
+                                    options="{'related_end_date': 'period_end'}"
+                                />
+                                <field
+                                    name="period_end"
+                                    widget="daterange"
+                                    options="{'related_start_date': 'period_start'}"
+                                />
+                            </div>
+                            <field name="timing_id" options="{'no_create': True}" />
                         </group>
                         <group>
                             <field
