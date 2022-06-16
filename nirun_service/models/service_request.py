@@ -23,6 +23,7 @@ class ServiceRequest(models.Model):
         check_company=True,
         states={"draft": [("readonly", False)]},
     )
+    service_timing_ids = fields.One2many(related="service_id.available_timing_ids")
     category_ids = fields.Many2many(related="service_id.category_ids")
     priority = fields.Selection(
         [("0", "Routine"), ("1", "Urgent"), ("2", "ASAP"), ("3", "STAT")],
@@ -63,6 +64,12 @@ class ServiceRequest(models.Model):
     instruction = fields.Text(help="Patient oriented instructions")
     approve_uid = fields.Many2one("res.users", "Approved by", readonly=True)
     approve_date = fields.Datetime("Approved on", readonly=True)
+    timing_id = fields.Many2one(
+        "ni.timing",
+        ondelete="set null",
+        domain="[('res_model', '=', 'ni.service.timing'),"
+        "('res_id', 'in', service_timing_ids)]",
+    )
 
     @api.depends("service_id", "patient_id", "state")
     def _compute_display_name(self):
