@@ -166,6 +166,7 @@ class Timing(models.Model):
                 [
                     rec.frequency_text,
                     rec.period_text,
+                    rec.time_of_day_text,
                     rec.day_of_week_text,
                     rec.when_text,
                     rec.duration_text,
@@ -248,6 +249,8 @@ class Timing(models.Model):
 
     @property
     def day_of_week_text(self):
+        if self.everyday:
+            return "Everyday"
         dow = self.day_of_week.mapped("name")
         return ", ".join(dow) if dow else ""
 
@@ -279,6 +282,11 @@ class Timing(models.Model):
             )
         else:
             return ""
+
+    @property
+    def time_of_day_text(self):
+        tod = self.time_of_day.mapped("name")
+        return ", ".join(tod) if tod else ""
 
     @api.onchange("bound_start", "bound_end")
     def _compute_bound_duration(self):
