@@ -96,3 +96,27 @@ class HealthcareServiceAvailableTime(models.Model):
     def _compute_everyday(self):
         for rec in self:
             rec.everyday = len(rec.day_of_week) == 7
+
+    def to_timing(self):
+        self.ensure_one()
+        vals = {
+            "service_id": self.service_id.id,
+            "period": 1,
+            "period_unit": "week",
+            "everyday": self.everyday,
+            "day_of_week": [(4, dow.id, 0) for dow in self.day_of_week],
+            "time_type": "tod",
+            "time_of_day": [
+                (
+                    0,
+                    0,
+                    {
+                        "all_day": self.all_day,
+                        "start_time": self.start_time,
+                        "end_time": self.end_time,
+                        "tz": self.tz,
+                    },
+                )
+            ],
+        }
+        return self.env["ni.service.timing"].create(vals)
