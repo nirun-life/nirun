@@ -212,9 +212,11 @@ class Patient(models.Model):
         if self._context.get("show_gender_age"):
             gender_age = []
             if patient.gender in ["male", "female"]:
-                gender_age.append(patient.gender.capitalize())
+                gender_age.append(
+                    dict(self._fields["gender"].selection(self))[self.gender]
+                )
             if patient.age:
-                gender_age.append("{} years old".format(patient.age))
+                gender_age.append(_("{} years old").format(patient.age))
             if gender_age:
                 name = "{}\n{}".format(name, ", ".join(gender_age))
         return name
