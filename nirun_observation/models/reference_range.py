@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 Piruin P.
+#  Copyright (c) 2021 NSTDA
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError

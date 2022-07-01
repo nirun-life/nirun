@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 Piruin P.
+#  Copyright (c) 2021 NSTDA
 import datetime
 
 import pytz
@@ -113,4 +113,17 @@ class HealthcareServiceTimingCalendarWizard(models.TransientModel):
             "name": self.service_id.name,
             "location": self.service_id.location,
             "partner_ids": self.partner_ids,
+            "attendee_ids": [
+                (
+                    0,
+                    0,
+                    {
+                        "state": "tentative",
+                        "partner_id": partner.id,
+                        "email": partner.email,
+                        "availability": "busy",
+                    },
+                )
+                for partner in self.partner_ids
+            ],
         }

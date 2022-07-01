@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 Piruin P.
+#  Copyright (c) 2021 NSTDA
 
 from odoo import api, fields, models
 
@@ -32,10 +32,8 @@ class ServiceRequest(models.Model):
     )
     timing_id = fields.Many2one(
         "ni.timing",
-        related="service_timing_id.timing_id",
-        index=True,
-        store=True,
         ondelete="set null",
+        domain="[('res_id', '=', service_id), ('res_model', '=', 'ni.service')]",
         help="Internal: to directly refer to ni.timing",
     )
     category_ids = fields.Many2many(related="service_id.category_ids")

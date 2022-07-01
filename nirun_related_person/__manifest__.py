@@ -1,11 +1,11 @@
-#  Copyright (c) 2021 Piruin P.
+#  Copyright (c) 2021 NSTDA
 
 {
     "name": "Related Person",
     "version": "13.0.0.3.0",
     "development_status": "Alpha",
     "category": "Healthcare",
-    "author": "Piruin P.",
+    "author": "NSTDA, Piruin P.",
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
