@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 Piruin P.
+#  Copyright (c) 2021 NSTDA
 
 from . import patient_group
 from . import survey_grade

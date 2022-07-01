@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 Piruin P.
+#  Copyright (c) 2021 NSTDA
 from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase
 from odoo.tools.date_utils import datetime, get_timedelta

@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 Piruin P.
+#  Copyright (c) 2021 NSTDA
 
 {
     "name": "Partner Gender",
@@ -6,7 +6,7 @@
     "version": "13.0.0.2.0",
     "development_status": "Alpha",
     "category": "Tools",
-    "author": "Piruin P.",
+    "author": "NSTDA, Piruin P.",
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],

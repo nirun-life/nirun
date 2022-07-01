@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 Piruin P.
+#  Copyright (c) 2021 NSTDA
 
 import math
 
@@ -104,3 +104,7 @@ class HealthcareService(models.Model):
             "nirun_service", "service_request_action"
         )
         return dict(action, context=ctx)
+
+    def action_copy_time_to_timing(self):
+        for rec in self.available_time_ids:
+            rec.to_timing()
