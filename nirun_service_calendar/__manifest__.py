@@ -12,6 +12,7 @@
     "depends": ["nirun_service", "calendar"],
     "data": [
         "data/calendar_data.xml",
+        "data/ir_cron_data.xml",
         "views/calendar_views.xml",
         "views/service_views.xml",
         "views/service_menus.xml",
