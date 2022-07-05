@@ -1,60 +1,6 @@
 #  Copyright (c) 2021 NSTDA
-import datetime
-
-import pytz
 
 from odoo import api, fields, models
-
-
-def naive_utc(value, timezone):
-    naive_datetime = datetime.datetime.strptime(value, "%Y-%m-%d %H:%M")
-    local_datetime = timezone.localize(naive_datetime, is_dst=None)
-    utc_time = local_datetime.astimezone(pytz.utc)
-    return str(utc_time)[0:-6]
-
-
-class HealthcareServiceTime(models.Model):
-    _inherit = "ni.service.time"
-
-    def get_calendar_dict(self, start_date):
-        self.ensure_one()
-        start_datetime = fields.Datetime.to_datetime(start_date)
-        res = {
-            "interval": 1,
-            "rrule_type": "weekly",
-            "allday": self.all_day,
-            "start": start_datetime,
-            "stop": start_datetime,
-        }
-
-        if not self.all_day:
-            tz = self._get_timezone()
-            start_time = "{} {}".format(start_date, self.start)
-            stop_time = "{} {}".format(start_date, self.end)
-            res.update(
-                {
-                    "start": fields.Datetime.to_datetime(naive_utc(start_time, tz)),
-                    "stop": fields.Datetime.to_datetime(naive_utc(stop_time, tz)),
-                }
-            )
-
-        res.update(self._get_day_of_week_calendar_dict())
-        return res
-
-    def _get_timezone(self):
-        if self.tz:
-            return pytz.timezone(self.tz)
-        if self.env.user.tz:
-            return pytz.timezone(self.env.user.tz)
-        return pytz.utc
-
-    def _get_day_of_week_calendar_dict(self):
-        self.ensure_one()
-        res = {}
-        for day in self.day_of_week:
-            field = day.code[0:2].lower()
-            res[field] = True
-        return res
 
 
 class HealthcareServiceTimingCalendarWizard(models.TransientModel):
@@ -63,7 +9,12 @@ class HealthcareServiceTimingCalendarWizard(models.TransientModel):
     _inherit = ["period.mixin"]
 
     service_id = fields.Many2one("ni.service", required=True)
-    time_id = fields.Many2one("ni.service.time", required=True)
+    time_id = fields.Many2one(
+        "ni.service.time", domain="[('service_id', '=', service_id)]"
+    )
+    timing_id = fields.Many2one(
+        "ni.service.timing", domain="[('service_id', '=', service_id)]"
+    )
     partner_ids = fields.Many2many(
         "res.partner",
         string="Participant",
@@ -96,7 +47,12 @@ class HealthcareServiceTimingCalendarWizard(models.TransientModel):
 
     def schedule(self):
         val = self._get_calendar_dict()
-        val.update(self.time_id.get_calendar_dict(self.period_start))
+        time = self.time_id or self.timing_id
+        val.update(time.get_calendar_dict(self.period_start))
+        # if self.time_id:
+        #     val.update(self.get_calendar_dict(self.period_start))
+        # elif self.timing_id:
+        #     val.update(self.timing_id.get_calendar_dict(self.period_start))
         events = self.env["calendar.event"]
         events.create(val)
 

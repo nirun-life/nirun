@@ -3,19 +3,39 @@
   ~ Copyright (c) 2021 NSTDA
   -->
 <odoo>
+    <record id="calendar_event_view_calender" model="ir.ui.view">
+        <field name="name">calendar.event.view.calendar</field>
+        <field name="model">calendar.event</field>
+        <field name="arch" type="xml">
+            <calendar
+                js_class="attendee_calendar"
+                date_start="start"
+                date_stop="stop"
+                date_delay="duration"
+                all_day="allday"
+                event_open_popup="true"
+                mode="month"
+                event_limit="5"
+                color="service_id"
+            >
+                <field name="service_id" invisible="1" />
+                <field name="is_highlighted" invisible="1" />
+            </calendar>
+        </field>
+    </record>
     <record id="action_calendar_event_service" model="ir.actions.act_window">
         <field name="name">Healthcare Services</field>
         <field name="res_model">calendar.event</field>
         <field name="view_mode">calendar,tree,form</field>
-        <field name="view_id" ref="calendar.view_calendar_event_calendar" />
+        <field name="view_id" ref="calendar_event_view_calender" />
         <field name="search_view_id" ref="calendar.view_calendar_event_search" />
         <field name="context">{'search_default_service': True, 'mode': 'month'}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Schedule a event of healthcare service</p>
             <p>
                 The calendar is shared between employees and fully integrated with
-            other applications such as the employee leaves or the business
-            opportunities.
+                other applications such as the employee leaves or the business
+                opportunities.
             </p>
         </field>
     </record>
@@ -25,8 +45,22 @@
         <field name="inherit_id" ref="calendar.view_calendar_event_form" />
         <field name="arch" type="xml">
             <field name="user_id" position="after">
-                <field name="service_id" />
+                <field name="service_id" readonly="1" />
+                <field name="timing_id" readonly="1" />
+                <field name="time_id" readonly="1" />
             </field>
+            <!-- position values: after|before|replace|attributes|inside -->
+            <xpath expr="//page[@name='page_details']" position="before">
+                <page name="request" string="Request" attrs="{'invisible': [('service_id', '=', False)]}">
+                    <field name="service_request_ids" widget="one2many" mode="tree" context="{'show_age': True}">
+                        <tree>
+                            <field name="encounter_id" />
+                            <field name="patient_id" />
+                            <field name="state" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
         </field>
     </record>
     <record id="calendar_event_view_search_inherit" model="ir.ui.view">

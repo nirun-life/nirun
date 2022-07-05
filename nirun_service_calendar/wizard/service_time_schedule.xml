@@ -27,12 +27,20 @@
                         <group colspan="3">
                             <field
                                 name="time_id"
+                                attrs="{'required': [('timing_id', '=', False)]}"
                                 context="{'default_service_id':service_id}"
-                                domain="[('service_id', '=', service_id)]"
+                                options="{'no_create': True, 'no_create_edit': True}"
+                            />
+                            <field
+                                name="timing_id"
+                                attrs="{'required': [('time_id', '=', False)]}"
+                                context="{'default_service_id':service_id}"
+                                options="{'no_create': True, 'no_create_edit': True}"
                             />
                             <label string="Period" for="period_start" />
                             <div class="o_row">
                                 <field name="period_start" placeholder="Since" />
+                                <i class="fa fa-fw fa-arrow-right mx-2" aria-label="arrow-icon" title="to" />
                                 <field name="period_end" placeholder="Until" />
                             </div>
                             <field
