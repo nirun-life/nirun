@@ -16,9 +16,9 @@ class Observation(models.Model):
         index=True,
         ondelete="cascade",
     )
-    effective_date = fields.Datetime(readonly=True)
+    effective_date = fields.Datetime(default=lambda _: fields.datetime.now())
     type_id = fields.Many2one("ni.observation.type", required=True)
-    sequence = fields.Integer(related="type_id.sequence")
+    sequence = fields.Integer(default=0)
     category_id = fields.Many2one(related="type_id.category_id", readonly=True)
     value = fields.Float(group_operator="avg")
     unit = fields.Many2one(related="type_id.unit")
@@ -48,7 +48,7 @@ class Observation(models.Model):
     _sql_constraints = [
         (
             "type__uniq",
-            "unique (observation_sheet_id, type_id)",
+            "unique (sheet_id, type_id)",
             "Duplication observation type!",
         ),
     ]
@@ -66,6 +66,13 @@ class Observation(models.Model):
             self._table,
             ["encounter_id", "type_id"],
         )
+
+    @api.constrains("sheet_id", "effective_date")
+    def _check_effective_date(self):
+        # effective date must always depend on observation sheet
+        for rec in self.filtered(lambda r: r.sheet_id):
+            if rec.effective_date != rec.sheet_id.effective_date:
+                raise ValidationError(_("Effective date not follow the sheet"))
 
     @api.onchange("type_id")
     def _onchange_type(self):

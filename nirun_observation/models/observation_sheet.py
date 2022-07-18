@@ -37,6 +37,13 @@ class ObservationSheet(models.Model):
         required=False,
     )
 
+    def write(self, vals):
+        result = super(ObservationSheet, self).write(vals)
+        if result and vals.get("effective_date"):
+            for rec in self:
+                rec.observation_ids.write({"effective_date": rec.effective_date})
+        return result
+
     def action_patient_observation_graph(self):
         action_rec = self.env.ref("nirun_observation.ob_action")
         action = action_rec.read()[0]
@@ -68,7 +75,9 @@ class ObservationSheet(models.Model):
     def line_data(self, type_id):
         return {
             "sheet_id": self.id,
-            "type_id": type_id.id,
+            "effective_date": self.effective_date,
             "patient_id": self.patient_id.id,
             "encounter_id": self.encounter_id.id,
+            "type_id": type_id.id,
+            "sequence": type_id.sequence,
         }
