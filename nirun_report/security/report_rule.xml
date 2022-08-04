@@ -3,6 +3,18 @@
   ~ Copyright (c) 2021 NSTDA
   -->
 <odoo noupdate="1">
+    <record id="demographic_company_rule" model="ir.rule">
+        <field name="name">Demographic: multi-company</field>
+        <field name="model_id" ref="model_ni_report_demographic" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="demographic_line_company_rule" model="ir.rule">
+        <field name="name">Demographic/Detail: multi-company</field>
+        <field name="model_id" ref="model_ni_report_demographic_line" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
     <record id="demographic_manager_cwu_rule" model="ir.rule">
         <field name="name">Demographic: Manager create/write in company</field>
         <field name="model_id" ref="nirun_report.model_ni_report_demographic" />
