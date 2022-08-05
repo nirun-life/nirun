@@ -79,7 +79,7 @@
         <field name="model">ni.service.request</field>
         <field name="arch" type="xml">
             <form>
-                <header class="oe_read_only">
+                <header>
                     <button
                         name="action_approve"
                         string="Approve"
@@ -129,6 +129,7 @@
                             <field name="service_id" class="w-100" nolabel="True" placeholder="Healthcare Service" />
                         </h2>
                         <div>
+                            <field name="name" attrs="{'invisible': [('id', '=', False)]}" />
                             <span class="fa fa-clock-o ml-2" />
                             <field name="duration" class="mx-1" />
                         </div>
@@ -142,21 +143,42 @@
                                 invisible="context.get('default_encounter_id', False)"
                                 context="{'show_patient': True}"
                             />
-                            <label for="period_start" />
+                            <label for="period_start" string="Period" />
                             <div class="o_row">
                                 <field
                                     name="period_start"
+                                    placeholder="Since"
                                     widget="daterange"
+                                    required="1"
                                     options="{'related_end_date': 'period_end'}"
                                 />
+                                <i class="fa fa-fw fa-arrow-right mx-2" aria-label="arrow-icon" title="to" />
                                 <field
                                     name="period_end"
+                                    placeholder="Until"
                                     widget="daterange"
                                     options="{'related_start_date': 'period_start'}"
                                 />
                             </div>
-                            <field name="service_timing_id" options="{'no_create': True}" widget="radio" />
-                            <field name="timing_id" options="{'no_create': True}" invisible="1" />
+                            <field name="service_available_type" invisible="1" />
+                            <field name="service_available_time_ids" invisible="1" />
+                            <field
+                                name="service_time_id"
+                                attrs="{
+                            'invisible': [('service_available_type', '!=', 'routine')],
+                            'readonly': [('service_available_type', '!=', 'routine')],
+                             'required': [('service_available_type', '=', 'routine'), ('service_available_time_ids', '!=', False)]}"
+                                widget="radio"
+                            />
+                            <field name="service_available_timing_ids" invisible="1" />
+                            <field
+                                name="service_timing_id"
+                                attrs="{
+                            'invisible': [('service_available_type', '!=', 'event')],
+                            'readonly': [('service_available_type', '!=', 'event')],
+                             'required': [('service_available_type', '=', 'event'), ('service_available_timing_ids', '!=', False)]}"
+                                widget="radio"
+                            />
                         </group>
                         <group>
                             <field
@@ -216,6 +238,7 @@
                     options="{'color_field': 'color', 'limit':3}"
                     optional="show"
                 />
+                <field name="display_time" />
                 <field name="intent" invisible="context.get('search_default_group_by_intent', False)" optional="show" />
                 <field name="priority" optional="show" />
                 <field name="period_start" optional="hide" />

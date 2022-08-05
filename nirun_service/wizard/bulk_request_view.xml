@@ -26,11 +26,42 @@
                     <group col="4">
                         <group colspan="3">
                             <field name="state" options="{'horizontal':True}" widget="radio" />
-                            <label string="Period" for="period_start" />
+                            <label for="period_start" string="Period" />
                             <div class="o_row">
-                                <field name="period_start" placeholder="Since" required="1" />
-                                <field name="period_end" placeholder="Until" />
+                                <field
+                                    name="period_start"
+                                    placeholder="Since"
+                                    widget="daterange"
+                                    required="1"
+                                    options="{'related_end_date': 'period_end'}"
+                                />
+                                <i class="fa fa-fw fa-arrow-right mx-2" aria-label="arrow-icon" title="to" />
+                                <field
+                                    name="period_end"
+                                    placeholder="Until"
+                                    widget="daterange"
+                                    options="{'related_start_date': 'period_start'}"
+                                />
                             </div>
+                            <field name="service_available_type" invisible="1" />
+                            <field name="service_available_time_ids" invisible="1" />
+                            <field
+                                name="service_time_id"
+                                options="{'no_create': True, 'no_create_edit': True, 'no_open':True}"
+                                attrs="{
+                            'invisible': [('service_available_type', '!=', 'routine')],
+                            'readonly': [('service_available_type', '!=', 'routine')],
+                             'required': [('service_available_type', '=', 'routine'), ('service_available_time_ids', '!=', False)]}"
+                            />
+                            <field name="service_available_timing_ids" invisible="1" />
+                            <field
+                                name="service_timing_id"
+                                options="{'no_create': True, 'no_create_edit': True, 'no_open':True}"
+                                attrs="{
+                            'invisible': [('service_available_type', '!=', 'event')],
+                            'readonly': [('service_available_type', '!=', 'event')],
+                             'required': [('service_available_type', '=', 'event'), ('service_available_timing_ids', '!=', False)]}"
+                            />
                             <field name="patient_ids" options="{'no_create_edit': True}" widget="many2many_tags" />
                         </group>
                     </group>
