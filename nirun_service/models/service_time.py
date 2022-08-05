@@ -59,11 +59,14 @@ class HealthcareServiceAvailableTime(models.Model):
         if self.end_time < self.start_time:
             self.end_time = self.start_time
 
-    @api.depends("day_of_week")
+    @api.depends("day_of_week", "everyday")
     def _compute_dow_txt(self):
         for rec in self:
-            dow = rec.day_of_week.mapped("name")
-            rec.display_day = ", ".join(dow) if dow else ""
+            if rec.everyday:
+                rec.display_day = _("Everyday")
+            else:
+                dow = rec.day_of_week.mapped("name")
+                rec.display_day = ", ".join(dow) if dow else ""
 
     @api.depends("all_day", "start_time", "end_time")
     def _compute_time_txt(self):

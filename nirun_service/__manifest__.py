@@ -15,6 +15,7 @@
         "security/service_rules.xml",
         "security/ir.model.access.csv",
         "data/service_category_data.xml",
+        "data/ir_sequence_data.xml",
         "views/service_category_views.xml",
         "views/service_timing_views.xml",
         "views/service_time_view.xml",
