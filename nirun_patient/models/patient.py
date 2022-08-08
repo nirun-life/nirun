@@ -219,6 +219,8 @@ class Patient(models.Model):
                 gender_age.append(_("{} years old").format(patient.age))
             if gender_age:
                 name = "{}\n{}".format(name, ", ".join(gender_age))
+        elif self._context.get("show_age") and patient.age:
+            name = "{} ({})".format(name, patient.age)
         return name
 
     def _name_search(
