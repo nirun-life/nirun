@@ -1,7 +1,16 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, tools
 from odoo.exceptions import ValidationError
+
+
+def create_patient_encounter_idx(self):
+    tools.create_index(
+        self._cr,
+        "{}__patient__encounter__idx".format(self._table.replace(".", "_")),
+        self._table,
+        ["patient_id", "encounter_id"],
+    )
 
 
 class PatientRes(models.AbstractModel):
@@ -18,10 +27,10 @@ class PatientRes(models.AbstractModel):
     patient_id = fields.Many2one(
         "ni.patient",
         "Patient",
-        store=True,
         index=True,
         ondelete="cascade",
         required=True,
+        tracking=True,
     )
     partner_id = fields.Many2one(related="patient_id.partner_id")
     encounter_id = fields.Many2one(
@@ -29,6 +38,7 @@ class PatientRes(models.AbstractModel):
         "Encounter No.",
         ondelete="restrict",
         index=True,
+        tracking=True,
         check_company=True,
         domain="""[
               ('patient_id', '=?', patient_id),
