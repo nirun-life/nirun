@@ -2,7 +2,8 @@
 
 import math
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 def float_time_convert(float_val):
@@ -75,6 +76,11 @@ class HealthcareService(models.Model):
     request_ids = fields.One2many("ni.service.request", "service_id")
     request_count = fields.Integer("Participant", compute="_compute_request_count")
 
+    is_procedure = fields.Boolean(default=False)
+    procedure_code_id = fields.Many2one("ni.procedure.code")
+    procedure_category_id = fields.Many2one("ni.procedure.category")
+    procedure_outcome_id = fields.Many2one("ni.procedure.outcome")
+
     @api.depends("request_ids")
     def _compute_request_count(self):
         res = self._count_active_request()
@@ -108,3 +114,9 @@ class HealthcareService(models.Model):
     def action_copy_time_to_timing(self):
         for rec in self.available_time_ids:
             rec.to_timing()
+
+    @api.constrains("is_procedure", "procedure_code_id")
+    def check_procedure_code(self):
+        for rec in self:
+            if rec.is_procedure and not rec.procedure_code_id:
+                raise ValidationError(_("Procedure code is require!!!"))

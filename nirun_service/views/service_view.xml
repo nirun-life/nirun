@@ -121,6 +121,19 @@
                                 </tree>
                             </field>
                         </page>
+                        <page name="procedure" string="Procedure">
+                            <div>
+                                <field name="is_procedure" />
+                                <label for="is_procedure" string="Procedure" />
+                            </div>
+                            <group>
+                                <group attrs="{'invisible': [('is_procedure', '=', False)]}" string="Default Values">
+                                    <field name="procedure_code_id" string="Code" />
+                                    <field name="procedure_category_id" string="Category" />
+                                    <field name="procedure_outcome_id" string="Outcome" widget="radio" />
+                                </group>
+                            </group>
+                        </page>
                         <page string="Internal Note">
                             <field name="comment" />
                         </page>

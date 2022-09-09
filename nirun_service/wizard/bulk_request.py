@@ -63,6 +63,10 @@ class ServiceBulkRequest(models.TransientModel):
                     "service_timing_id": self.service_timing_id.id
                     if self.service_available_type == "event"
                     else False,
+                    "is_procedure": self.service_id.is_procedure,
+                    "procedure_code_id": self.service_id.procedure_code_id.id,
+                    "procedure_category_id": self.service_id.procedure_category_id.id,
+                    "procedure_outcome_id": self.service_id.procedure_outcome_id.id,
                 }
             )
         return self.service_id.open_request(self.state)

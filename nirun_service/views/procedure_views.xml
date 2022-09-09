@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022. NSTDA
+  -->
+<odoo>
+    <record id="procedure_view_search" model="ir.ui.view">
+        <field name="name">procedure.view.search</field>
+        <field name="model">ni.procedure</field>
+        <field name="inherit_id" ref="nirun_procedure.procedure_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='group_by_encounter']" position="after">
+                <separator />
+                <filter name="group_by_service_request" string="Service" context="{'group_by': 'service_request_id'}" />
+            </xpath>
+        </field>
+    </record>
+    <record id="procedure_view_tree" model="ir.ui.view">
+        <field name="name">procedure.view.tree</field>
+        <field name="model">ni.procedure</field>
+        <field name="inherit_id" ref="nirun_procedure.procedure_view_tree" />
+        <field name="arch" type="xml">
+            <field name="code_id" position="before">
+                <field
+                    name="service_request_id"
+                    optional="hide"
+                    invisible="context.get('default_service_reqeust_id')"
+                />
+            </field>
+        </field>
+    </record>
+    <record id="procedure_view_form" model="ir.ui.view">
+        <field name="name">procedure.view.form</field>
+        <field name="model">ni.procedure</field>
+        <field name="inherit_id" ref="nirun_procedure.procedure_view_form" />
+        <field name="arch" type="xml">
+            <field name="code_id" position="before">
+                <field name="service_request_id" invisible="context.get('default_service_request_id')" />
+            </field>
+        </field>
+    </record>
+</odoo>

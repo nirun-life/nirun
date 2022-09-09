@@ -18,8 +18,11 @@ class Meeting(models.Model):
         ondelete="cascade",
     )
     # To support recurrence event, We have to compute with _read_service_request_ids()
-    service_request_ids = fields.Many2many("ni.service.request")
-    patient_ids = fields.Many2many("ni.patient")
+    service_request_ids = fields.Many2many(
+        "ni.service.request", readonly=True, default=False
+    )
+    patient_ids = fields.Many2many("ni.patient", readonly=True, default=False)
+    patient_count = fields.Integer(readonly=True, default=0)
 
     @api.onchange("service_id")
     def onchange_service_id(self):
@@ -66,6 +69,38 @@ class Meeting(models.Model):
             res = d.copy()
             sr = self.env["ni.service.request"].search(domain)
             res["service_request_ids"] = sr.ids
-            res["patient_ids"] = sr.mapped("patient_id").ids
+            patients = sr.mapped("patient_id")
+            res["patient_ids"] = patients.ids
+            res["patient_count"] = len(patients)
             result.append(res)
         return result
+
+    def action_procedure(self):
+        action_rec = self.env.ref("nirun_service.service_request_action")
+        action = action_rec.read()[0]
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "default_calendar_id": self.ids[0],
+                "default_service_id": self.service_id.id,
+                "default_service_timing_id": self.timing_id.id,
+                "default_service_time_id": self.time_id.id,
+                "no_state_control": True,
+            }
+        )
+        action["context"] = ctx
+        action["name"] = "{} ({})".format(self.name, self.start)
+        domain = [
+            ("service_id", "=", self.service_id.id),
+            ("period_start", "<=", self.start),
+            "|",
+            ("period_end", ">=", self.stop),
+            ("period_end", "=", False),
+            ("state", "=", "active"),
+        ]
+        if self.timing_id:
+            domain.insert(1, ("service_timing_id", "=", self.timing_id.id))
+        if self.time_id:
+            domain.insert(1, ("service_time_id", "=", self.time_id.id))
+        action["domain"] = domain
+        return action

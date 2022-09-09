@@ -7,3 +7,4 @@ from . import service_category
 from . import service_request
 from . import service_time
 from . import service_timing
+from . import procedure
