@@ -9,7 +9,7 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun_patient"],
+    "depends": ["nirun_patient", "nirun_procedure"],
     "data": [
         "security/service_group.xml",
         "security/service_rules.xml",
@@ -24,6 +24,8 @@
         "views/patient_views.xml",
         "views/encounter_views.xml",
         "views/service_menus.xml",
+        "views/procedure_views.xml",
+        "views/procedure_menu.xml",
         "wizard/bulk_request_view.xml",
     ],
     "application": True,

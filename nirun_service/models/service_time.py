@@ -40,6 +40,8 @@ class HealthcareServiceAvailableTime(models.Model):
     display_day = fields.Char("Day", compute="_compute_dow_txt")
     display_time = fields.Char("Time", compute="_compute_time_txt")
 
+    timing_id = fields.Many2one("ni.service.timing")
+
     @api.depends("day_of_week", "all_day", "start_time", "end_time")
     def _compute_name(self):
         for rec in self:
@@ -102,6 +104,9 @@ class HealthcareServiceAvailableTime(models.Model):
 
     def to_timing(self):
         self.ensure_one()
+        if self.timing_id:
+            return self.timing_id
+
         vals = {
             "service_id": self.service_id.id,
             "period": 1,
@@ -122,4 +127,6 @@ class HealthcareServiceAvailableTime(models.Model):
                 )
             ],
         }
-        return self.env["ni.service.timing"].create(vals)
+        timing = self.env["ni.service.timing"].create(vals)
+        self.timing_id = timing
+        return timing

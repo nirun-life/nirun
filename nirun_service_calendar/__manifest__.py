@@ -9,7 +9,7 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["nirun_service", "calendar"],
+    "depends": ["nirun_service", "nirun_procedure", "calendar"],
     "data": [
         "data/calendar_data.xml",
         "data/ir_cron_data.xml",

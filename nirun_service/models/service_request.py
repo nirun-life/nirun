@@ -3,6 +3,8 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
+from odoo.addons.nirun_patient.models.patient_res import create_patient_encounter_idx
+
 
 class ServiceRequest(models.Model):
     _name = "ni.service.request"
@@ -17,6 +19,22 @@ class ServiceRequest(models.Model):
     )
     name = fields.Char(default="New", readonly=True)
     display_name = fields.Char(compute="_compute_display_name")
+    is_procedure = fields.Boolean()
+    procedure_code_id = fields.Many2one(
+        "ni.procedure.code", "Code", help="What is being requested/ordered"
+    )
+    procedure_category_id = fields.Many2one("ni.procedure.category", "Category")
+    procedure_outcome_id = fields.Many2one("ni.procedure.outcome", "Outcome")
+    procedure_ids = fields.One2many("ni.procedure", "service_request_id")
+    procedure_count = fields.Integer(
+        "Performed Count", compute="_compute_procedure", store=True
+    )
+    procedure_performed = fields.Datetime(
+        "Last Performed",
+        compute="_compute_procedure",
+        store=True,
+        help="Last procedure performed",
+    )
     service_id = fields.Many2one(
         "ni.service",
         ondelete="restrict",
@@ -93,12 +111,36 @@ class ServiceRequest(models.Model):
     approve_uid = fields.Many2one("res.users", "Approved by", readonly=True)
     approve_date = fields.Datetime("Approved on", readonly=True)
 
+    def init(self):
+        create_patient_encounter_idx(self)
+
     @api.depends("service_id", "patient_id", "state")
     def _compute_display_name(self):
         diff = dict(show_patient=None, show_state=None)
         names = dict(self.with_context(**diff).name_get())
         for rec in self:
             rec.display_name = names.get(rec.id)
+
+    @api.depends("procedure_ids")
+    def _compute_procedure(self):
+        procedures = self.env["ni.procedure"].sudo()
+        read = procedures.read_group(
+            [("service_request_id", "in", self.ids)],
+            ["service_request_id", "performed:max"],
+            ["service_request_id"],
+        )
+        data = {
+            res["service_request_id"][0]: {
+                "performed": res["performed"],
+                "count": res["service_request_id_count"],
+            }
+            for res in read
+        }
+        for rec in self:
+            proc = data.get(rec.id, False)
+            if proc:
+                rec.procedure_count = proc.get("count", 0)
+                rec.procedure_performed = proc.get("performed", False)
 
     def name_get(self):
         res = []
@@ -129,6 +171,26 @@ class ServiceRequest(models.Model):
     def _get_state_label(self):
         self.ensure_one()
         return dict(self._fields["state"].selection).get(self.state)
+
+    @api.onchange("service_id")
+    def onchange_service_id(self):
+        for rec in self:
+            if rec.service_id:
+                serv = rec.service_id
+                rec.update(
+                    {
+                        "is_procedure": serv.is_procedure,
+                        "procedure_code_id": serv.procedure_code_id.id,
+                        "procedure_category_id": serv.procedure_category_id.id,
+                        "procedure_outcome_id": serv.procedure_outcome_id.id,
+                    }
+                )
+
+    @api.model
+    def create(self, vals):
+        res = super(ServiceRequest, self).create(vals)
+        res.onchange_service_id()
+        return res
 
     def action_approve(self):
         records = self.filtered(lambda rec: rec.state == "draft")
@@ -181,3 +243,25 @@ class ServiceRequest(models.Model):
                     raise ValidationError(_("Must not have event"))
                 if rec.service_available_time_ids and not rec.service_time_id:
                     raise ValidationError(_("Must choose routine"))
+
+    def create_procedure(self):
+        no_active = self.filtered_domain([("state", "!=", "active")])
+        if no_active:
+            raise ValidationError(
+                _("To create procedure, Request must be in active state")
+            )
+
+        procedures = self.env["ni.procedure"]
+        for rec in self:
+            procedures.create(
+                {
+                    "patient_id": rec.patient_id.id,
+                    "encounter_id": rec.encounter_id.id,
+                    "performed": fields.datetime.now(),
+                    "service_request_id": rec.id,
+                    "code_id": rec.procedure_code_id.id,
+                    "state": "completed",
+                    "outcome_id": rec.procedure_outcome_id.id
+                    or self.ref("nirun_procedure.outcome_success"),
+                }
+            )

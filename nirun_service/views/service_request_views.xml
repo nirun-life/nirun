@@ -39,6 +39,15 @@
         <field name="groups_id" eval="[(6, 0, [ref('nirun_service.group_manager')])]" />
         <field name="code">action = records.action_resume()</field>
     </record>
+    <record id="service_request_procedure_action" model="ir.actions.server">
+        <field name="name">Procedure</field>
+        <field name="model_id" ref="model_ni_service_request" />
+        <field name="binding_model_id" ref="model_ni_service_request" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="groups_id" eval="[(6, 0, [ref('nirun_service.group_user')])]" />
+        <field name="code">action = records.create_procedure()</field>
+    </record>
     <record id="service_request_action" model="ir.actions.act_window">
         <field name="name">Service Requests</field>
         <field name="res_model">ni.service.request</field>
@@ -192,6 +201,52 @@
                         </group>
                     </group>
                     <notebook>
+                        <page name="procedure" string="Procedure">
+                            <div groups="base.group_no_one">
+                                <field name="is_procedure" attrs="{'readonly': [('service_id', '!=', False)]}" />
+                                <label for="is_procedure" string="Procedure" />
+                            </div>
+                            <group groups="base.group_no_one">
+                                <group attrs="{'invisible': [('is_procedure', '=', False)]}" string="Default Values">
+                                    <field
+                                        name="procedure_code_id"
+                                        string="Code"
+                                        attrs="{'readonly': [('service_id', '!=', False)]}"
+                                    />
+                                    <field
+                                        name="procedure_category_id"
+                                        string="Category"
+                                        attrs="{'readonly': [('service_id', '!=', False)]}"
+                                    />
+                                    <field
+                                        name="procedure_outcome_id"
+                                        string="Outcome"
+                                        widget="radio"
+                                        attrs="{'readonly': [('service_id', '!=', False)]}"
+                                    />
+                                </group>
+                            </group>
+                            <field
+                                name="procedure_ids"
+                                context="{
+                                  'default_service_request_id': id,
+                                  'default_patient_id': patient_id,
+                                  'default_encounter_id': encounter_id,
+                                  'default_code_id': procedure_code_id,
+                                  'default_category_id': procedure_category_id,
+                                  'default_outcome_id': procedure_outcome_id,
+                                }"
+                                attrs="{'invisible': [('is_procedure', '=', False)], 'readonly': [('state', '!=', 'active')]}"
+                            />
+                            <button
+                                name="create_procedure"
+                                class="btn-primary"
+                                icon="fa-calendar-check-o"
+                                type="object"
+                                string="Check-In"
+                                attrs="{'invisible': ['|','|', ('id', '=', False), ('is_procedure', '=', False), ('state','!=','active')]}"
+                            />
+                        </page>
                         <page string="Instruction">
                             <field name="instruction" placeholder="Patient oriented instructions.." />
                         </page>
@@ -231,7 +286,7 @@
                 <field name="id" invisible="1" />
                 <field name="patient_id" invisible="context.get('default_patient_id', False)" />
                 <field name="encounter_id" invisible="context.get('default_encounter_id', False)" optional="show" />
-                <field name="service_id" />
+                <field name="service_id" invisible="context.get('default_service_id', False)" />
                 <field
                     name="category_ids"
                     widget="many2many_tags"
@@ -244,6 +299,8 @@
                 <field name="period_start" optional="hide" />
                 <field name="period_end" optional="hide" />
                 <field name="duration" optional="show" />
+                <field name="procedure_count" optional="show" />
+                <field name="procedure_performed" optional="show" />
                 <field name="requester_id" optional="hide" />
                 <field name="approve_uid" optional="hide" />
                 <field name="state" optional="show" />
@@ -253,13 +310,23 @@
                     name="action_approve"
                     icon="fa-play"
                     class="text-primary"
+                    invisible="context.get('no_state_control', False)"
                     attrs="{'invisible': ['|', ('id', '=', False), ('state', 'not in', ['draft'])]}"
+                />
+                <button
+                    name="create_procedure"
+                    class="text-info"
+                    type="object"
+                    string="Check-In"
+                    icon="fa-calendar-check-o"
+                    attrs="{'invisible': [('state', '!=', 'active')]}"
                 />
                 <button
                     type="object"
                     name="action_complete"
                     icon="fa-check"
                     class="text-success"
+                    invisible="context.get('no_state_control', False)"
                     attrs="{'invisible': ['|', ('id', '=', False), ('state', 'not in', ['active', 'on-hold'])]}"
                 />
                 <button
@@ -267,6 +334,7 @@
                     name="action_revoke"
                     icon="fa-times"
                     class="text-danger"
+                    invisible="context.get('no_state_control', False)"
                     attrs="{'invisible': ['|', ('id', '=', False), ('state', 'not in', ['active', 'on-hold'])]}"
                 />
             </tree>
