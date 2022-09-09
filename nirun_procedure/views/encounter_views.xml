@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022. NSTDA
+  -->
+<odoo>
+    <record id="encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="groups_id" eval="[(4, ref('nirun_procedure.group_viewer'))]" />
+        <field name="priority">2</field>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_procedure" class="oe_stat_button" icon="fa-scissors" type="object">
+                    <field name="procedure_count" string="Procedures" widget="statinfo" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
