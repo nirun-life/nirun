@@ -50,15 +50,15 @@ class CareplanActivity(models.Model):
     active = fields.Boolean(default=True)
 
     def _name_get(self):
-        goal = self
+        act = self
         name = super(CareplanActivity, self)._name_get()
-        if self._context.get("show_timing") and self.timing_id:
-            name = "{} {}".format(name, goal.timing_id.name)
+        if self._context.get("show_timing") and act.timing_id:
+            name = "{}, {}".format(name, act.timing_id.name)
         return name
 
     @api.depends("name", "timing_id")
     def _compute_display_name(self):
-        diff = dict(show_timing=True, show_patient=None, show_state=None)
+        diff = dict(show_timing=None, show_patient=None, show_state=None)
         names = dict(self.with_context(**diff).name_get())
         for rec in self:
             rec.display_name = names.get(rec.id)
@@ -100,4 +100,11 @@ class CareplanActivity(models.Model):
     def _onchange_service_request_id(self):
         for rec in self:
             if rec.service_request_id:
-                rec.timing_id = rec.service_request_id.timing_id.id
+                if rec.service_id != rec.service_request_id.service_id:
+                    rec.service_id = rec.service_request_id.service_id
+                if rec.service_request_id.service_timing_id:
+                    rec.timing_id = rec.service_request_id.service_timing_id.timing_id
+                else:
+                    rec.timing_id = (
+                        rec.service_request_id.service_time_id.to_timing().timing_id
+                    )
