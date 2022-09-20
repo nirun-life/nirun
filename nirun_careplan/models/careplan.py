@@ -7,7 +7,7 @@ class CarePlan(models.Model):
     _name = "ni.careplan"
     _description = "Careplan"
     _inherit = ["period.mixin", "mail.thread", "ni.patient.res", "ir.sequence.mixin"]
-    _order = "sequence"
+    _order = "identifier desc"
     _check_company_auto = True
     _check_period_start = True
     _sequence_field = "identifier"

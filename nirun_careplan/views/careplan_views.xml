@@ -193,17 +193,23 @@
                         <page name="activity" string="Activity">
                             <field
                                 name="activity_ids"
-                                context="{'default_encounter_id': encounter_id, 'default_patient_id': patient_id, 'default_careplan_id': id, 'hide_careplan_id': 1, 'default_period_start': period_start, 'default_period_end': period_end, 'no_notebook': True, 'no_header':True}"
+                                context="{
+                                    'default_encounter_id': encounter_id,
+                                    'default_patient_id': patient_id,
+                                    'default_careplan_id': id,
+                                    'hide_careplan_id': 1,
+                                    'default_period_start': period_start,
+                                    'default_period_end': period_end,
+                                    'no_notebook': True
+                                }"
                             />
-                            <div class="o_row">
-                                <button
-                                    name="%(careplan_activity_action_category_graph)d"
-                                    attrs="{'invisible': [('activity_count', '=', 0)]}"
-                                    class="oe_read_only"
-                                    string="See More"
-                                    type="action"
-                                />
-                            </div>
+                            <button
+                                name="%(careplan_activity_action_from_careplan)d"
+                                class="btn-secondary"
+                                string="See More"
+                                type="action"
+                                invisible="1"
+                            />
                         </page>
                     </notebook>
                 </sheet>
@@ -223,8 +229,8 @@
                 decoration-muted="active == False or state == 'revoked'"
                 decoration-success="state in ['completed']"
             >
-                <field name="sequence" widget="handle" />
                 <field name="active" invisible="1" />
+                <field name="identifier" />
                 <field name="patient_id" invisible="context.get('default_patient_id')" />
                 <field name="encounter_id" invisible="context.get('default_encounter_id')" />
                 <field name="name" optional="show" />

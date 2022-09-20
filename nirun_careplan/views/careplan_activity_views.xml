@@ -98,6 +98,7 @@
                 <field name="id" />
                 <field name="careplan_id" />
                 <field name="code_id" />
+                <field name="display_name" />
                 <field name="sequence" />
                 <field name="description" />
                 <field name="assignee_id" />
@@ -119,7 +120,7 @@
                                 <div class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
                                         <strong class="o_kanban_record_title">
-                                            <field name="code_id" />
+                                            <field name="display_name" />
                                         </strong>
                                         <br />
                                         <small class="text-muted">
@@ -227,7 +228,7 @@
                     invisible="context.get('default_careplan_id', False) or context.get('default_patient_id', False)"
                     optional="hide"
                 />
-                <field name="code_id" />
+                <field name="display_name" />
                 <field name="category_id" optional="hide" />
                 <field name="timing_id" />
                 <field name="period_start" optional="hide" />
@@ -255,10 +256,12 @@
                     type="object"
                     string="Cancel"
                     icon="fa-ban"
+                    confirm="Are you sure to cancel this activity?"
                     attrs="{'invisible': [('state', 'in', ['scheduled', 'completed', 'cancelled'])], 'column_invisible': [('parent.state', 'not in', ['active'])]}"
                 />
                 <control>
                     <create string="Add Activity" context="{'dummy': True}" />
+                    <create string="Add Service" context="{'default_kind': 'ni.service.request'}" />
                 </control>
             </tree>
         </field>
@@ -271,8 +274,29 @@
                 <field name="active" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
-                <header class="oe_read_only" invisible="context.get('no_header')">
-                    <field name="state" statusbar_visible="scheduled,in-progress,completed" widget="statusbar" />
+                <header invisible="context.get('no_header')">
+                    <button
+                        name="action_complete"
+                        class="btn-primary"
+                        type="object"
+                        string="Complete"
+                        icon="fa-check"
+                        attrs="{'invisible': [('state', 'in', ['scheduled', 'completed', 'cancelled'])]}"
+                    />
+                    <button
+                        name="action_cancel"
+                        class="btn-secondary"
+                        type="object"
+                        string="Cancel"
+                        confirm="Are you sure to cancel this activity?"
+                        attrs="{'invisible': [('state', 'in', ['scheduled', 'completed', 'cancelled'])]}"
+                    />
+                    <field
+                        name="state"
+                        statusbar_visible="scheduled,in-progress,completed"
+                        widget="statusbar"
+                        attrs="{'invisible': [('id', '=', False)]}"
+                    />
                 </header>
                 <sheet>
                     <widget
@@ -288,28 +312,40 @@
                         title="Completed"
                     />
                     <div class="oe_title pr-0">
-                        <field name="kind" widget="radio" options="{'horizontal': True}" />
+                        <field
+                            name="kind"
+                            widget="radio"
+                            options="{'horizontal': True}"
+                            class="oe_edit_only"
+                            attrs="{'readonly': [('id', '!=', False)]}"
+                        />
                         <h1 class="d-flex flex-row justify-content-between">
-                            <field name="priority" class="mr-3" widget="priority" />
+                            <field name="priority" class="mr-3" widget="priority" invisible="1" />
                             <field
                                 name="code_id"
                                 class="o_task_name text-truncate w-100"
                                 placeholder="Activity..."
-                                attrs="{'invisible': [('kind', '!=', 'ni.careplan.activity.code')]}"
+                                attrs="{'invisible': [('kind', '!=', 'ni.careplan.activity.code')], 'required':[('kind', '=', 'ni.careplan.activity.code')]}"
                             />
                             <field
-                                name="service_request_id"
+                                name="service_id"
                                 class="o_task_name text-truncate w-100"
-                                placeholder="Service..."
-                                attrs="{'invisible': [('kind', '!=', 'ni.service.request')]}"
-                                domain="[('patient_id','=', patient_id)]"
+                                placeholder="Service"
+                                options="{'no_create_edit': True}"
+                                attrs="{'invisible': [('kind', '!=', 'ni.service.request')], 'required':[('kind', '=', 'ni.service.request')]}"
                             />
                             <field name="kanban_state" class="ml-auto oe_read_only" widget="state_selection" />
                         </h1>
                     </div>
-                    <field name="category_id" placeholder="Category" />
+                    <field name="category_id" placeholder="Category" invisible="1" />
                     <group>
                         <group>
+                            <field
+                                name="service_request_id"
+                                placeholder="Request..."
+                                context="{'default_patient_id': id, 'default_encounter_id': encounter_id, 'default_service_id': service_id, 'default_period_start': period_start,'show_state':True}"
+                                attrs="{'invisible': [('kind', '!=', 'ni.service.request')], 'required':[('kind', '=', 'ni.service.request')]}"
+                            />
                             <field
                                 name="careplan_id"
                                 context="{'show_patient': True}"
@@ -359,21 +395,12 @@
                                 />
                             </div>
                         </group>
+                        <p class="text-muted oe_edit_only">
+                            Add a description to help your coworkers understand the meaning and purpose of the
+                            stage.
+                        </p>
+                        <field name="description" nolabel="1" placeholder="Add a description..." />
                     </group>
-                    <notebook invisible="context.get('no_notebook')">
-                        <page name='description' string="Description">
-                            <group name="reference" />
-                            <p class="text-muted oe_edit_only">
-                                Add a description to help your coworkers understand the meaning and purpose of the
-                                stage.
-                            </p>
-                            <field name="description" nolabel="1" placeholder="Add a description..." />
-                        </page>
-                        <page name='reason' string="Reason">
-                            <group name="reason_reference" />
-                            <p class="text-muted oe_edit_only">Add a reason why this activity should be done!.</p>
-                        </page>
-                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" groups="base.group_user" widget="mail_followers" />

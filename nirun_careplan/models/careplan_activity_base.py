@@ -21,7 +21,9 @@ class Activity(models.AbstractModel):
         copy=False,
         default=lambda self: self.env.context.get("default_careplan_id"),
     )
+    careplan_state = fields.Selection(related="careplan_id.state")
     patient_id = fields.Many2one(related="careplan_id.patient_id")
+    encounter_id = fields.Many2one(related="careplan_id.encounter_id")
     company_id = fields.Many2one(
         related="careplan_id.company_id", store=True, readonly=True, index=True
     )
@@ -57,13 +59,32 @@ class Activity(models.AbstractModel):
     )
     kind = fields.Selection(
         [
-            ("ni.careplan.activity.code", "General Activity"),
-            ("ni.service.request", "Service Request"),
-            ("ni.medication.request", "Medication Request"),
+            ("ni.careplan.activity.code", "Activity"),
+            ("ni.service.request", "Service"),
+            # ("ni.medication.request", "Medication Request"),
         ],
         default="ni.careplan.activity.code",
     )
-    service_request_id = fields.Many2one("ni.service.request")
+    service_id = fields.Many2one("ni.service")
+    service_available_type = fields.Selection(related="service_id.available_type")
+    service_available_timing_ids = fields.One2many(
+        related="service_id.available_timing_ids",
+    )
+    service_available_time_ids = fields.One2many(
+        related="service_id.available_time_ids"
+    )
+    service_request_id = fields.Many2one(
+        "ni.service.request",
+        domain="[('service_id', '=?', service_id), "
+        "('patient_id', '=?', patient_id), "
+        "('encounter_id', '=?', encounter_id)]",
+    )
+    service_timing_id = fields.Many2one(
+        related="service_request_id.service_timing_id", readonly=False
+    )
+    service_time_id = fields.Many2one(
+        related="service_request_id.service_time_id", readonly=False
+    )
 
     _sql_constraints = [
         (
@@ -77,12 +98,12 @@ class Activity(models.AbstractModel):
         return [(rec.id, rec._name_get()) for rec in self]
 
     def _name_get(self):
-        goal = self
-        name = goal.name or goal.code_id.name
+        act = self
+        name = act.code_id.name or act.service_id.name
         if self._context.get("show_patient"):
-            name = "{} - {}".format(goal.patient_id._name_get(), name)
+            name = "{} - {}".format(act.patient_id._name_get(), name)
         if self._context.get("show_state"):
-            name = "{} ({})".format(name, goal.get_state_label())
+            name = "{} ({})".format(name, act.get_state_label())
         return name
 
     def get_state_label(self):
@@ -124,3 +145,11 @@ class Activity(models.AbstractModel):
             if act.state == "completed":
                 raise ValidationError(_("Must be not be completed"))
         self.write({"state": "cancelled"})
+
+    @api.constrains("code_id", "service_request_id")
+    def check_code_or_ref(self):
+        for rec in self:
+            if not rec.code_id and not rec.service_request_id:
+                raise ValidationError(
+                    _("Must select activity or service/medication request")
+                )
