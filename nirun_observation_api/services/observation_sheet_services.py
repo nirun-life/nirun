@@ -89,4 +89,5 @@ class ObservationSheetService(Component):
         line["patient_id"] = params["patient_id"]
         if "encounter_id" in params:
             line["encounter_id"] = params["encounter_id"]
+        line["effective_date"] = params["effective_date"]
         return line
