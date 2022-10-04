@@ -42,6 +42,21 @@ class HealthcareServiceAvailableTime(models.Model):
 
     timing_id = fields.Many2one("ni.service.timing")
 
+    @api.onchange("start_time")
+    def _onchange_start_time(self):
+        if self._origin.start_time == self._origin.end_time:
+            self.end_time = self.start_time
+        if self.end_time < self.start_time:
+            self.end_time = self.start_time
+
+    @api.onchange("everyday")
+    def _onchange_everyday(self):
+        all_dow = self.env["ni.timing.dow"].search([]).mapped("id")
+        for rec in self:
+            org = rec._origin
+            if not org.everyday and rec.everyday:
+                rec.day_of_week = [(6, 0, all_dow)]
+
     @api.depends("day_of_week", "all_day", "start_time", "end_time")
     def _compute_name(self):
         for rec in self:
@@ -53,13 +68,6 @@ class HealthcareServiceAvailableTime(models.Model):
         for rec in self:
             rec.start = float_time_format(rec.start_time)
             rec.end = float_time_format(rec.end_time)
-
-    @api.onchange("start_time")
-    def _onchange_start_time(self):
-        if self._origin.start_time == self._origin.end_time:
-            self.end_time = self.start_time
-        if self.end_time < self.start_time:
-            self.end_time = self.start_time
 
     @api.depends("day_of_week", "everyday")
     def _compute_dow_txt(self):
@@ -83,24 +91,17 @@ class HealthcareServiceAvailableTime(models.Model):
                     res.append(rec.end)
             rec.display_time = "-".join(res).strip()
 
-    def check_end_time(self):
-        for rec in self:
-            if not rec.all_day and rec.end_time < rec.start_time:
-                raise ValidationError(_("End time must be set after start time"))
-
-    @api.onchange("everyday")
-    def _onchange_everyday(self):
-        all_dow = self.env["ni.timing.dow"].search([]).mapped("id")
-        for rec in self:
-            org = rec._origin
-            if not org.everyday and rec.everyday:
-                rec.day_of_week = [(6, 0, all_dow)]
-
     @api.onchange("day_of_week")
     @api.depends("day_of_week")
     def _compute_everyday(self):
         for rec in self:
             rec.everyday = len(rec.day_of_week) == 7
+
+    @api.constrains("all_day", "start_time", "end_time")
+    def _check_end_time(self):
+        for rec in self:
+            if not rec.all_day and rec.end_time <= rec.start_time:
+                raise ValidationError(_("End time must be set after start time"))
 
     def to_timing(self):
         self.ensure_one()

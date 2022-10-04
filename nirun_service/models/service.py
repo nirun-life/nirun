@@ -14,7 +14,7 @@ def float_time_convert(float_val):
 
 def float_time_format(float_val):
     h, m = float_time_convert(float_val)
-    return "%0d:%02d" % (h, m)
+    return "%02d:%02d" % (h, m)
 
 
 class HealthcareService(models.Model):
@@ -110,10 +110,6 @@ class HealthcareService(models.Model):
             "nirun_service", "service_request_action"
         )
         return dict(action, context=ctx)
-
-    def action_copy_time_to_timing(self):
-        for rec in self.available_time_ids:
-            rec.to_timing()
 
     @api.constrains("is_procedure", "procedure_code_id")
     def check_procedure_code(self):
