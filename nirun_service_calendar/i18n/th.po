@@ -6,16 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-27 09:25+0000\n"
-"PO-Revision-Date: 2021-05-27 16:28+0700\n"
+"POT-Creation-Date: 2022-10-04 09:05+0000\n"
+"PO-Revision-Date: 2022-10-04 09:05+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
-"Language: th\n"
-"X-Generator: Poedit 2.4.2\n"
+
+#. module: nirun_service_calendar
+#: model_terms:ir.ui.view,arch_db:nirun_service_calendar.service_time_schedule_view_form
+msgid "<i class=\"fa fa-fw fa-arrow-right mx-2\" aria-label=\"arrow-icon\" title=\"to\"/>"
+msgstr ""
 
 #. module: nirun_service_calendar
 #: model:ir.ui.menu,name:nirun_service_calendar.service_calendar_event_menu
@@ -31,6 +34,11 @@ msgstr "ปฎิทินกิจกรรม"
 #: model_terms:ir.ui.view,arch_db:nirun_service_calendar.service_time_schedule_view_form
 msgid "Cancel"
 msgstr "ยกเลิก"
+
+#. module: nirun_service_calendar
+#: model_terms:ir.ui.view,arch_db:nirun_service_calendar.calendar_event_view_form_inherit
+msgid "Check-In"
+msgstr "บันทึกเข้าร่วม"
 
 #. module: nirun_service_calendar
 #: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_time_schedule__create_uid
@@ -68,14 +76,29 @@ msgid "Duration (years)"
 msgstr "ระยะเวลา (ปี)"
 
 #. module: nirun_service_calendar
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_calendar_event__encounter_ids
+msgid "Encounter"
+msgstr "รหัสรับบริการ"
+
+#. module: nirun_service_calendar
 #: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service__event_ids
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_time__event_ids
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_timing__event_ids
 msgid "Event"
 msgstr "กำหนดการ"
 
 #. module: nirun_service_calendar
 #: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service__event_count
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_time__event_count
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_timing__event_count
 msgid "Event Count"
 msgstr "จำนวนกำหนดการ"
+
+#. module: nirun_service_calendar
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_time__event_final_date
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_timing__event_final_date
+msgid "Event Final Date"
+msgstr "วันสิ้นสุด"
 
 #. module: nirun_service_calendar
 #: model:ir.model,name:nirun_service_calendar.model_ni_service
@@ -90,6 +113,17 @@ msgid "Healthcare Service Available Time"
 msgstr "บริการ ช่วงเวลาทำการ"
 
 #. module: nirun_service_calendar
+#: model:ir.model,name:nirun_service_calendar.model_ni_service_timing
+msgid "Healthcare Service Event Timing"
+msgstr "ช่วงเวลาให้บริการ"
+
+#. module: nirun_service_calendar
+#: model:ir.model,name:nirun_service_calendar.model_ni_service_time_schedule
+msgid "Healthcare Service Schedule"
+msgstr "กำหนดการให้บริการ"
+
+#. module: nirun_service_calendar
+#: model:ir.actions.act_window,name:nirun_service_calendar.action_calendar_event_from_encounter
 #: model:ir.actions.act_window,name:nirun_service_calendar.action_calendar_event_service
 msgid "Healthcare Services"
 msgstr "บริการ"
@@ -140,6 +174,17 @@ msgid "Participant"
 msgstr "ผู้รับบริการ"
 
 #. module: nirun_service_calendar
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_calendar_event__patient_ids
+#: model_terms:ir.ui.view,arch_db:nirun_service_calendar.calendar_event_view_form_inherit
+msgid "Patient"
+msgstr "ผู้สูงอายุ"
+
+#. module: nirun_service_calendar
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_calendar_event__patient_count
+msgid "Patient Count"
+msgstr "จำนวนผู้สูงอายุ"
+
+#. module: nirun_service_calendar
 #: model_terms:ir.ui.view,arch_db:nirun_service_calendar.service_time_schedule_view_form
 msgid "Period"
 msgstr "ช่วงเวลา"
@@ -169,6 +214,25 @@ msgid "Service"
 msgstr "บริการ"
 
 #. module: nirun_service_calendar
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_calendar_event__service_request_ids
+msgid "Service Request"
+msgstr "การใช้บริการ"
+
+#. module: nirun_service_calendar
+#: model:ir.actions.server,name:nirun_service_calendar.ir_cron_service_timing_ir_actions_server
+#: model:ir.cron,cron_name:nirun_service_calendar.ir_cron_service_timing
+#: model:ir.cron,name:nirun_service_calendar.ir_cron_service_timing
+msgid "Service/Event (Timing): Monthly Schedule"
+msgstr ""
+
+#. module: nirun_service_calendar
+#: model:ir.actions.server,name:nirun_service_calendar.ir_cron_service_time_ir_actions_server
+#: model:ir.cron,cron_name:nirun_service_calendar.ir_cron_service_time
+#: model:ir.cron,name:nirun_service_calendar.ir_cron_service_time
+msgid "Service/Time: Monthly Schedule"
+msgstr ""
+
+#. module: nirun_service_calendar
 #: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_time_schedule__period_start
 #: model_terms:ir.ui.view,arch_db:nirun_service_calendar.service_time_schedule_view_form
 msgid "Since"
@@ -183,22 +247,24 @@ msgstr "ช่วงเวลา"
 #: model_terms:ir.actions.act_window,help:nirun_service_calendar.action_calendar_event_service
 msgid ""
 "The calendar is shared between employees and fully integrated with\n"
-"            other applications such as the employee leaves or the business\n"
-"            opportunities."
+"                other applications such as the employee leaves or the business\n"
+"                opportunities."
 msgstr ""
 
 #. module: nirun_service_calendar
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_calendar_event__time_id
 #: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_time_schedule__time_id
 msgid "Time"
 msgstr "เวลา"
+
+#. module: nirun_service_calendar
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_calendar_event__timing_id
+#: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_time_schedule__timing_id
+msgid "Timing"
+msgstr "เหตุการณ์"
 
 #. module: nirun_service_calendar
 #: model:ir.model.fields,field_description:nirun_service_calendar.field_ni_service_time_schedule__period_end
 #: model_terms:ir.ui.view,arch_db:nirun_service_calendar.service_time_schedule_view_form
 msgid "Until"
 msgstr "สิ้นสุด"
-
-#. module: nirun_service_calendar
-#: model:ir.model,name:nirun_service_calendar.model_ni_service_time_schedule
-msgid "ni.service.time.schedule"
-msgstr ""

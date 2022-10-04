@@ -1,7 +1,5 @@
 #  Copyright (c) 2021 NSTDA
 
-import pprint
-
 from odoo import api, fields, models
 from odoo.tools.date_utils import end_of, relativedelta, start_of
 
@@ -31,20 +29,12 @@ class HealthcareServiceTiming(models.Model):
             rec.event_count = len(rec.event_ids)
             rec.event_final_date = data.get(rec.id, None) if rec.event_count else None
 
-    def _get_day_of_week_calendar_dict(self):
-        self.ensure_one()
-        res = {}
-        for day in self.day_of_week:
-            field = day.code[0:2].lower()
-            res[field] = True
-        return res
-
     def get_calendar_dict(self, start_date, final_date=None):
         self.ensure_one()
         start_datetime = fields.Datetime.to_datetime(start_date)
         stop_datetime = self._stop_datetime_for(start_datetime)
         vals = {
-            "name": self.service_id.name,
+            "name": "{} - {}".format(self.service_id.name, self.name),
             "location": self.service_id.location,
             "service_id": self.service_id.id,
             "timing_id": self.id,
@@ -66,8 +56,6 @@ class HealthcareServiceTiming(models.Model):
             )
         if self.period_unit == "week":
             vals.update(self._get_day_of_week_calendar_dict())
-
-        pprint.pprint(vals)
         return vals
 
     def _stop_datetime_for(self, start_datetime):
@@ -75,6 +63,14 @@ class HealthcareServiceTiming(models.Model):
             "{}s".format(self.duration_unit): self.duration_max or self.duration
         }
         return start_datetime + relativedelta(duration)
+
+    def _get_day_of_week_calendar_dict(self):
+        self.ensure_one()
+        res = {}
+        for day in self.day_of_week:
+            field = day.code[0:2].lower()
+            res[field] = True
+        return res
 
     @api.model
     def cron_calendar(self):
