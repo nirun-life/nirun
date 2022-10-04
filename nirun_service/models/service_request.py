@@ -33,7 +33,6 @@ class ServiceRequest(models.Model):
         "Last Performed",
         compute="_compute_procedure",
         store=True,
-        help="Last procedure performed",
     )
     service_id = fields.Many2one(
         "ni.service",
