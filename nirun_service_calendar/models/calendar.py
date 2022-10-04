@@ -23,6 +23,7 @@ class Meeting(models.Model):
     )
     patient_ids = fields.Many2many("ni.patient", readonly=True, default=False)
     patient_count = fields.Integer(readonly=True, default=0)
+    encounter_ids = fields.Many2many("ni.encounter", readonly=True, default=False)
 
     @api.onchange("service_id")
     def onchange_service_id(self):
@@ -52,7 +53,9 @@ class Meeting(models.Model):
                     require_key = False
             if not require_key:
                 break
-
+            if not d["service_id"]:
+                result.append(d)
+                continue
             domain = [
                 ("service_id", "=", d["service_id"][0]),
                 ("period_start", "<=", d["start"]),
@@ -72,6 +75,7 @@ class Meeting(models.Model):
             patients = sr.mapped("patient_id")
             res["patient_ids"] = patients.ids
             res["patient_count"] = len(patients)
+            res["encounter_ids"] = sr.mapped("encounter_id").ids
             result.append(res)
         return result
 

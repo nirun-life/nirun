@@ -38,7 +38,7 @@ class HealthcareServiceTime(models.Model):
         self.ensure_one()
         start_datetime = fields.Datetime.to_datetime(start_date)
         res = {
-            "name": self.service_id.name,
+            "name": "{} ({})".format(self.service_id.name, self.name),
             "location": self.service_id.location,
             "service_id": self.service_id.id,
             "time_id": self.id,
@@ -69,7 +69,6 @@ class HealthcareServiceTime(models.Model):
                     "stop": fields.Datetime.to_datetime(naive_utc(stop_time, tz)),
                 }
             )
-
         res.update(self._get_day_of_week_calendar_dict())
         return res
 

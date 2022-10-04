@@ -16,6 +16,7 @@
         "views/calendar_views.xml",
         "views/service_views.xml",
         "views/service_menus.xml",
+        "views/encounter_views.xml",
         "wizard/service_time_schedule.xml",
     ],
     "demo": [],
