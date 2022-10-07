@@ -66,13 +66,13 @@ class AllergyIntolerance(models.Model):
 
     def _name_get(self):
         allergy = self
-        name = "{} - {}".format(allergy.patient_id.name, allergy.code_id.name)
+        name = allergy.code_id.name
+        if self._context.get("show_patient"):
+            name = "{} - {}".format(allergy.patient_id._name_get(), name)
         if self._context.get("show_criticality"):
-            name = "{}[{}]".format(name, allergy.get_severity_label())
-        if self._context.get("show_category") and allergy.severity:
-            name = "{} : {}".format(allergy.patient_id._name_get(), name)
+            name = "{}[{}]".format(name, allergy._get_criticality_label())
         if self._context.get("show_state"):
-            name = "{} ({})".format(name, allergy.get_state_label())
+            name = "{} ({})".format(name, allergy._get_state_label())
         return name
 
     @api.onchange("asserter_is_patient")
@@ -113,3 +113,11 @@ class AllergyIntolerance(models.Model):
 
     def action_active(self):
         self.write({"state": "active"})
+
+    def _get_state_label(self):
+        self.ensure_one()
+        return dict(self._fields["state"].selection).get(self.state)
+
+    def _get_criticality_label(self, vals):
+        self.ensure_one()
+        return dict(self._fields["criticality"].selection).get(self.criticality)
