@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="arch" type="xml">
+            <field name="patient_id" position="after">
+                <label for="allergy_ids" />
+                <div>
+                    <field
+                        name="allergy_ids"
+                        widget="many2many_tags"
+                        attrs="{'readonly': [('no_allergy', '=', True)]}"
+                        options="{'no_quick_create': True}"
+                        context="{'default_encounter_id':id, 'default_patient_id': patient_id}"
+                    />
+                    <span attrs="{'invisible': [('allergy_ids', '>', 0)]}">
+                        <field name="no_allergy" class="oe_edit_only" />
+                        <label for="no_allergy" class="oe_edit_only" />
+                        <label
+                            for="no_allergy"
+                            attrs="{'invisible': [('no_allergy', '!=', True)]}"
+                            class="oe_read_only"
+                        />
+                    </span>
+                </div>
+            </field>
+        </field>
+    </record>
+</odoo>

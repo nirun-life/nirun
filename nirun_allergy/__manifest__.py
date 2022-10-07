@@ -2,7 +2,7 @@
 
 {
     "name": "Allergy & Intolerance",
-    "version": "13.0.0.2.1",
+    "version": "13.0.0.3.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -14,6 +14,7 @@
         "security/ir.model.access.csv",
         "security/allergy_rule.xml",
         "views/patient_views.xml",
+        "views/encounter_views.xml",
         "views/allergy_views.xml",
         "views/allergy_code_views.xml",
         "views/allergy_menu.xml",

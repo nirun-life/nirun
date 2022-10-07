@@ -11,7 +11,16 @@
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page name="allergy" string="Allergy / Intolerance">
-                    <field name="allergy_ids" context="{'default_patient_id': id}" mode="tree">
+                    <div attrs="{'invisible': [('allergy_ids', '!=', False)]}">
+                        <field name="no_allergy" />
+                        <label for="no_allergy" />
+                    </div>
+                    <field
+                        name="allergy_ids"
+                        context="{'default_patient_id': id}"
+                        mode="tree"
+                        attrs="{'invisible': [('no_allergy', '=', True)]}"
+                    >
                         <tree editable="bottom">
                             <field name="company_id" invisible="1" />
                             <field name="patient_id" invisible="1" />

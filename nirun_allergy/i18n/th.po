@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-16 08:40+0000\n"
-"PO-Revision-Date: 2021-08-16 08:40+0000\n"
+"POT-Creation-Date: 2022-10-18 08:42+0000\n"
+"PO-Revision-Date: 2022-10-18 08:42+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -51,6 +51,7 @@ msgid "Additional note"
 msgstr "หมายเหตุ"
 
 #. module: nirun_allergy
+#: model:ir.model.fields,field_description:nirun_allergy.field_ni_encounter__allergy_ids
 #: model:ir.model.fields,field_description:nirun_allergy.field_ni_patient__allergy_ids
 #: model:ir.model.fields.selection,name:nirun_allergy.selection__ni_allergy__type__allergy
 msgid "Allergy"
@@ -119,13 +120,9 @@ msgstr "สี"
 
 #. module: nirun_allergy
 #: model:ir.model.fields,field_description:nirun_allergy.field_ni_allergy__company_id
+#: model:ir.model.fields,field_description:nirun_allergy.field_ni_allergy_reaction__company_id
 msgid "Company"
 msgstr "บริษัท"
-
-#. module: nirun_allergy
-#: model:ir.model.fields,help:nirun_allergy.field_ni_allergy__partner_id
-msgid "Contact information of patient"
-msgstr ""
 
 #. module: nirun_allergy
 #: model:ir.model.fields,field_description:nirun_allergy.field_ni_allergy__create_uid
@@ -174,6 +171,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:nirun_allergy.field_ni_allergy_reaction__display_name
 msgid "Display Name"
 msgstr "ชื่อที่ใช้แสดง"
+
+#. module: nirun_allergy
+#: model:ir.model,name:nirun_allergy.model_ni_encounter
+msgid "Encounter"
+msgstr "ข้อมูลรับบริการ"
 
 #. module: nirun_allergy
 #: model:ir.model.fields,field_description:nirun_allergy.field_ni_allergy__encounter_id
@@ -286,6 +288,12 @@ msgid "Name"
 msgstr "ชื่อ"
 
 #. module: nirun_allergy
+#: model:ir.model.fields,field_description:nirun_allergy.field_ni_encounter__no_allergy
+#: model:ir.model.fields,field_description:nirun_allergy.field_ni_patient__no_allergy
+msgid "No Allergy"
+msgstr "ไม่มี"
+
+#. module: nirun_allergy
 #: model:ir.model.fields.selection,name:nirun_allergy.selection__ni_allergy__state__inactive
 msgid "Not Active"
 msgstr "ไม่มีอาการ"
@@ -303,8 +311,12 @@ msgid "Onset"
 msgstr "เมื่อ"
 
 #. module: nirun_allergy
+#: model:ir.model.fields,help:nirun_allergy.field_ni_allergy__partner_id
+msgid "Partner-related data of patient"
+msgstr ""
+
+#. module: nirun_allergy
 #: model:ir.model,name:nirun_allergy.model_ni_patient
-#: model:ir.model.fields,field_description:nirun_allergy.field_ni_allergy__partner_id
 #: model:ir.model.fields,field_description:nirun_allergy.field_ni_allergy__patient_id
 #: model_terms:ir.ui.view,arch_db:nirun_allergy.allergy_view_search
 msgid "Patient"
@@ -319,6 +331,11 @@ msgstr "พบการระบุข้อมูลการแพ้ซ้ำ
 #: model:ir.model.fields,field_description:nirun_allergy.field_ni_allergy__reaction_ids
 msgid "Reaction"
 msgstr "อาการแพ้"
+
+#. module: nirun_allergy
+#: model:ir.model.fields,field_description:nirun_allergy.field_ni_allergy__partner_id
+msgid "Related Partner"
+msgstr ""
 
 #. module: nirun_allergy
 #: model:ir.model.fields.selection,name:nirun_allergy.selection__ni_allergy__state__resolved
