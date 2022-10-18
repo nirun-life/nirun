@@ -8,8 +8,21 @@
         <field name="model">ni.patient</field>
         <field name="inherit_id" ref="nirun_patient.patient_view_form" />
         <field name="arch" type="xml">
-            <field name="birthdate" position="after">
-                <field name="birthdate_estimate" />
+            <field name="birthdate" position="replace">
+                <label class="mr-2" for="birthdate" />
+                <div class="o_row">
+                    <field name="birthdate" />
+                    <span>
+                        <field name="birthdate_estimate" class="oe_edit_only" />
+                        <label string="Estimate" class="oe_edit_only" for="birthdate_estimate" />
+                        <label
+                            string="Estimate"
+                            attrs="{'invisible': [('birthdate_estimate', '!=', True)]}"
+                            class="oe_read_only"
+                            for="birthdate_estimate"
+                        />
+                    </span>
+                </div>
             </field>
         </field>
     </record>

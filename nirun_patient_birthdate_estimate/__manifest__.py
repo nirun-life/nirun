@@ -2,7 +2,7 @@
 
 {
     "name": "Patients - Birthdate Estimate",
-    "version": "13.0.0.2.0",
+    "version": "13.0.0.2.1",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
