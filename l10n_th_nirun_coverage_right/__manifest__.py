@@ -2,7 +2,7 @@
 
 {
     "name": "Coverage - Health Right",
-    "version": "13.0.0.1.0",
+    "version": "13.0.0.2.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -10,7 +10,11 @@
     "license": "OPL-1",
     "maintainers": ["piruin"],
     "depends": ["nirun_coverage"],
-    "data": ["data/coverage_data.xml", "views/patient_views.xml"],
+    "data": [
+        "data/coverage_data.xml",
+        "views/patient_views.xml",
+        "views/encounter_views.xml",
+    ],
     "application": False,
     "auto_install": False,
     "installable": True,
