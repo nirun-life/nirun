@@ -11,23 +11,25 @@
         <field name="model">survey.subject.wizard</field>
         <field name="arch" type="xml">
             <form>
-                <group>
-                    <field
-                        name="survey_id"
-                        invisible="context.get('default_survey_id', False)"
-                        options="{'no_create': True, 'no_create_edit': True}"
-                    />
-                    <field name="type" invisible="True" />
-                    <field
-                        name="subject_res_partner"
-                        attrs="{'invisible': [('type', '!=', 'res.partner')] }"
-                        options="{'no_create': True, 'no_create_edit': True}"
-                    />
-                    <field
-                        name="subject_res_users"
-                        attrs="{'invisible': [('type', '!=', 'res.users')]}"
-                        options="{'no_create': True, 'no_create_edit': True}"
-                    />
+                <group name="main">
+                    <group>
+                        <field
+                            name="survey_id"
+                            invisible="context.get('default_survey_id', False)"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                        />
+                        <field name="type" invisible="True" />
+                        <field
+                            name="subject_res_partner"
+                            attrs="{'invisible': [('type', '!=', 'res.partner')] }"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                        />
+                        <field
+                            name="subject_res_users"
+                            attrs="{'invisible': [('type', '!=', 'res.users')]}"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                        />
+                    </group>
                 </group>
                 <footer>
                     <button name="action_survey" string="Survey" class="oe_highlight" type="object" />
