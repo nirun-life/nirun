@@ -57,3 +57,16 @@ class Encounter(models.Model):
             ).action_print_survey()
             action.update({"target": "new"})
             return action
+
+    def action_survey_subject(self):
+        action_rec = self.env.ref("survey_subject.survey_subject_action")
+        action = action_rec.read()[0]
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "default_subject_ni_encounter": self.id,
+                "default_subject_ni_patient": self.patient_id.id,
+            }
+        )
+        action["context"] = ctx
+        return action
