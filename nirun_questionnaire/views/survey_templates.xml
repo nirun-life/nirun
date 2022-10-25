@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <template id="back" name="Back" inherit_id="survey_subject.back">
+        <xpath expr="//div" position="after">
+            <div
+                class="alert alert-info alert-dismissible rounded-0 mt16 fade show d-print-none css_editable_mode_hidden"
+                groups="nirun_patient.group_user"
+                t-ignore="true"
+                t-if="answer.encounter_id"
+            >
+                <div class="text-center" t-ignore="true">
+                    <a
+                        t-attf-href="/web#view_type=form&amp;model=ni.encounter&amp;id=#{answer.encounter_id.id}&amp;action=nirun_patient.encounter_action"
+                    >
+                        <i class="fa fa-fw fa-arrow-right" />
+                        Back to Encounter.
+                    </a>
+                </div>
+                <button aria-label="Close" class="close" data-dismiss="alert" type="button"> &#215; </button>
+            </div>
+        </xpath>
+    </template>
+</odoo>

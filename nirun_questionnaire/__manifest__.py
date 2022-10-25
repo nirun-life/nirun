@@ -2,7 +2,7 @@
 
 {
     "name": "Questionnaire",
-    "version": "13.0.0.2.2",
+    "version": "13.0.0.3.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -17,6 +17,7 @@
         "wizard/survey_subject_views.xml",
         "views/survey_survey_views.xml",
         "views/survey_user_views.xml",
+        "views/survey_templates.xml",
         "views/patient_views.xml",
         "views/encounter_views.xml",
         "report/patient_survey_latest_views.xml",
