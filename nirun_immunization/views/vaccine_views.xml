@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <!-- This file only intent use as scaffold for coding model -->
+    <record id="vaccine_action" model="ir.actions.act_window">
+        <field name="name">Vaccine</field>
+        <field name="res_model">ni.vaccine</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="vaccine_view_search" model="ir.ui.view">
+        <field name="name">vaccine.view.search</field>
+        <field name="model">ni.vaccine</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
+                <field name="manufacturer_ids" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+            </search>
+        </field>
+    </record>
+    <record id="vaccine_view_tree" model="ir.ui.view">
+        <field name="name">vaccine.view.tree</field>
+        <field name="model">ni.vaccine</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="manufacturer_ids" widget="many2many_tags" />
+                <field name="code" optional="show" />
+                <field name="color" optional="hide" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="vaccine_view_form" model="ir.ui.view">
+        <field name="name">vaccine.view.form</field>
+        <field name="model">ni.vaccine</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="manufacturer_ids" widget="many2many_tags" />
+                        </group>
+                        <group>
+                            <field name="code" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Definition">
+                            <field name="definition" />
+                        </page>
+                        <page name="product" string="Product" groups="product.group_product_pricelist">
+                            <div>
+                                <field name="sale_ok" />
+                                <label for="sale_ok" />
+                            </div>
+                            <div>
+                                <field name="purchase_ok" />
+                                <label for="purchase_ok" />
+                            </div>
+                            <group>
+                                <group name="product_gen" string="General Information">
+                                    <field name="type" />
+                                    <field name="categ_id" readonly="True" />
+                                    <field name="list_price" />
+                                    <field name="standard_price" />
+                                    <field name="uom_id" groups="uom.group_uom" options="{'no_create': True}" />
+                                    <field name="uom_po_id" invisible="1" />
+                                    <label for="default_code" />
+                                    <div>
+                                        <field name="default_code" />
+                                        <i class="text-muted oe_edit_only">
+                                            Use this reference as a subject prefix when
+                                            submitting by email.
+                                        </i>
+                                    </div>
+                                    <field name="company_id" groups="base.group_multi_company" />
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <group>
+                                    <field name="color" />
+                                    <field name="sequence" />
+                                </group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <!-- This file only intent use as scaffold for coding model -->
+    <record id="immunization_action" model="ir.actions.act_window">
+        <field name="name">Immunization</field>
+        <field name="res_model">ni.immunization</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="immunization_view_search" model="ir.ui.view">
+        <field name="name">immunization.view.search</field>
+        <field name="model">ni.immunization</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="patient_id"
+                    filter_domain="['|' ,('patient_id', 'ilike', self), ('encounter_id', 'ilike', self)]"
+                />
+                <field name="vaccine_id" />
+                <field name="manufacturer_id" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+            </search>
+        </field>
+    </record>
+    <record id="immunization_view_tree" model="ir.ui.view">
+        <field name="name">immunization.view.tree</field>
+        <field name="model">ni.immunization</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="occurrence" />
+                <field name="encounter_id" invisible="context.get('default_encounter_id')" />
+                <field name="patient_id" invisible="context.get('default_patient_id')" />
+                <field name="vaccine_id" optional="show" />
+                <field name="manufacturer_id" />
+                <field
+                    name="company_id"
+                    invisible="context.get('default_patient_id')"
+                    groups="base.group_multi_company"
+                />
+            </tree>
+        </field>
+    </record>
+    <record id="immunization_view_form" model="ir.ui.view">
+        <field name="name">immunization.view.form</field>
+        <field name="model">ni.immunization</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="patient_id" />
+                            <field name="encounter_id" />
+                            <field name="occurrence" />
+                            <field name="administering_id" />
+                        </group>
+                        <group name="vaccine">
+                            <field name="vaccine_id" />
+                            <field name="vaccine_manufacturer_ids" invisible="1" />
+                            <field name="vaccine_manufacturer_filter" invisible="1" />
+                            <field name="manufacturer_id" />
+                            <field name="lot_number" />
+                            <field name="expiration_date" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="note" string="Note">
+                            <field name="note" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>
