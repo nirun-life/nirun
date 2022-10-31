@@ -20,7 +20,25 @@ def float_time_format(float_val):
 class HealthcareService(models.Model):
     _name = "ni.service"
     _description = "Healthcare Service"
+    _inherits = {"product.template": "product_tmpl_id"}
     _inherit = ["mail.thread", "image.mixin", "coding.base"]
+
+    product_tmpl_id = fields.Many2one(
+        "product.template",
+        "Product Template",
+        auto_join=True,
+        index=True,
+        ondelete="cascade",
+        required=True,
+        tracking=True,
+    )
+
+    @api.model
+    def default_get(self, default_fields):
+        res = super(HealthcareService, self).default_get(default_fields)
+        res["type"] = "service"
+        res["purchase_ok"] = False
+        return res
 
     company_id = fields.Many2one(
         "res.company",
