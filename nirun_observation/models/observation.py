@@ -6,7 +6,8 @@ from odoo.exceptions import ValidationError
 class Observation(models.Model):
     _name = "ni.observation"
     _description = "Observation"
-    _inherit = ["ni.patient.res"]
+    _inherit = ["ni.workflow.event.mixin"]
+    _workflow_occurrence = "effective_date"
     _order = "effective_date DESC,patient_id,sequence"
 
     sheet_id = fields.Many2one(
@@ -123,3 +124,11 @@ class Observation(models.Model):
         )
         action["context"] = ctx
         return action
+
+    @property
+    def _workflow_name(self):
+        return self.category_id.name or self._name
+
+    @property
+    def _workflow_summary(self):
+        return "{} {} {}".format(self.type_id.name, self.value, self.unit.name)
