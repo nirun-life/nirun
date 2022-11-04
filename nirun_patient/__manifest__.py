@@ -36,6 +36,8 @@
         "views/partner_views.xml",
         "views/patient_views.xml",
         "views/patient_menus.xml",
+        "views/workflow_event_views.xml",
+        "views/workflow_request_views.xml",
     ],
     "demo": ["data/patient_demo.xml", "data/location_demo.xml"],
     "application": True,

@@ -12,3 +12,5 @@ from . import location_type
 from . import partner
 from . import patient
 from . import patient_res
+from . import workflow
+from . import workflow_mixin
