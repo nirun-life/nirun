@@ -220,6 +220,8 @@ class Encounter(models.Model):
         states=LOCK_STATE_DICT,
         domain="[('is_company', '=', False), ('id', '!=', performer_id)]",
     )
+    workflow_event_ids = fields.One2many("ni.workflow.event", "encounter_id")
+    workflow_request_ids = fields.One2many("ni.workflow.request", "encounter_id")
 
     _sql_constraints = [
         (
