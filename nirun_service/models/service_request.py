@@ -3,8 +3,6 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
-from odoo.addons.nirun_patient.models.patient_res import create_patient_encounter_idx
-
 
 class ServiceRequest(models.Model):
     _name = "ni.service.request"
@@ -109,9 +107,6 @@ class ServiceRequest(models.Model):
     instruction = fields.Text(help="Patient oriented instructions")
     approve_uid = fields.Many2one("res.users", "Approved by", readonly=True)
     approve_date = fields.Datetime("Approved on", readonly=True)
-
-    def init(self):
-        create_patient_encounter_idx(self)
 
     @api.depends("service_id", "patient_id", "state")
     def _compute_display_name(self):
