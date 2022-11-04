@@ -1,8 +1,6 @@
 #  Copyright (c) 2022. NSTDA
 from odoo import api, fields, models
 
-from odoo.addons.nirun_patient.models.patient_res import create_patient_encounter_idx
-
 
 class Procedure(models.Model):
     _name = "ni.procedure"
@@ -34,9 +32,6 @@ class Procedure(models.Model):
     location_id = fields.Many2one("ni.location", tracking=True)
     outcome_id = fields.Many2one("ni.procedure.outcome", tracking=True)
     note = fields.Html()
-
-    def init(self):
-        create_patient_encounter_idx(self)
 
     @api.depends("performed")
     def _compute_performed_date(self):

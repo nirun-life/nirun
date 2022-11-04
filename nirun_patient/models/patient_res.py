@@ -4,15 +4,6 @@ from odoo import _, api, fields, models, tools
 from odoo.exceptions import ValidationError
 
 
-def create_patient_encounter_idx(self):
-    tools.create_index(
-        self._cr,
-        "{}__patient__encounter__idx".format(self._table.replace(".", "_")),
-        self._table,
-        ["patient_id", "encounter_id"],
-    )
-
-
 class PatientRes(models.AbstractModel):
     _name = "ni.patient.res"
     _description = "Patient Resource"
@@ -45,6 +36,15 @@ class PatientRes(models.AbstractModel):
               ('state', 'in', ['draft','planned','in-progress'])
           ]""",
     )
+
+    def init(self):
+        if not self._abstract:
+            tools.create_index(
+                self._cr,
+                "{}_patient_id_encounter_id_index".format(self._table),
+                self._table,
+                ["patient_id", "encounter_id"],
+            )
 
     @api.onchange("patient_id")
     def onchange_patient(self):
