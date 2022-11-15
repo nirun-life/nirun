@@ -21,7 +21,14 @@ class HealthcareService(models.Model):
     _name = "ni.service"
     _description = "Healthcare Service"
     _inherits = {"product.template": "product_tmpl_id"}
-    _inherit = ["mail.thread", "image.mixin", "coding.base"]
+    _inherit = ["mail.thread", "image.mixin"]
+
+    @api.model
+    def default_get(self, default_fields):
+        res = super(HealthcareService, self).default_get(default_fields)
+        res["type"] = "service"
+        res["purchase_ok"] = False
+        return res
 
     product_tmpl_id = fields.Many2one(
         "product.template",
@@ -33,13 +40,6 @@ class HealthcareService(models.Model):
         tracking=True,
     )
 
-    @api.model
-    def default_get(self, default_fields):
-        res = super(HealthcareService, self).default_get(default_fields)
-        res["type"] = "service"
-        res["purchase_ok"] = False
-        return res
-
     company_id = fields.Many2one(
         "res.company",
         "Company",
@@ -48,8 +48,6 @@ class HealthcareService(models.Model):
         index=True,
         default=lambda self: self.env.company,
     )
-    name = fields.Char(index=True)
-    active = fields.Boolean(default=True)
     code = fields.Char("Internal Reference", index=True)
     category_ids = fields.Many2many(
         "ni.service.category",
