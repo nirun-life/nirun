@@ -5,8 +5,9 @@ from odoo import api, fields, models
 class Procedure(models.Model):
     _name = "ni.procedure"
     _description = "Procedure"
-    _inherit = ["ni.patient.res", "ir.sequence.mixin", "mail.thread"]
-    _order = "performed_date DESC,name DESC"
+    _inherit = ["ni.workflow.event.mixin", "ir.sequence.mixin", "mail.thread"]
+    _order = "performed_date DESC,id DESC"
+    _workflow_occurrence = "performed"
 
     _sequence_ts_field = "performed_date"
     name = fields.Char(
@@ -55,3 +56,14 @@ class Procedure(models.Model):
 
     def action_pause(self):
         self.write({"state": "on-hold"})
+
+    @property
+    def _workflow_name(self):
+        return self.code_id.name
+
+    @property
+    def _workflow_summary(self):
+        res = self.outcome_id.name or self.name
+        if self.note:
+            "%s; %s".format(res, self.note)
+        return res
