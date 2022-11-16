@@ -7,8 +7,14 @@ from odoo.exceptions import ValidationError
 class ServiceRequest(models.Model):
     _name = "ni.service.request"
     _description = "Service Request"
-    _inherit = ["ni.patient.res", "period.mixin", "mail.thread", "ir.sequence.mixin"]
+    _inherit = [
+        "ni.workflow.request.mixin",
+        "period.mixin",
+        "mail.thread",
+        "ir.sequence.mixin",
+    ]
     _order = "id DESC"
+    _workflow_occurrence = "period_start"
 
     _check_period_start = True
     patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
@@ -259,3 +265,15 @@ class ServiceRequest(models.Model):
                     or self.ref("nirun_procedure.outcome_success"),
                 }
             )
+
+    @property
+    def _workflow_name(self):
+        return self.service_id.name
+
+    @property
+    def _workflow_summary(self):
+        if self.service_time_id:
+            return self.service_time_id.name
+        if self.service_timing_id:
+            return self.service_timing_id.name
+        return self.instruction
