@@ -6,7 +6,8 @@ from odoo.exceptions import ValidationError
 
 class SurveyUserInput(models.Model):
     _name = "survey.user_input"
-    _inherit = ["survey.user_input", "ni.patient.res"]
+    _inherit = ["survey.user_input", "ni.workflow.event.mixin"]
+    _workflow_occurrence = "create_date"
 
     patient_id = fields.Many2one(required=False, groups="nirun_patient.group_user")
     encounter_id = fields.Many2one(required=False, groups="nirun_patient.group_user")
@@ -88,3 +89,15 @@ class SurveyUserInput(models.Model):
             },
             "views": [[False, "graph"]],
         }
+
+    @property
+    def _workflow_name(self):
+        return self.survey_id.title
+
+    @property
+    def _workflow_summary(self):
+        if self.survey_id.scoring_type != "no_scoring":
+            res = "{:.2f}% ({})".format(self.quizz_score, self.grade_ids)
+            return res
+        else:
+            return None
