@@ -22,7 +22,6 @@ class Medication(models.Model):
         vals = self._compute_ingredient_val(vals)
         return super().create(vals)
 
-    @api.model
     def write(self, vals):
         vals = self._compute_ingredient_val(vals)
         return super().write(vals)
