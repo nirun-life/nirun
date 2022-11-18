@@ -37,6 +37,22 @@ class Dosage(models.Model):
         help="Technique for administering medication",
     )
     as_need = fields.Boolean("As need?", default=False, tracking=True)
+    dose = fields.Float()
+    dose_unit_id = fields.Many2one("ni.quantity.unit")
+    display_dose = fields.Char(compute="_compute_display_dose")
+
+    @api.depends("dose", "dose_unit_id")
+    def _compute_display_dose(self):
+        for rec in self:
+            if rec.dose and rec.dose_unit_id:
+                if rec.dose.is_integer():
+                    rec.display_dose = "{:d} {}".format(
+                        int(rec.dose), rec.dose_unit_id.name
+                    )
+                else:
+                    rec.display_dose = "{} {}".format(rec.dose, rec.dose_unit_id.name)
+            else:
+                rec.display_dose = None
 
     @api.depends("timing_id", "text", "additional_ids")
     def _compute_display_name(self):
@@ -51,6 +67,8 @@ class Dosage(models.Model):
     def _name_get(self):
         rec = self
         name = rec.timing_id.name
+        if self.display_dose:
+            name = "{} - {}".format(self.display_dose, name)
         if self._context.get("show_text") and self.text:
             name = "{}\n{}".format(name, rec.text)
         if self._context.get("show_additional") and self.additional_ids:

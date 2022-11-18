@@ -98,6 +98,8 @@
                     widget="many2many_tags"
                     options="{'color_field': 'color'}"
                 />
+                <field name="dose" />
+                <field name="dose_unit_id" attrs="{'required': [('dose', '!=', 0 )]}" />
                 <field name="text" optional="hide" />
                 <field name="as_need" optional="hide" />
                 <field name="site_id" optional="hide" />
@@ -137,6 +139,11 @@
                 </group>
                 <group>
                     <group>
+                        <label for="dose" />
+                        <div class="o_row">
+                            <field name="dose" />
+                            <field name="dose_unit_id" attrs="{'required': [('dose', '!=', 0 )]}" />
+                        </div>
                         <field name="additional_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
                     </group>
                     <group>

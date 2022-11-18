@@ -39,6 +39,8 @@ class MedicationStatement(models.Model):
         store=False,
         help="Internal: use as domain filter of dosage_tmpl_id",
     )
+    medication_dosage_count = fields.Integer(related="medication_id.dosage_count")
+    medication_dose_unit_id = fields.Many2one(related="medication_id.dose_unit_id")
 
     image_1920 = fields.Image(related="medication_id.image_1920")
     image_1024 = fields.Image(related="medication_id.image_1024")
