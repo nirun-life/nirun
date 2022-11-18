@@ -62,6 +62,18 @@ class Medication(models.Model):
         "dosage_id",
         help="dosages available for this medication",
     )
+    dosage_count = fields.Integer(compute="_compute_dosage_count")
+    dose_unit_id = fields.Many2one("ni.quantity.unit", compute="_compute_dose_unit_id")
+
+    @api.depends("dosage_ids")
+    def _compute_dosage_count(self):
+        for rec in self:
+            rec.dosage_count = len(rec.dosage_ids)
+
+    @api.depends("amount_numerator_unit", "amount_denominator_unit")
+    def _compute_dose_unit_id(self):
+        for rec in self:
+            rec.dose_unit_id = rec.amount_numerator_unit or rec.amount_denominator_unit
 
     @api.depends("statement_ids", "statement_ids.state")
     def _compute_patient(self):

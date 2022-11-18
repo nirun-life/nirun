@@ -154,13 +154,15 @@
                         <page name="detail" string="Detail">
                             <group string="Dosage">
                                 <field name="medication_dosage_ids" invisible="1" />
+                                <field name="medication_dosage_count" invisible="1" />
+                                <field name="medication_dose_unit_id" invisible="1" />
                                 <label for="dosage_id" />
                                 <div class="o_row">
                                     <field
                                         name="dosage_tmpl_id"
                                         domain="[('id', 'in', medication_dosage_ids)]"
                                         context="{'show_text': True, 'show_additional':True}"
-                                        attrs="{'invisible': [('dosage_id', '!=', False)]}"
+                                        attrs="{'invisible': ['|', ('medication_dosage_count', '=', 0), ('dosage_id', '!=', False),]}"
                                         options="{'no_create':True, 'always_reload':True}"
                                         placeholder="choose from..."
                                     />
@@ -168,12 +170,12 @@
                                         class="oe_edit_only"
                                         for="dosage_id"
                                         string="or"
-                                        attrs="{'invisible': ['|', '|',  ('medication_dosage_ids', '=', False), ('dosage_tmpl_id', '!=', False), ('dosage_id', '!=', False)]}"
+                                        attrs="{'invisible': ['|', '|',  ('medication_dosage_count', '=', 0), ('dosage_tmpl_id', '!=', False), ('dosage_id', '!=', False)]}"
                                     />
                                     <field
                                         name="dosage_id"
                                         domain="[('id', '=', False)]"
-                                        context="{'show_text': True, 'show_additional':True}"
+                                        context="{'show_text': True, 'show_additional':True, 'default_dose_unit_id': medication_dose_unit_id}"
                                         placeholder="create new..."
                                         attrs="{'invisible': [('dosage_tmpl_id', '!=', False)]}"
                                         options="{'no_quick_create':True, 'always_reload':True}"
