@@ -7,13 +7,14 @@ class MedicationStatement(models.Model):
     _name = "ni.medication.statement"
     _description = "Medication Statement"
     _inherit = [
-        "ni.patient.res",
+        "ni.workflow.event.mixin",
         "period.mixin",
         "mail.thread",
         "mail.activity.mixin",
         "image.mixin",
     ]
     _check_period_start = True
+    _workflow_occurrence = "period_start"
 
     name = fields.Char(related="medication_id.name", store=True)
     display_name = fields.Char(compute="_compute_display_name", store=True)
@@ -109,3 +110,9 @@ class MedicationStatement(models.Model):
         if vals.get("dosage_tmpl_id") and not vals.get("dosage_id"):
             vals["dosage_id"] = vals.get("dosage_tmpl_id")
         return super(MedicationStatement, self).update(vals)
+
+    @property
+    def _workflow_summary(self):
+        return "{}; {}, {}".format(
+            self.category_id.name, self.medication_id.name, self.dosage_id.display_name
+        )
