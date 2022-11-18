@@ -2,7 +2,7 @@
 
 {
     "name": "Healthcare Services - Calendar",
-    "version": "13.0.0.2.0",
+    "version": "13.0.0.2.1",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -13,6 +13,7 @@
     "data": [
         "data/calendar_data.xml",
         "data/ir_cron_data.xml",
+        "security/calendar_rules.xml",
         "views/calendar_views.xml",
         "views/service_views.xml",
         "views/service_menus.xml",

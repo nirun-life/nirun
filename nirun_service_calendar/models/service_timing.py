@@ -34,7 +34,8 @@ class HealthcareServiceTiming(models.Model):
         start_datetime = fields.Datetime.to_datetime(start_date)
         stop_datetime = self._stop_datetime_for(start_datetime)
         vals = {
-            "name": "{} - {}".format(self.service_id.name, self.name),
+            "name": self.service_id.name,
+            "description": self.name,
             "location": self.service_id.location,
             "service_id": self.service_id.id,
             "timing_id": self.id,

@@ -7,6 +7,7 @@ class Meeting(models.Model):
     _inherit = "calendar.event"
 
     service_id = fields.Many2one("ni.service", ondelete="cascade")
+    service_company_id = fields.Many2one(related="service_id.company_id")
     timing_id = fields.Many2one(
         "ni.service.timing",
         domain="[('service_id', '=', service_id)]",
