@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <record id="calendar_service_rule_company" model="ir.rule">
+        <field name="name">Service: multi-company</field>
+        <field name="model_id" ref="model_calendar_event" />
+        <field name="global" eval="True" />
+        <field name="domain_force">
+            ['|', ('service_company_id', '=', False), ('service_company_id', 'in', company_ids)]
+        </field>
+    </record>
+</odoo>

@@ -38,7 +38,8 @@ class HealthcareServiceTime(models.Model):
         self.ensure_one()
         start_datetime = fields.Datetime.to_datetime(start_date)
         res = {
-            "name": "{} ({})".format(self.service_id.name, self.name),
+            "name": self.service_id.name,
+            "description": self.name,
             "location": self.service_id.location,
             "service_id": self.service_id.id,
             "time_id": self.id,
