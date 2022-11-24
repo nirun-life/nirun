@@ -36,6 +36,9 @@ class CareplanTemplateGoal(models.Model):
         ),
     ]
 
+    def init(self):
+        """To prevent index creation cause by inherit ni.patient.res"""
+
     def copy_data(self, default=None):
         # Put this snippet at ni.goal not work [13.0]. May try later.
         if default is None:
@@ -112,6 +115,9 @@ class CareplanTemplate(models.Model):
         readonly=False,
         states={},
     )
+
+    def init(self):
+        """To prevent index creation cause by inherit ni.patient.res"""
 
     def name_get(self):
         res = []
