@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-18 03:10+0000\n"
-"PO-Revision-Date: 2022-05-18 03:10+0000\n"
+"POT-Creation-Date: 2022-11-30 03:33+0000\n"
+"PO-Revision-Date: 2022-11-30 03:33+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,16 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: nirun_condition
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
+msgid ""
+"<i class=\"fa fa-fw fa-arrow-right mx-2 oe_edit_only\" aria-label=\"arrow-"
+"icon\" title=\"to\"/>"
+msgstr ""
+
+#. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__period_end
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__period_end
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
 msgid "Abatement Date"
 msgstr "หายเมื่อ"
 
@@ -27,6 +35,21 @@ msgstr "หายเมื่อ"
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_type__active
 msgid "Active"
 msgstr "เปิดใช้งาน"
+
+#. module: nirun_condition
+#: model_terms:ir.ui.view,arch_db:nirun_condition.encounter_view_form_inherit
+msgid "Add diagnosis"
+msgstr "เพิ่มวินิจฉัย"
+
+#. module: nirun_condition
+#: model_terms:ir.ui.view,arch_db:nirun_condition.encounter_view_form_inherit
+msgid "Add diagnosis & problem"
+msgstr "เพิ่มวินิจฉัย"
+
+#. module: nirun_condition
+#: model_terms:ir.ui.view,arch_db:nirun_condition.encounter_view_form_inherit
+msgid "Add problem"
+msgstr "เพิ่มปัญหา"
 
 #. module: nirun_condition
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_class_view_form
@@ -44,6 +67,12 @@ msgstr "ถูกเก็บ"
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__category
 msgid "Category"
 msgstr "หมวด"
+
+#. module: nirun_condition
+#: code:addons/nirun_condition/models/condition.py:0
+#, python-format
+msgid "Chronic"
+msgstr "โรคเรื้อรัง"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__classification_id
@@ -103,6 +132,7 @@ msgid "Condition Ref"
 msgstr "อ้างอิง"
 
 #. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_encounter__condition_report_ids
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_patient__condition_report_ids
 msgid "Condition Report"
 msgstr "รายงานโรค/ปัญหา"
@@ -159,9 +189,14 @@ msgstr "สร้างเมื่อ"
 msgid "Definition"
 msgstr "คำนิยาม"
 
+
 #. module: nirun_condition
+#: code:addons/nirun_condition/models/condition.py:0
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__is_diagnosis
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__is_diagnosis
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_encounter__condition_ids
 #: model_terms:ir.ui.view,arch_db:nirun_condition.encounter_view_form_inherit
+#, python-format
 msgid "Diagnosis"
 msgstr "วินิจฉัย"
 
@@ -230,12 +265,6 @@ msgstr "รหัสรับบริการ"
 #: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
 msgid "Extra Info"
 msgstr "ข้อมูลอื่นๆ"
-
-#. module: nirun_condition
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__gender
-#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__gender
-msgid "Gender"
-msgstr "เพศ"
 
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__id
@@ -343,6 +372,7 @@ msgstr "การพยาบาล"
 #. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__period_start
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__period_start
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
 msgid "Onset Date"
 msgstr "เริ่มเป็นเมื่อ"
 
@@ -377,6 +407,11 @@ msgid "Patient already have this condition!"
 msgstr "พบการระบุโรค/ปัญหาซ้ำ"
 
 #. module: nirun_condition
+#: model_terms:ir.ui.view,arch_db:nirun_condition.condition_view_form
+msgid "Period"
+msgstr "ช่วงเวลา"
+
+#. module: nirun_condition
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__period_end_calendar
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__period_end_calendar
 msgid "Period End Calendar"
@@ -389,6 +424,8 @@ msgid "Previous Diagnosis"
 msgstr "ผลวินิจฉัยที่ผ่านมา"
 
 #. module: nirun_condition
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition__is_problem
+#: model:ir.model.fields,field_description:nirun_condition.field_ni_condition_latest__is_problem
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_encounter__condition_problem_ids
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_patient__condition_ids
 #: model:ir.model.fields,field_description:nirun_condition.field_ni_patient__condition_problem_ids
