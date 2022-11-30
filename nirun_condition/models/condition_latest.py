@@ -28,6 +28,7 @@ class ConditionLatest(models.Model):
             WHERE id IN (
                 SELECT max(id)
                 FROM ni_condition
+                WHERE state IN ('active', 'recurrence', 'remission')
                 GROUP BY patient_id, code_id
             )
         )

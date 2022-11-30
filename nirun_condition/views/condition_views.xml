@@ -41,6 +41,8 @@
                 <field name="encounter_id" invisible="context.get('default_encounter_id', False)" />
                 <field name="category" invisible="context.get('default_category', False)" />
                 <field name="code_id" />
+                <field name="is_problem" />
+                <field name="is_diagnosis" />
                 <field name="classification_id" optional="show" />
                 <field name="verification" optional="show" />
                 <field name="severity" optional="show" />
@@ -87,13 +89,12 @@
                 </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box" groups="base.group_user" />
-                    <field
-                        name="category"
-                        invisible="context.get('default_category', False)"
-                        options="{'horizontal':True}"
-                        widget="radio"
-                    />
+                    <field name="category" invisible="1" options="{'horizontal':True}" widget="radio" />
                     <div class="oe_title" style="max-width:85%;">
+                        <div attrs="{'invisible': [('period_start', '=', False)]}">
+                            <span class="fa fa-clock-o ml-2" />
+                            <field name="duration" class="mx-1" />
+                        </div>
                         <h1>
                             <field
                                 name="code_id"
@@ -103,17 +104,29 @@
                                 options="{'no_open': True}"
                             />
                         </h1>
-                        <div attrs="{'invisible': [('period_start', '=', False)]}">
-                            <span class="fa fa-clock-o ml-2" />
-                            <field name="duration" class="mx-1" />
-                        </div>
+                    </div>
+                    <div>
+                        <field name="is_problem" />
+                        <label for="is_problem" />
+                        <span class="ml-4" attrs="{'invisible': [('encounter_id', '=', False)]}">
+                            <field name="is_diagnosis" />
+                            <label for="is_diagnosis" />
+                        </span>
                     </div>
                     <group>
                         <group>
                             <field name="patient_id" invisible="context.get('default_patient_id', False)" />
                             <field name="encounter_id" invisible="context.get('default_encounter_id', False)" />
-                            <field name="period_start" />
-                            <field name="period_end" />
+                            <label for="period_start" string="Period" />
+                            <div class="o_row">
+                                <field name="period_start" placeholder="Onset Date" />
+                                <i
+                                    class="fa fa-fw fa-arrow-right mx-2 oe_edit_only"
+                                    aria-label="arrow-icon"
+                                    title="to"
+                                />
+                                <field name="period_end" placeholder="Abatement Date" />
+                            </div>
                         </group>
                         <group>
                             <field

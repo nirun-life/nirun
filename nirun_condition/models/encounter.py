@@ -22,6 +22,7 @@ class Encounter(models.Model):
         default="problem",
         store=False,
     )
+    condition_report_ids = fields.One2many(related="patient_id.condition_report_ids")
 
     @api.depends("patient_id")
     def _compute_condition_prev_ids(self):

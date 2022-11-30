@@ -1,12 +1,13 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class Condition(models.Model):
     _name = "ni.condition"
     _description = "Condition"
-    _inherit = ["period.mixin", "ni.patient.res"]
+    _inherit = ["period.mixin", "ni.workflow.event.mixin"]
+    _workflow_occurrence = "create_date"
 
     def _get_default_condition_class(self):
         return (
@@ -21,7 +22,10 @@ class Condition(models.Model):
             ("encounter-diagnosis", "Encounter Diagnosis"),
         ],
         required=True,
+        help="Deprecated",
     )
+    is_problem = fields.Boolean("Problem")
+    is_diagnosis = fields.Boolean("Diagnosis")
     code_id = fields.Many2one(
         "ni.condition.code",
         "Name",
@@ -71,11 +75,18 @@ class Condition(models.Model):
         index=True,
     )
     recurrence = fields.Boolean()
-    gender = fields.Selection(related="patient_id.gender")
     note = fields.Text()
 
     create_date = fields.Datetime("Recorded", readonly=True)
     create_uid = fields.Many2one("res.users", "Recorder", readonly=True)
+
+    _sql_constraints = [
+        (
+            "condition_encounter__uniq",
+            "unique (patient_id, code_id, encounter_id)",
+            "Patient already have this condition!",
+        ),
+    ]
 
     def name_get(self):
         return [(rec.id, rec._name_get()) for rec in self]
@@ -99,6 +110,10 @@ class Condition(models.Model):
         self.ensure_one()
         return dict(self._fields["state"].selection).get(self.state)
 
+    def get_verification_label(self):
+        self.ensure_one()
+        return dict(self._fields["verification"].selection).get(self.verification)
+
     @api.onchange("encounter_id")
     def _onchange_encounter_id(self):
         self.ensure_one()
@@ -106,13 +121,20 @@ class Condition(models.Model):
             "encounter-diagnosis" if self.encounter_id else "problem-list-item"
         )
 
-    _sql_constraints = [
-        (
-            "condition_encounter__uniq",
-            "unique (patient_id, code_id, encounter_id)",
-            "Patient already have this condition!",
-        ),
-    ]
+    @api.depends("category")
+    def _compute_category(self):
+        for rec in self:
+            # for convert old version
+            if rec.category == "problem-list-item":
+                rec.is_problem = True
+            if rec.category == "encounter-diagnosis":
+                rec.is_diagnosis = True
+
+    def _inverse_category(self):
+        for rec in self:
+            rec.category = (
+                "problem-list-item" if rec.is_problem else "encounter-diagnosis"
+            )
 
     def action_edit(self):
         self.ensure_one()
@@ -144,3 +166,21 @@ class Condition(models.Model):
     def onchange_code_id(self):
         if self.code_id.classification_id:
             self.classification_id = self.code_id.classification_id
+
+    @property
+    def _workflow_name(self) -> str:
+        if self.is_diagnosis:
+            return _("Diagnosis")
+        elif self.is_problem:
+            return _("Chronic")
+        else:
+            return self._description
+
+    @property
+    def _workflow_summary(self):
+        summary = self.code_id.name
+        if self.severity:
+            summary = "{} ({})".format(summary, self.get_severity_label())
+        if self.verification:
+            summary = "{} - {}".format(summary, self.get_verification_label())
+        return summary
