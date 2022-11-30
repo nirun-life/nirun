@@ -31,7 +31,9 @@ class Workflow(models.AbstractModel):
     name = fields.Char(required=True)
     summary = fields.Text()
     occurrence = fields.Datetime(index=True)
-    occurrence_date = fields.Date(index=True)
+    occurrence_date = fields.Date(
+        index=True, compute="_compute_date", inverse="_inverse_date"
+    )
     type = fields.Selection(
         [("request", "Request"), ("event", "Event")],
         required=True,
@@ -51,6 +53,17 @@ class Workflow(models.AbstractModel):
                 self._table,
                 ["res_model", "res_id"],
             )
+
+    @api.depends("occurrence")
+    def _compute_date(self):
+        for rec in self:
+            rec.occurrence_date = rec.occurrence.date()
+
+    def _inverse_date(self):
+        for rec in self:
+            occur = fields.Datetime.from_string(rec.occurrence_date)
+            occur = occur.replace(hour=8)
+            rec.write({"occurrence": occur.replace(tzinfo=self.create_uid.tz)})
 
     @api.model
     def garbage_collect(self):
@@ -79,6 +92,7 @@ class Workflow(models.AbstractModel):
 
 class Request(models.Model):
     _name = "ni.workflow.request"
+    _description = "Workflow: Reqeust"
     _workflow_type = "request"
     _inherit = "ni.workflow"
 
@@ -109,6 +123,7 @@ class Request(models.Model):
 
 class Event(models.Model):
     _name = "ni.workflow.event"
+    _description = "Workflow: Event"
     _workflow_type = "event"
     _inherit = "ni.workflow"
 
