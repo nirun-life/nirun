@@ -11,8 +11,8 @@ This is odoo modules for new generation Health care provider.
 
 Available addons
 ----------------
-addon | version | summary
---- | --- | ---
+addon | version    | summary
+--- |------------| ---
 [base_religion](base_religion/) | 13.0.0.1.1 | Religions
 [l10n_th_nirun_coverage_hide](l10n_th_nirun_coverage_hide/) | 13.0.0.1.0 | Hiding Coverage
 [l10n_th_nirun_coverage_right](l10n_th_nirun_coverage_right/) | 13.0.0.2.0 | Coverage - Health Right
@@ -24,7 +24,7 @@ addon | version | summary
 [nirun](nirun/) | 13.0.0.2.0 | Nirun
 [nirun_allergy](nirun_allergy/) | 13.0.0.3.0 | Allergy & Intolerance
 [nirun_careplan](nirun_careplan/) | 13.0.0.5.0 | Care Plans
-[nirun_condition](nirun_condition/) | 13.0.0.4.0 | Condition (Problem)
+[nirun_condition](nirun_condition/) | 13.0.0.5.0 | Condition (Problem)
 [nirun_coverage](nirun_coverage/) | 13.0.0.1.1 | Coverage
 [nirun_goal](nirun_goal/) | 13.0.0.4.0 | Goal
 [nirun_goal_questionnaire](nirun_goal_questionnaire/) | 13.0.0.1.0 | Goal - Questionnaire

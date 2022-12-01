@@ -60,6 +60,7 @@ class Condition(models.Model):
         tracking=1,
         default="active",
     )
+    verification_id = fields.Many2one("ni.condition.verification")
     verification = fields.Selection(
         [
             ("unconfirmed", "Unconfirmed"),
@@ -70,9 +71,10 @@ class Condition(models.Model):
         ],
         tracking=1,
         copy=False,
-        required=True,
+        required=False,
         default="provisional",
         index=True,
+        help="Deprecated",
     )
     recurrence = fields.Boolean()
     note = fields.Text()
@@ -181,6 +183,6 @@ class Condition(models.Model):
         summary = self.code_id.name
         if self.severity:
             summary = "{} ({})".format(summary, self.get_severity_label())
-        if self.verification:
-            summary = "{} - {}".format(summary, self.get_verification_label())
+        if self.verification_id:
+            summary = "{} - {}".format(summary, self.verification_id.display_name)
         return summary

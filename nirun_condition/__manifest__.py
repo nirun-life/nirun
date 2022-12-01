@@ -2,7 +2,7 @@
 
 {
     "name": "Condition (Problem)",
-    "version": "13.0.0.4.0",
+    "version": "13.0.0.5.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -12,10 +12,12 @@
     "depends": ["nirun_patient"],
     "data": [
         "data/condition_class_data.xml",
+        "data/condition_verification_data.xml",
         "security/ir.model.access.csv",
         "security/condition_rules.xml",
         "views/condition_code_views.xml",
         "views/condition_class_views.xml",
+        "views/condition_verification_views.xml",
         "views/condition_type_views.xml",
         "views/condition_views.xml",
         "views/patient_views.xml",
