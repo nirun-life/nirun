@@ -11,17 +11,20 @@
     <record id="group_viewer" model="res.groups">
         <field name="name">Viewer</field>
         <field name="category_id" ref="module_category_medical_service" />
-        <field name="implied_ids" eval="[(4, ref('nirun_patient.group_viewer'))]" />
+        <field
+            name="implied_ids"
+            eval="[(4, ref('nirun_patient.group_viewer')),  (4, ref('nirun_procedure.group_viewer'))]"
+        />
     </record>
     <record id="group_user" model="res.groups">
         <field name="name">User</field>
         <field name="category_id" ref="module_category_medical_service" />
-        <field name="implied_ids" eval="[(4, ref('group_viewer'))]" />
+        <field name="implied_ids" eval="[(4, ref('group_viewer')), (4, ref('nirun_procedure.group_user'))]" />
     </record>
     <record id="group_manager" model="res.groups">
         <field name="name">Manager</field>
         <field name="category_id" ref="module_category_medical_service" />
-        <field name="implied_ids" eval="[(4, ref('group_user'))]" />
+        <field name="implied_ids" eval="[(4, ref('group_user')),  (4, ref('nirun_procedure.group_manager'))]" />
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]" />
     </record>
 </odoo>
