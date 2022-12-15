@@ -1,3 +1,4 @@
+from . import patient
 from . import encounter
 from . import encounter_admit
 from . import encounter_arrangement
@@ -10,7 +11,6 @@ from . import encounter_reason
 from . import location
 from . import location_type
 from . import partner
-from . import patient
 from . import patient_res
 from . import workflow
 from . import workflow_mixin

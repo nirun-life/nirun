@@ -16,6 +16,7 @@ class Encounter(models.Model):
     _name = "ni.encounter"
     _description = "Encounter"
     _inherit = ["mail.thread", "period.mixin", "image.mixin", "ir.sequence.mixin"]
+    _inherits = {"ni.patient": "patient_id"}
     _check_company_auto = True
     _order = "name DESC"
 
