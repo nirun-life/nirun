@@ -21,7 +21,7 @@ addon | version    | summary
 [l10n_th_nirun_patient_birth_year_be](l10n_th_nirun_patient_birth_year_be/) | 13.0.0.1.0 | Patients - Birth year in Thai Buddhist Era (BE)
 [l10n_th_nirun_patient_disability](l10n_th_nirun_patient_disability/) | 13.0.0.1.1 | Patients - Disability (Thai Localization)
 [l10n_th_nirun_patient_name](l10n_th_nirun_patient_name/) | 13.0.0.1.0 | Patients - Name (Thai Localization)
-[nirun](nirun/) | 13.0.0.2.0 | Nirun
+[nirun](nirun/) | 13.0.0.2.1 | Nirun
 [nirun_allergy](nirun_allergy/) | 13.0.0.3.0 | Allergy & Intolerance
 [nirun_careplan](nirun_careplan/) | 13.0.0.5.0 | Care Plans
 [nirun_condition](nirun_condition/) | 13.0.0.5.0 | Condition (Problem)
