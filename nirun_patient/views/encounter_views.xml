@@ -255,9 +255,10 @@
                             <field name="name" placeholder="AN. 0000X" />
                         </h1>
                     </div>
-                    <field name="company_id" class="mr-2" groups="base.group_multi_company" placeholder="Company" />
-                    <span class="fa fa-clock-o" />
-                    <field name="duration" class="mx-1" />
+                    <div name="company" groups="base.group_multi_company" attrs="{'invisible': [('id', '=', False)]}">
+                        <i class="fa fa-building-o" />
+                        <field name="company_id" class="mx-2" placeholder="Company" />
+                    </div>
                     <group>
                         <group>
                             <field
@@ -281,6 +282,7 @@
                         <group>
                             <field name="period_start" />
                             <field name="period_end" attrs="{'invisible':[('state', '!=', 'finished')]}" />
+                            <field name="duration" />
                             <field name="reason_ids" options="{'color_field': 'color'}" widget='many2many_tags' />
                         </group>
                     </group>
