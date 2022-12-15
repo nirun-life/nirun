@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2022. NSTDA
+  -->
+<odoo>
+    <record id="encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="priority">1000</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[@name='company']" position="after">
+                <div attrs="{'invisible': [('id', '=', False)]}">
+                    <i class="fa fa-user" />
+                    <field name="create_uid" class="mx-2" />
+                    <field name="create_date" />
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
