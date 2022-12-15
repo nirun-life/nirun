@@ -6,6 +6,12 @@ from odoo import _, api, fields, models
 class Patient(models.Model):
     _inherit = "ni.patient"
 
+    disability_card = fields.Boolean(
+        help="Indicate patient have disability card or not"
+    )
+    disability_card_reason = fields.Text(
+        help="Reason why patient not have disability card"
+    )
     disability_ids = fields.Many2many(
         "ni.disability",
         "ni_patient_disability_rel",
