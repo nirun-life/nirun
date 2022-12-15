@@ -34,17 +34,26 @@ class CodingBase(models.AbstractModel):
         return models.lazy_name_get(self.browse(ids).with_user(name_get_uid))
 
     def name_get(self):
-        if self.env.context.get("show_code"):
-            return [
-                (
-                    codeable.id,
-                    "[{}] {}".format(codeable.code, codeable.name)
-                    if codeable.code
-                    else codeable.name,
-                )
-                for codeable in self
-            ]
-        return super(CodingBase, self).name_get()
+        super(CodingBase, self).name_get()
+        return [(code.id, code._name_get()) for code in self]
+
+    def _name_get(self):
+        coding = self
+        name = coding.name
+        if (
+            self._context.get("show_parent")
+            and "parent_id" in self._fields
+            and coding._fields["parent_id"]
+        ):
+            names = []
+            current = coding
+            while current:
+                names.append(current.name)
+                current = current.parent_id
+            name = ", ".join(reversed(names))
+        if self._context.get("show_code") and self.code:
+            name = "[{}] {}".format(coding.code, name)
+        return name
 
     _sql_constraints = [
         (
