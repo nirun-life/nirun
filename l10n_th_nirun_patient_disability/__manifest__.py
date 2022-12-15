@@ -2,7 +2,7 @@
 
 {
     "name": "Patients - Disability (Thai Localization)",
-    "version": "13.0.0.1.1",
+    "version": "13.0.0.2.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -15,6 +15,7 @@
         "data/disability_data.xml",
         "views/disability_views.xml",
         "views/patient_views.xml",
+        "views/encounter_views.xml",
         "views/disability_menus.xml",
     ],
     "application": False,
