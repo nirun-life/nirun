@@ -18,14 +18,3 @@ class EncounterClassification(models.Model):
     def _check_hierarchy(self):
         if not self._check_recursion():
             raise models.ValidationError(_("Error! You cannot create recursive data."))
-
-    def name_get(self):
-        res = []
-        for enc_cls in self:
-            names = []
-            current = enc_cls
-            while current:
-                names.append(current.name)
-                current = current.parent_id
-            res.append((enc_cls.id, ", ".join(reversed(names))))
-        return res

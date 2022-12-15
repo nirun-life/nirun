@@ -116,6 +116,7 @@
                 decoration-muted="state in ['cancelled', 'entered-in-error']"
                 edit="0"
             >
+                <field name="identification_id" optional="hide" />
                 <field name="name" />
                 <field name="patient_id" />
                 <field name="class_id" optional="show" />
@@ -189,7 +190,7 @@
                     <button
                         name="action_reset_to_draft"
                         string="Reset To Draft"
-                        attrs="{'invisible': [('state', 'not in', ['cancelled', 'revoked', 'entered-in-error'])]}"
+                        attrs="{'invisible': [('state', 'not in', ['cancelled', 'entered-in-error'])]}"
                         type="object"
                         confirm="Are you sure you want to reset this to draft?"
                         groups="nirun_patient.group_admin"
@@ -261,10 +262,14 @@
                         <group>
                             <field
                                 name="patient_id"
-                                context="{'show_gender_age': True}"
+                                context="{'show_gender_age': True, 'show_identification_id': True, 'show_address': True}"
                                 options="{'always_reload': True}"
                             />
-                            <field name="class_id" options="{'no_create': True, 'no_open':True}" />
+                            <field
+                                name="class_id"
+                                options="{'no_create': True, 'no_open':True, 'always_reload': True}"
+                                context="{'show_parent': True}"
+                            />
                             <field name="hospitalization" invisible="1" />
                             <field
                                 name="location_id"

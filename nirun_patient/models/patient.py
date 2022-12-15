@@ -205,10 +205,10 @@ class Patient(models.Model):
     def _name_get(self):
         patient = self
         name = patient.name or ""
-        if self._context.get("show_address"):
-            name = patient.partner_id.with_context(show_address=True).name_get()
         if self._context.get("show_code") and patient.code:
             name = "[{}] {}".format(patient.code, name)
+        if self._context.get("show_identification_id") and patient.identification_id:
+            name = "{} ({})".format(name, patient.identification_id)
         if self._context.get("show_gender_age"):
             gender_age = []
             if patient.gender in ["male", "female"]:
