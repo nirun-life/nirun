@@ -9,6 +9,11 @@
         <field name="priority">1000</field>
         <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
         <field name="arch" type="xml">
+            <!-- They not need stat button -->
+            <xpath expr="//div[@name='button_box']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <!-- They need more clear information of record creation -->
             <xpath expr="//sheet/div[@name='company']" position="after">
                 <div attrs="{'invisible': [('id', '=', False)]}">
                     <i class="fa fa-user" />
