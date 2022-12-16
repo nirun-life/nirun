@@ -302,6 +302,12 @@
                                     />
                                     <field name="re_admit" />
                                     <field name="re_admit_reason" attrs="{'invisible': [('re_admit', '=', False)]}" />
+                                    <field
+                                        name="re_admit_encounter_id"
+                                        attrs="{'invisible': [('re_admit', '=', False)]}"
+                                        context="{'order_display': 'period_end desc, period_start desc'}"
+                                        options="{'always_reload': True, 'no_create': True, 'no_create_edit': True}"
+                                    />
                                     <field name="pre_admit_identifier" />
                                 </group>
                                 <group string="Special">
