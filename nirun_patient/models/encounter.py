@@ -149,6 +149,15 @@ class Encounter(models.Model):
         states=LOCK_STATE_DICT,
         tracking=True,
     )
+    re_admit_encounter_id = fields.Many2one(
+        "ni.encounter",
+        "Re-Admission Of",
+        states=LOCK_STATE_DICT,
+        tracking=True,
+        domain="[('patient_id', '=', patient_id),"
+        " ('id', '!=', id),"
+        " ('state', '=', 'finished')]",
+    )
     diet_ids = fields.Many2many(
         "ni.encounter.diet",
         "ni_encounter_diet_rel",
@@ -268,6 +277,21 @@ class Encounter(models.Model):
                 return {"warning": warning}
             self.pre_admit_identifier = self.patient_id.code
 
+    @api.onchange("re_admit")
+    def onchange_re_admit(self):
+        for rec in self:
+            if rec.re_admit:
+                last_enc = self.search(
+                    [
+                        ("patient_id", "=", rec.patient_id.id),
+                        ("state", "=", "finished"),
+                    ],
+                    order="period_end desc, period_start desc",
+                    limit=1,
+                )
+                if last_enc:
+                    rec.re_admit_encounter_id = last_enc[0]
+
     def _get_another_active_encounter(self):
         self.ensure_one()
         return (
@@ -312,11 +336,7 @@ class Encounter(models.Model):
                 raise ValidationError(_("Consultant should not be performer"))
 
     def name_get(self):
-        res = []
-        for rec in self:
-            name = rec._get_name()
-            res.append((rec.id, name))
-        return res
+        return [(enc.id, enc._get_name()) for enc in self]
 
     def _get_name(self):
         self.ensure_one()
@@ -330,6 +350,10 @@ class Encounter(models.Model):
             name = "{} [{}]".format(name, rec._get_state_label())
         if self._context.get("show_location") and rec.location_id:
             name = "{}\n{}".format(name, rec.location_id.display_name)
+        if self._context.get("show_period"):
+            name = "{}\n{} → {}".format(
+                name, rec.period_start, rec.period_end or _("Now")
+            )
         return name
 
     @api.model
