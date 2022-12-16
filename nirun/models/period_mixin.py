@@ -120,7 +120,7 @@ class PeriodMixin(models.AbstractModel):
 
     def get_intercept_period(self, start, end, domain):
         args = [
-            ("period_start", "<=", end),
+            ("period_start", "<=", end or start),
             "|",
             ("period_end", "=", False),
             ("period_end", ">=", start),
