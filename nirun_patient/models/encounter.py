@@ -18,7 +18,7 @@ class Encounter(models.Model):
     _inherit = ["mail.thread", "period.mixin", "image.mixin", "ir.sequence.mixin"]
     _inherits = {"ni.patient": "patient_id"}
     _check_company_auto = True
-    _order = "name DESC"
+    _order = "period_start DESC, name DESC"
 
     company_id = fields.Many2one(
         related="patient_id.company_id",
