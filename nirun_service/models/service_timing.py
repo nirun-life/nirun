@@ -9,4 +9,5 @@ class HealthcareServiceTiming(models.Model):
     _inherits = {"ni.timing": "timing_id"}
     _inherit = "ni.timing.mixin"
 
-    service_id = fields.Many2one("ni.service", ondelete="cascade")
+    service_id = fields.Many2one("ni.service", required=True, ondelete="cascade")
+    timing_id = fields.Many2one(required=True, ondelete="cascade")
