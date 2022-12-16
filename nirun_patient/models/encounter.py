@@ -198,6 +198,10 @@ class Encounter(models.Model):
     discharge_note = fields.Text("Note", tracking=True)
 
     # Participant
+    participant_ids = fields.One2many(
+        "ni.encounter.participant", "encounter_id", state=LOCK_STATE_DICT
+    )
+    participant_count = fields.Integer(compute="_compute_participant")
     performer_id = fields.Many2one(
         "res.partner",
         "Primary Performer",
@@ -245,6 +249,11 @@ class Encounter(models.Model):
     def _compute_location_history_count(self):
         for rec in self:
             rec.location_history_count = len(rec.location_history_ids)
+
+    @api.depends("participant_ids")
+    def _compute_participant(self):
+        for rec in self:
+            rec.participant_count = len(rec.participant_ids)
 
     @api.onchange("patient_id")
     def onchange_patient(self):
@@ -447,6 +456,7 @@ class Encounter(models.Model):
                 raise ValidationError(_("Must be in-progress state"))
             else:
                 enc.update({"state": "finished", "period_end": fields.date.today()})
+                enc.participant_ids.action_stop()
 
     def action_entered_in_error(self):
         self.write({"state": "entered-in-error"})

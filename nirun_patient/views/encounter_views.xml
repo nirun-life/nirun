@@ -353,6 +353,15 @@
                                     />
                                 </group>
                             </group>
+                            <field name="participant_ids">
+                                <tree editable="bottom" decoration-muted="period_end != False">
+                                    <field name="encounter_id" invisible="1" />
+                                    <field name="type" options="{'no_open': True}" />
+                                    <field name="employee_id" />
+                                    <field name="period_start" />
+                                    <field name="period_end" />
+                                </tree>
+                            </field>
                         </page>
                         <page name="request" string="Request" groups="base.group_no_one">
                             <field name="workflow_request_ids">
