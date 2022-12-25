@@ -10,7 +10,10 @@
     "license": "LGPL-3",
     "maintainers": ["piruin"],
     "depends": ["nirun_patient"],
-    "data": ["views/patient_views.xml"],
+    "data": [
+        "views/patient_views.xml",
+        "views/encounter_views.xml",
+    ],
     "application": False,
     "auto_install": True,
     "installable": True,
