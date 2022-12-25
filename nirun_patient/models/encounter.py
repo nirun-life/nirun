@@ -130,6 +130,12 @@ class Encounter(models.Model):
         help="organization which the patient came before admission",
         copy=True,
     )
+    origin_date = fields.Date(
+        string="Transfer At",
+        states=LOCK_STATE_DICT,
+        tracking=True,
+        help="When origin organization request to transfer",
+    )
     admit_source_id = fields.Many2one(
         "ni.encounter.admit",
         "Admission Source",
@@ -331,9 +337,7 @@ class Encounter(models.Model):
                     _("Primary and Secondary performer should not be the same person")
                 )
 
-    @api.constrains(
-        "consultant_id",
-    )
+    @api.constrains("consultant_id")
     def _check_consultant_id(self):
         for rec in self:
             if not rec.consultant_id:
@@ -343,6 +347,14 @@ class Encounter(models.Model):
                 or rec.consultant_id == rec.performer_id_2
             ):
                 raise ValidationError(_("Consultant should not be performer"))
+
+    @api.constrains("origin_partner_id", "origin_date", "period_start")
+    def check_origin_date(self):
+        for rec in self:
+            if rec.origin_date and not rec.origin_partner_id:
+                raise _("Transfer from must not be null when transfer at is present")
+            if rec.origin_date > rec.period_start:
+                raise _("Transfer date must not be after encounter start date")
 
     def name_get(self):
         return [(enc.id, enc._get_name()) for enc in self]
