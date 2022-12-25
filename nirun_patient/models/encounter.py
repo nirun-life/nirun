@@ -54,8 +54,7 @@ class Encounter(models.Model):
         states={"draft": [("readonly", False)]},
         auto_join=True,
     )
-    patient_gender = fields.Selection(related="patient_id.gender", store=True)
-    patient_age = fields.Integer(related="patient_id.age", store=True)
+    patient_name = fields.Char(related="patient_id.name", readonly=False)
 
     partner_id = fields.Many2one(
         related="patient_id.partner_id",
@@ -353,7 +352,7 @@ class Encounter(models.Model):
         for rec in self:
             if rec.origin_date and not rec.origin_partner_id:
                 raise _("Transfer from must not be null when transfer at is present")
-            if rec.origin_date > rec.period_start:
+            if rec.origin_date and rec.origin_date > rec.period_start:
                 raise _("Transfer date must not be after encounter start date")
 
     def name_get(self):

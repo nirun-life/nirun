@@ -16,6 +16,7 @@
         "views/relationship_views.xml",
         "views/partner_views.xml",
         "views/patient_views.xml",
+        "views/encounter_views.xml",
     ],
     "application": False,
     "auto_install": False,

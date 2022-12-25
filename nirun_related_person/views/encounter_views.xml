@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2022 NSTDA
+  -->
+<odoo>
+    <record id="encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="arch" type="xml">
+            <field name="spouse_name" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </field>
+            <field name="father_name" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </field>
+            <field name="mother_name" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </field>
+            <!-- res.partner.default_get() to why this view use 'default_partner_parent_id' -->
+            <field name="spouse_name" position="after">
+                <field
+                    name="spouse_id"
+                    attrs="{'invisible':[('marital_status', '=', 'single')]}"
+                    context="{'show_address':True, 'related_person':True, 'default_type': 'other', 'default_partner_parent_id':partner_id, 'default_relationship_id':%(nirun_related_person.SPS)d}"
+                    domain="[('is_company', '=', False), ('id', 'not in', [partner_id, mother_id, father_id])]"
+                    options='{"always_reload": True}'
+                />
+            </field>
+            <field name="father_name" position="after">
+                <field
+                    name="father_id"
+                    context="{'show_address':True, 'related_person':True, 'default_type': 'other', 'default_partner_parent_id':partner_id, 'default_gender':'male', 'default_relationship_id':%(nirun_related_person.FTH)d }"
+                    domain="[ ('is_company', '=', False), ('id', 'not in', [partner_id, mother_id, spouse_id])]"
+                    options='{"always_reload": True}'
+                />
+            </field>
+            <field name="mother_name" position="after">
+                <field
+                    name="mother_id"
+                    context="{'show_address':True, 'related_person':True, 'default_type': 'other', 'default_partner_parent_id':partner_id, 'default_gender':'female', 'default_relationship_id':%(nirun_related_person.MTH)d }"
+                    domain="[ ('is_company', '=', False), ('id', 'not in', [partner_id, father_id, spouse_id])]"
+                    options='{"always_reload": True}'
+                />
+            </field>
+            <field name="children_count" position="after">
+                <field
+                    name="child_ids"
+                    widget="many2many_tags"
+                    context="{'default_type':'other', 'related_person':True, 'default_partner_parent_id':partner_id, 'default_relationship_id':%(nirun_related_person.CHILD)d }"
+                    domain="[ ('is_company', '=', False), ('id', 'not in', [partner_id, mother_id, father_id, spouse_id])]"
+                    options="{'color_field': 'color'}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -90,10 +90,10 @@
             >
                 <field name="name" />
                 <field name="patient_id" />
-                <field name="patient_gender" />
-                <field name="patient_age" />
+                <field name="gender" />
+                <field name="age" />
                 <field name="class_id" optional="show" />
-                <field name="priority" />
+                <field name="priority" optional="show" />
                 <field name="performer_id" optional="show" />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
@@ -261,11 +261,32 @@
                     </div>
                     <group>
                         <group>
-                            <field
-                                name="patient_id"
-                                context="{'show_gender_age': True, 'show_identification_id': True, 'show_address': True}"
-                                options="{'always_reload': True}"
-                            />
+                            <label for="patient_id" />
+                            <div>
+                                <field
+                                    class="oe_read_only"
+                                    name="patient_id"
+                                    context="{'show_gender_age': True, 'show_identification_id': True, 'show_address': True}"
+                                    options="{'always_reload': True}"
+                                    attrs="{'required': [('patient_name', '=', False)]}"
+                                />
+                                <field
+                                    class="oe_edit_only"
+                                    name="patient_id"
+                                    context="{'show_gender_age': True, 'show_identification_id': True, 'show_address': True}"
+                                    options="{'always_reload': True}"
+                                    attrs="{
+                                    'invisible': [('state', '!=', 'draft')],
+                                    'required': [('patient_name', '=', False)]}"
+                                />
+                                <field
+                                    class="oe_edit_only"
+                                    name="patient_name"
+                                    required="True"
+                                    placeholder="Name"
+                                    attrs="{'invisible': [('state', '=', 'draft')]}"
+                                />
+                            </div>
                             <field
                                 name="class_id"
                                 options="{'no_create': True, 'no_open':True, 'always_reload': True}"
@@ -287,6 +308,48 @@
                         </group>
                     </group>
                     <notebook attrs="{'invisible': [('id', '=', False)]}">
+                        <page name="private" string="Private Information">
+                            <group>
+                                <group string="Citizenship">
+                                    <field name="nationality_id" options='{"no_open": True}' />
+                                    <field name="identification_id" placeholder="ex. 1104740100001" />
+                                    <field name="gender" options="{'horizontal': True}" widget="radio" />
+                                    <field name="birthdate" placeholder="ex. 31/01/1950" />
+                                    <field name="age" attrs="{'readonly': [('birthdate', '!=', False)]}" />
+                                    <field
+                                        name="age_range_id"
+                                        attrs="{'readonly': ['|', ('birthdate', '!=', False), ('age', '!=', 0)]}"
+                                        groups="nirun_patient.group_admin"
+                                    />
+                                </group>
+                                <group string="Marital Status">
+                                    <field name="marital_status" />
+                                    <field
+                                        name="spouse_name"
+                                        attrs="{'invisible':[('marital_status', '=', 'single')]}"
+                                    />
+                                </group>
+                                <group string="Family">
+                                    <field name="father_name" />
+                                    <field name="mother_name" />
+                                    <field name="sibling_count" />
+                                    <field name="birth_order" attrs="{'invisible': [('sibling_count', '=', 0)]}" />
+                                    <field name="children_count" />
+                                </group>
+                                <group string="Education">
+                                    <field name="education_level" />
+                                    <field name="study_field" placeholder="ex. Public Health" />
+                                    <field name="study_school" placeholder="ex. Health Science" />
+                                </group>
+                                <group string="Career">
+                                    <field name="function" />
+                                </group>
+                                <group string="Decease">
+                                    <field name="deceased" invisible="1" />
+                                    <field name="deceased_date" />
+                                </group>
+                            </group>
+                        </page>
                         <page
                             name="hospitalization"
                             string="Hospitalization"

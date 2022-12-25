@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-14 08:20+0000\n"
-"PO-Revision-Date: 2021-07-14 08:20+0000\n"
+"POT-Creation-Date: 2022-12-26 08:04+0000\n"
+"PO-Revision-Date: 2022-12-26 08:04+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -44,12 +44,6 @@ msgid "Address"
 msgstr "ที่อยู่"
 
 #. module: nirun_related_person
-#: model:ir.model.fields,field_description:nirun_related_person.field_res_partner__type
-#: model:ir.model.fields,field_description:nirun_related_person.field_res_users__type
-msgid "Address Type"
-msgstr "ชนิดที่อยู่"
-
-#. module: nirun_related_person
 #: model:res.partner.relationship,name:nirun_related_person.CHLDADOPT
 msgid "Adopted Child"
 msgstr "บุตรบุญธรรม"
@@ -76,9 +70,10 @@ msgid "Child-in-law"
 msgstr "ลูกสะใภ้/ลูกเขย"
 
 #. module: nirun_related_person
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_encounter__child_ids
 #: model:ir.model.fields,field_description:nirun_related_person.field_ni_patient__child_ids
 msgid "Children"
-msgstr "บุตร"
+msgstr "ลูก"
 
 #. module: nirun_related_person
 #: model_terms:ir.ui.view,arch_db:nirun_related_person.res_partner_view_form_related_person
@@ -144,15 +139,17 @@ msgstr "นายจ้าง"
 #. module: nirun_related_person
 #: model_terms:ir.ui.view,arch_db:nirun_related_person.partner_relationship_view_form
 msgid "Extra Info"
-msgstr ""
+msgstr "ข้อมูลเพิ่มเติม"
 
 #. module: nirun_related_person
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_encounter__father_id
 #: model:ir.model.fields,field_description:nirun_related_person.field_ni_patient__father_id
 #: model:res.partner.relationship,name:nirun_related_person.FTH
 msgid "Father"
 msgstr "บิดา"
 
 #. module: nirun_related_person
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_encounter__father_name
 #: model:ir.model.fields,field_description:nirun_related_person.field_ni_patient__father_name
 msgid "Father Complete Name"
 msgstr "ชื่อ-นามสกุลบิดา"
@@ -193,14 +190,6 @@ msgid "Internal notes..."
 msgstr "บันทึกภายใน"
 
 #. module: nirun_related_person
-#: model:ir.model.fields,help:nirun_related_person.field_res_partner__type
-#: model:ir.model.fields,help:nirun_related_person.field_res_users__type
-msgid ""
-"Invoice & Delivery addresses are used in sales orders. Private addresses are"
-" only visible by authorized users."
-msgstr ""
-
-#. module: nirun_related_person
 #: model:ir.model.fields,field_description:nirun_related_person.field_res_partner_relationship____last_update
 msgid "Last Modified on"
 msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
@@ -216,12 +205,14 @@ msgid "Last Updated on"
 msgstr "อัพเดทครั้งสุดท้ายเมื่อ"
 
 #. module: nirun_related_person
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_encounter__mother_id
 #: model:ir.model.fields,field_description:nirun_related_person.field_ni_patient__mother_id
 #: model:res.partner.relationship,name:nirun_related_person.MTH
 msgid "Mother"
 msgstr "มารดา"
 
 #. module: nirun_related_person
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_encounter__mother_name
 #: model:ir.model.fields,field_description:nirun_related_person.field_ni_patient__mother_name
 msgid "Mother Complete Name"
 msgstr "ชื่อ-นามสกุลมารดา"
@@ -248,25 +239,26 @@ msgid "Private Address Form"
 msgstr ""
 
 #. module: nirun_related_person
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_encounter__relate_person
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_patient__relate_person
 #: model:ir.model.fields,field_description:nirun_related_person.field_res_partner__relate_person
 #: model:ir.model.fields,field_description:nirun_related_person.field_res_users__relate_person
 msgid "Relate Person"
 msgstr "ผู้เกี่ยวข้อง"
 
 #. module: nirun_related_person
-#: model:ir.model.fields.selection,name:nirun_related_person.selection__res_partner__type__relate
-msgid "Related Person"
-msgstr "ผู้เกี่ยวข้อง"
-
-#. module: nirun_related_person
 #: model:ir.actions.act_window,name:nirun_related_person.relationship_action
 #: model:ir.model,name:nirun_related_person.model_res_partner_relationship
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_encounter__relationship_id
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_patient__relationship_id
 #: model:ir.model.fields,field_description:nirun_related_person.field_res_partner__relationship_id
 #: model:ir.model.fields,field_description:nirun_related_person.field_res_users__relationship_id
 msgid "Relationship"
 msgstr "ความสัมพันธ์"
 
 #. module: nirun_related_person
+#: model:ir.model.fields,help:nirun_related_person.field_ni_encounter__relationship_id
+#: model:ir.model.fields,help:nirun_related_person.field_ni_patient__relationship_id
 #: model:ir.model.fields,help:nirun_related_person.field_res_partner__relationship_id
 #: model:ir.model.fields,help:nirun_related_person.field_res_users__relationship_id
 msgid "Relationship of this partner to their related partner [parent_id]"
@@ -288,12 +280,14 @@ msgid "Sibling"
 msgstr "พี่น้อง"
 
 #. module: nirun_related_person
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_encounter__spouse_id
 #: model:ir.model.fields,field_description:nirun_related_person.field_ni_patient__spouse_id
 #: model:res.partner.relationship,name:nirun_related_person.SPS
 msgid "Spouse"
 msgstr "คู่สมรส"
 
 #. module: nirun_related_person
+#: model:ir.model.fields,field_description:nirun_related_person.field_ni_encounter__spouse_name
 #: model:ir.model.fields,field_description:nirun_related_person.field_ni_patient__spouse_name
 msgid "Spouse Complete Name"
 msgstr "ชื่อ-นามสกุลคู่สมรส"
@@ -311,12 +305,12 @@ msgstr "เจ้าหน้าที่"
 #. module: nirun_related_person
 #: model_terms:ir.ui.view,arch_db:nirun_related_person.res_partner_view_form_related_person
 msgid "Street 2..."
-msgstr ""
+msgstr "ถนน"
 
 #. module: nirun_related_person
 #: model_terms:ir.ui.view,arch_db:nirun_related_person.res_partner_view_form_related_person
 msgid "Street..."
-msgstr ""
+msgstr "บ้านเลขที่ หมู่บ้าน หมู่ที่"
 
 #. module: nirun_related_person
 #: model:res.partner.relationship,name:nirun_related_person.TWIN
@@ -331,12 +325,12 @@ msgstr "ไม่ทราบ"
 #. module: nirun_related_person
 #: model_terms:ir.ui.view,arch_db:nirun_related_person.res_partner_view_form_related_person
 msgid "ZIP"
-msgstr ""
+msgstr "รหัสไปรษณีย์"
 
 #. module: nirun_related_person
 #: model_terms:ir.ui.view,arch_db:nirun_related_person.res_partner_view_form_related_person
 msgid "e.g. Mr."
-msgstr ""
+msgstr "เช่น นาย"
 
 #. module: nirun_related_person
 #: model_terms:ir.ui.view,arch_db:nirun_related_person.res_partner_view_form_related_person
