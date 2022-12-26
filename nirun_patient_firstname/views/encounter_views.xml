@@ -14,17 +14,17 @@
                 <attribute name="invisible">True</attribute>
             </xpath>
             <field name="patient_name" position="after">
-                <div class="o_row">
+                <div class="o_row" attrs="{'invisible': [('id', '=', False)]}">
                     <field
                         class="oe_edit_only"
                         name="lastname"
-                        attrs="{'required': [('firstname', '=', False)], 'invisible': [('state', '=', 'draft')]}"
+                        attrs="{'required': [('firstname', '=', False)]}"
                         placeholder="Last name"
                     />
                     <field
                         class="oe_edit_only"
                         name="firstname"
-                        attrs="{'required': [('lastname', '=', False)], 'invisible': [('state', '=', 'draft')]}"
+                        attrs="{'required': [('lastname', '=', False)]}"
                         placeholder="Name"
                     />
                 </div>
