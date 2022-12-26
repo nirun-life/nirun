@@ -8,7 +8,7 @@ class EncounterParticipant(models.Model):
     _name = "ni.encounter.participant"
     _description = "Encounter Participant"
     _inherit = ["period.mixin"]
-    _order = "period_start desc, type"
+    _order = "period_start desc, period_end desc, type"
 
     def _get_default_type(self):
         part = self.env.ref("nirun_patient.PART")

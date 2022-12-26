@@ -404,24 +404,8 @@
                             </group>
                         </page>
                         <page name="participant" string="Participant">
-                            <group>
-                                <group name="performer" string="Performer">
-                                    <field name="performer_id" />
-                                    <field name="performer_id_2" />
-                                </group>
-                                <group name="performer_2" string="Consultant">
-                                    <field name="consultant_id" />
-                                </group>
-                                <group name="attendant" string="Attendants">
-                                    <field
-                                        name="attendant_ids"
-                                        options="{'color_field': 'color', 'no_edit': True}"
-                                        widget="many2many_tags"
-                                    />
-                                </group>
-                            </group>
                             <field name="participant_ids">
-                                <tree editable="bottom" decoration-muted="period_end != False">
+                                <tree editable="top" decoration-muted="period_end != False">
                                     <field name="encounter_id" invisible="1" />
                                     <field name="type" options="{'no_open': True}" />
                                     <field name="employee_id" />
@@ -429,6 +413,23 @@
                                     <field name="period_end" />
                                 </tree>
                             </field>
+                            <!-- Hide for now -->
+                            <group invisible="1">
+                                <group name="performer" string="Performer">
+                                    <field name="performer_id" />
+                                    <field name="performer_id_2" />
+                                </group>
+                                <group name="consultant" string="Consultant">
+                                    <field name="consultant_id" />
+                                </group>
+                            </group>
+                            <group name="attendant" string="Attendants" invisible="1">
+                                <field
+                                    name="attendant_ids"
+                                    options="{'color_field': 'color', 'no_edit': True}"
+                                    widget="many2many_tags"
+                                />
+                            </group>
                         </page>
                         <page name="request" string="Request" groups="base.group_no_one">
                             <field name="workflow_request_ids">
