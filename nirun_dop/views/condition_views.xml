@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2022. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit_condition" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_condition.encounter_view_form_inherit" />
+        <field name="arch" type="xml">
+            <field name="is_diagnosis" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <xpath expr="//tree/control/create[3]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_condition_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.condition.view.form.inherit</field>
+        <field name="model">ni.condition</field>
+        <field name="inherit_id" ref="nirun_condition.condition_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[@name='category']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
