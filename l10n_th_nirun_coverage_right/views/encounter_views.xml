@@ -8,7 +8,7 @@
         <field name="model">ni.encounter</field>
         <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
         <field name="arch" type="xml">
-            <field name="period_end" position="after">
+            <field name="reason_ids" position="before">
                 <field name="coverage_plan_id" />
                 <field
                     name="coverage_partner_id"
@@ -23,7 +23,7 @@
         <field name="model">ni.encounter</field>
         <field name="inherit_id" ref="nirun_patient.encounter_view_tree" />
         <field name="arch" type="xml">
-            <field name="state" position="before">
+            <field name="period_start" position="before">
                 <field name="coverage_plan_id" optional="show" />
                 <field name="coverage_partner_id" optional="hide" />
             </field>
