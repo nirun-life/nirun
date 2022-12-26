@@ -24,8 +24,8 @@ class Condition(models.Model):
         required=True,
         help="Deprecated",
     )
-    is_problem = fields.Boolean("Problem")
-    is_diagnosis = fields.Boolean("Diagnosis")
+    is_problem = fields.Boolean("Problem List Item")
+    is_diagnosis = fields.Boolean("Encounter Diagnosis")
     code_id = fields.Many2one(
         "ni.condition.code",
         "Name",

@@ -12,7 +12,8 @@
     "depends": ["nirun_patient", "nirun_careplan", "nirun"],
     "data": [
         # "views/patient_views.xml",
-        "views/encounter_views.xml"
+        "views/encounter_views.xml",
+        "views/condition_views.xml",
     ],
     "application": False,
     "auto_install": False,
