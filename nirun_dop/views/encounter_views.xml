@@ -23,14 +23,24 @@
             </xpath>
         </field>
     </record>
-    <record id="ni_encounter_view_search_inherit" model="ir.ui.view">
-        <field name="name">ni.encounter.view.search.inherit</field>
+    <record id="encounter_view_search_inherit" model="ir.ui.view">
+        <field name="name">encounter.view.search.inherit</field>
         <field name="model">ni.encounter</field>
         <field name="inherit_id" ref="nirun_patient.encounter_view_search" />
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='Priority']" position="attributes">
                 <attribute name="groups">base.group_no_one</attribute>
             </xpath>
+        </field>
+    </record>
+    <record id="ni_encounter_view_tree_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.tree.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="identification_id" />
+            </field>
         </field>
     </record>
 </odoo>
