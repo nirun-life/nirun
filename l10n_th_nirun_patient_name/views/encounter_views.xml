@@ -9,13 +9,7 @@
         <field name="inherit_id" ref="nirun_patient_firstname.encounter_view_form_inherit" />
         <field name="arch" type="xml">
             <field name="lastname" position="before">
-                <field
-                    class="oe_edit_only"
-                    name="title"
-                    options="{'no_open': True}"
-                    placeholder="Title"
-                    attrs="{'invisible': [('state', '=', 'draft')]}"
-                />
+                <field class="oe_edit_only" name="title" options="{'no_open': True}" placeholder="Title" />
             </field>
             <!-- swap firstname and lastname position -->
             <field name="firstname" position="after">

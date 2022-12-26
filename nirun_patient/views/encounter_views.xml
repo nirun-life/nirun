@@ -275,7 +275,7 @@
                                     context="{'show_gender_age': True, 'show_identification_id': True, 'show_address': True}"
                                     options="{'always_reload': True}"
                                     attrs="{
-                                    'invisible': [('state', '!=', 'draft')],
+                                    'invisible': [('id', '!=', False)],
                                     'required': [('patient_name', '=', False)]}"
                                 />
                                 <field
@@ -283,7 +283,7 @@
                                     name="patient_name"
                                     required="True"
                                     placeholder="Name"
-                                    attrs="{'invisible': [('state', '=', 'draft')]}"
+                                    attrs="{'invisible': [('id', '=', 'False')]}"
                                 />
                             </div>
                             <field
