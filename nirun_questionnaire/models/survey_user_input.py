@@ -90,6 +90,12 @@ class SurveyUserInput(models.Model):
             "views": [[False, "graph"]],
         }
 
+    def _write_workflow(self):
+        if self.survey_id.category not in ["ni_patient", "ni_encounter"]:
+            return None
+        else:
+            return super(SurveyUserInput, self)._write_workflow()
+
     @property
     def _workflow_name(self):
         return self.survey_id.title
@@ -97,7 +103,11 @@ class SurveyUserInput(models.Model):
     @property
     def _workflow_summary(self):
         if self.survey_id.scoring_type != "no_scoring":
-            res = "{:.2f}% ({})".format(self.quizz_score, self.grade_ids)
+            res = "{:.2f}% ({}/{})".format(
+                self.quizz_score, self.quizz_score_raw, self.quizz_score_total
+            )
+            if self.grade_ids:
+                res = "{} - {}".format(self.grade_ids.name, res)
             return res
         else:
             return None
