@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo noupdate="1">
+    <!-- This file only intent use as scaffold for security rule -->
+    <record id="document_company_rule" model="ir.rule">
+        <field name="name">Document: multi-company</field>
+        <field name="model_id" ref="nirun_document.model_ni_document" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
