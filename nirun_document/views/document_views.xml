@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023. NSTDA
+  -->
+<odoo>
+    <record id="document_action" model="ir.actions.act_window">
+        <field name="name">Document Reference</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.document</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Not Found</p>
+            <p>Try remove some filter</p>
+        </field>
+    </record>
+    <record id="document_view_search" model="ir.ui.view">
+        <field name="name">document.view.search</field>
+        <field name="model">ni.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <filter name="groupby_category" string="Category" context="{'group_by':'category_id'}" />
+                <filter name="groupby_type" string="Type" context="{'group_by':'type_id'}" />
+                <filter name="groupby_mime" string="MIME Type" context="{'group_by':'mimetype'}" />
+            </search>
+        </field>
+    </record>
+    <record id="document_view_tree" model="ir.ui.view">
+        <field name="name">document.view.tree</field>
+        <field name="model">ni.document</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="company_id" groups="base.group_multi_company" />
+                <field name="patient_id" invisible="context.get('default_patient_id')" />
+                <field name="encounter_id" invisible="context.get('default_encounter_id')" />
+                <field name="category_id" />
+                <field name="type_id" />
+                <field name="type" />
+                <field name="name" />
+                <field name="datas" widget="binary" string="Download" />
+                <field name="active" optional="hide" />
+                <field name="create_uid" optional="hide" />
+                <field name="create_date" optional="hide" />
+                <field name="write_uid" optional="show" />
+                <field name="write_date" optional="show" />
+            </tree>
+        </field>
+    </record>
+    <record id="document_view_form" model="ir.ui.view">
+        <field name="name">document.view.form</field>
+        <field name="model">ni.document</field>
+        <field name="arch" type="xml">
+            <form string="Document Reference">
+                <field name="active" invisible="1" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        class="oe_read_only"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <label for="name" class="oe_edit_only" />
+                    <h1>
+                        <field name="name" />
+                    </h1>
+                    <group>
+                        <group name="patient" string="Patient" invisible="context.get('default_encounter_id')">
+                            <field name="patient_id" options="{'no_create': True, 'no_create_edit': True}" />
+                            <field name="encounter_id" options="{'no_create': True, 'no_create_edit': True}" />
+                        </group>
+                        <group name="content" string="Content">
+                            <field name="type" />
+                            <field name="datas" filename="name" attrs="{'invisible':[('type','=','url')]}" />
+                            <field name="url" widget="url" attrs="{'invisible':[('type','=','binary')]}" />
+                            <field name="mimetype" groups="base.group_no_one" />
+                        </group>
+                        <group string="Attached To" groups="base.group_no_one">
+                            <field name="res_model" />
+                            <field name="res_field" />
+                            <field name="res_id" />
+                            <field name="res_name" />
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" />
+                            <field name="public" />
+                        </group>
+                        <group
+                            string="History"
+                            groups="base.group_no_one"
+                            attrs="{'invisible':[('create_date','=',False)]}"
+                        >
+                            <label for="create_uid" string="Creation" />
+                            <div name="creation_div">
+                                <field name="create_uid" readonly="1" class="oe_inline" />
+                                on
+                                <field name="create_date" readonly="1" class="oe_inline" />
+                            </div>
+                        </group>
+                        <group name="description_group" string="Description" groups="base.group_no_one" colspan="4">
+                            <field name="description" nolabel="1" />
+                        </group>
+                        <group groups="base.group_no_one" string="Indexed Content" colspan="4">
+                            <field name="index_content" nolabel="1" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="priority">99</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="inside">
+                <page name="document" string="Document">
+                    <field
+                        name="document_ids"
+                        mode="tree"
+                        context="{'default_patient_id': patient_id, 'default_encounter_id':id}"
+                    >
+                        <tree editable="bottom">
+                            <field name="company_id" invisible="1" />
+                            <field name="patient_id" invisible="1" />
+                            <field name="encounter_id" invisible="1" />
+                            <field name="type" invisible="1" />
+                            <field name="category_id" />
+                            <field
+                                name="type_id"
+                                domain="[('category_id', '=?', category_id)]"
+                                context="{'default_category_id': category_id}"
+                            />
+                            <field name="name" />
+                            <field
+                                name="datas"
+                                filename="name"
+                                widget="binary"
+                                attrs="{'invisible': [('type', '!=', 'binary')]}"
+                            />
+                            <!--                            <field name="url" attrs="{'invisible': [('type', '!=', 'url')]}" string="Content" widget="url" />-->
+                            <field name="create_uid" optional="hide" />
+                            <field name="create_date" optional="hide" />
+                            <field name="write_uid" optional="show" />
+                            <field name="write_date" optional="show" />
+                            <control>
+                                <create string="Add File" context="{'default_type': 'binary'}" />
+                                <!--                                <create string="Add Url" context="{'default_type': 'url'}"/>-->
+                            </control>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
