@@ -1,11 +1,11 @@
-#  Copyright (c) 2021-2023. NSTDA
+#  Copyright (c) 2023-2023. NSTDA
 
 from odoo import _, api, models
 from odoo.exceptions import ValidationError
 
 
-class Patient(models.Model):
-    _inherit = "ni.patient"
+class Encounter(models.Model):
+    _inherit = "ni.encounter"
 
     @api.onchange("city_id")
     def _onchange_city_id(self):
@@ -57,9 +57,6 @@ class Patient(models.Model):
         self.update(vals)
 
     def _check_zip(self):
-        if self.encounter_id:
-            self.encounter_id._check_zip()
-            return
         if self.env.context.get("skip_check_zip"):
             return
         for rec in self:
