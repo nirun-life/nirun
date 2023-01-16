@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import api, fields, models
 
@@ -11,7 +11,6 @@ class Disability(models.Model):
     patient_ids = fields.Many2many(
         "ni.patient", "ni_patient_disability_rel", "disability_id", "patient_id"
     )
-
     patient_count = fields.Integer(
         "Total", compute="_compute_patient_count", store=True, compute_sudo=True
     )

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-26 08:07+0000\n"
-"PO-Revision-Date: 2022-12-26 08:07+0000\n"
+"POT-Creation-Date: 2023-01-16 10:21+0000\n"
+"PO-Revision-Date: 2023-01-16 10:21+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -91,6 +91,12 @@ msgstr "บัตรผู้พิการ"
 #: model:ir.model.fields,field_description:l10n_th_nirun_patient_disability.field_ni_patient__disability_card_reason
 msgid "Disability Card Reason"
 msgstr "เหตุผลที่ไม่มีบัตร"
+
+#. module: l10n_th_nirun_patient_disability
+#: model:ir.model.fields,field_description:l10n_th_nirun_patient_disability.field_ni_encounter__disability_count
+#: model:ir.model.fields,field_description:l10n_th_nirun_patient_disability.field_ni_patient__disability_count
+msgid "Disability Count"
+msgstr "จำนวนความพิการ"
 
 #. module: l10n_th_nirun_patient_disability
 #: model:ir.actions.act_window,name:l10n_th_nirun_patient_disability.disability_action
@@ -205,6 +211,23 @@ msgstr "ทั้งหมด"
 #: model:ni.disability,name:l10n_th_nirun_patient_disability.type1_vision
 msgid "Vision"
 msgstr "การมองเห็น"
+
+#. module: l10n_th_nirun_patient_disability
+#: code:addons/l10n_th_nirun_patient_disability/models/patient.py:0
+#, python-format
+msgid ""
+"When not have disability card, The reason be must be provide. On other hand,"
+" There must have no reason"
+msgstr ""
+"เมื่อไม่มีบัตรผู้พิการต้องระบุเหตุผล และไม่ต้องระบุเหตุผลเมื่อมีบัตร"
+
+#. module: l10n_th_nirun_patient_disability
+#: model:ir.model.constraint,message:l10n_th_nirun_patient_disability.constraint_ni_patient_disability_card_reason_check
+msgid ""
+"When not have disability care, the reason be must be provide. On other hand,"
+" There must have no reason"
+msgstr ""
+"เมื่อไม่มีบัตรผู้พิการต้องระบุเหตุผล และไม่ต้องระบุเหตุผลเมื่อมีบัตร"
 
 #. module: l10n_th_nirun_patient_disability
 #: model:ir.model.fields,field_description:l10n_th_nirun_patient_disability.field_ni_encounter__disability_display
