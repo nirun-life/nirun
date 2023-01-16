@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-  ~ Copyright (c) 2022 Piruin P.
+  ~ Copyright (c) 2022-2023. NSTDA
   -->
 <odoo>
     <record id="encounter_survey_latest_view_form" model="ir.ui.view">
@@ -68,8 +68,11 @@
                 <field name="encounter_id" invisible="context.get('default_encounter_id', False)" />
                 <field name="survey_id" />
                 <field name="quizz_grade_id" />
-                <field name="quizz_score" widget="progressbar" />
-                <field name="create_date" />
+                <field name="quizz_score" widget="progressbar" optional="show" />
+                <field name="quizz_score_raw" optional="hide" />
+                <field name="quizz_score_total" optional="hide" />
+                <field name="create_uid" optional="show" />
+                <field name="create_date" optional="show" />
                 <button name="action_print_answers" string="Print" type="object" icon="fa-print" />
                 <button name="action_graph_view" string="See results" type="object" icon="fa-bar-chart" />
                 <button
@@ -94,9 +97,11 @@
                         <tree>
                             <field name="survey_id" />
                             <field name="quizz_grade_id" />
-                            <field name="quizz_score" widget="progressbar" />
-                            <field name="create_date" />
-                            <field name="create_uid" optional="hide" />
+                            <field name="quizz_score" widget="progressbar" optional="show" />
+                            <field name="quizz_score_raw" optional="hide" />
+                            <field name="quizz_score_total" optional="hide" />
+                            <field name="create_uid" optional="show" />
+                            <field name="create_date" optional="show" />
                             <button name="action_print_answers" string="Print" type="object" icon="fa-print" />
                             <button name="action_graph_view" string="See results" type="object" icon="fa-bar-chart" />
                             <button
