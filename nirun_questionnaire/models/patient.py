@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import api, fields, models
 
@@ -26,14 +26,12 @@ class Patient(models.Model):
             rec.response_count = len(rec.response_ids)
 
     def action_survey_user_input_completed(self):
-        action_rec = self.env.ref("survey.action_survey_user_input")
+        action_rec = self.env.ref("nirun_questionnaire.questionnaire_response_action")
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
         ctx.update(
             {
                 "search_default_patient_id": self.ids[0],
-                "search_default_completed": 1,
-                "search_default_not_test": 1,
                 "search_default_group_by_survey": 1,
                 "default_subject_ni_patient": self.id,
             }

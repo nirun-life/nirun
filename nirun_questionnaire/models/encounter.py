@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import fields, models
 
@@ -24,7 +24,14 @@ class Encounter(models.Model):
     response_latest_ids = fields.One2many("ni.encounter.survey_latest", "encounter_id")
 
     def action_survey_user_input_completed(self):
-        return self.patient_id.action_survey_user_input_completed()
+        action = self.patient_id.action_survey_user_input_completed()
+        if self.state in ["draft", "planned", "in-progress"]:
+            action["context"].update(
+                {
+                    "default_subject_ni_encounter": self.id,
+                }
+            )
+        return action
 
     def action_start_survey(self):
         self.ensure_one()
