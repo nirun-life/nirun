@@ -1,14 +1,10 @@
-#  Copyright (c) 2021-2023. NSTDA
+#  Copyright (c) 2023-2023. NSTDA
 
 from odoo import api, fields, models
 
 
-class Patient(models.Model):
-    _inherit = "ni.patient"
-
-    birthdate_estimate = fields.Boolean(
-        related="partner_id.birthdate_estimate", readonly=False
-    )
+class Encounter(models.Model):
+    _inherit = "ni.encounter"
 
     @api.onchange("birthdate_estimate")
     def onchange_birthdate_estimate(self):
