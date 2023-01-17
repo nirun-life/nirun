@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 import base64
 
@@ -220,7 +220,7 @@ class Patient(models.Model):
             if gender_age:
                 name = "{}\n{}".format(name, ", ".join(gender_age))
         elif self._context.get("show_age") and patient.age:
-            name = "{} ({})".format(name, patient.age)
+            name = _("{} ({}Y)").format(name, patient.age)
         return name
 
     def _name_search(
