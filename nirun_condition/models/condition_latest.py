@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import fields, models, tools
 
@@ -9,11 +9,11 @@ class ConditionLatest(models.Model):
     _inherit = ["ni.condition", "period.mixin"]
     _auto = False
 
-    category = fields.Selection(readonly=True)
+    company_id = fields.Many2one(readonly=True, index=True)
     patient_id = fields.Many2one(readonly=True, index=True)
+    encounter_id = fields.Many2one(readonly=True, index=True)
+    category = fields.Selection(readonly=True)
     code_id = fields.Many2one(readonly=True, required=True, index=True)
-    type_id = fields.Many2one(readonly=True)
-    encounter_id = fields.Many2one(readonly=True)
     period_start = fields.Date(readonly=True)
     period_end = fields.Date(readonly=True)
     state = fields.Selection(readonly=True)
