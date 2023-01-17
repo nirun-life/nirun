@@ -30,36 +30,6 @@ class Patient(models.Model):
         string="With Disability",
     )
 
-    _sql_constraints = [
-        (
-            "disability_card_check",
-            """CHECK (
-                (disability_count <= 0
-                    AND (disability_card IS NULL or disability_card IS FALSE))
-                OR
-                (disability_count > 0
-                    AND (disability_card IS NOT NULL))
-            )""",
-            _("Must provide disability type when have disability card"),
-        ),
-        (
-            "disability_card_reason_check",
-            """CHECK (
-                disability_count <= 0
-                OR
-                (disability_card IS FALSE
-                    AND nullif(trim(disability_card_reason),'') IS NOT NULL)
-                OR
-                ((disability_card IS TRUE or disability_card IS NULL)
-                    AND nullif(trim(disability_card_reason),'') IS NULL)
-            )""",
-            _(
-                "When not have disability card, The reason be must be provide. "
-                "On other hand, There must have no reason"
-            ),
-        ),
-    ]
-
     @api.model
     def create(self, vals):
         self._prepare_disability_value(vals)
