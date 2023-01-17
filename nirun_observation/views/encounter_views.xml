@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (c) 2021 NSTDA
+  ~ Copyright (c) 2021-2023. NSTDA
   -->
 <odoo>
     <record id="encounter_view_form_inherit" model="ir.ui.view">
@@ -10,11 +10,14 @@
         <field name="groups_id" eval="[(4, ref('nirun_observation.group_user'))]" />
         <field name="priority">2</field>
         <field name="arch" type="xml">
+            <!--
+            Stat button might not work for our design
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_observation" class="oe_stat_button" icon="fa-thermometer-half" type="object">
                     <field name="observation_sheet_count" string="Observations" widget="statinfo" />
                 </button>
             </xpath>
+            -->
             <xpath expr="//notebook" position="inside">
                 <page name="vital-sign" string="Vital Sign">
                     <field name="observation_line_vital_sign_ids" />
@@ -29,7 +32,7 @@
                         type="action"
                         string="New"
                         class="btn-primary"
-                        context="{'default_patient_id': patient_id ,'default_encounter_id': id}"
+                        context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(category_vital_signs)d]}"
                         attrs="{'invisible': [('state', '=', 'finished')]}"
                     />
                 </page>
