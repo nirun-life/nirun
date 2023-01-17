@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2023. NSTDA
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -8,7 +8,7 @@ class EncounterParticipant(models.Model):
     _name = "ni.encounter.participant"
     _description = "Encounter Participant"
     _inherit = ["period.mixin"]
-    _order = "period_start desc, period_end desc, type"
+    _order = "period_start desc, period_end desc, type_id"
 
     def _get_default_type(self):
         part = self.env.ref("nirun_patient.PART")
@@ -20,6 +20,13 @@ class EncounterParticipant(models.Model):
     encounter_id = fields.Many2one("ni.encounter", required=True, ondelete="cascade")
     employee_id = fields.Many2one("hr.employee", required=True, ondelete="restrict")
     type = fields.Many2one(
+        "ni.participant.type",
+        default=lambda self: self._get_default_type(),
+        required=False,
+        ondelete="restrict",
+        help="Deprecated",  # TODO remove next release
+    )
+    type_id = fields.Many2one(
         "ni.participant.type",
         default=lambda self: self._get_default_type(),
         required=True,
