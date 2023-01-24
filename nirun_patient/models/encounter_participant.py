@@ -19,13 +19,6 @@ class EncounterParticipant(models.Model):
 
     encounter_id = fields.Many2one("ni.encounter", required=True, ondelete="cascade")
     employee_id = fields.Many2one("hr.employee", required=True, ondelete="restrict")
-    type = fields.Many2one(
-        "ni.participant.type",
-        default=lambda self: self._get_default_type(),
-        required=False,
-        ondelete="restrict",
-        help="Deprecated",  # TODO remove next release
-    )
     type_id = fields.Many2one(
         "ni.participant.type",
         default=lambda self: self._get_default_type(),
