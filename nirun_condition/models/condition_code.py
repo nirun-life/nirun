@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import fields, models
 
@@ -10,11 +10,3 @@ class ConditionCode(models.Model):
 
     type_id = fields.Many2one("ni.condition.type", required=False)
     classification_id = fields.Many2one("ni.condition.cls", required=False)
-    category = fields.Selection(
-        [
-            ("problem-list-item", "Problem List Item"),
-            ("encounter-diagnosis", "Encounter Diagnosis"),
-        ],
-        required=False,
-        help="Make this condition selectable for category ",
-    )

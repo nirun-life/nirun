@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-  ~ Copyright (c) 2021 NSTDA
+  ~ Copyright (c) 2021-2023. NSTDA
   -->
 <odoo>
     <record id="encounter_view_form_inherit" model="ir.ui.view">
@@ -15,14 +15,12 @@
                         name="condition_ids"
                         class="x-sheet-fill"
                         context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
-                        domain="[('category', '=', 'encounter-diagnosis')]"
                         mode="tree"
                     >
                         <tree decoration-success="state in ['remission', 'resolved']">
                             <field name="company_id" invisible="1" />
                             <field name="patient_id" invisible="1" />
                             <field name="encounter_id" invisible="1" />
-                            <field name="category" invisible="1" />
                             <field name="code_id" width="5" />
                             <field name="is_problem" />
                             <field name="is_diagnosis" />
