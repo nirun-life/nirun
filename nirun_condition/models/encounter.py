@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import api, fields, models
 
@@ -32,7 +32,7 @@ class Encounter(models.Model):
                 [
                     ("patient_id", "=", self.patient_id.id),
                     ("encounter_id", "!=", rec.id),
-                    ("category", "=", "encounter-diagnosis"),
+                    ("is_diagnosis", "=", True),
                 ],
                 order="encounter_id desc",
             )

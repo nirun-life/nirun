@@ -12,7 +12,6 @@ class ConditionLatest(models.Model):
     company_id = fields.Many2one(readonly=True, index=True)
     patient_id = fields.Many2one(readonly=True, index=True)
     encounter_id = fields.Many2one(readonly=True, index=True)
-    category = fields.Selection(readonly=True)
     code_id = fields.Many2one(readonly=True, required=True, index=True)
     period_start = fields.Date(readonly=True)
     period_end = fields.Date(readonly=True)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (c) 2021 NSTDA
+  ~ Copyright (c) 2021-2023. NSTDA
   -->
 <odoo>
     <record id="condition_action" model="ir.actions.act_window">
@@ -15,12 +15,8 @@
             <search>
                 <field name="patient_id" />
                 <field name="code_id" />
-                <filter name="problem" string="Problem List Item" domain="[('category', '=', 'problem-list-item')]" />
-                <filter
-                    name="diagnosis"
-                    string="Encounter Diagnosis"
-                    domain="[('category', '=', 'encounter-diagnosis')]"
-                />
+                <filter name="problem" string="Problem List Item" domain="[('is_problem', '=', True)]" />
+                <filter name="diagnosis" string="Encounter Diagnosis" domain="[('is_diagnosis', '=', True)]" />
                 <separator />
                 <filter name="active" string="Suffering" domain="[('state', '=', 'active')]" />
                 <filter name="remission" string="Remission" domain="[('state', '=', 'remission')]" />
@@ -39,7 +35,6 @@
             <tree>
                 <field name="patient_id" invisible="context.get('default_patient_id', False)" />
                 <field name="encounter_id" invisible="context.get('default_encounter_id', False)" />
-                <field name="category" invisible="context.get('default_category', False)" />
                 <field name="code_id" />
                 <field name="is_problem" />
                 <field name="is_diagnosis" />
@@ -89,7 +84,6 @@
                 </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box" groups="base.group_user" />
-                    <field name="category" invisible="1" options="{'horizontal':True}" widget="radio" />
                     <div class="oe_title" style="max-width:85%;">
                         <div attrs="{'invisible': [('period_start', '=', False)]}">
                             <span class="fa fa-clock-o ml-2" />

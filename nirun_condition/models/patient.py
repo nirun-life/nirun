@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import api, fields, models
 
@@ -22,7 +22,7 @@ class Patient(models.Model):
     @api.depends("condition_ids")
     def _compute_condition_problem_ids(self):
         problem = self.env["ni.condition"].search(
-            [("patient_id", "in", self.ids), ("category", "=", "problem-list-item")]
+            [("patient_id", "in", self.ids), ("is_problem", "=", True)]
         )
         for rec in self:
             rec.condition_problem_ids = problem.filtered_domain(

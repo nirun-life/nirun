@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import _, api, fields, models
 
@@ -16,14 +16,6 @@ class Condition(models.Model):
         )
 
     name = fields.Char(related="code_id.name", store=True)
-    category = fields.Selection(
-        [
-            ("problem-list-item", "Problem List Item"),
-            ("encounter-diagnosis", "Encounter Diagnosis"),
-        ],
-        required=True,
-        help="Deprecated",
-    )
     is_problem = fields.Boolean("Problem List Item")
     is_diagnosis = fields.Boolean("Encounter Diagnosis")
     code_id = fields.Many2one(
@@ -61,21 +53,6 @@ class Condition(models.Model):
         default="active",
     )
     verification_id = fields.Many2one("ni.condition.verification")
-    verification = fields.Selection(
-        [
-            ("unconfirmed", "Unconfirmed"),
-            ("provisional", "Provisional"),
-            ("differential", "Differential"),
-            ("confirmed", "Confirmed"),
-            ("refuted", "Refuted"),
-        ],
-        tracking=1,
-        copy=False,
-        required=False,
-        default="provisional",
-        index=True,
-        help="Deprecated",
-    )
     recurrence = fields.Boolean()
     note = fields.Text()
 
@@ -96,8 +73,10 @@ class Condition(models.Model):
     def _name_get(self):
         condition = self
         name = condition.name or condition.code_id.name
+        if self._context.get("show_code") and condition.code_id.code:
+            name = "[{}] {}".format(name, condition.code_id.code)
         if self._context.get("show_patient"):
-            name = "{} : {}".format(condition.patient_id._name_get(), name)
+            name = "{}: {}".format(condition.patient_id._name_get(), name)
         if self._context.get("show_severity") and condition.severity:
             name = "{}[{}]".format(name, condition.get_severity_label())
         if self._context.get("show_state"):
@@ -115,28 +94,6 @@ class Condition(models.Model):
     def get_verification_label(self):
         self.ensure_one()
         return dict(self._fields["verification"].selection).get(self.verification)
-
-    @api.onchange("encounter_id")
-    def _onchange_encounter_id(self):
-        self.ensure_one()
-        self.category = (
-            "encounter-diagnosis" if self.encounter_id else "problem-list-item"
-        )
-
-    @api.depends("category")
-    def _compute_category(self):
-        for rec in self:
-            # for convert old version
-            if rec.category == "problem-list-item":
-                rec.is_problem = True
-            if rec.category == "encounter-diagnosis":
-                rec.is_diagnosis = True
-
-    def _inverse_category(self):
-        for rec in self:
-            rec.category = (
-                "problem-list-item" if rec.is_problem else "encounter-diagnosis"
-            )
 
     def action_edit(self):
         self.ensure_one()
