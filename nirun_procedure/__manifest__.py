@@ -1,8 +1,8 @@
-#  Copyright (c) 2022. NSTDA
+#  Copyright (c) 2022-2023. NSTDA
 
 {
     "name": "Procedure",
-    "version": "13.0.0.0.1",
+    "version": "13.0.0.1.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",

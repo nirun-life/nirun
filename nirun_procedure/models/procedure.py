@@ -1,4 +1,4 @@
-#  Copyright (c) 2022. NSTDA
+#  Copyright (c) 2022-2023. NSTDA
 from odoo import api, fields, models
 
 
@@ -8,12 +8,12 @@ class Procedure(models.Model):
     _inherit = ["ni.workflow.event.mixin", "ir.sequence.mixin", "mail.thread"]
     _order = "performed_date DESC,id DESC"
     _workflow_occurrence = "performed"
+    _sequence_field = "identifier"
 
     _sequence_ts_field = "performed_date"
-    name = fields.Char(
-        "Identifier", default=lambda self: self._sequence_default, tracking=True
-    )
-    code_id = fields.Many2one("ni.procedure.code", tracking=True)
+    name = fields.Char(related="code_id.name", store=True)
+    code_id = fields.Many2one("ni.procedure.code", "Procedure", tracking=True)
+    identifier = fields.Char(default=lambda self: self._sequence_default, required=True)
     category_id = fields.Many2one("ni.procedure.category", tracking=True)
     performed_date = fields.Date(compute="_compute_performed_date", store=True)
     performed = fields.Datetime(
@@ -33,6 +33,37 @@ class Procedure(models.Model):
     location_id = fields.Many2one("ni.location", tracking=True)
     outcome_id = fields.Many2one("ni.procedure.outcome", tracking=True)
     note = fields.Html()
+
+    def _name_search(
+        self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
+        args = list(args or [])
+        if not (name == "" and operator == "ilike"):
+            args += ["|", ("name", operator, name), ("identifier", operator, name)]
+        ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
+        return models.lazy_name_get(self.browse(ids).with_user(name_get_uid))
+
+    def name_get(self):
+        return [(rec.id, rec._name_get()) for rec in self]
+
+    def _name_get(self):
+        procedure = self
+        name = procedure.name or procedure.code_id.name
+        if self._context.get("show_category") and procedure.category_id:
+            name = "{},{}".format(procedure.category_id.name, name)
+        if self._context.get("show_code") and procedure.code_id.code:
+            name = "[{}] {}".format(name, procedure.code_id.code)
+        if self._context.get("show_patient"):
+            name = "{}: {}".format(procedure.patient_id._name_get(), name)
+        if self._context.get("show_state"):
+            name = "{} ({})".format(name, procedure._get_state_label())
+        if self._context.get("show_identifier"):
+            name = "{} - {}".format(name, procedure.identifier)
+        return name
+
+    def _get_state_label(self, vals):
+        self.ensure_one()
+        return dict(self._fields["state"].selection).get(self.state)
 
     @api.depends("performed")
     def _compute_performed_date(self):
