@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -71,7 +71,14 @@ class CarePlan(models.Model):
         " hide the care plan without removing it.",
     )
     condition_ids = fields.Many2many(
-        "ni.condition", "ni_careplan_condition_rel", "careplan_id", "condition_id"
+        "ni.condition",
+        "ni_careplan_condition_rel",
+        "careplan_id",
+        "condition_id",
+        readonly=True,
+        states={"draft": [("readonly", False)], "active": [("readonly", False)]},
+        domain="""[('patient_id', '=', patient_id),
+                   ('encounter_id', '=?', encounter_id)]""",
     )
     condition_count = fields.Integer(compute="_compute_condition_count", store=True)
 
@@ -80,6 +87,9 @@ class CarePlan(models.Model):
         "careplan_id",
         readonly=True,
         states={"draft": [("readonly", False)], "active": [("readonly", False)]},
+        domain="""[('patient_id', '=', patient_id),
+                   ('encounter_id', '=?', encounter_id),
+                   ('careplan_id', '=?', id)]""",
     )
     goal_count = fields.Integer(compute="_compute_goal_count")
     goal_achieved_count = fields.Integer(compute="_compute_goal_count")
@@ -94,6 +104,9 @@ class CarePlan(models.Model):
         string="Activity",
         readonly=True,
         states={"draft": [("readonly", False)], "active": [("readonly", False)]},
+        domain="""[('patient_id', '=', patient_id),
+                   ('encounter_id', '=?', encounter_id),
+                   ('careplan_id', '=?', id)]""",
     )
     activity_count = fields.Integer(compute="_compute_activities_count", store=True)
     manager_id = fields.Many2one(

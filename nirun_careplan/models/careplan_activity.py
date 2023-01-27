@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import api, fields, models
 
@@ -99,12 +99,11 @@ class CareplanActivity(models.Model):
     @api.onchange("service_request_id")
     def _onchange_service_request_id(self):
         for rec in self:
-            if rec.service_request_id:
-                if rec.service_id != rec.service_request_id.service_id:
-                    rec.service_id = rec.service_request_id.service_id
-                if rec.service_request_id.service_timing_id:
-                    rec.timing_id = rec.service_request_id.service_timing_id.timing_id
-                else:
-                    rec.timing_id = (
-                        rec.service_request_id.service_time_id.to_timing().timing_id
-                    )
+            req = rec.service_request_id
+            if req:
+                if rec.service_id != req.service_id:
+                    rec.service_id = req.service_id
+                if req.service_timing_id:
+                    rec.timing_id = req.service_timing_id.timing_id
+                elif req.service_time_id:
+                    rec.timing_id = req.service_time_id.to_timing().timing_id

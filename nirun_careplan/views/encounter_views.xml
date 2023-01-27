@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-  ~ Copyright (c) 2021 NSTDA
+  ~ Copyright (c) 2021-2023. NSTDA
   -->
 <odoo>
     <record id="encounter_view_form_inherit" model="ir.ui.view">
@@ -20,6 +20,7 @@
                             decoration-muted="state in ['revoked']"
                             default_order="sequence"
                         >
+                            <field name="id" invisible="1" />
                             <field name="sequence" widget="handle" />
                             <field name="patient_id" invisible="1" />
                             <field name="encounter_id" invisible="1" />
@@ -27,13 +28,29 @@
                             <field
                                 name="category_ids"
                                 widget="many2many_tags"
-                                options="{'color_field': 'color'}"
+                                options="{'color_field': 'color', 'no_create': True, 'no_create_edit': True}"
                                 optional="show"
                             />
-                            <field name="condition_ids" widget="many2many_tags" />
-                            <field name="goal_ids" widget="many2many_tags" />
-                            <field name="activity_ids" widget="many2many_tags" />
-                            <field name="employee_ids" widget="many2many_tags_avatar" />
+                            <field
+                                name="condition_ids"
+                                widget="many2many_tags"
+                                options="{'no_create': True, 'no_create_edit': True}"
+                            />
+                            <field
+                                name="goal_ids"
+                                widget="many2many_tags"
+                                context="{'default_careplan_id': id, 'default_patient_id': patient_id, 'default_encounter_id': encounter_id}"
+                            />
+                            <field
+                                name="activity_ids"
+                                widget="many2many_tags"
+                                context="{'default_careplan_id': id, 'default_patient_id': patient_id, 'default_encounter_id': encounter_id}"
+                            />
+                            <field
+                                name="employee_ids"
+                                widget="many2many_tags_avatar"
+                                options="{'no_create': True, 'no_create_edit': True}"
+                            />
                             <field name="period_start" optional="show" />
                             <field name="period_end" optional="show" />
                             <field name="achievement_date" optional="show" />
@@ -74,7 +91,7 @@
                                 confirm="Are you sure for revoke this plan?"
                             />
                             <control>
-                                <create string="Add Plan" />
+                                <create string="Add Plan" context="{}" />
                             </control>
                         </tree>
                     </field>
