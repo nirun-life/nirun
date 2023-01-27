@@ -1,4 +1,4 @@
-#  Copyright (c) 2022 Piruin P.
+#  Copyright (c) 2022-2023. NSTDA
 
 from odoo import api, fields, models
 
@@ -108,12 +108,14 @@ class CareplanTemplate(models.Model):
         "careplan_id",
         readonly=False,
         states={},
+        domain=False,
     )
     goal_ids = fields.One2many(
         "ni.careplan.template.goal",
         "careplan_id",
         readonly=False,
         states={},
+        domain=False,
     )
 
     def init(self):
