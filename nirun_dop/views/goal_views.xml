@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_goal_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.goal.view.form.inherit</field>
+        <field name="model">ni.goal</field>
+        <field name="inherit_id" ref="nirun_goal.goal_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/group[2]" position="inside">
+                <field name="employee_id" required="True" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

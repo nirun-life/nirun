@@ -1,4 +1,4 @@
-#  Copyright (c) 2021-2022. NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 {
     "name": "Nirun - DOP",
@@ -14,6 +14,7 @@
         # "views/patient_views.xml",
         "views/encounter_views.xml",
         "views/condition_views.xml",
+        "views/goal_views.xml",
     ],
     "application": False,
     "auto_install": False,
