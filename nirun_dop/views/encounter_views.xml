@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-  ~ Copyright (c) 2021-2022. NSTDA
+  ~ Copyright (c) 2022-2023. NSTDA
   -->
 <odoo>
     <record id="encounter_view_form_inherit" model="ir.ui.view">
@@ -41,6 +41,31 @@
             <field name="name" position="after">
                 <field name="identification_id" />
             </field>
+        </field>
+    </record>
+    <record id="ni_encounter_view_form_inherit_careplan" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_careplan.encounter_view_form_inherit" />
+        <field name="priority">300</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page/field[@name='careplan_ids']/tree" position="attributes">
+                <attribute name="editable">top</attribute>
+            </xpath>
+            <xpath expr="//page/field[@name='careplan_ids']/tree/field[@name='name']" position="before">
+                <field name="identifier" optional="hide" />
+            </xpath>
+            <field name="goal_achieved" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <xpath expr="//page/field[@name='careplan_ids']/tree" position="inside">
+                <button
+                    name="action_edit"
+                    attrs="{'column_invisible': [('parent.id', '=', False)], 'invisible': [('id', '=', False)]}"
+                    icon="fa-pencil-square-o"
+                    type="object"
+                />
+            </xpath>
         </field>
     </record>
 </odoo>
