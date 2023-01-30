@@ -6,11 +6,17 @@ from odoo.exceptions import UserError
 class CarePlan(models.Model):
     _name = "ni.careplan"
     _description = "Careplan"
-    _inherit = ["period.mixin", "mail.thread", "ni.patient.res", "ir.sequence.mixin"]
+    _inherit = [
+        "period.mixin",
+        "mail.thread",
+        "ir.sequence.mixin",
+        "ni.workflow.request.mixin",
+    ]
     _order = "identifier desc"
     _check_company_auto = True
     _check_period_start = True
     _sequence_field = "identifier"
+    _workflow_occurrence = "period_start"
 
     name = fields.Char()
     identifier = fields.Char(default="New")
@@ -309,3 +315,10 @@ class CarePlan(models.Model):
                 )
                 if enc:
                     enc.write({"encounter_id": rec.encounter_id.id})
+
+    @property
+    def _workflow_summary(self):
+        summary = self.name or self._generate_name().name
+        if self.description:
+            summary = "{} - {}".format(summary, self.description)
+        return summary
