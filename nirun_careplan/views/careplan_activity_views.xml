@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-  ~ Copyright (c) 2021 NSTDA
+  ~ Copyright (c) 2021-2023. NSTDA
   -->
 <odoo>
     <record id="careplan_activity_action" model="ir.actions.act_window">
@@ -343,7 +343,7 @@
                             <field
                                 name="service_request_id"
                                 placeholder="Request..."
-                                context="{'default_patient_id': id, 'default_encounter_id': encounter_id, 'default_service_id': service_id, 'default_period_start': period_start,'show_state':True}"
+                                context="{'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_service_id': service_id, 'default_period_start': period_start,'show_state':True}"
                                 attrs="{'invisible': [('kind', '!=', 'ni.service.request')], 'required':[('kind', '=', 'ni.service.request')]}"
                             />
                             <field
