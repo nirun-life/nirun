@@ -1,4 +1,4 @@
-#  Copyright (c) 2022 Piruin P.
+#  Copyright (c) 2022-2023. NSTDA
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -19,13 +19,13 @@ _term_code = {
 class Goal(models.Model):
     _name = "ni.goal"
     _description = "Goal"
-    _inherit = ["ni.patient.res", "mail.thread", "mail.activity.mixin"]
+    _inherit = ["ni.patient.res", "mail.thread", "mail.activity.mixin", "period.mixin"]
     _order = "sequence"
-    _rec_name = "code_id"
 
     sequence = fields.Integer(help="Determine the display order", index=True)
     color = fields.Integer(string="Color Index")
 
+    name = fields.Char(related="code_id.name")
     code_id = fields.Many2one(
         "ni.goal.code",
         "Goal",
@@ -47,7 +47,10 @@ class Goal(models.Model):
         required=False,
         tracking=True,
     )
-    due_date = fields.Date(tracking=True)
+    start_date = fields.Date(tracking=True, help="deprecated")
+    due_date = fields.Date(tracking=True, help="deprecated")
+    period_start = fields.Date("Start Date")
+    period_stop = fields.Date("Due Date")
     achievement_id = fields.Many2one("ni.goal.achievement", tracking=True, copy=False)
     achieved = fields.Boolean(
         related="achievement_id.goal_achieved",
@@ -71,6 +74,12 @@ class Goal(models.Model):
         copy=False,
         group_expand="_group_expand_state",
     )
+
+    @api.onchange("code_id")
+    def _onchange_code_id(self):
+        for rec in self:
+            if rec.code_id:
+                rec.name = rec.code_id.name
 
     @api.onchange("achievement_id")
     def onchange_achievement_id(self):
