@@ -15,13 +15,9 @@
                         name="careplan_ids"
                         context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'default_intent': 'plan', 'no_header': True, 'no_button_box': True}"
                     >
-                        <tree
-                            decoration-bf="state in ['draft', 'on-hold']"
-                            decoration-muted="state in ['revoked']"
-                            default_order="sequence"
-                        >
+                        <tree decoration-bf="state in ['draft', 'on-hold']" decoration-muted="state in ['revoked']">
                             <field name="id" invisible="1" />
-                            <field name="sequence" widget="handle" />
+                            <field name="identifier" optional="hide" />
                             <field name="patient_id" invisible="1" />
                             <field name="encounter_id" invisible="1" />
                             <field name="name" optional="hide" />

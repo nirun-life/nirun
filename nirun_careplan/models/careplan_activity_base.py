@@ -1,4 +1,4 @@
-#  Copyright (c) 2022 Piruin P.
+#  Copyright (c) 2022-2023. NSTDA
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -113,6 +113,14 @@ class Activity(models.AbstractModel):
     @api.model
     def _group_expand_state(self, states, domain, order):
         return [key for key, val in type(self).state.selection]
+
+    @api.onchange("code_id", "service_id")
+    def _onchange_code_id(self):
+        for rec in self:
+            if rec.kind == "ni.careplan.activity.code" and rec.code_id:
+                rec.name = rec.code_id.name
+            if rec.kind == "ni.service.request" and rec.service_request_id:
+                rec.name = rec.service_request_id.service_id.name
 
     @api.onchange("category_id")
     def _onchange_category_id(self):
