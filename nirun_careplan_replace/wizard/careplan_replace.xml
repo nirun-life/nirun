@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023-2023. NSTDA
+  -->
+<odoo>
+    <record id="careplan_replace_wizard_action" model="ir.actions.act_window">
+        <field name="name">Replace Care Plan</field>
+        <field name="res_model">ni.careplan.replace.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="careplan_replace_wizard_view_form" model="ir.ui.view">
+        <field name="name">careplan.replace.wizard.view.form</field>
+        <field name="model">ni.careplan.replace.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="patient_id" invisible="1" />
+                    <field name="plan_id" />
+                    <label for="plan_period_start" string="" />
+                    <div class="o_row">
+                        <field
+                            name="plan_period_start"
+                            widget="daterange"
+                            options="{'related_end_date': 'plan_period_end'}"
+                        />
+                        <i class="fa fa-fw fa-arrow-right mx-2" aria-label="arrow-icon" title="to" />
+                        <field
+                            name="plan_period_end"
+                            widget="daterange"
+                            options="{'related_start_date': 'plan_period_start'}"
+                        />
+                    </div>
+                </group>
+                <group string="New Plan">
+                    <label for="period_start" string="Period" />
+                    <div class="o_row">
+                        <field name="period_start" widget="daterange" options="{'related_end_date': 'period_end'}" />
+                        <i class="fa fa-fw fa-arrow-right mx-2" aria-label="arrow-icon" title="to" />
+                        <field name="period_end" widget="daterange" options="{'related_start_date': 'period_start'}" />
+                    </div>
+                </group>
+                <footer>
+                    <button
+                        name="action_replace"
+                        string="Confirm"
+                        class="oe_highlight"
+                        type="object"
+                        confirm="Are you sure to proceed?"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

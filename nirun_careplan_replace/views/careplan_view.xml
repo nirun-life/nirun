@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_careplan_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.careplan.view.form.inherit</field>
+        <field name="model">ni.careplan</field>
+        <field name="inherit_id" ref="nirun_careplan.careplan_view_form" />
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <button
+                    name="action_replace_wizard"
+                    type="object"
+                    string="Replace"
+                    attrs="{'invisible': [('state', 'not in', ['active', 'on-hold'])]}"
+                />
+            </field>
+            <xpath expr="//sheet/widget[@name='web_ribbon']" position="after">
+                <widget
+                    name="web_ribbon"
+                    title="Replaced"
+                    bg_color="bg-primary"
+                    attrs="{'invisible': [('state', 'not in', ['replaced'])]}"
+                />
+            </xpath>
+            <xpath expr="//sheet/group/group[1]" position="inside">
+                <field
+                    name="replace_by_ids"
+                    widget="many2many_tags"
+                    attrs="{'invisible': [('state', 'not in', ['replaced'])]}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
