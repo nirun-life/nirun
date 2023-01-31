@@ -289,7 +289,7 @@ class CarePlan(models.Model):
         draft_plan.mapped("activity_ids").action_start(force=True)
         draft_plan.write({"state": "active"})
 
-    def action_close(self):
+    def action_close(self, _period_end=lambda _: fields.date.today()):
         for plan in self:
             if plan.state != "active":
                 raise UserError(_("Must be active state"))
@@ -303,7 +303,7 @@ class CarePlan(models.Model):
             ).action_complete()
             plan.write({"state": "completed"})
             if not plan.period_end:
-                plan.period_end = fields.Date.today()
+                plan.period_end = _period_end
 
     @api.constrains("goal_ids", "encounter_id")
     def check_goal_encounter_id(self):
@@ -322,3 +322,17 @@ class CarePlan(models.Model):
         if self.description:
             summary = "{} - {}".format(summary, self.description)
         return summary
+
+    def action_edit(self):
+        self.ensure_one()
+        view = {
+            "name": self.name,
+            "res_model": self._name,
+            "type": "ir.actions.act_window",
+            "target": "current",
+            "res_id": self.id,
+            "view_type": "form",
+            "views": [[False, "form"]],
+            "context": self.env.context,
+        }
+        return view
