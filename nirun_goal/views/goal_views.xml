@@ -149,7 +149,7 @@
                 <field name="description" optional="hide" />
                 <field name="achievement_id" />
                 <field name="period_start" />
-                <field name="period_stop" />
+                <field name="period_end" />
                 <field name="state" optional="show" />
                 <field name="company_id" groups="base.group_multi_company" optional="hide" />
                 <field name="achieved" invisible="1" />
@@ -245,9 +245,22 @@
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
                             <field name="term" />
-                            <field name="period_start" />
-                            <field name="period_stop" />
-                            <field name="due_date" invisible="1" />
+                            <label for="period_start" string="Period" />
+                            <div class="o_row">
+                                <field
+                                    name="period_start"
+                                    placeholder="Start Date"
+                                    widget="daterange"
+                                    options="{'related_end_date': 'period_end'}"
+                                />
+                                <i class="fa fa-fw fa-arrow-right mx-2" aria-label="arrow-icon" title="to" />
+                                <field
+                                    name="period_end"
+                                    placeholder="Due Date"
+                                    widget="daterange"
+                                    options="{'related_start_date': 'period_start'}"
+                                />
+                            </div>
                         </group>
                         <group name="achievement" attrs="{'invisible':[('state', 'in', ['proposed', 'cancelled'])]}">
                             <field

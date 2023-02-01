@@ -47,10 +47,8 @@ class Goal(models.Model):
         required=False,
         tracking=True,
     )
-    start_date = fields.Date(tracking=True, help="deprecated")
-    due_date = fields.Date(tracking=True, help="deprecated")
     period_start = fields.Date("Start Date")
-    period_stop = fields.Date("Due Date")
+    period_end = fields.Date("Due Date")
     achievement_id = fields.Many2one("ni.goal.achievement", tracking=True, copy=False)
     achieved = fields.Boolean(
         related="achievement_id.goal_achieved",
