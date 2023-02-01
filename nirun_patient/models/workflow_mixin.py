@@ -1,3 +1,5 @@
+#  Copyright (c) 2023. NSTDA
+
 from typing import Optional
 
 from odoo import api, fields, models
@@ -26,8 +28,16 @@ class WorkflowMixin(models.AbstractModel):
     def _workflow_occurence(self) -> fields.Datetime:
         return self.mapped(self._workflow_occurrence)[0]
 
+    def _workflow_replace_id(self, data):
+        if "replace_id" in self._fields and self.replace_id:
+            data["replace_id"] = (
+                self.replace_id.event_id.id
+                if self._workflow_type == "event"
+                else self.replace_id.request_id.id
+            )
+
     def _to_workflow(self):
-        return {
+        data = {
             "company_id": self.company_id.id,
             "patient_id": self.patient_id.id,
             "encounter_id": self.encounter_id.id,
@@ -42,6 +52,8 @@ class WorkflowMixin(models.AbstractModel):
             "write_date": self.write_date,
             "write_uid": self.write_uid.id,
         }
+        self._workflow_replace_id(data)
+        return data
 
     @api.model
     def create(self, vals):
