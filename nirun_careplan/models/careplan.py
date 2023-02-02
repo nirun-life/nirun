@@ -16,10 +16,11 @@ class CarePlan(models.Model):
     _check_company_auto = True
     _check_period_start = True
     _sequence_field = "identifier"
+    _sequence_default = _("New Plan")
     _workflow_occurrence = "period_start"
 
     name = fields.Char()
-    identifier = fields.Char(default="New")
+    identifier = fields.Char(default=_sequence_default, readonly=True)
     template_id = fields.Many2one("ni.careplan.template")
     patient_id = fields.Many2one(readonly=True, states={"draft": [("readonly", False)]})
     encounter_id = fields.Many2one(
