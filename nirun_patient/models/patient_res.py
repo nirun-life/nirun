@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import ValidationError
@@ -48,7 +48,9 @@ class PatientRes(models.AbstractModel):
 
     @api.onchange("patient_id")
     def onchange_patient(self):
-        if self.encounter_id.patient_id != self.patient_id:
+        if self.patient_id and (
+            not self.encounter_id or self.encounter_id.patient_id != self.patient_id
+        ):
             self.encounter_id = self.patient_id.encounter_id
 
         if self.patient_id.deceased:
