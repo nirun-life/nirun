@@ -12,6 +12,23 @@ class PatientRes(models.AbstractModel):
     """Set this param to enforce period start follow the encounter start date"""
     _check_period_start = False
 
+    def _active_id_of(self, model: str):
+        if model == self.env.context.get("active_model"):
+            return self.env.context["active_id"]
+        else:
+            return None
+
+    @api.model
+    def default_get(self, fields):
+        res = super(PatientRes, self).default_get(fields)
+        if (not fields or "encounter_id" in fields) and "encounter_id" not in res:
+            if self._active_id_of("ni.encounter"):
+                res["encounter_id"] = self.env.context["active_id"]
+        if (not fields or "patient_id" in fields) and "patient_id" not in res:
+            if self._active_id_of("ni.patient"):
+                res["patient_id"] = self.env.context["active_id"]
+        return res
+
     company_id = fields.Many2one(
         related="patient_id.company_id", store=True, readonly=True, index=True
     )
