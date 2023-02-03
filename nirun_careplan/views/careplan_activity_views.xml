@@ -222,10 +222,11 @@
                 expand="True"
             >
                 <field name="sequence" widget="handle" />
-                <field name="patient_id" invisible="context.get('default_patient_id', False)" optional="show" />
+                <field name="patient_id" invisible="context.get('default_patient_id')" optional="show" />
+                <field name="encounter_id" invisible="context.get('default_patient_id')" optional="show" />
                 <field
                     name="careplan_id"
-                    invisible="context.get('default_careplan_id', False) or context.get('default_patient_id', False)"
+                    invisible="context.get('default_careplan_id') or context.get('default_patient_id')"
                     optional="hide"
                 />
                 <field name="display_name" />

@@ -168,14 +168,19 @@
                             <field name="company_id" groups="base.group_multi_company" />
                             <label for="period_start" string="Period" />
                             <div class="o_row">
-                                <field name="period_start" placeholder="Start" />
-                                <label
-                                    for="period_end"
-                                    string="-"
-                                    class="oe_read_only"
-                                    attrs="{'invisible':[('period_end', '=', False)]}"
+                                <field
+                                    name="period_start"
+                                    placeholder="Start"
+                                    widget="daterange"
+                                    options="{'related_end_date': 'period_end'}"
                                 />
-                                <field name="period_end" placeholder="End" />
+                                <i class="fa fa-fw fa-arrow-right mx-2" aria-label="arrow-icon" title="to" />
+                                <field
+                                    name="period_end"
+                                    placeholder="End"
+                                    widget="daterange"
+                                    options="{'related_start_date': 'period_start'}"
+                                />
                             </div>
                             <field name="employee_ids" widget="many2many_tags_avatar" />
                         </group>
@@ -184,7 +189,13 @@
                         <page name="goal" string="Goal">
                             <field
                                 name="goal_ids"
-                                context="{'default_encounter_id': encounter_id, 'default_patient_id': patient_id, 'default_careplan_id': id}"
+                                context="{
+                                    'default_patient_id': patient_id,
+                                    'default_encounter_id': encounter_id,
+                                    'default_careplan_id': id,
+                                    'default_period_start':period_start,
+                                    'default_period_end': period_end
+                                   }"
                             />
                             <group attrs="{'invisible': [('state', '=', 'draft')]}">
                                 <field name="goal_achieved" widget="progressbar" />
