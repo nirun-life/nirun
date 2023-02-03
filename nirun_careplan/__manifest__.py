@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 {
     "name": "Care Plans",
@@ -30,6 +30,7 @@
         "views/patient_views.xml",
         "views/encounter_views.xml",
         "views/careplan_menus.xml",
+        "views/goal_views.xml",
         "wizard/careplan_activity_state.xml",
     ],
     "demo": ["data/category_demo.xml"],

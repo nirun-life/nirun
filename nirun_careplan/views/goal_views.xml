@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_goal_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.goal.view.form.inherit</field>
+        <field name="model">ni.goal</field>
+        <field name="inherit_id" ref="nirun_goal.goal_view_form" />
+        <field name="arch" type="xml">
+            <field name="encounter_id" position="after">
+                <field name="careplan_id" invisible="context.get('default_careplan_id')" />
+            </field>
+        </field>
+    </record>
+</odoo>
