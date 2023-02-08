@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023-2023. NSTDA
+  -->
+<odoo>
+    <record id="careplan_eval_wizard_action" model="ir.actions.act_window">
+        <field name="name">Care Plan Evaluation</field>
+        <field name="res_model">ni.careplan.eval.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="careplan_eval_wizard_view_form" model="ir.ui.view">
+        <field name="name">careplan.eval.wizard.view.form</field>
+        <field name="model">ni.careplan.eval.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="mode" invisible="1" />
+                    <field name="patient_id" invisible="1" />
+                    <field name="state" invisible="1" />
+                    <field name="careplan_id" readonly="context.get('default_careplan_id')" />
+                    <field name="state" />
+                    <label for="period_start" string="Period" />
+                    <div class="o_row">
+                        <field
+                            name="period_start"
+                            widget="daterange"
+                            options="{'related_end_date': 'plan_period_end'}"
+                        />
+                        <i class="fa fa-fw fa-arrow-right mx-2" aria-label="arrow-icon" title="to" />
+                        <field
+                            name="period_end"
+                            widget="daterange"
+                            options="{'related_start_date': 'plan_period_start'}"
+                        />
+                    </div>
+                </group>
+                <group string="Pre-Evaluation" attrs="{'invisible': [('mode', '!=', 'pre')]}">
+                    <field name="pre_eval" string="Detail" />
+                    <field name="pre_eval_date" string="Date" />
+                </group>
+                <group string="Post-Evaluation" attrs="{'invisible': [('mode', '!=', 'post')]}">
+                    <field name="post_eval" string="Detail" />
+                    <field name="post_eval_date" string="Date" />
+                </group>
+                <p class="text-secondary" attrs="{'invisible': [('mode', '!=', 'post'), ('state', '=', 'completed')]}">
+                    Post-Evaluation will be editable when careplan was completed
+                </p>
+                <footer>
+                    <button
+                        name="action_eval"
+                        string="Confirm"
+                        class="oe_highlight"
+                        type="object"
+                        confirm="Are you sure to proceed?"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

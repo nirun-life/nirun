@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_careplan.encounter_view_form_inherit" />
+        <field name="arch" type="xml">
+            <field name="achievement_date" position="before">
+                <field name="pre_eval_date" />
+                <button
+                    name="%(careplan_eval_wizard_action)d"
+                    class="text-primary"
+                    type="action"
+                    icon="fa-file-o"
+                    context="{'default_mode': 'pre', 'default_careplan_id': id, 'default_patient_id': patient_id}"
+                />
+                <field name="post_eval_date" />
+                <button
+                    name="%(careplan_eval_wizard_action)d"
+                    class="text-primary"
+                    type="action"
+                    icon="fa-file-text-o"
+                    context="{'default_mode': 'post', 'default_careplan_id': id, 'default_patient_id': patient_id}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
