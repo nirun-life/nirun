@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023-2023. NSTDA
+  -->
+<odoo>
+    <record id="encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="priority">3</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='condition']" position="after">
+                <page name="diagnosis" string="Diagnosis">
+                    <field name="diagnosis_ids" mode="tree" context="{'default_encounter_id': id}">
+                        <tree editable="bottom">
+                            <field name="encounter_id" invisible="1" />
+                            <field name="sequence" widget="handle" />
+                            <field name="role_id" />
+                            <field
+                                name="condition_id"
+                                domain="[('encounter_id', '=', encounter_id)]"
+                                context="{'default_patient_id': parent.patient_id, 'default_encounter_id': encounter_id, 'default_is_diagnosis': True}"
+                            />
+                            <field name="create_uid" optional="hide" />
+                            <field name="create_date" optional="hide" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
