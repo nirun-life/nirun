@@ -173,8 +173,6 @@
         <field name="model">ni.goal</field>
         <field name="arch" type="xml">
             <form class="o_form_project_tasks" string="Goal">
-                <field name="patient_id" invisible="1" />
-                <field name="encounter_id" invisible="1" />
                 <field name="achieved" invisible="1" />
                 <header>
                     <button
@@ -232,10 +230,10 @@
                                 name="patient_id"
                                 context="{'show_patient': True}"
                                 options='{"always_reload": True}'
-                                invisible="context.get('default_patient_id', False)"
+                                invisible="context.get('default_patient_id')"
                                 domain="[('active', '=', True), ('company_id', '=', company_id)]"
                             />
-                            <field name="encounter_id" invisible="context.get('default_encounter_id', False)" />
+                            <field name="encounter_id" invisible="context.get('default_encounter_id')" />
                             <field
                                 name="condition_id"
                                 domain="[('patient_id', '=', patient_id), ('encounter_id', '=?', encounter_id)]"
