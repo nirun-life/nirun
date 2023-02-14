@@ -16,6 +16,14 @@ class Condition(models.Model):
         )
 
     name = fields.Char(related="code_id.name", store=True)
+    category = fields.Selection(
+        [
+            ("problem-list-item", "Problem List Item"),
+            ("encounter-diagnosis", "Encounter Diagnosis"),
+        ],
+        required=True,
+        help="Deprecated",
+    )
     is_problem = fields.Boolean("Problem List Item")
     is_diagnosis = fields.Boolean("Encounter Diagnosis")
     code_id = fields.Many2one(
