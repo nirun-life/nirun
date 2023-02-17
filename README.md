@@ -11,8 +11,8 @@ This is odoo modules for new generation Health care provider.
 
 Available addons
 ----------------
-addon | version    | summary
---- |------------| ---
+addon | version | summary
+--- | --- | ---
 [base_religion](base_religion/) | 13.0.0.1.1 | Religions
 [l10n_th_nirun_coverage_hide](l10n_th_nirun_coverage_hide/) | 13.0.0.1.0 | Hiding Coverage
 [l10n_th_nirun_coverage_right](l10n_th_nirun_coverage_right/) | 13.0.0.2.0 | Coverage - Health Right
@@ -24,8 +24,13 @@ addon | version    | summary
 [nirun](nirun/) | 13.0.0.2.1 | Nirun
 [nirun_allergy](nirun_allergy/) | 13.0.0.3.0 | Allergy & Intolerance
 [nirun_careplan](nirun_careplan/) | 13.0.0.5.0 | Care Plans
+[nirun_careplan_eval](nirun_careplan_eval/) | 13.0.0.1.0 | Care Plans Evaluation
+[nirun_careplan_replace](nirun_careplan_replace/) | 13.0.0.1.0 | Care Plans Replace
 [nirun_condition](nirun_condition/) | 13.0.0.5.0 | Condition (Problem)
 [nirun_coverage](nirun_coverage/) | 13.0.0.1.1 | Coverage
+[nirun_diagnosis](nirun_diagnosis/) | 13.0.0.1.0 | Diagnosis
+[nirun_document](nirun_document/) | 13.0.0.1.0 | Document
+[nirun_dop](nirun_dop/) | 13.0.0.1.0 | Nirun - DOP
 [nirun_goal](nirun_goal/) | 13.0.0.4.0 | Goal
 [nirun_goal_questionnaire](nirun_goal_questionnaire/) | 13.0.0.1.0 | Goal - Questionnaire
 [nirun_immunization](nirun_immunization/) | 13.0.0.1.0 | Immunization
@@ -50,9 +55,10 @@ addon | version    | summary
 [nirun_patient_name_duplicate](nirun_patient_name_duplicate/) | 13.0.0.1.0 | Warning when found patient with same name was already registered
 [nirun_patient_personality](nirun_patient_personality/) | 13.0.0.1.1 | Patients - Personality
 [nirun_patient_religion](nirun_patient_religion/) | 13.0.0.1.0 | Patients - Religion
-[nirun_procedure](nirun_procedure/) | 13.0.0.0.1 | Procedure
+[nirun_procedure](nirun_procedure/) | 13.0.0.1.0 | Procedure
 [nirun_questionnaire](nirun_questionnaire/) | 13.0.0.3.0 | Questionnaire
 [nirun_questionnaire_condition](nirun_questionnaire_condition/) | 13.0.0.2.0 | Questionnaire - Condition
+[nirun_reason_category](nirun_reason_category/) | 13.0.1.0.0 | Reason Category
 [nirun_related_person](nirun_related_person/) | 13.0.0.3.0 | Related Person
 [nirun_report](nirun_report/) | 13.0.0.2.1 | Nirun Report
 [nirun_service](nirun_service/) | 13.0.0.4.0 | Healthcare Services
