@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit_careplan" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_careplan.encounter_view_form_inherit" />
+        <field name="priority">300</field>
+        <field name="arch" type="xml">
+            <field name="careplan_ids" position="before">
+                <group>
+                    <group string="Case Manager">
+                        <field name="case_manager_id" />
+                        <field name="case_manager_job_title" />
+                    </group>
+                    <group string="Special">
+                        <field
+                            name="arrangement_ids"
+                            options="{'color_field': 'color', 'no_edit': True}"
+                            widget="many2many_tags"
+                        />
+                        <field
+                            name="courtesy_ids"
+                            options="{'color_field': 'color', 'no_edit': True}"
+                            widget="many2many_tags"
+                            invisible="1"
+                        />
+                        <field
+                            name="diet_ids"
+                            options="{'color_field': 'color', 'no_edit': True}"
+                            widget="many2many_tags"
+                        />
+                    </group>
+                </group>
+            </field>
+            <xpath expr="//page/field[@name='careplan_ids']/tree" position="attributes">
+                <attribute name="editable">top</attribute>
+            </xpath>
+            <field name="goal_achieved" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <xpath expr="//page/field[@name='careplan_ids']/tree" position="inside">
+                <button
+                    name="action_edit"
+                    attrs="{'column_invisible': [('parent.id', '=', False)], 'invisible': [('id', '=', False)]}"
+                    icon="fa-pencil-square-o"
+                    type="object"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_medication.encounter_view_form_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='medication_ids']/tree/field[@name='state']" position="after">
+                <field name="reason_condition_ids" widget="many2many_tags" />
+                <field name="dispense_partner_id" />
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_medication_statement_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.medication.statement.view.form.inherit</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="inherit_id" ref="nirun_medication.medication_statement_view_form" />
+        <field name="arch" type="xml">
+            <field name="location_id" position="after">
+                <field name="dispense_partner_id" />
+            </field>
+        </field>
+    </record>
+</odoo>

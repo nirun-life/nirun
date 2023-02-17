@@ -4,3 +4,4 @@ from . import encounter
 from . import encounter_participant
 from . import patient
 from . import condition
+from . import medication_statement
