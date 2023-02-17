@@ -1,4 +1,4 @@
-#  Copyright (c) 2021 NSTDA
+#  Copyright (c) 2021-2023. NSTDA
 
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import ValidationError
@@ -106,8 +106,8 @@ class SurveyUserInput(models.Model):
             res = "{:.2f}% ({}/{})".format(
                 self.quizz_score, self.quizz_score_raw, self.quizz_score_total
             )
-            if self.grade_ids:
-                res = "{} - {}".format(self.grade_ids.name, res)
+            if self.quizz_grade_id:
+                res = "{} - {}".format(self.quizz_grade, res)
             return res
         else:
             return None
