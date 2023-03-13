@@ -8,7 +8,7 @@ class Encounter(models.Model):
 
     priority = fields.Selection(groups="base.group_no_one")
     pre_admit_identifier = fields.Char(groups="base.group_no_one")
-    period_end = fields.Datetime("Discharge Date")
+    period_end = fields.Date("Discharge Date")
 
     case_manager_id = fields.Many2one(
         "hr.employee",
