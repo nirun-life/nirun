@@ -21,7 +21,7 @@ class Condition(models.Model):
             ("problem-list-item", "Problem List Item"),
             ("encounter-diagnosis", "Encounter Diagnosis"),
         ],
-        required=True,
+        required=False,
         help="Deprecated",
     )
     is_problem = fields.Boolean("Problem List Item")
