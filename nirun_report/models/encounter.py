@@ -6,4 +6,4 @@ from odoo import fields, models
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
-    gender = fields.Selection(related="patient_id.gender")
+    gender = fields.Selection(related="patient_id.gender", store=True)
