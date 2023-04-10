@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="survey_subject_action" model="ir.actions.act_window">
+        <field name="name">Select survey subject</field>
+        <field name="res_model">survey.subject.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="survey_subject_view_form" model="ir.ui.view">
+        <field name="name">survey.subject.view.form</field>
+        <field name="model">survey.subject.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group name="main">
+                    <group>
+                        <field
+                            name="survey_id"
+                            invisible="context.get('default_survey_id', False)"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                        />
+                        <field name="type" invisible="True" />
+                        <field
+                            name="subject_res_partner"
+                            attrs="{'invisible': [('type', '!=', 'res.partner')] }"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                        />
+                        <field
+                            name="subject_res_users"
+                            attrs="{'invisible': [('type', '!=', 'res.users')]}"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                        />
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_survey" string="Survey" class="oe_highlight" type="object" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="survey_view_form_inherit_wizard" model="ir.ui.view">
+        <field name="name">survey.view.form.inherit.wizard</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form" />
+        <field name="arch" type="xml">
+            <button name="action_send_survey" position="after">
+                <button
+                    name="action_survey_subject_wizard"
+                    string="Answer Survey"
+                    attrs="{'invisible': ['|', '|', ('subject_type', '=', False), ('active','=', False), ('id', '=', False)]}"
+                    class="oe_highlight"
+                    context="{'default_survey_id': id}"
+                    type="object"
+                />
+            </button>
+        </field>
+    </record>
+    <record id="survey_view_tree_inherit_wizard" model="ir.ui.view">
+        <field name="name">survey.survey.view.tree.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_tree" />
+        <field name="arch" type="xml">
+            <field name="answer_score_avg" position="after">
+                <field name="subject_type" invisible="1" />
+                <button
+                    name="action_survey_subject_wizard"
+                    string="Answer Survey"
+                    attrs="{'invisible': ['|', '|', ('subject_type', '=', False), ('active', '=', 'False'), ('id', '=', False)]}"
+                    class="text-primary"
+                    icon="fa-commenting"
+                    context="{'default_survey_id': id}"
+                    type="object"
+                />
+            </field>
+        </field>
+    </record>
+    <record id="survey_user_input_view_tree_inherit_wizard" model="ir.ui.view">
+        <field name="name">survey.user_input.view.tree.inherit.wizard</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_tree" />
+        <field name="arch" type="xml">
+            <field name="survey_id" position="after">
+                <groupby name="survey_id">
+                    <button
+                        type="object"
+                        name="action_survey_subject_wizard"
+                        string="Answer Survey"
+                        icon="fa-file-text"
+                    />
+                </groupby>
+            </field>
+        </field>
+    </record>
+</odoo>
