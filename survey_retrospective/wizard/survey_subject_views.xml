@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="survey_subject_wizard_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.subject.wizard.view.form.inherit</field>
+        <field name="model">survey.subject.wizard</field>
+        <field name="inherit_id" ref="survey_subject.survey_subject_view_form" />
+        <field name="arch" type="xml">
+            <!-- position values: after|before|replace|attributes|inside -->
+            <xpath expr="//group[@name='main']" position="inside">
+                <group groups="base.group_no_one">
+                    <field name="retrospective" />
+                    <field
+                        name="survey_date"
+                        attrs="{'invisible': [('retrospective', '=', False)], 'required': [('retrospective', '!=', False)]}"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
