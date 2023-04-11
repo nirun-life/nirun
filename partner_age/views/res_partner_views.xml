@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="res_partner_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <field name="title" position="after">
+                <label attrs="{'readonly': [('birthdate', '!=', False)]}" for="age" />
+                <div>
+                    <field name="age" attrs="{'readonly': [('birthdate', '!=', False)]}" />
+                </div>
+                <field name="birthdate" />
+                <field name="deceased_date" />
+            </field>
+            <field name="active" position="after">
+                <!-- invisible fields -->
+                <field name="age_init" invisible="1" />
+                <field name="age_init_date" invisible="1" />
+                <field name="deceased" invisible="1" />
+            </field>
+        </field>
+    </record>
+</odoo>
