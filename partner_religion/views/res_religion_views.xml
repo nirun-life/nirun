@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <!-- This file only intent use as scaffold for coding model -->
+    <record id="religion_action" model="ir.actions.act_window">
+        <field name="name">Religions</field>
+        <field name="res_model">res.religion</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="religion_view_search" model="ir.ui.view">
+        <field name="name">religion.view.search</field>
+        <field name="model">res.religion</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="parent_id" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+            </search>
+        </field>
+    </record>
+    <record id="coding_view_tree" model="ir.ui.view">
+        <field name="name">coding.view.tree</field>
+        <field name="model">res.religion</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name" />
+                <field name="parent_id" optional="hide" />
+                <field name="child_ids" optional="hide" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="coding_view_form" model="ir.ui.view">
+        <field name="name">coding.view.form</field>
+        <field name="model">res.religion</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="name" />
+                        </group>
+                        <group>
+                            <field name="parent_id" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
