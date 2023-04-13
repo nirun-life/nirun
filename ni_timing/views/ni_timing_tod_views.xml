@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_timing_tod_action" model="ir.actions.act_window">
+        <field name="name">Time of day</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.timing.tod</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="ni_timing_tod_view_tree" model="ir.ui.view">
+        <field name="name">ni.timing.tod.view.tree</field>
+        <field name="model">ni.timing.tod</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" />
+                <field name="all_day" />
+                <field name="start_time" attrs="{'invisible': [('all_day', '=', True)]}" widget="float_time" />
+                <field name="end_time" attrs="{'invisible': [('all_day', '=', True)]}" widget="float_time" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_timing_tod_view_form" model="ir.ui.view">
+        <field name="name">ni.timing.tod.view.form</field>
+        <field name="model">ni.timing.tod</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="0" />
+                            <field name="code" />
+                        </group>
+                        <group>
+                            <field name="all_day" />
+                            <field
+                                name="start_time"
+                                attrs="{'invisible': [('all_day', '=', True)]}"
+                                widget="float_time"
+                            />
+                            <field
+                                name="end_time"
+                                attrs="{'invisible': [('all_day', '=', True)]}"
+                                widget="float_time"
+                            />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Definition">
+                            <field name="definition" />
+                        </page>
+                        <page string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <group>
+                                    <field name="color" widget="color_picker" />
+                                    <field name="sequence" />
+                                </group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_timing_timing_tod_view_form" model="ir.ui.view">
+        <field name="name">ni.timing.timing.tod.view.form</field>
+        <field name="model">ni.timing.timing.tod</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="all_day" />
+                            <field
+                                name="start_time"
+                                attrs="{'invisible': [('all_day', '=', True)]}"
+                                widget="float_time"
+                            />
+                            <field
+                                name="end_time"
+                                attrs="{'invisible': [('all_day', '=', True)]}"
+                                widget="float_time"
+                            />
+                            <field name="tz" attrs="{'invisible': [('all_day', '=', True)]}" />
+                        </group>
+                        <group>
+                            <field name="code_id" placeholder="Choose form..." />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_timing_timing_tod_view_tree" model="ir.ui.view">
+        <field name="name">ni.timing.timing.tod.view.tree</field>
+        <field name="model">ni.timing.timing.tod</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" string="time" />
+                <field name="all_day" width="1" optional="hide" />
+                <field
+                    name="start_time"
+                    width="2"
+                    widget="float_time"
+                    optional="hide"
+                    attrs="{'invisible': [('all_day', '=', True)]}"
+                />
+                <field
+                    name="end_time"
+                    width="2"
+                    widget="float_time"
+                    optional="hide"
+                    attrs="{'invisible': [('all_day', '=', True)]}"
+                />
+                <field name="tz" width="2" optional="hide" attrs="{'invisible': [('all_day', '=', True)]}" />
+            </tree>
+        </field>
+    </record>
+</odoo>
