@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_timing_timing_view_form" model="ir.ui.view">
+        <field name="name">ni.timing.timing.view.form</field>
+        <field name="model">ni.timing.timing</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <sheet>
+                    <label string="Summary" for="name" />
+                    <h2>
+                        <field name="name" />
+                    </h2>
+                    <p class="oe_edit_only text-muted">
+                        The summarize is automatically generated from the given
+                        information.
+                        You can edit as you please but it will be overwritten when information was changed.
+                    </p>
+                    <group>
+                        <group invisible="context.get('no_bound',False)">
+                            <field name="bound_start" />
+                            <field name="bound_end" />
+                            <field name="bound_duration_days" />
+                        </group>
+                        <group class="oe_edit_only">
+                            <field name="template_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detail">
+                            <group>
+                                <group>
+                                    <label for="frequency" />
+                                    <div class="o_row">
+                                        <field name="frequency" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="frequency_max" class="oe_inline" />
+                                        <span>Times</span>
+                                    </div>
+                                    <label string="Duration" for="duration" />
+                                    <div class="o_row">
+                                        <field name="duration" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="duration_max" class="oe_inline" />
+                                        <field name="duration_unit" nolabel="True" />
+                                    </div>
+                                    <label string="Repeat Every" for="period" />
+                                    <div class="o_row">
+                                        <field name="period" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="period_max" class="oe_inline" />
+                                        <field name="period_unit" string="Unit" />
+                                    </div>
+                                    <field
+                                        name="day_of_week"
+                                        widget="many2many_checkboxes"
+                                        attrs="{'invisible': [('period_unit', '!=', 'week')]}"
+                                    />
+                                </group>
+                                <group>
+                                    <field name="time_type" options="{'horizontal':False}" widget="radio" />
+                                    <field
+                                        name="when"
+                                        attrs="{'invisible': [('time_type', '!=', 'event')]}"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="offset"
+                                        string="Min. before/after"
+                                        attrs="{'invisible': [('time_type', '!=', 'event')]}"
+                                    />
+                                    <field
+                                        name="time_of_day"
+                                        context="{'default_timing_id': id}"
+                                        attrs="{'invisible': [('time_type', '!=', 'tod')]}"
+                                    >
+
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_timing_timing_view_form_quick" model="ir.ui.view">
+        <field name="name">ni.timing.timing.view.form</field>
+        <field name="model">ni.timing.timing</field>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="1" />
+                <field name="frequency" invisible="1" />
+                <field name="frequency_max" invisible="1" />
+                <field name="duration" invisible="1" />
+                <field name="duration_max" invisible="1" />
+                <field name="duration_unit" invisible="1" />
+                <field name="period" invisible="1" />
+                <field name="period_max" invisible="1" />
+                <field name="period_unit" invisible="1" />
+                <field name="when" invisible="1" />
+                <field name="day_of_week" invisible="1" />
+                <field name="offset" invisible="1" />
+                <field name="time_of_day" invisible="1" />
+                <field name="name" invisible="1" />
+                <sheet>
+                    <group>
+                        <field name="template_id" string="Timing" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
