@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_patient_view_form" model="ir.ui.view">
+        <field name="name">ni.patient.view.form.inherit.religion</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <field name="birthdate" position="replace">
+                <label class="mr-2" for="birthdate" />
+                <div class="o_row">
+                    <field name="birthdate" />
+                    <span>
+                        <field name="birthdate_estimate" class="oe_edit_only" />
+                        <label string="Estimate" class="oe_edit_only" for="birthdate_estimate" />
+                        <label
+                            string="Estimate"
+                            attrs="{'invisible': [('birthdate_estimate', '!=', True)]}"
+                            class="oe_read_only"
+                            for="birthdate_estimate"
+                        />
+                    </span>
+                </div>
+            </field>
+        </field>
+    </record>
+</odoo>
