@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="patient_company_rule" model="ir.rule">
+        <field name="name">Patient: multi-company</field>
+        <field name="model_id" ref="model_ni_patient" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="encounter_company_rule" model="ir.rule">
+        <field name="name">Encounter: multi-company</field>
+        <field name="model_id" ref="model_ni_encounter" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="encounter_location_company_rule" model="ir.rule">
+        <field name="name">Encounter/Location: multi-company</field>
+        <field name="model_id" ref="model_ni_encounter_location" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="encounter_cls_company_rule" model="ir.rule">
+        <field name="name">Encounter Classification: multi-company</field>
+        <field name="model_id" ref="model_ni_encounter_cls" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="location_company_rule" model="ir.rule">
+        <field name="name">Location: multi-company</field>
+        <field name="model_id" ref="model_ni_location" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
