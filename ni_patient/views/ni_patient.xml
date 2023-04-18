@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <menuitem id="patient_menu_root" name="Patients" sequence="0" web_icon="ni_patient,static/description/icon.png" />
+    <!-- Patient -->
+    <menuitem id="patient_menu_section" name="Patients" parent="patient_menu_root" sequence="2" />
+    <menuitem
+        id="patient_menu_in_progress"
+        name="Patients"
+        action="patient_action_in_progress"
+        parent="patient_menu_section"
+        sequence="1"
+    />
+    <menuitem
+        id="patient_menu"
+        name="All Patients"
+        action="patient_action"
+        parent="patient_menu_section"
+        sequence="2"
+    />
+    <!-- Encounter -->
+    <menuitem id="ni_encounter_menu_section" name="Encounter" parent="patient_menu_root" sequence="1" />
+    <menuitem
+        id="ni_encounter_menu"
+        name="Encounter"
+        action="ni_encounter_action"
+        parent="ni_encounter_menu_section"
+        sequence="1"
+    />
+    <menuitem
+        id="ni_encounter_menu_discharged"
+        name="Discharged"
+        action="ni_encounter_action_discharged"
+        parent="ni_encounter_menu_section"
+    />
+    <!-- Configuration -->
+    <menuitem
+        id="configuration_menu"
+        name="Configuration"
+        groups="ni_patient.group_manager"
+        parent="patient_menu_root"
+        sequence="100"
+    />
+    <!-- Location Configuration-->
+    <menuitem id="location_menu_section" name="Location" parent="configuration_menu" />
+    <menuitem id="location_menu" name="Location" action="location_action" parent="location_menu_section" />
+    <menuitem id="location_type_menu" name="Type" action="location_type_action" parent="location_menu_section" />
+    <!-- Encounter Configuration-->
+    <menuitem id="ni_encounter_configuration_menu_section" name="Encounter" parent="configuration_menu" />
+    <menuitem
+        id="ni_encounter_class_menu"
+        name="Classification"
+        action="ni_encounter_class_action"
+        parent="ni_encounter_configuration_menu_section"
+    />
+    <menuitem
+        id="ni_encounter_reason_menu"
+        name="Reason"
+        action="ni_encounter_reason_action"
+        parent="ni_encounter_configuration_menu_section"
+    />
+    <menuitem
+        id="ni_encounter_admit_menu"
+        name="Admission Source"
+        action="ni_encounter_admit_action"
+        parent="ni_encounter_configuration_menu_section"
+    />
+    <menuitem
+        id="ni_encounter_arrangement_menu"
+        name="Arrangement"
+        action="ni_encounter_arrangement_action"
+        parent="ni_encounter_configuration_menu_section"
+    />
+    <menuitem
+        id="ni_encounter_courtesy_menu"
+        name="Courtesy"
+        action="ni_encounter_courtesy_action"
+        parent="ni_encounter_configuration_menu_section"
+    />
+    <menuitem
+        id="ni_encounter_diet_menu"
+        name="Diet"
+        action="ni_encounter_diet_action"
+        parent="ni_encounter_configuration_menu_section"
+    />
+    <menuitem
+        id="participant_type_menu"
+        name="Participant Type"
+        action="participant_type_action"
+        parent="ni_encounter_configuration_menu_section"
+    />
+    <menuitem
+        id="ni_encounter_discharge_menu"
+        name="Discharge Disposition"
+        action="ni_encounter_discharge_action"
+        parent="ni_encounter_configuration_menu_section"
+    />
+</odoo>
