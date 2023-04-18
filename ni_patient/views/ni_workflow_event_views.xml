@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2022-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_workflow_event_action" model="ir.actions.act_window">
+        <field name="name">Event</field>
+        <field name="res_model">ni.workflow.event</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">No Event</p>
+            <p>You may try to remove some filter</p>
+        </field>
+    </record>
+    <record id="ni_workflow_event_view_tree" model="ir.ui.view">
+        <field name="name">ni.workflow.event.view.tree</field>
+        <field name="model">ni.workflow.event</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field
+                    name="company_id"
+                    invisible="context.get('default_patient_id')"
+                    groups="base.group_multi_company"
+                />
+                <field name="occurrence" />
+                <field name="patient_id" invisible="context.get('default_patient_id')" />
+                <field name="encounter_id" invisible="context.get('default_encounter_id')" optional="show" />
+                <field name="name" />
+                <field name="summary" />
+                <field name="write_date" optional="hide" />
+                <field name="write_uid" optional="hide" />
+                <button
+                    name="action_resource"
+                    class="text-primary"
+                    type="object"
+                    string="External Link"
+                    icon="fa-external-link"
+                />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_workflow_event_view_form" model="ir.ui.view">
+        <field name="name">ni.workflow.event.view.form</field>
+        <field name="model">ni.workflow.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="btn_box">
+                        <button
+                            name="action_resource"
+                            type="object"
+                            string="Link"
+                            class="oe_stat_button"
+                            icon="fa-external-link"
+                        >
+
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="summary" />
+                            <field name="occurrence" readonly="1" />
+                        </group>
+                        <group>
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                invisible="context.get('default_patient_id')"
+                                readonly="1"
+                            />
+                            <field name="patient_id" invisible="context.get('default_patient_id')" readonly="1" />
+                            <field name="encounter_id" invisible="context.get('default_encounter_id')" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="request_id" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="parent_id" readonly="1" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
