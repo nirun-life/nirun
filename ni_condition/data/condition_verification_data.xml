@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="verify_unconfirmed" model="ni.condition.verification">
+        <field name="code">unconfirmed</field>
+        <field name="name">Unconfirmed</field>
+        <field name="definition">
+            There is not sufficient diagnostic and/or clinical evidence to treat this as a confirmed condition.
+        </field>
+    </record>
+    <record id="verify_provisional" model="ni.condition.verification">
+        <field name="code">provisional</field>
+        <field name="name">Provisional</field>
+        <field name="definition">This is a tentative diagnosis - still a candidate that is under consideration.</field>
+        <field name="parent_id" ref="ni_condition.verify_unconfirmed" />
+    </record>
+    <record id="verify_differential" model="ni.condition.verification">
+        <field name="code">differential</field>
+        <field name="name">Differential</field>
+        <field name="definition">
+            One of a set of potential (and typically mutually exclusive) diagnoses asserted to further guide the
+            diagnostic process and preliminary treatment.
+        </field>
+        <field name="parent_id" ref="ni_condition.verify_unconfirmed" />
+    </record>
+    <record id="verify_confirmed" model="ni.condition.verification">
+        <field name="code">confirmed</field>
+        <field name="name">Confirmed</field>
+        <field name="definition">
+            There is sufficient diagnostic and/or clinical evidence to treat this as a confirmed condition.
+        </field>
+    </record>
+    <record id="verify_refuted" model="ni.condition.verification">
+        <field name="code">refuted</field>
+        <field name="name">Refuted</field>
+        <field name="definition">This condition has been ruled out by diagnostic and clinical evidence.</field>
+    </record>
+</odoo>
