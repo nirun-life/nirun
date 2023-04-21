@@ -36,7 +36,7 @@ class Encounter(models.Model):
     identifier = fields.Char("Encounter No.")
     color = fields.Integer()
     class_id = fields.Many2one(
-        "ni.encounter.cls",
+        "ni.encounter.class",
         "Classification",
         index=True,
         required=True,
@@ -72,9 +72,15 @@ class Encounter(models.Model):
     image_128 = fields.Image(related="patient_id.image_128", readonly=False)
 
     priority = fields.Selection(
-        [("0", "Routine"), ("1", "Urgent"), ("2", "ASAP"), ("3", "STAT")],
-        default="0",
+        [
+            ("routing", "Routine"),
+            ("urgent", "Urgent"),
+            ("asap", "ASAP"),
+            ("stat", "STAT"),
+        ],
+        default="routing",
         tracking=True,
+        required=True,
         states=LOCK_STATE_DICT,
     )
     state = fields.Selection(
@@ -420,7 +426,7 @@ class Encounter(models.Model):
         )
 
     def action_confirm(self):
-        today = fields.date.today()
+        today = fields.datetime.now()
         for enc in self:
             if not enc.period_start:
                 raise ValidationError(
