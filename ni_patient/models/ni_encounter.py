@@ -286,6 +286,16 @@ class Encounter(models.Model):
                 if last_enc:
                     rec.re_admit_encounter_id = last_enc[0]
 
+    @api.onchange("country_id")
+    def _onchange_country_id(self):
+        if self.country_id and self.country_id != self.state_id.country_id:
+            self.state_id = False
+
+    @api.onchange("state_id")
+    def _onchange_state(self):
+        if self.state_id.country_id:
+            self.country_id = self.state_id.country_id
+
     def _get_another_active_encounter(self):
         self.ensure_one()
         return (
