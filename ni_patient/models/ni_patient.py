@@ -282,6 +282,16 @@ class Patient(models.Model):
             if rec.deceased:
                 rec.presence_state = "deceased"
 
+    @api.onchange("country_id")
+    def _onchange_country_id(self):
+        if self.country_id and self.country_id != self.state_id.country_id:
+            self.state_id = False
+
+    @api.onchange("state_id")
+    def _onchange_state(self):
+        if self.state_id.country_id:
+            self.country_id = self.state_id.country_id
+
     def action_encounter(self):
         action_rec = self.env.ref("ni_patient.ni_encounter_action")
         action = action_rec.read()[0]
