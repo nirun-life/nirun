@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_condition_action" model="ir.actions.act_window">
+        <field name="name">Conditions</field>
+        <field name="res_model">ni.condition</field>
+        <field name="view_mode">pivot,graph,tree,form</field>
+    </record>
+    <record id="ni_condition_view_search" model="ir.ui.view">
+        <field name="name">ni.condition.view.search</field>
+        <field name="model">ni.condition</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <field name="code_id" />
+                <filter name="problem" string="Problem List Item" domain="[('is_problem', '=', True)]" />
+                <filter name="diagnosis" string="Encounter Diagnosis" domain="[('is_diagnosis', '=', True)]" />
+                <separator />
+                <filter name="active" string="Suffering" domain="[('state', '=', 'active')]" />
+                <filter name="remission" string="Remission" domain="[('state', '=', 'remission')]" />
+                <filter name="resolved" string="Resolved" domain="[('state', '=', 'resolved')]" />
+                <group name="Group By">
+                    <filter name="patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="condition" string="Condition / Problem" context="{'group_by': 'code_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_condition_view_tree" model="ir.ui.view">
+        <field name="name">ni.condition.view.tree</field>
+        <field name="model">ni.condition</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="patient_id" invisible="context.get('default_patient_id', False)" />
+                <field name="encounter_id" invisible="context.get('default_encounter_id', False)" />
+                <field name="code_id" />
+                <field name="is_problem" />
+                <field name="is_diagnosis" />
+                <field name="class_id" optional="show" />
+                <field name="verification_id" optional="show" />
+                <field name="severity" optional="show" />
+                <field name="note" optional="show" />
+                <field name="create_uid" optional="hide" />
+                <field name="create_date" optional="hide" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_condition_view_form" model="ir.ui.view">
+        <field name="name">ni.condition.view.form</field>
+        <field name="model">ni.condition</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <header attrs="{'invisible': [('id', '=', False)]}">
+                    <button
+                        name="action_active"
+                        type="object"
+                        string="Recurrence"
+                        attrs="{'invisible': [('state', 'not in', ['resolved'])]}"
+                    />
+                    <button
+                        name="action_active"
+                        type="object"
+                        string="Relapse"
+                        attrs="{'invisible': [('state', 'not in', ['remission'])]}"
+                    />
+                    <button
+                        name="action_remission"
+                        string="Remission"
+                        attrs="{'invisible': [('state', 'in', ['remission', 'resolved'])]}"
+                        type="object"
+                    />
+                    <button
+                        name="action_resolve"
+                        class="btn-primary"
+                        string="Resolve"
+                        attrs="{'invisible': [('state', '=', 'resolved')]}"
+                        type="object"
+                    />
+                    <field name="state" statusbar_visible="active,remission,resolved" widget="statusbar" />
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
+                    <div class="oe_title" style="max-width:85%;">
+                        <div attrs="{'invisible': [('period_start', '=', False)]}">
+                            <span class="fa fa-clock-o ml-2" title="Duration" />
+                            <field name="duration" class="mx-1" />
+                        </div>
+                        <h1>
+                            <field
+                                name="code_id"
+                                class="w-100"
+                                nolabel="1"
+                                placeholder="Condition / Problem"
+                                options="{'no_open': True}"
+                            />
+                        </h1>
+                    </div>
+                    <div name="category">
+                        <field name="is_problem" />
+                        <label for="is_problem" />
+                        <span class="ml-4" attrs="{'invisible': [('encounter_id', '=', False)]}">
+                            <field name="is_diagnosis" />
+                            <label for="is_diagnosis" />
+                        </span>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id" invisible="context.get('default_patient_id', False)" />
+                            <field name="encounter_id" invisible="context.get('default_encounter_id', False)" />
+                            <label for="period_start" string="Period" />
+                            <div class="o_row">
+                                <field name="period_start" placeholder="Onset Date" />
+                                <i
+                                    class="fa fa-fw fa-arrow-right mx-2 oe_edit_only"
+                                    aria-label="arrow-icon"
+                                    title="to"
+                                />
+                                <field name="period_end" placeholder="Abatement Date" />
+                            </div>
+                        </group>
+                        <group>
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                readonly="context.get('default_patient_id', False)"
+                            />
+                            <field name="verification_id" />
+                            <field name="class_id" options="{'no_open': True, 'no_create': True}" />
+                            <field name="severity" />
+                        </group>
+                    </group>
+                    <notebook attrs="{'invisible': [('id', '=', False)]}">
+                        <page name="note" string="Note">
+                            <field name="note" />
+                        </page>
+                        <page name="extra_info" string="Extra Info" groups="base.group_system">
+                            <group>
+                                <group>
+                                    <field name="create_date" readonly="1" />
+                                    <field name="create_uid" readonly="1" />
+                                </group>
+                                <group>
+                                    <field name="write_date" readonly="1" />
+                                    <field name="write_uid" readonly="1" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_condition_view_pivot" model="ir.ui.view">
+        <field name="name">ni.condition.view.pivot</field>
+        <field name="model">ni.condition</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="code_id" type="row" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_condition_view_graph" model="ir.ui.view">
+        <field name="name">ni.condition.view.graph</field>
+        <field name="model">ni.condition</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="code_id" type="col" />
+            </graph>
+        </field>
+    </record>
+</odoo>

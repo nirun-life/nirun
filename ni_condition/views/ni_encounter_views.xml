@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="priority">3</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='history']" position="inside">
+                <group string="Problem">
+                    <field name="problem_code_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
