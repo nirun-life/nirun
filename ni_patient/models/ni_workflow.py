@@ -23,7 +23,7 @@ class Workflow(models.AbstractModel):
     encounter_id = fields.Many2one(
         "ni.encounter",
         "Encounter No.",
-        ondelete="restrict",
+        ondelete="cascade",
         index=True,
         tracking=True,
         check_company=True,
