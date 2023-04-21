@@ -4,7 +4,7 @@
     "name": "Survey - Subject",
     "version": "16.0.0.1.1",
     "development_status": "Alpha",
-    "category": "Healthcare",
+    "category": "Marketing/Surveys",
     "author": "NSTDA, Piruin P.",
     "website": "https://nirun.life/",
     "license": "LGPL-3",
