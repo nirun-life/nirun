@@ -53,10 +53,10 @@
                 <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]" />
                 <filter name="entered-in-error" string="Error Entry" domain="[('state', '=', 'entered-in-error')]" />
                 <separator />
-                <filter name="stat" string="Priority: STAT" domain="[('priority', '=', '3')]" />
-                <filter name="asap" string="Priority: ASAP" domain="[('priority', '=', '2')]" />
-                <filter name="urgent" string="Priority: Urgent" domain="[('priority', '=', '1')]" />
-                <filter name="routing" string="Priority: Routine" domain="[('priority', '=', '0')]" />
+                <filter name="stat" string="Priority: STAT" domain="[('priority', '=', 'stat')]" />
+                <filter name="asap" string="Priority: ASAP" domain="[('priority', '=', 'asap')]" />
+                <filter name="urgent" string="Priority: Urgent" domain="[('priority', '=', 'urgent')]" />
+                <filter name="routing" string="Priority: Routine" domain="[('priority', '=', 'routing')]" />
                 <group name="Group by">
                     <filter name="Priority" context="{'group_by': 'priority'}" />
                     <filter name="Classification" context="{'group_by': 'class_id'}" />
@@ -77,7 +77,7 @@
             <tree
                 duplicate="0"
                 decoration-bf="state in ['draft','planned']"
-                decoration-info="state == 'planned'"
+                decoration-info="state in ['draft','planned']"
                 decoration-muted="state in ['cancelled', 'entered-in-error']"
             >
                 <field name="name" />
@@ -85,7 +85,15 @@
                 <field name="gender" />
                 <field name="age" />
                 <field name="class_id" optional="show" />
-                <field name="priority" optional="show" />
+                <field
+                    name="priority"
+                    optional="show"
+                    widget="badge"
+                    decoration-danger="priority=='stat'"
+                    decoration-warning="priority=='asap'"
+                    decoration-success="priority=='urgent'"
+                    decoration-info="priority=='routing'"
+                />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
                 <field name="period_end" optional="hide" />
@@ -111,7 +119,6 @@
                 <field name="name" />
                 <field name="patient_id" />
                 <field name="class_id" optional="show" />
-                <field name="priority" optional="show" />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
                 <field name="period_end" optional="show" />
@@ -244,36 +251,19 @@
                             <field name="identifier" placeholder="AN. 0000X" />
                         </h1>
                     </div>
-                    <div name="company" attrs="{'invisible': [('id', '=', False)]}">
+                    <div name="company" class="mb-4" attrs="{'invisible': [('id', '=', False)]}">
                         <i class="fa fa-building-o" title="Company" />
-                        <field name="company_id" class="mx-2" placeholder="Company" />
+                        <field name="company_id" class="mx-2" placeholder="Company" options="{'no_open': True}" />
                     </div>
                     <group>
                         <group>
                             <label for="patient_id" />
                             <div>
                                 <field
-                                    class="oe_read_only"
                                     name="patient_id"
                                     context="{'show_gender_age': True, 'show_identification_id': True, 'show_address': True}"
                                     options="{'always_reload': True}"
-                                    attrs="{'required': [('patient_name', '=', False)]}"
-                                />
-                                <field
-                                    class="oe_edit_only"
-                                    name="patient_id"
-                                    context="{'show_gender_age': True, 'show_identification_id': True, 'show_address': True}"
-                                    options="{'always_reload': True}"
-                                    attrs="{
-                                    'invisible': [('id', '!=', False)],
-                                    'required': [('patient_name', '=', False)]}"
-                                />
-                                <field
-                                    class="oe_edit_only"
-                                    name="patient_name"
-                                    required="True"
-                                    placeholder="Name"
-                                    attrs="{'invisible': [('id', '=', 'False')]}"
+                                    placeholder="Search for patient..."
                                 />
                             </div>
                             <field
@@ -290,24 +280,12 @@
                             <field name="priority" />
                         </group>
                         <group>
-                            <label
-                                for="period_start"
-                                string="Start"
-                                attrs="{'invisible': [('state', 'in', ['cancelled','finished'])]}"
-                            />
-                            <label
-                                for="period_start"
-                                string="Period"
+                            <field name="period_start" placeholder="Start" />
+                            <field
+                                name="period_end"
+                                placeholder="End"
                                 attrs="{'invisible': [('state', 'not in', ['cancelled','finished'])]}"
                             />
-                            <div>
-                                <field name="period_start" placeholder="Start" />
-                                <field
-                                    name="period_end"
-                                    placeholder="End"
-                                    attrs="{'invisible': [('state', 'not in', ['cancelled','finished'])]}"
-                                />
-                            </div>
                             <field name="duration" />
                         </group>
                     </group>
@@ -442,19 +420,20 @@
                                 <field name="chief_complaint_date" class="text-muted mx-2" />
                             </div>
                         </page>
-                        <page name="problem" string="Problems List" />
-                        <page name="vital-signs" string="Vital Signs" />
-                        <page name="procedure" string="Procedures" />
-                        <page name="medication" string="Medications" />
-                        <page name="discharge" string="Discharge">
-                            <group attrs="{'invisible': [('state', '!=', 'finished')]}">
-                                <group string="Discharge">
-                                    <field name="discharge_id" />
+                        <page name="history" string="History" />
+                        <page name="vital-signs" string="Vital Sign" />
+                        <page name="problem" string="Problem List" />
+                        <page name="medication" string="Medication" />
+                        <page name="procedure" string="Procedure" />
+                        <page name="discharge" string="Discharge" attrs="{'invisible': [('state', '!=', 'finished')]}">
+                            <group>
+                                <group>
+                                    <field name="discharge_id" options="{'no_open': True}" />
                                     <field name="discharge_partner_id" />
                                 </group>
-                                <group>
-                                    <field name="discharge_note" />
-                                </group>
+                                <div>
+                                    <field name="discharge_note" placeholder="Discharging note..." />
+                                </div>
                             </group>
                         </page>
                     </notebook>

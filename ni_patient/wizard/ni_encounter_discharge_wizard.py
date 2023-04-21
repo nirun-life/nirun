@@ -14,8 +14,8 @@ class Discharge(models.TransientModel):
     discharge_id = fields.Many2one(
         "ni.encounter.discharge", "Disposition", required=True
     )
-    discharge_date = fields.Date(
-        default=lambda self: fields.Date.today(), required=True
+    discharge_date = fields.Datetime(
+        default=lambda self: fields.Datetime.now(), required=True
     )
     discharge_partner_id = fields.Many2one(
         "res.partner", "Destination", domain=[("patient", "=", False)]
@@ -39,7 +39,7 @@ class Discharge(models.TransientModel):
         for rec in self:
             if rec.discharge_date < rec.encounter_start:
                 raise UserError(_("Discharge date should not before encounter start"))
-            if rec.discharge_date > fields.Date.today():
+            if rec.discharge_date.date() > fields.Date.today():
                 raise UserError(_("Discharge date should not be in the future"))
 
     def discharge(self):

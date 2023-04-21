@@ -4,12 +4,12 @@ from odoo import _, api, fields, models
 
 
 class EncounterClassification(models.Model):
-    _name = "ni.encounter.cls"
+    _name = "ni.encounter.class"
     _description = "Encounter Classification"
     _inherit = ["ni.coding"]
     _parent_store = True
 
-    parent_id = fields.Many2one("ni.encounter.cls", string="Parent Class", index=True)
+    parent_id = fields.Many2one("ni.encounter.class", string="Parent Class", index=True)
     parent_path = fields.Char(index=True, readonly=True)
     hospitalization = fields.Boolean(help="Is hospitalization classification?")
     company_id = fields.Many2one("res.company", required=False)

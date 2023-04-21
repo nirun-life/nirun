@@ -44,7 +44,7 @@ class PatientRes(models.AbstractModel):
     encounter_id = fields.Many2one(
         "ni.encounter",
         "Encounter No.",
-        ondelete="restrict",
+        ondelete="cascade",
         index=True,
         tracking=True,
         check_company=True,
@@ -97,7 +97,7 @@ class PatientRes(models.AbstractModel):
             and vals.get("period_start")
             and vals.get("encounter_id")
         ):
-            res_start = fields.Date.to_date(vals.get("period_start"))
+            res_start = fields.Datetime.to_datetime(vals.get("period_start"))
             encounters = self.env["ni.encounter"]
             enc_start = encounters.browse(vals.get("encounter_id")).period_start
             if res_start < enc_start:
@@ -127,7 +127,7 @@ class PatientRes(models.AbstractModel):
             and (vals.get("encounter_id") or self.encounter_id)
             and not ("encounter_id" in vals and not vals.get("encounter_id"))
         ):
-            res_start = fields.Date.to_date(vals.get("period_start"))
+            res_start = fields.Datetime.to_datetime(vals.get("period_start"))
             encounters = self.encounter_id or self.env["ni.encounter"].browse(
                 vals.get("encounter_id")
             )
