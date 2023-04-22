@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <menuitem
+        id="medication_menu_root"
+        name="Medications"
+        sequence="3"
+        web_icon="ni_medication,static/description/icon.png"
+    />
+    <menuitem
+        id="medication_statement_menu"
+        name="Statement"
+        parent="medication_menu_root"
+        groups="base.group_no_one"
+    />
+    <menuitem
+        id="medication_statement_menu_default"
+        name="Statement"
+        action="ni_medication_statement_action"
+        parent="medication_statement_menu"
+    />
+    <menuitem
+        id="medication_statement_menu_completed"
+        name="Completed"
+        action="ni_medication_statement_action_completed"
+        parent="medication_statement_menu"
+    />
+    <menuitem
+        id="medication_menu"
+        name="Medications"
+        parent="medication_menu_root"
+        groups="ni_medication.group_manager"
+    />
+    <menuitem id="medication_menu_default" name="Medications" action="ni_medication_action" parent="medication_menu" />
+    <menuitem
+        id="configuration_menu"
+        name="Configuration"
+        groups="ni_medication.group_manager"
+        parent="medication_menu_root"
+        sequence="100"
+    />
+    <menuitem
+        id="medication_configuration_menu_section"
+        name="Medications"
+        action="ni_medication_action"
+        parent="configuration_menu"
+    />
+    <menuitem
+        id="medication_form_menu"
+        name="Forms"
+        action="ni_medication_form_action"
+        parent="medication_configuration_menu_section"
+    />
+    <menuitem
+        id="unit_menu"
+        name="Units"
+        action="uom.product_uom_form_action"
+        parent="medication_configuration_menu_section"
+    />
+    <menuitem
+        id="medication_statement_configuration_menu_section"
+        name="Medication Statement"
+        parent="configuration_menu"
+    />
+    <menuitem
+        id="medication_statement_category_menu"
+        name="Category"
+        action="ni_medication_statement_category_action"
+        parent="medication_statement_configuration_menu_section"
+    />
+    <menuitem
+        id="timing_template_menu"
+        name="Timing"
+        action="ni_timing.ni_timing_template_action"
+        parent="configuration_menu"
+    />
+</odoo>

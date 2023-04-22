@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_medication_statement_action" model="ir.actions.act_window">
+        <field name="name">Medications Statement</field>
+        <field name="res_model">ni.medication.statement</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph,activity</field>
+        <field name="context">{'search_default_period_today': True}</field>
+    </record>
+    <record id="ni_medication_statement_action_completed" model="ir.actions.act_window">
+        <field name="name">Medications Statement</field>
+        <field name="res_model">ni.medication.statement</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph,activity</field>
+        <field name="context">{'search_default_state_completed': True}</field>
+    </record>
+    <record id="ni_medication_statement_view_search" model="ir.ui.view">
+        <field name="name">ni.medication.statement.view.search</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="medication_id" />
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <field name="location_id" operator="child_of" />
+                <separator />
+                <filter
+                    name="period_today"
+                    string="Today"
+                    domain="[
+                    ('state', '=', 'active'),
+                    ('period_start', '&lt;=', context_today().strftime('%Y-%m-%d')),
+                    '|', ('period_end', '&gt;=', context_today().strftime('%Y-%m-%d')),
+                         ('period_end', '=', False),
+                    ]"
+                />
+                <filter name="period_start" string="Since" date="period_start" />
+                <filter name="period_end" string="Until" date="period_end" />
+                <separator />
+                <filter
+                    name="at_morning"
+                    string="At morning"
+                    domain="[('dosage_when.code', 'in', ['WAKE', 'CM', 'ACM', 'PCM', 'MORN'])]"
+                />
+                <filter
+                    name="at_noon"
+                    string="At noon"
+                    domain="[('dosage_when.code', 'in', ['CD', 'ACD', 'PCD', 'AFT'])]"
+                />
+                <filter
+                    name="at_evening"
+                    string="At evening"
+                    domain="[('dosage_when.code', 'in', ['CV', 'ACV', 'PCV', 'EVE'])]"
+                />
+                <filter name="at_night" string="At night" domain="[('dosage_when.code', 'in', ['HS'])]" />
+                <separator />
+                <filter name="state_active" string="Currently" domain="[('state', '=', 'active')]" />
+                <filter name="state_completed" string="Completed" domain="[('state', '=', 'completed')]" />
+                <filter name="state_stopped" string="Stopped" domain="[('state', '=', 'stopped')]" />
+                <separator />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <group string="Group by">
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_medication" string="Medication" context="{'group_by': 'medication_id'}" />
+                    <filter name="group_by_location" string="Location" context="{'group_by': 'location_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_medication_statement_view_tree" model="ir.ui.view">
+        <field name="name">ni.medication.statement.view.tree</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="state in ['completed','stopped']" multi_edit="1">
+                <field name="patient_id" invisible="context.get('default_patient_id', False)" optional="show" />
+                <field name="encounter_id" invisible="context.get('default_encounter_id', False)" optional="hide" />
+                <field name="medication_id" />
+                <field name="dosage_id" optional="show" />
+                <field name="category_id" optional="hide" />
+                <field name="period_start" optional="show" />
+                <field name="period_end" optional="hide" />
+                <field name="duration" optional="show" />
+                <field name="state" />
+                <field name="active" optional="hide" />
+                <field name="company_id" optional="show" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_medication_statement_view_form" model="ir.ui.view">
+        <field name="name">ni.medication.statement.view.form</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <header>
+                    <field name="state" options="{'clickable': '1'}" widget="statusbar" />
+                </header>
+                <sheet>
+                    <field
+                        name="image_1920"
+                        class="oe_avatar"
+                        options="{'preview_image': 'image_128'}"
+                        widget="image"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'completed')]}"
+                        bg_color="bg-success"
+                        title="Completed"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'stopped')]}"
+                        bg_color="bg-warning"
+                        title="Stopped"
+                    />
+                    <div class="oe_title" style="max-width:85%;">
+                        <label for="medication_id" />
+                        <h2>
+                            <field name="medication_id" class="w-100" nolabel="True" />
+                        </h2>
+                        <div>
+                            <span class="fa fa-clock-o ml-2" title="Duration" />
+                            <field name="duration" class="mx-1" />
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id" />
+                            <field name="encounter_id" />
+                            <field name="location_id" />
+                        </group>
+                        <group>
+                            <field name="category_id" />
+                            <field name="period_start" />
+                            <field name="period_end" />
+                            <field name="company_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="detail" string="Detail">
+                            <group string="Dosage">
+                                <field name="medication_dosage_ids" invisible="1" />
+                                <field name="medication_dosage_count" invisible="1" />
+                                <field name="medication_dose_unit_id" invisible="1" />
+                                <label for="dosage_id" />
+                                <div class="o_row">
+                                    <field
+                                        name="dosage_tmpl_id"
+                                        domain="[('id', 'in', medication_dosage_ids)]"
+                                        context="{'show_text': True, 'show_additional':True}"
+                                        attrs="{'invisible': ['|', ('medication_dosage_count', '=', 0), ('dosage_id', '!=', False),]}"
+                                        options="{'no_create':True, 'always_reload':True}"
+                                        placeholder="choose from..."
+                                    />
+                                    <label
+                                        class="oe_edit_only"
+                                        for="dosage_id"
+                                        string="or"
+                                        attrs="{'invisible': ['|', '|',  ('medication_dosage_count', '=', 0), ('dosage_tmpl_id', '!=', False), ('dosage_id', '!=', False)]}"
+                                    />
+                                    <field
+                                        name="dosage_id"
+                                        domain="[('id', '=', False)]"
+                                        context="{'show_text': True, 'show_additional':True, 'default_dose_unit_id': medication_dose_unit_id}"
+                                        placeholder="create new..."
+                                        attrs="{'invisible': [('dosage_tmpl_id', '!=', False)]}"
+                                        options="{'no_quick_create':True, 'always_reload':True}"
+                                    />
+                                </div>
+                            </group>
+                            <group>
+                                <group attrs="{'invisible': [('state', '!=', 'stopped')]}">
+                                    <field name="state_reason" attrs="{'required':[('state', '=', 'stopped')]}" />
+                                </group>
+                            </group>
+                        </page>
+                        <page name="note" string="Note">
+                            <field name="note" placeholder="Further information about the statement" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="ni_medication_statement_view_calendar" model="ir.ui.view">
+        <field name="name">ni.medication.statement.view.calendar</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <calendar
+                color="patient_id"
+                date_start="period_start_date"
+                date_stop="period_end_date_calendar"
+                hide_time="true"
+                mode="month"
+                quick_add="False"
+            >
+                <field name="patient_id" />
+                <field name="medication_id" />
+                <field name="dosage_id" />
+                <field name="location_id" />
+                <field name="state" />
+            </calendar>
+        </field>
+    </record>
+    <record id="ni_medication_statement_view_activity" model="ir.ui.view">
+        <field name="name">ni.medication.statement.view.activity</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <activity string="Medication Statement">
+                <field name="patient_id" />
+                <templates>
+                    <div t-name="activity-box">
+                        <div>
+                            <field name="name" display="full" />
+                            <field
+                                name="patient_id"
+                                display="full"
+                                invisible="context.get('default_patient_id', False)"
+                                muted="1"
+                            />
+                        </div>
+                    </div>
+                </templates>
+            </activity>
+        </field>
+    </record>
+    <record id="ni_medication_statement_view_pivot" model="ir.ui.view">
+        <field name="name">ni.medication.statement.view.pivot</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="medication_id" type="row" />
+                <field name="location_id" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_medication_statement_view_graph" model="ir.ui.view">
+        <field name="name">ni.medication.statement.view.graph</field>
+        <field name="model">ni.medication.statement</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="medication_id" type="col" />
+                <field name="location_id" type="col" />
+            </graph>
+        </field>
+    </record>
+</odoo>

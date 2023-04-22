@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_medication_action" model="ir.actions.act_window">
+        <field name="name">Medications</field>
+        <field name="res_model">ni.medication</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="context" eval="{'default_categ_id': ref('product_category_medication')}" />
+    </record>
+    <record id="ni_medication_view_search" model="ir.ui.view">
+        <field name="name">ni.medication.view.search</field>
+        <field name="model">ni.medication</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="manufacturer_name" />
+                <field name="ingredient" />
+                <field name="form" />
+                <field name="amount" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+            </search>
+        </field>
+    </record>
+    <record id="ni_medication_view_tree" model="ir.ui.view">
+        <field name="name">ni.medication.view.tree</field>
+        <field name="model">ni.medication</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="manufacturer_name" optional="show" />
+                <field name="ingredient" optional="show" />
+                <field name="form" optional="show" />
+                <field name="amount" optional="show" />
+                <field name="patient_count" optional="show" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_medication_view_form" model="ir.ui.view">
+        <field name="name">ni.medication.view.form</field>
+        <field name="model">ni.medication</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                        <button name="open_statement" class="oe_stat_button" icon="fa-users" type="object">
+                            <field name="patient_count" string="Patients" widget="statinfo" />
+                        </button>
+                    </div>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <field
+                        name="image_1920"
+                        class="oe_avatar"
+                        options="{'image_preview': 'image_128'}"
+                        widget="image"
+                    />
+                    <div class="oe_title">
+                        <label string="Medication Name" class="oe_edit_only" for="name" />
+                        <h2>
+                            <field name="name" placeholder="e.g. Nstdamol (Paracetamol 500mg)" required="True" />
+                        </h2>
+                        <field name="is_medication" invisible="True" />
+                    </div>
+                    <group>
+                        <group>
+                            <field name="form" />
+                            <label string="Amount" for="amount_numerator" />
+                            <div class="o_row">
+                                <field name="amount_numerator" class="oe_edit_only" />
+                                <field
+                                    name="amount_numerator_unit"
+                                    class="oe_edit_only"
+                                    options='{"create":False,"create_edit": False,"no_open": True}'
+                                />
+                                <span class="oe_edit_only">/</span>
+                                <field name="amount_denominator" class="oe_edit_only" />
+                                <field
+                                    name="amount_denominator_unit"
+                                    class="oe_edit_only"
+                                    options='{"create":False,"create_edit": False,"no_open": True}'
+                                />
+                                <field name="amount" class="oe_read_only" />
+                            </div>
+                        </group>
+                        <group>
+                            <field name="manufacturer_name" />
+                            <field name="manufacturer_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="dosage" string="Dosage">
+                            <field name="dosage_ids" mode="kanban" widget="one2many" />
+                        </page>
+                        <page name="ingredient" string="Ingredient">
+                            <field name="ingredient" invisible="True" />
+                            <field
+                                name="ingredient_ids"
+                                context="{'default_strength_denominator': 1, 'default_strength_denominator_unit': amount_numerator_unit}"
+                            />
+                        </page>
+                        <page name="product" string="Product" groups="product.group_product_pricelist">
+                            <div>
+                                <field name="sale_ok" />
+                                <label for="sale_ok" />
+                            </div>
+                            <div>
+                                <field name="purchase_ok" />
+                                <label for="purchase_ok" />
+                            </div>
+                            <group>
+                                <group name="product_gen" string="General Information">
+                                    <field name="type" />
+                                    <field name="categ_id" readonly="True" />
+                                    <field name="list_price" />
+                                    <field name="standard_price" />
+                                    <field name="uom_id" groups="uom.group_uom" options="{'no_create': True}" />
+                                    <field name="uom_po_id" invisible="1" />
+                                    <label for="default_code" />
+                                    <div>
+                                        <field name="default_code" />
+                                        <i class="text-muted oe_edit_only">
+                                            Use this reference as a subject prefix when
+                                            submitting by email.
+                                        </i>
+                                    </div>
+                                    <field name="company_id" groups="base.group_multi_company" />
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="ni_medication_view_pivot" model="ir.ui.view">
+        <field name="name">ni.medication.view.pivot</field>
+        <field name="model">ni.medication</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="form" type="row" />
+                <field name="name" type="row" />
+                <field name="patient_count" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_medication_view_graph" model="ir.ui.view">
+        <field name="name">ni.medication.view.graph</field>
+        <field name="model">ni.medication</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="name" type="col" />
+                <field name="patient_count" type="measure" />
+            </graph>
+        </field>
+    </record>
+</odoo>

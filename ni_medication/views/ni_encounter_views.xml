@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="priority">4</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='history']">
+                <separator string="Medication" />
+                <field name="medication_statement_ids" context="{'default_patient_id': id,}">
+                    <tree>
+                        <field name="company_id" invisible="1" />
+                        <field name="patient_id" invisible="1" />
+                        <field name="encounter_id" invisible="1" />
+                        <field name="medication_id" />
+                        <field name="dosage_id" />
+                        <field
+                            name="state"
+                            widget="badge"
+                            decoration-success="state=='completed'"
+                            decoration-primary="state=='active'"
+                            decoration-muted="state=='stopped'"
+                        />
+                    </tree>
+                    <form>
+                        <group>
+                            <field name="company_id" invisible="1" />
+                            <field name="patient_id" invisible="1" />
+                            <field name="encounter_id" invisible="1" />
+                            <field name="category_id" />
+                            <field name="medication_id" />
+                            <field name="dosage_id" />
+                        </group>
+                    </form>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>
