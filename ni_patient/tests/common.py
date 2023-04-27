@@ -2,17 +2,21 @@
 
 from odoo.tests import common
 
-from odoo.addons.test_mail.tests.common import mail_new_test_user
-
 
 class TestPatientCommon(common.TransactionCase):
     def setUp(self):
         super(TestPatientCommon, self).setUp()
 
-        self.patient_admin = mail_new_test_user(
-            self.env,
-            login="patient",
-            groups="base.group_user,ni_patient.group_user",
-            name="Patient Administrator",
-            email="p.admin@example.com",
+        patient_admin = self.env["res.users"].create(
+            {
+                "login": "Patient.User",
+                "groups_id": [
+                    (4, self.ref("base.group_user"), 0),
+                    (4, self.ref("ni_patient.group_admin"), 0),
+                ],
+                "name": "Patient Admin",
+                "email": "p.admin@example.com",
+                "password": "admin",
+            }
         )
+        self.patient_admin = self.env["ni.patient"].with_user(patient_admin)
