@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_procedure_action" model="ir.actions.act_window">
+        <field name="name">Procedures</field>
+        <field name="res_model">ni.procedure</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+    </record>
+    <record id="ni_procedure_action_pivot_from_encounter" model="ir.actions.act_window">
+        <field name="name">Procedures</field>
+        <field name="res_model">ni.procedure</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="domain">[('encounter_id', '=', active_id)]</field>
+    </record>
+    <record id="ni_procedure_view_search" model="ir.ui.view">
+        <field name="name">ni.procedure.view.search</field>
+        <field name="model">ni.procedure</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <filter
+                    name="occurrence_today"
+                    string="Today"
+                    domain="[
+                    ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                    ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter
+                    name="occurrence_yesterday"
+                    string="Yesterday"
+                    domain="[
+                    ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
+                    ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter name="occurrence" string="Occurrence" date="occurrence" />
+                <separator />
+                <group string="Group By">
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_encounter" string="Encounter" context="{'group_by': 'encounter_id'}" />
+                    <separator />
+                    <filter name="group_by_code" string="Code" context="{'group_by': 'code_id'}" />
+                    <filter name="group_by_outcome" string="Outcome" context="{'group_by': 'outcome_id'}" />
+                </group>
+                <searchpanel>
+                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" />
+                    <field name="category_id" enable_counters="1" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_procedure_view_graph" model="ir.ui.view">
+        <field name="name">ni.procedure.view.graph</field>
+        <field name="model">ni.procedure</field>
+        <field name="arch" type="xml">
+            <graph stacked="False" type="bar">
+                <field name="occurrence" interval="day" />
+                <field name="category_id" type="row" />
+                <field name="code_id" type="row" />
+                <field name="outcome_id" type="measure" />
+            </graph>
+        </field>
+    </record>
+    <record id="ni_procedure_view_pivot" model="ir.ui.view">
+        <field name="name">ni.procedure.view.pivot</field>
+        <field name="model">ni.procedure</field>
+        <field name="arch" type="xml">
+            <pivot default_order="patient_id, occurrence DESC">
+                <field name="occurrence" interval="day" type="col" />
+                <field name="patient_id" type="row" />
+                <field name="code_id" type="row" />
+                <field name="outcome_id" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_procedure_view_tree" model="ir.ui.view">
+        <field name="name">ni.procedure.view.tree</field>
+        <field name="model">ni.procedure</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-info="state in ['preparation', 'suspended']"
+                decoration-muted="state in ['not-done', 'abort']"
+            >
+                <field name="identifier" optional="hide" />
+                <field name="occurrence" />
+                <field name="encounter_id" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="code_id" />
+                <field name="category_id" />
+                <field name="outcome_id" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-muted="state in ['preparation', 'suspended']"
+                    decoration-info="state=='in-progress'"
+                    decoration-success="state=='completed'"
+                    decoration-danger="state in ['not-done', 'abort']"
+                />
+                <control>
+                    <create string="Add procedure" context="{'default_state': 'preparation', 'no_header': True}" />
+                    <create string="Add completed" context="{'default_state': 'completed'}" />
+                </control>
+            </tree>
+        </field>
+    </record>
+    <record id="ni_procedure_view_form" model="ir.ui.view">
+        <field name="name">ni.procedure.view.form</field>
+        <field name="model">ni.procedure</field>
+        <field name="arch" type="xml">
+            <form>
+                <header invisible="context.get('no_header')">
+                    <button
+                        name="action_start"
+                        string="Start"
+                        class="oe_highlight"
+                        states="preparation"
+                        type="object"
+                    />
+                    <button name="action_complete" string="Complete" states="preparation,in-progress" type="object" />
+                    <button name="action_not_done" string="Decline" states="preparation" type="object" />
+                    <button name="action_suspend" string="Suspend" states="in-progress" type="object" />
+                    <button name="action_not_done" string="Abort" states="in-progress" type="object" />
+                    <button name="action_resume" string="Resume" states="suspended" type="object" />
+                    <field name="state" widget="statusbar" statusbar_visible="preparation,in-progress,completed" />
+                </header>
+                <sheet>
+                    <div class="oe-title mb24">
+                        <label for="code_id" />
+                        <h4>
+                            <field name="code_id" class="w-100" placeholder="Search..." options="{'no_open': True}" />
+                        </h4>
+                        <div class="small text-muted">
+                            <field name="identifier" attrs="{'invisible': [('id', '=', False)]}" readonly="True" />
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="category_id" options="{'no_open': True}" />
+                            <field name="outcome_id" widget="radio" options="{'no_open': True}" />
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="1" options="{'no_open': True}" />
+                            <field
+                                name="patient_id"
+                                invisible="context.get('default_patient_id')"
+                                options="{'no_open': True}"
+                            />
+                            <field
+                                name="encounter_id"
+                                invisible="context.get('default_encounter_id')"
+                                options="{'no_open': True}"
+                            />
+                            <field name="occurrence" />
+                            <field name="location_id" options="{'no_open': True}" />
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Log a note..." />
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>
