@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2022. NSTDA
+  -->
+<odoo>
+    <record id="ni_procedure_company_rule" model="ir.rule">
+        <field name="name">Procedure: multi-company</field>
+        <field name="model_id" ref="model_ni_procedure" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

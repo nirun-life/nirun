@@ -1,0 +1,30 @@
+#  Copyright (c) 2022-2023. NSTDA
+
+{
+    "name": "Procedure",
+    "version": "16.0.0.1.0",
+    "development_status": "Alpha",
+    "category": "Medical/Summary",
+    "author": "NSTDA, Piruin P.",
+    "website": "https://nirun.life/",
+    "license": "LGPL-3",
+    "maintainers": ["piruin"],
+    "depends": ["ni_patient", "mail"],
+    "data": [
+        "security/ni_procedure_group.xml",
+        "security/ni_procedure_security.xml",
+        "security/ir.model.access.csv",
+        "data/ir_sequence_data.xml",
+        "data/ni_procedure_category_data.xml",
+        "data/ni_procedure_outcome_data.xml",
+        "views/ni_procedure_code_views.xml",
+        "views/ni_procedure_category_views.xml",
+        "views/ni_procedure_outcome_views.xml",
+        "views/ni_procedure_views.xml",
+        "views/ni_encounter_views.xml",
+    ],
+    "demo": [],
+    "application": False,
+    "auto_install": False,
+    "installable": True,
+}

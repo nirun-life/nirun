@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="priority">2</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='procedure']" position="inside">
+                <field
+                    name="procedure_ids"
+                    context="{'default_encounter_id': id, 'default_patient_id': patient_id, 'default_state':'completed'}"
+                >
+
+                </field>
+                <button name="action_procedure" icon="fa-scissors" type="object" title="Procedure" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
