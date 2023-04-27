@@ -10,9 +10,6 @@ from .common import TestPatientCommon
 
 class TestPatient(TestPatientCommon):
     def test_patient_resource(self):
-        patients = self.env["ni.patient"].with_user(self.patient_admin)
-        form = Form(patients)
-
         madam_glenda = self.env["res.partner"].create(
             {
                 "name": "Glenda J Langlois",
@@ -20,10 +17,12 @@ class TestPatient(TestPatientCommon):
                 "title": self.ref("base.res_partner_title_madam"),
             }
         )
+
+        form = Form(self.patient_admin)
         form.partner_id = madam_glenda
         form.save()
 
-        form2 = Form(patients)
+        form2 = Form(self.patient_admin)
         form2.partner_id = madam_glenda
         try:
             form2.save()
@@ -33,9 +32,9 @@ class TestPatient(TestPatientCommon):
             self.assertEqual(True, False, "Not raise UniqueViolation")
 
     def test_age(self):
-        patient = self.env["ni.patient"].with_user(self.patient_admin)
-        form = Form(patient)
+        form = Form(self.patient_admin)
         form.partner_id = self.env["res.partner"].create({"name": "Eunice"})
+        form.save()
         form.birthdate = fields.date.today() - relativedelta(years=62)
 
         patient = form.save()
@@ -44,9 +43,9 @@ class TestPatient(TestPatientCommon):
         self.assertEqual(patient.deceased, False)
 
     def test_deceased(self):
-        patient = self.env["ni.patient"].with_user(self.patient_admin)
-        form = Form(patient)
-        form.partner_id = self.env["res.partner"].create({"name": "Eunice"})
+        form = Form(self.patient_admin)
+        form.partner_id = self.env["res.partner"].create({"name": "Smith"})
+        form.save()
         form.birthdate = fields.date.today() - relativedelta(years=62)
         form.deceased_date = fields.date.today() - relativedelta(years=2)
 
