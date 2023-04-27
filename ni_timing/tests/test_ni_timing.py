@@ -8,8 +8,8 @@ _timing_name = [
     ("3 times every day", 3, 0, 1, 0, "day", 0, 0, 0),
     ("Every 4-6 hours", 1, 0, 4, 6, "hour", 0, 0, 0),
     ("1-2 times every day", 1, 2, 1, 0, "day", 0, 0, 0),
-    ("Every 21 days for 1 hour", 1, 0, 21, 0, "day", 1, 0, "hour"),
-    ("Every 2 days for 10-15 minutes", 1, 0, 2, 0, "day", 10, 15, "minute"),
+    ("For 1 hour every 21 days", 1, 0, 21, 0, "day", 1, 0, "hour"),
+    ("For 10-15 minutes every 2 days", 1, 0, 2, 0, "day", 10, 15, "minute"),
 ]
 
 
