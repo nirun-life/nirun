@@ -18,14 +18,12 @@ class Workflow(models.AbstractModel):
         index=True,
         ondelete="cascade",
         required=True,
-        tracking=True,
     )
     encounter_id = fields.Many2one(
         "ni.encounter",
         "Encounter No.",
         ondelete="cascade",
         index=True,
-        tracking=True,
         check_company=True,
     )
     name = fields.Char(required=True)
@@ -57,13 +55,15 @@ class Workflow(models.AbstractModel):
     @api.depends("occurrence")
     def _compute_date(self):
         for rec in self:
-            rec.occurrence_date = rec.occurrence.date()
+            if rec.occurrence:
+                rec.occurrence_date = rec.occurrence.date()
 
     def _inverse_date(self):
         for rec in self:
-            occur = fields.Datetime.from_string(rec.occurrence_date)
-            occur = occur.replace(hour=8)
-            rec.write({"occurrence": occur.replace(tzinfo=self.create_uid.tz)})
+            if rec.occurrence_date and not rec.occurrence:
+                occur = fields.Datetime.from_string(rec.occurrence_date)
+                occur = occur.replace(hour=0, tzinfo=None)
+                rec.occurrence = occur
 
     @api.model
     def garbage_collect(self):
@@ -109,6 +109,46 @@ class Request(models.Model):
         "request_id",
     )
     event_count = fields.Integer(compute="_compute_event_count")
+    intent = fields.Selection(
+        [
+            ("proposal", "Proposal"),
+            ("plan", "Plan"),
+            ("order", "Order"),
+        ],
+        default="order",
+        required=True,
+        readonly=False,
+        states={
+            "completed": [("readonly", True)],
+            "revoked": [("readonly", True)],
+        },
+    )
+    priority = fields.Selection(
+        [
+            ("routing", "Routine"),
+            ("urgent", "Urgent"),
+            ("asap", "ASAP"),
+            ("stat", "STAT"),
+        ],
+        default="routing",
+        required=True,
+        readonly=False,
+        states={
+            "completed": [("readonly", True)],
+            "revoked": [("readonly", True)],
+        },
+    )
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("active", "Active"),
+            ("on-hold", "On-Hold"),
+            ("revoked", "Revoked"),
+            ("completed", "Completed"),
+        ],
+        default="draft",
+        required=True,
+    )
 
     @api.depends("event_ids")
     def _compute_event_count(self):
@@ -129,3 +169,16 @@ class Event(models.Model):
 
     parent_id = fields.Many2one("ni.workflow.event", "Part of")
     request_id = fields.Many2one("ni.workflow.request", "Base on", required=False)
+
+    state = fields.Selection(
+        [
+            ("preparation", "Preparation"),
+            ("not-done", "Not done"),
+            ("in-progress", "In Progress"),
+            ("suspended", "Suspend"),
+            ("abort", "aborted"),
+            ("completed", "Completed"),
+        ],
+        default="preparation",
+        required=True,
+    )
