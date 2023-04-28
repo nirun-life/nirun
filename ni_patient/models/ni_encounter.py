@@ -194,7 +194,7 @@ class Encounter(models.Model):
     courtesy_ids = fields.Many2many(
         "ni.encounter.courtesy",
         "ni_encounter_courtesy_rel",
-        "encouter_id",
+        "encounter_id",
         "courtesy_id",
         string="Special Courtesy",
         states=LOCK_STATE_DICT,
@@ -216,7 +216,7 @@ class Encounter(models.Model):
 
     # Participant
     participant_ids = fields.One2many(
-        "ni.encounter.participant", "encounter_id", state=LOCK_STATE_DICT
+        "ni.encounter.participant", "encounter_id", states=LOCK_STATE_DICT
     )
     participant_count = fields.Integer(compute="_compute_participant")
 
@@ -365,11 +365,12 @@ class Encounter(models.Model):
             ] + args
         return self._search(args, limit=limit, access_rights_uid=name_get_uid)
 
-    @api.model
-    def create(self, vals):
-        self._update_chief_complaint(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._update_chief_complaint(vals)
 
-        result = super().create(vals)
+        result = super().create(vals_list)
         if result.location_id:
             result._create_location_hist(
                 location=result.location_id.id, start=result.period_start

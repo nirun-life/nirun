@@ -13,7 +13,6 @@ class Location(models.Model):
     company_id = fields.Many2one(
         "res.company",
         "Company",
-        tracking=True,
         required=True,
         index=True,
         default=lambda self: self.env.company,
