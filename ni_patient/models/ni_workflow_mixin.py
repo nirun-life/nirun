@@ -8,8 +8,10 @@ from odoo import api, fields, models
 class WorkflowMixin(models.AbstractModel):
     _name = "ni.workflow.mixin"
     _description = "Workflow Mixin"
-    _inherit = "ni.patient.res"
-    _workflow_occurrence = "occurrence"
+    _inherit = [
+        "ni.patient.res",
+    ]
+    _workflow_occurrence_field = "occurrence"
     _workflow_type = False
 
     @property
@@ -25,8 +27,11 @@ class WorkflowMixin(models.AbstractModel):
         return None
 
     @property
-    def _workflow_occurence(self) -> fields.Datetime:
-        return self.mapped(self._workflow_occurrence)[0]
+    def _workflow_occurrence(self) -> fields.Datetime | None:
+        if self._workflow_occurrence_field in self._fields:
+            return self.mapped(self._workflow_occurrence_field)[0]
+        else:
+            return None
 
     def _workflow_replace_id(self, data):
         if "replace_id" in self._fields and self.replace_id:
@@ -45,8 +50,9 @@ class WorkflowMixin(models.AbstractModel):
             "res_id": self.id,
             "name": self._workflow_name,
             "summary": self._workflow_summary,
-            "occurrence": self._workflow_occurence,
+            "occurrence": self._workflow_occurrence,
             "type": self._workflow_type,
+            "state": self.state,
             "create_date": self.create_date,
             "create_uid": self.create_uid.id,
             "write_date": self.write_date,
@@ -55,14 +61,15 @@ class WorkflowMixin(models.AbstractModel):
         self._workflow_replace_id(data)
         return data
 
-    @api.model
-    def create(self, vals):
-        record = super(WorkflowMixin, self).create(vals)
-        record._write_workflow()
-        return record
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for rec in records:
+            rec._write_workflow()
+        return records
 
     def write(self, vals):
-        success = super(WorkflowMixin, self).write(vals)
+        success = super().write(vals)
         for rec in self:
             rec._write_workflow()
         return success
@@ -86,6 +93,10 @@ class WorkflowMixin(models.AbstractModel):
         ).unlink()
         return result
 
+    def _get_state_label(self):
+        self.ensure_one()
+        return dict(self._fields["state"].selection).get(self.state)
+
 
 class EventMixin(models.AbstractModel):
     _name = "ni.workflow.event.mixin"
@@ -105,6 +116,19 @@ class EventMixin(models.AbstractModel):
         ],
     )
 
+    state = fields.Selection(
+        related="event_id.state", readonly=False, store=True, default="preparation"
+    )
+    occurrence = fields.Datetime(
+        related="event_id.occurrence",
+        readonly=False,
+        store=True,
+        default=fields.Datetime.now(),
+    )
+    occurrence_date = fields.Date(
+        related="event_id.occurrence_date", readonly=False, store=True
+    )
+
     @property
     def _workflow_request_id(self):
         return None
@@ -115,12 +139,41 @@ class EventMixin(models.AbstractModel):
             res.update({"request_id": self._workflow_request_id.id})
         return res
 
+    def action_not_done(self):
+        self.filtered_domain([("state", "=", "preparation")]).write(
+            {"state": "not-done"}
+        )
+
+    def action_start(self):
+        self.filtered_domain([("state", "=", "preparation")]).write(
+            {"state": "in-progress"}
+        )
+
+    def action_suspend(self):
+        self.filtered_domain([("state", "=", "in-progress")]).write(
+            {"state": "suspended"}
+        )
+
+    def action_resume(self):
+        self.filtered_domain([("state", "=", "suspended")]).write(
+            {"state": "in-progress"}
+        )
+
+    def action_complete(self):
+        self.filtered_domain([("state", "in", ["preparation", "in-progress"])]).write(
+            {"state": "completed"}
+        )
+
+    def action_abort(self):
+        self.filtered_domain([("state", "in", "in-progress")]).write({"state": "abort"})
+
 
 class RequestMixin(models.AbstractModel):
     _name = "ni.workflow.request.mixin"
     _description = "Request Mixin"
     _inherit = "ni.workflow.mixin"
     _workflow_type = "request"
+    _workflow_occurrence = "create_date"
 
     request_id = fields.Many2one(
         "ni.workflow.request",
@@ -134,3 +187,35 @@ class RequestMixin(models.AbstractModel):
             ("res_id", "=", lambda self: self.id),
         ],
     )
+    priority = fields.Selection(related="request_id.priority", readonly=False)
+    intent = fields.Selection(related="request_id.intent", readonly=False, store=True)
+    state = fields.Selection(related="request_id.state", readonly=False, store=True)
+
+    def _to_workflow(self):
+        data = super(RequestMixin, self)._to_workflow()
+        data.update(
+            {
+                "priority": self.priority,
+                "intent": self.intent,
+            }
+        )
+        return data
+
+    def action_confirm(self):
+        self.filtered_domain([("state", "=", "draft")]).write({"state": "active"})
+
+    def action_hold(self):
+        self.filtered_domain([("state", "=", "active")]).write({"state": "on-hold"})
+
+    def action_resume(self):
+        self.filtered_domain([("state", "=", "on-hold")]).write({"state": "active"})
+
+    def action_complete(self):
+        self.filtered_domain([("state", "in", ["draft", "active"])]).write(
+            {"state": "completed"}
+        )
+
+    def action_revoked(self):
+        self.filtered_domain([("state", "in", "in-progress")]).write(
+            {"state": "revoked"}
+        )
