@@ -13,14 +13,14 @@ class Dosage(models.Model):
     display_name = fields.Char(compute="_compute_display_name")
     color = fields.Integer()
     text = fields.Text(
-        help="How the medication is/was taken or should be taken", tracking=True
+        help="How the medication is/was taken or should be taken",
     )
     additional_ids = fields.Many2many(
         "ni.medication.dosage.additional",
         "ni_medication_dosage_additional_rel",
         "dosage_id",
         "additional_id",
-        stirng="Additional Instruction",
+        string="Additional Instruction",
         help="Supplemental instruction or warnings to the patient - "
         'e.g. "with meals", "may cause drowsiness"',
     )
@@ -36,7 +36,10 @@ class Dosage(models.Model):
         "Method",
         help="Technique for administering medication",
     )
-    as_need = fields.Boolean("As need?", default=False, tracking=True)
+    as_need = fields.Boolean(
+        "As need?",
+        default=False,
+    )
     dose = fields.Float()
     dose_unit_id = fields.Many2one("uom.uom")
     display_dose = fields.Char(compute="_compute_display_dose")

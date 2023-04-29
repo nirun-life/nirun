@@ -3,21 +3,21 @@
   ~ Copyright (c) 2021-2023 NSTDA
   -->
 <odoo>
-    <record id="ni_medication_statement_action" model="ir.actions.act_window">
-        <field name="name">Medications Statement</field>
-        <field name="res_model">ni.medication.statement</field>
-        <field name="view_mode">tree,form,pivot,graph</field>
+    <record id="ni_medication_dispense_action" model="ir.actions.act_window">
+        <field name="name">Medications Dispense</field>
+        <field name="res_model">ni.medication.dispense</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph,activity</field>
         <field name="context">{'search_default_period_today': True}</field>
     </record>
-    <record id="ni_medication_statement_action_completed" model="ir.actions.act_window">
-        <field name="name">Medications Statement</field>
-        <field name="res_model">ni.medication.statement</field>
-        <field name="view_mode">tree,form,pivot,graph</field>
+    <record id="ni_medication_dispense_action_completed" model="ir.actions.act_window">
+        <field name="name">Medications dispense</field>
+        <field name="res_model">ni.medication.dispense</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph,activity</field>
         <field name="context">{'search_default_state_completed': True}</field>
     </record>
-    <record id="ni_medication_statement_view_search" model="ir.ui.view">
-        <field name="name">ni.medication.statement.view.search</field>
-        <field name="model">ni.medication.statement</field>
+    <record id="ni_medication_dispense_view_search" model="ir.ui.view">
+        <field name="name">ni.medication.dispense.view.search</field>
+        <field name="model">ni.medication.dispense</field>
         <field name="arch" type="xml">
             <search>
                 <field name="medication_id" />
@@ -48,40 +48,46 @@
                 />
                 <filter name="at_night" string="At night" domain="[('dosage_when.code', 'in', ['HS'])]" />
                 <separator />
-                <filter name="state_draft" string="Currently" domain="[('state', '=', 'preparation')]" />
-                <filter name="state_recorded" string="Recorded" domain="[('state', '=', 'completed')]" />
+                <filter
+                    name="state_to_dispense"
+                    string="To Dispense"
+                    domain="[('state', 'in', ['preparation', 'in-progress', 'suspended'])]"
+                />
+                <filter name="state_dispensed" string="Dispensed" domain="[('state', '=', 'completed')]" />
+                <filter name="state_abort" string="Abort" domain="[('state', 'in', ['not-done', 'abort'])]" />
                 <separator />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
                 <group string="Group by">
                     <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
                     <filter name="group_by_medication" string="Medication" context="{'group_by': 'medication_id'}" />
+                    <filter name="group_by_category" string="Category" context="{'group_by': 'category_id'}" />
                 </group>
             </search>
         </field>
     </record>
-    <record id="ni_medication_statement_view_tree" model="ir.ui.view">
-        <field name="name">ni.medication.statement.view.tree</field>
-        <field name="model">ni.medication.statement</field>
+    <record id="ni_medication_dispense_view_tree" model="ir.ui.view">
+        <field name="name">ni.medication.dispense.view.tree</field>
+        <field name="model">ni.medication.dispense</field>
         <field name="arch" type="xml">
             <tree decoration-info="state in ['preparation']" multi_edit="1">
                 <field name="company_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
-                <field name="occurrence" optional="hide" />
+                <field name="category_id" optional="hide" />
+                <field name="occurrence" optional="show" />
                 <field name="medication_id" />
                 <field name="dosage_id" optional="show" />
-                <field name="category_id" optional="hide" />
                 <field name="state" optional="hide" />
                 <field name="active" invisible="1" />
                 <control>
-                    <create string="Add statement" context="{}" />
+                    <create string="Add dispense" context="{}" />
                 </control>
             </tree>
         </field>
     </record>
-    <record id="ni_medication_statement_view_form" model="ir.ui.view">
-        <field name="name">ni.medication.statement.view.form</field>
-        <field name="model">ni.medication.statement</field>
+    <record id="ni_medication_dispense_view_form" model="ir.ui.view">
+        <field name="name">ni.medication.dispense.view.form</field>
+        <field name="model">ni.medication.dispense</field>
         <field name="arch" type="xml">
             <form>
                 <field name="id" invisible="True" />
@@ -96,9 +102,9 @@
                     />
                     <div class="oe_title">
                         <label for="medication_id" />
-                        <div>
+                        <h4>
                             <field name="medication_id" class="w-100" nolabel="True" />
-                        </div>
+                        </h4>
                     </div>
                     <group>
                         <group>
@@ -121,9 +127,6 @@
                     </group>
                     <notebook>
                         <page name="detail" string="Detail">
-                            <group string="Condition">
-                                <field name="condition_ids" widget="many2many_tags" />
-                            </group>
                             <group>
                                 <group class="w-75" string="Dosage">
                                     <label for="timing_id" />
@@ -131,7 +134,7 @@
                                         <field
                                             name="timing_tmpl_id"
                                             options="{'no_create':True, 'no_create_edit':True}"
-                                            attrs="{'invisible': [('timing_id', '!=', False)]}"
+                                            attrs="{'invisible': [('timing_id', '!=', False)], 'required':[('timing_id', '=', False)]}"
                                             placeholder="choose from..."
                                         />
                                         <span
@@ -144,7 +147,7 @@
                                             name="timing_id"
                                             domain="[('id', '=', False)]"
                                             options="{'no_quick_create':True}"
-                                            attrs="{'invisible': [('timing_tmpl_id', '!=', False)]}"
+                                            attrs="{'invisible': [('timing_tmpl_id', '!=', False)], 'required':[('timing_tmpl_id', '=', False)]}"
                                             placeholder="create new..."
                                         />
                                     </div>
@@ -201,21 +204,42 @@
                             <field name="text" placeholder="Describe more additional dosage here..." />
                         </page>
                         <page name="note" string="Note">
-                            <field name="note" placeholder="Further information about the statement" />
+                            <field name="note" placeholder="Further information about the dispense" />
                         </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" groups="base.group_user" />
-                    <field name="activity_ids" />
                     <field name="message_ids" />
                 </div>
             </form>
         </field>
     </record>
-    <record id="ni_medication_statement_view_pivot" model="ir.ui.view">
-        <field name="name">ni.medication.statement.view.pivot</field>
-        <field name="model">ni.medication.statement</field>
+    <record id="ni_medication_dispense_view_activity" model="ir.ui.view">
+        <field name="name">ni.medication.dispense.view.activity</field>
+        <field name="model">ni.medication.dispense</field>
+        <field name="arch" type="xml">
+            <activity string="Medication dispense">
+                <field name="patient_id" />
+                <templates>
+                    <div t-name="activity-box">
+                        <div>
+                            <field name="name" display="full" />
+                            <field
+                                name="patient_id"
+                                display="full"
+                                invisible="context.get('default_patient_id', False)"
+                                muted="1"
+                            />
+                        </div>
+                    </div>
+                </templates>
+            </activity>
+        </field>
+    </record>
+    <record id="ni_medication_dispense_view_pivot" model="ir.ui.view">
+        <field name="name">ni.medication.dispense.view.pivot</field>
+        <field name="model">ni.medication.dispense</field>
         <field name="arch" type="xml">
             <pivot>
                 <field name="medication_id" type="row" />
@@ -223,9 +247,9 @@
             </pivot>
         </field>
     </record>
-    <record id="ni_medication_statement_view_graph" model="ir.ui.view">
-        <field name="name">ni.medication.statement.view.graph</field>
-        <field name="model">ni.medication.statement</field>
+    <record id="ni_medication_dispense_view_graph" model="ir.ui.view">
+        <field name="name">ni.medication.dispense.view.graph</field>
+        <field name="model">ni.medication.dispense</field>
         <field name="arch" type="xml">
             <graph>
                 <field name="medication_id" type="col" />

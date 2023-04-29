@@ -10,15 +10,14 @@ class Patient(models.Model):
         "ni.medication.statement",
         "patient_id",
         string="Medication Statements",
-        domain=[("state", "=", "active")],
         check_company=True,
         groups="ni_medication.group_user",
     )
     medication_statement_count = fields.Integer(compute="_compute_medication_count")
 
     def _compute_medication_count(self):
-        observations = self.env["ni.medication.statement"].sudo()
-        read = observations.read_group(
+        statement = self.env["ni.medication.statement"].sudo()
+        read = statement.read_group(
             [("patient_id", "in", self.ids)], ["patient_id"], ["patient_id"]
         )
         data = {res["patient_id"][0]: res["patient_id_count"] for res in read}

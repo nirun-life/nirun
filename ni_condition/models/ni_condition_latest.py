@@ -15,7 +15,7 @@ class ConditionLatest(models.Model):
     code_id = fields.Many2one(readonly=True, required=True, index=True)
     period_start = fields.Date(readonly=True)
     period_end = fields.Date(readonly=True)
-    state = fields.Selection(readonly=True)
+    clinical_state = fields.Selection(readonly=True)
     severity = fields.Selection(readonly=True)
 
     def init(self):
@@ -27,7 +27,7 @@ class ConditionLatest(models.Model):
             WHERE id IN (
                 SELECT max(id)
                 FROM ni_condition
-                WHERE state IN ('active', 'recurrence', 'remission')
+                WHERE clinical_state IN ('active', 'recurrence', 'remission')
                 GROUP BY patient_id, code_id
             )
         )
