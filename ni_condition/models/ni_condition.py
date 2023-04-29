@@ -6,7 +6,7 @@ from odoo import _, api, fields, models
 class Condition(models.Model):
     _name = "ni.condition"
     _description = "Condition"
-    _inherit = ["ni.period.mixin", "ni.workflow.event.mixin"]
+    _inherit = ["ni.period.mixin", "ni.patient.res"]
     _workflow_occurrence = "create_date"
 
     def _get_default_condition_class(self):
@@ -41,7 +41,7 @@ class Condition(models.Model):
     period_start_date = fields.Date("Onset Date", default=None)
     period_end = fields.Datetime("Abatement")
     period_end_date = fields.Datetime("Abatement Date")
-    state = fields.Selection(
+    clinical_state = fields.Selection(
         [
             ("active", "Suffering"),
             ("recurrence", "Recurrence "),
@@ -93,7 +93,7 @@ class Condition(models.Model):
 
     def get_state_label(self):
         self.ensure_one()
-        return dict(self._fields["state"].selection).get(self.state)
+        return dict(self._fields["clinical_state"].selection).get(self.clinical_state)
 
     def get_verification_label(self):
         self.ensure_one()
@@ -114,15 +114,15 @@ class Condition(models.Model):
         return view
 
     def action_remission(self):
-        self.write({"state": "remission", "period_end": fields.Date.today()})
+        self.write({"clinical_state": "remission", "period_end": fields.Date.today()})
         return True
 
     def action_resolve(self):
-        self.write({"state": "resolved", "period_end": fields.Date.today()})
+        self.write({"clinical_state": "resolved", "period_end": fields.Date.today()})
         return True
 
     def action_active(self):
-        self.write({"state": "active", "period_end": False})
+        self.write({"clinical_state": "active", "period_end": False})
         return True
 
     @api.onchange("code_id")
