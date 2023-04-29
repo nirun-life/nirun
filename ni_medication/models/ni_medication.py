@@ -50,10 +50,10 @@ class Medication(models.Model):
         "ni_medication_patient_rel",
         compute="_compute_patient",
         store=True,
-        sudo_compute=True,
     )
     patient_count = fields.Integer(
-        compute="_compute_patient", store=True, sudo_compute=True
+        compute="_compute_patient",
+        store=True,
     )
     dosage_ids = fields.Many2many(
         "ni.medication.dosage",
@@ -64,6 +64,14 @@ class Medication(models.Model):
     )
     dosage_count = fields.Integer(compute="_compute_dosage_count")
     dose_unit_id = fields.Many2one("uom.uom", compute="_compute_dose_unit_id")
+
+    type = fields.Selection(
+        related="product_tmpl_id.type", default="consu", store=False
+    )
+
+    condition_code_ids = fields.Many2many(
+        "ni.condition.code", "ni_medication_condition_code", "id", "code_id"
+    )
 
     @api.depends("dosage_ids")
     def _compute_dosage_count(self):
@@ -80,7 +88,7 @@ class Medication(models.Model):
         statement = self.env["ni.medication.statement"].search(
             [
                 ("medication_id", "in", self.ids),
-                ("state", "=", "active"),
+                ("state", "in", ["in-progress", "completed"]),
                 ("company_id", "in", self.env.company.ids),
             ]
         )

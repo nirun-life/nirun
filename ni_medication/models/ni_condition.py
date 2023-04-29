@@ -8,9 +8,9 @@ class Condition(models.Model):
 
     medication_statement_ids = fields.Many2many(
         "ni.medication.statement",
-        "ni_medication_statement_condition_rel",
+        "ni_medication_statement_condition",
         "condition_id",
         "statement_id",
-        "Medication Statements",
+        "Medication Statement",
         readonly=True,
     )
