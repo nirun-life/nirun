@@ -39,17 +39,18 @@ class Partner(models.Model):
         store=True,
     )
 
-    @api.model
-    def create(self, vals):
-        if vals.get("age") and not vals.get("birthdate"):
-            vals.update(
-                {
-                    "birthdate": None,
-                    "age_init": vals.get("age"),
-                    "age_init_date": fields.Date.context_today(self),
-                }
-            )
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("age") and not vals.get("birthdate"):
+                vals.update(
+                    {
+                        "birthdate": None,
+                        "age_init": vals.get("age"),
+                        "age_init_date": fields.Date.context_today(self),
+                    }
+                )
+        return super().create(vals_list)
 
     def write(self, vals):
         if vals.get("birthdate"):
