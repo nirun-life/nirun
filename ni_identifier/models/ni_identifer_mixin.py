@@ -14,28 +14,30 @@ class IdentifierMixin(models.AbstractModel):
 
     identifier = fields.Char(default=_identifier_default)
 
-    @api.model
-    def create(self, vals):
-        if (
-            vals.get(self._identifier_field, self._identifier_default)
-            == self._identifier_default
-        ):
-            seq_date = fields.Date.today()
-            seq = self.env["ir.sequence"]
-            if self._identifier_ts_field in vals:
-                seq_date = fields.Datetime.context_timestamp(
-                    self, fields.Datetime.to_datetime(vals[self._identifier_ts_field])
-                )
-            if "company_id" in vals:
-                vals[self._identifier_field] = (
-                    seq.with_context(force_company=vals["company_id"]).next_by_code(
-                        self._name, sequence_date=seq_date
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if (
+                vals.get(self._identifier_field, self._identifier_default)
+                == self._identifier_default
+            ):
+                seq_date = fields.Date.today()
+                if self._identifier_ts_field in vals:
+                    seq_date = fields.Datetime.context_timestamp(
+                        self,
+                        fields.Datetime.to_datetime(vals[self._identifier_ts_field]),
                     )
-                    or self._identifier_default
-                )
-            else:
-                vals[self._identifier_field] = (
-                    seq.next_by_code(self._name, sequence_date=seq_date)
-                    or self._identifier_default
-                )
-        return super().create(vals)
+                seq = self.env["ir.sequence"]
+                if "company_id" in vals:
+                    vals[self._identifier_field] = (
+                        seq.with_context(with_company=vals["company_id"]).next_by_code(
+                            self._name, sequence_date=seq_date
+                        )
+                        or self._identifier_default
+                    )
+                else:
+                    vals[self._identifier_field] = (
+                        seq.next_by_code(self._name, sequence_date=seq_date)
+                        or self._identifier_default
+                    )
+        return super().create(vals_list)
