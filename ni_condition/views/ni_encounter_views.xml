@@ -10,9 +10,18 @@
         <field name="priority">3</field>
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[@name='history']" position="inside">
-                <group string="Problem">
-                    <field name="problem_code_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
-                </group>
+                <separator string="Problem List Item" />
+                <field
+                    name="condition_problem_ids"
+                    context="{'default_encounter_id': id, 'default_patient_id': patient_id, 'no_category':True, 'no_header': True }"
+                />
+            </xpath>
+            <xpath expr="//notebook/page[@name='problem']" position="inside">
+                <field
+                    name="diagnosis_ids"
+                    mode="tree"
+                    context="{'default_encounter_id': id, 'default_patient_id': patient_id}"
+                />
             </xpath>
         </field>
     </record>
