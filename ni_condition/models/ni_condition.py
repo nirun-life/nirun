@@ -34,7 +34,6 @@ class Condition(models.Model):
     )
     severity = fields.Selection(
         [("mild", "Mild"), ("moderate", "Moderate"), ("severe", "Severe")],
-        tracking=1,
         required=False,
     )
     period_start = fields.Datetime("Onset", default=None)
@@ -53,15 +52,12 @@ class Condition(models.Model):
         string="Status",
         copy=False,
         index=True,
-        tracking=1,
         default="active",
     )
     verification_id = fields.Many2one("ni.condition.verification")
     recurrence = fields.Boolean()
     note = fields.Text()
-
-    create_date = fields.Datetime("Recorded", readonly=True)
-    create_uid = fields.Many2one("res.users", "Recorder", readonly=True)
+    diagnosis_ids = fields.One2many("ni.encounter.diagnosis", "condition_id")
 
     _sql_constraints = [
         (
@@ -94,10 +90,6 @@ class Condition(models.Model):
     def get_state_label(self):
         self.ensure_one()
         return dict(self._fields["clinical_state"].selection).get(self.clinical_state)
-
-    def get_verification_label(self):
-        self.ensure_one()
-        return dict(self._fields["verification"].selection).get(self.verification)
 
     def action_edit(self):
         self.ensure_one()
