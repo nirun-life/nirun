@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_diagnosis_view_form" model="ir.ui.view">
+        <field name="name">ni.encounter.diagnosis.view.form</field>
+        <field name="model">ni.encounter.diagnosis</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <field name="encounter_id" invisible="1" />
+                    <field name="patient_id" invisible="1" />
+                    <field name="company_id" invisible="1" />
+                    <group>
+                        <field name="code_id" attrs="{'readonly': [('id', '!=', False)]}" />
+                    </group>
+                    <group>
+                        <group>
+                            <field name="role_id" />
+                            <field name="severity" />
+                        </group>
+                        <group>
+                            <field name="is_diagnosis" invisible="1" />
+                            <field name="is_problem" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_encounter_diagnosis_view_tree" model="ir.ui.view">
+        <field name="name">ni.encounter.diagnosis.view.tree</field>
+        <field name="model">ni.encounter.diagnosis</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="is_problem == True">
+                <field name="company_id" invisible="1" />
+                <field name="encounter_id" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="sequence" widget="handle" />
+                <field name="code_id" />
+                <field name="severity" optional="hide" />
+                <field
+                    name="role_id"
+                    widget="badge"
+                    decoration-primary="role_decoration == 'primary'"
+                    decoration-success="role_decoration == 'success'"
+                    decoration-info="role_decoration == 'info'"
+                    decoration-warning="role_decoration == 'warning'"
+                    decoration-danger="role_decoration == 'danger'"
+                    decoration-muted="role_decoration == 'muted'"
+                />
+                <field name="role_decoration" invisible="1" />
+                <field name="is_diagnosis" invisible="1" />
+                <field name="is_problem" invisible="1" />
+                <field name="create_uid" optional="hide" />
+                <field name="create_date" optional="hide" />
+                <control>
+                    <create string="Add diagnosis" context="{'default_is_diagnosis': True}" />
+                </control>
+            </tree>
+        </field>
+    </record>
+</odoo>
