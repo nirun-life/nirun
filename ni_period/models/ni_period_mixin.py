@@ -20,8 +20,7 @@ class PeriodMixin(models.AbstractModel):
         "Since", index=True, default=lambda self: fields.Datetime.now()
     )
     period_start_date = fields.Date(
-        "Since",
-        tracking=True,
+        "Since (Date)",
         index=True,
         readonly=False,
         store=True,
@@ -32,8 +31,7 @@ class PeriodMixin(models.AbstractModel):
     )
     period_end = fields.Datetime("Until", index=True)
     period_end_date = fields.Date(
-        "Until",
-        tracking=True,
+        "Until (Date)",
         index=True,
         readonly=False,
         store=True,
@@ -70,7 +68,7 @@ class PeriodMixin(models.AbstractModel):
 
     def _inverse_period_start_date(self):
         for rec in self:
-            if rec.period_start_date:
+            if rec.period_start_date and not rec.period_start:
                 dt = fields.Datetime.from_string(rec.period_start_date)
                 dt = dt.replace(hour=0, tzinfo=None)
                 rec.period_start = dt
@@ -83,7 +81,7 @@ class PeriodMixin(models.AbstractModel):
 
     def _inverse_period_end_date(self):
         for rec in self:
-            if rec.period_end_date:
+            if rec.period_end_date and not rec.period_end:
                 dt = fields.Datetime.from_string(rec.period_end_date)
                 dt = dt.replace(hour=0, tzinfo=None)
                 rec.period_end = dt
