@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_allergy_action" model="ir.actions.act_window">
+        <field name="name">Allergy / Intolerance</field>
+        <field name="res_model">ni.allergy</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+    </record>
+    <record id="ni_allergy_view_search" model="ir.ui.view">
+        <field name="name">ni.allergy.view.search</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <field name="code_id" />
+                <separator />
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]" />
+                <filter name="inactive" string="Inactive" domain="[('state', '=', 'inactive')]" />
+                <filter name="resolved" string="Resolved" domain="[('state', '=', 'resolved')]" />
+                <separator />
+                <filter name="criticality_high" string="High" domain="[('criticality', '=', 'high')]" />
+                <filter name="criticality_low" string="Low" domain="[('criticality', '=', 'low')]" />
+                <filter
+                    name="criticality_unable_to_assess"
+                    string="Unable to Access"
+                    domain="[('criticality', '=', 'unable-to-assess')]"
+                />
+                <group>
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_code" string="Allergy / Intolerance" context="{'group_by': 'code_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_allergy_view_tree" model="ir.ui.view">
+        <field name="name">ni.allergy.view.tree</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="state in ['inactive','resolved']">
+                <field name="company_id" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="encounter_id" invisible="1" />
+                <field name="type" optional="hide" />
+                <field name="category" optional="hide" />
+                <field name="code_id" />
+                <field name="criticality" optional="hide" />
+                <field name="state" optional="hide" />
+                <button
+                    name="action_resolve"
+                    type="object"
+                    string="Resolve"
+                    class="text-success"
+                    states="active,inactive"
+                />
+                <control>
+                    <create string="Add Allergy" context="{'default_state': 'active', 'default_type': 'allergy'}" />
+                    <create
+                        string="Add Intolerance"
+                        context="{'default_state': 'active', 'default_type': 'intolerance'}"
+                    />
+                </control>
+            </tree>
+        </field>
+    </record>
+    <record id="ni_allergy_view_form" model="ir.ui.view">
+        <field name="name">ni.allergy.view.form</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="1" />
+                <field name="company_id" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="encounter_id" invisible="1" />
+                <header class="oe_read_only" invisible="context.get('no_header')">
+                    <button name="action_active" string="Active" states="resolved" type="object" />
+                    <button name="action_resolve" string="Resolve" states="active" type="object" />
+                    <field name="state" statusbar_visible="active,resolved" widget="statusbar" />
+                </header>
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'inactive')]}"
+                        bg_color="bg-success"
+                        title="Inactive"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'resolved')]}"
+                        bg_color="bg-success"
+                        title="Resolved"
+                    />
+                    <div class="oe_title mb-4">
+                        <label for="code_id" />
+                        <div>
+                            <field
+                                name="code_id"
+                                nolabel="1"
+                                placeholder="Allergy / Intolerance"
+                                class="w-100"
+                                options="{'no_open': True}"
+                            />
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type" />
+                        </group>
+                        <group>
+                            <field name="criticality" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="note" string="Note">
+                            <field name="note" placeholder="Additional note" />
+                        </page>
+                        <page name="reaction" string="Event">
+                            <field name="reaction_ids" context="{'default_allergy_id': id}" mode="tree">
+                                <tree editable="top">
+                                    <field name="onset" />
+                                    <field name="description" placeholder="Description of the event as a whole" />
+                                    <field name="severity" optional="show" />
+                                    <field name="note" optional="hide" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="condition_view_pivot" model="ir.ui.view">
+        <field name="name">condition.view.pivot</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="category" type="row" />
+            </pivot>
+        </field>
+    </record>
+    <record id="condition_view_graph" model="ir.ui.view">
+        <field name="name">condition.view.graph</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="category" type="col" />
+            </graph>
+        </field>
+    </record>
+</odoo>
