@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_document_ref_action" model="ir.actions.act_window">
+        <field name="name">Document Reference</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.document.ref</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Not Found</p>
+            <p>Try remove some filter</p>
+        </field>
+    </record>
+    <record id="ni_document_ref_view_search" model="ir.ui.view">
+        <field name="name">ni.document.ref.view.search</field>
+        <field name="model">ni.document.ref</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="type_id" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <filter name="groupby_category" string="Category" context="{'group_by':'category_id'}" />
+                <filter name="groupby_type" string="Type" context="{'group_by':'type_id'}" />
+            </search>
+        </field>
+    </record>
+    <record id="ni_document_ref_view_tree" model="ir.ui.view">
+        <field name="name">ni.document.ref.view.tree</field>
+        <field name="model">ni.document.ref</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="company_id" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="encounter_id" invisible="1" />
+                <field name="category_id" optional="hide" />
+                <field name="occurrence" />
+                <field name="type_id" />
+                <field name="create_uid" optional="hide" />
+                <field name="create_date" optional="hide" />
+                <field name="write_uid" optional="show" />
+                <field name="write_date" optional="hide" />
+                <control>
+                    <create string="Add document" context="{}" />
+                </control>
+            </tree>
+        </field>
+    </record>
+    <record id="ni_document_ref_view_form" model="ir.ui.view">
+        <field name="name">ni.document.ref.view.form</field>
+        <field name="model">ni.document.ref</field>
+        <field name="arch" type="xml">
+            <form string="Document Reference">
+                <field name="active" invisible="1" />
+                <field name="state" invisible="1" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        class="oe_read_only"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="type_id" options="{'no_open': True}" />
+                            <field name="category_id" options="{'no_open': True}" />
+                        </group>
+                        <group>
+                            <field name="occurrence" />
+                        </group>
+                    </group>
+                    <field name="data" class="oe-bordered-editor mt-2" placeholder="Document content..." />
+                    <field
+                        name="attachment_ids"
+                        widget="many2many_binary"
+                        string="Attach a file"
+                        nolabel="1"
+                        class="w-100"
+                    />
+                    <div class="mt-2">
+                        <field
+                            name="write_uid"
+                            widget="many2one_avatar_user"
+                            class="text-muted"
+                            options="{'no_open': True}"
+                        />
+                        <field name="write_date" class="text-muted mx-2" />
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
