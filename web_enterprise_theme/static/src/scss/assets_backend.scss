@@ -1,0 +1,352 @@
+@mixin x2many-list-sheet-fill($marginTop: 0px) {
+    display: block;
+    width: auto;
+    @include o-form-sheet-negative-margin;
+    margin-top: $marginTop;
+    border-top-width: 0;
+
+    tr {
+        &:first-child > th {
+            border: none;
+            background-color: white;
+        }
+
+        > :first-child {
+            @include o-form-sheet-inner-left-padding;
+
+            &.o_handle_cell {
+                padding-left: 0.3rem;
+            }
+        }
+        > :last-child {
+            @include o-form-sheet-inner-right-padding;
+        }
+    }
+}
+
+.o_form_view {
+    .o_group .o_td_label {
+        border-color: transparent;
+    }
+
+    .oe_button_box {
+        .oe_stat_button {
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.03) !important;
+            }
+            .o_button_icon {
+                color: $gray-800 !important;
+            }
+        }
+    }
+
+    .o_horizontal_separator {
+        font-size: $h5-font-size;
+        font-weight: 400;
+        border-bottom: 0.5px solid $gray-300;
+        margin-right: $o-horizontal-padding * 2;
+        margin-bottom: 8px;
+    }
+
+    .o_form_label {
+        &.o_form_label_empty,
+        &.o_form_label_false {
+            opacity: 0.5;
+            font-weight: 400;
+            height: 24.5px;
+        }
+    }
+
+    .o_form_sheet .o_field_x2many.o_field_x2many_list.x-sheet-fill {
+        @include x2many-list-sheet-fill;
+    }
+}
+
+.o_input {
+    border: 1px solid $o-form-lightsecondary;
+    border-top-style: none;
+    border-right-style: none;
+    border-left-style: none;
+
+    &:hover,
+    &:focus {
+        border-bottom-color: $o-brand-primary !important;
+    }
+}
+
+.o_required_modifier {
+    &.o_input,
+    .o_input {
+        border-bottom: 1.5px solid $o-brand-odoo;
+        background-color: transparent !important;
+    }
+}
+
+.o_field_widget {
+    &.o_field_many2one {
+        .o_external_button {
+            font-size: 1.1rem;
+            color: $link-color;
+
+            &:hover {
+                color: darken($link-color, 15%);
+            }
+        }
+    }
+    &:hover,
+    &:focus {
+        .o_dropdown_button,
+        .o_datepicker_button {
+            color: $link-color;
+        }
+    }
+}
+
+.o_form_sheet_bg {
+    border-bottom: 1px solid $gray-300 !important;
+    background: #f9f9f9 !important;
+}
+
+.table {
+    thead th {
+        vertical-align: bottom;
+        border-bottom: none;
+        padding-left: 0px;
+    }
+    td {
+        padding: 0.35rem;
+        vertical-align: top;
+        height: 10px;
+        border-top: 1px solid $gray-300;
+    }
+}
+
+.o_list_view {
+    background-color: transparent;
+
+    .text-info {
+        color: #666666 !important;
+    }
+
+    .o_data_row.o_selected_row > .o_data_cell {
+        &.o_required_modifier:not(.o_readonly_modifier) {
+            border-bottom: 1px solid $gray-900;
+
+            &.o_invalid_cell {
+                border-bottom-color: #dc3545;
+                .o_input {
+                    box-shadow: none !important;
+                }
+            }
+        }
+    }
+
+    .o_list_table {
+        thead {
+            background-color: white;
+
+            > tr {
+                > th {
+                    border-left: 0px solid white;
+                    padding: 12px 4px;
+                }
+
+                > th:not(.o_list_record_selector) {
+                    border-left: 0px solid $gray-100;
+                    display: table-cell;
+                    max-width: 100%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    vertical-align: top;
+                }
+            }
+        }
+
+        tbody:first-of-type > tr:first-child:not(.o_group_header) {
+            box-shadow: inset 0px 5px 10px -4px rgba(black, 0.1);
+        }
+    }
+
+    .o_list_record_selector,
+    .o_list_record_remove,
+    .o_handle_cell {
+        width: 39px;
+        padding-left: 16px !important;
+        padding-right: 5px !important;
+    }
+
+    .o_optional_columns_dropdown_toggle {
+        padding: 8px 10px;
+    }
+}
+
+.o_searchview {
+    border: none;
+    border-bottom: 1px solid $o-form-lightsecondary;
+    align-items: flex-end;
+    position: relative;
+    padding: 0 20px 1px 0;
+
+    &:hover,
+    &:focus,
+    &:target,
+    &:active {
+        border-bottom-color: $o-brand-primary !important;
+    }
+
+    .o_searchview_facet {
+        border: none;
+        background: inherit;
+
+        .o_facet_values {
+            border: 1px solid $o-brand-odoo;
+            border-left-width: 0;
+        }
+    }
+}
+
+.o_notebook {
+    .o_notebook_headers {
+        @include o-form-sheet-negative-margin;
+
+        .nav-tabs {
+            @include o-form-sheet-inner-left-padding;
+
+            .nav-link {
+                color: #666666;
+                background-color: $white;
+                border-color: $gray-400;
+                border-bottom-color: #c9ccd2;
+
+                &:hover {
+                    color: $link-color;
+                }
+                &.active {
+                    color: #212529;
+                    background-color: $white;
+                    border-color: $o-brand-odoo $gray-300 $white $gray-300;
+                }
+            }
+            .nav-item.show .nav-link {
+                color: #212529;
+                background-color: $white;
+                border-color: $o-brand-odoo $gray-300 $white $gray-300;
+            }
+            .nav-item.show .nav-link {
+                color: #008784;
+            }
+        }
+    }
+
+    .tab-content > .tab-pane {
+        > :first-child.o_field_x2many.o_field_x2many_list,
+        > :first-child.o_field_widget.o_invisible_modifier + .o_field_x2many.o_field_x2many_list {
+            @include x2many-list-sheet-fill($marginTop: -16px);
+        }
+    }
+}
+
+@mixin btn-secondary-bg {
+    background-color: #f6f7fa;
+    border-color: #c9ccd2;
+}
+
+@mixin btn-material-shadow {
+    box-shadow: 0 2px 2px 0 rgba(black, 0.14), 0 3px 1px -2px rgba(black, 0.12), 0 1px 5px 0 rgba(black, 0.2);
+    z-index: 1;
+
+    &:hover,
+    &:active,
+    &:focus,
+    &:active:focus {
+        box-shadow: 0 3px 3px 0 rgba(black, 0.14), 0 1px 7px 0 rgba(black, 0.12), 0 3px 1px -1px rgba(black, 0.2);
+    }
+}
+
+%btn-common {
+    display: inline-block;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: color 0.15s ease-out, background-color 0.15s ease-out, border-color 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+.btn {
+    @extend %btn-common;
+
+    &.btn-primary {
+        color: $white;
+        background-color: $o-brand-primary;
+        border-color: $o-brand-primary;
+        @include btn-material-shadow;
+    }
+
+    &.btn-success,
+    &.btn-danger,
+    &.btn-warning,
+    &.btn-info {
+        @include btn-material-shadow;
+    }
+
+    &.btn-secondary {
+        background-color: transparent;
+
+        &:hover,
+        &:focus {
+            @include btn-secondary-bg;
+            color: $o-main-text-color;
+            z-index: 2;
+        }
+
+        &:not(:disabled):not(.disabled) {
+            &:active,
+            &.active {
+                @include btn-secondary-bg;
+                color: darken($o-brand-primary, 5%);
+                z-index: 1;
+            }
+        }
+    }
+}
+
+.o_account_reports_page .oe_link_reports,
+.o_radio_hide_bullet label {
+    @extend %btn-common;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-link,
+.o_radio_hide_bullet label {
+    text-transform: uppercase;
+}
+
+.o_dropdown_toggler_btn {
+    text-transform: none !important;
+    background-color: transparent !important;
+}
+
+.o_cp_buttons,
+.o_cp_sidebar,
+.o_cp_pager {
+    .btn {
+        font-weight: 600;
+
+        &.btn-secondary {
+            color: darken($o-brand-primary, 5%);
+        }
+    }
+}
+
+.o_chatter .o_chatter_topbar .btn {
+    color: darken($o-brand-primary, 5%);
+    border: 1px solid transparent;
+    text-transform: none;
+
+    &:hover,
+    &:focus {
+        @include btn-secondary-bg;
+        color: $o-main-text-color;
+        z-index: 0;
+    }
+}
