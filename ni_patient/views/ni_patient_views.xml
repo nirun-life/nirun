@@ -211,6 +211,12 @@
                                             placeholder="Country"
                                         />
                                     </div>
+                                    <field
+                                        name="address_other_id"
+                                        placeholder="e.g. Current Address, Work Address"
+                                        options="{'always_reload':True, 'no_quick_create': True}"
+                                        context="{'form_view_ref': 'base.res_partner_view_form_private', 'default_type': 'private', 'default_name': 'Home Address', 'show_address': True, 'show_name': False, 'default_parent_id': partner_id,  'no_bank':True}"
+                                    />
                                 </group>
                                 <group string="Citizenship">
                                     <field name="nationality_id" options='{"no_open": True}' />
