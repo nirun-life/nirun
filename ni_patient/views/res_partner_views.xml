@@ -23,4 +23,17 @@
             </field>
         </field>
     </record>
+    <record id="res_partner_view_form_private_inherit" model="ir.ui.view">
+        <field name="name">res.partner.view.form.private.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_view_form_private" />
+        <field name="arch" type="xml">
+            <field name="lang" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <xpath expr="//form/sheet/group[2]" position="attributes">
+                <attribute name="invisible">context.get('no_bank')</attribute>
+            </xpath>
+        </field>
+    </record>
 </odoo>
