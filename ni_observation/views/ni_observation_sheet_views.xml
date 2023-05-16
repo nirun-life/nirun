@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <record id="ni_observation_sheet_action" model="ir.actions.act_window">
+        <field name="name">Observations</field>
+        <field name="res_model">ni.observation.sheet</field>
+        <field name="view_mode">tree,form,graph</field>
+    </record>
+    <record id="ni_observation_sheet_action_form" model="ir.actions.act_window">
+        <field name="name">Observations</field>
+        <field name="res_model">ni.observation.sheet</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+    <record id="ni_observation_sheet_view_search" model="ir.ui.view">
+        <field name="name">ni.observation.sheet.view.search</field>
+        <field name="model">ni.observation.sheet</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <filter
+                    name="effective_today"
+                    string="Today"
+                    domain="[
+                    ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                    ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter
+                    name="effective_yesterday"
+                    string="Yesterday"
+                    domain="[
+                    ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
+                    ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter name="effective_date" string="Period" date="occurrence" />
+                <separator />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <group string="Group By">
+                    <filter name="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="Encounter " context="{'group_by': 'encounter_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_observation_sheet_view_tree" model="ir.ui.view">
+        <field name="name">ni.observation.sheet.view.tree</field>
+        <field name="model">ni.observation.sheet</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show" />
+                <field name="performer_ref" optional="hide" />
+                <field name="observation_ids" />
+                <field name="note" optional="hide" />
+                <field name="active" optional="hide" />
+                <field name="occurrence" />
+                <field name="company_id" groups="base.group_multi_company" optional="show" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_observation_sheet_view_graph" model="ir.ui.view">
+        <field name="name">ni.observation.line.view.graph</field>
+        <field name="model">ni.observation.sheet</field>
+        <field name="arch" type="xml">
+            <graph stacked="False" type="bar">
+                <field name="patient_id" type="col" />
+                <field name="occurrence" interval="day" />
+            </graph>
+        </field>
+    </record>
+    <record id="ni_observation_sheet_view_form" model="ir.ui.view">
+        <field name="name">ni.observation.sheet.view.form</field>
+        <field name="model">ni.observation.sheet</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <div name="button_box" class="oe_button_box" groups="base.group_user">
+                        <button
+                            name="action_patient_observation_graph"
+                            string="Graph"
+                            class="oe_stat_button"
+                            icon="fa-bar-chart"
+                            inivisible="[('id','=', False)]"
+                            type="object"
+                        />
+                    </div>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="patient_id" />
+                            <field name="encounter_id" context="{'show_state': True}" />
+                            <label for="category_ids" />
+                            <div>
+                                <field
+                                    name="category_ids"
+                                    options="{'color_field': 'color', 'no_open':True, 'no_create':True}"
+                                    widget="many2many_tags"
+                                    attrs="{'readonly': [('patient_id', '=', False)]}"
+                                />
+                                <button
+                                    class="oe_edit_only btn-primary"
+                                    string="Apply"
+                                    name="action_line_by_category_ids"
+                                    type="object"
+                                    attrs="{'invisible': ['|', ('category_ids', '=', False), ('patient_id', '=', False)]}"
+                                />
+                            </div>
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="1" />
+                            <field name="occurrence" />
+                            <field name="performer_ref" invisible="1" />
+                        </group>
+                    </group>
+                    <notebook attrs="{'invisible': [('id', '=', False)]}">
+                        <page string="Detail">
+                            <field
+                                name="observation_ids"
+                                context="{'default_sheet_id':id, 'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_occurrence': occurrence}"
+                            />
+                        </page>
+                        <page string="Note">
+                            <field name="note" placeholder="Additional Note..." />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

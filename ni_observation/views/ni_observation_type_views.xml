@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <record id="ni_observation_type_action" model="ir.actions.act_window">
+        <field name="name">Observation Types</field>
+        <field name="res_model">ni.observation.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="ni_observation_type_view_tree" model="ir.ui.view">
+        <field name="name">ni.observation.type.view.tree</field>
+        <field name="model">ni.observation.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" optional="show" />
+                <field name="category_id" />
+                <field name="min" />
+                <field name="max" />
+                <field name="unit" />
+                <field name="definition" optional="hide" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_observation_type_view_form" model="ir.ui.view">
+        <field name="name">ni.observation.type.view.form</field>
+        <field name="model">ni.observation.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="code" />
+                            <field name="category_id" />
+                        </group>
+                        <group>
+                            <field name="unit" />
+                            <field name="min" />
+                            <field name="max" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Reference Range">
+                            <field name="ref_range_ids" context="{'default_type_id': id}">
+                                <tree editable="bottom">
+                                    <field name="low" />
+                                    <field name="high" />
+                                    <field name="interpretation_id" context="{'show_code': True}" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Definition">
+                            <field name="definition" />
+                        </page>
+                        <page string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <group>
+                                    <field name="color" />
+                                    <field name="sequence" />
+                                </group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="uom_categ_fraction" model="uom.category">
+        <field name="name">Fraction</field>
+    </record>
+    <record id="uom_%" model="uom.uom">
+        <field name="name">%</field>
+        <field name="alias">Percentage</field>
+        <field name="category_id" ref="uom_categ_fraction" />
+        <field name="factor">1</field>
+        <field name="uom_type">reference</field>
+    </record>
+    <record id="uom_categ_density" model="uom.category">
+        <field name="name">Density</field>
+    </record>
+    <record id="uom_kg_m3" model="uom.uom">
+        <field name="name">kg/m³</field>
+        <field name="category_id" ref="uom_categ_density" />
+        <field name="factor">1</field>
+        <field name="uom_type">reference</field>
+    </record>
+    <record id="uom_mg_dl" model="uom.uom">
+        <field name="name">mg/dl</field>
+        <field name="category_id" ref="uom_categ_density" />
+        <field name="factor">100</field>
+        <field name="uom_type">smaller</field>
+    </record>
+    <record id="uom_categ_temperature" model="uom.category">
+        <field name="name">Temperature</field>
+    </record>
+    <record id="uom_degree_cel" model="uom.uom">
+        <field name="name">°C</field>
+        <field name="alias">Celsius</field>
+        <field name="category_id" ref="uom_categ_temperature" />
+        <field name="factor">1</field>
+        <field name="uom_type">reference</field>
+    </record>
+    <record id="uom_categ_blood_pressure" model="uom.category">
+        <field name="name">Blood Pressure</field>
+    </record>
+    <record id="uom_mmHg" model="uom.uom">
+        <field name="name">mmHg</field>
+        <field name="category_id" ref="uom_categ_blood_pressure" />
+        <field name="factor" eval="1" />
+        <field name="uom_type">reference</field>
+    </record>
+    <record id="uom_categ_frequency" model="uom.category">
+        <field name="name">Frequency</field>
+    </record>
+    <record id="uom_per_min" model="uom.uom">
+        <field name="name">/min</field>
+        <field name="category_id" ref="uom_categ_frequency" />
+        <field name="factor">1</field>
+        <field name="uom_type">reference</field>
+    </record>
+    <record id="uom_per_sec" model="uom.uom">
+        <field name="name">/sec</field>
+        <field name="category_id" ref="uom_categ_frequency" />
+        <field name="factor" eval="60" />
+        <field name="uom_type">smaller</field>
+    </record>
+    <record id="uom_per_hour" model="uom.uom">
+        <field name="name">/hour</field>
+        <field name="category_id" ref="uom_categ_frequency" />
+        <field name="factor_inv" eval="60" />
+        <field name="uom_type">bigger</field>
+    </record>
+</odoo>
