@@ -6,10 +6,10 @@
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Website",
-    "author": "DADOS, Harit, Kawin",
+    "author": "NSTDA, DADOS, Harit, Kawin",
     "website": "https://nirun.life/",
     "license": "LGPL-3",
-    "maintainers": ["harit","kawin"],
+    "maintainers": ["piruin"],
     "depends": ["web"],
     "assets": {
         "web.assets_backend": [

@@ -1,30 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright (c) 2023 NSTDA
   -->
 <templates xml:space="preserve">
     <t t-inherit="web.Notebook" t-inherit-mode="extension" owl="1">
         <xpath expr="//div" position="replace">
-                <div class="alert clearfix">    
-                    <button type="button" id="btnCollapse" class="btn btn-info float-end"  t-on-click="() => collapXpand(true)">[-]</button>
-                    <button type="button" id="btnExpand" class="btn btn-info float-end d-none" t-on-click="() => collapXpand(false)">[+]</button>
-                </div>
-                <div class="accordion nav-link" id="accordionPanelsStayOpenExample">
-                        <div class="accordion-item mb-3 shadow-sm"  t-foreach="pages" t-as="pageItem" t-key="pageItem[0]">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button fw-bolder fs-4" type="button" data-bs-toggle="collapse" t-attf-data-bs-target="#panelsStayOpen-collapseOne-{{ pageItem[1].name }}" aria-expanded="true" t-attf-aria-controls="panelsStayOpen-collapseOne-{{ pageItem[1].name }}"  aria-controls="panelsStayOpen-collapseThree">
-                                    <t t-out="pageItem[1].title" ></t>                 
-                                    <a class="nav-link" href="#" ></a>
-                                </button>
-                            </h2>
-                            <div t-attf-id="panelsStayOpen-collapseOne-{{ pageItem[1].name }}" class="accordion-collapse collapse show">
-                                <div class="accordion-body bg-white">
-                                    <t t-if="page" t-component="page.Component" t-key="pageItem[0]" t-props="page.props" ></t>
-                                    <t t-else="" t-slot="{{ pageItem[0] }}" ></t>
-                                </div>
-                            </div>
+            <div class="alert clearfix">
+                <button
+                    type="button"
+                    id="btnCollapse"
+                    class="btn btn-info float-end"
+                    t-on-click="() => collapXpand(true)"
+                >
+                    [-]
+                </button>
+                <button
+                    type="button"
+                    id="btnExpand"
+                    class="btn btn-info float-end d-none"
+                    t-on-click="() => collapXpand(false)"
+                >
+                    [+]
+                </button>
+            </div>
+            <div class="accordion nav-link" id="accordionPanelsStayOpenExample">
+                <div class="accordion-item mb-3 shadow-sm" t-foreach="pages" t-as="pageItem" t-key="pageItem[0]">
+                    <h2 class="accordion-header">
+                        <button
+                            class="accordion-button fw-bolder fs-4"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            t-attf-data-bs-target="#panelsStayOpen-collapseOne-{{ pageItem[1].name }}"
+                            aria-expanded="true"
+                            t-attf-aria-controls="panelsStayOpen-collapseOne-{{ pageItem[1].name }}"
+                            aria-controls="panelsStayOpen-collapseThree"
+                        >
+                            <t t-out="pageItem[1].title" />
+                            <a class="nav-link" href="#" />
+                        </button>
+                    </h2>
+                    <div
+                        t-attf-id="panelsStayOpen-collapseOne-{{ pageItem[1].name }}"
+                        class="accordion-collapse collapse show"
+                    >
+                        <div class="accordion-body bg-white">
+                            <t t-if="page" t-component="page.Component" t-key="pageItem[0]" t-props="page.props" />
+                            <t t-else="" t-slot="{{ pageItem[0] }}" />
                         </div>
+                    </div>
                 </div>
+            </div>
         </xpath>
     </t>
 </templates>
