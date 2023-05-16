@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="priority">2</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='vital-signs']" position="inside">
+                <field name="observation_line_vital_sign_ids" />
+                <button
+                    name="%(ni_observation_action_pivot_from_encounter)d"
+                    type="action"
+                    string="See More"
+                    class="btn-secondary"
+                />
+                <button
+                    name="%(ni_observation_sheet_action_form)d"
+                    type="action"
+                    string="New"
+                    class="btn-primary"
+                    context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(category_vital_signs)d]}"
+                    attrs="{'invisible': [('state', '=', 'finished')]}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

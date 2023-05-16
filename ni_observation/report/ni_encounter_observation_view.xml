@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_ob_line_action" model="ir.actions.act_window">
+        <field name="name">Observation Detail</field>
+        <field name="res_model">ni.encounter.observation</field>
+        <field name="view_mode">tree</field>
+    </record>
+    <record id="ni_encounter_ob_line_view_search" model="ir.ui.view">
+        <field name="name">ni.encounter.ob.line.view.search</field>
+        <field name="model">ni.encounter.observation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="sheet_id" />
+                <field name="patient_id" />
+                <field name="type_id" />
+                <field name="interpretation_id" operator="child_of" />
+                <filter
+                    name="effective_today"
+                    string="Today"
+                    domain="[
+                    ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                    ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter
+                    name="effective_yesterday"
+                    string="Yesterday"
+                    domain="[
+                    ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
+                    ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter name="effective_date" string="Period" date="occurrence" />
+                <separator />
+                <group string="Group By">
+                    <filter name="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="Encounter" context="{'group_by': 'encounter_id'}" />
+                    <separator />
+                    <filter name="Task" context="{'group_by': 'sheet_id'}" />
+                    <filter name="Type" context="{'group_by': 'type_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_encounter_ob_line_view_tree" model="ir.ui.view">
+        <field name="name">ni.encounter.ob.line.view.tree</field>
+        <field name="model">ni.encounter.observation</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" default_order="sequence,type_id">
+                <field name="sequence" widget="handle" />
+                <field name="type_id" optional="show" />
+                <field name="category_id" optional="1" />
+                <field name="value_type" invisible="1" />
+                <field name="value" />
+                <field name="unit" />
+                <field
+                    name="interpretation_id"
+                    widget="badge"
+                    decoration-danger="display_class == 'danger'"
+                    decoration-info="display_class == 'info'"
+                    decoration-muted="display_class == 'muted'"
+                    decoration-primary="display_class == 'primary'"
+                    decoration-success="display_class == 'success'"
+                    decoration-warning="display_class == 'warning'"
+                />
+                <field name="occurrence" widget="remaining_days" optional="show" />
+                <field name="display_class" invisible="1" />
+                <button name="action_graph_view" icon="fa-bar-chart" title="View graph" type="object" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_encounter_ob_line_view_form" model="ir.ui.view">
+        <field name="name">ni.encounter.ob.line.view.form</field>
+        <field name="model">ni.encounter.observation</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="patient_id" invisible="1" />
+                    <field name="encounter_id" invisible="1" />
+                    <field name="company_id" invisible="1" />
+                    <group>
+                        <group>
+                            <field name="type_id" />
+                            <field name="category_id" />
+                            <field name="occurrence" />
+                        </group>
+                        <group>
+                            <field name="value_type" invisible="1" />
+                            <field name="value" />
+                            <field
+                                name="unit"
+                                options="{'no_open': True}"
+                                attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                            />
+                            <field
+                                name="interpretation_id"
+                                widget="badge"
+                                decoration-danger="display_class == 'danger'"
+                                decoration-info="display_class == 'info'"
+                                decoration-muted="display_class == 'muted'"
+                                decoration-primary="display_class == 'primary'"
+                                decoration-success="display_class == 'success'"
+                                decoration-warning="display_class == 'warning'"
+                            />
+                            <field name="display_class" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
