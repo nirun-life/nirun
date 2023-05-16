@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <menuitem
+        id="observation_menu_root"
+        name="Observations"
+        sequence="4"
+        web_icon="ni_observation,static/description/icon.png"
+        groups="base.group_no_one"
+    />
+    <menuitem id="observation_menu_main" name="Observation" parent="observation_menu_root" />
+    <menuitem
+        id="observation_menu"
+        name="Observation Sheet"
+        action="ni_observation_sheet_action"
+        parent="observation_menu_main"
+    />
+    <menuitem
+        id="observation_line_menu"
+        name="Observation"
+        action="ni_observation_action"
+        parent="observation_menu_main"
+    />
+    <menuitem
+        id="configuration_menu"
+        name="Configurations"
+        groups="ni_observation.group_manager"
+        parent="observation_menu_root"
+        sequence="100"
+    />
+    <menuitem id="configuration_ob_menu" name="Observation" parent="configuration_menu" />
+    <menuitem
+        id="observation_category_menu"
+        name="Category"
+        action="ni_observation_category_action"
+        parent="configuration_ob_menu"
+    />
+    <menuitem
+        id="observation_type_menu"
+        name="Type"
+        action="ni_observation_type_action"
+        parent="configuration_ob_menu"
+    />
+    <menuitem
+        id="interpretation_menu"
+        name="Interpretation"
+        action="ni_observation_interpretation_action"
+        parent="configuration_menu"
+    />
+    <menuitem
+        id="reference_range_menu"
+        name="Reference Range"
+        action="ni_observation_reference_range_action"
+        parent="configuration_menu"
+    />
+</odoo>
