@@ -1,6 +1,6 @@
 /** @odoo-module */
 
-import { Notebook } from "@web/core/notebook/notebook.js";
+import { Notebook } from "@web/core/notebook/notebook";
 import { patch } from "web.utils";
 
 patch(Notebook.prototype, "web_notebook_collapse.collapXpand", {
