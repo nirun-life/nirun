@@ -5,7 +5,7 @@
     "summary": "Odoo Enterprise Theme",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
-    "category": "Website",
+    "category": "Themes/Backend",
     "author": "NSTDA, Piruin P.",
     "website": "https://nirun.life/",
     "license": "LGPL-3",
@@ -23,7 +23,7 @@
             "/web_enterprise_theme/static/src/scss/assets_backend.scss",
         ],
     },
-    "application": False,
+    "application": True,
     "auto_install": False,
     "installable": True,
 }
