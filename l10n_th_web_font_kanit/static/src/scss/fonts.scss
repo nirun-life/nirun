@@ -26,6 +26,47 @@
 
 @include module-font-set("Kanit");
 
+$custom-font-family: Kanit, "Odoo Unicode Support Noto", "Lucida Grande", Helvetica, Verdana, Arial, sans-serif !important;
+
+h6,
+.h6,
+h5,
+.h5,
+.o_legacy_kanban_view.o_kanban_dashboard
+    .o_kanban_record
+    .o_kanban_card_manage_pane.container
+    div[class*="col-"]
+    > .o_kanban_card_manage_title,
+.o_legacy_kanban_view.o_kanban_dashboard
+    .o_kanban_record
+    .o_kanban_card_manage_pane.o_container_small
+    div[class*="col-"]
+    > .o_kanban_card_manage_title,
+.o_kanban_dashboard:not(.o_legacy_kanban_view)
+    .o_kanban_record
+    > div
+    .o_kanban_card_manage_pane.container
+    div[class*="col-"]
+    > .o_kanban_card_manage_title,
+.o_kanban_dashboard:not(.o_legacy_kanban_view)
+    .o_kanban_record
+    > div
+    .o_kanban_card_manage_pane.o_container_small
+    div[class*="col-"]
+    > .o_kanban_card_manage_title,
+h4,
+.h4,
+h3,
+.h3,
+h2,
+.h2,
+h1,
+.h1 {
+    font-family: $custom-font-family;
+}
+html:root {
+    font-family: $custom-font-family;
+}
 body {
-    font-family: Kanit, "Odoo Unicode Support Noto", "Lucida Grande", Helvetica, Verdana, Arial, sans-serif !important;
+    font-family: $custom-font-family;
 }
