@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023. NSTDA
+  -->
+<odoo>
+    <record id="survey_user_input_view_search_inherit" model="ir.ui.view">
+        <field name="name">survey.user_input.view.search.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_search" />
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <filter name="patient" string="Patient Answer" domain="[('patient_id', '!=', False)]" />
+                <separator />
+            </field>
+        </field>
+    </record>
+    <record id="survey_user_input_view_tree_inherit" model="ir.ui.view">
+        <field name="name">survey.user_input.view.tree.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="default_order">create_date desc</attribute>
+            </xpath>
+            <field name="partner_id" position="after">
+                <field name="patient_id" optional="hide" />
+                <field name="encounter_id" optional="hide" />
+            </field>
+            <field name="subject_ref" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="deadline" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="email" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="survey_user_input_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.user_input.view.form.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_form" />
+        <field name="arch" type="xml">
+            <field name="subject_ref" position="attributes">
+                <attribute name="attrs">{'invisible': [('subject_model', '=', 'ni.patient')]}</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="survey_user_input_view_graph" model="ir.ui.view">
+        <field name="name">survey.user_input.view.graph</field>
+        <field name="model">survey.user_input</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <graph stacked="False">
+                <field name="create_date" type="col" interval="day" />
+                <field name="survey_id" type="row" />
+                <field name="scoring_percentage" type="measure" />
+            </graph>
+        </field>
+    </record>
+    <record id="survey_user_input_view_pivot" model="ir.ui.view">
+        <field name="name">survey.user_input.view.pivot</field>
+        <field name="model">survey.user_input</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="create_date" type="col" interval="day" />
+                <field name="partner_id" type="row" />
+                <field name="survey_id" type="row" />
+                <field name="scoring_total" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="questionnaire_response_action" model="ir.actions.act_window">
+        <field name="name">Questionnaire Response</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">survey.user_input</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="domain">[('state', '=', 'done'),('test_entry', '=', False)]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Questionnaire response Not found!</p>
+        </field>
+    </record>
+</odoo>

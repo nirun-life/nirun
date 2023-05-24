@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_start_survey"
+                    class="oe_stat_button"
+                    attrs="{'invisible':['|', ('survey_id','=',False), ('response_id', '!=', False)]}"
+                    type="object"
+                    context="{'survey_id': survey_id}"
+                    help="Questionnaire relate to  encounter classification"
+                    icon="fa-commenting-o"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Start</span>
+                        <span class="o_stat_text">Questionnaire</span>
+                    </div>
+                </button>
+                <button
+                    name="action_print_survey"
+                    attrs="{'invisible':[('survey_id','=',False)]}"
+                    class="oe_stat_button"
+                    help="Print questionnaire response"
+                    icon="fa-commenting"
+                    type="object"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Print</span>
+                        <span class="o_stat_text">Questionnaire</span>
+                    </div>
+                </button>
+            </xpath>
+            <field name="reason_ids" position="after">
+                <field name="survey_id" invisible="1" />
+                <field name="response_id" invisible="1" />
+            </field>
+        </field>
+    </record>
+    <record id="ni_encounter_class_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.class.view.form.inherit</field>
+        <field name="model">ni.encounter.class</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_class_view_form" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="survey_id" context="{'default_category': 'ni_encounter'}" />
+            </field>
+        </field>
+    </record>
+</odoo>
