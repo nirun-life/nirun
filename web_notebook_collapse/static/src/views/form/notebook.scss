@@ -1,0 +1,70 @@
+@mixin x2many-list-sheet-fill($marginTop: 0px) {
+    display: block;
+    width: auto;
+    @include o-form-sheet-negative-margin;
+    margin-top: $marginTop;
+    border-top-width: 0;
+
+    tr {
+        &:first-child > th {
+            border: none;
+            background-color: #f8f9fa;
+        }
+
+        > :first-child {
+            @include o-form-sheet-inner-left-padding;
+
+            &.o_handle_cell {
+                padding-left: 0.2rem;
+            }
+        }
+        > :last-child {
+            @include o-form-sheet-inner-right-padding;
+        }
+    }
+}
+
+.o_notebook_collapse_control {
+    margin-right: -8px;
+
+    > button.btn {
+        font-size: 0.9rem;
+    }
+}
+
+.o_notebook_collapse {
+    margin: 0px var(--notebook-margin-x);
+    margin-bottom: 3rem;
+    padding: 0;
+
+    .o_notebook_item {
+        border-radius: 0px !important;
+        border-left: none;
+        border-right: none;
+
+        &:first-of-type,
+        &:last-of-type {
+            .accordion-button {
+                border-radius: 0;
+            }
+        }
+    }
+
+    .o_notebook_header > button {
+        padding: 1rem var(--notebook-padding-x);
+        box-shadow: none !important;
+        font-weight: 600;
+        transition: 0.3s ease;
+        background-color: #fdfdfd;
+    }
+    .o_notebook_content {
+        padding: 1rem var(--notebook-padding-x) 3rem var(--notebook-padding-x);
+        background-color: $white;
+        box-shadow: inset 0px -3px 10px -4px rgba(black, 0.1);
+
+        > .o_field_widget > :first-child.o_field_x2many.o_field_x2many_list,
+        > .o_field_widget > :first-child.o_field_widget.o_invisible_modifier + .o_field_x2many.o_field_x2many_list {
+            @include x2many-list-sheet-fill($marginTop: -1rem);
+        }
+    }
+}
