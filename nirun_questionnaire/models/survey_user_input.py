@@ -9,6 +9,7 @@ class SurveyUserInput(models.Model):
     _inherit = ["survey.user_input", "ni.workflow.event.mixin"]
     _workflow_occurrence = "create_date"
 
+    company_id = fields.Many2one(required=False)
     patient_id = fields.Many2one(required=False, groups="nirun_patient.group_user")
     encounter_id = fields.Many2one(required=False, groups="nirun_patient.group_user")
 
