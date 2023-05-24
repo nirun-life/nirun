@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+~ Copyright (c) 2021 NSTDA
+-->
+<odoo>
+    <record id="survey_view_search_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.search</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_search" />
+        <field name="arch" type="xml">
+            <!-- position values: after|before|replace|attributes|inside -->
+            <xpath expr="//filter[@name='not_certification']" position="after">
+                <separator />
+                <filter string="Patient Questionnaire" name="patient" domain="[('subject_type', '=', 'ni.patient')]" />
+                <filter
+                    string="Encounter Questionnaire"
+                    name="encounter"
+                    domain="[('subject_type', '=', 'ni.encounter')]"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_view_tree_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.tree.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='answer_count']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_action_patient" model="ir.actions.act_window">
+        <field name="name">Surveys</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">survey.survey</field>
+        <field name="view_mode">tree,kanban,form,activity</field>
+        <field name="context">{'search_default_patient': 1}</field>
+    </record>
+</odoo>
