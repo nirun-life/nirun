@@ -5,29 +5,31 @@
 <templates xml:space="preserve">
     <t t-inherit="web.Notebook" t-inherit-mode="extension" owl="1">
         <xpath expr="//div" position="replace">
-            <div class="alert clearfix">
+            <div class="o_notebook_collapse_control clearfix">
                 <button
                     type="button"
                     id="btnCollapse"
-                    class="btn btn-info float-end"
+                    class="btn btn-secondary float-end"
                     t-on-click="() => collapXpand(true)"
                 >
-                    [-]
+                    <i class="fa fa-minus-square-o mx-1" aria-hidden="true" />
+                    Collapse
                 </button>
                 <button
                     type="button"
                     id="btnExpand"
-                    class="btn btn-info float-end d-none"
+                    class="btn btn-secondary float-end d-none"
                     t-on-click="() => collapXpand(false)"
                 >
-                    [+]
+                    <i class="fa fa-plus-square-o mx-1" aria-hidden="true" />
+                    Expand
                 </button>
             </div>
-            <div class="accordion nav-link" id="accordionPanelsStayOpenExample">
-                <div class="accordion-item mb-3 shadow-sm" t-foreach="pages" t-as="pageItem" t-key="pageItem[0]">
-                    <h2 class="accordion-header">
+            <div class="accordion nav-link o_notebook o_notebook_collapse" id="notebookCollapse">
+                <div class="accordion-item o_notebook_item" t-foreach="pages" t-as="pageItem" t-key="pageItem[0]">
+                    <h2 class="accordion-header o_notebook_header">
                         <button
-                            class="accordion-button fw-bolder fs-4"
+                            class="accordion-button o_notebook_header_button fs-4"
                             type="button"
                             data-bs-toggle="collapse"
                             t-attf-data-bs-target="#panelsStayOpen-collapseOne-{{ pageItem[1].name }}"
@@ -41,9 +43,9 @@
                     </h2>
                     <div
                         t-attf-id="panelsStayOpen-collapseOne-{{ pageItem[1].name }}"
-                        class="accordion-collapse collapse show"
+                        class="accordion-collapse collapse show "
                     >
-                        <div class="accordion-body bg-white">
+                        <div class="accordion-body o_notebook_content">
                             <t t-if="page" t-component="page.Component" t-key="pageItem[0]" t-props="page.props" />
                             <t t-else="" t-slot="{{ pageItem[0] }}" />
                         </div>
