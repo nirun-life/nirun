@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 04:05+0000\n"
-"PO-Revision-Date: 2023-04-14 04:05+0000\n"
+"POT-Creation-Date: 2023-05-25 09:36+0000\n"
+"PO-Revision-Date: 2023-05-25 09:36+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,8 +17,15 @@ msgstr ""
 
 #. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding__active
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__active
 msgid "Active"
 msgstr "เปิดใช้งาน"
+
+#. module: ni_coding
+#: model_terms:ir.ui.view,arch_db:ni_coding.coding_system_view_form
+#: model_terms:ir.ui.view,arch_db:ni_coding.coding_system_view_search
+msgid "Archived"
+msgstr "ถูกเก็บ"
 
 #. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding__code
@@ -27,8 +34,16 @@ msgstr "รหัส"
 
 #. module: ni_coding
 #: model:ir.model,name:ni_coding.model_ni_coding
+#: model:ir.ui.menu,name:ni_coding.coding_menu
 msgid "Coding"
-msgstr "ตัวเลือก"
+msgstr "รหัส"
+
+#. module: ni_coding
+#: model:ir.actions.act_window,name:ni_coding.coding_system_action
+#: model:ir.model,name:ni_coding.model_ni_coding_system
+#: model:ir.ui.menu,name:ni_coding.coding_system_menu
+msgid "Coding System"
+msgstr "มาตรฐาน"
 
 #. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding__color
@@ -36,26 +51,134 @@ msgid "Color"
 msgstr "สี"
 
 #. module: ni_coding
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__create_uid
+msgid "Created by"
+msgstr "สร้างโดย"
+
+#. module: ni_coding
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__create_date
+msgid "Created on"
+msgstr "สร้างเมื่อ"
+
+#. module: ni_coding
+#: model:ni.coding.system,name:ni_coding.system_dicom
+msgid "DICOM"
+msgstr "DICOM"
+
+#. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding__definition
 msgid "Definition"
 msgstr "คำนิยาม"
 
 #. module: ni_coding
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__display_name
+msgid "Display Name"
+msgstr "ชื่อแสดง"
+
+#. module: ni_coding
+#: model:ni.coding.system,name:ni_coding.system_hl7_fhir
+msgid "HL7 FHIR"
+msgstr "HL7 FHIR"
+
+#. module: ni_coding
+#: model:ni.coding.system,name:ni_coding.system_hl7_v2
+msgid "HL7 V2"
+msgstr "HL7 V2"
+
+#. module: ni_coding
+#: model:ni.coding.system,name:ni_coding.system_hl7_v3
+msgid "HL7 V3"
+msgstr "HL7 V3"
+
+#. module: ni_coding
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ni_coding
+#: model:ni.coding.system,name:ni_coding.system_internal
+msgid "Internal"
+msgstr "ภายใน"
+
+#. module: ni_coding
+#: model:ni.coding.system,name:ni_coding.system_loinc
+msgid "LOINC"
+msgstr "LOINC"
+
+#. module: ni_coding
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system____last_update
+msgid "Last Modified on"
+msgstr "แก้ไขล่าสุดเมื่อ"
+
+#. module: ni_coding
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__write_uid
+msgid "Last Updated by"
+msgstr "แก้ไขล่าสุดโดย"
+
+#. module: ni_coding
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__write_date
+msgid "Last Updated on"
+msgstr "แก้ไขล่าสุดเมื่อ"
+
+#. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding__name
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__name
 msgid "Name"
 msgstr "ชื่อ"
 
 #. module: ni_coding
+#: model:ni.coding.system,name:ni_coding.system_other
+msgid "Other"
+msgstr "อื่นๆ"
+
+#. module: ni_coding
+#: model:ni.coding.system,name:ni_coding.system_snomed
+msgid "SNOMED"
+msgstr "SNOMED"
+
+#. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding__sequence
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__sequence
 msgid "Sequence"
 msgstr "ลำดับ"
 
 #. module: ni_coding
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_coding_code__uniq
-msgid "This code already exists!"
-msgstr "รหัสของตัวเลือกต้องไม่ซ้ำกัน"
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding__system_id
+msgid "System"
+msgstr "มาตรฐาน"
 
 #. module: ni_coding
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_coding_name__uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_coding__system_code___uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_dow__system_code___uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_event__system_code___uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_template__system_code___uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_tod__system_code___uniq
+msgid "This code already exists!"
+msgstr "รหัสที่ระบุมีอยู่แล้ว"
+
+#. module: ni_coding
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_coding__system_name__uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_coding_system_name__uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_dow__system_name__uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_event__system_name__uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_template__system_name__uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_tod__system_name__uniq
 msgid "This name already exists!"
-msgstr "ชื่อของตัวเลือกต้องไม่ซ้ำกัน"
+msgstr "ชื่อที่ระบุมีอยู่แล้ว"
+
+#. module: ni_coding
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_coding_system_url__uniq
+msgid "This url already exists!"
+msgstr "Url นี้มีอยู่แล้ว"
+
+#. module: ni_coding
+#: model:ni.coding.system,name:ni_coding.system_ucum
+msgid "UCUM"
+msgstr "UCUM"
+
+#. module: ni_coding
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding__system
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__url
+msgid "Url"
+msgstr "Url"
+
