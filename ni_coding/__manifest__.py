@@ -10,6 +10,12 @@
     "license": "LGPL-3",
     "maintainers": ["piruin"],
     "depends": ["base", "mail"],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/ni_coding_system_data.xml",
+        "views/ni_coding_system_views.xml",
+        "views/ni_coding_menu.xml",
+    ],
     "application": False,
     "auto_install": False,
     "installable": True,
