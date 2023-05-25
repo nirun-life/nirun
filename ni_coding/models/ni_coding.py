@@ -10,6 +10,8 @@ class Coding(models.AbstractModel):
     _description = "Coding"
     _order = "sequence, id"
 
+    _display_name_separator = ", "
+
     def _get_default_sequence(self):
         last_sequence = self.env[self._name].search([], order="sequence desc", limit=1)
         return last_sequence.sequence + 1 if last_sequence else 0
@@ -20,6 +22,11 @@ class Coding(models.AbstractModel):
     )
     name = fields.Char(required=True, index=True, translate=True)
     code = fields.Char(index=True, size=16)
+    system_id = fields.Many2one(
+        "ni.coding.system",
+        default=lambda self: self.env.ref("ni_coding.system_internal"),
+    )
+    system = fields.Char(related="system_id.url")
     definition = fields.Text(translate=True)
     color = fields.Integer(default=lambda _: random.randint(0, 10))
     active = fields.Boolean(default=True)
@@ -49,20 +56,20 @@ class Coding(models.AbstractModel):
             while current:
                 names.append(current.name)
                 current = current.parent_id
-            name = ", ".join(reversed(names))
+            name = self._display_name_separator.join(reversed(names))
         if self._context.get("show_code") and self.code:
             name = "[{}] {}".format(coding.code, name)
         return name
 
     _sql_constraints = [
         (
-            "name__uniq",
-            "unique (name)",
+            "system_name_uniq",
+            "unique (system_id, name)",
             "This name already exists!",
         ),
         (
-            "code__uniq",
-            "unique (code)",
+            "system_code_uniq",
+            "unique (system_id, code)",
             "This code already exists!",
         ),
     ]

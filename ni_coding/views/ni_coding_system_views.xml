@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <!-- This file only intent use as scaffold for coding model -->
+    <record id="coding_system_action" model="ir.actions.act_window">
+        <field name="name">Coding System</field>
+        <field name="res_model">ni.coding.system</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="coding_system_view_search" model="ir.ui.view">
+        <field name="name">coding.system.view.search</field>
+        <field name="model">ni.coding.system</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('url', 'ilike', self)]" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+            </search>
+        </field>
+    </record>
+    <record id="coding_system_view_tree" model="ir.ui.view">
+        <field name="name">coding.system.view.tree</field>
+        <field name="model">ni.coding.system</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="url" optional="show" />
+                <field name="active" invisible="1" />
+            </tree>
+        </field>
+    </record>
+    <record id="coding_system_view_form" model="ir.ui.view">
+        <field name="name">coding.system.view.form</field>
+        <field name="model">ni.coding.system</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <field name="name" />
+                        <field name="url" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
