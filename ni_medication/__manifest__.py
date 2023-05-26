@@ -29,6 +29,8 @@
         "views/ni_medication_menus.xml",
         "views/ni_patient_views.xml",
         "views/ni_encounter_views.xml",
+        "reports/op_label.xml",
+        "reports/op_templates.xml",
     ],
     "application": True,
     "auto_install": False,
