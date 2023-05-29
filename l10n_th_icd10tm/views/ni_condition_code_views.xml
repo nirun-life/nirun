@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_condition_code_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.condition.code.view.form.inherit</field>
+        <field name="model">ni.condition.code</field>
+        <field name="inherit_id" ref="ni_condition.ni_condition_code_view_form" />
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="type" widget="radio" options="{'horizontal':True}" />
+                <field name="parent_id" context="{'show_code':True}" options="{'always_reload': True}" />
+                <field name="block_id" context="{'show_code':True}" options="{'always_reload': True}" />
+                <field name="chapter_id" context="{'show_code':True}" options="{'always_reload': True}" />
+            </field>
+        </field>
+    </record>
+    <record id="ni_condition_code_view_tree_inherit" model="ir.ui.view">
+        <field name="name">ni.condition.code.view.tree.inherit</field>
+        <field name="model">ni.condition.code</field>
+        <field name="inherit_id" ref="ni_condition.ni_condition_code_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-bf">type == 'header'</attribute>
+            </xpath>
+            <field name="name" position="before">
+                <field name="type" invisible="1" />
+            </field>
+        </field>
+    </record>
+</odoo>
