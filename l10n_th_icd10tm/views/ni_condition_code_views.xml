@@ -3,6 +3,31 @@
   ~ Copyright (c) 2023 NSTDA
   -->
 <odoo>
+    <record id="ni_condition_code_view_search_inherit" model="ir.ui.view">
+        <field name="name">ni.condition.code.view.search.inherit</field>
+        <field name="model">ni.condition.code</field>
+        <field name="inherit_id" ref="ni_condition.ni_condition_code_view_search" />
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="filter_domain">
+                    ['|', '|' ,('name', 'ilike', self), ('code', 'ilike', self), ('code_simplify', 'ilike', self)]
+                </attribute>
+            </field>
+            <xpath expr="//search" position="inside">
+                <separator />
+                <filter string="Code" name="type_code" domain="[('type', '=', 'code')]" />
+                <filter string="Header" name="type_header" domain="[('type', '=', 'header')]" />
+                <group string="Group By">
+                    <filter string="Chapter" name="chapter" domain="[]" context="{'group_by':'chapter_id'}" />
+                    <filter string="Block" name="block" domain="[]" context="{'group_by':'block_id'}" />
+                    <filter string="Parent" name="parent" domain="[]" context="{'group_by':'parent_id'}" />
+                </group>
+                <searchpanel>
+                    <field name="chapter_id" string="Chapter" enable_counters="1" />
+                </searchpanel>
+            </xpath>
+        </field>
+    </record>
     <record id="ni_condition_code_view_form_inherit" model="ir.ui.view">
         <field name="name">ni.condition.code.view.form.inherit</field>
         <field name="model">ni.condition.code</field>
