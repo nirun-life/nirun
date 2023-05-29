@@ -13,7 +13,7 @@
         <field name="model">ni.condition.code</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" />
+                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
             </search>
         </field>
@@ -26,7 +26,8 @@
                 <field name="sequence" widget="handle" />
                 <field name="code" optional="show" />
                 <field name="name" />
-                <field name="class_id" />
+                <field name="class_id" optional="show" />
+                <field name="system_id" optional="show" />
                 <field name="active" optional="hide" />
             </tree>
         </field>
@@ -45,12 +46,14 @@
                         bg_color="bg-danger"
                         title="Archived"
                     />
+                    <field name="class_id" widget="radio" options="{'horizontal':True}" />
                     <group>
                         <group>
                             <field name="name" />
-                            <field name="class_id" />
+                            <field name="parent_id" />
                         </group>
                         <group>
+                            <field name="system_id" />
                             <field name="code" />
                         </group>
                     </group>

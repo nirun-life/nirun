@@ -27,6 +27,7 @@ class Condition(models.Model):
         ondelete="restrict",
         index=True,
     )
+    code = fields.Char(related="code_id.code", store=True)
     class_id = fields.Many2one(
         "ni.condition.class",
         default=lambda self: self._get_default_condition_class(),
@@ -120,14 +121,14 @@ class Condition(models.Model):
     @api.onchange("code_id")
     def onchange_code_id(self):
         if self.code_id.class_id:
-            self.classification_id = self.code_id.class_id
+            self.class_id = self.code_id.class_id
 
     @property
     def _workflow_name(self) -> str:
         if self.is_diagnosis:
             return _("Diagnosis")
         elif self.is_problem:
-            return _("Chronic")
+            return _("Problem List Item")
         else:
             return self._description
 
