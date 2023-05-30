@@ -5,6 +5,7 @@ from odoo import _, api, fields, models
 
 class ConditionBlock(models.Model):
     _name = "ni.condition.block"
+    _description = "Block"
     _inherit = "ni.coding"
     _parent_store = True
 
