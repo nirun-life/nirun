@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <!-- Disable default dx role from ni_condition -->
+    <record id="ni_condition.encounter_dx_role_cc" model="ni.encounter.diagnosis.role">
+        <field name="active">False</field>
+    </record>
+    <record id="ni_condition.encounter_dx_role_cm" model="ni.encounter.diagnosis.role">
+        <field name="active">False</field>
+    </record>
+    <record id="ni_condition.encounter_dx_role_ad" model="ni.encounter.diagnosis.role">
+        <field name="active">False</field>
+    </record>
+    <record id="ni_condition.encounter_dx_role_dd" model="ni.encounter.diagnosis.role">
+        <field name="active">False</field>
+    </record>
+    <!-- Add new dx role follow ICD-10 -->
+    <record id="dx_role_pdx" model="ni.encounter.diagnosis.role">
+        <field name="name">Principle Diagnosis</field>
+        <field name="code">PDx</field>
+        <field name="limit">1</field>
+        <field name="system_id" ref="l10n_th_icd10tm.system_icd_10_tm" />
+    </record>
+    <record id="dx_role_sdx" model="ni.encounter.diagnosis.role">
+        <field name="name">Secondary Diagnosis</field>
+        <field name="code">SDx</field>
+        <field name="active">False</field>
+        <field name="system_id" ref="l10n_th_icd10tm.system_icd_10_tm" />
+    </record>
+    <record id="dx_role_sdx_comorbidity" model="ni.encounter.diagnosis.role">
+        <field name="name">Comorbidity</field>
+        <field name="code">SDx COMORBIDITY</field>
+        <field name="parent_id" ref="dx_role_sdx" />
+        <field name="system_id" ref="l10n_th_icd10tm.system_icd_10_tm" />
+    </record>
+    <record id="dx_role_sdx_complication" model="ni.encounter.diagnosis.role">
+        <field name="name">Complication</field>
+        <field name="code">SDx COMPLICATION</field>
+        <field name="parent_id" ref="dx_role_sdx" />
+        <field name="system_id" ref="l10n_th_icd10tm.system_icd_10_tm" />
+    </record>
+    <record id="dx_role_other" model="ni.encounter.diagnosis.role">
+        <field name="name">Other</field>
+        <field name="code">OTHER</field>
+        <field name="parent_id" ref="dx_role_sdx" />
+        <field name="system_id" ref="l10n_th_icd10tm.system_icd_10_tm" />
+    </record>
+    <record id="dx_role_external" model="ni.encounter.diagnosis.role">
+        <field name="name">External Cause</field>
+        <field name="code">EXTERNAL</field>
+        <field name="parent_id" ref="dx_role_sdx" />
+        <field name="system_id" ref="l10n_th_icd10tm.system_icd_10_tm" />
+    </record>
+</odoo>

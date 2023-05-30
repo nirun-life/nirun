@@ -20,6 +20,7 @@
         "data/ni.condition.chapter.csv",
         "data/ni.condition.block.csv",
         "data/ni.condition.code.csv",
+        "data/ni_encounter_diagnosis_role_data.xml",
     ],
     "application": False,
     "auto_install": False,
