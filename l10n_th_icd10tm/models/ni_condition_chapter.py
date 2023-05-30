@@ -3,8 +3,9 @@
 from odoo import _, api, fields, models
 
 
-class ConditionChappter(models.Model):
+class ConditionChapter(models.Model):
     _name = "ni.condition.chapter"
+    _description = "Chapter"
     _inherit = "ni.coding"
 
     roman = fields.Char()
