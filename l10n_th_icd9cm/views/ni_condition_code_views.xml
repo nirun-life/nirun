@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_procedure_code_view_search_inherit" model="ir.ui.view">
+        <field name="name">ni.procedure.code.view.search.inherit</field>
+        <field name="model">ni.procedure.code</field>
+        <field name="inherit_id" ref="ni_procedure.ni_procedure_code_view_search" />
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="filter_domain">
+                    ['|', '|' ,('name', 'ilike', self), ('code', 'ilike', self), ('code_simplify', 'ilike', self)]
+                </attribute>
+            </field>
+            <xpath expr="//search" position="inside">
+                <group string="Group By">
+                    <filter string="Chapter" name="chapter" domain="[]" context="{'group_by':'chapter_id'}" />
+                </group>
+                <searchpanel>
+                    <field name="chapter_id" string="Chapter" enable_counters="1" />
+                </searchpanel>
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_procedure_code_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.procedure.code.view.form.inherit</field>
+        <field name="model">ni.procedure.code</field>
+        <field name="inherit_id" ref="ni_procedure.ni_procedure_code_view_form" />
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field
+                    name="chapter_id"
+                    optional="hide"
+                    context="{'show_code':True}"
+                    options="{'always_reload': True}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
