@@ -21,6 +21,7 @@
         "views/ni_procedure_category_views.xml",
         "views/ni_procedure_outcome_views.xml",
         "views/ni_procedure_views.xml",
+        "views/ni_procedure_menu.xml",
         "views/ni_encounter_views.xml",
     ],
     "demo": [],
