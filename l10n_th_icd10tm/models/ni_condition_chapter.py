@@ -8,13 +8,13 @@ class ConditionChapter(models.Model):
     _description = "Chapter"
     _inherit = "ni.coding"
 
-    roman = fields.Char()
+    chapter = fields.Char()
     display_name = fields.Char(compute="_compute_display_name", store=True)
     block_ids = fields.One2many("ni.condition.block", "chapter_id")
 
-    @api.depends("roman", "name")
+    @api.depends("chapter", "name")
     def _compute_display_name(self):
         for rec in self:
             rec.display_name = _(
-                "Chapter {} {} ({})".format(rec.roman, rec.name, rec.code)
+                "Chapter {} {} ({})".format(rec.chapter, rec.name, rec.code)
             )
