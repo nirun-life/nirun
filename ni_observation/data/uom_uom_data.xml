@@ -28,6 +28,15 @@
         <field name="factor">100</field>
         <field name="uom_type">smaller</field>
     </record>
+    <record id="uom_categ_pressure" model="uom.category">
+        <field name="name">Pressure</field>
+    </record>
+    <record id="uom_kg_m2" model="uom.uom">
+        <field name="name">kg/m²</field>
+        <field name="category_id" ref="uom_categ_pressure" />
+        <field name="factor">1</field>
+        <field name="uom_type">reference</field>
+    </record>
     <record id="uom_categ_temperature" model="uom.category">
         <field name="name">Temperature</field>
     </record>
