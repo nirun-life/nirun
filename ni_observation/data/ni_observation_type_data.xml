@@ -43,20 +43,28 @@
         <field name="unit" ref="uom_degree_cel" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
-    <record id="type_body_body_weight" model="ni.observation.type">
-        <field name="code">body-wight</field>
+    <record id="type_body_weight" model="ni.observation.type">
+        <field name="code">body-weight</field>
         <field name="name">Body Weight</field>
         <field name="min" eval="1" />
         <field name="max" eval="300" />
         <field name="unit" ref="uom.product_uom_kgm" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
-    <record id="type_body_body_height" model="ni.observation.type">
+    <record id="type_body_height" model="ni.observation.type">
         <field name="code">body-height</field>
         <field name="name">Body Height</field>
         <field name="min" eval="1" />
         <field name="max" eval="300" />
         <field name="unit" ref="uom.product_uom_cm" />
+        <field name="category_id" ref="category_vital_signs" />
+    </record>
+    <record id="type_bmi" model="ni.observation.type">
+        <field name="code">bmi</field>
+        <field name="name">Body Mass Index</field>
+        <field name="min" eval="1" />
+        <field name="max" eval="100" />
+        <field name="unit" ref="ni_observation.uom_kg_m2" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
     <record id="type_oxygen_sat" model="ni.observation.type">
