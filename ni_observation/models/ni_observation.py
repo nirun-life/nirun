@@ -87,13 +87,14 @@ class Observation(models.Model):
 
     @api.onchange("type_id")
     def _onchange_type(self):
-        self.update(
-            {
-                "interpretation_id": None,
-                "value_type": type.id,
-            }
-        )
-        self._compute_interpretation()
+        if self.type_id:
+            self.update(
+                {
+                    "interpretation_id": None,
+                    "value_type": self.type_id.value_type,
+                }
+            )
+            self._compute_interpretation()
 
     @api.depends("value")
     def _compute_interpretation(self):

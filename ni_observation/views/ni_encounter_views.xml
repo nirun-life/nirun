@@ -9,6 +9,56 @@
         <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
         <field name="priority">2</field>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='physical_exam']" position="before">
+                <group class="mb-4">
+                    <group>
+                        <label for="body_temp" />
+                        <div class="o_row">
+                            <field name="body_temp" />
+                            <span class="text-muted me-4">°C</span>
+                        </div>
+                        <label for="respiratory_rate" />
+                        <div class="o_row">
+                            <field name="respiratory_rate" />
+                            <span class="text-muted me-4">/min</span>
+                        </div>
+                        <label for="bp_s" string="Blood Pressure" />
+                        <div class="o_row">
+                            <field name="bp_s" />
+                            <span class="mx-1">/</span>
+                            <field name="bp_d" />
+                            <span class="text-muted me-4">mmHg</span>
+                        </div>
+                        <label for="heart_rate" />
+                        <div class="o_row">
+                            <field name="heart_rate" />
+                            <span class="text-muted me-4">/min</span>
+                        </div>
+                    </group>
+                    <group>
+                        <label for="body_weight" />
+                        <div class="o_row">
+                            <field name="body_weight" />
+                            <span class="text-muted me-4">kg</span>
+                        </div>
+                        <label for="body_height" />
+                        <div class="o_row">
+                            <field name="body_height" />
+                            <span class="text-muted me-4">cm</span>
+                        </div>
+                        <label for="bmi" />
+                        <div class="o_row">
+                            <field name="bmi" />
+                            <span class="text-muted me-4">kg/m²</span>
+                        </div>
+                        <label for="fbs" />
+                        <div class="o_row">
+                            <field name="fbs" />
+                            <span class="text-muted me-4">mg/dl</span>
+                        </div>
+                    </group>
+                </group>
+            </xpath>
             <xpath expr="//page[@name='vital-signs']" position="inside">
                 <field name="observation_line_vital_sign_ids" />
                 <button
