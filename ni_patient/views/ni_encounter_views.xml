@@ -409,6 +409,7 @@
                                 </group>
                             </group>
                         </page>
+                        <page name="history" string="History" />
                         <page name="cc" string="Chief Complaint">
                             <field name="chief_complaint" placeholder="Chief Complaint" />
                             <div class="my-1">
@@ -421,12 +422,52 @@
                                     widget='many2many_tags'
                                 />
                             </div>
-                            <div class="my-1">
-                                <field name="chief_complaint_uid" class="text-muted" options="{'no_open': True}" />
+                            <div class="my-2">
+                                <field
+                                    name="chief_complaint_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
                                 <field name="chief_complaint_date" class="text-muted mx-2" />
                             </div>
                         </page>
-                        <page name="history" string="History" />
+                        <page name="hpi" string="History of Present Illness">
+                            <field name="history_of_present_illness" placeholder="History of Present Illness" />
+                            <div class="my-2">
+                                <field
+                                    name="history_of_present_illness_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field name="history_of_present_illness_date" class="text-muted mx-2" />
+                            </div>
+                        </page>
+                        <page name="ros" string="Review of Systems">
+                            <field name="review_of_systems" placeholder="Review of Systems" />
+                            <div class="my-2">
+                                <field
+                                    name="review_of_systems_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field name="review_of_systems_date" class="text-muted mx-2" />
+                            </div>
+                        </page>
+                        <page name="pe" string="Physical Examination">
+                            <field name="physical_exam" placeholder="Physical Examination" />
+                            <div class="my-2">
+                                <field
+                                    name="physical_exam_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field name="physical_exam_date" class="text-muted mx-2" />
+                            </div>
+                        </page>
                         <page name="vital-signs" string="Vital Sign" />
                         <page name="problem" string="Problem List" />
                         <page name="medication" string="Medication" />

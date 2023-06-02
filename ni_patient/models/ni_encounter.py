@@ -11,6 +11,13 @@ LOCK_STATE_DICT = {
     "finished": [("readonly", True)],
 }
 
+SIGN_FILEDS = [
+    "chief_complaint",
+    "hist_of_present_illness",
+    "review_of_systems",
+    "physical_exam",
+]
+
 
 class Encounter(models.Model):
     _name = "ni.encounter"
@@ -124,9 +131,31 @@ class Encounter(models.Model):
         copy=True,
         help="Reason the encounter takes place",
     )
-    chief_complaint = fields.Text(tracking=True, states=LOCK_STATE_DICT)
+    chief_complaint = fields.Text(
+        "Chief Complaint", tracking=True, states=LOCK_STATE_DICT
+    )
     chief_complaint_uid = fields.Many2one("res.users", readonly=True, copy=False)
     chief_complaint_date = fields.Datetime(readonly=True, copy=False)
+
+    history_of_present_illness = fields.Html(
+        "History of Present Illness", tracking=True, states=LOCK_STATE_DICT
+    )
+    history_of_present_illness_uid = fields.Many2one(
+        "res.users", readonly=True, copy=False
+    )
+    history_of_present_illness_date = fields.Datetime(readonly=True, copy=False)
+
+    review_of_systems = fields.Html(
+        "Review of Systems", tracking=True, states=LOCK_STATE_DICT
+    )
+    review_of_systems_uid = fields.Many2one("res.users", readonly=True, copy=False)
+    review_of_systems_date = fields.Datetime(readonly=True, copy=False)
+
+    physical_exam = fields.Html(
+        "Physical Examination", tracking=True, states=LOCK_STATE_DICT
+    )
+    physical_exam_uid = fields.Many2one("res.users", readonly=True, copy=False)
+    physical_exam_date = fields.Datetime(readonly=True, copy=False)
 
     # Hospitalization
     hospitalization = fields.Boolean(related="class_id.hospitalization", store=True)
@@ -368,7 +397,7 @@ class Encounter(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            self._update_chief_complaint(vals)
+            self._update_sign_fields(vals)
 
         result = super().create(vals_list)
         if result.location_id:
@@ -392,7 +421,7 @@ class Encounter(models.Model):
                 )
             else:
                 last_location.update({"location_id": new_location})
-        self._update_chief_complaint(vals)
+        self._update_sign_fields(vals)
 
         res = super().write(vals)
         if "state" in vals:
@@ -400,12 +429,16 @@ class Encounter(models.Model):
                 enc.patient_id._compute_encounter()
         return res
 
-    def _update_chief_complaint(self, vals):
-        if "chief_complaint" in vals and vals["chief_complaint"]:
-            if "chief_complaint_uid" not in vals:
-                vals["chief_complaint_uid"] = self.env.uid
-            if "chief_complaint_date" not in vals:
-                vals["chief_complaint_date"] = fields.Datetime.now()
+    def _update_sign_fields(self, vals):
+        ts = fields.Datetime.now()
+        for f in SIGN_FILEDS:
+            if f in vals and vals[f]:
+                f_uid = "{}_uid".format(f)
+                f_date = "{}_date".format(f)
+                if f_uid not in vals:
+                    vals[f_uid] = self.env.uid
+                if f_date not in vals:
+                    vals[f_date] = ts
         return vals
 
     def get_last_location(self):
