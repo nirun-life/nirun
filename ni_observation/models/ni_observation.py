@@ -17,10 +17,12 @@ class Observation(models.Model):
         index=True,
         ondelete="cascade",
     )
-    occurrence = fields.Datetime(default=lambda _: fields.datetime.now())
-    type_id = fields.Many2one("ni.observation.type", required=True)
+    occurrence = fields.Datetime(default=lambda _: fields.datetime.now(), index=True)
+    type_id = fields.Many2one("ni.observation.type", required=True, index=True)
     sequence = fields.Integer(default=0)
-    category_id = fields.Many2one(related="type_id.category_id", readonly=True)
+    category_id = fields.Many2one(
+        related="type_id.category_id", readonly=True, store=True, index=True
+    )
     value_type = fields.Selection(
         [("char", "Char"), ("float", "Float"), ("int", "Integer"), ("code_id", "Code")],
         default="float",
@@ -179,7 +181,7 @@ class Observation(models.Model):
                 )
 
     def view_graph(self):
-        action_rec = self.env.ref("ni_observation.ni_observation_action")
+        action_rec = self.env.ref("ni_observation.ni_observation_action_graph")
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
         ctx.update(
@@ -187,6 +189,7 @@ class Observation(models.Model):
                 "search_default_patient_id": self.patient_id.id,
                 "search_default_type_id": self.type_id.id,
                 "default_patient_id": self.patient_id.id,
+                "search_default_occurrence_hour": True,
             }
         )
         action["context"] = ctx
