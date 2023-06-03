@@ -60,21 +60,31 @@ class Encounter(models.Model):
     def _create_observation(self, vals):
         ts = fields.Datetime.now()
         vals_list = []
+        types = self.env["ni.observation.type"]
         for f in OBSERVATION_FIELDS:
             if f in vals and vals[f]:
-                vals_list.append(
-                    {
-                        "occurrence": ts,
-                        "patient_id": self.patient_id.id,
-                        "encounter_id": self.encounter_id.id,
-                        "type_id": self.env["ni.observation.type"]
-                        .search([("code", "=", f.replace("_", "-"))])
-                        .id,
-                        "value": vals[f],
-                    }
-                )
+                ob_type = types.search([("code", "=", f.replace("_", "-"))])
+                value = vals[f]
+                if type(value) is float:
+                    value = round(value, 2)
+                vals_list.append(self._observation_vals(ts, ob_type.id, value))
+        if ("body_height" in vals or "body_weight" in vals) and self.bmi:
+            # write BMI if any change
+            bmi_type = types.search([("code", "=", "bmi")])
+            vals_list.append(
+                self._observation_vals(ts, bmi_type.id, round(self.bmi, 2))
+            )
         if vals_list:
             return self.env["ni.observation"].create(vals_list)
+
+    def _observation_vals(self, occurrence, type_id, value):
+        return {
+            "occurrence": occurrence,
+            "patient_id": self.patient_id.id,
+            "encounter_id": self.encounter_id.id,
+            "type_id": type_id,
+            "value": value,
+        }
 
     @api.depends("body_height", "body_weight")
     def _compute_bmi(self):
