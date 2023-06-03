@@ -8,6 +8,26 @@
         <field name="res_model">ni.observation.type</field>
         <field name="view_mode">tree,form</field>
     </record>
+    <record id="ni_observation_type_view_search" model="ir.ui.view">
+        <field name="name">ni.observation.type.view.search</field>
+        <field name="model">ni.observation.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]" />
+                <group string="Group By">
+                    <filter
+                        string="Category"
+                        name="group_by_category"
+                        domain="[]"
+                        context="{'group_by':'category_id'}"
+                    />
+                </group>
+                <searchpanel>
+                    <field name="category_id" string="Category" enable_counters="1" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
     <record id="ni_observation_type_view_tree" model="ir.ui.view">
         <field name="name">ni.observation.type.view.tree</field>
         <field name="model">ni.observation.type</field>
