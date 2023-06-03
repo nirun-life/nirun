@@ -7,8 +7,12 @@ class ObservationInterpretation(models.Model):
     _name = "ni.observation.interpretation"
     _description = "Interpretation"
     _inherit = ["ni.coding"]
+    _parent_store = True
 
-    parent_id = fields.Many2one("ni.observation.interpretation")
+    parent_id = fields.Many2one(
+        "ni.observation.interpretation", index=True, ondelete="cascade"
+    )
+    parent_path = fields.Char(index=True, unaccent=False)
     display_class = fields.Selection(
         [
             ("text", "Text"),
