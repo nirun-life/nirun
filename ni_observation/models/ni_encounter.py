@@ -32,6 +32,11 @@ class Encounter(models.Model):
         "encounter_id",
         compute="_compute_observation_line_vital_sign_ids",
     )
+    observation_lab_ids = fields.One2many(
+        "ni.encounter.observation",
+        "encounter_id",
+        compute="_compute_observation_lab_ids",
+    )
 
     bp = fields.Char("Blood Pressure")
     bp_s = fields.Float("SYS")
@@ -114,8 +119,17 @@ class Encounter(models.Model):
                 [("encounter_id", "=", rec.id)]
             )
 
+    @api.depends("observation_latest_ids")
+    def _compute_observation_lab_ids(self):
+        ob_lines = self.env["ni.encounter.observation"].search(
+            [("encounter_id", "in", self.ids), ("category_id.code", "=", "laboratory")]
+        )
+        for rec in self:
+            rec.observation_lab_ids = ob_lines.filtered_domain(
+                [("encounter_id", "=", rec.id)]
+            )
+
     def action_observation(self):
-        self.ensure_one()
         action_rec = self.env.ref("ni_observation.ni_observation_action")
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
@@ -125,6 +139,13 @@ class Encounter(models.Model):
                 "default_encounter_id": self.ids[0],
             }
         )
+        domain = [
+            ("patient_id", "=", self.patient_id.id),
+            ("encounter_id", "<=", self.id),
+        ]
+        if "category_id" in ctx and ctx["category_id"]:
+            domain.append(("category_id", "=", ctx["category_id"]))
+
         action["context"] = ctx
-        action["domain"] = [("encounter_id", "=", self.id)]
+        action["domain"] = domain
         return action

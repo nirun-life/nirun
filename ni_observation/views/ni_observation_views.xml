@@ -8,12 +8,10 @@
         <field name="res_model">ni.observation</field>
         <field name="view_mode">pivot,graph,tree</field>
     </record>
-    <record id="ni_observation_action_pivot_from_encounter" model="ir.actions.act_window">
+    <record id="ni_observation_action_graph" model="ir.actions.act_window">
         <field name="name">Observation</field>
         <field name="res_model">ni.observation</field>
-        <field name="view_mode">pivot,graph</field>
-        <field name="context">{'default_encounter_id': active_id}</field>
-        <field name="domain">[('encounter_id', '=', active_id)]</field>
+        <field name="view_mode">graph</field>
     </record>
     <record id="ni_observation_view_search" model="ir.ui.view">
         <field name="name">ni.observation.view.search</field>
@@ -25,7 +23,7 @@
                 <field name="type_id" />
                 <field name="interpretation_id" operator="child_of" />
                 <filter
-                    name="effective_today"
+                    name="occurrence_today"
                     string="Today"
                     domain="[
                     ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
@@ -33,21 +31,25 @@
                     ]"
                 />
                 <filter
-                    name="effective_yesterday"
+                    name="occurrence_yesterday"
                     string="Yesterday"
                     domain="[
                     ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
                     ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))
                     ]"
                 />
-                <filter name="effective_date" string="Period" date="occurrence" />
+                <separator />
+                <filter name="occurrence" string="Occurrence" date="occurrence" default_period="this_year,last_year" />
                 <separator />
                 <group string="Group By">
-                    <filter name="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_occurrence" string="Occurrence" context="{'group_by': 'occurrence:day'}" />
                     <separator />
-                    <filter name="Task" context="{'group_by': 'sheet_id'}" />
-                    <filter name="Type" context="{'group_by': 'type_id'}" />
-                    <filter name="Category" context="{'group_by': 'category_id'}" />
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_encounter" string="Encounter" context="{'group_by': 'encounter_id'}" />
+                    <separator />
+                    <filter name="group_by_sheet" string="Task" context="{'group_by': 'sheet_id'}" />
+                    <filter name="group_by_type" string="Type" context="{'group_by': 'type_id'}" />
+                    <filter name="group_by_category" string="Category" context="{'group_by': 'category_id'}" />
                 </group>
             </search>
         </field>
@@ -57,7 +59,7 @@
         <field name="model">ni.observation</field>
         <field name="arch" type="xml">
             <graph stacked="False" type="bar">
-                <field name="occurrence" interval="hour" />
+                <field name="occurrence" interval="day" type="col" />
                 <field name="type_id" type="row" />
                 <field name="value_float" type="measure" />
             </graph>
@@ -67,7 +69,9 @@
         <field name="name">ni.observation.view.pivot</field>
         <field name="model">ni.observation</field>
         <field name="arch" type="xml">
-            <pivot default_order="type_id.sequence, occurrence DESC">
+            <pivot default_order="type_id.sequence, occurrence">
+                <!-- pylint:disable=duplicate-xml-fields -->
+                <field name="occurrence" interval="day" type="col" />
                 <field name="occurrence" interval="hour" type="col" />
                 <field name="type_id" type="row" />
                 <field name="value_float" type="measure" />
@@ -84,11 +88,15 @@
                 <field name="encounter_id" invisible="1" />
                 <field name="sequence" widget="handle" />
                 <field name="occurrence" optional="hide" />
-                <field name="type_id" optional="show" />
                 <field name="category_id" optional="hide" />
+                <field name="type_id" />
                 <field name="value_type" invisible="1" />
-                <field name="value" />
-                <field name="unit" attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}" />
+                <field name="value" decoration-bf="1" />
+                <field
+                    name="unit"
+                    decoration-muted="1"
+                    attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                />
                 <field
                     name="interpretation_id"
                     widget="badge"

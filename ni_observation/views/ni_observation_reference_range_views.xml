@@ -7,6 +7,23 @@
         <field name="name">Reference Ranges</field>
         <field name="res_model">ni.observation.reference.range</field>
         <field name="view_mode">tree,form</field>
+        <field name="context">{'group_by': 'type_id'}</field>
+    </record>
+    <record id="ni_observation_reference_range_view_search" model="ir.ui.view">
+        <field name="name">ni.observation.reference.range.view.search</field>
+        <field name="model">ni.observation.reference.range</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="type_id" />
+                <group string="Group By">
+                    <filter string="Type" name="group_by_type" domain="[]" context="{'group_by':'type_id'}" />
+                </group>
+                <searchpanel>
+                    <field name="type_id" string="Type" enable_counters="1" />
+                    <field name="interpretation_id" string="Interpretation" />
+                </searchpanel>
+            </search>
+        </field>
     </record>
     <record id="ni_observation_reference_range_view_tree" model="ir.ui.view">
         <field name="name">ni.observation.reference.range.view.tree</field>
@@ -16,7 +33,17 @@
                 <field name="type_id" />
                 <field name="low" />
                 <field name="high" />
-                <field name="interpretation_id" />
+                <field
+                    name="interpretation_id"
+                    widget="badge"
+                    decoration-danger="display_class == 'danger'"
+                    decoration-info="display_class == 'info'"
+                    decoration-muted="display_class == 'muted'"
+                    decoration-primary="display_class == 'primary'"
+                    decoration-success="display_class == 'success'"
+                    decoration-warning="display_class == 'warning'"
+                />
+                <field name="display_class" invisible="1" />
             </tree>
         </field>
     </record>

@@ -10,9 +10,10 @@ class ReferenceRange(models.Model):
     _order = "type_id, low"
 
     type_id = fields.Many2one("ni.observation.type", index=True, required=True)
-    low = fields.Float(help="Inclusive")
-    high = fields.Float(help="Exclusive")
+    low = fields.Float(help="Inclusive", group_operator="min")
+    high = fields.Float(help="Exclusive", group_operator="max")
     interpretation_id = fields.Many2one("ni.observation.interpretation", required=True)
+    display_class = fields.Selection(related="interpretation_id.display_class")
     active = fields.Boolean(default="True")
 
     def name_get(self):

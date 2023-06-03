@@ -62,10 +62,11 @@
             <xpath expr="//page[@name='vital-signs']" position="inside">
                 <field name="observation_line_vital_sign_ids" />
                 <button
-                    name="%(ni_observation_action_pivot_from_encounter)d"
-                    type="action"
+                    name="action_observation"
+                    type="object"
                     string="See More"
                     class="btn-secondary"
+                    context="{'category_id': %(category_vital_signs)d}"
                 />
                 <button
                     name="%(ni_observation_sheet_action_form)d"
@@ -75,6 +76,26 @@
                     context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(category_vital_signs)d]}"
                     attrs="{'invisible': [('state', '=', 'finished')]}"
                 />
+            </xpath>
+            <xpath expr="//page[@name='vital-signs']" position="after">
+                <page name="laboratory" string="Laboratory">
+                    <field name="observation_lab_ids" />
+                    <button
+                        name="action_observation"
+                        type="object"
+                        string="See More"
+                        class="btn-secondary"
+                        context="{'category_id': %(category_laboratory)d}"
+                    />
+                    <button
+                        name="%(ni_observation_sheet_action_form)d"
+                        type="action"
+                        string="New"
+                        class="btn-primary"
+                        context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(category_laboratory)d]}"
+                        attrs="{'invisible': [('state', '=', 'finished')]}"
+                    />
+                </page>
             </xpath>
         </field>
     </record>
