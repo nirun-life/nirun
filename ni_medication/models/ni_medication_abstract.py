@@ -57,3 +57,9 @@ class MedicationAbstract(models.AbstractModel):
                 dosage = {k: v for k, v in dosage.items() if k in self._fields}
                 dosage["dosage_name"] = dosage.pop("name")
                 rec.update(dosage)
+
+    @api.onchange("route_id")
+    def _onchange_route_id(self):
+        for rec in self:
+            if rec.route_id and rec.route_id.method_id:
+                rec.method_id = rec.route_id.method_id
