@@ -18,6 +18,8 @@
         "data/uom_uom_data.xml",
         "data/ni_medication_form_data.xml",
         "data/ni_medication_admin_location_data.xml",
+        "data/ni_medication_dosage_method_data.xml",
+        "data/ni_medication_dosage_route_data.xml",
         "views/ni_medication_form_views.xml",
         "views/ni_medication_ingredient_views.xml",
         "views/ni_medication_views.xml",

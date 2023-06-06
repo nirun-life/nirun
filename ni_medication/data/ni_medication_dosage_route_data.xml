@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="route_PO" model="ni.medication.dosage.route">
+        <field name="name">Oral</field>
+        <field name="abbr">PO</field>
+        <field name="definition">By mouth</field>
+        <field name="method_id" ref="method_swallow" />
+    </record>
+    <record id="route_topical" model="ni.medication.dosage.route">
+        <field name="name">Topical</field>
+        <field name="definition">Onto the surface, such as the skin or the eye</field>
+        <field name="method_id" ref="method_apply" />
+    </record>
+    <record id="route_SL" model="ni.medication.dosage.route">
+        <field name="name">Sublingual</field>
+        <field name="abbr">SL</field>
+        <field name="method_id" ref="method_instill" />
+    </record>
+    <record id="route_SC" model="ni.medication.dosage.route">
+        <field name="name">Subcutaneous</field>
+        <field name="abbr">SC,SQ</field>
+        <field name="method_id" ref="method_inject" />
+    </record>
+    <record id="route_ID" model="ni.medication.dosage.route">
+        <field name="name">Intradermal</field>
+        <field name="abbr">ID</field>
+        <field name="method_id" ref="method_inject" />
+    </record>
+    <record id="route_IM" model="ni.medication.dosage.route">
+        <field name="name">Intramuscular</field>
+        <field name="abbr">IM</field>
+        <field name="definition">Into a muscle</field>
+        <field name="method_id" ref="method_inject" />
+    </record>
+    <record id="route_IV" model="ni.medication.dosage.route">
+        <field name="name">Intravenous</field>
+        <field name="abbr">IV</field>
+        <field name="definition">Into a vein</field>
+        <field name="method_id" ref="method_inject" />
+    </record>
+    <record id="route_PV" model="ni.medication.dosage.route">
+        <field name="name">Per vagina</field>
+        <field name="abbr">PV</field>
+        <field name="method_id" ref="method_insert" />
+    </record>
+    <record id="route_PR" model="ni.medication.dosage.route">
+        <field name="name">Per rectum</field>
+        <field name="abbr">PR</field>
+        <field name="method_id" ref="method_insert" />
+    </record>
+    <record id="route_NG" model="ni.medication.dosage.route">
+        <field name="name">Nasogastric</field>
+        <field name="abbr">NG</field>
+    </record>
+    <record id="route_G" model="ni.medication.dosage.route">
+        <field name="name">Gastrostomy</field>
+        <field name="abbr">G</field>
+    </record>
+</odoo>
