@@ -12,6 +12,8 @@ class TimingTemplate(models.Model):
     definition = fields.Text(copy=False)
     color = fields.Integer(copy=False)
     active = fields.Boolean(copy=False)
+    abbr = fields.Char(copy=False)
+    system_id = fields.Many2one(copy=False)
 
     name = fields.Text("Template Name", compute=None, store=True, copy=False)
     when = fields.Many2many(
