@@ -1,5 +1,4 @@
 #  Copyright (c) 2021-2023 NSTDA
-
 import random
 
 from odoo import api, fields, models
@@ -21,6 +20,7 @@ class Coding(models.AbstractModel):
         default=lambda self: self._get_default_sequence(),
     )
     name = fields.Char(required=True, index=True, translate=True)
+    abbr = fields.Char("Abbreviation", index=True)
     code = fields.Char(index=True, size=16)
     system_id = fields.Many2one(
         "ni.coding.system",
@@ -31,13 +31,36 @@ class Coding(models.AbstractModel):
     color = fields.Integer(default=lambda _: random.randint(0, 10))
     active = fields.Boolean(default=True)
 
+    _sql_constraints = [
+        (
+            "system_name_uniq",
+            "unique (system_id, name)",
+            "This name already exists!",
+        ),
+        (
+            "system_code_uniq",
+            "unique (system_id, code)",
+            "This code already exists!",
+        ),
+    ]
+
     @api.model
     def _name_search(
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
     ):
         args = list(args or [])
         if not (name == "" and operator == "ilike"):
-            args += ["|", ("name", operator, name), ("code", operator, name)]
+            if len(name.split()) > 1:
+                for n in name.split():
+                    args.append(("name", operator, n))
+            else:
+                args += [
+                    "|",
+                    "|",
+                    ("name", operator, name),
+                    ("code", operator, name),
+                    ("abbr", operator, name),
+                ]
         return self._search(args, limit=limit, access_rights_uid=name_get_uid)
 
     def name_get(self):
@@ -57,22 +80,11 @@ class Coding(models.AbstractModel):
                 names.append(current.name)
                 current = current.parent_id
             name = self._display_name_separator.join(reversed(names))
+        if self._context.get("show_abbr") and self.abbr:
+            name = "{} ({})".format(name, coding.abbr)
         if self._context.get("show_code") and self.code:
             name = "[{}] {}".format(coding.code, name)
         return name
-
-    _sql_constraints = [
-        (
-            "system_name_uniq",
-            "unique (system_id, name)",
-            "This name already exists!",
-        ),
-        (
-            "system_code_uniq",
-            "unique (system_id, code)",
-            "This code already exists!",
-        ),
-    ]
 
     def copy(self, default=None):
         default = default or {}
