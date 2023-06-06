@@ -24,13 +24,18 @@ class ConditionCode(models.Model):
     ):
         args = list(args or [])
         if not (name == "" and operator == "ilike"):
-            args += [
-                "|",
-                "|",
-                ("name", operator, name),
-                ("code", operator, name),
-                ("code_simplify", operator, name),
-            ]
+            if name.split():
+                for n in name.split():
+                    args.append(("name", operator, n))
+            else:
+                args += [
+                    "|" "|",
+                    "|",
+                    ("name", operator, name),
+                    ("code", operator, name),
+                    ("code_simplify", operator, name),
+                    ("abbr", operator, name),
+                ]
         return self._search(args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.depends("code")
