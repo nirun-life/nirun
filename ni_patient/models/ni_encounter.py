@@ -80,12 +80,12 @@ class Encounter(models.Model):
 
     priority = fields.Selection(
         [
-            ("routing", "Routine"),
-            ("urgent", "Urgent"),
+            ("routine", "Routine"),
             ("asap", "ASAP"),
+            ("urgent", "Urgent"),
             ("stat", "STAT"),
         ],
-        default="routing",
+        default="routine",
         tracking=True,
         required=True,
         states=LOCK_STATE_DICT,
@@ -480,13 +480,14 @@ class Encounter(models.Model):
                     _("Invalid State!, Please contact your system administrator")
                 )
 
-    def action_close(self):
+    def action_close(self, vals=None):
         for enc in self:
             if enc.state != "in-progress":
                 raise ValidationError(_("Must be in-progress state"))
-            else:
-                enc.update({"state": "finished", "period_end": fields.date.today()})
-                enc.participant_ids.action_stop()
+
+        vals = dict(vals or {"state": "finished", "period_end": fields.date.today()})
+        self.participant_ids.action_stop()
+        self.write(vals)
 
     def action_entered_in_error(self):
         self.write({"state": "entered-in-error"})

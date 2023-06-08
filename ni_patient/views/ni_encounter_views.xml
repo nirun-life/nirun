@@ -56,7 +56,7 @@
                 <filter name="stat" string="Priority: STAT" domain="[('priority', '=', 'stat')]" />
                 <filter name="asap" string="Priority: ASAP" domain="[('priority', '=', 'asap')]" />
                 <filter name="urgent" string="Priority: Urgent" domain="[('priority', '=', 'urgent')]" />
-                <filter name="routing" string="Priority: Routine" domain="[('priority', '=', 'routing')]" />
+                <filter name="routine" string="Priority: Routine" domain="[('priority', '=', 'routine')]" />
                 <group name="Group by">
                     <filter name="Priority" context="{'group_by': 'priority'}" />
                     <filter name="Classification" context="{'group_by': 'class_id'}" />
@@ -81,7 +81,7 @@
                 decoration-muted="state in ['cancelled', 'entered-in-error']"
             >
                 <field name="name" />
-                <field name="patient_id" />
+                <field name="patient_id" widget="many2one_avatar" />
                 <field name="gender" />
                 <field name="age" />
                 <field name="class_id" optional="show" />
@@ -91,8 +91,8 @@
                     widget="badge"
                     decoration-danger="priority=='stat'"
                     decoration-warning="priority=='asap'"
-                    decoration-success="priority=='urgent'"
-                    decoration-info="priority=='routing'"
+                    decoration-info="priority=='urgent'"
+                    decoration-success="priority=='routine'"
                 />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
@@ -117,7 +117,7 @@
                 duplicate="0"
             >
                 <field name="name" />
-                <field name="patient_id" />
+                <field name="patient_id" widget="many2one_avatar" />
                 <field name="class_id" optional="show" />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
