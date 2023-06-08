@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="type_routine" model="ni.appointment.type">
+        <field name="name">Routine</field>
+        <field name="code">ROUTINE</field>
+        <field name="system_id" ref="ni_coding.system_hl7_v2" />
+        <field name="definition">Routine appointment - default if not valued</field>
+    </record>
+    <record id="type_checkup" model="ni.appointment.type">
+        <field name="name">Check-up</field>
+        <field name="code">CHECKUP</field>
+        <field name="system_id" ref="ni_coding.system_hl7_v2" />
+        <field name="definition">A routine check-up, such as an annual physical</field>
+    </record>
+    <record id="type_followup" model="ni.appointment.type">
+        <field name="name">Follow-up</field>
+        <field name="code">FOLLOWUP</field>
+        <field name="system_id" ref="ni_coding.system_hl7_v2" />
+        <field name="definition">A follow up visit from a previous appointment</field>
+    </record>
+</odoo>

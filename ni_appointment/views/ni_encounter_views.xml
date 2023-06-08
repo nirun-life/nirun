@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="appointment_id" invisible="1" />
+                <field name="next_appointment_id" invisible="1" />
+                <field name="next_appointment_ids" invisible="1" />
+                <button
+                    name="action_next_appointment"
+                    class="oe_stat_button"
+                    icon="fa-calendar"
+                    type="object"
+                    attrs="{'invisible': [('state', 'in', ['draft', 'entered-in-error'])]}"
+                    context="{'default_encounter_id': id}"
+                    string="Appointment"
+                >
+                    <field name="next_appointment_info" widget="statinfo" string="Appointment" />
+                </button>
+            </xpath>
+            <field name="duration" position="after">
+                <field name="next_appointment_id" attrs="{'invisible': [('next_appointment_id', '=', False)]}" />
+            </field>
+        </field>
+    </record>
+</odoo>

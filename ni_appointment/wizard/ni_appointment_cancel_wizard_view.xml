@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="ni_appointment_cancel_wizard_view_form" model="ir.ui.view">
+        <field name="name">ni.appointment.cancel.wizard.view.form</field>
+        <field name="model">ni.appointment.cancel.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <label for="cancel_reason_id" />
+                        <div>
+                            <field
+                                name="cancel_reason_id"
+                                widget="radio"
+                                options="{'no_open': True, 'no_create_edit': True}"
+                            />
+                            <field name="cancel_note" placeholder="Further information about cancellation" />
+                        </div>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_cancel" type="object" class="btn-outline-danger" string="Mark as cancelled" />
+                    <button type="object" string="Discard" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

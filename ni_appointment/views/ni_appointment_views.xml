@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="ni_appointment_view_form" model="ir.ui.view">
+        <field name="name">ni.appointment.view.form</field>
+        <field name="model">ni.appointment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+                        name="action_encounter"
+                        class="btn-primary"
+                        type="object"
+                        string="Encounter"
+                        attrs="{'invisible': [('state', '!=', 'active')]}"
+                    />
+                    <button
+                        name="action_cancel_wizard"
+                        type="object"
+                        string="Cancel"
+                        attrs="{'invisible': [('state', '!=', 'active')]}"
+                    />
+                    <field name="state" statusbar_visible="active,completed" widget="statusbar" />
+                </header>
+                <sheet>
+                    <field name="encounter_id" invisible="1" />
+                    <field name="patient_id" invisible="1" />
+                    <field name="parent_id" invisible="1" />
+                    <field name="recurrency" invisible="1" />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'revoked')]}"
+                        bg_color="bg-danger"
+                        title="Cancelled"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'completed')]}"
+                        bg_color="bg-success"
+                        title="Completed"
+                    />
+                    <div class="oe_title mb-4">
+                        <div>
+                            <label for="name" />
+                        </div>
+                        <h1>
+                            <field name="name" placeholder="e.g. Follow-up" />
+                        </h1>
+                        <div class="text-muted">
+                            <field name="patient_identifier" class="d-inline" />
+                            <field name="patient_name" class="d-inline p-2" />
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field
+                                name="start_date"
+                                string="Starting at"
+                                attrs="{'required': [('allday','=',True)], 'invisible': [('allday','=',False)]}"
+                                force_save="1"
+                            />
+                            <field
+                                name="stop_date"
+                                string="Ending at"
+                                attrs="{'required': [('allday','=',True)],'invisible': [('allday','=',False)]}"
+                                force_save="1"
+                            />
+                            <field
+                                name="start"
+                                string="Starting at"
+                                attrs="{'required': [('allday','=',False)], 'invisible': [('allday','=',True)]}"
+                            />
+                            <field name="stop" string="Ending At" attrs="{'invisible': [('allday','=',True)]}" />
+                            <label for="duration" attrs="{'invisible': [('allday','=',True)]}" />
+                            <div attrs="{'invisible': [('allday','=',True)]}">
+                                <field
+                                    name="duration"
+                                    widget="float_time"
+                                    string="Duration"
+                                    class="oe_inline"
+                                    attrs="{'readonly': [('id', '!=', False), ('recurrency','=',True)]}"
+                                />
+                                <span>hours</span>
+                            </div>
+                            <field name="allday" force_save="1" />
+                        </group>
+                        <group>
+                            <field
+                                name="type_id"
+                                options="{'no_open': True, 'no_create_edit': True, 'no_create':True}"
+                            />
+                            <field
+                                name="employee_id"
+                                widget="many2one_avatar_employee"
+                                options="{'no_open': True, 'no_create_edit': True, 'no_create':True}"
+                            />
+                            <field name="department_id" options="{'no_open': True, 'no_create_edit': True}" />
+                            <field name="location" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" />
+                    </group>
+                    <group
+                        name="cancellation"
+                        attrs="{'invisible': [('state', '!=', 'revoked')]}"
+                        string="Cancellation"
+                    >
+                        <label for="cancel_reason_id" />
+                        <div>
+                            <field name="cancel_reason_id" options="{'no_open': True, 'no_create_edit': True}" />
+                            <field name="cancel_note" placeholder="Further information about cancellation" />
+                        </div>
+                    </group>
+                    <label for="cancel_uid" class="me-2" attrs="{'invisible': [('state', '!=', 'revoked')]}" />
+                    <span attrs="{'invisible': [('state', '!=', 'revoked')]}">
+                        <field name="cancel_uid" class="me-2" readonly="1" widget="many2one_avatar_user" />
+                        <field name="cancel_date" readonly="1" />
+                    </span>
+                </sheet>
+                <footer>
+                    <button
+                        string="Save &amp; Print"
+                        class="btn-primary"
+                        name="action_save_and_print"
+                        type="object"
+                        attrs="{'invisible': [('state', 'in', ['revoked', 'completed'])]}"
+                    />
+                    <button
+                        string="Save as draft"
+                        class="btn-secondary"
+                        special="save"
+                        attrs="{'invisible': [('state', '!=', 'draft')]}"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
