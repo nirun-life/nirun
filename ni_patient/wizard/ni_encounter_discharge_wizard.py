@@ -43,7 +43,7 @@ class Discharge(models.TransientModel):
                 raise UserError(_("Discharge date should not be in the future"))
 
     def discharge(self):
-        self.encounter_id.write(
+        self.encounter_id.action_close(
             {
                 "state": "finished",
                 "period_end": self.discharge_date,

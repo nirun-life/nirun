@@ -125,12 +125,12 @@ class Request(models.Model):
     )
     priority = fields.Selection(
         [
-            ("routing", "Routine"),
+            ("routine", "Routine"),
             ("urgent", "Urgent"),
             ("asap", "ASAP"),
             ("stat", "STAT"),
         ],
-        default="routing",
+        default="routine",
         required=True,
         readonly=False,
         states={

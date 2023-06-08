@@ -27,11 +27,11 @@ class WorkflowMixin(models.AbstractModel):
         return None
 
     @property
-    def _workflow_occurrence(self) -> fields.Datetime | None:
+    def _workflow_occurrence(self) -> fields.Datetime:
         if self._workflow_occurrence_field in self._fields:
-            return self.mapped(self._workflow_occurrence_field)[0]
+            return self[self._workflow_occurrence_field]
         else:
-            return None
+            return self.create_date
 
     def _workflow_replace_id(self, data):
         if "replace_id" in self._fields and self.replace_id:
@@ -77,11 +77,11 @@ class WorkflowMixin(models.AbstractModel):
     def _write_workflow(self):
         self.ensure_one()
         rec = self
-        field_name = "%s_id" % self._workflow_type
-        if rec[field_name]:
-            rec[field_name].write(rec._to_workflow())
+        workflow_id = "%s_id" % self._workflow_type
+        if rec[workflow_id]:
+            rec[workflow_id].write(rec._to_workflow())
         else:
-            rec[field_name] = self.env[self._workflow_table].create(rec._to_workflow())
+            rec[workflow_id] = self.env[self._workflow_table].create(rec._to_workflow())
 
     def unlink(self):
         """Override unlink to delete workflow. This cannot be
@@ -136,7 +136,12 @@ class EventMixin(models.AbstractModel):
     def _to_workflow(self):
         res = super(EventMixin, self)._to_workflow()
         if self._workflow_request_id:
-            res.update({"request_id": self._workflow_request_id.id})
+            res.update(
+                {
+                    "request_id": self._workflow_request_id.id,
+                    "parent_id": self.parent_id.event_id.id or None,
+                }
+            )
         return res
 
     def action_not_done(self):
@@ -173,7 +178,7 @@ class RequestMixin(models.AbstractModel):
     _description = "Request Mixin"
     _inherit = "ni.workflow.mixin"
     _workflow_type = "request"
-    _workflow_occurrence = "create_date"
+    _workflow_occurrence_field = "create_date"
 
     request_id = fields.Many2one(
         "ni.workflow.request",
@@ -189,14 +194,17 @@ class RequestMixin(models.AbstractModel):
     )
     priority = fields.Selection(related="request_id.priority", readonly=False)
     intent = fields.Selection(related="request_id.intent", readonly=False, store=True)
-    state = fields.Selection(related="request_id.state", readonly=False, store=True)
+    state = fields.Selection(
+        related="request_id.state", readonly=False, store=True, default="draft"
+    )
 
     def _to_workflow(self):
         data = super(RequestMixin, self)._to_workflow()
         data.update(
             {
-                "priority": self.priority,
-                "intent": self.intent,
+                "priority": self.priority or "routine",
+                "intent": self.intent or "order",
+                "parent_id": self.parent_id.request_id.id or None,
             }
         )
         return data
