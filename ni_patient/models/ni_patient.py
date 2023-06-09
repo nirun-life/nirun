@@ -68,10 +68,10 @@ class Patient(models.Model):
     email = fields.Char(
         related="partner_id.email", inherited=True, readonly=False, tracking=True
     )
-    address_other_id = fields.Many2one(
+    other_address_id = fields.Many2one(
         "res.partner",
         "Other Address",
-        domain="[('parent_id', '=', partner_id), ('type', '=', 'private')]",
+        domain="[('ref', '=', identifier), ('type', '=', 'private')]",
     )
 
     code = fields.Char(
