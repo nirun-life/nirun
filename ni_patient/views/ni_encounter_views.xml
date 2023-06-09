@@ -147,6 +147,7 @@
             <form duplicate="0">
                 <field name="id" invisible="1" />
                 <field name="partner_id" invisible="1" />
+                <field name="patient_identifier" invisible="1" />
                 <header>
                     <button
                         name="action_confirm"
@@ -317,10 +318,10 @@
                                     <field name="mobile" widget="phone" />
                                     <field name="phone" widget="phone" />
                                     <field
-                                        name="address_other_id"
+                                        name="other_address_id"
                                         placeholder="e.g. Current Address, Work Address"
                                         options="{'always_reload':True, 'no_quick_create': True}"
-                                        context="{'form_view_ref': 'base.res_partner_view_form_private', 'default_type': 'private', 'default_name': 'Home Address', 'show_address': True, 'show_name': False, 'default_parent_id': partner_id,  'no_bank':True}"
+                                        context="{'form_view_ref': 'base.res_partner_view_form_private', 'default_type': 'private', 'default_name': 'Home Address', 'show_address': True, 'show_name': False, 'no_bank':True, 'default_ref': patient_identifier}"
                                     />
                                 </group>
                                 <group string="Citizenship">
