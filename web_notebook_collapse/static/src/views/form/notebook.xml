@@ -26,7 +26,13 @@
                 </button>
             </div>
             <div class="accordion nav-link o_notebook o_notebook_collapse" id="notebookCollapse">
-                <div class="accordion-item o_notebook_item" t-foreach="pages" t-as="pageItem" t-key="pageItem[0]">
+                <div
+                    class="accordion-item o_notebook_item"
+                    t-foreach="pages"
+                    t-as="pageItem"
+                    t-key="pageItem[0]"
+                    t-if="pageItem[1].isVisible"
+                >
                     <h2 class="accordion-header o_notebook_header">
                         <button
                             class="accordion-button o_notebook_header_button fs-4"
