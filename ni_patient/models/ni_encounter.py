@@ -65,6 +65,13 @@ class Encounter(models.Model):
         auto_join=True,
     )
     patient_name = fields.Char(related="patient_id.name", readonly=False)
+    patient_identifier = fields.Char(related="patient_id.identifier")
+
+    other_address_id = fields.Many2one(
+        "res.partner",
+        "Other Address",
+        domain="[('ref', '=', patient_identifier), ('type', '=', 'private')]",
+    )
 
     partner_id = fields.Many2one(
         related="patient_id.partner_id",
