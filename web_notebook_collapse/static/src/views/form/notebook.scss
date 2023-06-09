@@ -62,8 +62,12 @@
         background-color: $white;
         box-shadow: inset 0px -3px 10px -4px rgba(black, 0.1);
 
-        > .o_field_widget > :first-child.o_field_x2many.o_field_x2many_list,
-        > .o_field_widget > :first-child.o_field_widget.o_invisible_modifier + .o_field_x2many.o_field_x2many_list {
+        > .o_field_widget:not(:first-child) > :first-child.o_field_x2many.o_field_x2many_list {
+            @include x2many-list-sheet-fill();
+        }
+        > .o_field_widget:first-child > :first-child.o_field_x2many.o_field_x2many_list,
+        > .o_field_widget:first-child > :first-child.o_field_widget.o_invisible_modifier + .o_field_x2many.o_field_x2many_list,
+        .o_horizontal_separator + .o_field_widget > :first-child.o_field_x2many.o_field_x2many_list {
             @include x2many-list-sheet-fill($marginTop: -1rem);
         }
     }
