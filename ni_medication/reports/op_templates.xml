@@ -18,6 +18,21 @@
                                         HN:
                                         <span t-field="o.encounter_id" />
                                     </p>
+                                    <p>
+                                        location:
+                                        <span t-field="o.encounter_id.location_id" />
+                                    </p>
+                                    <p>Age:                                    
+                                        <span t-field="o.encounter_id.age" />
+                                        </p>
+                                        <p>วันที่จ่าย:                                    
+                                        <span t-field="o.occurrence" />
+                                        </p>
+                                        <p>หมายเหตุ:     
+                                        <t t-foreach="o.additional_ids" t-as="a">                                           
+                                        <span t-field="a.name" />
+                                        </t>                            
+                                        </p>
                                 </div>
                             </div>
                             <hr />
