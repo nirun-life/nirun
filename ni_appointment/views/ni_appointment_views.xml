@@ -55,6 +55,28 @@
                     </div>
                     <group>
                         <group>
+                            <field name="hide_next" invisible="1" />
+                            <label for="next_days" string="At Next" attrs="{'invisible': [('hide_next', '=', True)]}" />
+                            <div class="o_row" attrs="{'invisible': [('hide_next', '=', True)]}">
+                                <field
+                                    name="next_days"
+                                    class="oe_inline"
+                                    attrs="{'invisible': [('next_weeks', '>', 0)]}"
+                                />
+                                <span attrs="{'invisible': [('next_weeks', '>', 0)]}">Days</span>
+                                <span
+                                    class="mx-2"
+                                    attrs="{'invisible': ['|', ('next_weeks', '>', 0), ('next_days', '>', 0)]}"
+                                >
+                                    or
+                                </span>
+                                <field
+                                    name="next_weeks"
+                                    class="oe_inline"
+                                    attrs="{'invisible': [('next_days', '>', 0)]}"
+                                />
+                                <span attrs="{'invisible': [('next_days', '>', 0)]}">Weeks</span>
+                            </div>
                             <field
                                 name="start_date"
                                 string="Starting at"

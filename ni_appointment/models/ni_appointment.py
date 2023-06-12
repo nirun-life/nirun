@@ -1,4 +1,8 @@
-#  Copyright (c) 2021-2023 NSTDA
+#  Copyright (c) 2023 NSTDA
+
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 
@@ -14,6 +18,9 @@ class Appointment(models.Model):
     patient_identifier = fields.Char(related="patient_id.identifier")
 
     event_id = fields.Many2one("calendar.event", index=True, ondelete="cascade")
+    hide_next = fields.Boolean(compute="_compute_hide_next")
+    next_days = fields.Integer()
+    next_weeks = fields.Integer()
 
     parent_id = fields.Many2one(
         "ni.appointment", "Previous Appointment", index=True, ondelete="restrict"
@@ -49,6 +56,30 @@ class Appointment(models.Model):
     cancel_note = fields.Text(tracking=True)
     cancel_date = fields.Datetime()
     cancel_uid = fields.Many2one("res.users", "Cancelled by")
+
+    @api.depends("create_date")
+    def _compute_hide_next(self):
+        for rec in self:
+            rec.hide_next = (
+                self.create_date.date() or fields.date.today()
+            ) != fields.date.today()
+
+    @api.onchange("next_days")
+    def _onchange_next_day(self):
+        if self.next_days > 0:
+            self.next_weeks = 0
+            self._update_start_next(days=self.next_days)
+
+    @api.onchange("next_weeks")
+    def _onchange_next_week(self):
+        if self.next_weeks > 0:
+            self.next_days = 0
+            self._update_start_next(days=7 * self.next_weeks)
+
+    def _update_start_next(self, days=0):
+        time = self.start.time()
+        date = fields.Datetime.now().date() + relativedelta(days=days)
+        self.start = fields.Datetime.to_datetime(datetime.combine(date, time))
 
     @api.onchange("employee_id")
     def _onchange_employee_id(self):
