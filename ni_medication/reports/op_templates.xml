@@ -6,46 +6,46 @@
                     <div class="page">
                         <div class="container">
                             <div class="row">
-                                <h2>Medicine Label</h2>
-                                <div class="col">
+                                <div class="col-6">
                                     <p>
-                                        <strong>ชื่อ:</strong>
                                         <span t-field="o.patient_id" />
                                     </p>
+                                    <p>วันเกิด <span t-field="o.patient_id.birthdate" />
+                                    </p>
+                                    <p>HN <span t-field="o.encounter_id" /></p>
                                 </div>
-                                <div class="col">
-                                    <p>
-                                        HN:
-                                        <span t-field="o.encounter_id" />
+                                <div class="col-6">
+                                    <p>วันที่จ่าย: <span t-field="o.occurrence_date" />
                                     </p>
-                                    <p>
-                                        location:
-                                        <span t-field="o.encounter_id.location_id" />
+                                    <p>VN. <span t-field="o.encounter_id.name" />
                                     </p>
-                                    <p>Age:                                    
-                                        <span t-field="o.encounter_id.age" />
-                                        </p>
-                                        <p>วันที่จ่าย:                                    
-                                        <span t-field="o.occurrence" />
-                                        </p>
-                                        <p>หมายเหตุ:     
-                                        <t t-foreach="o.additional_ids" t-as="a">                                           
-                                        <span t-field="a.name" />
-                                        </t>                            
-                                        </p>
+                                    <p>นพ. ฟหกด ฟหกด่าสว</p>
                                 </div>
                             </div>
                             <hr />
                             <div class="row">
                                 <div class="col">
-                                    <h3 t-field="o.medication_id" />
-                                </div>
-                                <div class="col">
-                                    <h3 t-field="o.dosage_id" />
+                                    <p>
+                                        <span t-field="o.dosage_id"></span>
+                                    </p>
+                                    <p>
+                                        <span t-field="o.additional_ids" />
+                                    </p>
                                 </div>
                             </div>
+                            <hr />
                             <div class="row">
-                                <h4 t-field="o.additional_ids" />
+                                <div class="col-6">
+                                    <p>
+                                        <span t-field="o.medication_id.name"></span>
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <p>
+                                        <span t-field="o.quantity"></span>
+                                        <span t-field="o.dose_unit_id"></span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
