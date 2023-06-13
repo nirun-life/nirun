@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ni_encounter_view_tree_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.tree.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="js_class">ni_reception_register_tree</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_encounter_view_kanban_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.kanban.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_kanban" />
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="js_class">ni_reception_register_kanban</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
