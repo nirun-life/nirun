@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="ni_reception.register_button" owl="1">
+        <button type="button" class="btn btn-secondary o_button_generate_leads" t-on-click="onClickRegister">
+            Register
+        </button>
+    </t>
+    <t t-name="ni_reception.ListView.buttons" t-inherit="web.ListView.Buttons" t-inherit-mode="primary" owl="1">
+        <!-- Before the export button -->
+        <xpath expr="//t[contains(@t-if, 'isExportEnable')]" position="before">
+            <t t-call="ni_reception.register_button" />
+        </xpath>
+    </t>
+    <t t-name="ni_reception.KanbanView.buttons" t-inherit="web.KanbanView.Buttons" t-inherit-mode="primary" owl="1">
+        <xpath expr="//div[@t-if='props.showButtons']" position="inside">
+            <t t-call="ni_reception.register_button" />
+        </xpath>
+    </t>
+</templates>
