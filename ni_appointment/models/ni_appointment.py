@@ -51,6 +51,12 @@ class Appointment(models.Model):
     department_id = fields.Many2one(
         "hr.department", related="employee_id.department_id"
     )
+    instruction_ids = fields.Many2many(
+        "ni.appointment.instruction",
+        "ni_appointment_patent_instruction",
+        "appointment_id",
+        "instruction_id",
+    )
 
     cancel_reason_id = fields.Many2one("ni.appointment.cancel.reason", tracking=True)
     cancel_note = fields.Text(tracking=True)
