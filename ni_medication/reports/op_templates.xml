@@ -2,13 +2,21 @@
     <template id="medicine_layout">
         <t t-name="web.external_layout_standard">
         <div t-attf-class="header o_company_#{o.company_id}_layout" t-att-style="report_header_style">
-            <div class="row">
-                <div class="col-3 mb4">
+            <div class="row no-gutters">
+                <div class="col-1">
                     <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
                 </div>
-                <div class="col-9 text-end" style="margin-top:22px;" t-field="o.company_id.report_header" name="moto"/>
+                <div class="col">
+                    <div class="col">
+                        <t t-out="o.company_id.name" />
+                    </div>
+                    <div class="col">
+                        <t t-out="o.company_id.website" />
+                    </div>            
+                </div>
+                <!-- <div class="col-6 text-end" style="margin-top:22px;" t-field="o.company_id.phone" name="moto"/> -->
             </div>
-            <div t-if="o.company_id.logo or o.company_id.report_header" class="row zero_min_height">
+            <div class="row zero_min_height">
                 <div class="col-12">
                     <div style="border-bottom: 0px solid black;"/>
                 </div>
@@ -27,10 +35,11 @@
                 <t t-call="web.address_layout"/>
             </div>
             <t t-out="0"/>
+            <span>ใช้ตามแพทย์สั่งเท่านั้น มิฉะนั้นอาจเกิดอันตราย หากอาการไม่ดีขึ้นให้กลับมาพบแพทย์</span>
         </div>
 
         <div t-attf-class="footer o_standard_footer o_company_#{o.company_id}_layout">
-            <div class="col-9 text-end" style="margin-top:0px;" t-field="o.company_id.report_header" name="moto"/>
+            <span>ใช้ตามแพทย์สั่งเท่านั้น มิฉะนั้นอาจเกิดอันตราย หากอาการไม่ดีขึ้นให้กลับมาพบแพทย์</span>
         </div>
         </t>
     </template>
