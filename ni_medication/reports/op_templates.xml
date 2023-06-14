@@ -2,7 +2,7 @@
     <template id="medicine_layout">
         <t t-name="web.external_layout_standard">
         <div t-attf-class="header o_company_#{o.company_id}_layout" t-att-style="report_header_style">
-            <div class="row no-gutters">
+            <div class="row no-gutters" t-attf-style="color:{{o.company_id.primary_color}}">
                 <div class="col-1">
                     <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
                 </div>
@@ -14,7 +14,7 @@
                         <t t-out="o.company_id.website" />
                     </div>            
                 </div>
-                <!-- <div class="col-6 text-end" style="margin-top:22px;" t-field="o.company_id.phone" name="moto"/> -->
+                <div class="col-6 text-end" style="margin-top:22px;" t-field="o.company_id.phone" name="moto"/>
             </div>
             <div class="row zero_min_height">
                 <div class="col-12">
