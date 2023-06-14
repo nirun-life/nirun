@@ -1,8 +1,44 @@
 <odoo>
+    <template id="medicine_layout">
+        <t t-name="web.external_layout_standard">
+        <div t-attf-class="header o_company_#{o.company_id}_layout" t-att-style="report_header_style">
+            <div class="row">
+                <div class="col-3 mb4">
+                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                </div>
+                <div class="col-9 text-end" style="margin-top:22px;" t-field="o.company_id.report_header" name="moto"/>
+            </div>
+            <div t-if="o.company_id.logo or o.company_id.report_header" class="row zero_min_height">
+                <div class="col-12">
+                    <div style="border-bottom: 0px solid black;"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6" name="company_address">
+                    <span t-if="o.company_id.company_details" t-field="o.company_id.company_details"/>
+                    <span t-else="" t-field="o.company_id.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>
+                </div>
+            </div>
+        </div>
+
+        <div t-attf-class="article o_report_layout_standard o_company_#{o.company_id}_layout {{  'o_report_layout_background' if o.company_id.layout_background in ['Geometric', 'Custom']  else  '' }}" t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % o.company_id.layout_background_image.decode('utf-8') if o.company_id.layout_background_image and o.company_id.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if o.company_id.layout_background == 'Geometric' else ''}});" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <div class="pt-5">
+                <!-- This div ensures that the address is not cropped by the header. -->
+                <t t-call="web.address_layout"/>
+            </div>
+            <t t-out="0"/>
+        </div>
+
+        <div t-attf-class="footer o_standard_footer o_company_#{o.company_id}_layout">
+            <div class="col-9 text-end" style="margin-top:0px;" t-field="o.company_id.report_header" name="moto"/>
+        </div>
+        </t>
+    </template>
+
     <template id="report_op_label">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-call="web.external_layout">
+                <t t-call="ni_medication.medicine_layout">    
                     <div class="page">
                         <div class="container">
                             <div class="row">
@@ -48,7 +84,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>        
                 </t>
             </t>
         </t>
