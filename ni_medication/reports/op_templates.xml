@@ -1,14 +1,10 @@
 <odoo>
     <template id="medicine_layout">
         <t t-name="web.external_layout_standard">
-        <div t-attf-class="header o_company_#{o.company_id}_layout" t-att-style="report_header_style">
-            <div class="row no-gutters" t-attf-style="color:{{o.company_id.primary_color}}">
-                <div class="col-1">
-                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
-                </div>
-                <div class="col">
-                    <div class="col">
-                        <t t-out="o.company_id.name" />
+            <div t-attf-class="header o_company_#{o.company_id}_layout" t-att-style="report_header_style">
+                <div class="row no-gutters" t-attf-style="color:{{o.company_id.primary_color}}">
+                    <div class="col-1">
+                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
                     </div>
                     <div class="col">
                         <div class="col">
