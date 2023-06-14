@@ -32,6 +32,11 @@
         "views/ni_encounter_views.xml",
         "report/ni_encounter_observation_view.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "/ni_observation/static/src/scss/observation.scss",
+        ],
+    },
     "demo": [],
     "application": True,
     "auto_install": False,
