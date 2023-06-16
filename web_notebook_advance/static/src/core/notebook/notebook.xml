@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<templates xml:space="preserve">
+    <t t-inherit="web.Notebook" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div/div[1]/ul/li/a" position="replace">
+            <a
+                class="nav-link"
+                t-attf-class="{{ navItem[0] === state.currentPage ? 'active' : '' }} {{ props.orientation === 'vertical' ? 'p-3 rounded-0' : '' }} {{ navItem[1].className }}"
+                t-att-name="navItem[1].name"
+                t-on-click.prevent="() => this.activatePage(navItem[0])"
+                href="#"
+                role="tab"
+                tabindex="0"
+            >
+                <i t-if="navItem[1].icon" t-attf-class="fa {{navItem[1].icon}} me-3" />
+                <t t-out="navItem[1].title" />
+                <span t-if="navItem[1].badge" class="ms-2 badge text-bg-info" t-esc="navItem[1].badge" />
+            </a>
+        </xpath>
+    </t>
+</templates>
