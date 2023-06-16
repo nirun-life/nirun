@@ -79,4 +79,38 @@
             @include x2many-list-sheet-fill($marginTop: -1rem);
         }
     }
+
+    &.row {
+        display: flex;
+
+        .o_notebook_item {
+            border-radius: 2rem !important;
+            box-shadow: 10px 10px 30px #d9d9d9cc, -10px -10px 30px #ffffffaa;
+            margin-bottom: 3rem;
+            background-color: $white;
+
+            .o_notebook_header > button {
+                border-radius: 2rem !important;
+                color: $o-brand-primary;
+                font-weight: 600;
+
+                &:after {
+                    order: 0;
+                    margin-left: auto;
+                    margin-right: 0rem;
+                }
+            }
+
+            .o_notebook_content {
+                padding: 1rem var(--notebook-padding-x) 1rem var(--notebook-padding-x);
+                background-color: $white;
+                border-radius: 2rem;
+                box-shadow: none;
+
+                .o_inner_group.grid.col-lg-6 {
+                    display: block;
+                }
+            }
+        }
+    }
 }
