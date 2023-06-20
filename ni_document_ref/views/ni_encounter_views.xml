@@ -10,7 +10,8 @@
         <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//sheet/notebook" position="inside">
-                <page name="document" string="Document">
+                <page name="document" string="Document" badge="document_count" icon="fa-file-text">
+                    <field name="document_count" invisible="1" />
                     <field
                         name="document_ids"
                         mode="tree"
