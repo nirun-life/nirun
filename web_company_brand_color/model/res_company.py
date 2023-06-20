@@ -2,13 +2,15 @@
 # Copyright 2019 Alexandre Díaz <dev@redneboa.es>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
 from colorsys import hls_to_rgb, rgb_to_hls
+
+from odoo import fields, models
+
 from ..utils import convert_to_image, image_to_rgb, n_rgb_to_hex
 
 
 class Company(models.Model):
-    _inherit = 'res.company'
+    _inherit = "res.company"
 
     brand_colors = fields.Serialized()
     primary_color = fields.Char(sparse="brand_colors", default="#8458c6")
@@ -42,8 +44,3 @@ class Company(models.Model):
                 }
             )
         self.write(values)
-
-
-
-
-
