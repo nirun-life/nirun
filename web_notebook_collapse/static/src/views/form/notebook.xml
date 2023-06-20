@@ -44,7 +44,20 @@
                                 t-attf-aria-controls="panelsStayOpen-collapseOne-{{ pageItem[1].name }}"
                                 aria-controls="panelsStayOpen-collapseThree"
                             >
-                                <t t-out="pageItem[1].title" />
+                                <i t-if="pageItem[1].icon" t-attf-class="fa {{pageItem[1].icon}} me-3" />
+                                <div>
+                                    <div>
+                                        <t t-out="pageItem[1].title" />
+                                        <span
+                                            class="ms-2 badge text-bg-info"
+                                            t-if="pageItem[1].badge"
+                                            t-esc="pageItem[1].badge"
+                                        />
+                                    </div>
+                                    <t t-if="pageItem[1].info">
+                                        <div class="o_notebook_header_info small" t-esc="pageItem[1].info" />
+                                    </t>
+                                </div>
                                 <a class="nav-link" href="#" />
                             </button>
                         </h2>
@@ -64,10 +77,10 @@
                 <div
                     class="accordion nav-link o_notebook o_notebook_collapse row"
                     data-masonry="{&quot;percentPosition&quot;: true }"
-                    id="notebookCollapse"
+                    id="notebookCollapse-vertical"
                 >
                     <div
-                        class="col-12 col-md-6 col-xl-4"
+                        class="col-12 col-lg-6 col-xxl-4"
                         t-foreach="pages"
                         t-as="pageItem"
                         t-key="pageItem[0]"
@@ -84,8 +97,20 @@
                                     t-attf-aria-controls="panelsStayOpen-collapseOne-{{ pageItem[1].name }}"
                                     aria-controls="panelsStayOpen-collapseThree"
                                 >
-                                    <!--                                <i class="fa fa-book me-2" aria-hidden="true"/>-->
-                                    <t t-out="pageItem[1].title" />
+                                    <i t-if="pageItem[1].icon" t-attf-class="fa {{pageItem[1].icon}} me-3" />
+                                    <div>
+                                        <div>
+                                            <t t-out="pageItem[1].title" />
+                                            <span
+                                                class="ms-2 badge text-bg-info"
+                                                t-if="pageItem[1].badge"
+                                                t-esc="pageItem[1].badge"
+                                            />
+                                        </div>
+                                        <t t-if="pageItem[1].info">
+                                            <div class="o_notebook_header_info small" t-esc="pageItem[1].info" />
+                                        </t>
+                                    </div>
                                     <a class="nav-link" href="#" />
                                 </button>
                             </h2>
