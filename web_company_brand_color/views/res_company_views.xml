@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="view_company_form" model="ir.ui.view">
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Company Styles" name="company_styles" groups="base.group_system">
+                    <group string="Brand Colors" name="brand_colors">
+                        <field name="primary_color" widget="color" />
+                        <field name="primary_dark_color" widget="color" />
+                        <field name="primary_light_color" widget="color" />
+                        <field name="text_color" widget="color" />
+                    </group>
+                    <button
+                        class="btn-outline-primary"
+                        name="button_compute_color"
+                        type="object"
+                        string="Compute from logo"
+                    />
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

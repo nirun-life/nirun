@@ -1,0 +1,150 @@
+<odoo>
+    <template id="medicine_layout">
+        <t t-name="web.external_layout_standard">
+            <div t-attf-class="header o_company_#{o.company_id}_layout" t-att-style="report_header_style">
+                <div class="row zero_min_height">
+                    <div class="col-12">
+                        <div style="border-bottom: 0px solid black;" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6" name="company_address">
+                        <span t-if="o.company_id.company_details" t-field="o.company_id.company_details" />
+                        <span
+                            t-else=""
+                            t-field="o.company_id.partner_id"
+                            t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div
+                t-attf-class="article o_report_layout_standard o_company_#{o.company_id}_layout {{  'o_report_layout_background' if o.company_id.layout_background in ['Geometric', 'Custom']  else  '' }}"
+                t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % o.company_id.layout_background_image.decode('utf-8') if o.company_id.layout_background_image and o.company_id.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if o.company_id.layout_background == 'Geometric' else ''}});"
+                t-att-data-oe-model="o and o._name"
+                t-att-data-oe-id="o and o.id"
+                t-att-data-oe-lang="o and o.env.context.get('lang')"
+            >
+                <t t-out="0" />
+            </div>
+        </t>
+    </template>
+    <template id="report_op_label">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="ni_medication.medicine_layout">
+                    <div class="page">
+                        <div class="container">
+                            <div class="row" t-attf-style="color:{{o.company_id.primary_color}}">
+                                <div class="col-1">
+                                    <img
+                                        t-if="o.company_id.logo"
+                                        t-att-src="image_data_uri(o.company_id.logo)"
+                                        style="max-height: 45px;"
+                                        alt="Logo"
+                                    />
+                                </div>
+                                <div class="col-5">
+                                    <div class="col">
+                                        <b>
+                                            <t t-out="o.company_id.name" />
+                                        </b>
+                                    </div>
+                                    <div class="col">
+                                        <t t-out="o.company_id.website" />
+                                    </div>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <t t-out="o.company_id.phone" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p>
+                                        <b>
+                                            <span t-field="o.patient_id" />
+                                        </b>
+                                    </p>
+                                    <p>
+                                        <b>
+                                            วันเกิด
+                                            <span t-field="o.patient_id.birthdate" />
+                                        </b>
+                                    </p>
+                                    <p>
+                                        HN.
+                                        <span t-field="o.encounter_id" />
+                                    </p>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <p>
+                                        วันที่จ่าย:
+                                        <span t-field="o.occurrence_date" />
+                                    </p>
+                                    <p>
+                                        VN.
+                                        <span t-field="o.encounter_id.name" />
+                                    </p>
+                                    <p>นพ. ชาติชาย รักษาชนะ</p>
+                                </div>
+                            </div>
+                            <div class="row" style="margin:1rem 0">
+                                <div class="col">
+                                    <div style="border-bottom: 1px solid #bfbfbf;" />
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-6">
+                                    <p>
+                                        <span t-field="o.dosage_id" />
+                                    </p>
+                                    <p>
+                                        <span t-field="o.additional_ids" />
+                                    </p>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <img
+                                        t-att-src="'/report/barcode/QR/%s' % 'My text in qr code'"
+                                        style="width:100px;height:100px"
+                                    />
+                                </div>
+                            </div>
+                            <div class="row" style="margin:1rem 0">
+                                <div class="col">
+                                    <div style="border-bottom: 1px solid #bfbfbf;" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p>
+                                        <span t-field="o.medication_id.name" />
+                                    </p>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <p>
+                                        <b>
+                                            <span class="h3" t-field="o.quantity" />
+                                        </b>
+                                        <b>
+                                            <span t-field="o.dose_unit_id" />
+                                        </b>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col" t-attf-style="color:{{o.company_id.primary_color}}">
+                                    <small>
+                                        <b>
+                                            ใช้ตามแพทย์สั่งเท่านั้น มิฉะนั้นอาจเกิดอันตราย
+                                            หากอาการไม่ดีขึ้นให้กลับมาพบแพทย์
+                                        </b>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

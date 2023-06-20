@@ -36,3 +36,6 @@ class MedicationDispense(models.Model):
         ):
             vals["occurrence"] = fields.Datetime.now()
         return super(MedicationDispense, self).write(vals)
+
+    def action_print_label(self):
+        return self.env.ref("ni_medication.action_report_op_label").report_action(self)
