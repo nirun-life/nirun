@@ -11,6 +11,15 @@
         <field name="state">code</field>
         <field name="code">action = records.action_entered_in_error()</field>
     </record>
+    <record id="ni_encounter_action_encounter_location" model="ir.actions.server">
+        <field name="name">Location History</field>
+        <field name="sequence" eval="0" />
+        <field name="model_id" ref="model_ni_encounter" />
+        <field name="binding_model_id" ref="model_ni_encounter" />
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_encounter_location()</field>
+    </record>
     <record id="ni_encounter_action" model="ir.actions.act_window">
         <field name="name">Encounter</field>
         <field name="res_model">ni.encounter</field>
@@ -90,9 +99,8 @@
                     optional="show"
                     widget="badge"
                     decoration-danger="priority=='stat'"
-                    decoration-warning="priority=='asap'"
-                    decoration-info="priority=='urgent'"
-                    decoration-success="priority=='routine'"
+                    decoration-warning="priority=='urgent'"
+                    decoration-success="priority=='asap'"
                 />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
@@ -200,18 +208,7 @@
                         attrs="{'invisible': [('id', '=', False)]}"
                         class="oe_button_box"
                         groups="ni_patient.group_user"
-                    >
-                        <button
-                            name="%(ni_encounter_location_action)d"
-                            class="oe_stat_button"
-                            icon="fa-building"
-                            type="action"
-                            attrs="{'invisible': [('location_history_count', '&lt;=', 1)]}"
-                            context="{'default_encounter_id': id}"
-                        >
-                            <field name="location_history_count" widget="statinfo" />
-                        </button>
-                    </div>
+                    />
                     <field
                         name="image_1920"
                         class="oe_avatar"
@@ -291,7 +288,7 @@
                         </group>
                     </group>
                     <notebook attrs="{'invisible': [('id', '=', False)]}">
-                        <page name="private" string="Private Information">
+                        <page name="private" string="Private Information" icon="fa-address-book-o">
                             <group>
                                 <group string="Address">
                                     <label name="address_name" for="street" string="Address" />
@@ -367,6 +364,7 @@
                         <page
                             name="hospitalization"
                             string="Hospitalization"
+                            icon="fa-bed"
                             attrs="{'invisible': [('hospitalization', '=', False)]}"
                         >
                             <group>
@@ -410,8 +408,8 @@
                                 </group>
                             </group>
                         </page>
-                        <page name="history" string="History" />
-                        <page name="cc" string="Chief Complaint">
+                        <page name="history" string="History" icon="fa-history" />
+                        <page name="cc" string="Chief Complaint" icon="fa-star-half-o">
                             <field name="chief_complaint" placeholder="Chief Complaint" />
                             <div class="my-1">
                                 <i class="fa fa-tags" aria-hidden="true" title="Reasons" />
@@ -433,7 +431,7 @@
                                 <field name="chief_complaint_date" class="text-muted mx-2" />
                             </div>
                         </page>
-                        <page name="hpi" string="History of Present Illness">
+                        <page name="hpi" string="History of Present Illness" icon="fa-hourglass-start">
                             <field name="history_of_present_illness" placeholder="History of Present Illness" />
                             <div class="my-2">
                                 <field
@@ -445,7 +443,7 @@
                                 <field name="history_of_present_illness_date" class="text-muted mx-2" />
                             </div>
                         </page>
-                        <page name="ros" string="Review of Systems">
+                        <page name="ros" string="Review of Systems" icon="fa-stethoscope">
                             <field name="review_of_systems" placeholder="Review of Systems" />
                             <div class="my-2">
                                 <field
@@ -457,7 +455,7 @@
                                 <field name="review_of_systems_date" class="text-muted mx-2" />
                             </div>
                         </page>
-                        <page name="pe" string="Physical Examination">
+                        <page name="pe" string="Physical Examination" icon="fa-gavel">
                             <field name="physical_exam" placeholder="Physical Examination" />
                             <div class="my-2">
                                 <field
@@ -469,11 +467,16 @@
                                 <field name="physical_exam_date" class="text-muted mx-2" />
                             </div>
                         </page>
-                        <page name="vital-signs" string="Vital Sign" />
-                        <page name="problem" string="Problem List" />
-                        <page name="medication" string="Medication" />
-                        <page name="procedure" string="Procedure" />
-                        <page name="discharge" string="Discharge" attrs="{'invisible': [('state', '!=', 'finished')]}">
+                        <page name="vital-signs" string="Vital Sign" icon="fa-heartbeat" />
+                        <page name="problem" string="Problem List" icon="fa-list-ul" />
+                        <page name="medication" string="Medication" icon="fa-minus-circle" />
+                        <page name="procedure" string="Procedure" icon="fa-scissors" />
+                        <page
+                            name="discharge"
+                            string="Discharge"
+                            icon="fa-sign-out"
+                            attrs="{'invisible': [('state', '!=', 'finished')]}"
+                        >
                             <group>
                                 <group>
                                     <field name="discharge_id" options="{'no_open': True}" />
@@ -486,7 +489,7 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
+                <div name="chatter" class="oe_chatter">
                     <field name="message_follower_ids" />
                     <field name="activity_ids" />
                     <field name="message_ids" />
