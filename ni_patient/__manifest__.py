@@ -45,7 +45,7 @@
         "views/ni_participant_type_views.xml",
         "views/res_partner_views.xml",
         "views/ni_patient_views.xml",
-        "views/ni_patient.xml",
+        "views/ni_patient_menu.xml",
         "views/ni_workflow_event_views.xml",
         "views/ni_workflow_request_views.xml",
     ],
