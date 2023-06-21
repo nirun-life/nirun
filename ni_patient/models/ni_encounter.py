@@ -415,19 +415,20 @@ class Encounter(models.Model):
         return result
 
     def write(self, vals):
-        origin_location = self._origin.location_id
-        new_location = vals.get("location_id")
-        if new_location and not origin_location:
-            self._create_location_hist(new_location, self.period_start)
-        if (new_location and origin_location) and (new_location != origin_location):
-            last_location = self.get_last_location()
-            if last_location.period_start != fields.date.today():
-                self._create_location_hist(new_location)
-                last_location.update(
-                    {"period_end": fields.date.today() - relativedelta(days=1)}
-                )
-            else:
-                last_location.update({"location_id": new_location})
+        if "location_id" in vals:
+            origin_location = self._origin.location_id
+            new_location = vals.get("location_id")
+            if new_location and not origin_location:
+                self._create_location_hist(new_location, self.period_start)
+            if (new_location and origin_location) and (new_location != origin_location):
+                last_location = self.get_last_location()
+                if last_location.period_start != fields.date.today():
+                    self._create_location_hist(new_location)
+                    last_location.update(
+                        {"period_end": fields.date.today() - relativedelta(days=1)}
+                    )
+                else:
+                    last_location.update({"location_id": new_location})
         self._update_sign_fields(vals)
 
         res = super().write(vals)
@@ -451,7 +452,7 @@ class Encounter(models.Model):
     def get_last_location(self):
         enc_location = self.env["ni.encounter.location"].sudo()
         return enc_location.search(
-            args=[("encounter_id", "=", self.id)], order="period_start DESC", limit=1
+            [("encounter_id", "=", self.id)], order="period_start DESC", limit=1
         )
 
     def _create_location_hist(self, location, start=None):
@@ -504,3 +505,16 @@ class Encounter(models.Model):
 
     def action_cancel(self):
         self.write({"state": "cancelled"})
+
+    def action_encounter_location(self):
+        action_rec = self.env.ref("ni_patient.ni_encounter_location_action")
+        action = action_rec.read()[0]
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "search_default_encounter_id": self.ids[0],
+                "default_encounter_id": self.ids[0],
+            }
+        )
+        action["context"] = ctx
+        return action
