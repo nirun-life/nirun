@@ -20,12 +20,11 @@ export function useRegisterButton() {
 
     component.onClickRegister = () => {
         action.doAction({
-            name: "Patient Register",
+            name: "Reception",
             type: "ir.actions.act_window",
-            res_model: "ni.patient",
-            target: "new",
+            res_model: "ni.reception",
+            target: "current",
             views: [[false, "form"]],
-            context: {is_modal: true},
         });
     };
 }
