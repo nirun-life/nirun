@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_reception_action" model="ir.actions.act_window">
+        <field name="name">Reception</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.reception</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">No reception note!</p>
+        </field>
+    </record>
+    <record id="ni_reception_action_form" model="ir.actions.act_window">
+        <field name="name">Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.reception</field>
+        <field name="target">current</field>
+        <field name="view_mode">form</field>
+    </record>
+    <record id="ni_reception_view_search" model="ir.ui.view">
+        <field name="name">ni.reception.view.search</field>
+        <field name="model">ni.reception</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <filter name="create_date" string="Created on" date="create_date" />
+                <group string="Group by">
+                    <filter name="group_by_create_date" string="Created on" context="{'group_by': 'create_date'}" />
+                    <separator />
+                    <filter name="group_by_priority" string="Priority" context="{'group_by': 'priority'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_reception_view_tree" model="ir.ui.view">
+        <field name="name">ni.reception.view.tree</field>
+        <field name="model">ni.reception</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state=='draft'" decoration-muted="state=='finished'">
+                <field name="identifier" optional="hide" />
+                <field name="encounter_id" string="Encounter No." optional="show" />
+                <field name="patient_id" widget="many2one_avatar" />
+                <field name="patient_age" string="Age" />
+                <field
+                    name="priority"
+                    optional="show"
+                    widget="badge"
+                    decoration-danger="priority=='stat'"
+                    decoration-warning="priority=='urgent'"
+                    decoration-success="priority=='asap'"
+                />
+                <field name="vital_sign" optional="hide" />
+                <field name="body_temp" optional="hide" />
+                <field name="bp" optional="hide" />
+                <field name="heart_rate" optional="hide" />
+                <field name="respiratory_rate" optional="hide" />
+                <field name="oxygen_sat" optional="hide" />
+                <field name="body_weight" optional="hide" />
+                <field name="body_height" optional="hide" />
+                <field name="bmi" optional="hide" />
+                <field name="create_date" />
+                <field name="create_uid" widget="many2one_avatar_user" optional="show" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-info="state == 'draft'"
+                    decoration-success="state == 'finished'"
+                />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_reception_view_form" model="ir.ui.view">
+        <field name="name">ni.reception.view.form</field>
+        <field name="model">ni.reception</field>
+        <field name="arch" type="xml">
+            <form duplicate="0">
+                <field name="state" invisible="1" />
+                <sheet>
+                    <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
+                    <div class="oe_title mb-4">
+                        <widget
+                            name="web_ribbon"
+                            title="Completed"
+                            bg_color="bg-success"
+                            attrs="{'invisible': [('state', '!=', 'finished')]}"
+                        />
+                        <div class="mb-2" attrs="{'invisible': [('state', '!=', 'draft')]}">
+                            <i class="fa fa-search" />
+                            <span class="mx-2">search patient</span>
+                        </div>
+                        <field
+                            class="w-100"
+                            name="partner_id"
+                            domain="[('patient', '=', True)]"
+                            options="{'no_create': True, 'no_open': True}"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"
+                        />
+                        <label for="identifier" attrs="{'invisible': [('state', '=', 'draft')]}" />
+                        <h3 class="">
+                            <field
+                                class="w-100 mt-1"
+                                name="identifier"
+                                attrs="{'invisible': [('state', '=', 'draft')], 'readonly': [('state', '!=', 'draft')]}"
+                            />
+                        </h3>
+                        <div class="small mt-4">
+                            <field name="write_uid" widget="many2one_avatar_user" />
+                            <field name="write_date" class="text-muted ms-2" />
+                        </div>
+                    </div>
+                    <group>
+                        <group string="Patient Information">
+                            <field name="patient_id" invisible="1" options="{'no_create': True, 'no_open': True}" />
+                            <label for="identification_id" />
+                            <div class="o_row">
+                                <field name="identification_id" placeholder="💳 X-XXXX-XXXXX-XX-1" />
+                                <field name="nationality_id" placeholder="Nationality" />
+                            </div>
+                            <label for="name" />
+                            <div class="o_row">
+                                <field
+                                    name="title"
+                                    class="narrow_field"
+                                    options="{'no_create': True, 'no_open': True}"
+                                    placeholder="Mr."
+                                />
+                                <field name="name" placeholder="John Smith" />
+                            </div>
+                            <field name="gender" widget="radio" />
+                            <field name="birthdate" placeholder="🎂 09-31-XXXX" />
+                            <label name="address_name" for="street" string="Address" />
+                            <div class="o_address_format">
+                                <field name="street" class="o_address_street" placeholder="Street..." />
+                                <field name="street2" class="o_address_street" placeholder="Street 2..." />
+                                <field name="city" class="o_address_city" placeholder="City" />
+                                <field
+                                    name="state_id"
+                                    class="o_address_state"
+                                    context="{'country_id': country_id, 'zip': zip}"
+                                    options='{"no_open": True, "no_create": True}'
+                                    placeholder="State"
+                                />
+                                <field name="zip" class="o_address_zip" placeholder="ZIP" />
+                                <field
+                                    name="country_id"
+                                    class="o_address_country"
+                                    options='{"no_open": True, "no_create": True}'
+                                    placeholder="Country"
+                                />
+                            </div>
+                            <label for="mobile" />
+                            <div class="o_row">
+                                <field name="mobile" widget="phone" placeholder="📱 086-XXX-XXXX" />
+                                <field name="phone" widget="phone" placeholder="📞 02-XXX-XXXX" />
+                            </div>
+                            <field name="email" widget="email" placeholder="📧 John21@freemail.com" />
+                            <field name="allergy_code_ids" widget="many2many_tags" placeholder="e.g. 🦐Shrimp..." />
+                            <field
+                                name="condition_problem_ids"
+                                widget="many2many_tags"
+                                placeholder="e.g. 🍦Type II Diabetes, 🥓Hypertension... "
+                            />
+                        </group>
+                        <group string="Encounter">
+                            <label for="chief_complaint" />
+                            <div>
+                                <field name="chief_complaint" />
+                                <field
+                                    name="reason_ids"
+                                    widget="many2many_tags"
+                                    placeholder="e.g. 🤒Fever, 😷Cough..."
+                                />
+                            </div>
+                            <label for="body_weight" string="Weight/Height" />
+                            <div class="row">
+                                <div class="col-12 col-md-auto">
+                                    <label for="body_weight" string="Wt." />
+                                    <field class="narrow_field me-2" name="body_weight" />
+                                    <span class="text-muted me-4">kg</span>
+                                    <label for="body_weight" string="Ht." />
+                                    <field class="narrow_field ms-4 me-2" name="body_height" />
+                                    <span class="text-muted me-4">cm</span>
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <label for="bmi" string="BMI" />
+                                    <field class="narrow_field" name="bmi" />
+                                </div>
+                            </div>
+                            <label for="vital_sign" />
+                            <div class="row">
+                                <field name="vital_sign" class="d-none" />
+                                <div class="col-6 ">
+                                    <label for="body_temp" string="T." class="me-3" />
+                                    <field class="narrow_field" name="body_temp" />
+                                    <span class="text-muted me-4">°C</span>
+                                </div>
+                                <div class="col-6 ">
+                                    <label for="respiratory_rate" string="RR." class="me-4" />
+                                    <field class="narrow_field" name="respiratory_rate" />
+                                    <span class="text-muted me-4">/min</span>
+                                </div>
+                                <div class="col-6">
+                                    <label for="heart_rate" string="P." class="me-3" />
+                                    <field class="narrow_field" name="heart_rate" />
+                                    <span class="text-muted me-4">/min</span>
+                                </div>
+                                <div class="col-6 ">
+                                    <label for="oxygen_sat" string="SpO2" class="me-1" />
+                                    <field class="narrow_field" name="oxygen_sat" />
+                                    <span class="text-muted me-4">%</span>
+                                </div>
+                                <div class="col-12">
+                                    <label for="bp_s" string="BP." class="me-1" />
+                                    <field class="narrow_field" name="bp_s" />
+                                    <span class="text-muted">/</span>
+                                    <field class="narrow_field" name="bp_d" />
+                                    <span class="text-muted me-4">mmHg</span>
+                                </div>
+                            </div>
+                            <label for="priority" />
+                            <div class="o_row">
+                                <field name="priority" class="narrow_field me-2" />
+                                <i
+                                    class="fa fa-flag text-danger"
+                                    title="STAT"
+                                    attrs="{'invisible': [('priority', '!=', 'stat')]}"
+                                />
+                                <i
+                                    class="fa fa-flag text-warning"
+                                    title="Urgent"
+                                    attrs="{'invisible': [('priority', '!=', 'urgent')]}"
+                                />
+                                <i
+                                    class="fa fa-flag text-success"
+                                    title="ASAP"
+                                    attrs="{'invisible': [('priority', '!=', 'asap')]}"
+                                />
+                                <i
+                                    class="fa fa-flag text-muted"
+                                    title="Routine"
+                                    attrs="{'invisible': [('priority', '!=', 'routine')]}"
+                                />
+                            </div>
+                            <field
+                                name="class_id"
+                                placeholder="🏥 Outpatient"
+                                options="{'no_create': True, 'no_open': True}"
+                                context="{'show_parent': True}"
+                            />
+                            <label for="encounter_identifier" attrs="{'invisible': [('state', '!=', 'draft')]}" />
+                            <div attrs="{'invisible': [('state', '!=', 'draft')]}">
+                                <field name="encounter_identifier_type" widget="radio" options="{'horizontal': True}" />
+                                <field
+                                    name="encounter_identifier"
+                                    attrs="{'invisible': [('encounter_identifier_type', '=', 'auto')], 'required': [('encounter_identifier_type', '=', 'manual')]}"
+                                />
+                            </div>
+                            <field
+                                name="encounter_id"
+                                string="Encounter No."
+                                attrs="{'invisible': [('state', '=', 'draft')]}"
+                                options="{'no_create': True}"
+                                readonly="True"
+                            />
+                            <field name="period_start" />
+                        </group>
+                    </group>
+                    <div class="text-center">
+                        <button
+                            class="btn-primary my-4 mx-auto w-50"
+                            name="action_submit"
+                            type="object"
+                            icon="fa-cloud-upload"
+                            string=" Submit"
+                            attrs="{'invisible': [('encounter_id', '!=', False)]}"
+                        />
+                        <button
+                            class="btn-outline-primary my-4 mx-auto w-50"
+                            name="action_submit"
+                            type="object"
+                            icon="fa-vcard-o"
+                            string=" View encounter"
+                            attrs="{'invisible': [('encounter_id', '=', False)]}"
+                        />
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

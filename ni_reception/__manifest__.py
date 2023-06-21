@@ -9,15 +9,28 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["ni_patient", "ni_condition", "ni_allergy"],
-    "data": ["views/ni_encounter_views.xml"],
+    "depends": [
+        "partner_age",
+        "partner_gender",
+        "ni_patient",
+        "ni_condition",
+        "ni_allergy",
+        "ni_observation",
+    ],
+    "data": [
+        "data/ir_sequence_data.xml",
+        "security/ir.model.access.csv",
+        "views/ni_encounter_views.xml",
+        "views/ni_reception_views.xml",
+        "views/ni_reception_menu.xml",
+    ],
     "assets": {
         "web.assets_backend": [
             "ni_reception/static/src/views/register_views.esm.js",
             "ni_reception/static/src/views/register_views.xml",
         ],
     },
-    "application": False,
+    "application": True,
     "auto_install": False,
     "installable": True,
 }
