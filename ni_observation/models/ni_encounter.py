@@ -2,21 +2,12 @@
 
 from odoo import api, fields, models
 
-OBSERVATION_FIELDS = [
-    "bp_s",
-    "bp_d",
-    "heart_rate",
-    "respiratory_rate",
-    "body_temp",
-    "body_weight",
-    "body_height",
-    "bmi",
-    "fbs",
-]
+from .ni_observation_vitalsign_mixin import VITALSIGN_FIELDS
 
 
 class Encounter(models.Model):
-    _inherit = "ni.encounter"
+    _name = "ni.encounter"
+    _inherit = ["ni.encounter", "ni.observation.vitalsign.mixin"]
 
     observation_sheet_ids = fields.One2many(
         "ni.observation.sheet",
@@ -38,17 +29,6 @@ class Encounter(models.Model):
         compute="_compute_observation_lab_ids",
     )
 
-    bp = fields.Char("Blood Pressure")
-    bp_s = fields.Float("SYS")
-    bp_d = fields.Float("DIA")
-    heart_rate = fields.Integer("Heart Rate (Pulse)")
-    respiratory_rate = fields.Integer("Respiratory Rate")
-    body_temp = fields.Float("Body Temperature")
-    body_weight = fields.Float("Body Weight")
-    body_height = fields.Float("Body Height")
-    bmi = fields.Float("Body Mass Index", compute="_compute_bmi", store=True)
-    fbs = fields.Float("Fasting Blood Sugar")
-
     @api.model_create_multi
     def create(self, vals_list):
         res = super(Encounter, self).create(vals_list)
@@ -66,7 +46,7 @@ class Encounter(models.Model):
         ts = fields.Datetime.now()
         vals_list = []
         types = self.env["ni.observation.type"]
-        for f in OBSERVATION_FIELDS:
+        for f in VITALSIGN_FIELDS:
             if f in vals and vals[f]:
                 ob_type = types.search([("code", "=", f.replace("_", "-"))])
                 value = vals[f]
@@ -90,15 +70,6 @@ class Encounter(models.Model):
             "type_id": type_id,
             "value": value,
         }
-
-    @api.depends("body_height", "body_weight")
-    def _compute_bmi(self):
-        for rec in self:
-            if rec.body_height and rec.body_weight:
-                body_height_m = rec.body_height * 0.01
-                rec.bmi = rec.body_weight / pow(body_height_m, 2)
-            else:
-                rec.bmi = 0.0
 
     def _compute_observation_sheet_count(self):
         observations = self.env["ni.observation.sheet"].sudo()

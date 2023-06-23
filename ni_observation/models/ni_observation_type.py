@@ -11,7 +11,7 @@ class ObservationType(models.Model):
     category_id = fields.Many2one("ni.observation.category", index=True)
     min = fields.Float()
     max = fields.Float(default=100.0)
-    unit = fields.Many2one("uom.uom", index=True, required=False)
+    unit_id = fields.Many2one("uom.uom", index=True, required=False)
     ref_range_ids = fields.One2many(
         "ni.observation.reference.range", "type_id", "Reference Range"
     )
