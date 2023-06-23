@@ -34,7 +34,7 @@ class Observation(models.Model):
     value_code_id = fields.Many2one(
         "ni.observation.value.code", "Value", domain="[('type_id', '=', type_id)]"
     )
-    unit = fields.Many2one(related="type_id.unit")
+    unit_id = fields.Many2one(related="type_id.unit_id")
     interpretation_id = fields.Many2one(
         "ni.observation.interpretation",
         compute="_compute_interpretation",
@@ -201,7 +201,7 @@ class Observation(models.Model):
 
     @property
     def _workflow_summary(self):
-        return "{} {} {}".format(self.type_id.name, self.value, self.unit.name or "")
+        return "{} {} {}".format(self.type_id.name, self.value, self.unit_id.name or "")
 
     @api.constrains("type_id", "value_type")
     def _check_value_type(self):
