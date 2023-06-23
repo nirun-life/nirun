@@ -5,90 +5,101 @@
 <odoo noupdate="1">
     <record id="type_bp_s" model="ni.observation.type">
         <field name="code">bp-s</field>
-        <field name="name">Systolic blood pressure (SYS)</field>
+        <field name="name">Systolic Blood Pressure</field>
+        <field name="abbr">SYS</field>
         <field name="min" eval="1.0" />
         <field name="max" eval="250.0" />
-        <field name="unit" ref="uom_mmHg" />
+        <field name="unit_id" ref="uom_mmHg" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
     <record id="type_bp_d" model="ni.observation.type">
         <field name="code">bp-d</field>
-        <field name="name">Diastolic blood pressure (DIA)</field>
+        <field name="name">Diastolic Blood Pressure</field>
+        <field name="abbr">DIA</field>
         <field name="min" eval="1.0" />
         <field name="max" eval="250.0" />
-        <field name="unit" ref="uom_mmHg" />
+        <field name="unit_id" ref="uom_mmHg" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
     <record id="type_heart_rate" model="ni.observation.type">
         <field name="code">heart-rate</field>
         <field name="name">Heart Rate (Pulse)</field>
+        <field name="abbr">P</field>
         <field name="min" eval="1.0" />
         <field name="max" eval="200.0" />
-        <field name="unit" ref="uom_per_min" />
+        <field name="unit_id" ref="uom_per_min" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
     <record id="type_respiratory_rate" model="ni.observation.type">
         <field name="code">respiratory-rate</field>
         <field name="name">Respiratory Rate</field>
+        <field name="abbr">RR</field>
         <field name="min" eval="1" />
         <field name="max" eval="100" />
-        <field name="unit" ref="uom_per_min" />
+        <field name="unit_id" ref="uom_per_min" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
     <record id="type_body_temp" model="ni.observation.type">
         <field name="code">body-temp</field>
         <field name="name">Body Temperature</field>
+        <field name="abbr">T</field>
         <field name="min" eval="35.0" />
         <field name="max" eval="45.0" />
-        <field name="unit" ref="uom_degree_cel" />
+        <field name="unit_id" ref="uom_degree_cel" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
     <record id="type_body_weight" model="ni.observation.type">
         <field name="code">body-weight</field>
         <field name="name">Body Weight</field>
+        <field name="abbr">Wt</field>
         <field name="min" eval="1" />
         <field name="max" eval="300" />
-        <field name="unit" ref="uom.product_uom_kgm" />
+        <field name="unit_id" ref="uom.product_uom_kgm" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
     <record id="type_body_height" model="ni.observation.type">
         <field name="code">body-height</field>
         <field name="name">Body Height</field>
+        <field name="abbr">Ht</field>
         <field name="min" eval="1" />
         <field name="max" eval="300" />
-        <field name="unit" ref="uom.product_uom_cm" />
+        <field name="unit_id" ref="uom.product_uom_cm" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
     <record id="type_bmi" model="ni.observation.type">
         <field name="code">bmi</field>
         <field name="name">Body Mass Index</field>
+        <field name="abbr">BMI</field>
         <field name="min" eval="1" />
         <field name="max" eval="100" />
-        <field name="unit" ref="ni_observation.uom_kg_m2" />
+        <field name="unit_id" ref="ni_observation.uom_kg_m2" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
     <record id="type_oxygen_sat" model="ni.observation.type">
         <field name="code">oxygen-sat</field>
-        <field name="name">SpO2</field>
+        <field name="name">Oxygen Saturation</field>
+        <field name="abbr">SpO2</field>
         <field name="min" eval="0" />
         <field name="max" eval="100" />
-        <field name="unit" ref="uom_%" />
+        <field name="unit_id" ref="uom_%" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
     <record id="type_fbs" model="ni.observation.type">
         <field name="code">fbs</field>
         <field name="name">Fasting Blood Sugar</field>
+        <field name="abbr">FBS</field>
         <field name="min" eval="0" />
         <field name="max" eval="200" />
-        <field name="unit" ref="uom_mg_dl" />
+        <field name="unit_id" ref="uom_mg_dl" />
         <field name="category_id" ref="category_laboratory" />
     </record>
     <record id="type_hba1c" model="ni.observation.type">
         <field name="code">hba1c</field>
-        <field name="name">Hemoglobin A1C</field>
+        <field name="name">Hemoglobin A1c</field>
+        <field name="abbr">HbA1c</field>
         <field name="min" eval="0" />
         <field name="max" eval="100" />
-        <field name="unit" ref="uom_%" />
+        <field name="unit_id" ref="uom_%" />
         <field name="category_id" ref="category_laboratory" />
     </record>
 </odoo>
