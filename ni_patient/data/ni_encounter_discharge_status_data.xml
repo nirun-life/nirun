@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<odoo noupdate="1">
+    <record id="discharge_status_1" model="ni.encounter.discharge.status">
+        <field name="code">1</field>
+        <field name="name">Complete Recovery</field>
+    </record>
+    <record id="discharge_status_2" model="ni.encounter.discharge.status">
+        <field name="code">2</field>
+        <field name="name">Improved</field>
+    </record>
+    <record id="discharge_status_3" model="ni.encounter.discharge.status">
+        <field name="code">3</field>
+        <field name="name">Not Improved</field>
+    </record>
+    <record id="discharge_status_4" model="ni.encounter.discharge.status">
+        <field name="code">4</field>
+        <field name="name">Normal Delivery</field>
+        <field name="disposition_ids" eval="[(4, ref('discharge_disposition_4'))]" />
+    </record>
+    <record id="discharge_status_5" model="ni.encounter.discharge.status">
+        <field name="code">5</field>
+        <field name="name">Undelivered</field>
+        <field name="disposition_ids" eval="[(4, ref('discharge_disposition_4'))]" />
+    </record>
+    <record id="discharge_status_6" model="ni.encounter.discharge.status">
+        <field name="code">6</field>
+        <field name="name">Normal Child Discharge with Mother</field>
+    </record>
+    <record id="discharge_status_7" model="ni.encounter.discharge.status">
+        <field name="code">7</field>
+        <field name="name">Normal Child Discharge Separately</field>
+    </record>
+    <record id="discharge_status_8" model="ni.encounter.discharge.status">
+        <field name="code">8</field>
+        <field name="name">Stillbirth</field>
+    </record>
+    <record id="discharge_status_9" model="ni.encounter.discharge.status">
+        <field name="code">9</field>
+        <field name="name">Dead</field>
+        <field
+            name="disposition_ids"
+            eval="[(4, ref('discharge_disposition_6')), (4, ref('discharge_disposition_7'))]"
+        />
+    </record>
+</odoo>
