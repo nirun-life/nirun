@@ -1,0 +1,25 @@
+<odoo>
+    <record id="paperformat_appointment" model="report.paperformat">
+        <field name="name">Appointment</field>
+        <field name="default" eval="True" />
+        <field name="format">A6</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">6</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">5</field>
+        <field name="dpi">150</field>
+    </record>
+    <record id="action_report_appointment" model="ir.actions.report">
+        <field name="name">Appointment</field>
+        <field name="model">ni.appointment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ni_appointment.report_appointment</field>
+        <field name="report_file">ni_appointment.report_appointment</field>
+        <field name="binding_model_id" eval="False" />
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="ni_appointment.paperformat_appointment" />
+    </record>
+</odoo>

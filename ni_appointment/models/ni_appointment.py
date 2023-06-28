@@ -125,7 +125,9 @@ class Appointment(models.Model):
         return result
 
     def action_save_and_print(self):
-        self._action_active()
+        return self.env.ref("ni_appointment.action_report_appointment").report_action(
+            self
+        )
 
     def _action_active(self):
         self.write({"state": "active"})

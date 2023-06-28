@@ -21,6 +21,8 @@
         "views/ni_appointment_type_views.xml",
         "views/ni_appointment_menu.xml",
         "wizard/ni_appointment_cancel_wizard_view.xml",
+        "reports/appointment.xml",
+        "reports/templates.xml",
     ],
     "application": False,
     "auto_install": False,
