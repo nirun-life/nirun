@@ -55,6 +55,7 @@ class Encounter(models.Model):
     period_start = fields.Datetime(
         readonly=True, states={"draft": [("readonly", False)]}
     )
+    period_end = fields.Datetime(readonly=True)
     patient_id = fields.Many2one(
         "ni.patient",
         "Patient",
@@ -235,11 +236,19 @@ class Encounter(models.Model):
         string="Special Courtesy",
         states=LOCK_STATE_DICT,
     )
-    discharge_id = fields.Many2one(
-        "ni.encounter.discharge",
-        "Disposition",
+    discharge_status_id = fields.Many2one(
+        "ni.encounter.discharge.status",
+        "Discharge Status",
+        help="Patient's status on discharge",
+        tracking=True,
+        states=LOCK_STATE_DICT,
+    )
+    discharge_disposition_id = fields.Many2one(
+        "ni.encounter.discharge.disposition",
+        "Discharge Disposition",
         help="Category or kind of location after discharge",
         tracking=True,
+        states=LOCK_STATE_DICT,
     )
     discharge_partner_id = fields.Many2one(
         "res.partner",
@@ -247,6 +256,7 @@ class Encounter(models.Model):
         domain="[('is_company', '=', True)]",
         help="Location/organization to which the patient is discharged",
         tracking=True,
+        states=LOCK_STATE_DICT,
     )
     discharge_note = fields.Text("Note", tracking=True)
 
@@ -365,6 +375,21 @@ class Encounter(models.Model):
                 raise _("Transfer from must not be null when transfer at is present")
             if rec.origin_date and rec.origin_date > rec.period_start:
                 raise _("Transfer date must not be after encounter start date")
+
+    @api.constrains(
+        "discharge_status_id",
+        "discharge_disposition_id",
+    )
+    def check_discharge_status_and_disposition(self):
+        for rec in self:
+            if (
+                rec.discharge_status_id.disposition_ids
+                and rec.discharge_disposition_id
+                not in rec.discharge_status_id.disposition_ids
+            ):
+                raise ValidationError(
+                    _("Inconsistency between discharge status and disposition")
+                )
 
     def name_get(self):
         return [(enc.id, enc._get_name()) for enc in self]
