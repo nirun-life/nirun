@@ -30,6 +30,8 @@
         "data/ni_encounter_courtesy_data.xml",
         "data/ni_encounter_diet_data.xml",
         "data/ni_participant_type_data.xml",
+        "data/ni_encounter_discharge_disposition_data.xml",
+        "data/ni_encounter_discharge_status_data.xml",
         "wizard/ni_encounter_discharge_wizard_views.xml",
         "views/ni_location_views.xml",
         "views/ni_location_type_views.xml",

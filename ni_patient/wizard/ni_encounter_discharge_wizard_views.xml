@@ -16,15 +16,26 @@
             <form>
                 <group>
                     <group>
-                        <field name="patient_id" readonly="1" />
+                        <field name="patient_id" readonly="1" options="{'no_open': True}" />
                     </group>
                     <group>
-                        <field name="encounter_id" readonly="1" />
+                        <field name="encounter_id" readonly="1" options="{'no_open': True}" />
                     </group>
                 </group>
                 <group>
-                    <field name="discharge_id" />
-                    <field name="discharge_partner_id" />
+                    <group>
+                        <field name="discharge_status_id" options="{'no_open': True}" widget="radio" />
+                    </group>
+                    <group>
+                        <field name="discharge_disposition_id" options="{'no_open': True}" widget="radio" />
+                        <field name="discharge_disposition_referral" invisible="1" />
+                    </group>
+                </group>
+                <group>
+                    <field
+                        name="discharge_partner_id"
+                        attrs="{'required': [('discharge_disposition_referral', '=', True)]}"
+                    />
                     <field name="discharge_date" />
                     <field name="deceased" invisible="1" />
                     <field
