@@ -7,7 +7,8 @@ from . import ni_encounter_arrangement
 from . import ni_encounter_class
 from . import ni_encounter_courtesy
 from . import ni_encounter_diet
-from . import ni_encounter_discharge
+from . import ni_encounter_discharge_disposition
+from . import ni_encounter_discharge_status
 from . import ni_encounter_location
 from . import ni_encounter_reason
 from . import ni_participant_type
