@@ -33,6 +33,11 @@ class DocumentReference(models.Model):
     state = fields.Selection(default="in-progress")
     active = fields.Boolean(default=True)
 
+    def action_save_and_print(self):
+        return self.env.ref("ni_document_ref.action_report_document").report_action(
+            self
+        )
+
     @api.onchange("type_id")
     def _onchange_type_id(self):
         if self.type_id.data_template:
