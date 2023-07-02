@@ -1,39 +1,41 @@
 <odoo>
     <template id="document_layout">
-        <div class="header">Header</div>
-        <div class="page">
-            <t t-out="0" />
-        </div>
-        <div class="footer">
-            <div class="row" style="font-size:8;">
-                <div class="col-6">
-                    <span t-esc="time.strftime('%Y-%m-%d %H:%M:%Sl')" />
-                </div>
-                <div class="col-6 text-right">
-                    Page
-                    <span class="page" />
-                    of
-                    <span class="topage" />
-                </div>
-            </div>
-        </div>
+        <t t-out="0" />
     </template>
     <template id="report_document">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="ni_document_ref.document_layout">
+                    <div class="header">
+                        <div t-field="o.type_id" />
+                    </div>
                     <div class="page">
                         <div class="container">
                             <t t-out="o.data" />
                         </div>
-                        <style type="text/css">
+                    </div>
+                    <div class="footer">
+                        <div class="row" style="font-size:8;">
+                            <div class="col-6">
+                                โดย
+                                <span t-field="o.create_uid" />
+                                <span t-esc="time.strftime('%Y-%m-%d %H:%M:%Sl')" />
+                            </div>
+                            <div class="col-6 text-right">
+                                Page
+                                <span class="page" />
+                                of
+                                <span class="topage" />
+                            </div>
+                        </div>
+                    </div>
+                    <style type="text/css">
 table,
 th,
 td {
     border: 1px solid;
 }
-                        </style>
-                    </div>
+                    </style>
                 </t>
             </t>
         </t>
