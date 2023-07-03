@@ -10,7 +10,7 @@ from odoo import _, api, fields, models
 class Appointment(models.Model):
     _name = "ni.appointment"
     _description = "Appointment"
-    _inherit = ["ni.workflow.request.mixin"]
+    _inherit = ["ni.workflow.request.mixin", "ni.identifier.mixin"]
     _inherits = {"calendar.event": "event_id"}
     _parent_store = True
 
@@ -124,10 +124,13 @@ class Appointment(models.Model):
         result &= super().unlink()
         return result
 
-    def action_save_and_print(self):
+    def action_print(self):
         return self.env.ref("ni_appointment.action_report_appointment").report_action(
-            self
+            self.ids
         )
+
+    def action_active(self):
+        self._action_active()
 
     def _action_active(self):
         self.write({"state": "active"})
