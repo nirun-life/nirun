@@ -13,6 +13,7 @@
     "data": [
         "data/ni_appointment_type_data.xml",
         "data/ni_appointment_cancel_reason_data.xml",
+        "data/ir_sequence_data.xml",
         "security/ir.model.access.csv",
         "views/ni_encounter_views.xml",
         "views/ni_appointment_views.xml",
