@@ -79,8 +79,7 @@
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <tree default_order="encounter_id, name">
-                <field name="code" optional="show" />
-                <field name="encounter_id" optional="show" />
+                <field name="identifier" optional="show" />
                 <field name="name" />
                 <field name="gender" optional="show" />
                 <field name="age" string="Age" optional="show" />
@@ -146,7 +145,7 @@
                     <div class="oe_title">
                         <b>
                             <field
-                                name="code"
+                                name="identifier"
                                 placeholder="ex. HN-001204"
                                 attrs="{'invisible': [('id', '=', False)], 'readonly': [('id', '!=', False)]}"
                             />
@@ -276,7 +275,7 @@
         <field name="arch" type="xml">
             <kanban class="o_res_partner_kanban" default_order="encounter_id, name">
                 <field name="name" />
-                <field name="code" />
+                <field name="identifier" />
                 <field name="age" />
                 <field name="gender" />
                 <field name="deceased" />
@@ -361,8 +360,8 @@
                                         <span class="o_kanban_record_title">
                                             <field name="name" placeholder="Patient's Name" />
                                         </span>
-                                        <span class="o_kanban_record_subtitle" t-if="record.code.value">
-                                            <t t-esc="record.code.value" />
+                                        <span class="o_kanban_record_subtitle" t-if="record.identifier.value">
+                                            <t t-esc="record.identifier.value" />
                                         </span>
                                         <span class="o_kanban_record_subtitle" t-if="record.encounter_id.value">
                                             <t t-esc="record.encounter_id.value" />
