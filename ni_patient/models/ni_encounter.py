@@ -321,7 +321,7 @@ class Encounter(models.Model):
                     % self.patient_id.name,
                 }
                 return {"warning": warning}
-            self.pre_admit_identifier = self.patient_id.code
+            self.pre_admit_identifier = self.patient_id.identifier
 
     @api.onchange("re_admit")
     def onchange_re_admit(self):
