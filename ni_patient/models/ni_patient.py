@@ -20,7 +20,6 @@ class Patient(models.Model):
     _inherits = {"res.partner": "partner_id"}
     _check_company_auto = True
     _order = "name"
-    _identifier_field = "code"
 
     @api.model
     def _default_image(self):
@@ -72,13 +71,6 @@ class Patient(models.Model):
         "res.partner",
         "Other Address",
         domain="[('ref', '=', identifier), ('type', '=', 'private')]",
-    )
-
-    code = fields.Char(
-        "Patient No.",
-        default=lambda self: self._identifier_default,
-        copy=False,
-        tracking=True,
     )
 
     nationality_id = fields.Many2one(
@@ -208,8 +200,8 @@ class Patient(models.Model):
     def _name_get(self):
         patient = self
         name = patient.name or ""
-        if self._context.get("show_code") and patient.code:
-            name = "[{}] {}".format(patient.code, name)
+        if self._context.get("show_identifier") and patient.identifier:
+            name = "{}  {}".format(patient.identifier, name)
         if self._context.get("show_identification_id") and patient.identification_id:
             name = "{} ({})".format(name, patient.identification_id)
         if self._context.get("show_gender_age"):
@@ -231,7 +223,13 @@ class Patient(models.Model):
     ):
         args = list(args or [])
         if not (name == "" and operator == "ilike"):
-            args += ["|", ("name", operator, name), ("code", operator, name)]
+            args += [
+                "|",
+                "|",
+                ("name", operator, name),
+                ("identifier", operator, name),
+                ("identification_id", operator, name),
+            ]
 
         return self._search(args, limit=limit, access_rights_uid=name_get_uid)
 
