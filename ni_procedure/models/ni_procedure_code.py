@@ -13,3 +13,4 @@ class ProcedureCode(models.Model):
         ondelete="set null",
         help="Default category for code but not limit to.",
     )
+    duration_hours = fields.Float("Duration")
