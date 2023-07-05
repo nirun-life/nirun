@@ -48,6 +48,8 @@
                 <searchpanel>
                     <field name="company_id" groups="base.group_multi_company" icon="fa-building" />
                     <field name="category_id" enable_counters="1" />
+                    <field name="performer_id" enable_counters="1" />
+                    <field name="outcome_id" enable_counters="1" />
                 </searchpanel>
             </search>
         </field>
@@ -85,12 +87,27 @@
                 decoration-muted="state in ['not-done', 'abort']"
             >
                 <field name="identifier" optional="hide" />
-                <field name="occurrence" />
                 <field name="encounter_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="code_id" />
-                <field name="category_id" />
-                <field name="outcome_id" />
+                <field name="category_id" optional="hide" />
+                <field name="period_start" optional="show" />
+                <field name="period_end" optional="hide" />
+                <field name="duration_hours" widget="float_time" optional="hide" />
+                <field name="location_id" optional="hide" />
+                <field name="performer_id" widget="many2one_avatar_employee" optional="hide" />
+                <field
+                    name="outcome_id"
+                    widget="badge"
+                    decoration-danger="outcome_display_class == 'danger'"
+                    decoration-info="outcome_display_class == 'info'"
+                    decoration-muted="outcome_display_class == 'muted'"
+                    decoration-primary="outcome_display_class == 'primary'"
+                    decoration-success="outcome_display_class == 'success'"
+                    decoration-warning="outcome_display_class == 'warning'"
+                    optional="hide"
+                />
+                <field name="outcome_display_class" invisible="1" />
                 <field
                     name="state"
                     widget="badge"
@@ -98,10 +115,10 @@
                     decoration-info="state=='in-progress'"
                     decoration-success="state=='completed'"
                     decoration-danger="state in ['not-done', 'abort']"
+                    optional="hide"
                 />
                 <control>
-                    <create string="Add procedure" context="{'default_state': 'preparation', 'no_header': True}" />
-                    <create string="Add completed" context="{'default_state': 'completed'}" />
+                    <create string="Add procedure" context="{'no_header': True}" />
                 </control>
             </tree>
         </field>
@@ -124,37 +141,58 @@
                     <button name="action_suspend" string="Suspend" states="in-progress" type="object" />
                     <button name="action_not_done" string="Abort" states="in-progress" type="object" />
                     <button name="action_resume" string="Resume" states="suspended" type="object" />
-                    <field name="state" widget="statusbar" statusbar_visible="preparation,in-progress,completed" />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="preparation,in-progress,completed"
+                        invisible="context.get('default_state')"
+                    />
                 </header>
                 <sheet>
                     <div class="oe-title mb24">
-                        <label for="code_id" />
+                        <div class="d-flex">
+                            <label for="code_id" class="flex-fill" />
+                            <field
+                                class="oe_inline text-muted"
+                                name="identifier"
+                                attrs="{'invisible': [('id', '=', False)]}"
+                                readonly="True"
+                            />
+                        </div>
                         <h4>
                             <field name="code_id" class="w-100" placeholder="Search..." options="{'no_open': True}" />
                         </h4>
-                        <div class="small text-muted">
-                            <field name="identifier" attrs="{'invisible': [('id', '=', False)]}" readonly="True" />
+                        <div class="small">
+                            <field name="category_id" class="oe_inline" options="{'no_open': True}" />
                         </div>
                     </div>
                     <group>
                         <group>
-                            <field name="category_id" options="{'no_open': True}" />
-                            <field name="outcome_id" widget="radio" options="{'no_open': True}" />
-                        </group>
-                        <group>
-                            <field name="company_id" invisible="1" options="{'no_open': True}" />
                             <field
                                 name="patient_id"
                                 invisible="context.get('default_patient_id')"
                                 options="{'no_open': True}"
+                                context="{'show_identifier': True}"
+                                widget="many2one_avatar"
                             />
                             <field
                                 name="encounter_id"
                                 invisible="context.get('default_encounter_id')"
                                 options="{'no_open': True}"
                             />
-                            <field name="occurrence" />
+                            <field name="period_start" />
+                            <field name="period_end" />
+                            <label for="duration_hours" />
+                            <div>
+                                <field name="duration_hours" widget="float_time" string="Duration" class="oe_inline" />
+                                <span>hours</span>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="1" options="{'no_open': True}" />
+                            <field name="performer_id" widget="many2one_avatar_employee" />
                             <field name="location_id" options="{'no_open': True}" />
+                            <field name="outcome_id" widget="radio" options="{'no_open': True}" />
                         </group>
                     </group>
                     <field name="note" placeholder="Log a note..." />

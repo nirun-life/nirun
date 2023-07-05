@@ -5,13 +5,21 @@ from odoo import api, fields, models
 class Procedure(models.Model):
     _name = "ni.procedure"
     _description = "Procedure"
-    _inherit = ["ni.workflow.event.mixin", "ni.identifier.mixin", "mail.thread"]
+    _inherit = [
+        "ni.workflow.event.mixin",
+        "ni.identifier.mixin",
+        "mail.thread",
+        "ni.period.mixin",
+    ]
     _order = "occurrence DESC,id DESC"
-    _identifier_ts_field = "occurrence"
+    _identifier_ts_field = "period_start"
+    _workflow_occurrence_field = "period_start"
 
     name = fields.Char(related="code_id.name", store=True)
     code_id = fields.Many2one("ni.procedure.code", "Procedure", tracking=True)
-    category_id = fields.Many2one("ni.procedure.category", tracking=True)
+    category_id = fields.Many2one(
+        related="code_id.category_id", tracking=True, store=True
+    )
 
     location_id = fields.Many2one("ni.location", tracking=True)
     outcome_id = fields.Many2one(
@@ -20,7 +28,11 @@ class Procedure(models.Model):
         readonly=True,
         states={"completed": [("readonly", False)]},
     )
+    outcome_display_class = fields.Selection(related="outcome_id.display_class")
     note = fields.Text(help="Further Information")
+    performer_id = fields.Many2one(
+        "hr.employee", required=True, default=lambda self: self.env.user.employee_id
+    )
 
     def _name_search(
         self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
@@ -51,8 +63,8 @@ class Procedure(models.Model):
     @api.onchange("code_id")
     def onchange_code(self):
         for rec in self:
-            if rec.code_id.category_id:
-                rec.category_id = rec.code_id.category_id
+            if rec.code_id.duration_hours:
+                rec.duration_hours = rec.code_id.duration_hours
 
     @property
     def _workflow_name(self):
