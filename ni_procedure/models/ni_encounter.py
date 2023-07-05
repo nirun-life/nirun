@@ -28,10 +28,11 @@ class Encounter(models.Model):
         ctx = dict(self.env.context)
         ctx.update(
             {
-                "search_default_encounter_id": self.ids[0],
+                "search_default_group_by_encounter": 1,
                 "default_patient_id": self[0].patient_id.id,
                 "default_encounter_id": self.ids[0],
             }
         )
         action["context"] = ctx
+        action["domain"] = [("patient_id", "=", self[0].patient_id.id)]
         return action
