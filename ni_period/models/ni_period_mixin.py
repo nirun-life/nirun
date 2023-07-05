@@ -1,5 +1,7 @@
 #  Copyright (c) 2021-2023 NSTDA
 
+from datetime import timedelta
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
@@ -26,10 +28,15 @@ class PeriodMixin(models.AbstractModel):
         store=True,
         compute="_compute_period_start_date",
         inverse="_inverse_period_start_date",
-        precompute=True,
         default=lambda self: fields.Date.context_today(self),
     )
-    period_end = fields.Datetime("Until", index=True)
+    period_end = fields.Datetime(
+        "Until",
+        compute="_compute_period_end",
+        store=True,
+        readonly=False,
+        index=True,
+    )
     period_end_date = fields.Date(
         "Until (Date)",
         index=True,
@@ -37,10 +44,12 @@ class PeriodMixin(models.AbstractModel):
         store=True,
         compute="_compute_period_end_date",
         inverse="_inverse_period_end_date",
-        precompute=True,
     )
     period_end_date_calendar = fields.Date(compute="_compute_period_end_date_calendar")
     duration = fields.Char("Duration", compute="_compute_duration", default="")
+    duration_hours = fields.Float(
+        "Duration (Hours)", compute="_compute_duration", store=True, readonly=False
+    )
     duration_days = fields.Integer(
         "Duration (days)", compute="_compute_duration", default=0
     )
@@ -123,22 +132,44 @@ class PeriodMixin(models.AbstractModel):
             return False
         return True
 
-    @api.onchange("period_start_date", "period_end_date")
+    @api.depends("period_start", "duration_hours")
+    def _compute_period_end(self):
+        duration_field = self._fields["duration_hours"]
+        self.env.remove_to_compute(duration_field, self)
+        for rec in self:
+            if rec.period_start and rec.duration_hours:
+                rec.period_end = rec.period_start and rec.period_start + timedelta(
+                    minutes=round((rec.duration_hours or 1.0) * 60)
+                )
+
+    @api.depends("period_start", "period_end")
     def _compute_duration(self):
         today = fields.Date.context_today(self)
         for record in self:
-            record.duration_years = 0
-            record.duration_months = 0
-            record.duration_days = 0
-            record.duration = ""
-            if record.period_start_date:
-                dt = record.period_end_date or today
-                delta = dt - record.period_start_date
-                record.duration_days = delta.days
-                record.duration_months = delta.days / 30
+            data = {
+                "duration_years": 0,
+                "duration_months": 0,
+                "duration_days": 0,
+                "duration_hours": self._get_duration_hours(
+                    record.period_start, record.period_end
+                ),
+                "duration": None,
+            }
+            if record.period_start:
+                dt = record.period_end.date() if record.period_end else today
+                delta = dt - record.period_start.date()
+                data["duration_days"] = delta.days
+                data["duration_months"] = delta.days / 30
                 delta = relativedelta(dt, record.period_start_date)
-                record.duration_years = delta.years
-                record.duration = record._format_relative_delta(delta)
+                data["duration_years"] = delta.years
+                data["duration"] = record._format_relative_delta(delta)
+            self.write(data)
+
+    def _get_duration_hours(self, start, stop):
+        if not start or not stop:
+            return 0
+        duration = (stop - start).total_seconds() / 3600
+        return round(duration, 2)
 
     @api.model
     def _format_relative_delta(self, delta):
