@@ -21,7 +21,7 @@ class Encounter(models.Model):
         )
         data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
         for enc in self:
-            enc.medication_dispense_count_count = data.get(enc.id, 0)
+            enc.medication_dispense_count = data.get(enc.id, 0)
 
     def action_medication_statement(self):
         action_rec = self.env.ref("ni_medication.ni_medication_statement_action")

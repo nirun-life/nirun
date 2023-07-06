@@ -16,11 +16,16 @@
                     context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
                 />
             </xpath>
+            <xpath expr="//page[@name='medication']" position="attributes">
+                <attribute name="badge">medication_dispense_count</attribute>
+            </xpath>
             <xpath expr="//page[@name='medication']" position="inside">
                 <field
                     name="medication_dispense_ids"
-                    context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
+                    context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'default_dose': 1.0}"
+                    mode="kanban"
                 />
+                <field name="medication_dispense_count" invisible="1" />
             </xpath>
         </field>
     </record>

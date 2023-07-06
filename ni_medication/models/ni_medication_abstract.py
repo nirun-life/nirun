@@ -7,6 +7,7 @@ class MedicationAbstract(models.AbstractModel):
     _description = "Medication Abstract Resource"
     _inherits = {"ni.medication.dosage": "dosage_id"}
 
+    name = fields.Char(related="medication_id.name", store=True)
     category_id = fields.Many2one("ni.medication.admin.location")
     medication_id = fields.Many2one("ni.medication", required=True)
     medication_dosage_ids = fields.Many2many(related="medication_id.dosage_ids")
@@ -48,6 +49,8 @@ class MedicationAbstract(models.AbstractModel):
     def _onchange_medication(self):
         if self.dosage_tmpl_id:
             self.dosage_tmpl_id = False
+        if self.medication_dose_unit_id:
+            self.dose_unit_id = self.medication_dose_unit_id
 
     @api.onchange("dosage_tmpl_id")
     def _onchange_dosage_tmpl_id(self):

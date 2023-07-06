@@ -14,6 +14,7 @@
         "security/ni_medication_group.xml",
         "security/ni_medication_rules.xml",
         "security/ir.model.access.csv",
+        "data/ir_sequence_data.xml",
         "data/product_category_data.xml",
         "data/uom_uom_data.xml",
         "data/ni_medication_form_data.xml",
