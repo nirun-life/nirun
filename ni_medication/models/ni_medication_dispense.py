@@ -11,7 +11,7 @@ class MedicationDispense(models.Model):
         "ni.identifier.mixin",
         "mail.thread",
     ]
-    quantity = fields.Float()
+    quantity = fields.Float(required=True)
     quantity_display = fields.Char(compute="_compute_quantity_display")
     days_supply = fields.Integer()
     occurrence = fields.Datetime("Handed Over")
@@ -19,7 +19,7 @@ class MedicationDispense(models.Model):
     note = fields.Text(help="Further information")
     active = fields.Boolean(default=True)
 
-    @api.depends("quantity", "dose_unit_id")
+    @api.depends("quantity", "medication_dose_unit_id")
     def _compute_quantity_display(self):
         for rec in self:
             quantity = (
@@ -27,7 +27,12 @@ class MedicationDispense(models.Model):
                 if rec.quantity.is_integer()
                 else round(self.quantity, 2)
             )
-            rec.quantity_display = "{} {}".format(quantity, rec.dose_unit_id)
+            if rec.medication_dose_unit_id:
+                rec.quantity_display = "{} {}".format(
+                    quantity, rec.medication_dose_unit_id.name
+                )
+            else:
+                rec.quantity_display = str(quantity)
 
     @api.model_create_multi
     def create(self, vals):
