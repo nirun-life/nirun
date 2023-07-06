@@ -17,6 +17,17 @@ class Encounter(models.Model):
         readonly=True,
     )
     diagnosis_ids = fields.One2many("ni.encounter.diagnosis", "encounter_id")
+    diagnosis_count = fields.Integer(compute="_compute_diagnosis_count")
+
+    @api.depends("diagnosis_ids")
+    def _compute_diagnosis_count(self):
+        procedure = self.env["ni.encounter.diagnosis"].sudo()
+        read = procedure.read_group(
+            [("encounter_id", "in", self.ids)], ["encounter_id"], ["encounter_id"]
+        )
+        data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
+        for encounter in self:
+            encounter.diagnosis_count = data.get(encounter.id, 0)
 
     @api.depends("patient_id")
     def _compute_condition_prev_ids(self):

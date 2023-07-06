@@ -16,8 +16,12 @@
                     context="{'default_encounter_id': id, 'default_patient_id': patient_id, 'no_category':True, 'no_header': True }"
                 />
             </xpath>
+            <xpath expr="//notebook/page[@name='problem']" position="attributes">
+                <attribute name="badge">diagnosis_count</attribute>
+            </xpath>
             <xpath expr="//notebook/page[@name='problem']" position="inside">
                 <field name="diagnosis_ids" context="{'default_encounter_id': id, 'default_patient_id': patient_id}" />
+                <field name="diagnosis_count" invisible="1" />
             </xpath>
         </field>
     </record>
