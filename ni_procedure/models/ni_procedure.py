@@ -17,6 +17,7 @@ class Procedure(models.Model):
 
     name = fields.Char(related="code_id.name", store=True)
     code_id = fields.Many2one("ni.procedure.code", "Procedure", tracking=True)
+    code = fields.Char(related="code_id.code")
     category_id = fields.Many2one(
         related="code_id.category_id", tracking=True, store=True
     )
