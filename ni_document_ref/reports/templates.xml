@@ -7,10 +7,46 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="ni_document_ref.document_layout">
                     <div class="header">
-                        <div t-field="o.type_id" />
+                        <div class="row" t-attf-style="color:{{o.company_id.primary_color}}">
+                            <div class="col-1">
+                                <img
+                                    t-if="o.company_id.logo"
+                                    t-att-src="image_data_uri(o.company_id.logo)"
+                                    style="max-height: 45px;"
+                                    alt="Logo"
+                                />
+                            </div>
+                            <div class="col-5">
+                                <div class="col">
+                                    <b>
+                                        <t t-out="o.company_id.name" />
+                                    </b>
+                                </div>
+                                <div class="col">
+                                    <t t-out="o.company_id.website" />
+                                </div>
+                            </div>
+                            <div class="col-6 text-end">
+                                <t t-out="o.company_id.phone" />
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <h1>
+                                <div t-field="o.type_id" />
+                            </h1>
+                        </div>
+
                     </div>
                     <div class="page">
                         <div class="container">
+                            <span t-field="o.create_uid" />
+                            <div class="row">
+                                <div class="col-6 text-start">โดย<span t-field="o.occurrence" /></div>
+                                <div class="col-6 text-end">
+                                    <b>ปรับปรุงล่าสุด</b>
+                                    <span t-field="o.write_date" />
+                                </div>
+                            </div>
                             <t t-out="o.data" />
                         </div>
                     </div>
