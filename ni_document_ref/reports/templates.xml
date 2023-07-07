@@ -74,11 +74,7 @@
                             <div class="col-6">
                                 โดย
                                 <span t-field="o.create_uid" />
-                                <t
-                                    t-set="time_format"
-                                    t-value="request.env['res.lang'].search([('code','=',user.lang)],limit=1).time_format"
-                                />
-                                <span t-esc=" context_timestamp(o.occurrence).strftime(time_format)" />
+                                <span t-esc="context_timestamp(datetime.datetime.now())" />
                             </div>
                             <div class="col-6 text-right">
                                 Page
