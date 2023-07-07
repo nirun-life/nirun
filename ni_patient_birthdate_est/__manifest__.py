@@ -12,7 +12,6 @@
     "depends": ["ni_patient"],
     "data": [
         "views/ni_patient_views.xml",
-        "views/ni_encounter_views.xml",
     ],
     "application": False,
     "auto_install": False,
