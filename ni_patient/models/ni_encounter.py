@@ -13,7 +13,7 @@ LOCK_STATE_DICT = {
 
 SIGN_FILEDS = [
     "chief_complaint",
-    "hist_of_present_illness",
+    "history_of_present_illness",
     "review_of_systems",
     "physical_exam",
 ]
@@ -401,7 +401,7 @@ class Encounter(models.Model):
         if self._context.get("show_class"):
             name = "{}/{}".format(name, rec.class_id.code or rec.class_id.name)
         if self._context.get("show_patient") or self._context.get("show_patient_name"):
-            name = "{}: {}".format(name, rec.patient_id.name)
+            name = "{} {}".format(name, rec.patient_id.name)
         if self._context.get("show_state"):
             name = "{} [{}]".format(name, rec._get_state_label())
         if self._context.get("show_location") and rec.location_id:
