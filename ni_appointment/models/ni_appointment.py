@@ -47,9 +47,9 @@ class Appointment(models.Model):
         domain="[('encounter_id', '=', encounter_id)]",
     )
 
-    employee_id = fields.Many2one("hr.employee", required=True)
+    performer_id = fields.Many2one("hr.employee", required=True)
     department_id = fields.Many2one(
-        "hr.department", related="employee_id.department_id"
+        "hr.department", related="performer_id.department_id"
     )
     instruction_ids = fields.Many2many(
         "ni.appointment.instruction",
@@ -87,11 +87,11 @@ class Appointment(models.Model):
         date = fields.Datetime.now().date() + relativedelta(days=days)
         self.start = fields.Datetime.to_datetime(datetime.combine(date, time))
 
-    @api.onchange("employee_id")
-    def _onchange_employee_id(self):
+    @api.onchange("performer_id")
+    def _onchange_performer_id(self):
         for rec in self:
-            if rec.employee_id.work_contact_id:
-                rec.location = rec.employee_id.work_location_id.name
+            if rec.performer_id.work_contact_id:
+                rec.location = rec.performer_id.work_location_id.name
 
     def name_get(self):
         return [(appointment.id, appointment._get_name()) for appointment in self]
@@ -104,7 +104,7 @@ class Appointment(models.Model):
         elif self.state == "completed":
             name = "{}  ✅".format(name)
         if self._context.get("show_employee"):
-            name = "{}\n{}".format(name, self.employee_id.name)
+            name = "{}\n{}".format(name, self.performer_id.name)
         return name
 
     def write(self, vals):
@@ -140,9 +140,9 @@ class Appointment(models.Model):
                 attendee += [fields.Command.link(rec.patient_id.partner_id.id)]
 
             employee_partner_ids = [
-                rec.employee_id.user_partner_id,
-                rec.employee_id.work_contact_id,
-                rec.employee_id.address_home_id,
+                rec.performer_id.user_partner_id,
+                rec.performer_id.work_contact_id,
+                rec.performer_id.address_home_id,
             ]
             for partner_id in employee_partner_ids:
                 if partner_id and partner_id not in rec.partner_ids:
