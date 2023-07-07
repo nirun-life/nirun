@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <template id="document_layout">
         <t t-name="web.external_layout_standard">
@@ -47,14 +48,21 @@
                     </div>
                     <div class="page">
                         <div class="container">
+                            <b>โดย</b>
                             <span t-field="o.create_uid" />
                             <div class="row">
                                 <div class="col-6 text-start">
                                     โดย
                                     <span t-field="o.occurrence" />
+                                    <span style="padding-right: 1em">
+                                        <b>เมื่อ</b>
+                                    </span>
+                                    <span t-field="o.occurrence" />
                                 </div>
                                 <div class="col-6 text-end">
-                                    <b>ปรับปรุงล่าสุด</b>
+                                    <span style="padding-right: 1em">
+                                        <b>ปรับปรุงล่าสุด</b>
+                                    </span>
                                     <span t-field="o.write_date" />
                                 </div>
                             </div>
@@ -66,7 +74,11 @@
                             <div class="col-6">
                                 โดย
                                 <span t-field="o.create_uid" />
-                                <span t-esc="time.strftime('%Y-%m-%d %H:%M:%Sl')" />
+                                <t
+                                    t-set="time_format"
+                                    t-value="request.env['res.lang'].search([('code','=',user.lang)],limit=1).time_format"
+                                />
+                                <span t-esc=" context_timestamp(o.occurrence).strftime(time_format)" />
                             </div>
                             <div class="col-6 text-right">
                                 Page
