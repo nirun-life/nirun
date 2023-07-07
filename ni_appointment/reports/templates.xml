@@ -59,7 +59,7 @@
                                         </b>
                                     </p>
                                     <p>
-                                        <b style="padding-right:1em">วันที่นัด</b>
+                                        <span style="padding-right:1em">วันที่นัด</span>
                                         <b>
                                             <t t-if="o.allday">
                                                 <span t-field="o.start" t-options='{"widget": "date"}' />
@@ -76,8 +76,8 @@
                                         </b>
                                     </p>
                                     <p>
-                                        <b style="padding-right:2em">แพทย์</b>
-                                        <span>นพ. ชาติชาย รักษาชนะ</span>
+                                        <span style="padding-right:2em">แพทย์</span>
+                                        <span t-field="o.employee_id" />
                                     </p>
                                 </div>
                                 <div class="col-6 text-end">
@@ -94,7 +94,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     <p>
-                                        <b style="padding-right:2em">คลีนิค</b>
+                                        <span style="padding-right:2em">คลีนิค</span>
                                         <span t-field="o.department_id" />
                                     </p>
                                 </div>
@@ -102,9 +102,9 @@
                             <div class="row">
                                 <div class="col-12">
                                     <p>
-                                        <b>สาเหตุที่นัดหมาย:</b>
+                                        <span>สาเหตุที่นัดหมาย:</span>
                                     </p>
-                                    <div style="padding-left: 1em">
+                                    <div style="padding-left: 1em; min-height: 4em">
                                         <t t-out="o.description" />
                                     </div>
                                 </div>
