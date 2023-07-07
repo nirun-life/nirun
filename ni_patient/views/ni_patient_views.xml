@@ -146,7 +146,7 @@
                         <b>
                             <field
                                 name="identifier"
-                                placeholder="ex. HN-001204"
+                                placeholder="e.g. HN-001204"
                                 attrs="{'invisible': [('id', '=', False)], 'readonly': [('id', '!=', False)]}"
                             />
                             <div class="mb-1" attrs="{'invisible': [('id', '!=', False)]}">New Patient</div>
@@ -215,14 +215,14 @@
                                         name="other_address_id"
                                         placeholder="e.g. Current Address, Work Address"
                                         options="{'always_reload':True, 'no_quick_create': True}"
-                                        context="{'form_view_ref': 'base.res_partner_view_form_private', 'default_type': 'private', 'default_name': 'Home Address', 'show_address': True, 'show_name': False, 'default_parent_id': partner_id,  'no_bank':True}"
+                                        context="{'form_view_ref': 'base.res_partner_view_form_private', 'default_type': 'private', 'default_name': 'Home Address', 'show_address': True, 'show_name': False, 'no_bank':True, 'default_ref': identifier}"
                                     />
                                 </group>
                                 <group string="Citizenship">
                                     <field name="nationality_id" options='{"no_open": True}' />
-                                    <field name="identification_id" placeholder="ex. 1104740100001" />
+                                    <field name="identification_id" placeholder="e.g. 1104740100001" />
                                     <field name="gender" options="{'horizontal': True}" widget="radio" />
-                                    <field name="birthdate" placeholder="ex. 31/01/1950" />
+                                    <field name="birthdate" placeholder="e.g. 31/01/1950" />
                                     <field name="age" attrs="{'readonly': [('birthdate', '!=', False)]}" />
                                     <field
                                         name="age_range_id"
@@ -246,8 +246,8 @@
                                 </group>
                                 <group string="Education">
                                     <field name="education_level" />
-                                    <field name="study_field" placeholder="ex. Public Health" />
-                                    <field name="study_school" placeholder="ex. Health Science" />
+                                    <field name="study_field" placeholder="e.g. Public Health" />
+                                    <field name="study_school" placeholder="e.g. Health Science" />
                                 </group>
                                 <group string="Career">
                                     <field name="function" />
