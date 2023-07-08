@@ -20,6 +20,8 @@
         "views/ni_document_ref_views.xml",
         "views/ni_document_ref_menu.xml",
         "views/ni_encounter_views.xml",
+        "reports/document.xml",
+        "reports/templates.xml",
     ],
     "demo": [],
     "application": False,
