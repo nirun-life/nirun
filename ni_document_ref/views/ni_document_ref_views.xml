@@ -88,6 +88,22 @@
                         <field name="write_date" class="text-muted mx-2" />
                     </div>
                 </sheet>
+                <footer>
+                    <button
+                        string="Save &amp; Print"
+                        class="btn-primary"
+                        name="action_save_and_print"
+                        type="object"
+                        attrs="{'invisible': [('state', 'in', ['revoked', 'completed'])]}"
+                    />
+                    <button
+                        string="Save as draft"
+                        class="btn-secondary"
+                        special="save"
+                        attrs="{'invisible': [('state', '!=', 'draft')]}"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
             </form>
         </field>
     </record>
