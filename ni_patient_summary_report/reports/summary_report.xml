@@ -3,7 +3,20 @@
   ~ Copyright (c) 2023 NSTDA
   -->
 <odoo noupdate="1">
-    <record id="action_report_appointment" model="ir.actions.report">
+    <record id="paperformat_document" model="report.paperformat">
+        <field name="name">Document</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">10</field>
+        <field name="dpi">100</field>
+    </record>
+    <record id="action_report_summary" model="ir.actions.report">
         <field name="name">Summary Report</field>
         <field name="model">ni.encounter</field>
         <field name="report_type">qweb-pdf</field>
@@ -14,6 +27,6 @@
         </field>
         <field name="binding_model_id" ref="ni_patient.model_ni_encounter" />
         <field name="binding_type">report</field>
-        <field name="paperformat_id" ref="base.paperformat_euro" />
+        <field name="paperformat_id" ref="ni_patient_summary_report.paperformat_document" />
     </record>
 </odoo>
