@@ -103,15 +103,19 @@
                                 <div class="col-6 text-end">
                                     <table class="table table-responsive text-start">
                                         <tr>
-                                            <td>แพ้ยา/อาหาร</td>
+                                            <td>แพ้ยา / อาหาร</td>
                                             <td>
-                                                <span t-field="o.patient_id.allergy_ids" />
+                                                <t t-foreach="o.patient_id.allergy_ids" t-as="allergy">
+                                                    <span t-esc="allergy.code_id.name" />, 
+                                                </t>                                                
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>โรคประจำตัว</td>
                                             <td>
-                                                <span t-esc="o.patient_id.condition_problem_ids" />
+                                                <t t-foreach="o.patient_id.condition_problem_ids" t-as="condition">
+                                                    <span t-esc="condition.code_id.name" />, 
+                                                </t>                                            
                                             </td>
                                         </tr>
                                     </table>
