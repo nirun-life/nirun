@@ -103,10 +103,10 @@
                                     <span t-esc="o.patient_id.partner_id._display_address(without_company=True)" />
                                     <br />
                                     <b>เลขบัตรประชาชน</b> <span t-field="o.patient_id.identification_id" /><br />
-                                    <b>สัญชาติ</b> <span t-field="o.patient_id.nationality_id" /> <b>ศาสนา</b> พุทธ
+                                    <b>สัญชาติ</b> <span t-field="o.patient_id.nationality_id" /> <b>ศาสนา</b> พุทธ                                                                      
                                 </div>
-                                <div class="col-6 text-end">
-                                    <table class="table table-responsive text-start">
+                                <div class="col-6 text-end px-2">
+                                    <table class="table table-responsive table-bordered text-start">
                                         <tr>
                                             <td>แพ้ยา / อาหาร</td>
                                             <td>
@@ -124,16 +124,109 @@
                                             </td>
                                         </tr>
                                     </table>
+                                    <div class="text-start">
+                                        <b>สิทธิการรักษา</b> หลักประกันสุขภาพถ้วนหน้า
+                                        <br />
+                                        <b>ผู้ติดต่อได้</b> นางกวี มารักษา
+                                        <br />
+                                        <b>ผู้บันทึกข้อมูล</b> <span t-field="o.patient_id.write_uid" /><br />
+                                        <span style="margin-left:6em" t-field="o.patient_id.write_date" />
+                                    </div>
                                 </div>
+                            </div>
+                            <br />
+                            <hr />
+                            <br />
+                            <div class="row">
+                                <div class="col-6 text-start">
+                                    <h3 t-attf-style="color:{{o.company_id.primary_color}}">ประวัติการเจ็บป่วย</h3>
+                                    <b>Chief Complain</b><br />
+                                    <span t-field="o.chief_complaint" />
+                                    <br /><br />
+                                    <b>History of Present Illness</b>
+                                    <span t-field="o.history_of_present_illness" />
+                                    <br /><br />
+                                    <b>Review of System</b>
+                                    <span t-field="o.review_of_systems" />
+                                    <br /><br />
+                                </div>
+                                <div class="col-6 text-start px-2">
+                                    <h3 t-attf-style="color:{{o.company_id.primary_color}}">การตรวจร่างกายและการวินิจฉัยโรค</h3>
+                                    <b>Physical Examination</b><br />
+                                    <span t-field="o.vital_sign" /><br />
+                                    <span t-field="o.physical_exam" />
+                                    <br /><br />                                    
+                                    <b>Diagnosis</b><br /><br />
+                                    <table class="table table-responsive table-bordered text-start">
+                                        <t t-foreach="o.diagnosis_ids" t-as="d">
+                                            <tr>
+                                                <td><b><span t-field="d.role_id" /></b></td>
+                                                <td><span t-field="d.name" /></td>
+                                                <td><span t-field="d.code" /></td>
+                                            </tr>
+                                        </t>                                    
+                                    </table>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-6 text-start bg-primary px-2">
+                                    <h3 t-attf-style="color:{{o.company_id.primary_color}}">การสั่งยา</h3>
+                                    <b>รายการสั่งยา</b><br /><br />
+                                    <table class="table table-responsive table-bordered text-start">
+                                        <t t-foreach="o.medication_dispense_ids" t-as="m">
+                                            <tr>
+                                                <td>
+                                                    <span t-field="m.name" /><br />
+                                                    <span t-field="m.dosage_id" />                                                
+                                                </td>
+                                                <td><span t-field="m.quantity_display" /></td>
+                                            </tr>
+                                        </t>                                    
+                                    </table>
+                                </div>
+                                <div class="col-6 text-start bg-danger px-2">
+                                    <b>หัตถการ</b><br /><br />
+                                    <table class="table table-responsive table-bordered text-start">
+                                        <tr>
+                                            <th>รายการ</th>
+                                            <th>เวลา</th>
+                                            <th>CODE</th>
+                                        </tr>                                        
+                                        <t t-foreach="o.procedure_ids" t-as="p">
+                                            <tr>
+                                                <td>
+                                                    <span t-field="p.name" /><br />
+                                                    <span t-field="p.performer_id" />
+                                                </td>
+                                                <td>
+                                                    <span t-field="p.period_start" /> -
+                                                    <span t-field="p.period_end" />
+                                                </td>
+                                                <td><span t-field="p.code" /></td>
+                                            </tr>
+                                        </t>                                    
+                                    </table>
+                                    <br /><br />
+                                    <b>นัดครั้งถัดไป <span t-field="o.next_appointment_id" /></b>
+                                    <br /><br />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <b>ผลการรักษา</b> <span t-field="o.discharge_status_id" /><br />
+                                <b>ส่งต่อไปที่</b> <span t-field="o.discharge_partner_id" /><br />
+                                <b>สาเหตุการส่งต่อ</b> <span t-field="o.discharge_note" /><br />
                             </div>
                             <!-- </div> -->
                         </div>
                     </div>
+                    <br /><br />
                     <div class="footer">
                         <div class="row" style="font-size:8;">
                             <div class="col-6 text-start">
                                 <span style="padding-right: 1em">
-                                    <b>ผู้พิมพ์</b>
+                                    <b>ผู้ออกรายงาน</b>
                                 </span>
                                 <span t-field="o.create_uid" />
                                 <small t-esc="context_timestamp(datetime.datetime.now())" style="padding-left: 1em" />
