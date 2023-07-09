@@ -96,9 +96,14 @@
                                         <span t-field="o.patient_id.identifier" />
                                     </b>
                                     <br />
-                                    <b>
-                                        <span t-field="o.patient_id.name" />
-                                    </b>
+                                    <b><span t-field="o.patient_id.name" /></b>
+                                    <br />
+                                    อายุ <span t-field="o.patient_id.display_age" /> หมู่เลือด O
+                                    <br />
+                                    <span t-esc="o.patient_id.partner_id._display_address(without_company=True)" />
+                                    <br />
+                                    <b>เลขบัตรประชาชน</b> <span t-field="o.patient_id.identification_id" /><br />
+                                    <b>สัญชาติ</b> <span t-field="o.patient_id.nationality_id" /> <b>ศาสนา</b> พุทธ
                                 </div>
                                 <div class="col-6 text-end">
                                     <table class="table table-responsive text-start">
