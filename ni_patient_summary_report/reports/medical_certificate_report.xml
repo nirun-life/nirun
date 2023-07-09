@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="action_report_medical_certificate" model="ir.actions.report">
+        <field name="name">Medical Certificate</field>
+        <field name="model">ni.encounter</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ni_patient_summary_report.medical_certificate_report</field>
+        <field name="report_file">ni_patient_summary_report.medical_certificate_report</field>
+        <field name="print_report_name">
+            ("%s-Medical-Certificate-Report-%s" % (object.patient_id.identifier, object.identifier))
+        </field>
+        <field name="binding_model_id" ref="ni_patient.model_ni_encounter" />
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="ni_patient_summary_report.paperformat_document" />
+    </record>
+</odoo>

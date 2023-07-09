@@ -22,6 +22,8 @@
         "views/ni_encounter_class_views.xml",
         "reports/summary_report_templates.xml",
         "reports/summary_report.xml",
+        "reports/medical_certificate_templates.xml",
+        "reports/medical_certificate_report.xml",
     ],
     "application": False,
     "auto_install": False,

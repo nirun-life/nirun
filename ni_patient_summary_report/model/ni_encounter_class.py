@@ -11,3 +11,8 @@ class EncounterClass(models.Model):
         return self.env.ref(
             "ni_patient_summary_report.action_report_summary"
         ).report_action(self.ids)
+
+    def action_print_medical_certificate(self):
+        return self.env.ref(
+            "ni_patient_summary_report.action_report_medical_certificate"
+        ).report_action(self.ids)
