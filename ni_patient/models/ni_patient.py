@@ -183,9 +183,9 @@ class Patient(models.Model):
 
     _sql_constraints = [
         (
-            "code_uniq",
-            "unique (company_id, code)",
-            _("Code must be unique !"),
+            "identifier_uniq",
+            "unique (company_id, identifier)",
+            _("Identifier must be unique !"),
         ),
         (
             "partner_uniq",
