@@ -10,7 +10,7 @@ class EncounterClassification(models.Model):
     _parent_store = True
 
     parent_id = fields.Many2one("ni.encounter.class", string="Parent Class", index=True)
-    parent_path = fields.Char(index=True, readonly=True)
+    parent_path = fields.Char(index=True, unaccent=False)
     hospitalization = fields.Boolean(help="Is hospitalization classification?")
     company_id = fields.Many2one("res.company", required=False)
 
