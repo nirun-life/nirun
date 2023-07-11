@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_report_document" model="ir.actions.report">
+        <field name="name">DocumentReference</field>
+        <field name="model">ni.document.ref</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ni_document_ref.report_document</field>
+        <field name="report_file">ni_document_ref.report_document</field>
+        <field name="print_report_name">
+            ("%s_%s_%s_%s" % (object.patient_id.identifier, object.encounter_id.identifier, object.type_id.code or
+            object.type_id.name.replace(' ', '-'),
+            object.occurrence.date().strftime('%Y%m%d')))
+        </field>
+        <field name="binding_model_id" ref="ni_document_ref.model_ni_document_ref" />
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro" />
+    </record>
+</odoo>
