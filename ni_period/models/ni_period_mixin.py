@@ -46,18 +46,29 @@ class PeriodMixin(models.AbstractModel):
         inverse="_inverse_period_end_date",
     )
     period_end_date_calendar = fields.Date(compute="_compute_period_end_date_calendar")
-    duration = fields.Char("Duration", compute="_compute_duration", default="")
+    duration = fields.Char(
+        "Duration", compute="_compute_duration", default="", store=True
+    )
     duration_hours = fields.Float(
-        "Duration (Hours)", compute="_compute_duration", store=True, readonly=False
+        "Duration (Hours)", compute="_compute_duration", readonly=False, store=True
     )
     duration_days = fields.Integer(
-        "Duration (days)", compute="_compute_duration", default=0
+        "Duration (days)",
+        compute="_compute_duration",
+        default=0,
+        store=True,
     )
     duration_months = fields.Integer(
-        "Duration (months)", compute="_compute_duration", default=0
+        "Duration (months)",
+        compute="_compute_duration",
+        default=0,
+        store=True,
     )
     duration_years = fields.Integer(
-        "Duration (years)", compute="_compute_duration", default=0
+        "Duration (years)",
+        compute="_compute_duration",
+        default=0,
+        store=True,
     )
     tense = fields.Selection(
         [("past", "Past"), ("present", "Present"), ("future", "Future")],
