@@ -8,6 +8,8 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.document.ref</field>
         <field name="view_mode">tree,form</field>
+        <field name="domain">[('encounter_id', '=', active_id)]</field>
+        <field name="context">{'default_encounter_id': active_id, 'default_patient_id': active_id.patient_id}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">Not Found</p>
             <p>Try remove some filter</p>
@@ -20,8 +22,13 @@
             <search>
                 <field name="type_id" />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
-                <filter name="groupby_category" string="Category" context="{'group_by':'category_id'}" />
-                <filter name="groupby_type" string="Type" context="{'group_by':'type_id'}" />
+                <filter name="group_by_category" string="Category" context="{'group_by':'category_id'}" />
+                <filter name="group_by_type" string="Type" context="{'group_by':'type_id'}" />
+                <filter name="group_by_encounter" string="Type" context="{'group_by':'encounter_id'}" />
+                <searchpanel>
+                    <field name="type_id" string="Type" enable_counters="1" />
+                    <field name="author_id" string="Author" enable_counters="1" icon="fa-users" />
+                </searchpanel>
             </search>
         </field>
     </record>
@@ -33,15 +40,26 @@
                 <field name="company_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
+                <field name="no_data" invisible="1" />
                 <field name="category_id" optional="hide" />
                 <field name="occurrence" />
                 <field name="type_id" />
-                <field name="create_uid" optional="hide" />
+                <field name="author_id" widget="many2one_avatar_user" />
+                <field name="create_uid" optional="hide" widget="many2one_avatar_user" />
                 <field name="create_date" optional="hide" />
-                <field name="write_uid" optional="show" />
+                <field name="write_uid" optional="hide" widget="many2one_avatar_user" />
                 <field name="write_date" optional="hide" />
+                <field name="state" widget="badge" optional="hide" />
+                <button
+                    class="btn-secondary"
+                    name="action_print"
+                    icon="fa-print"
+                    type="object"
+                    title="Print"
+                    attrs="{'invisible': [('no_data', '=', True)]}"
+                />
                 <control>
-                    <create string="Add document" context="{}" />
+                    <create string="Add Document" context="{}" />
                 </control>
             </tree>
         </field>
@@ -50,10 +68,13 @@
         <field name="name">ni.document.ref.view.form</field>
         <field name="model">ni.document.ref</field>
         <field name="arch" type="xml">
-            <form string="Document Reference">
-                <field name="active" invisible="1" />
-                <field name="state" invisible="1" />
+            <form>
                 <sheet>
+                    <field name="encounter_id" invisible="1" />
+                    <field name="patient_id" invisible="1" />
+                    <field name="active" invisible="1" />
+                    <field name="state" invisible="1" />
+                    <field name="identifier" invisible="1" />
                     <widget
                         name="web_ribbon"
                         class="oe_read_only"
@@ -68,6 +89,8 @@
                         </group>
                         <group>
                             <field name="occurrence" />
+                            <field name="author_id" widget="many2one_avatar_employee" />
+                            <field name="author_ids" widget="many2many_avatar_employee" invisible="1" />
                         </group>
                     </group>
                     <field name="data" class="oe-bordered-editor mt-2" placeholder="Document content..." />
@@ -88,23 +111,63 @@
                         <field name="write_date" class="text-muted mx-2" />
                     </div>
                 </sheet>
-                <footer>
-                    <button
-                        string="Save &amp; Print"
-                        class="btn-primary"
-                        name="action_save_and_print"
-                        type="object"
-                        attrs="{'invisible': [('state', 'in', ['revoked', 'completed'])]}"
-                    />
-                    <button
-                        string="Save as draft"
-                        class="btn-secondary"
-                        special="save"
-                        attrs="{'invisible': [('state', '!=', 'draft')]}"
-                    />
-                    <button string="Cancel" class="btn-secondary" special="cancel" />
-                </footer>
             </form>
+        </field>
+    </record>
+    <record id="ni_document_ref_view_kanban" model="ir.ui.view">
+        <field name="name">ni.document.ref.view.kanban</field>
+        <field name="model">ni.document.ref</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="type_id" />
+                <field name="author_id" />
+                <field name="occurrence" />
+                <field name="data" />
+                <field name="no_data" />
+                <field name="attachment_count" />
+                <template>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <div class="o_kanban_record_title">
+                                        <strong>
+                                            <field name="type_id" />
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div t-if="record.attachment_count.raw_value > 0">
+                                    <i class="fa fa-paperclip text-primary" title="Attachment Count" />
+                                    <field class="ms-1" name="attachment_count" />
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_content py-2">
+                                <t t-if="record.no_data.raw_value == false" class="p-2 m-2">
+                                    <div>
+                                        <field class="kanban_data text-truncate" name="data" />
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div>
+                                        <div class="kanban_data text-muted text-center">No content</div>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <div class="text-muted small">
+                                        <i class="fa fa-clock-o me-1" aria-hidden="true" title="Occurence" />
+                                        <field name="occurrence" />
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_bottom_right me-1">
+                                    <field name="author_id" widget="many2one_avatar_employee" />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </template>
+            </kanban>
         </field>
     </record>
 </odoo>

@@ -3,11 +3,28 @@
   ~ Copyright (c) 2021-2023 NSTDA
   -->
 <odoo noupdate="1">
-    <!-- This file only intent use as scaffold for security rule -->
     <record id="document_company_rule" model="ir.rule">
         <field name="name">Document: multi-company</field>
         <field name="model_id" ref="ni_document_ref.model_ni_document_ref" />
         <field name="global" eval="True" />
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="document_own_write_rule" model="ir.rule">
+        <field name="name">Document: Write own or unowned document</field>
+        <field name="model_id" ref="ni_document_ref.model_ni_document_ref" />
+        <field name="domain_force">
+            ['|', ('author_ids', '=', False), ('author_ids', 'in', [user.employee_id.id])]
+        </field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_user'))]" />
+    </record>
+    <record id="document_manager_rule" model="ir.rule">
+        <field name="name">Document: manager write all</field>
+        <field name="model_id" ref="ni_document_ref.model_ni_document_ref" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4,ref('ni_patient.group_manager')), (4,ref('ni_patient.group_admin'))]" />
     </record>
 </odoo>

@@ -17,3 +17,18 @@ class Encounter(models.Model):
     def _compute_document_count(self):
         for rec in self:
             rec.document_count = len(rec.document_ids)
+
+    def action_document_ref(self):
+        action_rec = self.env.ref("ni_document_ref.ni_document_ref_action").sudo()
+        action = action_rec.read()[0]
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "search_default_group_by_encounter": 1,
+                "default_patient_id": self[0].patient_id.id,
+                "default_encounter_id": self.ids[0],
+            }
+        )
+        action["context"] = ctx
+        action["domain"] = [("patient_id", "=", self[0].patient_id.id)]
+        return action
