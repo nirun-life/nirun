@@ -28,7 +28,7 @@ class Location(models.Model):
     parent_name = fields.Char(
         related="parent_id.name", readonly=True, string="Parent Location Name"
     )
-    parent_path = fields.Char(index=True, readonly=True)
+    parent_path = fields.Char(index=True, unaccent=False)
     child_ids = fields.One2many(
         "ni.location",
         "parent_id",
