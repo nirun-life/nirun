@@ -47,7 +47,9 @@ class Appointment(models.Model):
         domain="[('encounter_id', '=', encounter_id)]",
     )
 
-    performer_id = fields.Many2one("hr.employee", required=True)
+    performer_id = fields.Many2one(
+        "hr.employee", required=True, default=lambda self: self.env.user.employee_id
+    )
     department_id = fields.Many2one(
         "hr.department", related="performer_id.department_id"
     )
