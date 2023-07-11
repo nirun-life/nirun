@@ -6,8 +6,8 @@ class AllergyIntolerance(models.Model):
     _name = "ni.allergy"
     _description = "Allergy / Intolerance"
     _inherit = ["ni.patient.res"]
-    _rec_name = "code_id"
 
+    name = fields.Char(related="code_id.name", store=True)
     code_id = fields.Many2one(
         "ni.allergy.code",
         required=True,
