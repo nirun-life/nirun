@@ -15,9 +15,7 @@ class ObservationType(models.Model):
     ref_range_ids = fields.One2many(
         "ni.observation.reference.range", "type_id", "Reference Range"
     )
-    ref_range_count = fields.Integer(
-        compute="_compute_ref_range_count", sudo_compute=True, store=True
-    )
+    ref_range_count = fields.Integer(compute="_compute_ref_range_count", store=True)
     value_type = fields.Selection(
         [("char", "Char"), ("float", "Float"), ("int", "Integer"), ("code_id", "Code")],
         default="float",
