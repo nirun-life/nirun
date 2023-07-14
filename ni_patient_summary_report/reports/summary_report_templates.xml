@@ -174,7 +174,7 @@
                                         การตรวจร่างกายและการวินิจฉัยโรค
                                     </h3>
                                     <b>Physical Examination</b>
-                                    <br />
+                                    <br /><br />
                                     <span t-field="o.vital_sign" />
                                     <br />
                                     <span t-field="o.physical_exam" />
@@ -203,9 +203,9 @@
                                 </div>
                             </div>
                             <br />
+                            <h3 t-attf-style="color:{{o.company_id.primary_color}}">การรักษา</h3>
                             <div class="row">
-                                <div class="col-6 text-start bg-primary px-2">
-                                    <h3 t-attf-style="color:{{o.company_id.primary_color}}">การสั่งยา</h3>
+                                <div class="col-6 text-start px-2">                                    
                                     <b>รายการสั่งยา</b>
                                     <br />
                                     <br />
@@ -224,7 +224,7 @@
                                         </t>
                                     </table>
                                 </div>
-                                <div class="col-6 text-start bg-danger px-2">
+                                <div class="col-6 text-start px-2">
                                     <b>หัตถการ</b>
                                     <br />
                                     <br />
@@ -253,26 +253,24 @@
                                         </t>
                                     </table>
                                     <br />
-                                    <br />
-                                    <b>
-                                        นัดครั้งถัดไป
-                                        <span t-field="o.next_appointment_id" />
-                                    </b>
-                                    <br />
-                                    <br />
                                 </div>
                             </div>
                             <br />
                             <div class="row">
-                                <b>ผลการรักษา</b>
-                                <span t-field="o.discharge_status_id" />
-                                <br />
-                                <b>ส่งต่อไปที่</b>
-                                <span t-field="o.discharge_partner_id" />
-                                <br />
-                                <b>สาเหตุการส่งต่อ</b>
-                                <span t-field="o.discharge_note" />
-                                <br />
+                                <div class="col-6 text-start">
+                                    <b>ผลการรักษา</b>
+                                    <span t-field="o.discharge_status_id" />
+                                    <br />
+                                    <b>ส่งต่อไปที่</b>
+                                    <span t-field="o.discharge_partner_id" />
+                                    <br />
+                                    <b>สาเหตุการส่งต่อ</b>
+                                    <span t-field="o.discharge_note" />
+                                    <br />
+                                </div>
+                                <div class="col-6 text-start">
+                                    <b>นัดครั้งถัดไป</b><span t-field="o.next_appointment_id" style="padding-left: 1em" />
+                                </div>
                             </div>
                             <!-- </div> -->
                         </div>
@@ -286,7 +284,8 @@
                                     <b>ผู้ออกรายงาน</b>
                                 </span>
                                 <span t-field="o.create_uid" />
-                                <small t-esc="context_timestamp(datetime.datetime.now())" style="padding-left: 1em" />
+                                <t t-set="lang_id" t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1)" />
+                                <span style="padding-left: 1em" t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))" />
                             </div>
                             <div class="col-6 text-end">
                                 Page
