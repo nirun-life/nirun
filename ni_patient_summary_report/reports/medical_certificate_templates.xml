@@ -20,9 +20,6 @@
                 <t t-call="ni_patient_summary_report.medical_certificate_layout">
                     <div class="page">
                         <div class="container">
-                            <!-- <div class="row-fluid"> -->
-                            <!-- check if else when summary_report_title == false it will
-                                    show Summary -->
                             <div class="row">
                                 <div class="col text-center" t-attf-style="color:{{o.company_id.primary_color}}">
                                     <h1>
@@ -44,9 +41,59 @@
                             <div class="row">
                                 <div class="col text-center px-2">
                                     ข้าพเจ้า (ชื่อ-สกุลผู้ประกอบวิชาชีพ)
-                                    <span>นพ mock mockmock</span>
+                                    <span>
+                                        นพ mock mockmock
+                                        <!-- TODO remove mock -->
+                                    </span>
                                     ใบอนุญาตประกอบวิชาชีพเลขที่
-                                    <span>mockmockmock</span>
+                                    <span>
+                                        mockmockmock
+                                        <!-- TODO remove mock -->
+                                    </span>
+                                    <span>
+                                        ได้ทำการพยนาบาลและหรือการผดุงครรภ์ (ชื่อ-สกุลผู้รับบริการ)
+                                        <!-- TODO no variable  <t t-field="o.patient_id" ></t> -->
+                                        <span t-field="o.patient_id" />
+                                    </span>
+                                    <span>
+                                        เมื่อวันที่
+                                        <!-- TODO no variable <span t-field="o.occurrence" />-->
+                                    </span>
+                                    <span>
+                                        ด้วยอาการที่มาพบ (โปรดระบุ)
+                                        <span t-field="o.chief_complaint" />
+                                    </span>
+                                    <span>
+                                        ข้าพเจ้าขอรับรองว่า (ชื่อ-สกุลผู้รับบริการ)
+                                        <span t-field="o.patient_id" />
+                                        <!-- TODO no variable  <t t-field="o.patient_id" ></t> -->
+                                        มารับการรักษากับข้าพเจ้าตามข้อความข้างต้นจริง
+                                    </span>
+                                    <span>
+                                        ชื่อ-สกุล (mockmockmock
+                                        <!-- TODO remove mock -->
+                                        )
+                                    </span>
+                                    <span>
+                                        ตำแหน่ง (mockmockmock
+                                        <!-- TODO remove mock -->
+                                        )
+                                    </span>
+                                    <t
+                                        t-set="lang_id"
+                                        t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1)"
+                                    />
+                                    <span>
+                                        วันที่
+                                        <span
+                                            style="padding-left: 1em"
+                                            t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))"
+                                        />
+                                    </span>
+                                    <p>หมายเหตุ</p>
+                                    <p>1. ให้ประทับตราสถานพยาบาล (ถ้ามี)</p>
+                                    <p>2. กรณีสมควรให้พักต้องไม่เกิน 2 วัน ทั้งนี้รวมวันที่มารับการตรวจด้วย</p>
+                                    <p>3. ห้ามออกใบรับรองการรักษาพยาบาลย้อนหลัง</p>
                                 </div>
                             </div>
                         </div>
