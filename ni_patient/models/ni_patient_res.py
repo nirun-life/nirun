@@ -56,9 +56,9 @@ class PatientResource(models.AbstractModel):
         if not self._abstract:
             tools.create_index(
                 self._cr,
-                "{}__patient_id__encounter_id__index".format(self._table),
+                "{}_company_id_patient_id_encounter_id_index".format(self._table),
                 self._table,
-                ["patient_id", "encounter_id"],
+                ["company_id", "patient_id", "encounter_id"],
             )
 
     @api.onchange("patient_id")
