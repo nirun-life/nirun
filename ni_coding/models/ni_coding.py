@@ -19,11 +19,12 @@ class Coding(models.AbstractModel):
         index=True,
         default=lambda self: self._get_default_sequence(),
     )
-    name = fields.Char(required=True, index=True, translate=True)
-    abbr = fields.Char("Abbreviation", index=True)
+    name = fields.Char(required=True, index="trigram", translate=True)
+    abbr = fields.Char("Abbreviation", index="btree_not_null")
     code = fields.Char(index=True, size=16)
     system_id = fields.Many2one(
         "ni.coding.system",
+        index=True,
         default=lambda self: self.env.ref("ni_coding.system_internal"),
     )
     system = fields.Char(related="system_id.url")
