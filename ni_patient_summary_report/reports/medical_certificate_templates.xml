@@ -27,70 +27,134 @@
                                     </h1>
                                 </div>
                             </div>
-                            <div class="row">
+                            <br /><br />
+                            <div class="row">                                
                                 <div class="col text-center">
                                     ชื่อสถานพยาบาล
-                                    <span t-field="o.company_id.name" />
-                                </div>
+                                    <abbr title="">                                        
+                                        <spa style="margin-left: 1em; margin-right: 1em" t-field="o.company_id.name"/>
+                                    </abbr>
+                                </div>                     
+                            </div>
+                            <br />
+                            <div class="row">
                                 <div class="col text-center">
-                                    ตั้งอยู่เลขที่
-                                    <span t-esc="o.patient_id.partner_id._display_address(without_company=True)" />
-                                </div>
+                                    <span>ตั้งอยู่เลขที่</span>
+                                    <abbr title="">
+                                        <span style="margin-left: 1em; margin-right: 1em" t-esc="o.patient_id.partner_id._display_address(without_company=True)" />
+                                    </abbr>
+                                </div>                                
                             </div>
                             <br />
                             <div class="row">
                                 <div class="col text-center px-2">
                                     ข้าพเจ้า (ชื่อ-สกุลผู้ประกอบวิชาชีพ)
-                                    <span>
-                                        นพ mock mockmock
-                                        <!-- TODO remove mock -->
-                                    </span>
+                                    <abbr title="">
+                                        
+                                        <span style="margin-left: 1em; margin-right: 1em">
+                                            นพ mock mockmock
+                                            <!-- TODO remove mock -->
+                                        </span>
+                                    </abbr>
                                     ใบอนุญาตประกอบวิชาชีพเลขที่
+                                    <abbr title="">
+                                        <span style="margin-left: 1em; margin-right: 1em">
+                                            mockmockmock
+                                            <!-- TODO remove mock -->
+                                        </span>
+                                    </abbr>
+                                    <br />                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-start px-2">
                                     <span>
-                                        mockmockmock
-                                        <!-- TODO remove mock -->
-                                    </span>
-                                    <span>
-                                        ได้ทำการพยนาบาลและหรือการผดุงครรภ์ (ชื่อ-สกุลผู้รับบริการ)
+                                        ได้ทำการพยาบาลและหรือการผดุงครรภ์ (ชื่อ-สกุลผู้รับบริการ)
+                                        <abbr title="">
                                         <!-- TODO no variable  <t t-field="o.patient_id" ></t> -->
-                                        <span t-field="o.patient_id" />
+                                            <span style="margin-left: 1em; margin-right: 19em" t-field="o.patient_id" />
+                                        </abbr>
                                     </span>
+                                    <br />
                                     <span>
                                         เมื่อวันที่
-                                        <!-- TODO no variable <span t-field="o.occurrence" />-->
+                                        <abbr title="">
+                                            <!-- TODO no variable <span t-field="o.occurrence" />-->
+                                            <span style="margin-left: 1em; margin-right: 42em">07/17/2023</span>
+                                        </abbr>
                                     </span>
+                                    <br />
                                     <span>
                                         ด้วยอาการที่มาพบ (โปรดระบุ)
-                                        <span t-field="o.chief_complaint" />
+                                        <abbr title="">
+                                            <span style="margin-left: 1em; margin-right: 50em" t-field="o.chief_complaint" />
+                                        </abbr>
                                     </span>
+                                    <br /><br /><br />
+
+                                    
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-center px-2">
                                     <span>
                                         ข้าพเจ้าขอรับรองว่า (ชื่อ-สกุลผู้รับบริการ)
-                                        <span t-field="o.patient_id" />
+                                        <abbr title="">
+                                            <span style="margin-left: 1em; margin-right: 1em" t-field="o.patient_id" />
                                         <!-- TODO no variable  <t t-field="o.patient_id" ></t> -->
+                                        </abbr>
                                         มารับการรักษากับข้าพเจ้าตามข้อความข้างต้นจริง
                                     </span>
+                                </div>
+                            </div>
+                            <br /><br /><br /><br />
+                            <div class="row">
+                                <div class="col text-end px-2">
                                     <span>
-                                        ชื่อ-สกุล (mockmockmock
+                                        ชื่อ-สกุล 
+                                        (<abbr title="">
+                                            mockmockmock
                                         <!-- TODO remove mock -->
+                                        </abbr>
                                         )
                                     </span>
+                                    
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-end px-2">
                                     <span>
-                                        ตำแหน่ง (mockmockmock
-                                        <!-- TODO remove mock -->
+                                        ตำแหน่ง 
+                                        (<abbr title="">
+                                        mockmockmock
+                                        <!-- TODO remove mock -->                                        
+                                        </abbr>
                                         )
                                     </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-end px-2">
                                     <t
                                         t-set="lang_id"
                                         t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1)"
                                     />
                                     <span>
                                         วันที่
-                                        <span
-                                            style="padding-left: 1em"
-                                            t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))"
-                                        />
+                                        <abbr title="">
+                                            <span
+                                                style="padding-left: 1em"
+                                                t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))"
+                                            />
+                                        </abbr>
                                     </span>
-                                    <p>หมายเหตุ</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-start px-2">
+                                    <u><b>หมายเหตุ</b></u><br />
                                     <p>1. ให้ประทับตราสถานพยาบาล (ถ้ามี)</p>
                                     <p>2. กรณีสมควรให้พักต้องไม่เกิน 2 วัน ทั้งนี้รวมวันที่มารับการตรวจด้วย</p>
                                     <p>3. ห้ามออกใบรับรองการรักษาพยาบาลย้อนหลัง</p>
