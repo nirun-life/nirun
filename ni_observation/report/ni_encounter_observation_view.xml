@@ -112,4 +112,58 @@
             </form>
         </field>
     </record>
+    <record id="ni_encounter_ob_line_view_kanban" model="ir.ui.view">
+        <field name="name">ni.encounter.ob.line.view.kanban</field>
+        <field name="model">ni.encounter.observation</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="type_id" />
+                <field name="value" />
+                <field name="unit" />
+                <field name="interpretation_id" />
+                <field name="display_class" />
+                <field name="occurrence" />
+                <template>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <div class="o_kanban_record_title">
+                                        <strong>
+                                            <field name="type_id" />
+                                            <field
+                                                name="interpretation_id"
+                                                class="ms-2"
+                                                widget="badge"
+                                                decoration-danger="display_class == 'danger'"
+                                                decoration-info="display_class == 'info'"
+                                                decoration-muted="display_class == 'muted'"
+                                                decoration-primary="display_class == 'primary'"
+                                                decoration-success="display_class == 'success'"
+                                                decoration-warning="display_class == 'warning'"
+                                            />
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="me-1 text-body display-5">
+                                    <field name="value" />
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <div class="text-muted small">
+                                        <i class="fa fa-clock-o me-1" aria-hidden="true" title="Occurence" />
+                                        <field name="occurrence" />
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_bottom_right me-1">
+                                    <field name="unit" />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </template>
+            </kanban>
+        </field>
+    </record>
 </odoo>
