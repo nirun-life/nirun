@@ -20,6 +20,7 @@ class IdentifierMixin(models.AbstractModel):
             if (
                 vals.get(self._identifier_field, self._identifier_default)
                 == self._identifier_default
+                or self._identifier_field not in vals
             ):
                 seq_date = fields.Date.today()
                 if self._identifier_ts_field in vals:
