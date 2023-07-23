@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<templates id="template" xml:space="preserve">
+    <t t-inherit="hr_skills.ResumeListRenderer.RecordRow" owl="1" t-inherit-mode="extension">
+        <xpath expr="//p[@t-if='data.description']" position="replace">
+            <p class="o_resume_line_desc">
+                <span t-if="data.identifier" class="text-primary">
+                    <i class="fa fa-id-card-o me-2 text-body" aria-hidden="true" title="Credential ID" />
+                    <t t-out="data.identifier" />
+                </span>
+                <span t-if="data.identifier and data.description" class="mx-2">•</span>
+                <span t-if="data.description" t-esc="data.description" />
+            </p>
+        </xpath>
+    </t>
+</templates>
