@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="employee_category_doctor" model="hr.employee.category">
+        <field name="name">Doctor</field>
+        <field name="code">doctor</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="sequence" eval="1" />
+        <field name="definition">A qualified/registered medical practitioner</field>
+    </record>
+    <record id="employee_category_nurse" model="hr.employee.category">
+        <field name="name">Nurse</field>
+        <field name="code">nurse</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="sequence" eval="2" />
+        <field name="definition">A practitioner with nursing experience that may be qualified/registered</field>
+    </record>
+    <record id="employee_category_nurse_prac" model="hr.employee.category">
+        <field name="name">Nurse Practitioner</field>
+        <field name="code">nurse_prac</field>
+        <field name="parent_id" ref="ni_practitioner.employee_category_nurse" />
+        <field name="sequence" eval="2" />
+        <field name="definition">A practitioner with nursing experience that may be qualified/registered</field>
+    </record>
+    <record id="employee_category_pharmacist" model="hr.employee.category">
+        <field name="name">Pharmacist</field>
+        <field name="code">pharmacist</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="sequence" eval="3" />
+        <field name="definition">A qualified/registered/licensed pharmacist</field>
+    </record>
+    <record id="employee_category_researcher" model="hr.employee.category">
+        <field name="name">Researcher</field>
+        <field name="code">researcher</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="sequence" eval="4" />
+        <field name="definition">A practitioner that may perform research</field>
+    </record>
+    <record id="employee_category_teacher" model="hr.employee.category">
+        <field name="name">Teacher/educator</field>
+        <field name="code">teacher</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="sequence" eval="4" />
+        <field name="definition">Someone who is able to provide educational services</field>
+    </record>
+    <record id="employee_category_ict" model="hr.employee.category">
+        <field name="name">ICT professional</field>
+        <field name="code">ict</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="sequence" eval="6" />
+        <field name="definition">Someone who is qualified in Information and Communication Technologies</field>
+    </record>
+</odoo>
