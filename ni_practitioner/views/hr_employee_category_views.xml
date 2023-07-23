@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="hr_employee_category_view_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.category.view.tree.inherit</field>
+        <field name="model">hr.employee.category</field>
+        <field name="inherit_id" ref="hr.view_employee_category_list" />
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="sequence" widget="handle" />
+            </field>
+            <field name="name" position="after">
+                <field name="code" />
+                <field name="parent_id" />
+                <field name="employee_ids" optional="hide" />
+                <field name="system_id" options="{'no_open': True}" />
+                <field name="color" widget="color_picker" />
+                <field name="active" invisible="1" />
+            </field>
+        </field>
+    </record>
+</odoo>
