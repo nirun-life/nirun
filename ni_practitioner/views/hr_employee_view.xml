@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="hr_employee_view_form_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_skills.hr_employee_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='resume_line_ids']/tree" position="inside">
+                <field name="identifier" />
+                <field name="code_id" />
+            </xpath>
+            <xpath expr="//page[@name='public']/div/div/group[1]" position="before">
+                <group string="License">
+                    <field name="license_id" context="{'show_identifier': True}" options="{'always_reload': True}" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="hr_employee_public_view_form_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.public.view.form.inherit</field>
+        <field name="model">hr.employee.public</field>
+        <field name="inherit_id" ref="hr_skills.hr_employee_public_view_form_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='resume_line_ids']/tree" position="inside">
+                <field name="identifier" />
+                <field name="code_id" />
+            </xpath>
+            <xpath expr="//page[@name='public']/div/div/group[1]" position="before">
+                <group string="License">
+                    <field name="license_id" context="{'show_identifier': True}" options="{'always_reload': True}" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="res_users_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.users.view.form.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="hr_skills.res_users_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='resume_line_ids']/tree" position="inside">
+                <field name="identifier" />
+                <field name="code_id" />
+            </xpath>
+            <xpath expr="//page[@name='public']/div/div/group[1]" position="before">
+                <group string="License">
+                    <field name="employee_id" invisible="1" />
+                    <field name="license_id" context="{'show_identifier': True}" options="{'always_reload': True}" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

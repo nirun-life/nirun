@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="hr_resume_line_view_form" model="ir.ui.view">
+        <field name="name">hr.resume.line.view.form</field>
+        <field name="model">hr.resume.line</field>
+        <field name="inherit_id" ref="hr_skills.resume_line_view_form" />
+        <field name="priority" eval="100" />
+        <field name="arch" type="xml">
+            <xpath expr="//div/h1" position="after">
+                <h2 class="mb-2">
+                    <field
+                        name="identifier"
+                        placeholder="Credential ID"
+                        autocomplete="off"
+                        attrs="{'required': [('code_require_identifier', '=', True)]}"
+                    />
+                </h2>
+            </xpath>
+            <field name="name" position="replace">
+                <field
+                    name="code_id"
+                    class="w-100"
+                    options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                    placeholder="e.g. Doctor of Medicine"
+                />
+            </field>
+            <field name="line_type_id" position="before">
+                <field name="name" string="Display Name" />
+                <field name="code_require_identifier" invisible="1" />
+                <field name="issuer_id" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" />
+            </field>
+            <field name="line_type_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="display_type" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
