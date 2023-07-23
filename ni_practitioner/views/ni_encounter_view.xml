@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <i class="ms-2 fa fa-users text-primary" title="Department" />
+                <field
+                    class="mx-1 w-25"
+                    name="department_id"
+                    options="{'no_open': True, 'no_create': True}"
+                    placeholder="Department"
+                />
+            </field>
+            <field name="period_start" position="before">
+                <field name="performer_id" widget="many2one_avatar_employee" />
+                <field
+                    name="performer_license_id"
+                    context="{'show_identifier': True}"
+                    options="{'always_reload': True}"
+                />
+            </field>
+        </field>
+    </record>
+    <record id="ni_encounter_view_tree_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.tree.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_tree" />
+        <field name="arch" type="xml">
+            <field name="location_id" position="after">
+                <field name="department_id" optional="hide" />
+                <field name="performer_id" widget="many2one_avatar_employee" />
+                <field name="performer_license_no" />
+            </field>
+        </field>
+    </record>
+    <record id="ni_encounter_view_search_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.search.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_search" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="department_id" icon="fa-users" enable_counters="1" />
+                <field name="performer_id" icon="fa-user-md" hierarchize="0" enable_counters="1" />
+            </field>
+        </field>
+    </record>
+</odoo>
