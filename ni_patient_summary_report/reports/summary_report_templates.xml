@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <template id="summary_report_layout">
+        <div
+            t-attf-class="article o_report_layout_standard o_company_#{o.company_id}_layout {{  'o_report_layout_background' if o.company_id.layout_background in ['Geometric', 'Custom']  else  '' }}"
+            t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % o.company_id.layout_background_image.decode('utf-8') if o.company_id.layout_background_image and o.company_id.layout_background == 'Custom' else '/base/static/img/bg_background_template.jpg' if o.company_id.layout_background == 'Geometric' else ''}});"
+            t-att-data-oe-model="o and o._name"
+            t-att-data-oe-id="o and o.id"
+            t-att-data-oe-lang="o and o.env.context.get('lang')"
+        >
+            <t t-out="0" />
+        </div>
+    </template>
+    <template id="summary_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="ni_patient_summary_report.summary_report_layout">
+                    <div class="header">
+                        <div class="row" t-attf-style="color:{{o.company_id.primary_color}}">
+                            <div class="col-1">
+                                <img
+                                    t-if="o.company_id.logo"
+                                    t-att-src="image_data_uri(o.company_id.logo)"
+                                    style="max-height: 45px;"
+                                    alt="Logo"
+                                />
+                            </div>
+                            <div class="col-5">
+                                <div class="col">
+                                    <b>
+                                        <t t-out="o.company_id.name" />
+                                    </b>
+                                </div>
+                                <div class="col">
+                                    <t t-out="o.company_id.website" />
+                                </div>
+                                <div class="col">
+                                    <t t-out="o.company_id.phone" />
+                                </div>
+                            </div>
+                            <div class="col-6 text-end">
+                                <t t-out="o.patient_id.identifier" />
+                                <div class="mt-3">
+                                    <small class="fw-light text-body">
+                                        <t t-out="o.patient_id.name" />
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                    <br />
+                    <br />
+                    <div class="page">
+                        <div class="container">
+                            <!-- <div class="row-fluid"> -->
+                            <!-- check if else when summary_report_title == false it will
+                                    show Summary -->
+                            <div class="row">
+                                <div class="col-6 text-start" t-attf-style="color:{{o.company_id.primary_color}}">
+                                    <h1>
+                                        <t t-if="o.class_id.summary_report_title">
+                                            <b>
+                                                <span t-field="o.class_id.summary_report_title" />
+                                            </b>
+                                        </t>
+                                        <t t-else="">
+                                            <b>
+                                                <span t-field="o.class_id.name" />
+                                                Summary
+                                            </b>
+                                        </t>
+                                    </h1>
+                                </div>
+                                <div class="col-6 text-end align-self-end">
+                                    <b>
+                                        <span class="align-bottom" t-field="o.identifier" />
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-start">
+                                    <span>น.พ. ธนชัย ทองคํา</span>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span t-field="o.period_start" />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-6 text-start">
+                                    <b>
+                                        <span t-field="o.patient_id.identifier" />
+                                    </b>
+                                    <br />
+                                    <b>
+                                        <span t-field="o.patient_id.name" />
+                                    </b>
+                                    <br />
+                                    อายุ
+                                    <span t-field="o.patient_id.display_age" />
+                                    หมู่เลือด O
+                                    <br />
+                                    <span t-esc="o.patient_id.partner_id._display_address(without_company=True)" />
+                                    <br />
+                                    <b>เลขบัตรประชาชน</b>
+                                    <span t-field="o.patient_id.identification_id" />
+                                    <br />
+                                    <b>สัญชาติ</b>
+                                    <span t-field="o.patient_id.nationality_id" />
+                                    <b>ศาสนา</b>
+                                    พุทธ
+                                </div>
+                                <div class="col-6 text-end px-2">
+                                    <table class="table table-responsive table-bordered text-start">
+                                        <tr>
+                                            <td>แพ้ยา / อาหาร</td>
+                                            <td>
+                                                <t t-foreach="o.patient_id.allergy_ids" t-as="allergy">
+                                                    <span t-esc="allergy.code_id.name" />
+                                                    ,
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>โรคประจำตัว</td>
+                                            <td>
+                                                <t t-foreach="o.patient_id.condition_problem_ids" t-as="condition">
+                                                    <span t-esc="condition.code_id.name" />
+                                                    ,
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="text-start">
+                                        <b>สิทธิการรักษา</b>
+                                        หลักประกันสุขภาพถ้วนหน้า
+                                        <br />
+                                        <b>ผู้ติดต่อได้</b>
+                                        นางกวี มารักษา
+                                        <br />
+                                        <b>ผู้บันทึกข้อมูล</b>
+                                        <span t-field="o.patient_id.write_uid" />
+                                        <br />
+                                        <span style="margin-left:6em" t-field="o.patient_id.write_date" />
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <hr />
+                            <br />
+                            <div class="row">
+                                <div class="col-6 text-start">
+                                    <h3 t-attf-style="color:{{o.company_id.primary_color}}">ประวัติการเจ็บป่วย</h3>
+                                    <b>Chief Complain</b>
+                                    <br />
+                                    <span t-field="o.chief_complaint" />
+                                    <br />
+                                    <br />
+                                    <b>History of Present Illness</b>
+                                    <span t-field="o.history_of_present_illness" />
+                                    <br />
+                                    <br />
+                                    <b>Review of System</b>
+                                    <span t-field="o.review_of_systems" />
+                                    <br />
+                                    <br />
+                                </div>
+                                <div class="col-6 text-start px-2">
+                                    <h3 t-attf-style="color:{{o.company_id.primary_color}}">
+                                        การตรวจร่างกายและการวินิจฉัยโรค
+                                    </h3>
+                                    <b>Physical Examination</b>
+                                    <br /><br />
+                                    <span t-field="o.vital_sign" />
+                                    <br />
+                                    <span t-field="o.physical_exam" />
+                                    <br />
+                                    <br />
+                                    <b>Diagnosis</b>
+                                    <br />
+                                    <br />
+                                    <table class="table table-responsive table-bordered text-start">
+                                        <t t-foreach="o.diagnosis_ids" t-as="d">
+                                            <tr>
+                                                <td>
+                                                    <b>
+                                                        <span t-field="d.role_id" />
+                                                    </b>
+                                                </td>
+                                                <td>
+                                                    <span t-field="d.name" />
+                                                </td>
+                                                <td>
+                                                    <span t-field="d.code" />
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </div>
+                            </div>
+                            <br />
+                            <h3 t-attf-style="color:{{o.company_id.primary_color}}">การรักษา</h3>
+                            <div class="row">
+                                <div class="col-6 text-start px-2">                                    
+                                    <b>รายการสั่งยา</b>
+                                    <br />
+                                    <br />
+                                    <table class="table table-responsive table-bordered text-start">
+                                        <t t-foreach="o.medication_dispense_ids" t-as="m">
+                                            <tr>
+                                                <td>
+                                                    <span t-field="m.name" />
+                                                    <br />
+                                                    <span t-field="m.dosage_id" />
+                                                </td>
+                                                <td>
+                                                    <span t-field="m.quantity_display" />
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </div>
+                                <div class="col-6 text-start px-2">
+                                    <b>หัตถการ</b>
+                                    <br />
+                                    <br />
+                                    <table class="table table-responsive table-bordered text-start">
+                                        <tr>
+                                            <th>รายการ</th>
+                                            <th>เวลา</th>
+                                            <th>CODE</th>
+                                        </tr>
+                                        <t t-foreach="o.procedure_ids" t-as="p">
+                                            <tr>
+                                                <td>
+                                                    <span t-field="p.name" />
+                                                    <br />
+                                                    <span t-field="p.performer_id" />
+                                                </td>
+                                                <td>
+                                                    <span t-field="p.period_start" />
+                                                    -
+                                                    <span t-field="p.period_end" />
+                                                </td>
+                                                <td>
+                                                    <span t-field="p.code" />
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                    <br />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-6 text-start">
+                                    <b>ผลการรักษา</b>
+                                    <span t-field="o.discharge_status_id" />
+                                    <br />
+                                    <b>ส่งต่อไปที่</b>
+                                    <span t-field="o.discharge_partner_id" />
+                                    <br />
+                                    <b>สาเหตุการส่งต่อ</b>
+                                    <span t-field="o.discharge_note" />
+                                    <br />
+                                </div>
+                                <div class="col-6 text-start">
+                                    <b>นัดครั้งถัดไป</b><span t-field="o.next_appointment_id" style="padding-left: 1em" />
+                                </div>
+                            </div>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <div class="footer">
+                        <div class="row" style="font-size:8;">
+                            <div class="col-6 text-start">
+                                <span style="padding-right: 1em">
+                                    <b>ผู้ออกรายงาน</b>
+                                </span>
+                                <span t-field="o.create_uid" />
+                                <t t-set="lang_id" t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1)" />
+                                <span style="padding-left: 1em" t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))" />
+                            </div>
+                            <div class="col-6 text-end">
+                                Page
+                                <span class="page" />
+                                of
+                                <span class="topage" />
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                <style type="text/css">
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+}
+
+.table-sm th,
+.table-sm td {
+    padding: 0.3rem;
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+    border-spacing: 0px !important;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered thead th,
+.table-bordered thead td {
+    border-bottom-width: 2px;
+}
+
+.table-borderless th,
+.table-borderless td,
+.table-borderless thead th,
+.table-borderless tbody + tbody {
+    border: 0;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-hover tbody tr:hover {
+    color: #212529;
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-primary,
+.table-primary > th,
+.table-primary > td {
+    background-color: #b8daff;
+}
+
+.table-primary th,
+.table-primary td,
+.table-primary thead th,
+.table-primary tbody + tbody {
+    border-color: #7abaff;
+}
+
+.table-hover .table-primary:hover {
+    background-color: #9fcdff;
+}
+
+.table-hover .table-primary:hover > td,
+.table-hover .table-primary:hover > th {
+    background-color: #9fcdff;
+}
+
+.table-secondary,
+.table-secondary > th,
+.table-secondary > td {
+    background-color: #d6d8db;
+}
+
+.table-secondary th,
+.table-secondary td,
+.table-secondary thead th,
+.table-secondary tbody + tbody {
+    border-color: #b3b7bb;
+}
+
+.table-hover .table-secondary:hover {
+    background-color: #c8cbcf;
+}
+
+.table-hover .table-secondary:hover > td,
+.table-hover .table-secondary:hover > th {
+    background-color: #c8cbcf;
+}
+
+.table-success,
+.table-success > th,
+.table-success > td {
+    background-color: #c3e6cb;
+}
+
+.table-success th,
+.table-success td,
+.table-success thead th,
+.table-success tbody + tbody {
+    border-color: #8fd19e;
+}
+
+.table-hover .table-success:hover {
+    background-color: #b1dfbb;
+}
+
+.table-hover .table-success:hover > td,
+.table-hover .table-success:hover > th {
+    background-color: #b1dfbb;
+}
+
+.table-info,
+.table-info > th,
+.table-info > td {
+    background-color: #bee5eb;
+}
+
+.table-info th,
+.table-info td,
+.table-info thead th,
+.table-info tbody + tbody {
+    border-color: #86cfda;
+}
+
+.table-hover .table-info:hover {
+    background-color: #abdde5;
+}
+
+.table-hover .table-info:hover > td,
+.table-hover .table-info:hover > th {
+    background-color: #abdde5;
+}
+
+.table-warning,
+.table-warning > th,
+.table-warning > td {
+    background-color: #ffeeba;
+}
+
+.table-warning th,
+.table-warning td,
+.table-warning thead th,
+.table-warning tbody + tbody {
+    border-color: #ffdf7e;
+}
+
+.table-hover .table-warning:hover {
+    background-color: #ffe8a1;
+}
+
+.table-hover .table-warning:hover > td,
+.table-hover .table-warning:hover > th {
+    background-color: #ffe8a1;
+}
+
+.table-danger,
+.table-danger > th,
+.table-danger > td {
+    background-color: #f5c6cb;
+}
+
+.table-danger th,
+.table-danger td,
+.table-danger thead th,
+.table-danger tbody + tbody {
+    border-color: #ed969e;
+}
+
+.table-hover .table-danger:hover {
+    background-color: #f1b0b7;
+}
+
+.table-hover .table-danger:hover > td,
+.table-hover .table-danger:hover > th {
+    background-color: #f1b0b7;
+}
+
+.table-light,
+.table-light > th,
+.table-light > td {
+    background-color: #fdfdfe;
+}
+
+.table-light th,
+.table-light td,
+.table-light thead th,
+.table-light tbody + tbody {
+    border-color: #fbfcfc;
+}
+
+.table-hover .table-light:hover {
+    background-color: #ececf6;
+}
+
+.table-hover .table-light:hover > td,
+.table-hover .table-light:hover > th {
+    background-color: #ececf6;
+}
+
+.table-dark,
+.table-dark > th,
+.table-dark > td {
+    background-color: #c6c8ca;
+}
+
+.table-dark th,
+.table-dark td,
+.table-dark thead th,
+.table-dark tbody + tbody {
+    border-color: #95999c;
+}
+
+.table-hover .table-dark:hover {
+    background-color: #b9bbbe;
+}
+
+.table-hover .table-dark:hover > td,
+.table-hover .table-dark:hover > th {
+    background-color: #b9bbbe;
+}
+
+.table-active,
+.table-active > th,
+.table-active > td {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-hover .table-active:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-hover .table-active:hover > td,
+.table-hover .table-active:hover > th {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table .thead-dark th {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #454d55;
+}
+
+.table .thead-light th {
+    color: #495057;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.table-dark {
+    color: #fff;
+    background-color: #343a40;
+}
+
+.table-dark th,
+.table-dark td,
+.table-dark thead th {
+    border-color: #454d55;
+}
+
+.table-dark.table-bordered {
+    border: 0;
+}
+
+.table-dark.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table-dark.table-hover tbody tr:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.075);
+}
+
+@media (max-width: 575.98px) {
+    .table-responsive-sm {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .table-responsive-sm > .table-bordered {
+        border: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .table-responsive-md {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .table-responsive-md > .table-bordered {
+        border: 0;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .table-responsive-lg {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .table-responsive-lg > .table-bordered {
+        border: 0;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .table-responsive-xl {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .table-responsive-xl > .table-bordered {
+        border: 0;
+    }
+}
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive > .table-bordered {
+    border: 0;
+}
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive > .table-bordered {
+    border: 0;
+}
+                </style>
+            </t>
+        </t>
+    </template>
+</odoo>
