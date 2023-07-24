@@ -22,6 +22,7 @@
         "views/ni_appointment_type_views.xml",
         "views/ni_appointment_menu.xml",
         "views/ni_appointment_portal.xml",
+        "views/ni_appointment_portal_templates.xml",
         "wizard/ni_appointment_cancel_wizard_view.xml",
         "reports/appointment.xml",
         "reports/templates.xml",
