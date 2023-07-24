@@ -38,3 +38,34 @@ class AppointmentPortal(CustomerPortal):
         )
 
         return request.render("ni_appointment.portal_my_appointments", values)
+
+    @http.route(
+        ["/my/appointment/<int:appointment_id>"], type="http", auth="user", website=True
+    )
+    def portal_my_project(
+        self,
+        appointment_id=None,
+        access_token=None,
+        page=1,
+        date_begin=None,
+        date_end=None,
+        sortby=None,
+        search=None,
+        search_in="content",
+        groupby=None,
+        task_id=None,
+        **kw
+    ):
+        values = self._prepare_portal_layout_values()
+        Appointment = request.env["ni.appointment"]
+        domain = [("id", "=", int(appointment_id))]
+
+        appointments = Appointment.search(domain)
+        values.update(
+            {
+                "task": appointments[0],
+                "page_name": "appointment",
+                "default_url": "/my/appointment",
+            }
+        )
+        return request.render("ni_appointment.portal_my_appointment", values)
