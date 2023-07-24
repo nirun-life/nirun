@@ -89,22 +89,21 @@
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True" />
             <t t-call="portal.portal_searchbar">
-                <t t-set="title">Projects</t>
+                <t t-set="title">Appointments</t>
             </t>
-            <t t-if="not projects">
+            <t t-if="not appointments">
                 <div class="alert alert-warning mt8" role="alert">There are no projects.</div>
             </t>
-            <t t-if="projects" t-call="portal.portal_table">
+            <t t-if="appointments" t-call="portal.portal_table">
                 <tbody>
-                    <tr t-foreach="projects" t-as="project">
+                    <tr t-foreach="appointments" t-as="appointment">
                         <td>
-                            <a t-attf-href="/my/projects/#{project.id}?{{ keep_query() }}">
-                                <span t-field="project.name" />
+                            <a t-attf-href="/my/appointment/#{appointment.id}?{{ keep_query() }}">
+                                <span t-field="appointment.name" />
                             </a>
                         </td>
                         <td class="text-end">
-                            <t t-out="project.task_count_with_subtasks" />
-                            <t t-out="project.label_tasks" />
+                            <t t-out="appointment.identifier" />
                         </td>
                     </tr>
                 </tbody>
