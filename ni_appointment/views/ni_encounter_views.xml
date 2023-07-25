@@ -25,7 +25,11 @@
                 </button>
             </xpath>
             <field name="duration" position="after">
-                <field name="next_appointment_id" attrs="{'invisible': [('next_appointment_id', '=', False)]}" />
+                <field
+                    name="next_appointment_id"
+                    attrs="{'invisible': [('next_appointment_id', '=', False)]}"
+                    groups="base.group_no_one"
+                />
             </field>
         </field>
     </record>
