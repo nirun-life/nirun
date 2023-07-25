@@ -21,8 +21,11 @@
                         name="action_cancel_wizard"
                         type="object"
                         string="Cancel"
+                        class="btn-danger"
+                        icon="fa-calendar-times-o"
                         attrs="{'invisible': [('state', '!=', 'active')]}"
                     />
+                    <button name="action_event" type="object" string="Event" groups="base.group_no_one" />
                     <field name="state" statusbar_visible="active,completed" widget="statusbar" />
                 </header>
                 <sheet>
@@ -166,8 +169,12 @@
                         type="object"
                         attrs="{'invisible': [('state', 'in', ['revoked', 'completed'])]}"
                     />
-                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                    <button string="Discard" class="btn-secondary" special="cancel" />
                 </footer>
+                <div name="chatter" class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="message_ids" />
+                </div>
             </form>
         </field>
     </record>

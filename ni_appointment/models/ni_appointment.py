@@ -10,7 +10,7 @@ from odoo import _, api, fields, models
 class Appointment(models.Model):
     _name = "ni.appointment"
     _description = "Appointment"
-    _inherit = ["ni.workflow.request.mixin", "ni.identifier.mixin"]
+    _inherit = ["ni.workflow.request.mixin", "ni.identifier.mixin", "mail.thread"]
     _inherits = {"calendar.event": "event_id"}
     _parent_store = True
 
@@ -31,6 +31,7 @@ class Appointment(models.Model):
         "ni.appointment.type",
         required=True,
         default=lambda self: self.env.ref("ni_appointment.type_routine"),
+        tracking=True,
     )
 
     reason_ids = fields.Many2many(
@@ -48,7 +49,10 @@ class Appointment(models.Model):
     )
 
     performer_id = fields.Many2one(
-        "hr.employee", required=True, default=lambda self: self.env.user.employee_id
+        "hr.employee",
+        required=True,
+        default=lambda self: self.env.user.employee_id,
+        tracking=True,
     )
     department_id = fields.Many2one(
         "hr.department", related="performer_id.department_id"
@@ -167,6 +171,15 @@ class Appointment(models.Model):
         encounter = self.env["ni.encounter"].search([("appointment_id", "=", self.id)])
         if encounter:
             action.update({"res_id": encounter.id})
+        return action
+
+    def action_event(self):
+        action = {
+            "type": "ir.actions.act_window",
+            "res_model": "calendar.event",
+            "res_id": self.event_id.id,
+            "views": [[False, "form"]],
+        }
         return action
 
     def action_cancel_wizard(self):
