@@ -17,8 +17,10 @@
         "ni_procedure",
         "ni_medication",
         "ni_appointment",
+        "ni_practitioner",
     ],
     "data": [
+        "data/ni_encounter_class_data.xml",
         "views/ni_encounter_class_views.xml",
         "reports/summary_report_templates.xml",
         "reports/summary_report.xml",
