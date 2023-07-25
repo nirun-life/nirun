@@ -17,6 +17,7 @@
         "mail",
         "partner_age",
         "partner_gender",
+        "partner_religion",
     ],
     "data": [
         "security/ni_patient_group.xml",
