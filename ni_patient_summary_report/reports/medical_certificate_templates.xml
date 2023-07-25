@@ -54,16 +54,15 @@
                                 <div class="col text-center px-2">
                                     ข้าพเจ้า (ชื่อ-สกุลผู้ประกอบวิชาชีพ)
                                     <abbr title="">
-                                        <span style="margin-left: 1em; margin-right: 1em">
-                                            นพ mock mockmock
-                                            <!-- TODO remove mock -->
-                                        </span>
+                                        <span style="margin-left: 1em; margin-right: 1em" t-esc="o.performer_id.name" />
                                     </abbr>
                                     ใบอนุญาตประกอบวิชาชีพเลขที่
                                     <abbr title="">
-                                        <span style="margin-left: 1em; margin-right: 1em">
-                                            mockmockmock
-                                            <!-- TODO remove mock -->
+                                        <span
+                                            style="margin-left: 1em; margin-right: 1em"
+                                            t-esc="o.performer_license_no"
+                                        >
+
                                         </span>
                                     </abbr>
                                     <br />
@@ -74,7 +73,6 @@
                                     <span>
                                         ได้ทำการพยาบาลและหรือการผดุงครรภ์ (ชื่อ-สกุลผู้รับบริการ)
                                         <abbr title="">
-                                            <!-- TODO no variable  <t t-field="o.patient_id" ></t> -->
                                             <span style="margin-left: 1em; margin-right: 19em" t-field="o.patient_id" />
                                         </abbr>
                                     </span>
@@ -82,8 +80,10 @@
                                     <span>
                                         เมื่อวันที่
                                         <abbr title="">
-                                            <!-- TODO no variable <span t-field="o.occurrence" />-->
-                                            <span style="margin-left: 1em; margin-right: 43em">07/17/2023</span>
+                                            <span
+                                                style="margin-left: 1em; margin-right: 43em"
+                                                t-field="o.period_start_date"
+                                            />
                                         </abbr>
                                     </span>
                                     <br />
@@ -107,7 +107,6 @@
                                         ข้าพเจ้าขอรับรองว่า (ชื่อ-สกุลผู้รับบริการ)
                                         <abbr title="">
                                             <span style="margin-left: 1em; margin-right: 1em" t-field="o.patient_id" />
-                                            <!-- TODO no variable  <t t-field="o.patient_id" ></t> -->
                                         </abbr>
                                         มารับการรักษากับข้าพเจ้าตามข้อความข้างต้นจริง
                                     </span>
@@ -117,29 +116,40 @@
                             <br />
                             <br />
                             <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
                             <div class="row">
+                                <div class="col text-end px-2">
+                                    <span>
+                                        <abbr title="">
+                                            <span style="margin-left: 8em; margin-right: 8em" />
+                                        </abbr>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mt-1">
                                 <div class="col text-end px-2">
                                     <span>
                                         ชื่อ-สกุล
                                         (
                                         <abbr title="">
-                                            mockmockmock
-                                            <!-- TODO remove mock -->
+                                            <span class="px-3" t-field="o.performer_id" />
                                         </abbr>
                                         )
                                     </span>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" t-if="o.performer_id.job_title">
                                 <div class="col text-end px-2">
                                     <span>
                                         ตำแหน่ง
-                                        (
                                         <abbr title="">
-                                            mockmockmock
-                                            <!-- TODO remove mock -->
+                                            <span class="px-3" t-esc="o.performer_id.job_title" />
                                         </abbr>
-                                        )
                                     </span>
                                 </div>
                             </div>
@@ -153,22 +163,11 @@
                                         วันที่
                                         <abbr title="">
                                             <span
-                                                style="padding-left: 1em"
-                                                t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))"
+                                                class="px-3"
+                                                t-esc="context_timestamp(datetime.datetime.now()).strftime('{}'.format(lang_id.date_format))"
                                             />
                                         </abbr>
                                     </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-start px-2">
-                                    <u>
-                                        <b>หมายเหตุ</b>
-                                    </u>
-                                    <br />
-                                    <p>1. ให้ประทับตราสถานพยาบาล (ถ้ามี)</p>
-                                    <p>2. กรณีสมควรให้พักต้องไม่เกิน 2 วัน ทั้งนี้รวมวันที่มารับการตรวจด้วย</p>
-                                    <p>3. ห้ามออกใบรับรองการรักษาพยาบาลย้อนหลัง</p>
                                 </div>
                             </div>
                         </div>
@@ -176,11 +175,16 @@
                     <div class="footer">
                         <div class="row" style="font-size:8;">
                             <div class="col-6 text-start">
-                                <span style="padding-right: 1em">
-                                    <b>ผู้พิมพ์</b>
-                                </span>
-                                <span t-field="o.create_uid" />
-                                <small t-esc="context_timestamp(datetime.datetime.now())" style="padding-left: 1em" />
+                                <div class="d-block">
+                                    <span class="me-1">ผู้พิมพ์</span>
+                                    <span t-field="o.create_uid" />
+                                </div>
+                                <div class="d-block">
+                                    <span class="me-1">พิมพ์เมื่อ</span>
+                                    <span
+                                        t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))"
+                                    />
+                                </div>
                             </div>
                             <div class="col-6 text-end">
                                 Page
