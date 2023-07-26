@@ -1,8 +1,11 @@
 #  Copyright (c) 2023 NSTDA
 import base64
+import logging
 
 from odoo import api, fields, models
 from odoo.modules.module import get_module_resource
+
+_logger = logging.getLogger(__name__)
 
 
 class Reception(models.Model):
@@ -22,8 +25,8 @@ class Reception(models.Model):
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
     )
-    partner_id = fields.Many2one("res.partner", store=False)
-    patient_id = fields.Many2one("ni.patient")
+    partner_id = fields.Many2one("res.partner")
+    patient_id = fields.Many2one("ni.patient", check_company=True)
     patient_age = fields.Integer(related="patient_id.age")
     title = fields.Many2one("res.partner.title")
     name = fields.Char(copy=False)
@@ -90,7 +93,9 @@ class Reception(models.Model):
         copy=False,
     )
     encounter_identifier = fields.Char("Encounter No.", copy=False)
-    encounter_id = fields.Many2one("ni.encounter", copy=False)
+    encounter_id = fields.Many2one("ni.encounter", check_company=True, copy=False)
+    department_id = fields.Many2one("hr.department", check_company=True)
+    performer_id = fields.Many2one("hr.employee", check_company=True)
 
     state = fields.Selection(
         [
@@ -111,12 +116,20 @@ class Reception(models.Model):
         if self.title and self.title.gender:
             self.gender = self.title.gender
 
+    @api.onchange("performer_id")
+    def _onchange_performer_id(self):
+        if self.performer_id and self.department_id != self.performer_id.department_id:
+            self.department_id = self.performer_id.department_id
+
     @api.onchange("partner_id")
     def _onchange_partner_id(self):
         if self.partner_id:
             data = self.partner_id.copy_data({"name": self.partner_id.name})[0]
             vals = {key: val for key, val in data.items() if key in self._fields.keys()}
-            patient_id = self.partner_id.patient_id
+            vals["company_id"] = self.company_id.id
+            patient_id = self.partner_id.patient_ids.filtered(
+                lambda i: i.company_id == self.company_id
+            )
             if patient_id:
                 vals |= {
                     "patient_id": patient_id.id,
@@ -128,21 +141,40 @@ class Reception(models.Model):
                         fields.Command.set(patient_id.condition_problem_ids.code_id.ids)
                     ],
                 }
-            if patient_id.encounter_id:
-                vals |= {
-                    "body_height": patient_id.encounter_id.body_height,
-                    "body_weight": patient_id.encounter_id.body_weight,
-                }
+                if patient_id.encounter_id:
+                    vals |= {
+                        "body_height": patient_id.encounter_id.body_height,
+                        "body_weight": patient_id.encounter_id.body_weight,
+                    }
+            else:
+                vals |= {"patient_id": None}
             self.update(vals)
         else:
             self.patient_id = None
 
     def action_submit(self):
-        if not self.patient_id:
+        if not self.patient_id and self.partner_id:
+            # Try to find Patient ID if Partner ID present to make sure we're not creating duplicate Patient record
+            self.patient_id = self.partner_id.patient_ids.filtered(
+                lambda i: i.company_id == self.company_id
+            )
+
+        if not self.patient_id or self.patient_id.company_id != self.company_id:
             # Cause by delegation inheritance, we need to write into patient before we can write into encounter
             # Maybe it just cause be name field of encounter
-            patient = self.env["ni.patient"].create({"name": self.name})
+            patient = self.env["ni.patient"].create(
+                {
+                    "name": self.name,
+                    "company_id": self.company_id.id,
+                    "partner_id": self.partner_id.id or None,
+                }
+            )
             self.patient_id = patient
+            logging.info(
+                "Created ni.patient[%d] with res.partner[%d]",
+                self.patient_id.id,
+                self.patient_id.partner_id.id,
+            )
         data = self.encounter_data()
         if not self.encounter_id:
             enc = self.env["ni.encounter"].create(data)[0]

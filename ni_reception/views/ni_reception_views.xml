@@ -31,6 +31,10 @@
                     <separator />
                     <filter name="group_by_priority" string="Priority" context="{'group_by': 'priority'}" />
                 </group>
+                <searchpanel>
+                    <field name="company_id" enable_counters="1" icon="fa-building" groups="base.group_multi_company" />
+                    <field name="department_id" enable_counters="1" icon="fa-users" />
+                </searchpanel>
             </search>
         </field>
     </record>
@@ -79,33 +83,47 @@
                 <field name="state" invisible="1" />
                 <sheet>
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
+                    <widget
+                        name="web_ribbon"
+                        title="Completed"
+                        bg_color="bg-success"
+                        attrs="{'invisible': [('state', '!=', 'finished')]}"
+                    />
                     <div class="oe_title mb-4">
-                        <widget
-                            name="web_ribbon"
-                            title="Completed"
-                            bg_color="bg-success"
-                            attrs="{'invisible': [('state', '!=', 'finished')]}"
-                        />
-                        <div class="mb-2" attrs="{'invisible': [('state', '!=', 'draft')]}">
-                            <i class="fa fa-search" />
-                            <span class="mx-2">search patient</span>
+                        <div class="mb-2">
+                            <i class="fa fa-building text-primary" title="Company" />
+                            <field
+                                class="w-50 mx-2"
+                                name="company_id"
+                                placeholder="Company"
+                                options="{'no_open': True, 'no_create':True}"
+                            />
                         </div>
-                        <field
-                            class="w-100"
-                            name="partner_id"
-                            domain="[('patient', '=', True)]"
-                            options="{'no_create': True, 'no_open': True}"
-                            attrs="{'invisible': [('state', '!=', 'draft')]}"
-                        />
+                        <div class="mb-2 text-muted" attrs="{'invisible': [('state', '!=', 'draft')]}">
+                            <i class="fa fa-search " title="Search" />
+                            <span class="mx-2">
+                                <b>Search Patient</b>
+                            </span>
+                        </div>
+                        <h3>
+                            <field
+                                class="w-100 mt-2"
+                                name="partner_id"
+                                domain="[('patient', '=', True)]"
+                                options="{'no_create': True, 'no_open': True}"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                placeholder="e.g. John Smith"
+                            />
+                        </h3>
                         <label for="identifier" attrs="{'invisible': [('state', '=', 'draft')]}" />
-                        <h3 class="">
+                        <h3>
                             <field
                                 class="w-100 mt-1"
                                 name="identifier"
                                 attrs="{'invisible': [('state', '=', 'draft')], 'readonly': [('state', '!=', 'draft')]}"
                             />
                         </h3>
-                        <div class="small mt-4">
+                        <div class="small mt-4" attrs="{'invisible': [('id', '=', False)]}">
                             <field name="write_uid" widget="many2one_avatar_user" />
                             <field name="write_date" class="text-muted ms-2" />
                         </div>
@@ -265,6 +283,11 @@
                                 readonly="True"
                             />
                             <field name="period_start" />
+                            <label for="performer_id" />
+                            <div class="o_row">
+                                <field name="performer_id" widget="many2one_avatar_employee" />
+                                <field name="department_id" placeholder="Department" />
+                            </div>
                         </group>
                     </group>
                     <div class="text-center">
