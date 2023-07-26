@@ -8,6 +8,7 @@ class Partner(models.Model):
 
     gender = fields.Selection(
         [("male", "Male"), ("female", "Female"), ("other", "Other")],
+        index=True,
         tracking=True,
         required=False,
     )
