@@ -36,6 +36,7 @@ class Partner(models.Model):
         "res.partner.age.range",
         "Age Range",
         compute="_compute_age_range_id",
+        index=True,
         store=True,
     )
 
