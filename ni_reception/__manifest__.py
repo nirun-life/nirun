@@ -16,6 +16,7 @@
         "ni_condition",
         "ni_allergy",
         "ni_observation",
+        "ni_practitioner",
     ],
     "data": [
         "data/ir_sequence_data.xml",
