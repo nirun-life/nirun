@@ -1,5 +1,4 @@
 #  Copyright (c) 2021-2023 NSTDA
-
 from datetime import timedelta
 
 from dateutil.relativedelta import relativedelta
@@ -47,28 +46,27 @@ class PeriodMixin(models.AbstractModel):
     )
     period_end_date_calendar = fields.Date(compute="_compute_period_end_date_calendar")
     duration = fields.Char(
-        "Duration", compute="_compute_duration", default="", store=True
+        "Duration",
+        compute="_compute_duration",
+        default="",
     )
     duration_hours = fields.Float(
-        "Duration (Hours)", compute="_compute_duration", readonly=False, store=True
+        "Duration (Hours)", compute="_compute_duration", readonly=False, default=0.0
     )
     duration_days = fields.Integer(
         "Duration (days)",
         compute="_compute_duration",
         default=0,
-        store=True,
     )
     duration_months = fields.Integer(
         "Duration (months)",
         compute="_compute_duration",
         default=0,
-        store=True,
     )
     duration_years = fields.Integer(
         "Duration (years)",
         compute="_compute_duration",
         default=0,
-        store=True,
     )
     tense = fields.Selection(
         [("past", "Past"), ("present", "Present"), ("future", "Future")],
@@ -145,8 +143,11 @@ class PeriodMixin(models.AbstractModel):
 
     @api.depends("period_start", "duration_hours")
     def _compute_period_end(self):
-        duration_field = self._fields["duration_hours"]
-        self.env.remove_to_compute(duration_field, self)
+        self.env.remove_to_compute(self._fields["duration_years"], self)
+        self.env.remove_to_compute(self._fields["duration_months"], self)
+        self.env.remove_to_compute(self._fields["duration_days"], self)
+        self.env.remove_to_compute(self._fields["duration_hours"], self)
+        self.env.remove_to_compute(self._fields["duration"], self)
         for rec in self:
             if rec.period_start and rec.duration_hours:
                 rec.period_end = rec.period_start and rec.period_start + timedelta(
@@ -155,30 +156,30 @@ class PeriodMixin(models.AbstractModel):
 
     @api.depends("period_start", "period_end")
     def _compute_duration(self):
-        today = fields.Date.context_today(self)
-        for record in self:
+        now = fields.Datetime.now()
+        self.env.remove_to_compute(self._fields["period_end"], self)
+        for rec in self:
             data = {
                 "duration_years": 0,
                 "duration_months": 0,
                 "duration_days": 0,
                 "duration_hours": self._get_duration_hours(
-                    record.period_start, record.period_end
+                    rec.period_start, rec.period_end
                 ),
                 "duration": None,
             }
-            if record.period_start:
-                dt = record.period_end.date() if record.period_end else today
-                delta = dt - record.period_start.date()
+            if rec.period_start:
+                dt = rec.period_end if rec.period_end else now
+                delta = relativedelta(dt, rec.period_start)
                 data["duration_days"] = delta.days
-                data["duration_months"] = delta.days / 30
-                delta = relativedelta(dt, record.period_start_date)
+                data["duration_months"] = delta.months
                 data["duration_years"] = delta.years
-                data["duration"] = record._format_relative_delta(delta)
-            self.write(data)
+                data["duration"] = rec._format_relative_delta(delta)
+            rec.update(data)
 
     def _get_duration_hours(self, start, stop):
         if not start or not stop:
-            return 0
+            return 0.0
         duration = (stop - start).total_seconds() / 3600
         return round(duration, 2)
 
@@ -192,7 +193,15 @@ class PeriodMixin(models.AbstractModel):
         if delta.days > 0:
             result.append(_("%s Days") % delta.days)
         if delta.days == 0 and not result:
-            result.append(_("Today"))
+            if not self.period_end:
+                result.append(_("Today"))
+            else:
+                if delta.hours > 0:
+                    result.append(_("%s Hours") % delta.hours)
+                if delta.minutes > 0:
+                    result.append(_("%s Minutes") % delta.minutes)
+                if not result:
+                    result.append(_("%s Seconds") % delta.seconds)
         if delta.days < 0:
             result.append(_("Next %s days") % abs(delta.days))
         return " ".join(result) or None
@@ -205,7 +214,11 @@ class PeriodMixin(models.AbstractModel):
             if record.period_end_date < record.period_start_date:
                 raise ValidationError(
                     _("(%s), End date (%s) should not set before start date (%s)")
-                    % (self._description, self.period_end_date, self.period_start_date)
+                    % (
+                        record._description,
+                        record.period_end_date,
+                        record.period_start_date,
+                    )
                 )
 
     def get_intercept_period(self, start, end, domain):
