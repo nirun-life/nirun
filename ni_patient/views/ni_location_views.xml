@@ -18,12 +18,17 @@
                     string="Name"
                     filter_domain="['|', ('name', 'ilike', self), ('alias', 'ilike', self)]"
                 />
+                <field name="parent_id" operator="child_of" domain="[('child_count', '>', 1)]" />
                 <separator />
                 <filter name="inactive" domain="[('active', '=', False)]" string="Archived" />
                 <group string="Group by">
                     <filter name="Type" context="{'group_by': 'physical_type_id'}" />
                     <filter name="Parent Location" context="{'group_by': 'parent_id'}" />
                 </group>
+                <searchpanel>
+                    <field name="company_id" icon="fa-building" enable_counters="1" groups="base.group_multi_company" />
+                    <field name="physical_type_id" enable_counters="1" />
+                </searchpanel>
             </search>
         </field>
     </record>
@@ -33,7 +38,7 @@
         <field name="arch" type="xml">
             <tree name="Locations">
                 <field name="physical_type_id" optional="hide" />
-                <field name="display_name" />
+                <field name="full_name" />
                 <field name="parent_id" optional="hide" />
                 <field name="encounter_active_count" optional="show" />
                 <field name="active" optional="hide" />
@@ -76,13 +81,12 @@
                         <page string="Encounter">
                             <field name="encounter_active_ids">
                                 <tree>
-                                    <field name="name" />
+                                    <field name="identifier" />
+                                    <field name="patient_id" widget="many2one_avatar" />
                                     <field name="class_id" optional="show" />
-                                    <field name="patient_id" />
-                                    <field
-                                        name="location_id"
-                                        attrs="{'column_invisible': [('parent.child_count', '=', 0)]}"
-                                    />
+                                    <field name="location_id" optional="show" />
+                                    <field name="period_start" />
+                                    <field name="duration_days" />
                                     <field name="state" invisible="1" />
                                 </tree>
                             </field>

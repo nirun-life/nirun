@@ -7,7 +7,7 @@ class Location(models.Model):
     _name = "ni.location"
     _description = "Location"
     _check_company_auto = True
-    _order = "display_name"
+    _order = "parent_path"
     _parent_store = True
 
     company_id = fields.Many2one(
@@ -18,7 +18,8 @@ class Location(models.Model):
         default=lambda self: self.env.company,
     )
     name = fields.Char("Location Name", required=True, copy=False, index=True)
-    display_name = fields.Char(compute="_compute_display_name", store=True, index=True)
+    # We not use display name to show full path name cause it affect on search panel
+    full_name = fields.Char("Location", compute="_compute_full_name")
     alias = fields.Char("Alias Name", index=True)
     physical_type_id = fields.Many2one("ni.location.type", "Type", index=True)
     physical_type_name = fields.Char(
@@ -113,11 +114,11 @@ class Location(models.Model):
             raise models.ValidationError(_("Error! You cannot create recursive data."))
 
     @api.depends("parent_name", "parent_id", "name")
-    def _compute_display_name(self):
-        diff = dict(location_display=None, show_alias=True)
+    def _compute_full_name(self):
+        diff = dict(location_display=None, show_alias=True, show_parent=True)
         names = dict(self.with_context(**diff).name_get())
         for rec in self:
-            rec.display_name = names.get(rec.id)
+            rec.full_name = names.get(rec.id)
 
     def name_get(self):
         res = []
@@ -131,12 +132,15 @@ class Location(models.Model):
         if self._context.get("location_display") == "short":
             return self.name
 
-        names = []
-        current = self
-        while current:
-            names.append(current.name)
-            current = current.parent_id
-        name = ", ".join(reversed(names))
+        if self._context.get("show_parent"):
+            names = []
+            current = self
+            while current:
+                names.append(current.name)
+                current = current.parent_id
+            name = ", ".join(reversed(names))
+        else:
+            name = self.name
         if self._context.get("show_alias", True) and self.alias:
             name = "{} ({})".format(name, self.alias)
         return name
