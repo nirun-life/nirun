@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="res_company_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.company.view.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="appointment" string="Appointment">
+                    <p class="text-muted mb-3">Set default value for appointment</p>
+                    <group>
+                        <field name="appointment_instruction_ids" widget="many2many_tags" />
+                        <field name="appointment_duration" widget="float_time" />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

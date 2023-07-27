@@ -14,6 +14,22 @@ class Appointment(models.Model):
     _inherits = {"calendar.event": "event_id"}
     _parent_store = True
 
+    @api.model
+    def default_get(self, fields):
+        comp = self.env.user.company_id
+        if self.env.context.get("default_company_id"):
+            comp_id = self.env.context["default_company_id"]
+            comp = self.env["res.company"].browse(comp_id)[0]
+        if self.env.context.get("default_patient_id"):
+            pat_id = self.env.context["default_patient_id"]
+            comp = self.env["ni.patient"].browse(pat_id)[0].company_id
+        self = self.with_context(
+            default_instruction_ids=comp.appointment_instruction_ids,
+            default_duration=comp.appointment_duration,
+        )
+
+        return super(Appointment, self).default_get(fields)
+
     patient_name = fields.Char(related="patient_id.name")
     patient_identifier = fields.Char(related="patient_id.identifier")
 
