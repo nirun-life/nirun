@@ -66,7 +66,7 @@ class Encounter(models.Model):
         return {
             "occurrence": occurrence,
             "patient_id": self.patient_id.id,
-            "encounter_id": self.encounter_id.id,
+            "encounter_id": self.id,
             "type_id": type_id,
             "value": value,
         }
