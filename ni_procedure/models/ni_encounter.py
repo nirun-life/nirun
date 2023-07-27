@@ -23,7 +23,7 @@ class Encounter(models.Model):
             encounter.procedure_count = data.get(encounter.id, 0)
 
     def action_procedure(self):
-        action_rec = self.env.ref("ni_procedure.ni_procedure_action")
+        action_rec = self.env.ref("ni_procedure.ni_procedure_action").sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
         ctx.update(
