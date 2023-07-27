@@ -101,7 +101,7 @@ class Encounter(models.Model):
             )
 
     def action_observation(self):
-        action_rec = self.env.ref("ni_observation.ni_observation_action")
+        action_rec = self.env.ref("ni_observation.ni_observation_action").sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
         ctx.update(
