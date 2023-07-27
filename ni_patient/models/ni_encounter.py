@@ -64,6 +64,7 @@ class Encounter(models.Model):
         ondelete="cascade",
         states={"draft": [("readonly", False)]},
         auto_join=True,
+        index=True,
     )
     patient_name = fields.Char(related="patient_id.name", readonly=False)
     patient_identifier = fields.Char(related="patient_id.identifier")
