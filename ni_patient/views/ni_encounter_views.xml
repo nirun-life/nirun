@@ -77,15 +77,12 @@
                     <filter name="Until" context="{'group_by': 'period_end'}" />
                 </group>
                 <searchpanel>
-                    <field
-                        name="company_id"
-                        groups="base.group_multi_company"
-                        icon="fa-hospital-o"
-                        enable_counters="1"
-                    />
+                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" />
                     <field name="priority" icon="fa-flag" enable_counters="1" />
-                    <field name="class_id" icon="fa-code-fork" enable_counters="1" />
+                    <field name="class_id" enable_counters="1" />
                     <field name="location_id" icon="fa-map-marker" enable_counters="1" />
+                    <field name="gender" icon="fa-venus-mars" enable_counters="1" />
+                    <field name="age_range_id" icon="fa-birthday-cake" enable_counters="1" />
                 </searchpanel>
             </search>
         </field>
@@ -115,8 +112,11 @@
                 />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
+                <field name="period_start_date" optional="show" />
                 <field name="period_end" optional="hide" />
+                <field name="period_end_date" optional="show" />
                 <field name="duration" optional="hide" />
+                <field name="duration_hours" optional="hide" widget="float_time" />
                 <field name="state" />
                 <field name="company_id" groups="base.group_multi_company" />
             </tree>
@@ -259,7 +259,8 @@
                             <field
                                 name="location_id"
                                 domain="[('company_id', '=', company_id)]"
-                                options="{'no_create': True}"
+                                options="{'no_create': True, 'always_reload': True}"
+                                context="{'show_parent': True}"
                             />
                             <field name="priority" />
                         </group>

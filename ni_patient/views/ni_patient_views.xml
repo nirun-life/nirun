@@ -42,7 +42,7 @@
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
+                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('identifier', 'ilike', self)]" />
                 <field name="phone" filter_domain="['|' ,('phone', 'ilike', self), ('mobile', 'ilike', self)]" />
                 <filter name="in_progress" string='In-Progress' domain="[('presence_state', '=', 'in-progress')]" />
                 <filter name="planned" string='Planned' domain="[('presence_state', '=', 'planned')]" />
@@ -71,6 +71,12 @@
                         context="{'group_by': 'education_level'}"
                     />
                 </group>
+                <searchpanel>
+                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" />
+                    <field name="presence_state" icon="fa-bookmark" enable_counters="1" />
+                    <field name="gender" icon="fa-venus-mars" enable_counters="1" />
+                    <field name="age_range_id" icon="fa-birthday-cake" enable_counters="1" />
+                </searchpanel>
             </search>
         </field>
     </record>
