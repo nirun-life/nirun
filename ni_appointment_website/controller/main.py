@@ -154,8 +154,7 @@ class AppointmentController(http.Controller):
         if appoint.patient_id:
             appoint.action_active()
             appoint.write({"state": "draft"})
-
-        return request.render("ni_appointment_website.appointment_submit_mock", {})
+        return request.redirect("/my/appointment/%s" % appoint.id)
 
     def _regis_patient(self, comp_id, partner_id, post):
         patient_vals = {
