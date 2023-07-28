@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="res_partner_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <field name="vat" position="before">
+                <field name="google_maps_url" invisible="1" />
+                <label for="partner_latitude" string="Lat / Lng" />
+                <div class="o_row">
+                    <field name="partner_latitude" placeholder="Latitude" />
+                    <field name="partner_longitude" placeholder="Longitude" />
+                    <button
+                        name="action_google_maps_dir"
+                        type="object"
+                        icon="fa-location-arrow"
+                        title="Google Maps Direction"
+                        attrs="{'invisible': [('google_maps_url', '=', False)]}"
+                    />
+                </div>
+            </field>
+        </field>
+    </record>
+</odoo>
