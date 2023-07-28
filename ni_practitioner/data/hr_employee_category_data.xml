@@ -10,19 +10,26 @@
         <field name="sequence" eval="1" />
         <field name="definition">A qualified/registered medical practitioner</field>
     </record>
+    <record id="employee_category_prac_nursing" model="hr.employee.category">
+        <field name="name">Practical Nursing</field>
+        <field name="code">PN</field>
+        <field name="sequence" eval="2" />
+        <field name="definition">A practitioner with nursing experience that may be certified</field>
+    </record>
     <record id="employee_category_nurse" model="hr.employee.category">
         <field name="name">Nurse</field>
         <field name="code">nurse</field>
+        <field name="parent_id" ref="employee_category_prac_nursing" />
         <field name="system_id" ref="ni_coding.system_hl7_fhir" />
         <field name="sequence" eval="2" />
         <field name="definition">A practitioner with nursing experience that may be qualified/registered</field>
     </record>
     <record id="employee_category_nurse_prac" model="hr.employee.category">
         <field name="name">Nurse Practitioner</field>
-        <field name="code">nurse_prac</field>
+        <field name="code">NP</field>
         <field name="parent_id" ref="ni_practitioner.employee_category_nurse" />
         <field name="sequence" eval="2" />
-        <field name="definition">A practitioner with nursing experience that may be qualified/registered</field>
+        <field name="definition">A qualified/registered nurse practitioner</field>
     </record>
     <record id="employee_category_pharmacist" model="hr.employee.category">
         <field name="name">Pharmacist</field>
@@ -45,9 +52,18 @@
         <field name="sequence" eval="4" />
         <field name="definition">Someone who is able to provide educational services</field>
     </record>
+    <record id="employee_category_its" model="hr.employee.category">
+        <field name="name">IT Support</field>
+        <field name="code">its</field>
+        <field name="sequence" eval="6" />
+        <field name="definition">
+            Someone who advise and assist registered users with issues concerning technical part of System
+        </field>
+    </record>
     <record id="employee_category_ict" model="hr.employee.category">
         <field name="name">ICT professional</field>
         <field name="code">ict</field>
+        <field name="parent_id" ref="employee_category_its" />
         <field name="system_id" ref="ni_coding.system_hl7_fhir" />
         <field name="sequence" eval="6" />
         <field name="definition">Someone who is qualified in Information and Communication Technologies</field>
