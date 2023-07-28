@@ -201,7 +201,138 @@
                                 </t>
                             </div>
                             <div class="row mb-4 container">
-                                <div class="col-12 col-md-6">
+                                <!-- <div class="col-12 col-md-6"> -->
+                                    <div class="container" style="padding: 20px">
+                                        <div class="row" t-attf-style="color:{{task.company_id.primary_color}}">
+                                            <div class="col-1">
+                                                <img
+                                                    t-if="task.company_id.logo"
+                                                    t-att-src="image_data_uri(task.company_id.logo)"
+                                                    style="max-height: 45px;"
+                                                    alt="Logo"
+                                                />
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="col">
+                                                    <b>
+                                                        <t t-out="task.company_id.name" />
+                                                    </b>
+                                                </div>
+                                                <div class="col">
+                                                    <t t-out="task.company_id.website" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                <t t-out="task.company_id.phone" />
+                                                <div class="mt-3">
+                                                    <small class="fw-light text-body">
+                                                        <t t-out="task.identifier" />
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row-fluid">
+                                            <div class="span12 text-center">
+                                                <b class="h4">บัตรนัดหมายผู้ป่วย</b>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4">
+                                            <div class="col-6">
+                                                <p>
+                                                    <b class="h5">
+                                                        <span t-field="task.patient_identifier" />
+                                                        <span class="ms-2" t-field="task.patient_id" />
+                                                    </b>
+                                                </p>
+                                                <p>
+                                                    <span style="padding-right:1em">วันที่นัด</span>
+                                                    <b>
+                                                        <t t-if="task.allday">
+                                                            <span t-field="task.start" t-options='{"widget": "date"}' />
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span t-field="task.start" />
+                                                            <span class="mx-1">-</span>
+                                                            <!-- <t
+                                                                t-set="time_format"
+                                                                t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1).time_format"
+                                                            /> -->
+                                                            <!-- <span t-esc="context_timestamp(task.stop).strftime(time_format)" /> -->
+                                                        </t>
+                                                    </b>
+                                                </p>
+                                                <p>
+                                                    <span style="padding-right:2em">แพทย์</span>
+                                                    <span t-field="task.performer_id" />
+                                                </p>
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                <p t-if="task.patient_id.age">
+                                                    <span class="me-1">อายุ</span>
+                                                    <span t-field="task.patient_id.display_age" />
+                                                </p>
+                                                <p t-if="task.patient_id.birthdate" class="ms-2">
+                                                    วันเกิด
+                                                    <span t-field="task.patient_id.birthdate" />
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <p>
+                                                    <span style="padding-right:2em">คลีนิค</span>
+                                                    <span t-field="task.department_id" />
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <p>
+                                                    <span>สาเหตุที่นัดหมาย:</span>
+                                                </p>
+                                                <div style="padding-left: 1em; min-height: 4em">
+                                                    <t t-out="task.description" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin:1rem 0">
+                                            <div class="col">
+                                                <div style="border-bottom: 1px solid #bfbfbf;" />
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-6">
+                                                <p>
+                                                    <b>หมายเหตุ:</b>
+                                                    <span t-field="task.instruction_ids" />
+                                                </p>
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                <p>
+                                                    <span style="padding-right: 2em">ผู้ออกใบนัด</span>
+                                                    <span t-field="task.user_id" />
+                                                </p>
+                                                <p>
+                                                    <span style="padding-right: 2em">วันที่ออกบัตรนัด</span>
+                                                    <span t-field="task.create_date" />
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin:1rem 0">
+                                            <div class="col">
+                                                <div style="border-bottom: 1px solid #bfbfbf;" />
+                                            </div>
+                                        </div>
+                                        <div class="row text-center">
+                                            <div class="col">
+                                                <small>
+                                                    แก้ไขครั้งล่าสุด
+                                                    <span t-field="task.write_date" />
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <!-- <div t-if="project_accessible">
                                         <strong>Appointment:</strong>
                                         <a t-attf-href="/my/appointment/#{task.project_id.id}" t-field="task.project_id" />
@@ -221,7 +352,7 @@
                                     <div name="portal_my_task_planned_hours">
                                         <t t-call="project.portal_my_task_planned_hours_template" />
                                     </div> -->
-                                </div>
+                                <!-- </div> -->
                                 <div class="col-12 col-md-6" name="portal_my_task_second_column" />
                             </div>
                             <div class="row" t-if="task.description or task.attachment_ids">
@@ -266,6 +397,30 @@
                                         </div>
                                     </div>
                                 </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div>
+                        <div class="row">
+                            <div class="col-6 text-start">
+                                <a 
+                                    class="btn btn-danger" 
+                                    target="_blank" 
+                                    role="button"
+                                >
+                                <i class="fa fa-ban" aria-hidden="true" /> Cancel
+                                </a>
+                            </div>
+                            <div class="col-6 text-end">
+                                <a 
+                                    class="btn btn-primary" 
+                                    t-attf-href="http://localhost:8069/report/pdf/ni_appointment.report_appointment/{{task.id}}"
+                                    target="_blank" 
+                                    role="button"
+                                >
+                                <i class="fa fa-print" aria-hidden="true" /> Print
+                                </a>
                             </div>
                         </div>
                     </div>
