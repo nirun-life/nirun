@@ -61,11 +61,13 @@ class AppointmentPortal(CustomerPortal):
         domain = [("id", "=", int(appointment_id))]
 
         appointments = Appointment.search(domain)
+        reason = request.env['ni.appointment.cancel.reason'].search([])
         values.update(
             {
                 "task": appointments[0],
                 "page_name": "appointment",
                 "default_url": "/my/appointment",
+                "reason": reason
             }
         )
         return request.render("ni_appointment.portal_my_appointment", values)
