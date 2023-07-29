@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='procedure']" position="after">
+                <page name="communication" string="Communication" badge="communication_count" icon="fa-comments">
+                    <field name="communication_count" invisible="1" />
+                    <field
+                        name="communication_ids"
+                        context="{'default_encounter_id': id, 'default_patient_id': patient_id, 'default_state':'completed'}"
+                    />
+                    <button name="action_communication" type="object" title="Communication" string="See More" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
