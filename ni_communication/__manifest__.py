@@ -1,0 +1,30 @@
+#  Copyright (c) 2023. NSTDA
+
+{
+    "name": "Communication",
+    "version": "16.0.0.1.0",
+    "development_status": "Alpha",
+    "category": "Medical/Summary",
+    "author": "NSTDA, Piruin P.",
+    "website": "https://nirun.life/",
+    "license": "LGPL-3",
+    "maintainers": ["piruin"],
+    "depends": ["ni_patient", "mail"],
+    "data": [
+        "security/ni_procedure_group.xml",
+        "security/ni_procedure_security.xml",
+        "security/ir.model.access.csv",
+        "data/ir_sequence_data.xml",
+        "data/ni_communication_category_data.xml",
+        "views/ni_communication_content_views.xml",
+        "views/ni_communication_category_views.xml",
+        "views/ni_communication_views.xml",
+        "views/ni_communication_menu.xml",
+        "views/ni_encounter_views.xml",
+        "wizard/ni_encounter_discharge_wizard_views.xml",
+    ],
+    "demo": [],
+    "application": False,
+    "auto_install": False,
+    "installable": True,
+}
