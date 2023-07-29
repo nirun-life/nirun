@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2022-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_communication_action" model="ir.actions.act_window">
+        <field name="name">communications</field>
+        <field name="res_model">ni.communication</field>
+        <field name="view_mode">tree,kanban,form,graph,pivot</field>
+    </record>
+    <record id="ni_communication_action_pivot_from_encounter" model="ir.actions.act_window">
+        <field name="name">communications</field>
+        <field name="res_model">ni.communication</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="domain">[('encounter_id', '=', active_id)]</field>
+    </record>
+    <record id="ni_communication_view_search" model="ir.ui.view">
+        <field name="name">ni.communication.view.search</field>
+        <field name="model">ni.communication</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <filter
+                    name="period_start_today"
+                    string="Today"
+                    domain="[
+                    ('period_start', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                    ('period_start', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter
+                    name="period_start_yesterday"
+                    string="Yesterday"
+                    domain="[
+                    ('period_start', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
+                    ('period_start', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))
+                    ]"
+                />
+                <filter name="period_start" string="Occurrence" date="period_start" />
+                <separator />
+                <group string="Group By">
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_encounter" string="Encounter" context="{'group_by': 'encounter_id'}" />
+                    <separator />
+                    <filter name="group_by_category" string="Code" context="{'group_by': 'category_id'}" />
+                </group>
+                <searchpanel>
+                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" />
+                    <field name="category_id" enable_counters="1" />
+                    <field name="sender_id" enable_counters="1" icon="fa-user" />
+                    <!--                    <field name="recipient_ids"  icon="fa-bullseye" />-->
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_communication_view_graph" model="ir.ui.view">
+        <field name="name">ni.communication.view.graph</field>
+        <field name="model">ni.communication</field>
+        <field name="arch" type="xml">
+            <graph stacked="False" type="bar">
+                <field name="period_start" interval="day" />
+                <field name="category_id" type="row" />
+                <field name="duration_hours" type="measure" />
+            </graph>
+        </field>
+    </record>
+    <record id="ni_communication_view_pivot" model="ir.ui.view">
+        <field name="name">ni.communication.view.pivot</field>
+        <field name="model">ni.communication</field>
+        <field name="arch" type="xml">
+            <pivot default_order="patient_id, period_start DESC">
+                <field name="period_start" interval="day" type="col" />
+                <field name="patient_id" type="row" />
+                <field name="category_id" type="row" />
+                <field name="duration_hours" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_communication_view_tree" model="ir.ui.view">
+        <field name="name">ni.communication.view.tree</field>
+        <field name="model">ni.communication</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-info="state in ['preparation', 'suspended']"
+                decoration-muted="state in ['not-done', 'abort']"
+            >
+                <field name="identifier" optional="hide" />
+                <field name="company_id" invisible="1" />
+                <field name="encounter_id" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="category_id" optional="show" />
+                <field name="content_ids" optional="show" />
+                <field name="period_start" optional="show" />
+                <field name="period_end" optional="hide" />
+                <field name="duration_hours" widget="float_time" optional="hide" />
+                <field name="sender_id" widget="many2one_avatar" optional="show" />
+                <field name="recipient_ids" widget="many2many_tags_avatar" optional="hide" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-muted="state in ['preparation', 'suspended']"
+                    decoration-info="state=='in-progress'"
+                    decoration-success="state=='completed'"
+                    decoration-danger="state in ['not-done', 'abort']"
+                    optional="hide"
+                />
+                <control>
+                    <create string="Add communication" context="{'no_header': True}" />
+                </control>
+            </tree>
+        </field>
+    </record>
+    <record id="ni_communication_view_form" model="ir.ui.view">
+        <field name="name">ni.communication.view.form</field>
+        <field name="model">ni.communication</field>
+        <field name="arch" type="xml">
+            <field name="id" invisible="1" />
+            <form>
+                <field name="company_id" invisible="1" />
+                <header invisible="context.get('no_header')">
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="preparation,in-progress,completed"
+                        invisible="context.get('default_state')"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe-title mb24">
+                        <div class="d-flex">
+                            <field
+                                class="oe_inline text-muted"
+                                name="identifier"
+                                attrs="{'invisible': [('id', '=', False)]}"
+                                readonly="True"
+                            />
+                        </div>
+                        <h3>
+                            <field
+                                name="category_id"
+                                class="w-100"
+                                options="{'no_open': True}"
+                                placeholder="e.g. Suggestion"
+                                attrs="{'readonly': [('id', '!=', False)]}"
+                            />
+                        </h3>
+                        <field
+                            name="content_ids"
+                            class="mt-2"
+                            widget="many2many_checkboxes"
+                            attrs="{'invisible': [('category_id', '=', False)]}"
+                        />
+                    </div>
+                    <group>
+                        <group>
+                            <field
+                                name="patient_id"
+                                invisible="context.get('default_patient_id')"
+                                options="{'no_open': True}"
+                                context="{'show_identifier': True}"
+                                widget="many2one_avatar"
+                            />
+                            <field
+                                name="encounter_id"
+                                invisible="context.get('default_encounter_id')"
+                                options="{'no_open': True}"
+                            />
+                            <field name="period_start" />
+                            <field name="period_end" />
+                            <label for="duration_hours" />
+                            <div>
+                                <field name="duration_hours" widget="float_time" string="Duration" class="oe_inline" />
+                                <span>hours</span>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="sender_employee_id" widget="many2one_avatar_employee" />
+                            <field name="recipient_ids" widget="many2many_tags_avatar" />
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Log a note..." />
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_communication_view_kanban" model="ir.ui.view">
+        <field name="name">ni.communication.view.kanban</field>
+        <field name="model">ni.communication</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="category_id" />
+                <field name="content_ids" />
+                <field name="sender_employee_id" />
+                <field name="period_start" />
+                <field name="state" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="category_id" />
+                                    </strong>
+                                </div>
+                            </div>
+                            <div>
+                                <field name="content_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <div class="text-muted small">
+                                        <i class="fa fa-clock-o me-1" aria-hidden="true" title="Starting at" />
+                                        <field name="period_start" />
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_bottom_right mr4">
+                                    <t t-if="record.sender_employee_id">
+                                        <field name="sender_employee_id" widget="many2one_avatar_employee" />
+                                    </t>
+                                    <t t-else="">
+                                        <field name="sender_id" widget="many2one_avatar" />
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>
