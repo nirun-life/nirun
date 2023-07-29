@@ -292,22 +292,21 @@
                 <field name="encounter_id" />
                 <field name="is_encountering" />
                 <field name="location_id" />
+                <field name="image_128" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
-                            <t t-set="placeholder" t-value="'/ni_patient/static/src/img/default_image.png'" />
-                            <div
-                                class="o_kanban_image_fill_left d-none d-md-block"
-                                t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.partner_id.raw_value,  placeholder)}')"
-                            />
-                            <div
-                                class="o_kanban_image d-md-none"
-                                t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.partner_id.raw_value,  placeholder)}')"
+                            <field
+                                name="image_1024"
+                                class="o_kanban_image_fill_left d-block"
+                                preview_image="image_128"
+                                widget="background_image"
+                                options="{'zoom': true, 'zoom_delay': 1000}"
                             />
                             <div class="oe_kanban_details">
                                 <div name="kanban_top" class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
-                                        <div class="float-right" t-if="record.presence_state.raw_value == 'unknown'">
+                                        <div class="float-end" t-if="record.presence_state.raw_value == 'unknown'">
                                             <span
                                                 name="presence_to_define"
                                                 aria-label="Unknown"
@@ -316,7 +315,7 @@
                                                 title="Unknown"
                                             />
                                         </div>
-                                        <div class="float-right" t-if="record.presence_state.raw_value == 'draft'">
+                                        <div class="float-end" t-if="record.presence_state.raw_value == 'draft'">
                                             <span
                                                 name="presence_draft"
                                                 aria-label="Draft"
@@ -325,7 +324,7 @@
                                                 title="Draft"
                                             />
                                         </div>
-                                        <div class="float-right" t-if="record.presence_state.raw_value == 'planned'">
+                                        <div class="float-end" t-if="record.presence_state.raw_value == 'planned'">
                                             <span
                                                 name="presence_planned"
                                                 aria-label="Planned"
@@ -334,10 +333,7 @@
                                                 title="Planned"
                                             />
                                         </div>
-                                        <div
-                                            class="float-right"
-                                            t-if="record.presence_state.raw_value == 'in-progress'"
-                                        >
+                                        <div class="float-end" t-if="record.presence_state.raw_value == 'in-progress'">
                                             <span
                                                 name="presence_in_progress"
                                                 aria-label="Treating"
@@ -346,7 +342,7 @@
                                                 title="Treating"
                                             />
                                         </div>
-                                        <div class="float-right" t-if="record.presence_state.raw_value == 'finished'">
+                                        <div class="float-end" t-if="record.presence_state.raw_value == 'finished'">
                                             <span
                                                 name="presence_finished"
                                                 aria-label="Treated"
@@ -355,7 +351,7 @@
                                                 title="Treated"
                                             />
                                         </div>
-                                        <div class="float-right" t-if="record.presence_state.raw_value == 'deceased'">
+                                        <div class="float-end" t-if="record.presence_state.raw_value == 'deceased'">
                                             <span
                                                 name="presence_deceased"
                                                 aria-label="Deceased"
@@ -392,7 +388,7 @@
                                         <field name="gender" />
                                         <t t-if="record.age.value &gt; 0">
                                             <t t-if="record.gender.value">,</t>
-                                            <field name="age" class="mx-3" />
+                                            <field name="age" />
                                             years old
                                         </t>
                                     </li>
