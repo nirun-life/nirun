@@ -69,15 +69,39 @@
                 <div class="alert alert-warning mt8" role="alert">There are no projects.</div>
             </t>
             <t t-if="appointments" t-call="portal.portal_table">
+                <thead>
+                    <td>#</td>
+                    <td>Name</td>
+                    <td>Performer</td>
+                    <td>Company</td>
+                    <td>Appointment Time</td>
+                    <td class="text-end">State</td>                    
+                </thead>
                 <tbody>
                     <tr t-foreach="appointments" t-as="appointment">
                         <td>
                             <a t-attf-href="/my/appointment/#{appointment.id}?{{ keep_query() }}">
-                                <span t-field="appointment.name" />
+                                <t t-out="appointment.identifier" />                                
                             </a>
                         </td>
+                        <td>
+                            <span t-field="appointment.name" />
+                        </td>
+                        <td>
+                            <span t-field="appointment.performer_id" />
+                        </td>
+                        <td>
+                            <span t-field="appointment.company_id" />
+                        </td>
+                        <td>
+                            <span t-field="appointment.start" />
+                        </td>
                         <td class="text-end">
-                            <t t-out="appointment.identifier" />
+                            <span
+                                t-field="appointment.state"
+                                class=" badge rounded-pill text-bg-info"
+                                title="Current stage of this task"
+                            />
                         </td>
                     </tr>
                 </tbody>
@@ -441,7 +465,7 @@
                             <div class="col-6 text-end">
                                 <a 
                                     class="btn btn-primary" 
-                                    t-attf-href="http://localhost:8069/report/pdf/ni_appointment.report_appointment/{{task.id}}"
+                                    t-attf-href="/report/pdf/ni_appointment.report_appointment/{{task.id}}"
                                     target="_blank" 
                                     role="button"
                                 >
