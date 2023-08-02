@@ -18,6 +18,7 @@
         "ni_medication",
         "ni_appointment",
         "ni_practitioner",
+        "ni_communication",
     ],
     "data": [
         "data/ni_encounter_class_data.xml",
@@ -26,7 +27,11 @@
         "reports/summary_report.xml",
         "reports/medical_certificate_templates.xml",
         "reports/medical_certificate_report.xml",
+        "views/res_company_views.xml",
     ],
+    "assets": {
+        "web.report_assets_pdf": ["ni_patient_summary_report/static/src/css/report.css"]
+    },
     "application": False,
     "auto_install": False,
     "installable": True,
