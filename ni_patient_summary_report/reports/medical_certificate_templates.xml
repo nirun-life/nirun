@@ -52,7 +52,7 @@
                             <br />
                             <div class="row">
                                 <div class="col text-center px-2">
-                                    ข้าพเจ้า (ชื่อ-สกุลผู้ประกอบวิชาชีพ)
+                                    ข้าพเจ้า
                                     <abbr title="">
                                         <span style="margin-left: 1em; margin-right: 1em" t-esc="o.performer_id.name" />
                                     </abbr>
@@ -71,7 +71,7 @@
                             <div class="row">
                                 <div class="col text-start px-2">
                                     <span>
-                                        ได้ทำการพยาบาลและหรือการผดุงครรภ์ (ชื่อ-สกุลผู้รับบริการ)
+                                        ได้ทำการพยาบาลและหรือการผดุงครรภ์
                                         <abbr title="">
                                             <span style="margin-left: 1em; margin-right: 19em" t-field="o.patient_id" />
                                         </abbr>
@@ -88,7 +88,7 @@
                                     </span>
                                     <br />
                                     <span>
-                                        ด้วยอาการที่มาพบ (โปรดระบุ)
+                                        ด้วยอาการที่มาพบ
                                         <abbr title="">
                                             <span
                                                 style="margin-left: 1em; margin-right: 32em"
@@ -98,13 +98,42 @@
                                     </span>
                                     <br />
                                     <br />
+                                    <t t-if="o.company_id.med_cert_diagnosis == 'all'">
+                                        <span>
+                                            ผลการวินิจฉัย
+                                            <abbr title="" class="ms-2">
+                                                <t t-foreach="o.diagnosis_ids" t-as="dx">
+                                                    <span t-esc="dx.name" />
+                                                    <t t-if="not dx_last">
+                                                        <span class="me-1">,</span>
+                                                    </t>
+                                                </t>
+                                            </abbr>
+                                        </span>
+                                    </t>
+                                    <t t-if="o.company_id.med_cert_diagnosis == 'first'">
+                                        <span>
+                                            ผลการวินิจฉัย
+                                            <abbr title="" class="ms-2">
+                                                <t t-foreach="o.diagnosis_ids" t-as="dx">
+                                                    <t t-if="dx_index == 0">
+                                                        <span
+                                                            style="margin-left: 1em; margin-right: 32em"
+                                                            t-esc="dx.name"
+                                                        />
+                                                    </t>
+                                                </t>
+                                            </abbr>
+                                        </span>
+                                    </t>
+                                    <br />
                                     <br />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col text-center px-2">
                                     <span>
-                                        ข้าพเจ้าขอรับรองว่า (ชื่อ-สกุลผู้รับบริการ)
+                                        ข้าพเจ้าขอรับรองว่า
                                         <abbr title="">
                                             <span style="margin-left: 1em; margin-right: 1em" t-field="o.patient_id" />
                                         </abbr>

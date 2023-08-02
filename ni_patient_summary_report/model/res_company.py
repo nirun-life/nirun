@@ -16,4 +16,10 @@ APPEND = _(
 class Company(models.Model):
     _inherit = "res.company"
 
+    med_cert_diagnosis = fields.Selection(
+        [("none", "No Show"), ("first", "Show First"), ("all", "Show All")],
+        "Diagnosis",
+        default="none",
+        required=True,
+    )
     med_cert_append = fields.Html("Append", default=APPEND, translate=True)
