@@ -65,13 +65,13 @@
                     <td>Performer</td>
                     <td>Company</td>
                     <td>Appointment Time</td>
-                    <td class="text-end">State</td>                    
+                    <td class="text-end">State</td>
                 </thead>
                 <tbody>
                     <tr t-foreach="appointments" t-as="appointment">
                         <td>
                             <a t-attf-href="/my/appointment/#{appointment.id}?{{ keep_query() }}">
-                                <t t-out="appointment.identifier" />                                
+                                <t t-out="appointment.identifier" />
                             </a>
                         </td>
                         <td>
@@ -159,7 +159,10 @@
                                                 t-field="appointment.partner_id"
                                                 t-options='{"widget": "contact", "fields": ["name"]}'
                                             />
-                                            <a t-attf-href="tel:{{appointment.partner_id.phone}}" t-if="appointment.partner_id.phone">
+                                            <a
+                                                t-attf-href="tel:{{appointment.partner_id.phone}}"
+                                                t-if="appointment.partner_id.phone"
+                                            >
                                                 <div
                                                     t-field="appointment.partner_id"
                                                     t-options='{"widget": "contact", "fields": ["phone"]}'
@@ -191,7 +194,10 @@
                                                 t-field="appointment.performer_id.work_contact_id"
                                                 t-options='{"widget": "contact", "fields": ["name"]}'
                                             />
-                                            <a t-attf-href="tel:{{appointment.performer_id.work_contact_id.phone}}" t-if="appointment.performer_id.work_contact_id.phone">
+                                            <a
+                                                t-attf-href="tel:{{appointment.performer_id.work_contact_id.phone}}"
+                                                t-if="appointment.performer_id.work_contact_id.phone"
+                                            >
                                                 <div
                                                     t-field="appointment.performer_id.work_contact_id"
                                                     t-options='{"widget": "contact", "fields": ["phone"]}'
@@ -248,100 +254,127 @@
                             </div>
                             <div class="row mb-4 container">
                                 <!-- <div class="col-12 col-md-6"> -->
-                                    <div class="container" style="padding: 20px">
-                                        <div class="row" t-attf-style="color:{{appointment.company_id.primary_color}}">
-                                            <div class="col-1">
-                                                <img
-                                                    t-if="appointment.company_id.logo"
-                                                    t-att-src="image_data_uri(appointment.company_id.logo)"
-                                                    style="max-height: 45px;"
-                                                    alt="Logo"
-                                                />
+                                <div class="container" style="padding: 20px">
+                                    <div class="row" t-attf-style="color:{{appointment.company_id.primary_color}}">
+                                        <div class="col-1">
+                                            <img
+                                                t-if="appointment.company_id.logo"
+                                                t-att-src="image_data_uri(appointment.company_id.logo)"
+                                                style="max-height: 45px;"
+                                                alt="Logo"
+                                            />
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="col">
+                                                <b>
+                                                    <t t-out="appointment.company_id.name" />
+                                                </b>
                                             </div>
-                                            <div class="col-5">
-                                                <div class="col">
-                                                    <b>
-                                                        <t t-out="appointment.company_id.name" />
-                                                    </b>
-                                                </div>
-                                                <div class="col">
-                                                    <t t-out="appointment.company_id.website" />
-                                                </div>
-                                            </div>
-                                            <div class="col-6 text-end">
-                                                <t t-out="appointment.company_id.phone" />
-                                                <div class="mt-3">
-                                                    <small class="fw-light text-body">
-                                                        <t t-out="appointment.identifier" />
-                                                    </small>
-                                                </div>
+                                            <div class="col">
+                                                <t t-out="appointment.company_id.website" />
                                             </div>
                                         </div>
-                                        <hr />
-                                        <div class="row-fluid">
-                                            <div class="span12 text-center">
-                                                <b class="h4">บัตรนัดหมายผู้ป่วย</b>
+                                        <div class="col-6 text-end">
+                                            <t t-out="appointment.company_id.phone" />
+                                            <div class="mt-3">
+                                                <small class="fw-light text-body">
+                                                    <t t-out="appointment.identifier" />
+                                                </small>
                                             </div>
                                         </div>
-                                        <div class="row mt-4">
-                                            <div class="col-6">
-                                                <p>
-                                                    <b class="h5">
-                                                        <span t-field="appointment.patient_identifier" />
-                                                        <span class="ms-2" t-field="appointment.patient_id" />
-                                                    </b>
-                                                </p>
-                                                <p>
-                                                    <span style="padding-right:1em">วันที่นัด</span>
-                                                    <b>
-                                                        <t t-if="appointment.allday">
-                                                            <span t-field="appointment.start" t-options='{"widget": "date"}' />
-                                                        </t>
-                                                        <t t-else="">
-                                                            <span t-field="appointment.start" />
-                                                            <span class="mx-1">-</span>
-                                                            <!-- <t
+                                    </div>
+                                    <hr />
+                                    <div class="row-fluid">
+                                        <div class="span12 text-center">
+                                            <b class="h4">บัตรนัดหมายผู้ป่วย</b>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="col-6">
+                                            <p>
+                                                <b class="h5">
+                                                    <span t-field="appointment.patient_identifier" />
+                                                    <span class="ms-2" t-field="appointment.patient_id" />
+                                                </b>
+                                            </p>
+                                            <p>
+                                                <span style="padding-right:1em">วันที่นัด</span>
+                                                <b>
+                                                    <t t-if="appointment.allday">
+                                                        <span
+                                                            t-field="appointment.start"
+                                                            t-options='{"widget": "date"}'
+                                                        />
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span t-field="appointment.start" />
+                                                        <span class="mx-1">-</span>
+                                                        <!-- <t
                                                                 t-set="time_format"
                                                                 t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1).time_format"
                                                             /> -->
-                                                            <!-- <span t-esc="context_timestamp(appointment.stop).strftime(time_format)" /> -->
-                                                        </t>
-                                                    </b>
-                                                </p>
-                                                <p>
-                                                    <span style="padding-right:2em">แพทย์</span>
-                                                    <span t-field="appointment.performer_id" />
-                                                </p>
-                                            </div>
-                                            <div class="col-6 text-end">
-                                                <p t-if="appointment.patient_id.age">
-                                                    <span class="me-1">อายุ</span>
-                                                    <span t-field="appointment.patient_id.display_age" />
-                                                </p>
-                                                <p t-if="appointment.patient_id.birthdate" class="ms-2">
-                                                    วันเกิด
-                                                    <span t-field="appointment.patient_id.birthdate" />
-                                                </p>
+                                                        <!-- <span t-esc="context_timestamp(appointment.stop).strftime(time_format)" /> -->
+                                                    </t>
+                                                </b>
+                                            </p>
+                                            <p>
+                                                <span style="padding-right:2em">แพทย์</span>
+                                                <span t-field="appointment.performer_id" />
+                                            </p>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <p t-if="appointment.patient_id.age">
+                                                <span class="me-1">อายุ</span>
+                                                <span t-field="appointment.patient_id.display_age" />
+                                            </p>
+                                            <p t-if="appointment.patient_id.birthdate" class="ms-2">
+                                                วันเกิด
+                                                <span t-field="appointment.patient_id.birthdate" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p>
+                                                <span style="padding-right:2em">คลีนิค</span>
+                                                <span t-field="appointment.department_id" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p>
+                                                <span>สาเหตุที่นัดหมาย:</span>
+                                            </p>
+                                            <div style="padding-left: 1em; min-height: 4em">
+                                                <t t-out="appointment.description" />
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <p>
-                                                    <span style="padding-right:2em">คลีนิค</span>
-                                                    <span t-field="appointment.department_id" />
-                                                </p>
-                                            </div>
+                                    </div>
+                                    <div class="row" style="margin:1rem 0">
+                                        <div class="col">
+                                            <div style="border-bottom: 1px solid #bfbfbf;" />
                                         </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <p>
-                                                    <span>สาเหตุที่นัดหมาย:</span>
-                                                </p>
-                                                <div style="padding-left: 1em; min-height: 4em">
-                                                    <t t-out="appointment.description" />
-                                                </div>
-                                            </div>
+                                    </div>
+                                    <div class="row ">
+                                        <div class="col-6">
+                                            <p>
+                                                <b>หมายเหตุ:</b>
+                                                <span t-field="appointment.instruction_ids" />
+                                            </p>
                                         </div>
+                                        <div class="col-6 text-end">
+                                            <p>
+                                                <span style="padding-right: 2em">ผู้ออกใบนัด</span>
+                                                <span t-field="appointment.user_id" />
+                                            </p>
+                                            <p>
+                                                <span style="padding-right: 2em">วันที่ออกบัตรนัด</span>
+                                                <span t-field="appointment.create_date" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <t t-if="appointment.state == 'revoked'">
                                         <div class="row" style="margin:1rem 0">
                                             <div class="col">
                                                 <div style="border-bottom: 1px solid #bfbfbf;" />
@@ -350,51 +383,31 @@
                                         <div class="row ">
                                             <div class="col-6">
                                                 <p>
-                                                    <b>หมายเหตุ:</b>
-                                                    <span t-field="appointment.instruction_ids" />
-                                                </p>
-                                            </div>
-                                            <div class="col-6 text-end">
-                                                <p>
-                                                    <span style="padding-right: 2em">ผู้ออกใบนัด</span>
-                                                    <span t-field="appointment.user_id" />
+                                                    <b>ยกเลิก:</b>
                                                 </p>
                                                 <p>
-                                                    <span style="padding-right: 2em">วันที่ออกบัตรนัด</span>
-                                                    <span t-field="appointment.create_date" />
+                                                    <span t-field="appointment.cancel_reason_id" />
+                                                </p>
+                                                <p>
+                                                    <span t-field="appointment.cancel_note" />
                                                 </p>
                                             </div>
                                         </div>
-                                        <t t-if="appointment.state == 'revoked'">
-                                            <div class="row" style="margin:1rem 0">
-                                                <div class="col">
-                                                    <div style="border-bottom: 1px solid #bfbfbf;" />
-                                                </div>
-                                            </div>
-                                            <div class="row ">
-                                                <div class="col-6">
-                                                    <p>
-                                                        <b>ยกเลิก:</b>                                                    
-                                                    </p>
-                                                    <p><span t-field="appointment.cancel_reason_id" /></p>
-                                                    <p><span t-field="appointment.cancel_note" /></p>      
-                                                </div>
-                                            </div>
-                                        </t>
-                                        <div class="row" style="margin:1rem 0">
-                                            <div class="col">
-                                                <div style="border-bottom: 1px solid #bfbfbf;" />
-                                            </div>
-                                        </div>
-                                        <div class="row text-center">
-                                            <div class="col">
-                                                <small>
-                                                    แก้ไขครั้งล่าสุด
-                                                    <span t-field="appointment.write_date" />
-                                                </small>
-                                            </div>
+                                    </t>
+                                    <div class="row" style="margin:1rem 0">
+                                        <div class="col">
+                                            <div style="border-bottom: 1px solid #bfbfbf;" />
                                         </div>
                                     </div>
+                                    <div class="row text-center">
+                                        <div class="col">
+                                            <small>
+                                                แก้ไขครั้งล่าสุด
+                                                <span t-field="appointment.write_date" />
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-12 col-md-6" name="portal_my_task_second_column" />
                             </div>
                         </div>
@@ -405,55 +418,90 @@
                             <div class="col-6 text-start">
                                 <!-- Button trigger modal -->
                                 <t t-if="appointment.state != 'revoked'">
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                        <i class="fa fa-ban" aria-hidden="true" /> Cancel
+                                    <button
+                                        type="button"
+                                        class="btn btn-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal"
+                                    >
+                                        <i class="fa fa-ban" aria-hidden="true" />
+                                        Cancel
                                     </button>
-                                </t>                                
-                                
+                                </t>
                                 <!-- Modal -->
-                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div
+                                    class="modal fade"
+                                    id="exampleModal"
+                                    tabindex="-1"
+                                    aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true"
+                                >
                                     <div class="modal-dialog">
                                         <form class="mt-4" action="/appointment/cancel" method="post">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h1 class="modal-title fs-5"
-                                                        id="exampleModalLabel">Appointment
-                                                        Cancellation Reason</h1>
-                                                    <button type="button" class="btn-close"
-                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                                        Appointment
+                                                        Cancellation Reason
+                                                    </h1>
+                                                    <button
+                                                        type="button"
+                                                        class="btn-close"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Close"
+                                                    />
                                                 </div>
                                                 <div class="modal-body">
                                                     <t t-foreach="reason" t-as="r">
                                                         <div class="form-check">
-                                                            <input class="form-check-input"
+                                                            <input
+                                                                class="form-check-input"
                                                                 type="radio"
-                                                                t-att-value="r.id" name="reason_id"
+                                                                t-att-value="r.id"
+                                                                name="reason_id"
                                                                 t-attf-id="reason-{{r.id}}"
-                                                                required="true" />
-                                                            <label class="form-check-label"
-                                                                t-attf-for="reason-{{r.id}}">
+                                                                required="true"
+                                                            />
+                                                            <label
+                                                                class="form-check-label"
+                                                                t-attf-for="reason-{{r.id}}"
+                                                            >
                                                                 <span t-field="r.name" />
                                                             </label>
                                                         </div>
                                                     </t>
                                                     <div class="form">
-                                                        <textarea class="form-control"
+                                                        <textarea
+                                                            class="form-control"
                                                             placeholder="Further information about cancellation"
                                                             name="reason_detail"
                                                             id="floatingTextarea2"
-                                                            style="height: 100px"></textarea>
+                                                            style="height: 100px"
+                                                        />
                                                     </div>
-                                                    <input type="hidden" name="appointment_id"
-                                                        t-att-value="appointment.id" />
-                                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-
+                                                    <input
+                                                        type="hidden"
+                                                        name="appointment_id"
+                                                        t-att-value="appointment.id"
+                                                    />
+                                                    <input
+                                                        type="hidden"
+                                                        name="csrf_token"
+                                                        t-att-value="request.csrf_token()"
+                                                    />
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">DISCARD</button>
-                                                    <button type="submit"
-                                                        class="btn btn-outline-danger">Mark
-                                                        as cancelled</button>
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-secondary"
+                                                        data-bs-dismiss="modal"
+                                                    >
+                                                        DISCARD
+                                                    </button>
+                                                    <button type="submit" class="btn btn-outline-danger">
+                                                        Mark
+                                                        as cancelled
+                                                    </button>
                                                 </div>
                                             </div>
                                         </form>
@@ -461,13 +509,14 @@
                                 </div>
                             </div>
                             <div class="col-6 text-end">
-                                <a 
-                                    class="btn btn-primary" 
+                                <a
+                                    class="btn btn-primary"
                                     t-attf-href="/report/pdf/ni_appointment.report_appointment/{{appointment.id}}"
-                                    target="_blank" 
+                                    target="_blank"
                                     role="button"
                                 >
-                                <i class="fa fa-print" aria-hidden="true" /> Print
+                                    <i class="fa fa-print" aria-hidden="true" />
+                                    Print
                                 </a>
                             </div>
                         </div>

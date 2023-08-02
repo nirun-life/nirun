@@ -1,6 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import http, _
+from odoo import _, http
 from odoo.http import request
 
 from odoo.addons.portal.controllers.portal import CustomerPortal
@@ -20,36 +20,43 @@ class AppointmentPortal(CustomerPortal):
                 else 0
             )
         return values
-    
+
     def _prepare_searchbar_sortings(self):
         return {
-            'date': {'label': _('Newest'), 'order': 'create_date desc'},
-            'name': {'label': _('Name'), 'order': 'name'},
+            "date": {"label": _("Newest"), "order": "create_date desc"},
+            "name": {"label": _("Name"), "order": "name"},
         }
-    
+
     @http.route(["/my/appointment"], type="http", auth="user", website=True)
-    def portal_my_appointment(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
+    def portal_my_appointment(
+        self, page=1, date_begin=None, date_end=None, sortby=None, **kw
+    ):
         values = self._prepare_portal_layout_values()
         Appointment = request.env["ni.appointment"]
-        domain = [("partner_ids", "=", request.env.user.partner_id.id)]        
+        domain = [("partner_ids", "=", request.env.user.partner_id.id)]
 
         searchbar_sortings = self._prepare_searchbar_sortings()
         if not sortby:
-            sortby = 'date'
-        order = searchbar_sortings[sortby]['order']
+            sortby = "date"
+        order = searchbar_sortings[sortby]["order"]
 
         if date_begin and date_end:
-            domain += [('create_date', '>', date_begin), ('create_date', '<=', date_end)]
+            domain += [
+                ("create_date", ">", date_begin),
+                ("create_date", "<=", date_end),
+            ]
 
-        appointments = Appointment.search(domain, order=order, limit=self._items_per_page)
+        appointments = Appointment.search(
+            domain, order=order, limit=self._items_per_page
+        )
 
         values.update(
             {
                 "appointments": appointments,
                 "page_name": "appointment",
                 "default_url": "/my/appointment",
-                'searchbar_sortings': searchbar_sortings,
-                'sortby': sortby
+                "searchbar_sortings": searchbar_sortings,
+                "sortby": sortby,
             }
         )
 
@@ -77,17 +84,17 @@ class AppointmentPortal(CustomerPortal):
         domain = [("id", "=", int(appointment_id))]
 
         appointments = Appointment.search(domain)
-        reason = request.env['ni.appointment.cancel.reason'].search([])
+        reason = request.env["ni.appointment.cancel.reason"].search([])
         values.update(
             {
                 "appointment": appointments[0],
                 "page_name": "appointment",
                 "default_url": "/my/appointment",
-                "reason": reason
+                "reason": reason,
             }
         )
         return request.render("ni_appointment.portal_my_appointment", values)
-    
+
     @http.route(
         "/appointment/cancel", type="http", auth="user", website=True, sitemap=False
     )
@@ -99,10 +106,12 @@ class AppointmentPortal(CustomerPortal):
         reason_id = int(post.get("reason_id"))
         reason_detail = post.get("reason_detail").strip()
         appoint = request.env["ni.appointment"].sudo().browse(appointment_id)
-        appoint.write( {
+        appoint.write(
+            {
                 "cancel_reason_id": reason_id,
                 "cancel_note": reason_detail,
                 "state": "revoked",
-            })
+            }
+        )
 
         return request.redirect("/my/appointment/%s" % appointment_id)
