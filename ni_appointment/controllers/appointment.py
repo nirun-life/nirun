@@ -87,3 +87,22 @@ class AppointmentPortal(CustomerPortal):
             }
         )
         return request.render("ni_appointment.portal_my_appointment", values)
+    
+    @http.route(
+        "/appointment/cancel", type="http", auth="user", website=True, sitemap=False
+    )
+    def appointment_submit(self, **post):
+        if not post or post.get("captcha"):
+            return request.redirect("/my/appointment")
+
+        appointment_id = int(post.get("appointment_id"))
+        reason_id = int(post.get("reason_id"))
+        reason_detail = post.get("reason_detail").strip()
+        appoint = request.env["ni.appointment"].sudo().browse(appointment_id)
+        appoint.write( {
+                "cancel_reason_id": reason_id,
+                "cancel_note": reason_detail,
+                "state": "revoked",
+            })
+
+        return request.redirect("/my/appointment/%s" % appointment_id)

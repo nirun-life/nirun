@@ -436,29 +436,50 @@
                                 <!-- Modal -->
                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Appointment Cancellation Reason</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                        <t t-foreach="reason" t-as="r">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" t-att-value="r.id" name="reason_id" t-attf-id="reason-{{r.id}}" />
-                                                <label class="form-check-label" t-attf-for="reason-{{r.id}}">
-                                                    <span t-field="r.name" />
-                                                </label>
+                                        <form class="mt-4" action="/appointment/cancel" method="post">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5"
+                                                        id="exampleModalLabel">Appointment
+                                                        Cancellation Reason</h1>
+                                                    <button type="button" class="btn-close"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <t t-foreach="reason" t-as="r">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input"
+                                                                type="radio"
+                                                                t-att-value="r.id" name="reason_id"
+                                                                t-attf-id="reason-{{r.id}}"
+                                                                required="true" />
+                                                            <label class="form-check-label"
+                                                                t-attf-for="reason-{{r.id}}">
+                                                                <span t-field="r.name" />
+                                                            </label>
+                                                        </div>
+                                                    </t>
+                                                    <div class="form">
+                                                        <textarea class="form-control"
+                                                            placeholder="Further information about cancellation"
+                                                            name="reason_detail"
+                                                            id="floatingTextarea2"
+                                                            style="height: 100px"></textarea>
+                                                    </div>
+                                                    <input type="hidden" name="appointment_id"
+                                                        t-att-value="task.id" />
+                                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">DISCARD</button>
+                                                    <button type="submit"
+                                                        class="btn btn-outline-danger">Mark
+                                                        as cancelled</button>
+                                                </div>
                                             </div>
-                                        </t>
-                                        <div class="form">
-                                            <textarea class="form-control" placeholder="Further information about cancellation" name="reason_detail" id="floatingTextarea2" style="height: 100px"></textarea>
-                                          </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">DISCARD</button>
-                                        <button type="button" class="btn btn-outline-danger">Mark as cancelled</button>
-                                        </div>
-                                    </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
