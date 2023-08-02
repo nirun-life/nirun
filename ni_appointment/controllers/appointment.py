@@ -80,7 +80,7 @@ class AppointmentPortal(CustomerPortal):
         reason = request.env['ni.appointment.cancel.reason'].search([])
         values.update(
             {
-                "task": appointments[0],
+                "appointment": appointments[0],
                 "page_name": "appointment",
                 "default_url": "/my/appointment",
                 "reason": reason
