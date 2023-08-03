@@ -230,9 +230,9 @@
                                     <t t-set="path" t-value="'task'" />
                                 </t>
                             </div>
-                            <div class="row mb-4 container">
+                            <div class="row mb-4">
                                 <!-- <div class="col-12 col-md-6"> -->
-                                <div class="container" style="padding: 20px">
+                                <div class="container">
                                     <div class="row" t-attf-style="color:{{appointment.company_id.primary_color}}">
                                         <div class="col-1">
                                             <img
@@ -268,7 +268,7 @@
                                         </div>
                                     </div>
                                     <div class="row mt-4">
-                                        <div class="col-6">
+                                        <div class="col-12 col-xl-6">
                                             <p>
                                                 <b class="h5">
                                                     <span t-field="appointment.patient_identifier" />
@@ -276,22 +276,29 @@
                                                 </b>
                                             </p>
                                             <p>
-                                                <span style="padding-right:1em">วันที่นัด</span>
+                                                <span style="padding-right:2rem">วันที่นัด</span>
                                                 <b>
                                                     <t t-if="appointment.allday">
                                                         <span
-                                                            t-field="appointment.start"
+                                                            t-field="appointment.start_date"
                                                             t-options='{"widget": "date"}'
                                                         />
                                                     </t>
                                                     <t t-else="">
                                                         <span t-field="appointment.start" />
                                                         <span class="mx-1">-</span>
-                                                        <!-- <t
+                                                        <t t-if="appointment.start_date == appointment.stop_date">
+                                                            <t
                                                                 t-set="time_format"
-                                                                t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1).time_format"
-                                                            /> -->
-                                                        <!-- <span t-esc="context_timestamp(appointment.stop).strftime(time_format)" /> -->
+                                                                t-value="request.env['res.lang'].search([('code', '=', request.context['lang'])], limit=1).time_format"
+                                                            />
+                                                            <span
+                                                                t-esc="appointment.stop.astimezone(tz).strftime(time_format)"
+                                                            />
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span t-field="appointment.stop" />
+                                                        </t>
                                                     </t>
                                                 </b>
                                             </p>
@@ -300,7 +307,7 @@
                                                 <span t-field="appointment.performer_id" />
                                             </p>
                                         </div>
-                                        <div class="col-6 text-end">
+                                        <div class="col-12 col-xl-6 text-end">
                                             <p t-if="appointment.patient_id.age">
                                                 <span class="me-1">อายุ</span>
                                                 <span t-field="appointment.patient_id.display_age" />
@@ -312,7 +319,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-12">
                                             <p>
                                                 <span style="padding-right:2em">คลีนิค</span>
                                                 <span t-field="appointment.department_id" />
@@ -324,7 +331,7 @@
                                             <p>
                                                 <span>สาเหตุที่นัดหมาย:</span>
                                             </p>
-                                            <div style="padding-left: 1em; min-height: 4em">
+                                            <div style="padding-left: 1em; min-height: 4em" class="bg-100">
                                                 <t t-out="appointment.description" />
                                             </div>
                                         </div>
