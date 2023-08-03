@@ -1,4 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+import pytz
 
 from odoo import _, http
 from odoo.http import request
@@ -80,6 +81,8 @@ class AppointmentPortal(CustomerPortal):
                 "page_name": "appointment",
                 "default_url": "/my/appointment",
                 "reason": reason,
+                "user": request.env.user,
+                "tz": pytz.timezone(request.env.user.tz),
             }
         )
         return request.render("ni_appointment.portal_my_appointment", values)
