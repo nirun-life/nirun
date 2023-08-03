@@ -3,6 +3,59 @@
   ~ Copyright (c) 2023 NSTDA
   -->
 <odoo noupdate="1">
+    <record id="ni_appointment_action" model="ir.actions.act_window">
+        <field name="name">Appointment</field>
+        <field name="res_model">ni.appointment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="ni_appointment_view_search" model="ir.ui.view">
+        <field name="name">ni.appointment.view.search</field>
+        <field name="model">ni.appointment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('identifier', 'ilike', self)]" />
+                <field name="patient_id" />
+                <filter name="start" string="Start" date="start" />
+                <group name="group_by" string="Group By">
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_performer" string="Performer" context="{'group_by': 'performer_id'}" />
+                    <separator />
+                    <filter name="group_by_state" string="State" context="{'group_by': 'state'}" />
+                </group>
+                <searchpanel>
+                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" />
+                    <field name="performer_id" icon="fa-user-md" hierarchize="0" enable_counters="1" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_appointment_view_tree" model="ir.ui.view">
+        <field name="name">ni.appointment.view.tree</field>
+        <field name="model">ni.appointment</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-muted="state=='revoked'"
+                decoration-info="state=='draft'"
+                decoration-warning="state=='on-hold'"
+            >
+                <field name="identifier" />
+                <field name="name" />
+                <field name="patient_id" widget="many2one_avatar" />
+                <field name="performer_id" widget="many2one_avatar_employee" />
+                <field name="start" />
+                <field name="stop" optional="hide" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-muted="state == 'active'"
+                    decoration-info="state=='draft'"
+                    decoration-success="state=='completed'"
+                    decoration-warning="state=='on-hold'"
+                    decoration-danger="state == 'revoked'"
+                />
+            </tree>
+        </field>
+    </record>
     <record id="ni_appointment_view_form" model="ir.ui.view">
         <field name="name">ni.appointment.view.form</field>
         <field name="model">ni.appointment</field>
