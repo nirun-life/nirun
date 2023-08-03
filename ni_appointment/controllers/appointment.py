@@ -23,12 +23,14 @@ class AppointmentPortal(CustomerPortal):
 
     def _prepare_searchbar_sortings(self):
         return {
-            "date": {"label": _("Newest"), "order": "create_date desc"},
+            "date": {"label": _("Newest"), "order": "start desc"},
             "name": {"label": _("Name"), "order": "name"},
+            "performer": {"label": _("Performer"), "order": "performer_id, start desc"},
+            "company": {"label": _("Company"), "order": "company_id, start desc"},
         }
 
     @http.route(["/my/appointment"], type="http", auth="user", website=True)
-    def portal_my_appointment(
+    def portal_my_appointments(
         self, page=1, date_begin=None, date_end=None, sortby=None, **kw
     ):
         values = self._prepare_portal_layout_values()
@@ -65,20 +67,7 @@ class AppointmentPortal(CustomerPortal):
     @http.route(
         ["/my/appointment/<int:appointment_id>"], type="http", auth="user", website=True
     )
-    def portal_my_project(
-        self,
-        appointment_id=None,
-        access_token=None,
-        page=1,
-        date_begin=None,
-        date_end=None,
-        sortby=None,
-        search=None,
-        search_in="content",
-        groupby=None,
-        task_id=None,
-        **kw
-    ):
+    def portal_my_appointment(self, appointment_id=None):
         values = self._prepare_portal_layout_values()
         Appointment = request.env["ni.appointment"]
         domain = [("id", "=", int(appointment_id))]
