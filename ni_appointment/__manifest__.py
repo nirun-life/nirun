@@ -9,7 +9,7 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["ni_patient", "ni_condition", "calendar"],
+    "depends": ["ni_patient", "ni_condition", "calendar", "portal"],
     "data": [
         "data/ni_appointment_type_data.xml",
         "data/ni_appointment_cancel_reason_data.xml",
@@ -21,6 +21,8 @@
         "views/ni_appointment_instruction_views.xml",
         "views/ni_appointment_type_views.xml",
         "views/ni_appointment_menu.xml",
+        "views/ni_appointment_portal.xml",
+        "views/ni_appointment_portal_templates.xml",
         "wizard/ni_appointment_cancel_wizard_view.xml",
         "reports/appointment.xml",
         "reports/templates.xml",
