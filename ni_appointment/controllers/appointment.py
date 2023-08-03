@@ -68,7 +68,7 @@ class AppointmentPortal(CustomerPortal):
     @http.route(
         ["/my/appointment/<int:appointment_id>"], type="http", auth="user", website=True
     )
-    def portal_my_appointment(self, appointment_id=None):
+    def portal_my_appointment(self, appointment_id=None, **kw):
         values = self._prepare_portal_layout_values()
         Appointment = request.env["ni.appointment"]
         domain = [("id", "=", int(appointment_id))]
@@ -84,6 +84,10 @@ class AppointmentPortal(CustomerPortal):
                 "user": request.env.user,
                 "tz": pytz.timezone(request.env.user.tz),
             }
+        )
+        history = "my_appointment_history"
+        values = self._get_page_view_values(
+            appointments[0], None, values, history, False, **kw
         )
         return request.render("ni_appointment.portal_my_appointment", values)
 
