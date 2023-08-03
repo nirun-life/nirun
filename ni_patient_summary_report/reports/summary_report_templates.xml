@@ -14,340 +14,347 @@
             <t t-out="0" />
         </div>
     </template>
-    <template id="summary_report">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-call="ni_patient_summary_report.summary_report_layout">
-                    <t t-set="primary_color" t-value="o.company_id.primary_color" />
-                    <div class="header">
-                        <div class="row" t-attf-style="color:{{primary_color}}">
-                            <div class="col-1">
-                                <img
-                                    t-if="o.company_id.logo"
-                                    t-att-src="image_data_uri(o.company_id.logo)"
-                                    style="max-height: 45px;"
-                                    alt="Logo"
-                                />
+    <template id="encounter_report">
+        <t t-call="ni_patient_summary_report.summary_report_layout">
+            <t t-set="primary_color" t-value="o.company_id.primary_color" />
+            <div class="header">
+                <div class="row" t-attf-style="color:{{primary_color}}">
+                    <div class="col-1">
+                        <img
+                            t-if="o.company_id.logo"
+                            t-att-src="image_data_uri(o.company_id.logo)"
+                            style="max-height: 45px;"
+                            alt="Logo"
+                        />
+                    </div>
+                    <div class="col-5">
+                        <div class="col">
+                            <b>
+                                <t t-out="o.company_id.name" />
+                            </b>
+                        </div>
+                        <div class="col">
+                            <t t-out="o.company_id.website" />
+                        </div>
+                        <div class="col">
+                            <t t-out="o.company_id.phone" />
+                        </div>
+                    </div>
+                    <div class="col-6 text-end">
+                        <t t-out="o.patient_id.identifier" />
+                        <div>
+                            <small class="fw-light">
+                                <t t-out="o.patient_id.name" />
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+            </div>
+            <div class="page">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-8 text-start">
+                            <h2 t-attf-style="color:{{primary_color}}">
+                                <b>
+                                    <span t-esc="report_title" />
+                                </b>
+                            </h2>
+                        </div>
+                        <div class="col-4 text-end align-self-end pt-2">
+                            <div>
+                                <b class="h6 align-bottom" t-field="o.identifier" />
                             </div>
-                            <div class="col-5">
-                                <div class="col">
-                                    <b>
-                                        <t t-out="o.company_id.name" />
-                                    </b>
-                                </div>
-                                <div class="col">
-                                    <t t-out="o.company_id.website" />
-                                </div>
-                                <div class="col">
-                                    <t t-out="o.company_id.phone" />
-                                </div>
-                            </div>
-                            <div class="col-6 text-end">
-                                <t t-out="o.patient_id.identifier" />
-                                <div>
-                                    <small class="fw-light">
-                                        <t t-out="o.patient_id.name" />
-                                    </small>
-                                </div>
+                            <div>
+                                <span t-field="o.period_start" />
                             </div>
                         </div>
-                        <hr />
                     </div>
-                    <div class="page">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-8 text-start">
-                                    <h2 t-attf-style="color:{{primary_color}}">
-                                        <t t-if="o.class_id.summary_report_title">
-                                            <b>
-                                                <span t-field="o.class_id.summary_report_title" />
-                                            </b>
-                                        </t>
-                                        <t t-else="">
-                                            <b>
-                                                <span t-field="o.class_id.name" />
-                                                Summary
-                                            </b>
-                                        </t>
-                                    </h2>
-                                </div>
-                                <div class="col-4 text-end align-self-end pt-2">
-                                    <div>
-                                        <b class="h6 align-bottom" t-field="o.identifier" />
-                                    </div>
-                                    <div>
-                                        <span t-field="o.period_start" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 text-start">
-                                    <span t-field="o.performer_id" />
-                                    <span class="mx-2">•</span>
-                                    <span t-field="o.department_id" />
-                                </div>
-                            </div>
+                    <div class="row">
+                        <div class="col-12 text-start">
+                            <span t-field="o.performer_id" />
+                            <span class="mx-2">•</span>
+                            <span t-field="o.department_id" />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-6 text-start">
+                            <span class="h6">
+                                <b t-esc="o.patient_id.identifier" />
+                            </span>
                             <br />
-                            <div class="row">
-                                <div class="col-6 text-start">
-                                    <span class="h6">
-                                        <b t-esc="o.patient_id.identifier" />
-                                    </span>
-                                    <br />
-                                    <span class="h4">
-                                        <b t-esc="o.patient_id.name" />
-                                    </span>
-                                    <br />
-                                    Age
-                                    <span t-field="o.patient_id.display_age" />
-                                    <!-- TODO Add blood group here -->
-                                    <br />
-                                    <span t-esc="o.patient_id.partner_id._display_address(without_company=True)" />
-                                    <br />
-                                    <t t-if="o.patient_id.identification_id">
-                                        <b>Identification No</b>
-                                        <span t-field="o.patient_id.identification_id" />
-                                        <br />
-                                    </t>
-                                    <t t-if="o.patient_id.nationality_id">
-                                        <b>Nationality</b>
-                                        <span t-field="o.patient_id.nationality_id" />
-                                    </t>
-                                    <t t-if="o.patient_id.religion_id">
-                                        <b>Religion</b>
-                                        <span t-field="o.patient_id.religion_id" />
-                                    </t>
-                                </div>
-                                <div class="col-6 px-2">
-                                    <table class="table table-responsive table-bordered text-start">
-                                        <tr>
-                                            <td>
-                                                <b>Allergy</b>
-                                            </td>
-                                            <td>
-                                                <t t-foreach="o.patient_id.allergy_ids" t-as="allergy">
-                                                    <span t-esc="allergy.code_id.name" />
-                                                    <t t-if="not allergy_last">
-                                                        <span class="me-1">,</span>
-                                                    </t>
-                                                </t>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <b>Problem</b>
-                                            </td>
-                                            <td>
-                                                <t t-foreach="o.patient_id.condition_problem_ids" t-as="condition">
-                                                    <span t-esc="condition.code_id.name" />
-                                                    <t t-if="not condition_last">
-                                                        <span class="me-1">,</span>
-                                                    </t>
-                                                </t>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <div class="text-start">
-                                        <b>Coverage :</b>
-                                        <!-- TODO remove mock -->
-                                        <span class="ms-2" />
-                                        <br />
-                                        <b>Contract :</b>
-                                        <!-- TODO remove mock -->
-                                        <span class="ms-2">นางกวี มารักษา</span>
-                                        <br />
-                                        <b>Record By :</b>
-                                        <span class="ms-2" t-field="o.patient_id.write_uid" />
-                                        <span class="ms-1" t-field="o.patient_id.write_date" />
-                                    </div>
-                                </div>
-                            </div>
+                            <span class="h4">
+                                <b t-esc="o.patient_id.name" />
+                            </span>
                             <br />
-                            <hr />
+                            Age
+                            <span t-field="o.patient_id.display_age" />
+                            <!-- TODO Add blood group here -->
                             <br />
-                            <div class="row">
-                                <div class="col-6 text-start">
-                                    <h3 t-attf-style="color:{{primary_color}}">Illness</h3>
-                                    <div class="mt-2">
-                                        <b>Chief Complain</b>
-                                        <div class="mt-2">
-                                            <span t-field="o.chief_complaint" />
-                                        </div>
-                                    </div>
-                                    <div class="mt-4">
-                                        <b>History of Present Illness</b>
-                                        <br />
-                                        <span t-field="o.history_of_present_illness" class="mt-2" />
-                                    </div>
-                                    <div class="mt-4">
-                                        <b>Review of System</b>
-                                        <br />
-                                        <span t-field="o.review_of_systems" class="mt-2" />
-                                    </div>
-                                </div>
-                                <div class="col-6 text-start ps-2">
-                                    <h3 t-attf-style="color:{{primary_color}}">
-                                        Physical Exam &amp; Diagnosis
-                                    </h3>
-                                    <div class="mt-2">
-                                        <b>Physical Examination</b>
-                                        <div class="mt-2">
-                                            <span t-field="o.vital_sign" />
-                                            <br />
-                                            <span t-field="o.physical_exam" />
-                                        </div>
-                                    </div>
-                                    <div class="mt-4">
-                                        <b>Diagnosis</b>
-                                        <br />
-                                        <table class="table table-responsive table-bordered text-start mt-2">
-                                            <t t-foreach="o.diagnosis_ids" t-as="d">
-                                                <tr>
-                                                    <td>
-                                                        <b>
-                                                            <span t-field="d.role_id" />
-                                                        </b>
-                                                    </td>
-                                                    <td>
-                                                        <span t-field="d.name" />
-                                                    </td>
-                                                    <td>
-                                                        <span t-field="d.code" />
-                                                    </td>
-                                                </tr>
-                                            </t>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <h3 t-attf-style="color:{{primary_color}}" class="mt-2">Treatment</h3>
-                            <div class="row">
-                                <div class="col-6 text-start">
-                                    <b>Medication</b>
-                                    <br />
-                                    <table class="table table-responsive table-bordered text-start mt-2">
-                                        <t t-foreach="o.medication_dispense_ids" t-as="m">
-                                            <tr>
-                                                <td>
-                                                    <span t-field="m.name" />
-                                                    <br />
-                                                    <span class="text-secondary" t-field="m.dosage_id" />
-                                                </td>
-                                                <td>
-                                                    <span t-field="m.quantity_display" />
-                                                </td>
-                                            </tr>
-                                        </t>
-                                    </table>
-                                </div>
-                                <div class="col-6 text-start ps-2">
-                                    <b>Procedure</b>
-                                    <br />
-                                    <table class="table table-responsive table-bordered text-start mt-2">
-                                        <t t-foreach="o.procedure_ids" t-as="p">
-                                            <tr>
-                                                <td>
-                                                    <span t-field="p.name" />
-                                                    <br />
-                                                    <span class="text-secondary" t-field="p.performer_id" />
-                                                </td>
-                                                <td>
-                                                    <t
-                                                        t-set="time_format"
-                                                        t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1).time_format"
-                                                    />
-                                                    <t t-if="o.period_start_date == p.period_start_date">
-                                                        <div class="small">
-                                                            <span
-                                                                t-esc="context_timestamp(p.period_start).strftime(time_format)"
-                                                            />
-                                                            <span class="mx-1">-</span>
-                                                            <span
-                                                                t-esc="context_timestamp(p.period_end).strftime(time_format)"
-                                                            />
-                                                        </div>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <div class="small">
-                                                            <span t-field="p.period_start" />
-                                                            <span>-</span>
-                                                            <span
-                                                                t-esc="context_timestamp(p.period_end).strftime(time_format)"
-                                                            />
-                                                        </div>
-                                                    </t>
-                                                </td>
-                                                <td>
-                                                    <div class="small">
-                                                        <span t-field="p.code" />
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </t>
-                                    </table>
-                                    <br />
-                                </div>
-                            </div>
-                            <div class="row mt-4">
-                                <div class="col-6 text-start">
-                                    <b>Result :</b>
-                                    <span class="ms-2" t-field="o.discharge_status_id" />
-                                    <br />
-                                    <t t-if="o.discharge_disposition_id.referral">
-                                        <b>ส่งต่อไปที่ :</b>
-                                        <span class="ms-2" t-field="o.discharge_partner_id" />
-                                        <br />
-                                        <b>สาเหตุการส่งต่อ :</b>
-                                        <span class="ms-2" t-field="o.discharge_note" />
-                                        <br />
-                                    </t>
-                                </div>
-                                <div class="col-6 text-start ps-2">
-                                    <b>Next Appointment :</b>
-                                    <span class="ms-2" t-field="o.next_appointment_id" />
-                                    <br />
-                                    <b>Suggestion :</b>
-                                    <span class="ms-2">
-                                        <t t-foreach="o.discharge_communication_content_ids" t-as="content">
-                                            <t t-esc="content.name" />
-                                            <t t-if="not content_last">
+                            <span t-esc="o.patient_id.partner_id._display_address(without_company=True)" />
+                            <br />
+                            <t t-if="o.patient_id.identification_id">
+                                <b>Identification No</b>
+                                <span t-field="o.patient_id.identification_id" />
+                                <br />
+                            </t>
+                            <t t-if="o.patient_id.nationality_id">
+                                <b>Nationality</b>
+                                <span t-field="o.patient_id.nationality_id" />
+                            </t>
+                            <t t-if="o.patient_id.religion_id">
+                                <b>Religion</b>
+                                <span t-field="o.patient_id.religion_id" />
+                            </t>
+                        </div>
+                        <div class="col-6 px-2">
+                            <table class="table table-responsive table-bordered text-start">
+                                <tr>
+                                    <td>
+                                        <b>Allergy</b>
+                                    </td>
+                                    <td>
+                                        <t t-foreach="o.patient_id.allergy_ids" t-as="allergy">
+                                            <span t-esc="allergy.code_id.name" />
+                                            <t t-if="not allergy_last">
                                                 <span class="me-1">,</span>
                                             </t>
                                         </t>
-                                    </span>
-                                </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Problem</b>
+                                    </td>
+                                    <td>
+                                        <t t-foreach="o.patient_id.condition_problem_ids" t-as="condition">
+                                            <span t-esc="condition.code_id.name" />
+                                            <t t-if="not condition_last">
+                                                <span class="me-1">,</span>
+                                            </t>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="text-start">
+                                <b>Coverage :</b>
+                                <!-- TODO remove mock -->
+                                <span class="ms-2" />
+                                <br />
+                                <b>Contract :</b>
+                                <!-- TODO remove mock -->
+                                <span class="ms-2">นางกวี มารักษา</span>
+                                <br />
+                                <b>Record By :</b>
+                                <span class="ms-2" t-field="o.patient_id.write_uid" />
+                                <span class="ms-1" t-field="o.patient_id.write_date" />
                             </div>
                         </div>
                     </div>
                     <br />
+                    <hr />
                     <br />
-                    <div class="footer">
-                        <div class="row" style="font-size:8;">
-                            <div class="col-6 text-start">
-                                <div class="d-block">
-                                    <span class="me-1">Print by</span>
-                                    <span t-field="o.create_uid" />
-                                </div>
-                                <div class="d-block">
-                                    <span class="me-1">Print at</span>
-                                    <t
-                                        t-set="lang_id"
-                                        t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1)"
-                                    />
-                                    <span
-                                        t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))"
-                                    />
+                    <div class="row">
+                        <div class="col-6 text-start">
+                            <h3 t-attf-style="color:{{primary_color}}">Illness</h3>
+                            <div class="mt-2">
+                                <b>Chief Complain</b>
+                                <div class="mt-2">
+                                    <span t-field="o.chief_complaint" />
                                 </div>
                             </div>
-                            <div class="col-6 text-end">
-                                Page
-                                <span class="page" />
-                                of
-                                <span class="topage" />
+                            <div class="mt-4">
+                                <b>History of Present Illness</b>
+                                <br />
+                                <span t-field="o.history_of_present_illness" class="mt-2" />
+                            </div>
+                            <div class="mt-4">
+                                <b>Review of System</b>
+                                <br />
+                                <span t-field="o.review_of_systems" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="col-6 text-start ps-2">
+                            <h3 t-attf-style="color:{{primary_color}}">
+                                        Physical Exam &amp; Diagnosis
+                                    </h3>
+                            <div class="mt-2">
+                                <b>Physical Examination</b>
+                                <div class="mt-2">
+                                    <span t-field="o.vital_sign" />
+                                    <br />
+                                    <span t-field="o.physical_exam" />
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <b>Diagnosis</b>
+                                <br />
+                                <table class="table table-responsive table-bordered text-start mt-2">
+                                    <t t-foreach="o.diagnosis_ids" t-as="d">
+                                        <tr>
+                                            <td>
+                                                <b>
+                                                    <span t-field="d.role_id" />
+                                                </b>
+                                            </td>
+                                            <td>
+                                                <span t-field="d.name" />
+                                            </td>
+                                            <td>
+                                                <span t-field="d.code" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
                             </div>
                         </div>
                     </div>
+                    <h3 t-attf-style="color:{{primary_color}}" class="mt-2">Treatment</h3>
+                    <div class="row">
+                        <div class="col-6 text-start">
+                            <b>Medication</b>
+                            <br />
+                            <table class="table table-responsive table-bordered text-start mt-2">
+                                <t t-foreach="o.medication_dispense_ids" t-as="m">
+                                    <tr>
+                                        <td>
+                                            <span t-field="m.name" />
+                                            <br />
+                                            <span class="text-secondary" t-field="m.dosage_id" />
+                                        </td>
+                                        <td>
+                                            <span t-field="m.quantity_display" />
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+                        <div class="col-6 text-start ps-2">
+                            <b>Procedure</b>
+                            <br />
+                            <table class="table table-responsive table-bordered text-start mt-2">
+                                <t t-foreach="o.procedure_ids" t-as="p">
+                                    <tr>
+                                        <td>
+                                            <span t-field="p.name" />
+                                            <br />
+                                            <span class="text-secondary" t-field="p.performer_id" />
+                                        </td>
+                                        <td>
+                                            <t
+                                                t-set="time_format"
+                                                t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1).time_format"
+                                            />
+                                            <t t-if="o.period_start_date == p.period_start_date">
+                                                <div class="small">
+                                                    <span
+                                                        t-esc="context_timestamp(p.period_start).strftime(time_format)"
+                                                    />
+                                                    <span class="mx-1">-</span>
+                                                    <span
+                                                        t-esc="context_timestamp(p.period_end).strftime(time_format)"
+                                                    />
+                                                </div>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="small">
+                                                    <span t-field="p.period_start" />
+                                                    <span>-</span>
+                                                    <span
+                                                        t-esc="context_timestamp(p.period_end).strftime(time_format)"
+                                                    />
+                                                </div>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <div class="small">
+                                                <span t-field="p.code" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                            <br />
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-6 text-start">
+                            <b>Result :</b>
+                            <span class="ms-2" t-field="o.discharge_status_id" />
+                            <br />
+                            <t t-if="o.discharge_disposition_id.referral">
+                                <b>ส่งต่อไปที่ :</b>
+                                <span class="ms-2" t-field="o.discharge_partner_id" />
+                                <br />
+                                <b>สาเหตุการส่งต่อ :</b>
+                                <span class="ms-2" t-field="o.discharge_note" />
+                                <br />
+                            </t>
+                        </div>
+                        <div class="col-6 text-start ps-2">
+                            <b>Next Appointment :</b>
+                            <span class="ms-2" t-field="o.next_appointment_id" />
+                            <br />
+                            <b>Suggestion :</b>
+                            <span class="ms-2">
+                                <t t-foreach="o.discharge_communication_content_ids" t-as="content">
+                                    <t t-esc="content.name" />
+                                    <t t-if="not content_last">
+                                        <span class="me-1">,</span>
+                                    </t>
+                                </t>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="footer">
+                <div class="row" style="font-size:8;">
+                    <div class="col-6 text-start">
+                        <div class="d-block">
+                            <span class="me-1">Print by</span>
+                            <span t-field="o.create_uid" />
+                        </div>
+                        <div class="d-block">
+                            <span class="me-1">Print at</span>
+                            <t
+                                t-set="lang_id"
+                                t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1)"
+                            />
+                            <span
+                                t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))"
+                            />
+                        </div>
+                    </div>
+                    <div class="col-6 text-end">
+                        Page
+                        <span class="page" />
+                        of
+                        <span class="topage" />
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="referral_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="report_title" t-value="'Medical Referral'" />
+                <t t-call="ni_patient_summary_report.encounter_report" />
+            </t>
+        </t>
+    </template>
+    <template id="summary_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="report_title" t-valuef="{{ o.class_id.name }} Summary" />
+                <t t-if="o.class_id.summary_report_title">
+                    <t t-set="report_title" t-value="o.class_id.summary_report_title" />
                 </t>
+                <t t-call="ni_patient_summary_report.encounter_report" />
             </t>
         </t>
     </template>
