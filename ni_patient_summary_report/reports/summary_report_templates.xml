@@ -118,7 +118,7 @@
                                         <span t-field="o.patient_id.religion_id" />
                                     </t>
                                 </div>
-                                <div class="col-6 text-end px-2">
+                                <div class="col-6 px-2">
                                     <table class="table table-responsive table-bordered text-start">
                                         <tr>
                                             <td>
@@ -148,15 +148,15 @@
                                         </tr>
                                     </table>
                                     <div class="text-start">
-                                        <b>Coverage</b>
+                                        <b>Coverage :</b>
                                         <!-- TODO remove mock -->
                                         <span class="ms-2" />
                                         <br />
-                                        <b>Contract</b>
+                                        <b>Contract :</b>
                                         <!-- TODO remove mock -->
                                         <span class="ms-2">นางกวี มารักษา</span>
                                         <br />
-                                        <b>Record By</b>
+                                        <b>Record By :</b>
                                         <span class="ms-2" t-field="o.patient_id.write_uid" />
                                         <span class="ms-1" t-field="o.patient_id.write_date" />
                                     </div>
@@ -290,21 +290,31 @@
                             </div>
                             <div class="row mt-4">
                                 <div class="col-6 text-start">
-                                    <b>Result</b>
+                                    <b>Result :</b>
                                     <span class="ms-2" t-field="o.discharge_status_id" />
                                     <br />
                                     <t t-if="o.discharge_disposition_id.referral">
-                                        <b>ส่งต่อไปที่</b>
+                                        <b>ส่งต่อไปที่ :</b>
                                         <span class="ms-2" t-field="o.discharge_partner_id" />
                                         <br />
-                                        <b>สาเหตุการส่งต่อ</b>
+                                        <b>สาเหตุการส่งต่อ :</b>
                                         <span class="ms-2" t-field="o.discharge_note" />
                                         <br />
                                     </t>
                                 </div>
                                 <div class="col-6 text-start ps-2">
-                                    <b>Next Appointment</b>
+                                    <b>Next Appointment :</b>
                                     <span class="ms-2" t-field="o.next_appointment_id" />
+                                    <br />
+                                    <b>Suggestion :</b>
+                                    <span class="ms-2">
+                                        <t t-foreach="o.discharge_communication_content_ids" t-as="content">
+                                            <t t-esc="content.name" />
+                                            <t t-if="not content_last">
+                                                <span class="me-1">,</span>
+                                            </t>
+                                        </t>
+                                    </span>
                                 </div>
                             </div>
                         </div>
