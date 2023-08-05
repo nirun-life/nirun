@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="rating_rating_action_my_model" model="ir.actions.act_window">
+        <field name="name">Ratings</field>
+        <field name="res_model">rating.rating</field>
+        <field name="view_mode">kanban,pivot,graph</field>
+        <field name="domain">
+            [('res_model', '=', 'ni.encounter'), ('res_id', '=', active_id), ('consumed', '=', True)]
+        </field>
+    </record>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_send_rating_mail"
+                    type="object"
+                    string="Feedback"
+                    icon="fa-envelope"
+                    attrs="{'invisible': ['|', ('state', '!=', 'finished'), ('rating_count', '!=', 0)]}"
+                />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="%(rating_rating_action_my_model)d" type="action" class="oe_stat_button" icon="fa-smile-o">
+                    <field name="rating_last_value" string="Rating" widget="statinfo" />
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='discharge']" position="after">
+                <page name="rating" string="Feedback">
+                    <field name="rating_count" invisible="1" />
+                    <group attrs="{'invisible': [('rating_count', '=', 0)]}">
+                        <field name="rating_last_value" />
+                        <field name="rating_last_feedback" />
+                    </group>
+                    <group attrs="{'invisible': [('rating_count', '!=', 0)]}">
+                        <field name="rating_link" widget="CopyClipboardChar" />
+                        <field name="rating_qrcode" widget="image_url" class="o_qrcode" />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
