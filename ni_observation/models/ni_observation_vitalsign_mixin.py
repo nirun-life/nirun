@@ -12,6 +12,7 @@ VITALSIGN_FIELDS = [
     "body_height",
     "bmi",
     "fbs",
+    "dtx",
     "oxygen_sat",
 ]
 
@@ -48,9 +49,15 @@ class ObservationVitalsignMixin(models.AbstractModel):
         compute="_compute_bmi",
         store=True,
     )
+    glucose_type = fields.Selection(
+        [("fbs", "FBS"), ("dtx", "DTX")],
+        default="fbs",
+        required=True,
+    )
     fbs = fields.Float(
         "Fasting Blood Sugar", digits=(3, 1), help="Fasting Blood Sugar (mg/dl)"
     )
+    dtx = fields.Float("Dextrostix", digits=(3, 1), help="Dextrostix (mg/dl)")
     oxygen_sat = fields.Float("Oxygen Saturation", digits=(4, 1), help="Oxygen sat (%)")
 
     @api.depends(*VITALSIGN_FIELDS)
