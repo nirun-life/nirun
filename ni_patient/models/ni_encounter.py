@@ -533,7 +533,7 @@ class Encounter(models.Model):
         self.write({"state": "cancelled"})
 
     def action_encounter_location(self):
-        action_rec = self.env.ref("ni_patient.ni_encounter_location_action")
+        action_rec = self.env.ref("ni_patient.ni_encounter_location_action").sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
         ctx.update(
