@@ -14,6 +14,9 @@
         "data/website_data.xml",
         "views/ni_appointment_template.xml",
     ],
+    "assets": {
+        "web.assets_frontend": ["ni_appointment_website/static/js/appointment.js"]
+    },
     "application": False,
     "auto_install": False,
     "installable": True,
