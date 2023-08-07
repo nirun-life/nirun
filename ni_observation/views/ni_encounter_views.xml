@@ -51,9 +51,24 @@
                             <field class="narrow_field" name="bmi" />
                             <span class="text-muted me-4">kg/m²</span>
                         </div>
-                        <label for="fbs" />
+                        <span class="o_form_label o_td_label" name="glucose_type">
+                            <field
+                                name="glucose_type"
+                                attrs="{'readonly': [('state', 'not in', ['in-progress', 'draft'])]}"
+                                class="fw-bold"
+                            />
+                        </span>
                         <div class="o_row">
-                            <field class="narrow_field" name="fbs" />
+                            <field
+                                class="narrow_field"
+                                name="fbs"
+                                attrs="{'invisible': [('glucose_type', '!=', 'fbs')]}"
+                            />
+                            <field
+                                class="narrow_field"
+                                name="dtx"
+                                attrs="{'invisible': [('glucose_type', '!=', 'dtx')]}"
+                            />
                             <span class="text-muted me-4">mg/dl</span>
                         </div>
                     </group>
