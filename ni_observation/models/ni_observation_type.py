@@ -1,12 +1,16 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class ObservationType(models.Model):
     _name = "ni.observation.type"
     _description = "Observation Type"
     _inherit = ["ni.coding"]
+    _parent_store = True
+
+    parent_id = fields.Many2one("ni.observation.type", index=True, ondelete="restrict")
+    parent_path = fields.Char(index=True, unaccent=False)
 
     category_id = fields.Many2one("ni.observation.category", index=True)
     min = fields.Float()
@@ -31,3 +35,8 @@ class ObservationType(models.Model):
         data = {res["type_id"][0]: res["type_id_count"] for res in read}
         for rec in self:
             rec.ref_range_count = data.get(rec.id, 0)
+
+    @api.constrains("parent_id")
+    def _check_parent_id(self):
+        if not self._check_recursion():
+            raise models.ValidationError(_("Error! You cannot create recursive item."))

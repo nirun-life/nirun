@@ -3,10 +3,19 @@
   ~ Copyright (c) 2021 NSTDA
   -->
 <odoo noupdate="1">
+    <record id="type_bp" model="ni.observation.type">
+        <field name="code">bp</field>
+        <field name="name">Blood Pressure</field>
+        <field name="abbr">BP</field>
+        <field name="value_type">char</field>
+        <field name="unit_id" ref="uom_mmHg" />
+        <field name="category_id" ref="category_vital_signs" />
+    </record>
     <record id="type_bp_s" model="ni.observation.type">
         <field name="code">bp-s</field>
         <field name="name">Systolic Blood Pressure</field>
         <field name="abbr">SYS</field>
+        <field name="parent_id" ref="type_bp" />
         <field name="min" eval="1.0" />
         <field name="max" eval="250.0" />
         <field name="unit_id" ref="uom_mmHg" />
@@ -16,6 +25,7 @@
         <field name="code">bp-d</field>
         <field name="name">Diastolic Blood Pressure</field>
         <field name="abbr">DIA</field>
+        <field name="parent_id" ref="type_bp" />
         <field name="min" eval="1.0" />
         <field name="max" eval="250.0" />
         <field name="unit_id" ref="uom_mmHg" />
@@ -84,10 +94,30 @@
         <field name="unit_id" ref="uom_%" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
+    <record id="type_glucose" model="ni.observation.type">
+        <field name="code">glucose</field>
+        <field name="name">Glucose</field>
+        <field name="abbr">glc</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="200" />
+        <field name="unit_id" ref="uom_mg_dl" />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
     <record id="type_fbs" model="ni.observation.type">
         <field name="code">fbs</field>
         <field name="name">Fasting Blood Sugar</field>
         <field name="abbr">FBS</field>
+        <field name="parent_id" ref="type_glucose" />
+        <field name="min" eval="0" />
+        <field name="max" eval="200" />
+        <field name="unit_id" ref="uom_mg_dl" />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
+    <record id="type_dtx" model="ni.observation.type">
+        <field name="code">dtx</field>
+        <field name="name">Dextrostix</field>
+        <field name="abbr">DTX</field>
+        <field name="parent_id" ref="type_glucose" />
         <field name="min" eval="0" />
         <field name="max" eval="200" />
         <field name="unit_id" ref="uom_mg_dl" />
