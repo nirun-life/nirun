@@ -1,6 +1,8 @@
 #  Copyright (c) 2023 NSTDA
+import json
 
-import pytz
+from pytz import timezone, utc
+from werkzeug import exceptions
 
 import odoo.http as http
 from odoo import _, fields
@@ -9,7 +11,7 @@ from odoo.tools.date_utils import relativedelta
 
 
 def _prepare_appointment_time(post):
-    tz = pytz.timezone(request.env.user.tz)
+    tz = timezone(request.env.user.tz or "UTC")
     start = tz.localize(
         fields.Datetime.to_datetime(
             "%s %s" % (post.get("start"), post.get("start_time"))
@@ -21,7 +23,7 @@ def _prepare_appointment_time(post):
             m = m - 30
         start = start - relativedelta(minutes=m)
     stop = start + relativedelta(minutes=30)
-    return start.astimezone(pytz.utc), stop.astimezone(pytz.utc)
+    return start.astimezone(utc), stop.astimezone(utc)
 
 
 class AppointmentController(http.Controller):
@@ -140,11 +142,14 @@ class AppointmentController(http.Controller):
                 patient = self._regis_patient(comp_id, partner[0].id, post)
 
         start, stop = _prepare_appointment_time(post)
+        performer_id = None
+        if post.get("practitioner_id"):
+            performer_id = int(post.get("practitioner_id"))
 
         vals = {
             "name": _("Self Appointment"),
             "patient_id": patient.id,
-            "performer_id": int(post.get("practitioner_id")),
+            "performer_id": performer_id,
             "start": start.strftime("%Y-%m-%d %H:%M:%S"),
             "stop": stop.strftime("%Y-%m-%d %H:%M:%S"),
             "description": post.get("description"),
@@ -177,3 +182,31 @@ class AppointmentController(http.Controller):
             if tel:
                 search = search + ["|", ("mobile", "in", tel), ("phone", "in", tel)]
         return search
+
+    @http.route("/appointment/check", auth="public")
+    def appointment_check(self, performer_id, start_date, start_time):
+        tz = timezone(request.env.user.tz or "UTC")
+        try:
+            dt = fields.Datetime.to_datetime("%s %s" % (start_date, start_time))
+            start = tz.localize(dt)
+        except ValueError:
+            return exceptions.BadRequest("Invalid Datetime format")
+
+        emp = request.env["hr.employee"].browse(int(performer_id))
+        return json.dumps({"count": self._get_appointment_count(emp, start)})
+
+    def _get_appointment_count(self, emp, start):
+        if start.minute not in [0, 30]:
+            m = start.minute
+            if m > 30:
+                m = m - 30
+            start = start - relativedelta(minutes=m)
+        stop = start + relativedelta(minutes=30)
+        return request.env["ni.appointment"].search_count(
+            [
+                ("performer_id", "=", emp.id),
+                ("state", "in", ["draft", "active"]),
+                ("start", "<", stop.astimezone(utc)),
+                ("stop", ">", start.astimezone(utc)),
+            ]
+        )
