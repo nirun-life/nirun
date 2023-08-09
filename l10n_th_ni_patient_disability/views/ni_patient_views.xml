@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='history']" position="inside">
+                <group string="Disability">
+                    <field name="disability_ids" widget="many2many_checkboxes" />
+                    <field name="disability_count" />
+                    <label for="disability_card" attrs="{'invisible': [('disability_ids', '&lt;=', 0)]}" />
+                    <div attrs="{'invisible': [('disability_ids', '&lt;=', 0)]}">
+                        <div>
+                            <field name="disability_card" widget="boolean_toggle" class="oe_edit_only" />
+                            <span attrs="{'invisible': [('disability_card', '=', False)]}">Have</span>
+                            <span attrs="{'invisible': [('disability_card', '=', True)]}">Not Have</span>
+                        </div>
+                        <field
+                            name="disability_card_reason"
+                            placeholder="Reason why patient not have disability card"
+                            attrs="{'invisible': [('disability_card', '=', True)],
+                             'required': [('disability_count', '>', 0), ('disability_card', '=', False)]}"
+                        />
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_patient_view_tree_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.view.tree.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_tree" />
+        <field name="arch" type="xml">
+            <field name="mobile" position="after">
+                <field name="disability_display" optional="show" />
+            </field>
+        </field>
+    </record>
+</odoo>
