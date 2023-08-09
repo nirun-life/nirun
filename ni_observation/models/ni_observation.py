@@ -152,13 +152,18 @@ class Observation(models.Model):
                 case "float":
                     rec.value_float = float(rec.value)
                 case "code_id":
-                    code = self.env["ni.observation.value.code"].search(
-                        [
-                            ("type_id", "=", rec.type_id.id),
-                            ("name", "ilike", rec.value),
-                        ],
-                        limit=1,
-                    )
+                    if rec.value.isnumeric():
+                        code = self.env["ni.observation.value.code"].browse(
+                            int(rec.value)
+                        )
+                    else:
+                        code = self.env["ni.observation.value.code"].search(
+                            [
+                                ("type_id", "=", rec.type_id.id),
+                                ("name", "ilike", rec.value),
+                            ],
+                            limit=1,
+                        )
                     if code:
                         rec.update(
                             {
