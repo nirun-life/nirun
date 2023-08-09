@@ -132,4 +132,57 @@
         <field name="unit_id" ref="uom_%" />
         <field name="category_id" ref="category_laboratory" />
     </record>
+    <record model="ni.observation.type" id="type_blood_abo_rh">
+        <field name="code">abo-rh</field>
+        <field name="name">ABO and Rh group</field>
+        <field name="value_type">char</field>
+    </record>
+    <record model="ni.observation.type" id="type_blood_abo">
+        <field name="code">abo</field>
+        <field name="name">ABO Group</field>
+        <field name="parent_id" ref="ni_observation.type_blood_abo_rh" />
+        <field name="value_type">code_id</field>
+        <field name="category_id" ref="category_laboratory" />
+    </record>
+    <record model="ni.observation.value.code" id="code_blood_a">
+        <field name="name">A</field>
+        <field name="code">blood-a</field>
+        <field name="type_id" ref="ni_observation.type_blood_abo" />
+    </record>
+    <record model="ni.observation.value.code" id="code_blood_b">
+        <field name="name">B</field>
+        <field name="code">blood-b</field>
+        <field name="type_id" ref="ni_observation.type_blood_abo" />
+    </record>
+    <record model="ni.observation.value.code" id="code_blood_o">
+        <field name="name">O</field>
+        <field name="code">blood-o</field>
+        <field name="type_id" ref="ni_observation.type_blood_abo" />
+    </record>
+    <record model="ni.observation.value.code" id="code_blood_ab">
+        <field name="name">AB</field>
+        <field name="code">blood-ab</field>
+        <field name="type_id" ref="ni_observation.type_blood_abo" />
+    </record>
+    <record model="ni.observation.value.code" id="code_positive">
+        <field name="name">Positive</field>
+        <field name="abbr">+</field>
+        <field name="code">positive</field>
+    </record>
+    <record model="ni.observation.value.code" id="code_negative">
+        <field name="name">Negative</field>
+        <field name="abbr">-</field>
+        <field name="code">negative</field>
+    </record>
+    <record model="ni.observation.type" id="type_blood_rh">
+        <field name="code">rh</field>
+        <field name="name">RH Blood Type</field>
+        <field name="parent_id" ref="ni_observation.type_blood_abo_rh" />
+        <field name="value_type">code_id</field>
+        <field
+            name="value_code_ids"
+            eval="[(4, ref('ni_observation.code_negative')), (4, ref('ni_observation.code_positive'))]"
+        />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
 </odoo>
