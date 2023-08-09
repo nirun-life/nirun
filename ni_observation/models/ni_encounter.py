@@ -1,4 +1,5 @@
 #  Copyright (c) 2021-2023. NSTDA
+import pprint
 
 from odoo import api, fields, models
 
@@ -52,22 +53,22 @@ class Encounter(models.Model):
                 value = vals[f]
                 if type(value) is float:
                     value = round(value, 2)
-                vals_list.append(self._observation_vals(ts, ob_type.id, value))
+                vals_list.append(self._observation_vals(ts, ob_type, value))
         if ("body_height" in vals or "body_weight" in vals) and self.bmi:
             # write BMI if any change
             bmi_type = types.search([("code", "=", "bmi")])
-            vals_list.append(
-                self._observation_vals(ts, bmi_type.id, round(self.bmi, 2))
-            )
+            vals_list.append(self._observation_vals(ts, bmi_type, round(self.bmi, 2)))
         if vals_list:
+            pprint.pprint(vals_list)
             return self.env["ni.observation"].create(vals_list)
 
-    def _observation_vals(self, occurrence, type_id, value):
+    def _observation_vals(self, occurrence, type, value):
         return {
             "occurrence": occurrence,
             "patient_id": self.patient_id.id,
             "encounter_id": self.id,
-            "type_id": type_id,
+            "type_id": type.id,
+            "value_type": type.value_type,
             "value": value,
         }
 

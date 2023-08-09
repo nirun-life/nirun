@@ -7,4 +7,4 @@ class ObservationType(models.Model):
     _description = "Observation Category"
     _inherit = ["ni.coding"]
 
-    type_id = fields.Many2one("ni.observation.type", required=True, ondelete="cascade")
+    type_id = fields.Many2one("ni.observation.type", required=False, ondelete="cascade")
