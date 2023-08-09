@@ -1,0 +1,26 @@
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <menuitem id="coverage_menu_section" name="Coverage" parent="ni_patient.configuration_menu" />
+    <menuitem
+        id="insurance_plan_menu"
+        name="Insurance Plan"
+        action="ni_insurance_plan_action"
+        parent="coverage_menu_section"
+    />
+    <menuitem id="coverage_type_menu" name="Type" action="ni_coverage_type_action" parent="coverage_menu_section" />
+    <menuitem
+        id="coverage_copay_type_menu"
+        name="Copay Type"
+        action="ni_coverage_copay_action"
+        parent="coverage_menu_section"
+    />
+    <menuitem
+        id="coverage_menu"
+        name="Coverage"
+        action="ni_coverage_action"
+        parent="coverage_menu_section"
+        groups="base.group_no_one"
+    />
+</odoo>
