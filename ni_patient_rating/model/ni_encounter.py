@@ -12,7 +12,7 @@ class Encounter(models.Model):
 
     @api.depends("rating_ids")
     def _compute_rating_link(self):
-        base_url = self.env["ir.config_parameter"].get_param("web.base.url")
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         for rec in self:
             if not rec.rating_count:
                 rec.rating_link = "%s/rate/%s/5" % (
