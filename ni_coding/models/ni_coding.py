@@ -85,6 +85,8 @@ class Coding(models.AbstractModel):
             name = "{} ({})".format(name, coding.abbr)
         if self._context.get("show_code") and self.code:
             name = "[{}] {}".format(coding.code, name)
+        if self._context.get("only_abbr") and self.abbr:
+            name = coding.abbr
         return name
 
     def copy(self, default=None):
