@@ -13,7 +13,7 @@
                 <separator string="Medication Statement" />
                 <field
                     name="medication_statement_ids"
-                    context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
+                    context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'default_category_id': %(ni_medication.admin_location_patient_specified)d, }"
                 />
             </xpath>
             <xpath expr="//page[@name='medication']" position="attributes">
@@ -22,8 +22,7 @@
             <xpath expr="//page[@name='medication']" position="inside">
                 <field
                     name="medication_dispense_ids"
-                    context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'default_dose': 1.0}"
-                    mode="kanban"
+                    context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'default_dose': 1.0, 'default_category_id': %(ni_medication.admin_location_community)d}"
                 />
                 <field name="medication_dispense_count" invisible="1" />
             </xpath>

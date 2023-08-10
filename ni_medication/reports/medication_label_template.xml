@@ -1,5 +1,5 @@
 <odoo>
-    <template id="medicine_layout">
+    <template id="medicine_label_layout">
         <div
             t-attf-class="article o_report_layout_standard o_company_#{o.company_id}_layout }}"
             t-att-data-oe-model="o and o._name"
@@ -9,10 +9,10 @@
             <t t-out="0" />
         </div>
     </template>
-    <template id="report_op_label">
+    <template id="medication_label">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-call="ni_medication.medicine_layout">
+                <t t-call="ni_medication.medicine_label_layout">
                     <div class="page">
                         <div class="container">
                             <div id="header" class="row " t-attf-style="color:{{o.company_id.primary_color}}">
@@ -70,6 +70,10 @@
                             </div>
                             <div id="dosage" class="row mt-2">
                                 <div class="col-6">
+                                    <p t-it="o.reason_id">
+                                        <b>ข้อบ่งใช้</b>
+                                        <span t-field="o.reason_id" />
+                                    </p>
                                     <p>
                                         <span t-field="o.dosage_id" />
                                     </p>
@@ -82,7 +86,9 @@
                                         t-att-src="'/report/barcode/QR/%s' % 'My text in qr code'"
                                         style="width:95px;height:95px"
                                     />
-                                    <div class="mt-2">นพ. ชาติชาย รักษาชนะ</div>
+                                    <div class="mt-2">
+                                        <span t-field="o.encounter_id.performer_id" />
+                                    </div>
                                 </div>
                             </div>
                             <div class="row my-2">

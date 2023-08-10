@@ -1,5 +1,5 @@
 <odoo>
-    <record id="paperformat_op_label" model="report.paperformat">
+    <record id="paperformat_medication_label" model="report.paperformat">
         <field name="name">Medicine Label</field>
         <field name="default" eval="True" />
         <field name="format">custom</field>
@@ -14,13 +14,13 @@
         <field name="header_spacing">5</field>
         <field name="dpi">150</field>
     </record>
-    <record id="action_report_op_label" model="ir.actions.report">
+    <record id="action_report_medication_dispense_label" model="ir.actions.report">
         <field name="name">Medicine Label</field>
         <field name="model">ni.medication.dispense</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">ni_medication.report_op_label</field>
-        <field name="report_file">ni_medication.report_op_label</field>
-        <field name="paperformat_id" ref="ni_medication.paperformat_op_label" />
+        <field name="report_name">ni_medication.medication_label</field>
+        <field name="report_file">ni_medication.medication_label</field>
+        <field name="paperformat_id" ref="ni_medication.paperformat_medication_label" />
         <field name="binding_model_id" eval="False" />
         <field name="binding_type">report</field>
     </record>

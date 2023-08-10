@@ -11,6 +11,10 @@ class MedicationDispense(models.Model):
         "ni.identifier.mixin",
         "mail.thread",
     ]
+    reason_ids = fields.Many2many(related="encounter_id.reason_ids")
+    reason_id = fields.Many2one(
+        "ni.encounter.reason", "Indication", domain="[('id', 'in', reason_ids)]"
+    )
     quantity = fields.Float(required=True)
     quantity_display = fields.Char(compute="_compute_quantity_display")
     days_supply = fields.Integer()
@@ -54,4 +58,6 @@ class MedicationDispense(models.Model):
         return super(MedicationDispense, self).write(vals)
 
     def action_print_label(self):
-        return self.env.ref("ni_medication.action_report_op_label").report_action(self)
+        return self.env.ref(
+            "ni_medication.action_report_medication_dispense_label"
+        ).report_action(self)
