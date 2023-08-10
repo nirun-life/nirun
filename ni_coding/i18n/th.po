@@ -6,14 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-25 09:36+0000\n"
-"PO-Revision-Date: 2023-05-25 09:36+0000\n"
+"POT-Creation-Date: 2023-08-10 10:41+0000\n"
+"PO-Revision-Date: 2023-08-10 10:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: ni_coding
+#: model:ir.model.fields,field_description:ni_coding.field_ni_coding__abbr
+msgid "Abbreviation"
+msgstr "คำย่อ"
 
 #. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding__active
@@ -63,7 +68,7 @@ msgstr "สร้างเมื่อ"
 #. module: ni_coding
 #: model:ni.coding.system,name:ni_coding.system_dicom
 msgid "DICOM"
-msgstr "DICOM"
+msgstr ""
 
 #. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding__definition
@@ -78,22 +83,22 @@ msgstr "ชื่อแสดง"
 #. module: ni_coding
 #: model:ni.coding.system,name:ni_coding.system_hl7_fhir
 msgid "HL7 FHIR"
-msgstr "HL7 FHIR"
+msgstr ""
 
 #. module: ni_coding
 #: model:ni.coding.system,name:ni_coding.system_hl7_v2
 msgid "HL7 V2"
-msgstr "HL7 V2"
+msgstr ""
 
 #. module: ni_coding
 #: model:ni.coding.system,name:ni_coding.system_hl7_v3
 msgid "HL7 V3"
-msgstr "HL7 V3"
+msgstr ""
 
 #. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__id
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #. module: ni_coding
 #: model:ni.coding.system,name:ni_coding.system_internal
@@ -103,7 +108,7 @@ msgstr "ภายใน"
 #. module: ni_coding
 #: model:ni.coding.system,name:ni_coding.system_loinc
 msgid "LOINC"
-msgstr "LOINC"
+msgstr ""
 
 #. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system____last_update
@@ -134,7 +139,7 @@ msgstr "อื่นๆ"
 #. module: ni_coding
 #: model:ni.coding.system,name:ni_coding.system_snomed
 msgid "SNOMED"
-msgstr "SNOMED"
+msgstr ""
 
 #. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding__sequence
@@ -148,21 +153,104 @@ msgid "System"
 msgstr "มาตรฐาน"
 
 #. module: ni_coding
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_coding__system_code___uniq
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_dow__system_code___uniq
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_event__system_code___uniq
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_template__system_code___uniq
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_tod__system_code___uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_hr_employee_category_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_hr_resume_line_code_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_allergy_code_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_appointment_cancel_reason_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_appointment_instruction_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_appointment_type_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_coding_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_communication_category_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_communication_content_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_condition_class_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_condition_code_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_condition_verification_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_coverage_copay_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_coverage_type_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_disability_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_document_ref_category_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_document_ref_type_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_admit_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_arrangement_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_class_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_courtesy_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_diagnosis_role_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_diet_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_discharge_disposition_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_discharge_status_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_reason_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_insurance_plan_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_location_type_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_admin_location_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_dosage_additional_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_dosage_method_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_dosage_route_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_dosage_site_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_form_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_unit_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_observation_category_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_observation_interpretation_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_observation_type_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_observation_value_code_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_participant_type_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_procedure_category_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_procedure_code_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_procedure_outcome_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_dow_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_event_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_template_system_code_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_tod_system_code_uniq
 msgid "This code already exists!"
-msgstr "รหัสที่ระบุมีอยู่แล้ว"
+msgstr "รหัสนี้มีอยู่แล้ว"
 
 #. module: ni_coding
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_coding__system_name__uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_hr_employee_category_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_hr_resume_line_code_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_allergy_code_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_appointment_cancel_reason_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_appointment_instruction_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_appointment_type_system_name_uniq
 #: model:ir.model.constraint,message:ni_coding.constraint_ni_coding_system_name__uniq
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_dow__system_name__uniq
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_event__system_name__uniq
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_template__system_name__uniq
-#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_tod__system_name__uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_coding_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_communication_category_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_communication_content_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_condition_class_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_condition_verification_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_coverage_copay_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_coverage_type_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_disability_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_document_ref_category_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_document_ref_type_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_admit_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_arrangement_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_class_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_courtesy_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_diagnosis_role_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_diet_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_discharge_disposition_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_discharge_status_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_encounter_reason_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_insurance_plan_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_location_type_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_admin_location_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_dosage_additional_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_dosage_method_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_dosage_route_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_dosage_site_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_form_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_medication_unit_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_observation_category_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_observation_interpretation_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_observation_type_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_observation_value_code_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_participant_type_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_procedure_category_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_procedure_code_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_procedure_outcome_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_dow_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_event_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_template_system_name_uniq
+#: model:ir.model.constraint,message:ni_coding.constraint_ni_timing_tod_system_name_uniq
 msgid "This name already exists!"
 msgstr "ชื่อที่ระบุมีอยู่แล้ว"
 
@@ -174,11 +262,10 @@ msgstr "Url นี้มีอยู่แล้ว"
 #. module: ni_coding
 #: model:ni.coding.system,name:ni_coding.system_ucum
 msgid "UCUM"
-msgstr "UCUM"
+msgstr ""
 
 #. module: ni_coding
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding__system
 #: model:ir.model.fields,field_description:ni_coding.field_ni_coding_system__url
 msgid "Url"
-msgstr "Url"
-
+msgstr ""
