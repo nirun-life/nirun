@@ -88,9 +88,21 @@
                                 <b t-esc="o.patient_id.name" />
                             </span>
                             <br />
-                            Age
-                            <span t-field="o.patient_id.display_age" />
-                            <!-- TODO Add blood group here -->
+                            <span>
+                                <t t-if="o.patient_id.display_age">
+                                    <span class="me-2">
+                                        Age
+                                        <t t-out="o.patient_id.display_age" />
+                                    </span>
+                                </t>
+                                <t t-if="o.abo">
+                                    <span>
+                                        <b class="me-1">Blood Group</b>
+                                        <t t-out="o.abo.name" />
+                                        <t t-out="o.rh.abbr or o.rh.name" t-if="o.rh" />
+                                    </span>
+                                </t>
+                            </span>
                             <br />
                             <span t-esc="o.patient_id.partner_id._display_address(without_company=True)" />
                             <br />
@@ -114,12 +126,10 @@
                                     <td>
                                         <b>Allergy</b>
                                     </td>
-                                    <td>
+                                    <td class="w-100">
                                         <t t-foreach="o.patient_id.allergy_ids" t-as="allergy">
-                                            <span t-esc="allergy.code_id.name" />
-                                            <t t-if="not allergy_last">
-                                                <span class="me-1">,</span>
-                                            </t>
+                                            <t t-esc="allergy.code_id.name" />
+                                            <t t-if="not allergy_last" t-esc="','" />
                                         </t>
                                     </td>
                                 </tr>
@@ -127,25 +137,27 @@
                                     <td>
                                         <b>Problem</b>
                                     </td>
-                                    <td>
+                                    <td class="w-100">
                                         <t t-foreach="o.patient_id.condition_problem_ids" t-as="condition">
-                                            <span t-esc="condition.code_id.name" />
-                                            <t t-if="not condition_last">
-                                                <span class="me-1">,</span>
-                                            </t>
+                                            <t t-esc="condition.code_id.name" />
+                                            <t t-if="not condition_last" t-esc="', '" />
                                         </t>
                                     </td>
                                 </tr>
                             </table>
                             <div class="text-start">
-                                <b>Coverage :</b>
-                                <!-- TODO remove mock -->
-                                <span class="ms-2" />
-                                <br />
-                                <b>Contract :</b>
-                                <!-- TODO remove mock -->
-                                <span class="ms-2">นางกวี มารักษา</span>
-                                <br />
+                                <t t-if="o.patient_id.coverage_type_ids">
+                                    <b>Coverage :</b>
+                                    <span class="ms-2">
+                                        <t t-foreach="o.patient_id.coverage_type_ids" t-as="cov">
+                                            <t t-out="cov.name" />
+                                            <t t-if="not cov_last">
+                                                <span class="me-1">,</span>
+                                            </t>
+                                        </t>
+                                    </span>
+                                    <br />
+                                </t>
                                 <b>Record By :</b>
                                 <span class="ms-2" t-field="o.patient_id.write_uid" />
                                 <span class="ms-1" t-field="o.patient_id.write_date" />
