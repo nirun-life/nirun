@@ -1,0 +1,236 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ni_patient_rating
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-10 10:23+0000\n"
+"PO-Revision-Date: 2023-08-10 10:23+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: ni_patient_rating
+#: model:mail.template,body_html:ni_patient_rating.rating_ni_encounter_email_template
+msgid ""
+"<div>\n"
+"                <t t-set=\"access_token\" t-value=\"object._rating_get_access_token()\"></t>\n"
+"                <t t-set=\"partner\" t-value=\"object._rating_get_partner()\"></t>\n"
+"                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"width:100%; margin:0px auto;\">\n"
+"                    <tbody>\n"
+"                        <tr>\n"
+"                            <td valign=\"top\" style=\"font-size: 13px;\">\n"
+"                                <t t-if=\"partner.name\">\n"
+"                                    Hello\n"
+"                                    <t t-out=\"partner.name or ''\">Patient</t>\n"
+"                                    ,\n"
+"                                    <br>\n"
+"                                    <br>\n"
+"                                </t>\n"
+"                                Please take a moment to rate our\n"
+"                                <strong t-out=\"object.class_id.name\"></strong>\n"
+"                                service [\n"
+"                                <t t-out=\"object.identifier\"></t>\n"
+"                                ] at\n"
+"                                <span t-field=\"object.period_start\"></span>\n"
+"                                <br>\n"
+"                                performed by\n"
+"                                <strong t-out=\"object.performer_id.name or ''\">Our staff</strong>\n"
+"                                .\n"
+"                                <br>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                        <tr>\n"
+"                            <td style=\"text-align: center;\">\n"
+"                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" summary=\"o_mail_notification\" style=\"width:100%; margin: 32px 0px 32px 0px;\">\n"
+"                                    <tr>\n"
+"                                        <td style=\"font-size: 13px;\">\n"
+"                                            <strong>Tell us how you feel about our service</strong>\n"
+"                                            <br>\n"
+"                                            <span style=\"text-color: #888888\">(click on one of these smileys)</span>\n"
+"                                        </td>\n"
+"                                    </tr>\n"
+"                                    <tr>\n"
+"                                        <td style=\"font-size: 13px;\">\n"
+"                                            <table style=\"width:100%;text-align:center;margin-top:2rem;\">\n"
+"                                                <tr>\n"
+"                                                    <td>\n"
+"                                                        <a t-attf-href=\"/rate/{{ access_token }}/5\">\n"
+"                                                            <img alt=\"Satisfied\" src=\"/rating/static/src/img/rating_5.png\" title=\"Satisfied\">\n"
+"                                                        </a>\n"
+"                                                    </td>\n"
+"                                                    <td>\n"
+"                                                        <a t-attf-href=\"/rate/{{ access_token }}/3\">\n"
+"                                                            <img alt=\"Okay\" src=\"/rating/static/src/img/rating_3.png\" title=\"Okay\">\n"
+"                                                        </a>\n"
+"                                                    </td>\n"
+"                                                    <td>\n"
+"                                                        <a t-attf-href=\"/rate/{{ access_token }}/1\">\n"
+"                                                            <img alt=\"Dissatisfied\" src=\"/rating/static/src/img/rating_1.png\" title=\"Dissatisfied\">\n"
+"                                                        </a>\n"
+"                                                    </td>\n"
+"                                                </tr>\n"
+"                                            </table>\n"
+"                                        </td>\n"
+"                                    </tr>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                        <tr>\n"
+"                            <td valign=\"top\" style=\"font-size: 13px;\">\n"
+"                                We appreciate your feedback. It helps us to improve continuously.\n"
+"                                <br>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                    </tbody>\n"
+"                </table>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div>\n"
+"                <t t-set=\"access_token\" t-value=\"object._rating_get_access_token()\"></t>\n"
+"                <t t-set=\"partner\" t-value=\"object._rating_get_partner()\"></t>\n"
+"                <table style=\"box-sizing:border-box;border-collapse:collapse;caption-side:bottom;width:100%; margin:0px auto;\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
+"                    <tbody style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\">\n"
+"                        <tr style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\">\n"
+"                            <td style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;font-size: 13px;\" valign=\"top\">\n"
+"                                สวัสดี<t t-out=\"partner.name or ''\"></t>,\n"
+"                                <br>\n"
+"                                <br>\n"
+"\n"
+"                                ช่วยสละเวลาเพื่อให้คะแนนกับการบริการ<t t-out=\"object.class_id.name\"></t> <t t-out=\"object.identifier\"></t> เมื่อ <span t-field=\"object.period_start\"></span>\n"
+"                                <br>\n"
+"                                โดย <t t-out=\"object.performer_id.name\"></t>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                        <tr style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\">\n"
+"                            <td style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;text-align: center;\">\n"
+"                                <table summary=\"o_mail_notification\" style=\"box-sizing: border-box; border-collapse: collapse; caption-side: bottom; width: 100%; margin: 32px 0px; text-align: center;\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
+"                                    <tbody style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\"><tr style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\">\n"
+"                                        <td style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;font-size: 13px;\">\n"
+"                                            <strong style=\"box-sizing:border-box;font-weight:500;\">บอกเราว่าคุณรู้สึกอย่างไร</strong>\n"
+"                                            <br>\n"
+"                                            <span style=\"text-color: #888888\">(click on one of these smileys)</span>\n"
+"                                        </td>\n"
+"                                    </tr>\n"
+"                                    <tr style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\">\n"
+"                                        <td style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;font-size: 13px;\">\n"
+"                                            <table style=\"box-sizing: border-box; border-collapse: collapse; caption-side: bottom; width: 100%; text-align: center; margin-top: 24px; font-size: 13px;\" width=\"100%\">\n"
+"                                                <tbody style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\"><tr style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\">\n"
+"                                                    <td style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\">\n"
+"                                                        <a t-attf-href=\"/rate/{{ access_token }}/5\" style=\"text-decoration: none; box-sizing: border-box; color: #66598f;\">\n"
+"                                                            <img alt=\"Satisfied\" src=\"/rating/static/src/img/rating_5.png\" title=\"Satisfied\" style=\"box-sizing: border-box; vertical-align: middle; height: 69px;\" height=\"69\">\n"
+"                                                        </a>\n"
+"                                                    </td>\n"
+"                                                    <td style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\">\n"
+"                                                        <a t-attf-href=\"/rate/{{ access_token }}/3\" style=\"text-decoration: none; box-sizing: border-box; color: #66598f;\">\n"
+"                                                            <img alt=\"Okay\" src=\"/rating/static/src/img/rating_3.png\" title=\"Okay\" style=\"box-sizing: border-box; vertical-align: middle; height: 69px;\" height=\"69\">\n"
+"                                                        </a>\n"
+"                                                    </td>\n"
+"                                                    <td style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\">\n"
+"                                                        <a t-attf-href=\"/rate/{{ access_token }}/1\" style=\"text-decoration: none; box-sizing: border-box; color: #66598f;\">\n"
+"                                                            <img alt=\"Dissatisfied\" src=\"/rating/static/src/img/rating_1.png\" title=\"Dissatisfied\" style=\"box-sizing: border-box; vertical-align: middle; height: 69px;\" height=\"69\">\n"
+"                                                        </a>\n"
+"                                                    </td>\n"
+"                                                </tr>\n"
+"                                            </tbody></table>\n"
+"                                        </td>\n"
+"                                    </tr>\n"
+"                                </tbody></table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                        <tr style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;\">\n"
+"                            <td style=\"border-style:solid;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-left-color:inherit;border-bottom-color:inherit;border-right-color:inherit;border-top-color:inherit;font-size: 13px;\" valign=\"top\">\n"
+"                                We appreciate your feedback. It helps us to improve continuously.\n"
+"                                <br>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                    </tbody>\n"
+"                </table>\n"
+"            </div>\n"
+"        "
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_avg
+msgid "Average Rating"
+msgstr "คะแนนเฉลี่ย"
+
+#. module: ni_patient_rating
+#: model:ir.model,name:ni_patient_rating.model_ni_encounter
+msgid "Encounter"
+msgstr "ข้อมูลรับบริการ"
+
+#. module: ni_patient_rating
+#: model:mail.template,name:ni_patient_rating.rating_ni_encounter_email_template
+msgid "Encounter: Rating Request"
+msgstr "การรับบริการ: ข้อเสนอแนะ"
+
+#. module: ni_patient_rating
+#: model_terms:ir.ui.view,arch_db:ni_patient_rating.ni_encounter_view_form_inherit
+msgid "Feedback"
+msgstr "ข้อเสนอแนะ"
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_link
+msgid "Link"
+msgstr ""
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_qrcode
+msgid "QR Code"
+msgstr ""
+
+#. module: ni_patient_rating
+#. odoo-python
+#: code:addons/ni_patient_rating/model/ni_encounter.py:0
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_ids
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_last_value
+#: model_terms:ir.ui.view,arch_db:ni_patient_rating.ni_encounter_view_form_inherit
+#, python-format
+msgid "Rating"
+msgstr "คะแนน"
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_avg_text
+msgid "Rating Avg Text"
+msgstr "คะแนนเฉลี่ย"
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_last_feedback
+msgid "Rating Last Feedback"
+msgstr "ข้อเสนอแนะ"
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_last_image
+msgid "Rating Last Image"
+msgstr ""
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_percentage_satisfaction
+msgid "Rating Satisfaction"
+msgstr "ความพึงพอใจ"
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_last_text
+msgid "Rating Text"
+msgstr "คะแนน"
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_count
+msgid "Rating count"
+msgstr "จำนวนการให้คะแนน"
+
+#. module: ni_patient_rating
+#: model:ir.actions.act_window,name:ni_patient_rating.rating_rating_action_my_model
+msgid "Ratings"
+msgstr "คะแนน"
+
+#. module: ni_patient_rating
+#: model:mail.template,subject:ni_patient_rating.rating_ni_encounter_email_template
+msgid "{{ object.company_id.name }}: Satisfaction Survey"
+msgstr "{{ object.company_id.name }}: ประเมินความพึงพอใจ"
