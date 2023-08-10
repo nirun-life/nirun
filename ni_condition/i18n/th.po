@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 13.0\n"
+"Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-01 04:22+0000\n"
-"PO-Revision-Date: 2022-12-01 04:22+0000\n"
+"POT-Creation-Date: 2023-08-10 10:52+0000\n"
+"PO-Revision-Date: 2023-08-10 10:52+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,40 +16,86 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: ni_condition
-#: model_terms:ir.ui.view,arch_db:ni_condition.condition_view_form
+#: model:ni.condition.verification,definition:ni_condition.verify_differential
+msgid ""
+"\n"
+"            One of a set of potential (and typically mutually exclusive) diagnoses asserted to further guide the\n"
+"            diagnostic process and preliminary treatment.\n"
+"        "
+msgstr ""
+
+#. module: ni_condition
+#: model:ni.condition.verification,definition:ni_condition.verify_unconfirmed
+msgid ""
+"\n"
+"            There is not sufficient diagnostic and/or clinical evidence to treat this as a confirmed condition.\n"
+"        "
+msgstr ""
+
+#. module: ni_condition
+#: model:ni.condition.verification,definition:ni_condition.verify_confirmed
+msgid ""
+"\n"
+"            There is sufficient diagnostic and/or clinical evidence to treat this as a confirmed condition.\n"
+"        "
+msgstr ""
+
+#. module: ni_condition
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
 msgid ""
 "<i class=\"fa fa-fw fa-arrow-right mx-2 oe_edit_only\" aria-label=\"arrow-"
 "icon\" title=\"to\"/>"
 msgstr ""
 
 #. module: ni_condition
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
+msgid "<span class=\"fa fa-clock-o ml-2\" title=\"Duration\"/>"
+msgstr ""
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__period_end
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__period_end
-#: model_terms:ir.ui.view,arch_db:ni_condition.condition_view_form
-msgid "Abatement Date"
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__period_end
+msgid "Abatement"
 msgstr "หายเมื่อ"
+
+#. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__period_end_date
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__period_end_date
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__period_end_date
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
+msgid "Abatement Date"
+msgstr "วันที่หาย"
+
+#. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__abbr
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__abbr
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__abbr
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__abbr
+msgid "Abbreviation"
+msgstr "ตัวย่อ"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__active
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__active
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__active
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__active
 msgid "Active"
 msgstr "เปิดใช้งาน"
 
 #. module: ni_condition
-#: model_terms:ir.ui.view,arch_db:ni_condition.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_encounter_diagnosis_view_tree
 msgid "Add diagnosis"
-msgstr "เพิ่มวินิจฉัย"
+msgstr "เพิ่มผลวินิจฉัย"
 
 #. module: ni_condition
-#: model_terms:ir.ui.view,arch_db:ni_condition.ni_encounter_view_form_inherit
-msgid "Add diagnosis & problem"
-msgstr "เพิ่มวินิจฉัย"
-
-#. module: ni_condition
-#: model_terms:ir.ui.view,arch_db:ni_condition.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_tree
 msgid "Add problem"
-msgstr "เพิ่มปัญหา"
+msgstr "เพิ่มรายการปัญหา"
+
+#. module: ni_condition
+#: model:ni.encounter.diagnosis.role,name:ni_condition.encounter_dx_role_ad
+msgid "Admission diagnosis"
+msgstr "วินิจฉัยแรกรับ"
 
 #. module: ni_condition
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_class_view_form
@@ -62,29 +108,31 @@ msgid "Archived"
 msgstr "ถูกเก็บ"
 
 #. module: ni_condition
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__category
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__category
-msgid "Category"
-msgstr "หมวด"
+#: model:ni.encounter.diagnosis.role,name:ni_condition.encounter_dx_role_cc
+msgid "Chief complaint"
+msgstr "อาการสำคัญ"
 
 #. module: ni_condition
-#: code:addons/ni_condition/models/condition.py:0
-#, python-format
-msgid "Chronic"
-msgstr "โรคเรื้อรัง"
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__class_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__class_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__class_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__class_id
+msgid "Class"
+msgstr "ประเภท"
 
 #. module: ni_condition
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__classification_id
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__classification_id
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__classification_id
 #: model:ir.ui.menu,name:ni_condition.ni_condition_class_menu
 msgid "Classification"
 msgstr "ประเภท"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__code
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__code
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__code
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__code
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__code
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__code
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__code
 msgid "Code"
 msgstr "รหัส"
 
@@ -92,17 +140,27 @@ msgstr "รหัส"
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__color
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__color
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__color
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__color
 msgid "Color"
 msgstr "สี"
 
 #. module: ni_condition
+#: model:ni.encounter.diagnosis.role,name:ni_condition.encounter_dx_role_cm
+msgid "Comorbidity diagnosis"
+msgstr "อาการ/โรคร่วม"
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__company_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__company_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__company_id
 msgid "Company"
 msgstr "บริษัท"
 
 #. module: ni_condition
 #: model:ir.model,name:ni_condition.model_ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter__condition_ids
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__condition_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_patient__condition_ids
 msgid "Condition"
 msgstr "โรค/ปัญหา"
 
@@ -126,21 +184,24 @@ msgid "Condition Classification"
 msgstr "ประเภท"
 
 #. module: ni_condition
-#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter__condition_ref
-msgid "Condition Ref"
-msgstr "อ้างอิง"
-
-#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter__condition_report_ids
 #: model:ir.model.fields,field_description:ni_condition.field_ni_patient__condition_report_ids
 msgid "Condition Report"
 msgstr "รายงานโรค/ปัญหา"
 
 #. module: ni_condition
-#: model:ir.model,name:ni_condition.model_ni_condition_verification
 #: model:ir.actions.act_window,name:ni_condition.ni_condition_verification_action
+#: model:ir.model,name:ni_condition.model_ni_condition_verification
 msgid "Condition Verification"
 msgstr "การยืนยันโรค/ปัญหา"
+
+#. module: ni_condition
+#. odoo-python
+#: code:addons/ni_condition/models/ni_encounter_diagnosis.py:0
+#: model:ir.model.constraint,message:ni_condition.constraint_ni_encounter_diagnosis_encounter_condition_uniq
+#, python-format
+msgid "Condition must be unique!"
+msgstr "รายการปัญหาต้องไม่ซ้ำกัน"
 
 #. module: ni_condition
 #: model:ir.actions.act_window,name:ni_condition.ni_condition_action
@@ -149,30 +210,48 @@ msgid "Conditions"
 msgstr "โรค/ปัญหา"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__verification__confirmed
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__verification__confirmed
 #: model:ni.condition.verification,name:ni_condition.verify_confirmed
 msgid "Confirmed"
 msgstr "ยืนยัน"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__create_uid
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__create_uid
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__create_uid
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__create_uid
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__create_uid
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__create_uid
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__create_uid
 msgid "Created by"
-msgstr "สร้างโดย"
+msgstr "ผู้บันทึก"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__create_date
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__create_date
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__create_date
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__create_date
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__create_date
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__create_date
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__create_date
 msgid "Created on"
-msgstr "สร้างเมื่อ"
+msgstr "บันทึกเมื่อ"
+
+#. module: ni_condition
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_encounter_diagnosis_role__decoration__danger
+msgid "Danger"
+msgstr ""
+
+#. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__role_decoration
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__decoration
+msgid "Decoration"
+msgstr ""
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__definition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__definition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__definition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__definition
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_class_view_form
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_code_view_form
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_verification_view_form
@@ -180,51 +259,97 @@ msgid "Definition"
 msgstr "คำนิยาม"
 
 #. module: ni_condition
-#: code:addons/ni_condition/models/condition.py:0
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__is_diagnosis
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__is_diagnosis
-#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter__condition_ids
-#: model_terms:ir.ui.view,arch_db:ni_condition.ni_encounter_view_form_inherit
+#. odoo-python
+#: code:addons/ni_condition/models/ni_condition.py:0
+#: model:ir.model,name:ni_condition.model_ni_encounter_diagnosis
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__diagnosis_ids
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__diagnosis_ids
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter__diagnosis_ids
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__diagnosis_ids
 #, python-format
 msgid "Diagnosis"
 msgstr "วินิจฉัย"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__verification__differential
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__verification__differential
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter__diagnosis_count
+msgid "Diagnosis Count"
+msgstr "จำนวนผลวินิจฉัย"
+
+#. module: ni_condition
+#: model:ir.model,name:ni_condition.model_ni_encounter_diagnosis_role
+msgid "Diagnosis Role"
+msgstr "ประเภทวินิจฉัย"
+
+#. module: ni_condition
+#. odoo-python
+#: code:addons/ni_condition/models/ni_encounter.py:0
+#, python-format
+msgid "Diagnosis as [{}] has reached limit at {} item"
+msgstr "การวินิจฉัยประเภท [{}] ถึงขีดจำกันที่จำนวน {} รายแล้ว"
+
+#. module: ni_condition
+#. odoo-python
+#: code:addons/ni_condition/models/ni_encounter_diagnosis.py:0
+#, python-format
+msgid ""
+"Diagnosis item must be indicate to be diagnosis\n"
+"\n"
+"Please contract your administrator"
+msgstr ""
+
+
+#. module: ni_condition
 #: model:ni.condition.verification,name:ni_condition.verify_differential
 msgid "Differential"
 msgstr "วินิจฉัยเบื้องต้น(อื่นๆ)"
+
+#. module: ni_condition
+#: model:ni.encounter.diagnosis.role,name:ni_condition.encounter_dx_role_dd
+msgid "Discharge diagnosis"
+msgstr "วินิจฉัยเมื่อจำหน่าย"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__display_name
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__display_name
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__display_name
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__display_name
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__display_name
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__display_name
 msgid "Display Name"
 msgstr "ชื่อ"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__duration
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__duration
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__duration
 msgid "Duration"
 msgstr "ระยะเวลา"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__duration_hours
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__duration_hours
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__duration_hours
+msgid "Duration (Hours)"
+msgstr "ระยะเวลา (ชั่วโมง)"
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__duration_days
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__duration_days
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__duration_days
 msgid "Duration (days)"
 msgstr "ระยะเวลา (วัน)"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__duration_months
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__duration_months
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__duration_months
 msgid "Duration (months)"
 msgstr "ระยะเวลา (เดือน)"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__duration_years
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__duration_years
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__duration_years
 msgid "Duration (years)"
 msgstr "ระยะเวลา (ปี)"
 
@@ -234,29 +359,27 @@ msgid "Encounter"
 msgstr "ข้อมูลรับบริการ"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__category__encounter-diagnosis
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_code__category__encounter-diagnosis
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__category__encounter-diagnosis
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__is_diagnosis
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__is_diagnosis
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__is_diagnosis
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_search
 msgid "Encounter Diagnosis"
-msgstr "โรค/ปัญหาระหว่างรับบริการ"
+msgstr "วินิจฉัย"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__encounter_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__encounter_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__encounter_id
 msgid "Encounter No."
 msgstr "รหัสรับบริการ"
 
 #. module: ni_condition
-#: code:addons/ni_condition/models/condition_verification.py:0
+#. odoo-python
+#: code:addons/ni_condition/models/ni_condition_code.py:0
+#: code:addons/ni_condition/models/ni_condition_verification.py:0
+#: code:addons/ni_condition/models/ni_encounter_diagnosis_role.py:0
 #, python-format
 msgid "Error! You cannot create recursive data."
-msgstr ""
-
-#. module: ni_condition
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__event_id
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__event_id
-msgid "Event"
 msgstr ""
 
 #. module: ni_condition
@@ -273,30 +396,40 @@ msgstr "ข้อมูลอื่นๆ"
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__id
 msgid "ID"
 msgstr "รหัส"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__state__inactive
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__state__inactive
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__clinical_state__inactive
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__clinical_state__inactive
 msgid "Inactive"
-msgstr "ไม่เป็น"
+msgstr "แก้ไขแล้ว"
+
+#. module: ni_condition
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_encounter_diagnosis_role__decoration__info
+msgid "Info"
+msgstr ""
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__is_future
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__is_future
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__is_future
 msgid "Is Future"
 msgstr "อนาคต"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__is_past
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__is_past
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__is_past
 msgid "Is Past"
 msgstr "อดีต"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__is_present
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__is_present
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__is_present
 msgid "Is Present"
 msgstr "ปัจจุบัน"
 
@@ -306,6 +439,8 @@ msgstr "ปัจจุบัน"
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code____last_update
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest____last_update
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification____last_update
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis____last_update
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role____last_update
 msgid "Last Modified on"
 msgstr "แก้ไขล่าสุดเมื่อ"
 
@@ -313,7 +448,10 @@ msgstr "แก้ไขล่าสุดเมื่อ"
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__write_uid
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__write_uid
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__write_uid
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__write_uid
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__write_uid
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__write_uid
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__write_uid
 msgid "Last Updated by"
 msgstr "แก้ไขล่าสุดโดย"
 
@@ -321,14 +459,17 @@ msgstr "แก้ไขล่าสุดโดย"
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__write_date
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__write_date
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__write_date
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__write_date
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__write_date
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__write_date
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__write_date
 msgid "Last Updated on"
 msgstr "แก้ไขล่าสุดเมื่อ"
 
 #. module: ni_condition
-#: model:ir.model.fields,help:ni_condition.field_ni_condition_code__category
-msgid "Make this condition selectable for category "
-msgstr ""
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__limit
+msgid "Limit"
+msgstr "จำกัด"
 
 #. module: ni_condition
 #: model:ni.condition.class,name:ni_condition.class_medical
@@ -348,6 +489,11 @@ msgid "Moderate"
 msgstr "ปานกลาง"
 
 #. module: ni_condition
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_encounter_diagnosis_role__decoration__muted
+msgid "Muted"
+msgstr ""
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__code_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__name
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__name
@@ -355,12 +501,16 @@ msgstr "ปานกลาง"
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__code_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__name
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__name
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__code_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__name
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__name
 msgid "Name"
 msgstr "ชื่อ"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__note
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__note
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__note
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
 msgid "Note"
 msgstr "หมายเหตุ"
@@ -371,27 +521,36 @@ msgid "Nursing"
 msgstr "การพยาบาล"
 
 #. module: ni_condition
-#: model:ni.condition.verification,definition:ni_condition.verify_differential
-msgid ""
-"One of a set of potential (and typically mutually exclusive) diagnoses "
-"asserted to further guide the diagnostic process and preliminary treatment."
-msgstr ""
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__period_start
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__period_start
+msgid "Onset"
+msgstr "เริ่มเป็นเมื่อ"
 
 #. module: ni_condition
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__period_start
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__period_start
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__period_start_date
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__period_start_date
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__period_start_date
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
 msgid "Onset Date"
 msgstr "เริ่มเป็นเมื่อ"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__parent_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__parent_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__parent_id
 msgid "Parent"
+msgstr "แม่"
+
+#. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__parent_path
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__parent_path
+msgid "Parent Path"
 msgstr ""
 
 #. module: ni_condition
 #: model:ir.model.fields,help:ni_condition.field_ni_condition__partner_id
 #: model:ir.model.fields,help:ni_condition.field_ni_condition_latest__partner_id
+#: model:ir.model.fields,help:ni_condition.field_ni_encounter_diagnosis__partner_id
 msgid "Partner-related data of patient"
 msgstr ""
 
@@ -399,6 +558,7 @@ msgstr ""
 #: model:ir.model,name:ni_condition.model_ni_patient
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__patient_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__patient_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__patient_id
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_search
 msgid "Patient"
 msgstr "ผู้ป่วย"
@@ -420,87 +580,86 @@ msgid "Patient already have this condition!"
 msgstr "พบการระบุโรค/ปัญหาซ้ำ"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__period_mode
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__period_mode
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__period_mode
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
 msgid "Period"
 msgstr "ช่วงเวลา"
 
 #. module: ni_condition
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__period_end_calendar
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__period_end_calendar
-msgid "Period End Calendar"
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__period_end
+msgid "Period End"
+msgstr "หายเมื่อ"
+
+#. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__period_end_date_calendar
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__period_end_date_calendar
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__period_end_date_calendar
+msgid "Period End Date Calendar"
 msgstr ""
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__period_start
+msgid "Period Start"
+msgstr "เริ่มเป็นเมื่อ"
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter__condition_prev_ids
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_encounter__condition_ref__previous
 msgid "Previous Diagnosis"
 msgstr "ผลวินิจฉัยที่ผ่านมา"
 
 #. module: ni_condition
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__is_problem
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__is_problem
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_encounter_diagnosis_role__decoration__primary
+msgid "Primary"
+msgstr ""
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter__condition_problem_ids
-#: model:ir.model.fields,field_description:ni_condition.field_ni_patient__condition_ids
 #: model:ir.model.fields,field_description:ni_condition.field_ni_patient__condition_problem_ids
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_encounter__condition_ref__problem
 msgid "Problem"
 msgstr "ปัญหา"
 
 #. module: ni_condition
-#: model_terms:ir.ui.view,arch_db:ni_condition.patient_view_form_inherit
-msgid "Problem List"
-msgstr "รายการปัญหา"
-
-#. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__category__problem-list-item
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_code__category__problem-list-item
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__category__problem-list-item
+#. odoo-python
+#: code:addons/ni_condition/models/ni_condition.py:0
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__is_problem
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__is_problem
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__is_problem
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_search
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_patient_view_form_inherit
+#, python-format
 msgid "Problem List Item"
-msgstr "ประวัติการเจ็บป่วย/โรคประจำตัว"
+msgstr "ปัญหา"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__verification__provisional
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__verification__provisional
 #: model:ni.condition.verification,name:ni_condition.verify_provisional
 msgid "Provisional"
 msgstr "วินิจฉัยเบื้องต้น"
 
 #. module: ni_condition
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__create_date
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__create_date
-msgid "Recorded"
-msgstr "บันทึกเมื่อ"
-
-#. module: ni_condition
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__create_uid
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__create_uid
-msgid "Recorder"
-msgstr "ผู้บันทึก"
-
-#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__recurrence
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__recurrence
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__recurrence
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
 msgid "Recurrence"
 msgstr "กลับมาเป็นซ้ำ"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__state__recurrence
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__state__recurrence
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__clinical_state__recurrence
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__clinical_state__recurrence
 msgid "Recurrence "
 msgstr "เป็นซ้ำ"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__verification__refuted
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__verification__refuted
 #: model:ni.condition.verification,name:ni_condition.verify_refuted
 msgid "Refuted"
 msgstr "ถูกหักล้าง"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__state__relapse
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__state__relapse
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__clinical_state__relapse
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__clinical_state__relapse
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
 msgid "Relapse"
 msgstr "ทรุดลง"
@@ -508,12 +667,13 @@ msgstr "ทรุดลง"
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__partner_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__partner_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__partner_id
 msgid "Related Partner"
 msgstr "คุ่ค้าที่เกี่ยวข้อง"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__state__remission
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__state__remission
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__clinical_state__remission
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__clinical_state__remission
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_search
 msgid "Remission"
@@ -525,16 +685,23 @@ msgid "Resolve"
 msgstr "หาย"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__state__resolved
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__state__resolved
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__clinical_state__resolved
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__clinical_state__resolved
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_search
 msgid "Resolved"
 msgstr "หายดี"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__role_id
+msgid "Role"
+msgstr "ประเภท"
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__sequence
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__sequence
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__sequence
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__sequence
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__sequence
 msgid "Sequence"
 msgstr "ลำดับ"
 
@@ -547,41 +714,43 @@ msgstr "รุนแรง"
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__severity
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__severity
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__severity
 msgid "Severity"
 msgstr "ระดับความรุนแรง"
 
 #. module: ni_condition
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__state
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__state
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__clinical_state
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__clinical_state
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__clinical_state
 msgid "Status"
 msgstr "สถานะ"
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__state__active
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__state__active
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_encounter_diagnosis_role__decoration__success
+msgid "Success"
+msgstr ""
+
+#. module: ni_condition
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__clinical_state__active
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__clinical_state__active
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_search
 msgid "Suffering"
 msgstr "เป็นอยู่"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__system_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__system_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__system_id
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__system_id
+msgid "System"
+msgstr "ระบบ"
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__tense
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__tense
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__tense
 msgid "Tense"
 msgstr "ช่วงเวลา"
-
-#. module: ni_condition
-#: model:ni.condition.verification,definition:ni_condition.verify_unconfirmed
-msgid ""
-"There is not sufficient diagnostic and/or clinical evidence to treat this as"
-" a confirmed condition."
-msgstr ""
-
-#. module: ni_condition
-#: model:ni.condition.verification,definition:ni_condition.verify_confirmed
-msgid ""
-"There is sufficient diagnostic and/or clinical evidence to treat this as a "
-"confirmed condition."
-msgstr ""
 
 #. module: ni_condition
 #: model:ni.condition.verification,definition:ni_condition.verify_refuted
@@ -596,16 +765,33 @@ msgid ""
 msgstr ""
 
 #. module: ni_condition
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition__verification__unconfirmed
-#: model:ir.model.fields.selection,name:ni_condition.selection__ni_condition_latest__verification__unconfirmed
+#: model:ir.model.constraint,message:ni_condition.constraint_ni_condition_code_system_name_uniq
+msgid "This name already exists!"
+msgstr "ชื่อนี้มีอยู่แล้ว"
+
+#. module: ni_condition
 #: model:ni.condition.verification,name:ni_condition.verify_unconfirmed
 msgid "Unconfirmed"
 msgstr "ไม่มีการยืนยัน"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__system
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__system
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__system
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__system
+msgid "Url"
+msgstr ""
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__verification_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__verification_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__display_name
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__verification_id
 #: model:ir.ui.menu,name:ni_condition.ni_condition_verification_menu
 msgid "Verification"
 msgstr "การยืนยัน"
+
+#. module: ni_condition
+#: model:ir.model.fields.selection,name:ni_condition.selection__ni_encounter_diagnosis_role__decoration__warning
+msgid "Warning"
+msgstr ""
