@@ -19,6 +19,7 @@
         "ni_appointment",
         "ni_practitioner",
         "ni_communication",
+        "ni_coverage",
     ],
     "data": [
         "data/ni_encounter_class_data.xml",
