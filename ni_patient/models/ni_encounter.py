@@ -90,10 +90,11 @@ class Encounter(models.Model):
     priority = fields.Selection(
         [
             ("routine", "Routine"),
-            ("asap", "ASAP"),
             ("urgent", "Urgent"),
+            ("asap", "ASAP"),
             ("stat", "STAT"),
         ],
+        "Triage",
         default="routine",
         tracking=True,
         required=True,
