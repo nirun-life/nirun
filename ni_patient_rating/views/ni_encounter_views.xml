@@ -26,12 +26,18 @@
                 />
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="%(rating_rating_action_my_model)d" type="action" class="oe_stat_button" icon="fa-smile-o">
+                <button
+                    name="%(rating_rating_action_my_model)d"
+                    type="action"
+                    class="oe_stat_button"
+                    icon="fa-smile-o"
+                    attrs="{'invisible': [('rating_count', '=', 0)]}"
+                >
                     <field name="rating_last_value" string="Rating" widget="statinfo" />
                 </button>
             </xpath>
             <xpath expr="//page[@name='discharge']" position="after">
-                <page name="rating" string="Feedback">
+                <page name="rating" string="Feedback" attrs="{'invisible': [('state', '!=', 'finished')]}">
                     <field name="rating_count" invisible="1" />
                     <group attrs="{'invisible': [('rating_count', '=', 0)]}">
                         <field name="rating_last_value" />
