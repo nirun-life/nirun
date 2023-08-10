@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 04:57+0000\n"
-"PO-Revision-Date: 2023-04-14 04:57+0000\n"
+"POT-Creation-Date: 2023-08-10 10:43+0000\n"
+"PO-Revision-Date: 2023-08-10 10:43+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,117 +17,164 @@ msgstr ""
 
 #. module: ni_period
 #. odoo-python
-#: code:addons/ni_period/models/period_mixin.py:0
+#: code:addons/ni_period/models/ni_period_mixin.py:0
 #, python-format
 msgid "%s Days"
 msgstr "%s วัน"
 
 #. module: ni_period
 #. odoo-python
-#: code:addons/ni_period/models/period_mixin.py:0
+#: code:addons/ni_period/models/ni_period_mixin.py:0
+#, python-format
+msgid "%s Hours"
+msgstr ""
+
+#. module: ni_period
+#. odoo-python
+#: code:addons/ni_period/models/ni_period_mixin.py:0
+#, python-format
+msgid "%s Minutes"
+msgstr ""
+
+#. module: ni_period
+#. odoo-python
+#: code:addons/ni_period/models/ni_period_mixin.py:0
 #, python-format
 msgid "%s Months"
 msgstr "%s เดือน"
 
 #. module: ni_period
 #. odoo-python
-#: code:addons/ni_period/models/period_mixin.py:0
+#: code:addons/ni_period/models/ni_period_mixin.py:0
+#, python-format
+msgid "%s Seconds"
+msgstr "%s วินาที"
+
+#. module: ni_period
+#. odoo-python
+#: code:addons/ni_period/models/ni_period_mixin.py:0
 #, python-format
 msgid "%s Years"
 msgstr "%s ปี"
 
 #. module: ni_period
 #. odoo-python
-#: code:addons/ni_period/models/period_mixin.py:0
+#: code:addons/ni_period/models/ni_period_mixin.py:0
 #, python-format
 msgid "(%s), End date (%s) should not set before start date (%s)"
 msgstr "(%s), วันสิ้นสุด(%s) ไม่ควรเร็วกว่าวันเริ่ม (%s)"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__duration
+#: model:ir.model.fields.selection,name:ni_period.selection__ni_period_mixin__period_mode__date
+msgid "Date"
+msgstr "วันที่"
+
+#. module: ni_period
+#: model:ir.model.fields.selection,name:ni_period.selection__ni_period_mixin__period_mode__datetime
+msgid "Date / Time"
+msgstr "วัน / เวลา"
+
+#. module: ni_period
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__duration
 msgid "Duration"
 msgstr "ระยะเวลา"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__duration_days
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__duration_hours
+msgid "Duration (Hours)"
+msgstr "ระยะเวลา (ชั่วโมง)"
+
+#. module: ni_period
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__duration_days
 msgid "Duration (days)"
 msgstr "ระยะเวลา (วัน)"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__duration_months
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__duration_months
 msgid "Duration (months)"
 msgstr "ระยะเวลา (เดือน)"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__duration_years
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__duration_years
 msgid "Duration (years)"
 msgstr "ระยะเวลา (ปี)"
 
 #. module: ni_period
-#: model:ir.model.fields.selection,name:ni_period.selection__ni_period__tense__future
+#: model:ir.model.fields.selection,name:ni_period.selection__ni_period_mixin__tense__future
 msgid "Future"
-msgstr "ในอนาคต"
+msgstr "อนาคต"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__is_future
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__is_future
 msgid "Is Future"
-msgstr "ในอนาคต"
+msgstr "อนาคต"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__is_past
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__is_past
 msgid "Is Past"
-msgstr "ผ่านไปแล้ว"
+msgstr "อดีต"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__is_present
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__is_present
 msgid "Is Present"
 msgstr "ปัจจุบัน"
 
 #. module: ni_period
 #. odoo-python
-#: code:addons/ni_period/models/period_mixin.py:0
+#: code:addons/ni_period/models/ni_period_mixin.py:0
 #, python-format
 msgid "Next %s days"
 msgstr "%s วันข้างหน้า"
 
 #. module: ni_period
-#: model:ir.model.fields.selection,name:ni_period.selection__ni_period__tense__past
+#: model:ir.model.fields.selection,name:ni_period.selection__ni_period_mixin__tense__past
 msgid "Past"
-msgstr "ผ่านไปแล้ว"
+msgstr "อดีต"
 
 #. module: ni_period
-#: model:ir.model,name:ni_period.model_ni_period
+#: model:ir.model,name:ni_period.model_ni_period_mixin
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__period_mode
 msgid "Period"
 msgstr "ช่วงเวลา"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__period_end_calendar
-msgid "Period End Calendar"
-msgstr "สิ้นสุด (สำหรับปฎิทิน)"
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__period_end_date_calendar
+msgid "Period End Date Calendar"
+msgstr ""
 
 #. module: ni_period
-#: model:ir.model.fields.selection,name:ni_period.selection__ni_period__tense__present
+#: model:ir.model.fields.selection,name:ni_period.selection__ni_period_mixin__tense__present
 msgid "Present"
 msgstr "ปัจจุบัน"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__period_start
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__period_start
 msgid "Since"
 msgstr "ตั้งแต่"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__tense
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__period_start_date
+msgid "Since (Date)"
+msgstr "ตั้งแต่วันที่"
+
+#. module: ni_period
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__tense
 msgid "Tense"
-msgstr "ช่วงเวลา"
+msgstr "เวลา"
 
 #. module: ni_period
 #. odoo-python
-#: code:addons/ni_period/models/period_mixin.py:0
+#: code:addons/ni_period/models/ni_period_mixin.py:0
 #, python-format
 msgid "Today"
 msgstr "วันนี้"
 
 #. module: ni_period
-#: model:ir.model.fields,field_description:ni_period.field_ni_period__period_end
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__period_end
 msgid "Until"
 msgstr "สิ้นสุด"
+
+#. module: ni_period
+#: model:ir.model.fields,field_description:ni_period.field_ni_period_mixin__period_end_date
+msgid "Until (Date)"
+msgstr "วันที่สิ้นสุด"
