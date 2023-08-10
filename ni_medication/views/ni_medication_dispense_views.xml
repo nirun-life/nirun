@@ -112,7 +112,13 @@
                             />
                         </div>
                         <h4>
-                            <field name="medication_id" class="w-100" nolabel="True" options="{'no_open': True}" />
+                            <field
+                                name="medication_id"
+                                class="w-100"
+                                options="{'no_open': True}"
+                                placeholder="e.g. Paracetamol 500mg"
+                                domain="[('reason_ids', '=?', reason_id)]"
+                            />
                         </h4>
                     </div>
                     <group>
@@ -128,7 +134,13 @@
                                 invisible="context.get('default_encounter_id')"
                                 options="{'no_open': True}"
                             />
-                            <field name="category_id" options="{'no_open': True}" />
+                            <field
+                                name="category_id"
+                                options="{'no_open': True}"
+                                invisible="context.get('default_category_id')"
+                            />
+                            <field name="reason_id" />
+                            <field name="reason_ids" invisible="1" />
                             <label for="quantity" />
                             <div>
                                 <field name="quantity" class="narrow_field" />

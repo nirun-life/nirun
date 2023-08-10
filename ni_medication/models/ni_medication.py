@@ -72,6 +72,7 @@ class Medication(models.Model):
     condition_code_ids = fields.Many2many(
         "ni.condition.code", "ni_medication_condition_code", "id", "code_id"
     )
+    reason_ids = fields.Many2many("ni.encounter.reason")
 
     @api.depends("dosage_ids")
     def _compute_dosage_count(self):
@@ -103,13 +104,17 @@ class Medication(models.Model):
     ):
         args = list(args or [])
         if not (name == "" and operator == "ilike"):
-            args += [
-                "|",
-                "|",
-                ("name", operator, name),
-                ("manufacturer_name", operator, name),
-                ("ingredient", operator, name),
-            ]
+            if len(name.split()) > 1:
+                for n in name.split():
+                    args.append(("name", operator, n))
+            else:
+                args += [
+                    "|",
+                    "|",
+                    ("name", operator, name),
+                    ("manufacturer_name", operator, name),
+                    ("ingredient", operator, name),
+                ]
         return self._search(args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.depends("ingredient_ids")
