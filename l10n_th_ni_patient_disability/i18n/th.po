@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 13.0\n"
+"Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-16 10:21+0000\n"
-"PO-Revision-Date: 2023-01-16 10:21+0000\n"
+"POT-Creation-Date: 2023-08-11 10:32+0000\n"
+"PO-Revision-Date: 2023-08-11 10:32+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,16 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: l10n_th_ni_patient_disability
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.encounter_view_form_inherit
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.patient_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_encounter_view_form_inherit
+msgid ""
+"<span attrs=\"{'invisible': [('disability_card', '=', False)]}\">Have</span>\n"
+"                                <span attrs=\"{'invisible': [('disability_card', '=', True)]}\">Not Have</span>"
+msgstr ""
+"<span attrs=\"{'invisible': [('disability_card', '=', False)]}\">มี</span>\n"
+"                                <span attrs=\"{'invisible': [('disability_card', '=', True)]}\">ไม่มี</span>"
+
+#. module: l10n_th_ni_patient_disability
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_patient_view_form_inherit
 msgid ""
 "<span attrs=\"{'invisible': [('disability_card', '=', False)]}\">Have</span>\n"
 "                            <span attrs=\"{'invisible': [('disability_card', '=', True)]}\">Not Have</span>"
@@ -25,14 +33,20 @@ msgstr ""
 "<span attrs=\"{'invisible': [('disability_card', '=', False)]}\">มี</span>\n"
 "                            <span attrs=\"{'invisible': [('disability_card', '=', True)]}\">ไม่มี</span>"
 
+
+#. module: l10n_th_ni_patient_disability
+#: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_disability__abbr
+msgid "Abbreviation"
+msgstr "ตัวย่อ"
+
 #. module: l10n_th_ni_patient_disability
 #: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_disability__active
 msgid "Active"
 msgstr "เปิดใช้งาน"
 
 #. module: l10n_th_ni_patient_disability
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.disability_view_form
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.disability_view_search
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_disability_view_form
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_disability_view_search
 msgid "Archived"
 msgstr "ถูกเก็บ"
 
@@ -68,15 +82,15 @@ msgstr "สร้างเมื่อ"
 
 #. module: l10n_th_ni_patient_disability
 #: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_disability__definition
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.disability_view_form
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_disability_view_form
 msgid "Definition"
 msgstr "คำนิยาม"
 
 #. module: l10n_th_ni_patient_disability
 #: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_encounter__disability_ids
 #: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_patient__disability_ids
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.encounter_view_form_inherit
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.patient_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_patient_view_form_inherit
 msgid "Disability"
 msgstr "ความพิการ"
 
@@ -99,7 +113,7 @@ msgid "Disability Count"
 msgstr "จำนวนความพิการ"
 
 #. module: l10n_th_ni_patient_disability
-#: model:ir.actions.act_window,name:l10n_th_ni_patient_disability.disability_action
+#: model:ir.actions.act_window,name:l10n_th_ni_patient_disability.ni_disability_action
 #: model:ir.model,name:l10n_th_ni_patient_disability.model_ni_disability
 #: model:ir.ui.menu,name:l10n_th_ni_patient_disability.disability_configuration_menu
 msgid "Disability Type"
@@ -116,9 +130,9 @@ msgid "Education"
 msgstr "การเรียนรู้"
 
 #. module: l10n_th_ni_patient_disability
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.disability_view_form
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_disability_view_form
 msgid "Extra Info"
-msgstr "ช้อมูลเพิ่มเติม"
+msgstr "ข้อมูลเพิ่มเติม"
 
 #. module: l10n_th_ni_patient_disability
 #: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_disability__patient_female_count
@@ -172,14 +186,15 @@ msgid "Movement"
 msgstr "การเคลื่อนไหวหรือทางร่างกาย"
 
 #. module: l10n_th_ni_patient_disability
-#: code:addons/l10n_th_ni_patient_disability/models/patient.py:0
+#. odoo-python
+#: code:addons/l10n_th_ni_patient_disability/models/ni_patient.py:0
 #, python-format
 msgid "Multiple Disabilities"
 msgstr "พิการซ้ำซ้อน"
 
 #. module: l10n_th_ni_patient_disability
 #: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_disability__name
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.disability_view_search
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_disability_view_search
 msgid "Name"
 msgstr "ชื่อ"
 
@@ -187,13 +202,13 @@ msgstr "ชื่อ"
 #: model:ir.model,name:l10n_th_ni_patient_disability.model_ni_patient
 #: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_disability__patient_ids
 msgid "Patient"
-msgstr "ผู้สูงอายุ"
+msgstr "ผู้ป่วย"
 
 #. module: l10n_th_ni_patient_disability
 #: model:ir.model.fields,help:l10n_th_ni_patient_disability.field_ni_encounter__disability_card_reason
 #: model:ir.model.fields,help:l10n_th_ni_patient_disability.field_ni_patient__disability_card_reason
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.encounter_view_form_inherit
-#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.patient_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:l10n_th_ni_patient_disability.ni_patient_view_form_inherit
 msgid "Reason why patient not have disability card"
 msgstr "ระบุสาเหตุที่ไม่มีบัตรประจำตัวผู้พิการ"
 
@@ -203,31 +218,24 @@ msgid "Sequence"
 msgstr "ประเภทที่"
 
 #. module: l10n_th_ni_patient_disability
+#: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_disability__system_id
+msgid "System"
+msgstr "ระบบ"
+
+#. module: l10n_th_ni_patient_disability
 #: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_disability__patient_count
 msgid "Total"
 msgstr "ทั้งหมด"
 
 #. module: l10n_th_ni_patient_disability
+#: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_disability__system
+msgid "Url"
+msgstr ""
+
+#. module: l10n_th_ni_patient_disability
 #: model:ni.disability,name:l10n_th_ni_patient_disability.type1_vision
 msgid "Vision"
 msgstr "การมองเห็น"
-
-#. module: l10n_th_ni_patient_disability
-#: code:addons/l10n_th_ni_patient_disability/models/patient.py:0
-#, python-format
-msgid ""
-"When not have disability card, The reason be must be provide. On other hand,"
-" There must have no reason"
-msgstr ""
-"เมื่อไม่มีบัตรผู้พิการต้องระบุเหตุผล และไม่ต้องระบุเหตุผลเมื่อมีบัตร"
-
-#. module: l10n_th_ni_patient_disability
-#: model:ir.model.constraint,message:l10n_th_ni_patient_disability.constraint_ni_patient_disability_card_reason_check
-msgid ""
-"When not have disability care, the reason be must be provide. On other hand,"
-" There must have no reason"
-msgstr ""
-"เมื่อไม่มีบัตรผู้พิการต้องระบุเหตุผล และไม่ต้องระบุเหตุผลเมื่อมีบัตร"
 
 #. module: l10n_th_ni_patient_disability
 #: model:ir.model.fields,field_description:l10n_th_ni_patient_disability.field_ni_encounter__disability_display
