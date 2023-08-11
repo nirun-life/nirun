@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 13.0\n"
+"Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-18 08:42+0000\n"
-"PO-Revision-Date: 2022-10-18 08:42+0000\n"
+"POT-Creation-Date: 2023-08-11 09:47+0000\n"
+"PO-Revision-Date: 2023-08-11 09:47+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,54 +26,70 @@ msgid ""
 msgstr ""
 
 #. module: ni_allergy
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
-msgid ""
-"<i class=\"text-muted oe_edit_only\">\n"
-"                                            Encounter when the allergy or intolerance was asserted\n"
-"                                        </i>"
-msgstr ""
-
-#. module: ni_allergy
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
-msgid "<i class=\"text-muted oe_edit_only\">Underlying mechanism (if known)</i>"
+#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_code__abbr
+msgid "Abbreviation"
 msgstr ""
 
 #. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_code__active
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_search
+#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__state__active
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_search
 msgid "Active"
 msgstr "เปิดใช้งาน"
 
 #. module: ni_allergy
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_tree
+msgid "Add Allergy"
+msgstr "เพิ่มการแพ้"
+
+#. module: ni_allergy
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_tree
+msgid "Add Intolerance"
+msgstr "เพิ่มภูมิแพ้แฝง"
+
+#. module: ni_allergy
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_form
 msgid "Additional note"
-msgstr "หมายเหตุ"
+msgstr "หมายเหตุเพิ่มเติม"
 
 #. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_encounter__allergy_ids
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_patient__allergy_ids
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__type__allergy
 msgid "Allergy"
-msgstr "ภูมิแพ้"
+msgstr "การแพ้"
 
 #. module: ni_allergy
-#: model:ir.actions.act_window,name:ni_allergy.allergy_action
+#: model:ir.actions.act_window,name:ni_allergy.ni_allergy_action
 #: model:ir.model,name:ni_allergy.model_ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_reaction__allergy_id
+#: model:ir.model.fields,field_description:ni_allergy.field_ni_encounter__allergy_code_ids
 #: model:ir.ui.menu,name:ni_allergy.allergy_code_menu
 #: model:ir.ui.menu,name:ni_allergy.allergy_menu_section
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_search
-#: model_terms:ir.ui.view,arch_db:ni_allergy.patient_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_search
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_patient_view_form_inherit
 msgid "Allergy / Intolerance"
-msgstr "ภูมิแพ้ / การแพ้"
+msgstr "แพ้ยา / อาหาร"
 
 #. module: ni_allergy
-#: model:ir.actions.act_window,name:ni_allergy.allergy_code_action
+#: model:ir.actions.act_window,name:ni_allergy.ni_allergy_code_action
 #: model:ir.model,name:ni_allergy.model_ni_allergy_code
 msgid "Allergy / Intolerance Code"
-msgstr "ตัวเลือกภูมิแพ้ / การแพ้"
+msgstr "ตัวเลือกแพ้ยา / อาหาร"
+
+#. module: ni_allergy
+#: model:ir.model.fields,field_description:ni_allergy.field_ni_encounter__allergy_code_count
+msgid "Allergy Code Count"
+msgstr "จำนวนรหัสการแพ้"
+
+#. module: ni_allergy
+#: model:ir.model.fields,field_description:ni_allergy.field_ni_encounter__allergy_count
+#: model:ir.model.fields,field_description:ni_allergy.field_ni_patient__allergy_count
+msgid "Allergy Count"
+msgstr "จำนวนการแพ้"
 
 #. module: ni_allergy
 #: model:ir.model,name:ni_allergy.model_ni_allergy_reaction
@@ -81,26 +97,15 @@ msgid "Allergy Reaction Event"
 msgstr "เหตุการณ์ที่เกิดการแพ้"
 
 #. module: ni_allergy
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_code_view_form
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_code_view_search
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_code_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_code_view_search
 msgid "Archived"
 msgstr "ถูกเก็บ"
 
 #. module: ni_allergy
-#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__asserter_id
-msgid "Asserter"
-msgstr "ผู้ให้ข้อมูล"
-
-#. module: ni_allergy
-#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__asserter_is_patient
-msgid "Asserter Is Patient"
-msgstr "ผู้ป่วยเป็นผู้ให้ข้อมูล"
-
-#. module: ni_allergy
-#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__category__biologic
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy_code__category__biologic
 msgid "Biologic"
-msgstr "ชีวภาพ"
+msgstr "ทางชีวภาพ"
 
 #. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__category
@@ -146,11 +151,11 @@ msgstr "ความรุนแรง"
 #. module: ni_allergy
 #: model:ir.model.fields,help:ni_allergy.field_ni_allergy_reaction__onset
 msgid "Date(/time) when manifestations showed"
-msgstr ""
+msgstr "วันเวลาที่เกิดอาการ"
 
 #. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_code__definition
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_code_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_code_view_form
 msgid "Definition"
 msgstr "คำนิยาม"
 
@@ -161,9 +166,9 @@ msgstr "รายระเอียด"
 
 #. module: ni_allergy
 #: model:ir.model.fields,help:ni_allergy.field_ni_allergy_reaction__description
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_form
 msgid "Description of the event as a whole"
-msgstr ""
+msgstr "อธิบายเหตุการณ์โดยรวม"
 
 #. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__display_name
@@ -183,36 +188,29 @@ msgid "Encounter No."
 msgstr "รหัสรับบริการ"
 
 #. module: ni_allergy
-#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__category__environment
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy_code__category__environment
 msgid "Environment"
 msgstr "สภาพแวดล้อม"
 
 #. module: ni_allergy
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_form
 msgid "Event"
 msgstr "เหตุการณ์"
 
 #. module: ni_allergy
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_code_view_form
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_code_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_form
 msgid "Extra Info"
-msgstr "ข้อมูลเพิ่มเติม"
+msgstr "ข้อมูลอื่นๆ"
 
 #. module: ni_allergy
-#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__category__food
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy_code__category__food
 msgid "Food"
 msgstr "อาหาร"
 
 #. module: ni_allergy
-#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__code_id__ni_allergy_code
-msgid "Food / Environment / Biologic"
-msgstr "อาหาร, สภาพแวดล้อม, ชีวภาพ"
-
-#. module: ni_allergy
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__criticality__high
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_search
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_search
 msgid "High"
 msgstr "สูง"
 
@@ -224,15 +222,16 @@ msgid "ID"
 msgstr "รหัส"
 
 #. module: ni_allergy
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_search
+#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__state__inactive
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_search
 msgid "Inactive"
 msgstr "ไม่มีอาการ"
 
 #. module: ni_allergy
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__type__intolerance
 msgid "Intolerance"
-msgstr "อาการแพ้"
+msgstr "ภูมิแพ้แฝง"
 
 #. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy____last_update
@@ -262,13 +261,12 @@ msgstr "อัพเดทครั้งสุดท้ายเมื่อ"
 
 #. module: ni_allergy
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__criticality__low
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_search
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_search
 msgid "Low"
 msgstr "ต่ำ"
 
 #. module: ni_allergy
-#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__category__medication
-#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__code_id__ni_medication
+#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy_code__category__medication
 msgid "Medication"
 msgstr "ยา"
 
@@ -283,25 +281,15 @@ msgid "Moderate"
 msgstr "ปานกลาง"
 
 #. module: ni_allergy
+#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__name
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_code__name
 msgid "Name"
 msgstr "ชื่อ"
 
 #. module: ni_allergy
-#: model:ir.model.fields,field_description:ni_allergy.field_ni_encounter__no_allergy
-#: model:ir.model.fields,field_description:ni_allergy.field_ni_patient__no_allergy
-msgid "No Allergy"
-msgstr "ไม่มี"
-
-#. module: ni_allergy
-#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__state__inactive
-msgid "Not Active"
-msgstr "ไม่มีอาการ"
-
-#. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__note
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_reaction__note
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_form
 msgid "Note"
 msgstr "หมายเหตุ"
 
@@ -318,7 +306,7 @@ msgstr ""
 #. module: ni_allergy
 #: model:ir.model,name:ni_allergy.model_ni_patient
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__patient_id
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_search
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_search
 msgid "Patient"
 msgstr "ผู้ป่วย"
 
@@ -338,9 +326,15 @@ msgid "Related Partner"
 msgstr ""
 
 #. module: ni_allergy
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_tree
+msgid "Resolve"
+msgstr "หายแล้ว"
+
+#. module: ni_allergy
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__state__resolved
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_form
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_search
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_form
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_search
 msgid "Resolved"
 msgstr "หายแล้ว"
 
@@ -360,11 +354,6 @@ msgid "Severity"
 msgstr "ระดับความรุนแรง"
 
 #. module: ni_allergy
-#: model:ir.model.fields,help:ni_allergy.field_ni_allergy__asserter_id
-msgid "Source of the information about the allergy"
-msgstr ""
-
-#. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__state
 msgid "State"
 msgstr "สถานะ"
@@ -380,9 +369,9 @@ msgid "Substance"
 msgstr "สิ่งที่ทำให้แพ้"
 
 #. module: ni_allergy
-#: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__state__active
-msgid "Suffering"
-msgstr "เป็นอยู่"
+#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_code__system_id
+msgid "System"
+msgstr "ระบบ"
 
 #. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__type
@@ -391,6 +380,16 @@ msgstr "ประเภท"
 
 #. module: ni_allergy
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__criticality__unable-to-assess
-#: model_terms:ir.ui.view,arch_db:ni_allergy.allergy_view_search
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_search
 msgid "Unable to Access"
 msgstr "ไม่สามารถระบุได้"
+
+#. module: ni_allergy
+#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_code__system
+msgid "Url"
+msgstr ""
+
+#. module: ni_allergy
+#: model_terms:ir.ui.view,arch_db:ni_allergy.ni_encounter_view_form_inherit
+msgid "e.g. Shrimp, Seafood, Milk"
+msgstr "เช่น กุ้ง, อาหารทะเล, นม"
