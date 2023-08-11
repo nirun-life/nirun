@@ -6,6 +6,7 @@ from odoo.exceptions import ValidationError
 
 class EncounterObservationLatest(models.Model):
     _name = "ni.encounter.observation"
+    _description = "Encounter Observation"
     _auto = False
     _order = "sequence"
 
