@@ -82,6 +82,7 @@ class Reception(models.Model):
             ("urgent", "Urgent"),
             ("stat", "STAT"),
         ],
+        "Triage",
         default="routine",
         required=True,
     )
