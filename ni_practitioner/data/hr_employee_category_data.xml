@@ -7,13 +7,11 @@
         <field name="name">Doctor</field>
         <field name="code">doctor</field>
         <field name="system_id" ref="ni_coding.system_hl7_fhir" />
-        <field name="sequence" eval="1" />
         <field name="definition">A qualified/registered medical practitioner</field>
     </record>
     <record id="employee_category_prac_nursing" model="hr.employee.category">
         <field name="name">Practical Nursing</field>
         <field name="code">PN</field>
-        <field name="sequence" eval="2" />
         <field name="definition">A practitioner with nursing experience that may be certified</field>
     </record>
     <record id="employee_category_nurse" model="hr.employee.category">
@@ -21,41 +19,54 @@
         <field name="code">nurse</field>
         <field name="parent_id" ref="employee_category_prac_nursing" />
         <field name="system_id" ref="ni_coding.system_hl7_fhir" />
-        <field name="sequence" eval="2" />
         <field name="definition">A practitioner with nursing experience that may be qualified/registered</field>
     </record>
-    <record id="employee_category_nurse_prac" model="hr.employee.category">
+    <record id="employee_category_apn" model="hr.employee.category">
+        <field name="name">Advanced Practice Nurse</field>
+        <field name="code">ANP</field>
+        <field name="parent_id" ref="ni_practitioner.employee_category_nurse" />
+    </record>
+    <record id="employee_category_cns" model="hr.employee.category">
+        <field name="name">Clinical Nurse Specialist</field>
+        <field name="code">CNS</field>
+        <field name="parent_id" ref="ni_practitioner.employee_category_apn" />
+    </record>
+    <record id="employee_category_np" model="hr.employee.category">
         <field name="name">Nurse Practitioner</field>
         <field name="code">NP</field>
-        <field name="parent_id" ref="ni_practitioner.employee_category_nurse" />
-        <field name="sequence" eval="2" />
-        <field name="definition">A qualified/registered nurse practitioner</field>
+        <field name="parent_id" ref="ni_practitioner.employee_category_apn" />
+    </record>
+    <record id="employee_category_crna" model="hr.employee.category">
+        <field name="name">Certified Registered Nurse Anesthetist</field>
+        <field name="code">CRNA</field>
+        <field name="parent_id" ref="ni_practitioner.employee_category_apn" />
+    </record>
+    <record id="employee_category_cnm" model="hr.employee.category">
+        <field name="name">Certified Nurse Midwifery</field>
+        <field name="code">CNM</field>
+        <field name="parent_id" ref="ni_practitioner.employee_category_apn" />
     </record>
     <record id="employee_category_pharmacist" model="hr.employee.category">
         <field name="name">Pharmacist</field>
         <field name="code">pharmacist</field>
         <field name="system_id" ref="ni_coding.system_hl7_fhir" />
-        <field name="sequence" eval="3" />
         <field name="definition">A qualified/registered/licensed pharmacist</field>
     </record>
     <record id="employee_category_researcher" model="hr.employee.category">
         <field name="name">Researcher</field>
         <field name="code">researcher</field>
         <field name="system_id" ref="ni_coding.system_hl7_fhir" />
-        <field name="sequence" eval="4" />
         <field name="definition">A practitioner that may perform research</field>
     </record>
     <record id="employee_category_teacher" model="hr.employee.category">
         <field name="name">Teacher/educator</field>
         <field name="code">teacher</field>
         <field name="system_id" ref="ni_coding.system_hl7_fhir" />
-        <field name="sequence" eval="4" />
         <field name="definition">Someone who is able to provide educational services</field>
     </record>
     <record id="employee_category_its" model="hr.employee.category">
         <field name="name">IT Support</field>
         <field name="code">its</field>
-        <field name="sequence" eval="6" />
         <field name="definition">
             Someone who advise and assist registered users with issues concerning technical part of System
         </field>
@@ -65,7 +76,6 @@
         <field name="code">ict</field>
         <field name="parent_id" ref="employee_category_its" />
         <field name="system_id" ref="ni_coding.system_hl7_fhir" />
-        <field name="sequence" eval="6" />
         <field name="definition">Someone who is qualified in Information and Communication Technologies</field>
     </record>
 </odoo>
