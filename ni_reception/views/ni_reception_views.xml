@@ -272,6 +272,7 @@
                                 <field name="encounter_identifier_type" widget="radio" options="{'horizontal': True}" />
                                 <field
                                     name="encounter_identifier"
+                                    placeholder="HN-20230001"
                                     attrs="{'invisible': [('encounter_identifier_type', '=', 'auto')], 'required': [('encounter_identifier_type', '=', 'manual')]}"
                                 />
                             </div>
@@ -285,8 +286,8 @@
                             <field name="period_start" />
                             <label for="performer_id" />
                             <div class="o_row">
-                                <field name="performer_id" widget="many2one_avatar_employee" />
-                                <field name="department_id" placeholder="Department" />
+                                <field name="performer_id" options="{'no_open': True}" placeholder="Performer" />
+                                <field name="department_id" placeholder="Department" options="{'no_open': True}" />
                             </div>
                         </group>
                     </group>
