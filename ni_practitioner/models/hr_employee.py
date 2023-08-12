@@ -6,6 +6,7 @@ from odoo import api, fields, models
 class Employee(models.Model):
     _inherit = "hr.employee"
 
+    license_no = fields.Char("License No.")
     license_id = fields.Many2one(
         "hr.resume.line",
         domain="[('employee_id', '=', id), ('identifier', '!=', False)]",
@@ -29,3 +30,4 @@ class Employee(models.Model):
                 )
                 if _license:
                     rec.license_default_id = _license[0]
+                    rec.license_no = _license[0].name

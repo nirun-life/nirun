@@ -8,13 +8,22 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr_skills.hr_employee_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//page[@name='public']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='resume_line_ids']/tree" position="inside">
                 <field name="identifier" />
                 <field name="code_id" />
             </xpath>
             <xpath expr="//page[@name='public']/div/div/group[1]" position="before">
                 <group string="License">
-                    <field name="license_id" context="{'show_identifier': True}" options="{'always_reload': True}" />
+                    <field
+                        name="license_id"
+                        context="{'show_identifier': True}"
+                        options="{'always_reload': True}"
+                        invisible="1"
+                    />
+                    <field name="license_no" />
                 </group>
             </xpath>
         </field>
@@ -24,13 +33,22 @@
         <field name="model">hr.employee.public</field>
         <field name="inherit_id" ref="hr_skills.hr_employee_public_view_form_inherit" />
         <field name="arch" type="xml">
+            <xpath expr="//page[@name='public']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='resume_line_ids']/tree" position="inside">
                 <field name="identifier" />
                 <field name="code_id" />
             </xpath>
             <xpath expr="//page[@name='public']/div/div/group[1]" position="before">
                 <group string="License">
-                    <field name="license_id" context="{'show_identifier': True}" options="{'always_reload': True}" />
+                    <field
+                        name="license_id"
+                        context="{'show_identifier': True}"
+                        options="{'always_reload': True}"
+                        invisible="1"
+                    />
+                    <field name="license_no" />
                 </group>
             </xpath>
         </field>
@@ -40,6 +58,9 @@
         <field name="model">res.users</field>
         <field name="inherit_id" ref="hr_skills.res_users_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//page[@name='public']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='resume_line_ids']/tree" position="inside">
                 <field name="identifier" />
                 <field name="code_id" />
@@ -47,7 +68,13 @@
             <xpath expr="//page[@name='public']/div/div/group[1]" position="before">
                 <group string="License">
                     <field name="employee_id" invisible="1" />
-                    <field name="license_id" context="{'show_identifier': True}" options="{'always_reload': True}" />
+                    <field
+                        name="license_id"
+                        context="{'show_identifier': True}"
+                        options="{'always_reload': True}"
+                        invisible="1"
+                    />
+                    <field name="license_no" />
                 </group>
             </xpath>
         </field>
