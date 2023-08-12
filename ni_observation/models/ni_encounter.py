@@ -1,5 +1,4 @@
 #  Copyright (c) 2021-2023. NSTDA
-import pprint
 
 from odoo import api, fields, models
 
@@ -59,7 +58,6 @@ class Encounter(models.Model):
             bmi_type = types.search([("code", "=", "bmi")])
             vals_list.append(self._observation_vals(ts, bmi_type, round(self.bmi, 2)))
         if vals_list:
-            pprint.pprint(vals_list)
             return self.env["ni.observation"].create(vals_list)
 
     def _observation_vals(self, occurrence, type, value):
