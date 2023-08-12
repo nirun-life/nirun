@@ -146,8 +146,25 @@
                                 />
                                 <field name="name" placeholder="John Smith" />
                             </div>
-                            <field name="gender" widget="radio" />
+                            <field name="gender" widget="radio" options="{'horizontal': True}" />
+                            <label for="blood_abo" string="Blood Group" />
+                            <div class="o_row">
+                                <field
+                                    name="blood_abo"
+                                    class="abo_field"
+                                    placeholder="ABO"
+                                    options="{'no_open': True}"
+                                />
+                                <field
+                                    name="blood_rh"
+                                    class="abo_field"
+                                    placeholder="RH"
+                                    options="{'no_open': True, 'always_reload':True}"
+                                    context="{'only_abbr': True}"
+                                />
+                            </div>
                             <field name="birthdate" placeholder="🎂 09-31-XXXX" />
+                            k
                             <label name="address_name" for="street" string="Address" />
                             <div class="o_address_format">
                                 <field name="street" class="o_address_street" placeholder="Street..." />
