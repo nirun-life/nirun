@@ -8,7 +8,7 @@ class EncounterObservationLatest(models.Model):
     _name = "ni.encounter.observation"
     _description = "Encounter Observation"
     _auto = False
-    _order = "sequence"
+    _order = "occurrence desc"
 
     sheet_id = fields.Many2one("ni.observation.sheet", readonly=True)
     company_id = fields.Many2one("res.company", readonly=True)
