@@ -5,7 +5,7 @@ from odoo import fields, models
 class EncounterClass(models.Model):
     _inherit = "ni.encounter.class"
 
-    summary_report_title = fields.Char()
+    summary_report_title = fields.Char(default="Summary Report")
 
     def action_print_summary_report(self):
         return self.env.ref(
