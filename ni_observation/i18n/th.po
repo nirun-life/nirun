@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-11 10:22+0000\n"
-"PO-Revision-Date: 2023-08-11 10:22+0000\n"
+"POT-Creation-Date: 2023-08-12 08:47+0000\n"
+"PO-Revision-Date: 2023-08-12 08:47+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -180,7 +180,10 @@ msgid "AB"
 msgstr ""
 
 #. module: ni_observation
-#: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__blood_abo
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_bloodgroup_mixin__blood_abo
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient__blood_abo
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_patient_view_form_inherit
 msgid "ABO"
 msgstr ""
 
@@ -206,12 +209,6 @@ msgstr "คำย่อ"
 #: model:ni.observation.interpretation,name:ni_observation.interpretation_A
 msgid "Abnormal"
 msgstr "ผิดธรรมดา"
-
-#. module: ni_observation
-#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__abo
-#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_vitalsign_mixin__abo
-msgid "Abo"
-msgstr ""
 
 #. module: ni_observation
 #: model:ni.observation.interpretation,name:ni_observation.interpretation_HX
@@ -259,7 +256,10 @@ msgid "Below low threshold"
 msgstr "ต่ํากว่าขีดจํากัดต่ําสุด"
 
 #. module: ni_observation
-#: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__blood_group
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_bloodgroup_mixin__blood_group
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient__blood_group
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_patient_view_form_inherit
 msgid "Blood Group"
 msgstr "หมู่เลือด"
 
@@ -776,6 +776,11 @@ msgid "New"
 msgstr "ใหม่"
 
 #. module: ni_observation
+#: model:ir.model,name:ni_observation.model_ni_observation_bloodgroup_mixin
+msgid "Blood Group Mixin"
+msgstr ""
+
+#. module: ni_observation
 #: model:ni.observation.interpretation,name:ni_observation.interpretation_N
 msgid "Normal"
 msgstr "ปกติ"
@@ -978,6 +983,14 @@ msgid "Procedure"
 msgstr "หัตถการ"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__blood_rh
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_bloodgroup_mixin__blood_rh
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient__blood_rh
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_patient_view_form_inherit
+msgid "RH"
+msgstr ""
+
+#. module: ni_observation
 #: model:ni.observation.type,name:ni_observation.type_blood_rh
 msgid "RH Blood Type"
 msgstr "ค่า RH"
@@ -1017,12 +1030,6 @@ msgstr "อัตราการหายใจ"
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_vitalsign_mixin__respiratory_rate
 msgid "Respiratory Rate (/min)"
 msgstr "อัตราการหายใจ (/นาที)"
-
-#. module: ni_observation
-#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__rh
-#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_vitalsign_mixin__rh
-msgid "Rh"
-msgstr ""
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
@@ -1270,3 +1277,10 @@ msgstr ""
 #: model:uom.uom,name:ni_observation.uom_mmHg
 msgid "mmHg"
 msgstr ""
+
+#. module: ni_observation
+#. odoo-python
+#: code:addons/ni_observation/models/ni_patient.py:0
+#, python-format
+msgid "{} • Blood group {}"
+msgstr "{} • หมู่เลือด {}"
