@@ -17,7 +17,42 @@
     <template id="medical_certificate_report">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
+                <t t-set="primary_color" t-value="o.company_id.primary_color" />
                 <t t-call="ni_patient_summary_report.medical_certificate_layout">
+                    <div class="header">
+                        <div class="row" t-attf-style="color:{{primary_color}}">
+                            <div class="col-1">
+                                <img
+                                    t-if="o.company_id.logo"
+                                    t-att-src="image_data_uri(o.company_id.logo)"
+                                    style="max-height: 45px;"
+                                    alt="Logo"
+                                />
+                            </div>
+                            <div class="col-5">
+                                <div class="col">
+                                    <b>
+                                        <t t-out="o.company_id.name" />
+                                    </b>
+                                </div>
+                                <div class="col mt-1">
+                                    <small t-out="o.company_id.website" />
+                                </div>
+                                <div class="col">
+                                    <small t-out="o.company_id.phone" />
+                                </div>
+                            </div>
+                            <div class="col-6 text-end">
+                                <t t-out="o.patient_id.identifier" />
+                                <div>
+                                    <small class="fw-light">
+                                        <t t-out="o.patient_id.name" />
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
                     <div class="page">
                         <div class="container">
                             <div class="row">
@@ -71,9 +106,12 @@
                             <div class="row">
                                 <div class="col text-start px-2">
                                     <span>
-                                        ได้ทำการพยาบาลและหรือการผดุงครรภ์
+                                        ได้ทำการตรวจรักษา
+                                        <span t-field="o.class_id" />
                                         <abbr title="">
-                                            <span style="margin-left: 1em; margin-right: 19em" t-field="o.patient_id" />
+                                            <span style="margin-left: 1em; margin-right: 5em" t-field="o.patient_id" />
+                                            <span t-field="o.patient_id.identifier" />
+                                            <span style="margin-left: 1em; margin-right: 10em" t-field="o.identifier" />
                                         </abbr>
                                     </span>
                                     <br />

@@ -5,9 +5,9 @@ from odoo import _, fields, models
 APPEND = _(
     """
 <h5>Recommendation</h5>
-<ul class=""o_checklist"">
-    <li id=""checkId-1"">Patient need rest for ........................ day</li>
-    <li id=""checkId-2"">Patient has received treatment in the hospital</li>
+<ul class="o_checklist">
+    <li id="checkId-1">Patient need rest for ........................ day</li>
+    <li id="checkId-2">Patient has received treatment in the hospital</li>
 </ul>
 """
 )
