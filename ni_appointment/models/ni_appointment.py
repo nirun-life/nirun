@@ -33,7 +33,9 @@ class Appointment(models.Model):
     patient_name = fields.Char(related="patient_id.name")
     patient_identifier = fields.Char(related="patient_id.identifier")
 
-    event_id = fields.Many2one("calendar.event", index=True, ondelete="cascade")
+    event_id = fields.Many2one(
+        "calendar.event", index=True, required=True, ondelete="cascade"
+    )
     hide_next = fields.Boolean(compute="_compute_hide_next")
     next_days = fields.Integer()
     next_weeks = fields.Integer()
