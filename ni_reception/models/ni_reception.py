@@ -28,6 +28,7 @@ PATIENT_FIELD = [
     "blood_abo",
     "blood_rh",
     "condition_problem_ids",
+    "coverage_type_ids",
 ]
 
 ENCOUNTER_FIELD = [
@@ -91,6 +92,9 @@ class Reception(models.Model):
         "res.country", default=lambda self: self.env.company.country_id
     )
     birthdate = fields.Date()
+    coverage_type_ids = fields.Many2many(
+        "ni.coverage.type", "ni_reception_coverage_type", string="Coverage"
+    )
 
     period_start = fields.Datetime(
         "Encounter Start", default=fields.datetime.now(), required=True
