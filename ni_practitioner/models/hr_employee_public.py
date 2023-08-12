@@ -7,3 +7,4 @@ class EmployeePublic(models.Model):
     _inherit = "hr.employee.public"
 
     license_id = fields.Many2one("hr.resume.line")
+    license_no = fields.Char("License No.")

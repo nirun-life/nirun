@@ -10,11 +10,12 @@ class User(models.Model):
         readonly=False,
         domain="[('employee_id', '=', employee_id), ('identifier', '!=', False)]",
     )
+    license_no = fields.Char(related="employee_id.license_no", readonly=False)
 
     @property
     def SELF_READABLE_FIELDS(self):
-        return super().SELF_READABLE_FIELDS + ["license_id"]
+        return super().SELF_READABLE_FIELDS + ["license_id", "license_no"]
 
     @property
     def SELF_WRITEABLE_FIELDS(self):
-        return super().SELF_WRITEABLE_FIELDS + ["license_id"]
+        return super().SELF_WRITEABLE_FIELDS + ["license_id", "license_no"]
