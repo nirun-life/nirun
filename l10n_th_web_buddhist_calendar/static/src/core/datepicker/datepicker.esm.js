@@ -24,11 +24,10 @@ patch(DatePicker.prototype, "l10n_th_web_buddhist_calendar.datepicker", {
     // Call getDefaultDate() when field have no value to get BE as default
     bootstrapDateTimePicker(commandOrParams) {
         if (typeof commandOrParams === "object") {
-            const format = this.isValidStaticFormat(this.format) ? this.format : this.staticFormat;
             const params = {
                 ...commandOrParams,
                 date: this.date || this.getDefaultDate(commandOrParams),
-                format: luxonToMomentFormat(format),
+                format: luxonToMomentFormat(this.staticFormat),
                 locale: commandOrParams.locale || (this.date && this.date.locale),
             };
             for (const prop in params) {
@@ -38,7 +37,8 @@ patch(DatePicker.prototype, "l10n_th_web_buddhist_calendar.datepicker", {
             }
             commandOrParams = params;
         }
-        return window.$(this.rootRef.el).datetimepicker(commandOrParams);
+
+        window.$(this.rootRef.el).datetimepicker(commandOrParams);
     },
     getDefaultDate(commandOrParams) {
         var locale = commandOrParams.locale || session.user_context.lang.replace("_", "-");
