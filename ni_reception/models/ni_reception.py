@@ -2,16 +2,57 @@
 import base64
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 from odoo.modules.module import get_module_resource
 
+from odoo.addons.ni_observation.models import ni_observation_vitalsign_mixin as vs
+
 _logger = logging.getLogger(__name__)
+
+PATIENT_FIELD = [
+    "company_id",
+    "partner_id",
+    "title",
+    "name",
+    "image_1920",
+    "gender",
+    "street",
+    "street2",
+    "city",
+    "state_id",
+    "zip",
+    "country_id",
+    "nationality_id",
+    "birthdate",
+    "blood_abo",
+    "blood_rh",
+    "condition_problem_ids",
+]
+
+ENCOUNTER_FIELD = [
+    "company_id",
+    "patient_id",
+    "chief_complaint",
+    "reason_ids",
+    "priority",
+    "class_id",
+    "identifier",
+    "department_id",
+    "performer_id",
+    "allergy_code_ids",
+] + vs.VITALSIGN_FIELDS
 
 
 class Reception(models.Model):
     _name = "ni.reception"
     _description = "Reception"
-    _inherit = ["ni.identifier.mixin", "ni.observation.vitalsign.mixin", "image.mixin"]
+    _inherit = [
+        "ni.identifier.mixin",
+        "ni.observation.vitalsign.mixin",
+        "ni.observation.bloodgroup.mixin",
+        "image.mixin",
+    ]
     _rec_name = "identifier"
     _order = "create_date desc"
 
@@ -29,7 +70,7 @@ class Reception(models.Model):
     patient_id = fields.Many2one("ni.patient", check_company=True)
     patient_age = fields.Integer(related="patient_id.age")
     title = fields.Many2one("res.partner.title")
-    name = fields.Char(copy=False)
+    name = fields.Char(copy=False, required=True)
     image_1920 = fields.Image(default=_default_image)
     gender = fields.Selection(
         [("male", "Male"), ("female", "Female")], required=True, default="male"
@@ -54,8 +95,8 @@ class Reception(models.Model):
     period_start = fields.Datetime(
         "Encounter Start", default=fields.datetime.now(), required=True
     )
-    chief_complaint = fields.Text()
     class_id = fields.Many2one("ni.encounter.class", required=True)
+    chief_complaint = fields.Text()
     reason_ids = fields.Many2many(
         "ni.encounter.reason", "ni_reception_reason", "reception_id", "reason_id"
     )
@@ -65,7 +106,6 @@ class Reception(models.Model):
         "reception_id",
         "code_id",
         "Problem List",
-        copy=False,
     )
     allergy_code_ids = fields.Many2many(
         "ni.allergy.code",
@@ -73,7 +113,6 @@ class Reception(models.Model):
         "reception_id",
         "code_id",
         "Allergy",
-        copy=False,
     )
     priority = fields.Selection(
         [
@@ -161,21 +200,18 @@ class Reception(models.Model):
             )
 
         if not self.patient_id or self.patient_id.company_id != self.company_id:
-            # Cause by delegation inheritance, we need to write into patient before we can write into encounter
-            # Maybe it just cause be name field of encounter
-            patient = self.env["ni.patient"].create(
-                {
-                    "name": self.name,
-                    "company_id": self.company_id.id,
-                    "partner_id": self.partner_id.id or None,
-                }
-            )
+            patient = self.env["ni.patient"].create(self.patient_data())
             self.patient_id = patient
             logging.info(
                 "Created ni.patient[%d] with res.partner[%d]",
                 self.patient_id.id,
                 self.patient_id.partner_id.id,
             )
+        if not self.patient_id:
+            raise ValidationError(
+                _("Create patient process went wrong, please contact administrator.")
+            )
+
         data = self.encounter_data()
         if not self.encounter_id:
             enc = self.env["ni.encounter"].create(data)[0]
@@ -197,6 +233,10 @@ class Reception(models.Model):
             "views": [[False, "form"]],
         }
 
+    def patient_data(self):
+        vals = self.copy_data({"name": self.name})
+        return [{k: v for k, v in d.items() if k in PATIENT_FIELD} for d in vals]
+
     def encounter_data(self):
         vals = self.copy_data({"identifier": self.encounter_identifier or "New"})
-        return vals
+        return [{k: v for k, v in d.items() if k in ENCOUNTER_FIELD} for d in vals]
