@@ -26,7 +26,7 @@ class EncounterObservationLatest(models.Model):
     value_char = fields.Char(readonly=True)
     value_int = fields.Integer(group_operator="avg", readonly=True)
     value_float = fields.Float(group_operator="avg", readonly=True)
-    value_code_id = fields.Many2one(readonly=True)
+    value_code_id = fields.Many2one("ni.observation.value.code", readonly=True)
     unit = fields.Many2one(related="type_id.unit_id")
     interpretation_id = fields.Many2one(
         "ni.observation.interpretation",
