@@ -40,7 +40,6 @@ class Observation(models.Model):
         compute="_compute_interpretation",
         ondelete="restrict",
         readonly=True,
-        require=False,
         store=True,
         default=None,
     )
