@@ -27,7 +27,6 @@ class AllergyReaction(models.Model):
     severity = fields.Selection(
         [("mild", "Mild"), ("moderate", "Moderate"), ("severe", "Severe")],
         default="mild",
-        tracking=1,
         required=False,
     )
     note = fields.Text()
