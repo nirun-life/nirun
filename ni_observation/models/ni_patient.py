@@ -1,10 +1,11 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import fields, models
+from odoo import _, fields, models
 
 
 class Patient(models.Model):
-    _inherit = "ni.patient"
+    _name = "ni.patient"
+    _inherit = ["ni.patient", "ni.observation.bloodgroup.mixin"]
 
     observation_sheet_ids = fields.One2many(
         "ni.observation.sheet",
@@ -35,3 +36,13 @@ class Patient(models.Model):
         )
         action["context"] = ctx
         return action
+
+    def _name_get(self):
+        name = super(Patient, self)._name_get()
+        if (
+            self._context.get("show_gender_age")
+            and (self.age or self.gender)
+            and self.blood_group
+        ):
+            name = _("{} • Blood group {}").format(name, self.blood_group)
+        return name
