@@ -80,6 +80,7 @@
         <field name="model">ni.reception</field>
         <field name="arch" type="xml">
             <form duplicate="0">
+                <field name="company_id" invisible="1" />
                 <field name="state" invisible="1" />
                 <sheet>
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
@@ -90,7 +91,7 @@
                         attrs="{'invisible': [('state', '!=', 'finished')]}"
                     />
                     <div class="oe_title mb-4">
-                        <div class="mb-2">
+                        <div class="mb-2" groups="base.group_multi_company">
                             <i class="fa fa-building text-primary" title="Company" />
                             <field
                                 class="w-50 mx-2"
