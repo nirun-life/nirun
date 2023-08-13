@@ -21,6 +21,7 @@
         <field name="name">Principle Diagnosis</field>
         <field name="code">PDx</field>
         <field name="limit">1</field>
+        <field name="decoration">primary</field>
         <field name="system_id" ref="l10n_th_icd10tm.system_icd_10_tm" />
     </record>
     <record id="dx_role_sdx" model="ni.encounter.diagnosis.role">
@@ -33,12 +34,14 @@
         <field name="name">Comorbidity</field>
         <field name="code">SDx COMORBIDITY</field>
         <field name="parent_id" ref="dx_role_sdx" />
+        <field name="decoration">info</field>
         <field name="system_id" ref="l10n_th_icd10tm.system_icd_10_tm" />
     </record>
     <record id="dx_role_sdx_complication" model="ni.encounter.diagnosis.role">
         <field name="name">Complication</field>
         <field name="code">SDx COMPLICATION</field>
         <field name="parent_id" ref="dx_role_sdx" />
+        <field name="decoration">warning</field>
         <field name="system_id" ref="l10n_th_icd10tm.system_icd_10_tm" />
     </record>
     <record id="dx_role_other" model="ni.encounter.diagnosis.role">
@@ -51,6 +54,7 @@
         <field name="name">External Cause</field>
         <field name="code">EXTERNAL</field>
         <field name="parent_id" ref="dx_role_sdx" />
+        <field name="decoration">danger</field>
         <field name="system_id" ref="l10n_th_icd10tm.system_icd_10_tm" />
     </record>
 </odoo>
