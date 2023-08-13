@@ -95,7 +95,7 @@
                 duplicate="0"
                 decoration-bf="state in ['draft','planned']"
                 decoration-info="state in ['draft','planned']"
-                decoration-muted="state in ['cancelled', 'entered-in-error']"
+                decoration-muted="state in ['cancelled', 'entered-in-error', 'finished']"
             >
                 <field name="name" />
                 <field name="patient_id" widget="many2one_avatar" />
@@ -107,8 +107,8 @@
                     optional="show"
                     widget="badge"
                     decoration-danger="priority=='stat'"
-                    decoration-warning="priority=='urgent'"
-                    decoration-success="priority=='asap'"
+                    decoration-warning="priority=='asap'"
+                    decoration-success="priority=='urgent'"
                 />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
@@ -117,7 +117,12 @@
                 <field name="period_end_date" optional="show" />
                 <field name="duration" optional="hide" />
                 <field name="duration_hours" optional="hide" widget="float_time" />
-                <field name="state" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-primary="state in ['in-progress', 'finished']"
+                    decoration-info="state == ['draft', 'planned']"
+                />
                 <field name="company_id" groups="base.group_multi_company" />
             </tree>
         </field>
