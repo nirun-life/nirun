@@ -52,7 +52,7 @@ class Encounter(models.Model):
             "target": "new",
             "context": {
                 "default_patient_id": self.patient_id.id,
-                "default_encounter_id": self.encounter_id.id,
+                "default_encounter_id": self.id,
                 "default_type_id": followup.id,
                 "default_name": followup.name,
                 "default_parent_id": self.appointment_id.id,
