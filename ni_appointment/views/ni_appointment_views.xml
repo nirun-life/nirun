@@ -2,7 +2,7 @@
 <!--
   ~ Copyright (c) 2023 NSTDA
   -->
-<odoo noupdate="1">
+<odoo>
     <record id="ni_appointment_action" model="ir.actions.act_window">
         <field name="name">Appointment</field>
         <field name="res_model">ni.appointment</field>
@@ -112,12 +112,14 @@
                             <field name="name" placeholder="e.g. Follow-up" string="Appointment" />
                         </h1>
                         <div class="text-muted">
-                            <field name="patient_identifier" class="d-inline" />
-                            <field name="patient_name" class="d-inline p-2" />
+                            <field name="encounter_identifier" class="d-inline" />
+                            <field name="patient_identifier" class="d-inline p-2" />
+                            <field name="patient_name" class="d-inline" />
                         </div>
                     </div>
                     <group>
                         <group>
+                            <field name="encounter_id" />
                             <field name="hide_next" invisible="1" />
                             <label for="next_days" string="At Next" attrs="{'invisible': [('hide_next', '=', True)]}" />
                             <div class="o_row" attrs="{'invisible': [('hide_next', '=', True)]}">
