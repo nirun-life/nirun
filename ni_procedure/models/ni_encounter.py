@@ -1,6 +1,6 @@
 #  Copyright (c) 2022. NSTDA
 
-from odoo import fields, models
+from odoo import _, fields, models
 
 from odoo.addons.ni_patient.models.ni_encounter import LOCK_STATE_DICT
 
@@ -23,16 +23,16 @@ class Encounter(models.Model):
             encounter.procedure_count = data.get(encounter.id, 0)
 
     def action_procedure(self):
-        action_rec = self.env.ref("ni_procedure.ni_procedure_action").sudo()
-        action = action_rec.read()[0]
-        ctx = dict(self.env.context)
-        ctx.update(
-            {
+        action = {
+            "name": _("Procedure History"),
+            "type": "ir.actions.act_window",
+            "res_model": "ni.procedure",
+            "view_mode": "tree,kanban,form,graph,pivot",
+            "context": {
                 "search_default_group_by_encounter": 1,
                 "default_patient_id": self[0].patient_id.id,
                 "default_encounter_id": self.ids[0],
-            }
-        )
-        action["context"] = ctx
-        action["domain"] = [("patient_id", "=", self[0].patient_id.id)]
+            },
+            "domain": [("patient_id", "=", self[0].patient_id.id)],
+        }
         return action

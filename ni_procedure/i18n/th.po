@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-11 12:38+0000\n"
-"PO-Revision-Date: 2023-08-11 12:38+0000\n"
+"POT-Creation-Date: 2023-08-15 03:31+0000\n"
+"PO-Revision-Date: 2023-08-15 03:31+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -69,9 +69,9 @@ msgid "Attachment Count"
 msgstr "จำนวนไฟล์แนบ"
 
 #. module: ni_procedure
-#: model:ir.ui.menu,name:ni_procedure.ni_procedure_category_menu
 #: model:ir.model.fields,field_description:ni_procedure.field_ni_procedure__category_id
 #: model:ir.model.fields,field_description:ni_procedure.field_ni_procedure_code__category_id
+#: model:ir.ui.menu,name:ni_procedure.ni_procedure_category_menu
 msgid "Category"
 msgstr "หมวด"
 
@@ -391,7 +391,7 @@ msgstr ""
 
 #. module: ni_procedure
 #: model:ir.model.fields,help:ni_procedure.field_ni_procedure__message_needaction_counter
-msgid "Number of messages which requires an action"
+msgid "Number of messages requiring action"
 msgstr ""
 
 #. module: ni_procedure
@@ -459,6 +459,8 @@ msgid "Primary"
 msgstr ""
 
 #. module: ni_procedure
+#: model:ir.actions.act_window,name:ni_procedure.ni_procedure_action
+#: model:ir.actions.act_window,name:ni_procedure.ni_procedure_action_pivot_from_encounter
 #: model:ir.model,name:ni_procedure.model_ni_procedure
 #: model:ir.model.fields,field_description:ni_procedure.field_ni_encounter__procedure_ids
 #: model:ir.model.fields,field_description:ni_procedure.field_ni_patient__procedure_ids
@@ -471,13 +473,9 @@ msgstr "หัตถการ"
 
 #. module: ni_procedure
 #: model:ir.actions.act_window,name:ni_procedure.ni_procedure_category_action
-msgid "Procedure Category"
-msgstr "หมวดหัตถการ"
-
-#. module: ni_procedure
 #: model:ir.model,name:ni_procedure.model_ni_procedure_category
 msgid "Procedure Category"
-msgstr "หมวดหมู่หัตถการ"
+msgstr "หมวดหัตถการ"
 
 #. module: ni_procedure
 #: model:ir.model,name:ni_procedure.model_ni_procedure_code
@@ -496,6 +494,13 @@ msgid "Procedure Count"
 msgstr "จำนวนหัตถการ"
 
 #. module: ni_procedure
+#. odoo-python
+#: code:addons/ni_procedure/models/ni_encounter.py:0
+#, python-format
+msgid "Procedure History"
+msgstr "ประวัติหัตถการ"
+
+#. module: ni_procedure
 #: model:ir.model,name:ni_procedure.model_ni_procedure_outcome
 msgid "Procedure Outcome"
 msgstr "ผลลัพธ์หัตถการ"
@@ -504,12 +509,6 @@ msgstr "ผลลัพธ์หัตถการ"
 #: model:ir.actions.act_window,name:ni_procedure.ni_procedure_outcome_action
 msgid "Procedure Outcomes"
 msgstr "ผลลัพธ์หัตถการ"
-
-#. module: ni_procedure
-#: model:ir.actions.act_window,name:ni_procedure.ni_procedure_action
-#: model:ir.actions.act_window,name:ni_procedure.ni_procedure_action_pivot_from_encounter
-msgid "Procedure"
-msgstr "หัตถการ"
 
 #. module: ni_procedure
 #: model:ni.procedure.category,name:ni_procedure.categ_psychiatry
