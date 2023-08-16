@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_medication_suggest_action" model="ir.actions.act_window">
+        <field name="name">Medication Suggestion</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.medication.suggest</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="ni_medication_suggest_view_form" model="ir.ui.view">
+        <field name="name">ni.medication.suggest.view.form</field>
+        <field name="model">ni.medication.suggest</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="reason_ids" options="{'color_field': 'color'}" widget="many2many_tags" />
+                        </group>
+                        <group>
+                            <field name="code" />
+                            <field name="system_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="line" string="Medication">
+                            <field name="line_ids" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_medication_suggest_view_tree" model="ir.ui.view">
+        <field name="name">ni.medication.suggest.view.tree</field>
+        <field name="model">ni.medication.suggest</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="line_display" />
+                <field name="line_ids" />
+                <field name="code" optional="hide" />
+                <field name="system_id" optional="hide" />
+                <field name="color" widget="color_picker" />
+            </tree>
+        </field>
+    </record>
+</odoo>
