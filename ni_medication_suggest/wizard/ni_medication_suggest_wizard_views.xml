@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_medication_suggest_wizard_action" model="ir.actions.act_window">
+        <field name="name">Medication Suggestion</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.medication.suggest.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_encounter_id': active_id}</field>
+    </record>
+    <record id="ni_medication_suggest_wizard_view_form" model="ir.ui.view">
+        <field name="name">ni.medication.suggest.wizard.view.form</field>
+        <field name="model">ni.medication.suggest.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="reason_ids" invisible="1" />
+                <sheet>
+                    <group>
+                        <field name="encounter_id" invisible="context.get('default_encounter_id')" />
+                        <field name="reason_id" options="{'no_open': True}" string="Filter" placeholder="Reason" />
+                    </group>
+                    <div class="mb-4">
+                        <label for="suggest_id" />
+                        <h2 class="mt-1">
+                            <field
+                                name="suggest_id"
+                                domain="['|', ('reason_ids', '=?', reason_id), ('reason_ids', '=', False)]"
+                                options="{'no_open': True, 'no_create':False}"
+                                class="w-100"
+                                placeholder="Search..."
+                            />
+                        </h2>
+                    </div>
+                    <notebook>
+                        <page name="line" string="Detail" icon="fa-minus-circle" badge="suggest_line_count">
+                            <field name="suggest_line_ids" />
+                            <field name="suggest_line_count" invisible="1" />
+                            <group>
+                                <group>
+                                    <field name="occurrence" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply" class="btn-primary" />
+                    <button special="cancel" type="object" string="Discard" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='medication']" position="inside">
+                <button
+                    name="%(ni_medication_suggest_wizard_action)d"
+                    type="action"
+                    string="Suggestion"
+                    icon="fa-briefcase"
+                    attrs="{'invisible': [('state', '!=', 'in-progress')]}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

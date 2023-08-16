@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_medication_dispense_action" model="ir.actions.act_window">
+        <field name="name">Medication Suggestion Line</field>
+        <field name="res_model">ni.medication.suggest.line</field>
+        <field name="view_mode">tree,form,calendar,pivot,graph,activity</field>
+    </record>
+    <record id="ni_medication_dispense_view_search" model="ir.ui.view">
+        <field name="name">ni.medication.suggest.line.view.search</field>
+        <field name="model">ni.medication.suggest.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="medication_id" />
+            </search>
+        </field>
+    </record>
+    <record id="ni_medication_dispense_view_tree" model="ir.ui.view">
+        <field name="name">ni.medication.suggest.line.view.tree</field>
+        <field name="model">ni.medication.suggest.line</field>
+        <field name="arch" type="xml">
+            <tree multi_edit="1">
+                <field name="category_id" optional="hide" />
+                <field name="medication_id" />
+                <field name="dosage_id" optional="show" />
+                <field name="quantity" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_medication_suggestion_line_view_form" model="ir.ui.view">
+        <field name="name">ni.medication.suggest.line.view.form</field>
+        <field name="model">ni.medication.suggest.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="suggest_id" invisible="1" />
+                <sheet>
+                    <field
+                        name="medication_image_1920"
+                        class="oe_avatar"
+                        options="{'preview_image': 'medication_image_128'}"
+                        widget="image"
+                    />
+                    <div class="oe_title">
+                        <div class="d-flex">
+                            <label for="medication_id" class="flex-fill" />
+                        </div>
+                        <h4>
+                            <field
+                                name="medication_id"
+                                class="w-100"
+                                options="{'no_open': True}"
+                                placeholder="e.g. Paracetamol 500mg"
+                                domain="[('reason_ids', '=?', reason_id)]"
+                            />
+                        </h4>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="reason_id" />
+                            <field name="reason_ids" invisible="1" />
+                            <label for="quantity" />
+                            <div>
+                                <field name="quantity" class="narrow_field" />
+                                <field name="medication_dose_unit_id" class="oe_inline" options="{'no_open': True}" />
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="dosage" string="Dosage">
+                            <div class="d-lg-flex">
+                                <!-- These two div are used to position org_chart -->
+                                <div class="flex-grow-1">
+                                    <group>
+                                        <label for="timing_id" />
+                                        <div class="o_row">
+                                            <field
+                                                name="timing_tmpl_id"
+                                                options="{'no_create':True, 'no_create_edit':True}"
+                                                attrs="{'invisible': [('timing_id', '!=', False)], 'required':[('timing_id', '=', False)]}"
+                                                placeholder="choose from..."
+                                            />
+                                            <span
+                                                class="oe_edit_only"
+                                                attrs="{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}"
+                                            >
+                                                or
+                                            </span>
+                                            <field
+                                                name="timing_id"
+                                                domain="[('id', '=', False)]"
+                                                options="{'no_quick_create':True}"
+                                                attrs="{'invisible': [('timing_tmpl_id', '!=', False)], 'required':[('timing_tmpl_id', '=', False)]}"
+                                                placeholder="create new..."
+                                            />
+                                        </div>
+                                        <label for="dose" />
+                                        <div class="o_row">
+                                            <field name="dose" class="narrow_field" />
+                                            <field
+                                                name="dose_unit_id"
+                                                attrs="{'required': [('dose', '!=', 0 )]}"
+                                                options="{'no_open': True}"
+                                            />
+                                        </div>
+                                        <field name="method_id" options="{'no_open': True}" />
+                                        <field name="route_id" options="{'no_open': True}" />
+                                        <field name="site_id" options="{'no_open': True}" />
+                                        <field
+                                            name="additional_ids"
+                                            widget="many2many_tags"
+                                            options="{'color_field': 'color'}"
+                                        />
+                                    </group>
+                                    <field name="text" placeholder="Describe more additional dosage here..." />
+                                </div>
+                                <div class="col-lg-4 px-0 ps-lg-5 pe-lg-0">
+                                    <separator string="Template" />
+                                    <field name="medication_dosage_ids" invisible="1" />
+                                    <field name="medication_dosage_count" invisible="1" />
+                                    <p
+                                        class="text-muted"
+                                        attrs="{'invisible': ['|',('medication_id', '=', False), ('medication_dosage_count', '>', 0)]}"
+                                    >
+                                        There is no template for this medication
+                                    </p>
+                                    <div class="o_row">
+                                        <field
+                                            name="dosage_tmpl_id"
+                                            context="{'show_text': True, 'show_additional':True}"
+                                            options="{'no_create':True}"
+                                            widget="radio"
+                                        />
+                                        <label
+                                            class="oe_edit_only"
+                                            for="dosage_id"
+                                            string="or"
+                                            attrs="{'invisible': ['|', '|',  ('medication_dosage_count', '=', 0), ('dosage_tmpl_id', '!=', False), ('dosage_id', '!=', False)]}"
+                                        />
+                                        <field
+                                            name="dosage_id"
+                                            domain="[('id', '=', False)]"
+                                            context="{'show_text': True, 'show_additional':True, 'default_dose_unit_id': medication_dose_unit_id}"
+                                            placeholder="create new..."
+                                            attrs="{'invisible': [('dosage_tmpl_id', '!=', False)]}"
+                                            options="{'no_quick_create':True, 'always_reload':True}"
+                                            invisible="1"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_medication_suggestion_line_view_kanban" model="ir.ui.view">
+        <field name="name">ni.medication.suggest.line.view.kanban</field>
+        <field name="model">ni.medication.suggest.line</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="medication_id" />
+                <field name="dosage_id" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title d">
+                                        <field name="medication_id" />
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <div class="small">
+                                        <field name="dosage_id" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>
