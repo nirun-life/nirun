@@ -27,7 +27,7 @@ PATIENT_FIELD = [
     "birthdate",
     "blood_abo",
     "blood_rh",
-    "condition_problem_ids",
+    "condition_ids",
     "coverage_type_ids",
 ]
 
@@ -109,7 +109,7 @@ class Reception(models.Model):
         "ni_reception_condition",
         "reception_id",
         "code_id",
-        "Problem List",
+        "Chronic Condition",
     )
     allergy_code_ids = fields.Many2many(
         "ni.allergy.code",
@@ -197,6 +197,7 @@ class Reception(models.Model):
             self.patient_id = None
 
     def action_submit(self):
+        self.ensure_one()
         if not self.patient_id and self.partner_id:
             # Try to find Patient ID if Partner ID present to make sure we're not creating duplicate Patient record
             self.patient_id = self.partner_id.patient_ids.filtered(
@@ -237,8 +238,23 @@ class Reception(models.Model):
             "views": [[False, "form"]],
         }
 
+    def _get_condition_data(self):
+        patient_state = self.env.ref("ni_condition.class_patient_state")
+        return [
+            fields.Command.create(
+                {
+                    "code_id": c.id,
+                    "class_id": patient_state.id,
+                    "is_problem": True,
+                }
+            )
+            for c in self.condition_problem_ids
+        ]
+
     def patient_data(self):
-        vals = self.copy_data({"name": self.name})
+        vals = self.copy_data(
+            {"name": self.name, "condition_ids": self._get_condition_data()}
+        )
         return [{k: v for k, v in d.items() if k in PATIENT_FIELD} for d in vals]
 
     def encounter_data(self):
