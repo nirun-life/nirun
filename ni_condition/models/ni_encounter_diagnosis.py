@@ -17,10 +17,11 @@ class Diagnosis(models.Model):
         store=True,
         required=True,
         readonly=False,
+        ondelete="cascade",
     )
-    role_id = fields.Many2one("ni.encounter.diagnosis.role", required=True)
+    role_id = fields.Many2one("ni.encounter.diagnosis.role", ondelete="restrict")
     role_decoration = fields.Selection(related="role_id.decoration")
-    condition_id = fields.Many2one("ni.condition", required=True, ondelete="restrict")
+    condition_id = fields.Many2one("ni.condition", required=True, ondelete="cascade")
 
     _sql_constraints = [
         (
@@ -54,18 +55,28 @@ class Diagnosis(models.Model):
                     )
         return super().create(vals_list)
 
+    @api.onchange("role_id")
+    def _onchange_role_id(self):
+        if self.role_id:
+            self.sequence = self.role_id.sequence
+        else:
+            self.sequence = 99
+
+    @api.onchange("is_diagnosis")
+    def _onchange_is_diagnosis(self):
+        if not self.is_diagnosis and self.role_id:
+            self.role_id = None
+
     @api.onchange("class_id")
     def _onchange_class_id(self):
         if self.class_id:
             self.sequence = self.class_id.sequence
 
-    @api.constrains("is_diagnosis")
+    @api.constrains("is_diagnosis", "role_id")
     def _check_is_diagnosis(self):
         for rec in self:
-            if not rec.is_diagnosis:
-                raise _(
-                    "Diagnosis item must be indicate to be diagnosis\n\nPlease contract your administrator"
-                )
+            if rec.is_diagnosis and not rec.role_id:
+                raise _("Encounter Diagnosis must specify role")
 
     def unlink(self):
         condition_ids = self.mapped("condition_id")
