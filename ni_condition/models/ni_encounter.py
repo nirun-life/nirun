@@ -62,3 +62,24 @@ class Encounter(models.Model):
                             )
                         )
                     )
+
+    def action_condition(self):
+        self.ensure_one()
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "search_default_group_by_encounter": 1,
+                "default_patient_id": self[0].patient_id.id,
+                "default_encounter_id": self[0].id,
+            }
+        )
+        view = {
+            "name": _("Problem List"),
+            "res_model": "ni.condition",
+            "type": "ir.actions.act_window",
+            "target": "current",
+            "view_mode": "tree,form",
+            "domain": [("patient_id", "=", self.patient_id.id)],
+            "context": ctx,
+        }
+        return view
