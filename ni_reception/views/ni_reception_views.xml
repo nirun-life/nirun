@@ -98,6 +98,7 @@
                                 name="company_id"
                                 placeholder="Company"
                                 options="{'no_open': True, 'no_create':True}"
+                                attrs="{'readonly': [('id', '!=', False)]}"
                             />
                         </div>
                         <div class="mb-2 text-muted" attrs="{'invisible': [('state', '!=', 'draft')]}">
@@ -135,7 +136,7 @@
                             <label for="identification_id" />
                             <div class="o_row">
                                 <field name="identification_id" placeholder="💳 X-XXXX-XXXXX-XX-1" />
-                                <field name="nationality_id" placeholder="Nationality" />
+                                <field name="nationality_id" placeholder="Nationality" options="{'no_open': True}" />
                             </div>
                             <label for="name" />
                             <div class="o_row">
@@ -147,25 +148,25 @@
                                 />
                                 <field name="name" placeholder="John Smith" />
                             </div>
-                            <field name="gender" widget="radio" options="{'horizontal': True}" />
-                            <label for="blood_abo" string="Blood Group" />
+                            <label for="gender" />
                             <div class="o_row">
+                                <field name="gender" widget="radio" options="{'horizontal': True}" />
+                                <label for="blood_abo" string="Blood Group" class="mx-1" />
                                 <field
                                     name="blood_abo"
-                                    class="abo_field"
+                                    class="narrow_field"
                                     placeholder="ABO"
                                     options="{'no_open': True}"
                                 />
                                 <field
                                     name="blood_rh"
-                                    class="abo_field"
+                                    class="narrow_field"
                                     placeholder="RH"
                                     options="{'no_open': True, 'always_reload':True}"
                                     context="{'only_abbr': True}"
                                 />
                             </div>
                             <field name="birthdate" placeholder="🎂 09-31-XXXX" />
-                            k
                             <label name="address_name" for="street" string="Address" />
                             <div class="o_address_format">
                                 <field name="street" class="o_address_street" placeholder="Street..." />
@@ -290,7 +291,7 @@
                                 <field name="encounter_identifier_type" widget="radio" options="{'horizontal': True}" />
                                 <field
                                     name="encounter_identifier"
-                                    placeholder="HN-20230001"
+                                    placeholder="AN-20230001"
                                     attrs="{'invisible': [('encounter_identifier_type', '=', 'auto')], 'required': [('encounter_identifier_type', '=', 'manual')]}"
                                 />
                             </div>
@@ -309,7 +310,7 @@
                             />
                             <label for="performer_id" />
                             <div class="o_row">
-                                <field name="performer_id" options="{'no_open': True}" placeholder="Performer" />
+                                <field name="performer_id" placeholder="Performer" options="{'no_open': True}" />
                                 <field name="department_id" placeholder="Department" options="{'no_open': True}" />
                             </div>
                         </group>
