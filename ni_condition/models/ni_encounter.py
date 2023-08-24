@@ -7,17 +7,32 @@ from odoo.exceptions import ValidationError
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
-    condition_ids = fields.One2many(
-        "ni.condition", "encounter_id", string="Condition", readonly=True
-    )
-    condition_prev_ids = fields.One2many(
-        "ni.condition",
-        string="Previous Diagnosis",
-        compute="_compute_condition_prev_ids",
-        readonly=True,
-    )
     diagnosis_ids = fields.One2many("ni.encounter.diagnosis", "encounter_id")
     diagnosis_count = fields.Integer(compute="_compute_diagnosis_count")
+
+    def action_confirm(self):
+        super(Encounter, self).action_confirm()
+        for rec in self:
+            if not rec.diagnosis_ids:
+                prob = self.env["ni.condition"].search(
+                    [("patient_id", "=", rec.patient_id.id), ("is_problem", "=", True)]
+                )
+                if prob:
+                    vals = {
+                        "diagnosis_ids": [
+                            fields.Command.create(
+                                {
+                                    "encounter_id": rec.id,
+                                    "condition_id": p.id,
+                                    "patient_id": rec.patient_id.id,
+                                    "code_id": p.code_id.id,
+                                    "is_problem": True,
+                                }
+                            )
+                            for p in prob
+                        ]
+                    }
+                    rec.write(vals)
 
     @api.depends("diagnosis_ids")
     def _compute_diagnosis_count(self):
@@ -28,19 +43,6 @@ class Encounter(models.Model):
         data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
         for encounter in self:
             encounter.diagnosis_count = data.get(encounter.id, 0)
-
-    @api.depends("patient_id")
-    def _compute_condition_prev_ids(self):
-        conditions = self.env["ni.condition"]
-        for rec in self:
-            rec.condition_prev_ids = conditions.search(
-                [
-                    ("patient_id", "=", self.patient_id.id),
-                    ("encounter_id", "<", rec.id),
-                    ("is_diagnosis", "=", True),
-                ],
-                order="encounter_id desc",
-            )
 
     @api.constrains("encounter_id", "diagnosis_ids")
     def _check_role_limit(self):
@@ -68,7 +70,6 @@ class Encounter(models.Model):
         ctx = dict(self.env.context)
         ctx.update(
             {
-                "search_default_group_by_encounter": 1,
                 "default_patient_id": self[0].patient_id.id,
                 "default_encounter_id": self[0].id,
             }
