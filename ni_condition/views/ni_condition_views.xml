@@ -46,7 +46,12 @@
                 <field name="is_problem" invisible="1" />
                 <field name="is_diagnosis" invisible="1" />
                 <field name="verification_id" optional="hide" />
-                <field name="severity" optional="hide" />
+                <field
+                    name="severity"
+                    optional="hide"
+                    decoration-danger="severity == 'severe'"
+                    decoration-warning="severity == 'moderate'"
+                />
                 <field name="note" optional="hide" />
                 <field name="create_uid" optional="hide" />
                 <field name="create_date" optional="hide" />
@@ -143,6 +148,25 @@
                         </group>
                     </group>
                     <notebook attrs="{'invisible': [('id', '=', False)]}">
+                        <page name="History" string="History" icon="fa-history">
+                            <field name="diagnosis_ids">
+                                <tree default_order="encounter_start desc">
+                                    <field name="encounter_id" />
+                                    <field name="encounter_start" />
+                                    <field
+                                        name="role_id"
+                                        widget="badge"
+                                        decoration-primary="role_decoration == 'primary'"
+                                        decoration-success="role_decoration == 'success'"
+                                        decoration-info="role_decoration == 'info'"
+                                        decoration-warning="role_decoration == 'warning'"
+                                        decoration-danger="role_decoration == 'danger'"
+                                        decoration-muted="role_decoration == 'muted'"
+                                    />
+                                    <field name="role_decoration" invisible="1" />
+                                </tree>
+                            </field>
+                        </page>
                         <page name="note" string="Note">
                             <field name="note" />
                         </page>

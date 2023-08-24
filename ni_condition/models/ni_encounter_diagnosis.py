@@ -13,19 +13,19 @@ class Diagnosis(models.Model):
     sequence = fields.Integer()
     encounter_id = fields.Many2one(
         "ni.encounter",
-        related="condition_id.encounter_id",
         store=True,
         required=True,
         readonly=False,
         ondelete="cascade",
     )
+    encounter_start = fields.Datetime(related="encounter_id.period_start")
     role_id = fields.Many2one("ni.encounter.diagnosis.role", ondelete="restrict")
     role_decoration = fields.Selection(related="role_id.decoration")
     condition_id = fields.Many2one("ni.condition", required=True, ondelete="cascade")
 
     _sql_constraints = [
         (
-            "encounter_condition_uniq",
+            "encounter_id_condition_id_uniq",
             "unique (encounter_id, condition_id)",
             _("Condition must be unique!"),
         ),
@@ -34,25 +34,17 @@ class Diagnosis(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if "is_diagnosis" not in vals:
-                vals["is_diagnosis"] = True
-            if "code_id" in vals:
-                #  Check code already exist as problem history that just reveal on this encounter
-                problem_id = self.env["ni.condition"].search(
+            if "code_id" in vals and "condition_id" not in vals:
+                enc = self.env["ni.encounter"].browse(vals["encounter_id"])
+                condition = self.env["ni.condition"].search(
                     [
-                        ("encounter_id", "=", vals["encounter_id"]),
+                        ("patient_id", "=", enc.patient_id.id),
                         ("code_id", "=", vals["code_id"]),
-                        ("is_problem", "=", True),
                     ],
                     limit=1,
                 )
-                if problem_id:
-                    vals.update(
-                        {
-                            "is_problem": True,
-                            "condition_id": problem_id.id,
-                        }
-                    )
+                if condition:
+                    vals.update({"condition_id": condition.id})
         return super().create(vals_list)
 
     @api.onchange("role_id")
