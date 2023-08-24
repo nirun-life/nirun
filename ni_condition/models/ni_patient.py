@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class Patient(models.Model):
@@ -14,39 +14,32 @@ class Patient(models.Model):
         "patient_id",
         "Problem",
         compute="_compute_condition_problem_ids",
-        inverse="_inverse_condition_problem_ids",
-        readonly=False,
     )
     condition_report_ids = fields.One2many("ni.condition.latest", "patient_id")
 
     @api.depends("condition_ids")
     def _compute_condition_problem_ids(self):
-        problem = self.env["ni.condition"].search(
-            [("patient_id", "in", self.ids), ("is_problem", "=", True)]
-        )
         for rec in self:
-            problem_ids = problem.filtered_domain([("patient_id", "=", rec.id)])
-            added_code = []
-            cmd = []
-            for p in problem_ids:
-                if p.code_id.id not in added_code:
-                    cmd.append((4, p.id))
-                    added_code.append(p.code_id.id)
-            rec.write({"condition_problem_ids": cmd})
+            problem = self.env["ni.condition"].search(
+                [("patient_id", "=", rec.id), ("is_problem", "=", True)]
+            )
+            rec.condition_problem_ids = problem
 
-    def _inverse_condition_problem_ids(self):
-        for rec in self:
-            # remove all condition (problem) that have been removed
-            cmd = [
-                (2, c.id, 0)
-                for c in rec.condition_ids.filtered_domain([("is_problem", "=", True)])
-                if c.is_problem is True and c not in rec.condition_problem_ids
-            ]
-            # Then add new condition (problem)
-            cmd = cmd + [
-                (0, 0, p.copy_data()[0])
-                for p in rec.condition_problem_ids
-                if p not in rec.condition_ids
-            ]
-            if cmd:
-                rec.write({"condition_ids": cmd})
+    def action_condition(self):
+        self.ensure_one()
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "default_patient_id": self[0].id,
+            }
+        )
+        view = {
+            "name": _("Problem List"),
+            "res_model": "ni.condition",
+            "type": "ir.actions.act_window",
+            "target": "current",
+            "view_mode": "tree,form",
+            "domain": [("patient_id", "=", self.patient_id.id)],
+            "context": ctx,
+        }
+        return view
