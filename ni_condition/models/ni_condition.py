@@ -17,8 +17,10 @@ class Condition(models.Model):
 
     name = fields.Char(related="code_id.name", store=True)
 
-    is_problem = fields.Boolean("Problem List Item")
-    is_diagnosis = fields.Boolean("Encounter Diagnosis")
+    is_problem = fields.Boolean("Chronic", help="Save on Problem List Item")
+    is_diagnosis = fields.Boolean(
+        "Diagnosis", help="Condition that relate to encounter"
+    )
 
     code_id = fields.Many2one(
         "ni.condition.code",
