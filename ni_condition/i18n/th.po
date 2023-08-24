@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-10 10:52+0000\n"
-"PO-Revision-Date: 2023-08-10 10:52+0000\n"
+"POT-Creation-Date: 2023-08-23 09:30+0000\n"
+"PO-Revision-Date: 2023-08-23 09:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -84,12 +84,17 @@ msgstr "เปิดใช้งาน"
 
 #. module: ni_condition
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_encounter_diagnosis_view_tree
-msgid "Add diagnosis"
-msgstr "เพิ่มผลวินิจฉัย"
+msgid "Add Chronic"
+msgstr "ปัญหาเรื้อรัง"
+
+#. module: ni_condition
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_encounter_diagnosis_view_tree
+msgid "Add Diagnosis"
+msgstr "ปัญหาในครั้งนี้"
 
 #. module: ni_condition
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_tree
-msgid "Add problem"
+msgid "Add Problem"
 msgstr "เพิ่มรายการปัญหา"
 
 #. module: ni_condition
@@ -113,17 +118,24 @@ msgid "Chief complaint"
 msgstr "อาการสำคัญ"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__is_problem
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__is_problem
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__is_problem
+msgid "Chronic"
+msgstr "ปัญหาเรื้อรัง"
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__class_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__class_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__class_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__class_id
 msgid "Class"
-msgstr "ประเภท"
+msgstr "ระดับ"
 
 #. module: ni_condition
 #: model:ir.ui.menu,name:ni_condition.ni_condition_class_menu
 msgid "Classification"
-msgstr "ประเภท"
+msgstr "ระดับ"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__code
@@ -285,18 +297,7 @@ msgstr "ประเภทวินิจฉัย"
 #: code:addons/ni_condition/models/ni_encounter.py:0
 #, python-format
 msgid "Diagnosis as [{}] has reached limit at {} item"
-msgstr "การวินิจฉัยประเภท [{}] ถึงขีดจำกันที่จำนวน {} รายแล้ว"
-
-#. module: ni_condition
-#. odoo-python
-#: code:addons/ni_condition/models/ni_encounter_diagnosis.py:0
-#, python-format
-msgid ""
-"Diagnosis item must be indicate to be diagnosis\n"
-"\n"
-"Please contract your administrator"
-msgstr ""
-
+msgstr "ปัญหาประเภท [{}] ถึงขีดจำกันที่จำนวน {} รายแล้ว"
 
 #. module: ni_condition
 #: model:ni.condition.verification,name:ni_condition.verify_differential
@@ -355,6 +356,7 @@ msgstr "ระยะเวลา (ปี)"
 
 #. module: ni_condition
 #: model:ir.model,name:ni_condition.model_ni_encounter
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_search
 msgid "Encounter"
 msgstr "ข้อมูลรับบริการ"
 
@@ -363,8 +365,15 @@ msgstr "ข้อมูลรับบริการ"
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__is_diagnosis
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__is_diagnosis
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_search
-msgid "Encounter Diagnosis"
-msgstr "วินิจฉัย"
+msgid "Diagnosis"
+msgstr "ปัญหาในครั้งนี้"
+
+#. module: ni_condition
+#. odoo-python
+#: code:addons/ni_condition/models/ni_encounter_diagnosis.py:0
+#, python-format
+msgid "Encounter Diagnosis must specify role"
+msgstr "ปัญหาที่เกี่ยวกับการรับบริการต้องระบุประเภท"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__encounter_id
@@ -521,6 +530,13 @@ msgid "Nursing"
 msgstr "การพยาบาล"
 
 #. module: ni_condition
+#: model:ir.model.fields,help:ni_condition.field_ni_condition__is_diagnosis
+#: model:ir.model.fields,help:ni_condition.field_ni_condition_latest__is_diagnosis
+#: model:ir.model.fields,help:ni_condition.field_ni_encounter_diagnosis__is_diagnosis
+msgid "Condition that relate to encounter"
+msgstr "ปัญหา/โรคที่เกี่ยวข้องกับการให้บริการในครั้งนั้น"
+
+#. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__period_start
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__period_start
 msgid "Onset"
@@ -539,7 +555,7 @@ msgstr "เริ่มเป็นเมื่อ"
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_verification__parent_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role__parent_id
 msgid "Parent"
-msgstr "แม่"
+msgstr ""
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_code__parent_path
@@ -623,15 +639,11 @@ msgstr "ปัญหา"
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_condition.py:0
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__is_problem
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__is_problem
-#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__is_problem
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_search
-#: model_terms:ir.ui.view,arch_db:ni_condition.ni_encounter_view_form_inherit
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_patient_view_form_inherit
 #, python-format
 msgid "Problem List Item"
-msgstr "ปัญหา"
+msgstr "รายการปัญหา"
 
 #. module: ni_condition
 #: model:ni.condition.verification,name:ni_condition.verify_provisional
@@ -695,6 +707,18 @@ msgstr "หายดี"
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__role_id
 msgid "Role"
 msgstr "ประเภท"
+
+#. module: ni_condition
+#: model:ir.model.fields,help:ni_condition.field_ni_condition__is_problem
+#: model:ir.model.fields,help:ni_condition.field_ni_condition_latest__is_problem
+#: model:ir.model.fields,help:ni_condition.field_ni_encounter_diagnosis__is_problem
+msgid "Save on Problem List Item"
+msgstr "ปัญหา/โรคที่จะถูกบันทึกในรายการปัญหาของผู้ป่วย"
+
+#. module: ni_condition
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_encounter_view_form_inherit
+msgid "See More"
+msgstr "ดูเพิ่มเติม"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_class__sequence

@@ -23,6 +23,7 @@
         "views/ni_patient_views.xml",
         "views/ni_encounter_views.xml",
         "views/ni_encounter_diagnosis_views.xml",
+        "views/ni_encounter_diagnosis_role_views.xml",
         "views/ni_condition_menu.xml",
     ],
     "application": False,
