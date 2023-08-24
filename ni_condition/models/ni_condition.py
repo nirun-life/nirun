@@ -60,12 +60,14 @@ class Condition(models.Model):
     verification_id = fields.Many2one("ni.condition.verification")
     recurrence = fields.Boolean()
     note = fields.Text()
-    diagnosis_ids = fields.One2many("ni.encounter.diagnosis", "condition_id")
+    diagnosis_ids = fields.One2many(
+        "ni.encounter.diagnosis", "condition_id", readonly=True
+    )
 
     _sql_constraints = [
         (
-            "condition_encounter__uniq",
-            "unique (patient_id, code_id, encounter_id)",
+            "patient_id_code_id_uniq",
+            "unique (patient_id, code_id)",
             "Patient already have this condition!",
         ),
     ]

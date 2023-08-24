@@ -50,7 +50,12 @@
                 <field name="is_problem" invisible="1" />
                 <field name="sequence" widget="handle" />
                 <field name="code_id" />
-                <field name="severity" optional="hide" />
+                <field
+                    name="severity"
+                    optional="hide"
+                    decoration-danger="severity == 'severe'"
+                    decoration-warning="severity == 'moderate'"
+                />
                 <field
                     name="role_id"
                     widget="badge"
