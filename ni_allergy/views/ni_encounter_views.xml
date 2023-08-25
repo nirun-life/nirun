@@ -11,14 +11,11 @@
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[@name='history']" position="inside">
                 <separator name="allergy" string="Allergy / Intolerance" />
-                <group>
-                    <field
-                        name="allergy_code_ids"
-                        widget="many2many_tags"
-                        options="{'color_field': 'color'}"
-                        placeholder="e.g. Shrimp, Seafood, Milk"
-                    />
-                </group>
+                <field
+                    name="allergy_ids"
+                    context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
+                    attrs="{'readonly': [('state', 'not in', ['in-progress'])]}"
+                />
             </xpath>
         </field>
     </record>
