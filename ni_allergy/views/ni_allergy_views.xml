@@ -38,20 +38,28 @@
         <field name="name">ni.allergy.view.tree</field>
         <field name="model">ni.allergy</field>
         <field name="arch" type="xml">
-            <tree decoration-muted="state in ['inactive','resolved']">
+            <tree decoration-muted="state in ['inactive','resolved']" editable="top">
                 <field name="company_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
+                <field name="sequence" widget="handle" />
                 <field name="type" optional="hide" />
                 <field name="category" optional="hide" />
                 <field name="code_id" />
-                <field name="criticality" optional="hide" />
-                <field name="state" optional="hide" />
+                <field name="criticality" optional="show" />
+                <field
+                    name="state"
+                    optional="hide"
+                    widget="badge"
+                    decoration-info="state=='active'"
+                    decoration-success="state=='resolved'"
+                />
                 <button
+                    icon="fa-check"
                     name="action_resolve"
                     type="object"
                     string="Resolve"
-                    class="text-success"
+                    class="btn-secondary"
                     states="active,inactive"
                 />
                 <control>
@@ -73,6 +81,7 @@
                 <field name="company_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
+                <field name="sequence" invisible="0" />
                 <header class="oe_read_only" invisible="context.get('no_header')">
                     <button name="action_active" string="Active" states="resolved" type="object" />
                     <button name="action_resolve" string="Resolve" states="active" type="object" />
@@ -108,7 +117,7 @@
                             <field name="type" />
                         </group>
                         <group>
-                            <field name="criticality" />
+                            <field name="criticality" widget="radio" options="{'horizontal': True}" />
                         </group>
                     </group>
                     <notebook>

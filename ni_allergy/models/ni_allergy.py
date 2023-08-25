@@ -6,7 +6,9 @@ class AllergyIntolerance(models.Model):
     _name = "ni.allergy"
     _description = "Allergy / Intolerance"
     _inherit = ["ni.patient.res"]
+    _order = "sequence, name"
 
+    sequence = fields.Integer(default=0)
     name = fields.Char(related="code_id.name", store=True)
     code_id = fields.Many2one(
         "ni.allergy.code",
@@ -64,7 +66,6 @@ class AllergyIntolerance(models.Model):
 
     @api.depends("code_id")
     def _compute_category(self):
-
         for rec in self:
             rec.category = None
             if not rec.code_id:
@@ -97,7 +98,7 @@ class AllergyIntolerance(models.Model):
         self.write({"state": "active"})
 
     def action_resolve(self):
-        self.write({"state": "resolved"})
+        self.write({"state": "resolved", "sequence": 99})
 
     def _get_state_label(self):
         self.ensure_one()
