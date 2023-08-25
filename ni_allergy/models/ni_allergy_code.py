@@ -15,5 +15,6 @@ class AllergyIntoleranceCode(models.Model):
             ("biologic", "Biologic"),
             ("medication", "Medication"),
         ],
+        default="food",
         required=True,
     )
