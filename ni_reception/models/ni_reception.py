@@ -28,6 +28,7 @@ PATIENT_FIELD = [
     "blood_abo",
     "blood_rh",
     "condition_ids",
+    "allergy_ids",
     "coverage_type_ids",
 ]
 
@@ -41,7 +42,6 @@ ENCOUNTER_FIELD = [
     "identifier",
     "department_id",
     "performer_id",
-    "allergy_code_ids",
 ] + vs.VITALSIGN_FIELDS
 
 
@@ -121,8 +121,8 @@ class Reception(models.Model):
     priority = fields.Selection(
         [
             ("routine", "Routine"),
-            ("asap", "ASAP"),
             ("urgent", "Urgent"),
+            ("asap", "ASAP"),
             ("stat", "STAT"),
         ],
         "Triage",
@@ -185,10 +185,11 @@ class Reception(models.Model):
                         fields.Command.set(patient_id.condition_problem_ids.code_id.ids)
                     ],
                 }
-                if patient_id.encounter_id:
+                if patient_id.encounter_ids:
+                    enc = patient_id.encounter_ids[-1]
                     vals |= {
-                        "body_height": patient_id.encounter_id.body_height,
-                        "body_weight": patient_id.encounter_id.body_weight,
+                        "body_height": enc.body_height,
+                        "body_weight": enc.body_weight,
                     }
             else:
                 vals |= {"patient_id": None}
@@ -251,9 +252,23 @@ class Reception(models.Model):
             for c in self.condition_problem_ids
         ]
 
+    def _get_allergy_data(self):
+        return [
+            fields.Command.create(
+                {
+                    "code_id": c.id,
+                }
+            )
+            for c in self.allergy_code_ids
+        ]
+
     def patient_data(self):
         vals = self.copy_data(
-            {"name": self.name, "condition_ids": self._get_condition_data()}
+            {
+                "name": self.name,
+                "condition_ids": self._get_condition_data(),
+                "allergy_ids": self._get_allergy_data(),
+            }
         )
         return [{k: v for k, v in d.items() if k in PATIENT_FIELD} for d in vals]
 
