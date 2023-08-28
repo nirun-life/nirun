@@ -1,0 +1,73 @@
+@mixin module-font($family, $type, $weight, $style) {
+    @font-face {
+        font-family: $family;
+        src: url("../fonts/google/#{$family}/#{$family}-#{$type}.ttf") format("truetype");
+        font-weight: $weight;
+        font-style: $style;
+    }
+}
+
+@mixin module-font-pair($family, $type, $weight) {
+    @include module-font("#{$family}", $type, $weight, normal);
+}
+
+@mixin module-font-set($family) {
+    @include module-font-pair($family, "Thin", 100);
+    @include module-font-pair($family, "ExtraLight", 200);
+    @include module-font-pair($family, "Light", 300);
+    @include module-font-pair($family, "Regular", 400);
+    @include module-font-pair($family, "Medium", 500);
+    @include module-font-pair($family, "SemiBold", 600);
+    @include module-font-pair($family, "Bold", 700);
+    @include module-font-pair($family, "ExtraBold", 800);
+    @include module-font-pair($family, "Black", 900);
+}
+
+@include module-font-set("NotoSansThai");
+@include module-font-set("NotoSerifThai");
+
+$custom-font-family: NotoSansThai, "Odoo Unicode Support Noto", "Lucida Grande", Helvetica, Verdana, Arial, sans-serif !important;
+$custom-header-font-family: NotoSerifThai, serif, "Odoo Unicode Support Noto" !important;
+
+h6,
+.h6,
+h5,
+.h5,
+.o_legacy_kanban_view.o_kanban_dashboard
+    .o_kanban_record
+    .o_kanban_card_manage_pane.container
+    div[class*="col-"]
+    > .o_kanban_card_manage_title,
+.o_legacy_kanban_view.o_kanban_dashboard
+    .o_kanban_record
+    .o_kanban_card_manage_pane.o_container_small
+    div[class*="col-"]
+    > .o_kanban_card_manage_title,
+.o_kanban_dashboard:not(.o_legacy_kanban_view)
+    .o_kanban_record
+    > div
+    .o_kanban_card_manage_pane.container
+    div[class*="col-"]
+    > .o_kanban_card_manage_title,
+.o_kanban_dashboard:not(.o_legacy_kanban_view)
+    .o_kanban_record
+    > div
+    .o_kanban_card_manage_pane.o_container_small
+    div[class*="col-"]
+    > .o_kanban_card_manage_title,
+h4,
+.h4,
+h3,
+.h3,
+h2,
+.h2,
+h1,
+.h1 {
+    font-family: $custom-header-font-family;
+}
+html:root {
+    font-family: $custom-font-family;
+}
+body {
+    font-family: $custom-font-family;
+}
