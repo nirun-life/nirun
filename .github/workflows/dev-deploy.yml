@@ -1,0 +1,29 @@
+name: dev-deploy
+on:
+    pull_request:
+    push:
+env:
+  TEMP_BUILD: opd-16-temp
+  CONTAINER_NAME: opd-16
+  CONTAINER_IMAGE: nirun:latest
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment: secrets
+    steps:
+      - name: Build docker
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+            host: ${{ secrets-nirun.SSH_HOST }}
+            username: ${{ secrets-nirun.SSH_USER }}
+            key: ${{ secrets-nirun.PRIVATE_SSH_KEY }}
+            port: ${{ secrets-nirun.SSH_PORT }}
+            script: |
+                echo $TEMP_BUILD
+                mkdir $TEMP_BUILD
+                cd $TEMP_BUILD
+                git clone https://${{ secrets-nirun.GH_USER }}:${{ secrets-nirun.GH_TOKEN }}@github.com/nirun-life/docker.git
+                docker build . --file Dockerfile --build-arg GH_USER=${{ secrets-nirun.GH_USER }} --build-arg GH_TOKEN=${{ secrets-nirun.GH_TOKEN }} --tag $CONTAINER_IMAGE
+                docker stop $CONTAINER_NAME || echo ""
+                docker rm $CONTAINER_NAME || echo ""
+                
