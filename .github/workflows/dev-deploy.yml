@@ -6,6 +6,7 @@ env:
   TEMP_BUILD: opd-16-temp
   CONTAINER_NAME: opd-16
   CONTAINER_IMAGE: nirun:latest
+  NIRUN_DOCKER_BRANCH: max-dev 
 jobs:
   deploy:
     runs-on: self-hosted
@@ -22,8 +23,7 @@ jobs:
                 echo $TEMP_BUILD
                 mkdir $TEMP_BUILD
                 cd $TEMP_BUILD
-                git clone https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/docker.git
+                git clone --branch $NIRUN_DOCKER_BRANCH https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/docker.git
                 docker build . --file Dockerfile --build-arg GH_USER=${{ secrets.GH_USER }} --build-arg GH_TOKEN=${{ secrets.GH_TOKEN }} --tag $CONTAINER_IMAGE
-                docker stop $CONTAINER_NAME || echo ""
-                docker rm $CONTAINER_NAME || echo ""
+
                 
