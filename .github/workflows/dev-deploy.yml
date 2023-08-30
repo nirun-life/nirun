@@ -9,21 +9,21 @@ env:
 jobs:
   deploy:
     runs-on: self-hosted
-    environment: secrets
+    environment: secrets-nirun
     steps:
       - name: Build docker
         uses: appleboy/ssh-action@v1.0.0
         with:
-            host: ${{ secrets-nirun.SSH_HOST }}
-            username: ${{ secrets-nirun.SSH_USER }}
-            key: ${{ secrets-nirun.PRIVATE_SSH_KEY }}
-            port: ${{ secrets-nirun.SSH_PORT }}
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.SSH_USER }}
+            key: ${{ secrets.PRIVATE_SSH_KEY }}
+            port: ${{ secrets.SSH_PORT }}
             script: |
                 echo $TEMP_BUILD
                 mkdir $TEMP_BUILD
                 cd $TEMP_BUILD
-                git clone https://${{ secrets-nirun.GH_USER }}:${{ secrets-nirun.GH_TOKEN }}@github.com/nirun-life/docker.git
-                docker build . --file Dockerfile --build-arg GH_USER=${{ secrets-nirun.GH_USER }} --build-arg GH_TOKEN=${{ secrets-nirun.GH_TOKEN }} --tag $CONTAINER_IMAGE
+                git clone https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/docker.git
+                docker build . --file Dockerfile --build-arg GH_USER=${{ secrets.GH_USER }} --build-arg GH_TOKEN=${{ secrets.GH_TOKEN }} --tag $CONTAINER_IMAGE
                 docker stop $CONTAINER_NAME || echo ""
                 docker rm $CONTAINER_NAME || echo ""
                 
