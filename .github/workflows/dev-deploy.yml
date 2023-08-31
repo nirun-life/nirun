@@ -25,8 +25,6 @@ jobs:
                 cd ${{ env.TEMP_BUILD }}
                 git clone --branch ${{ env.NIRUN_DOCKER_BRANCH }} https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/docker.git
                 cd docker && git pull
-                git clone --branch 16.0 --depth 10 https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/nirun-3rd-party.git
-                cd nirun-3rd-party && git pull && cd ..
                 ls -al
                 docker build . --file Dockerfile --no-cache --build-arg GH_USER=${{ secrets.GH_USER }} --build-arg GH_TOKEN=${{ secrets.GH_TOKEN }} --tag ${{ env.CONTAINER_IMAGE }}
 
