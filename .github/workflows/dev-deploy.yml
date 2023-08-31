@@ -20,13 +20,15 @@ jobs:
             key: ${{ secrets.PRIVATE_SSH_KEY }}
             port: ${{ secrets.SSH_PORT }}
             script: |
-                printenv
                 echo ${{ env.TEMP_BUILD }}
                 mkdir ${{ env.TEMP_BUILD }}
                 cd ${{ env.TEMP_BUILD }}
                 git clone --branch ${{ env.NIRUN_DOCKER_BRANCH }} https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/docker.git
                 cd docker && git pull
                 ls -al
-                docker build --build-arg TEST_PASS_ARG=${{ env.NIRUN_DOCKER_BRANCH }} --secret id=GH_USER --secret id=GH_TOKEN --no-cache --tag ${{ env.CONTAINER_IMAGE }} --file Dockerfile .
+                export GH_USER=${{ secrets.GH_USER }}
+                export GH_TOKEN=${{ secrets.GH_TOKEN }}
+                export DOCKER_BUILDKIT=1
+                docker build --build-arg TEST_PASS_ARG=${{ env.NIRUN_DOCKER_BRANCH }} --secret id=GH_USER,env=GH_USER --secret id=GH_TOKEN,env=GH_TOKEN --no-cache --tag ${{ env.CONTAINER_IMAGE }} --file Dockerfile .
 
                 
