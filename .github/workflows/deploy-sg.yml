@@ -1,0 +1,39 @@
+name: deploy-sg
+on: 
+  # repository_dispatch:
+  #   types:['build-docker-local']
+  pull_request:
+  push:
+    
+env:
+  TEMP_BUILD: opd-16-temp
+  CONTAINER_NAME: opd-16
+  CONTAINER_IMAGE: nirun:latest
+  CONTAINER_IMAGE_DEPLOY: nirun:deploy
+  NIRUN_DOCKER_BRANCH: max-dev 
+jobs:
+  deploy-sg:
+    runs-on: self-hosted
+    environment: secrets-nirun
+    steps:
+      - name: Build docker
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.SSH_USER }}
+            key: ${{ secrets.PRIVATE_SSH_KEY }}
+            port: ${{ secrets.SSH_PORT }}
+            script: |
+                cd ${{ env.TEMP_BUILD }}/docker
+                pwd
+                ls -alh
+                docker stack rm ${{ env.CONTAINER_NAME }} || true
+                sleep 8
+                echo ${{ secrets.POSTGRES_HOST }} > secrets-var-pg-host
+                echo ${{ secrets.POSTGRES_PORT }} > secrets-var-pg-port
+                echo ${{ secrets.POSTGRES_DB }} > secrets-var-pg-db
+                echo ${{ secrets.POSTGRES_USER }} > secrets-var-pg-user
+                echo ${{ secrets.POSTGRES_PASSWORD }} > secrets-var-pg-password
+                docker image rm ${{ env.CONTAINER_IMAGE_DEPLOY }} || true
+                docker tag ${{ env.CONTAINER_IMAGE }} ${{ env.CONTAINER_IMAGE_DEPLOY }}
+                docker stack deploy -c ./stack.yml ${{ env.CONTAINER_NAME }}
