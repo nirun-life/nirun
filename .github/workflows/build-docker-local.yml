@@ -1,4 +1,4 @@
-name: dev-deploy
+name: build-docker-local
 on:
     pull_request:
     push:
@@ -8,7 +8,7 @@ env:
   CONTAINER_IMAGE: nirun:latest
   NIRUN_DOCKER_BRANCH: max-dev 
 jobs:
-  deploy:
+  build-docker:
     runs-on: self-hosted
     environment: secrets-nirun
     steps:
@@ -31,5 +31,3 @@ jobs:
                 export DOCKER_BUILDKIT=1
                 docker image ls |grep '<none>' |awk '{ print "docker image rm "$3 }' | sh
                 docker build --secret id=GH_USER,env=GH_USER --secret id=GH_TOKEN,env=GH_TOKEN --no-cache --tag ${{ env.CONTAINER_IMAGE }} --file Dockerfile .
-
-                
