@@ -26,6 +26,8 @@ jobs:
             script: |
                 cd ${{ env.TEMP_BUILD }}/docker
                 pwd
+                mkdir odoo
+                mkdir addons
                 ls -alh
                 docker stack rm ${{ env.CONTAINER_NAME }} || true
                 sleep 8
