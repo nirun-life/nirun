@@ -29,6 +29,6 @@ jobs:
                 export GH_USER=${{ secrets.GH_USER }}
                 export GH_TOKEN=${{ secrets.GH_TOKEN }}
                 export DOCKER_BUILDKIT=1
-                docker build --build-arg TEST_PASS_ARG=${{ env.NIRUN_DOCKER_BRANCH }} --secret id=GH_USER,env=GH_USER --secret id=GH_TOKEN,env=GH_TOKEN --no-cache --tag ${{ env.CONTAINER_IMAGE }} --file Dockerfile .
+                docker build --secret id=GH_USER,env=GH_USER --secret id=GH_TOKEN,env=GH_TOKEN --no-cache --tag ${{ env.CONTAINER_IMAGE }} --file Dockerfile .
 
                 
