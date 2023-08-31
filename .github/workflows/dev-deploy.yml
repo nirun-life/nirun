@@ -20,6 +20,7 @@ jobs:
             key: ${{ secrets.PRIVATE_SSH_KEY }}
             port: ${{ secrets.SSH_PORT }}
             script: |
+                printenv
                 echo ${{ env.TEMP_BUILD }}
                 mkdir ${{ env.TEMP_BUILD }}
                 cd ${{ env.TEMP_BUILD }}
