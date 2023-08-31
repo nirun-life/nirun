@@ -29,6 +29,7 @@ jobs:
                 export GH_USER=${{ secrets.GH_USER }}
                 export GH_TOKEN=${{ secrets.GH_TOKEN }}
                 export DOCKER_BUILDKIT=1
+                docker image ls |grep '<none>' |awk '{ print "docker image rm "$3 }' | sh
                 docker build --secret id=GH_USER,env=GH_USER --secret id=GH_TOKEN,env=GH_TOKEN --no-cache --tag ${{ env.CONTAINER_IMAGE }} --file Dockerfile .
 
                 
