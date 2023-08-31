@@ -1,13 +1,13 @@
 name: build-docker-deploy
 on:
-    pull_request:
-    push:
-  # pull_request:
-  #   branches:
-  #     - "16.0*"
-  # push:
-  #   branches:
-  #     - "16.0*"
+    # pull_request:
+    # push:
+  pull_request:
+    branches:
+      - "16.0*"
+  push:
+    branches:
+      - "16.0*"
 env:
   TEMP_BUILD: opd-16-temp
   CONTAINER_NAME: opd-16
@@ -15,7 +15,7 @@ env:
   CONTAINER_IMAGE_DEPLOY: nirun:deploy
   NIRUN_DOCKER_BRANCH: max-dev 
 jobs:
-  build-docker:
+  build-deploy:
     runs-on: self-hosted
     environment: secrets-nirun
     steps:
