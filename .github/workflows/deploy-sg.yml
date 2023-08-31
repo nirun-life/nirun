@@ -1,9 +1,7 @@
 name: deploy-sg
 on: 
-  # repository_dispatch:
-  #   types:['build-docker-local']
-  pull_request:
-  push:
+  repository_dispatch:
+    types:['build-docker-local']
     
 env:
   TEMP_BUILD: opd-16-temp
