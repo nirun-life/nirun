@@ -16,7 +16,7 @@ jobs:
     runs-on: self-hosted
     environment: secrets-nirun
     steps:
-      - name: Build docker
+      - name: Deploy staging
         uses: appleboy/ssh-action@v1.0.0
         with:
             host: ${{ secrets.SSH_HOST }}
@@ -32,14 +32,18 @@ jobs:
                 ls -alh
                 docker stack rm ${{ env.CONTAINER_NAME }} || true
                 sleep 8
-                echo HOST=${{ secrets.POSTGRES_HOST }} > env.env
-                echo PORT=${{ secrets.POSTGRES_PORT }} >> env.env
-                echo USER=${{ secrets.POSTGRES_USER }} >> env.env
-                echo PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> env.env
+                mkdir config-run
+                rsync -av --delete config/ config-run/
+                sed -i 's/db_host = .*/db_host = ${{ secrets.POSTGRES_HOST }}/g' ./config-run/odoo.conf
+                sed -i 's/db_port = .*/db_port = ${{ secrets.POSTGRES_PORT }}/g' ./config-run/odoo.conf
+                sed -i 's/db_name = .*/db_name = ${{ secrets.POSTGRES_DB }}/g' ./config-run/odoo.conf
+                sed -i 's/db_user = .*/db_user = ${{ secrets.POSTGRES_USER }}/g' ./config-run/odoo.conf
+                sed -i 's/db_password = .*/db_password = ${{ secrets.POSTGRES_PASSWORD }}/g' ./config-run/odoo.conf
                 docker image rm ${{ env.CONTAINER_IMAGE_DEPLOY }} || true
                 docker tag ${{ env.CONTAINER_IMAGE }} ${{ env.CONTAINER_IMAGE_DEPLOY }}
                 docker stack deploy -c ./stack.yml ${{ env.CONTAINER_NAME }}
                 sleep 8
                 docker stack ps ${{ env.CONTAINER_NAME }}
                 sleep 15
-                docker service logs ${{ env.CONTAINER_NAME }}_opd-16
+                docker service logs --details --no-trunc ${{ env.CONTAINER_NAME }}_opd-16
+                echo "Done"
