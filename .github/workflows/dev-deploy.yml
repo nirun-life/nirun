@@ -20,10 +20,10 @@ jobs:
             key: ${{ secrets.PRIVATE_SSH_KEY }}
             port: ${{ secrets.SSH_PORT }}
             script: |
-                echo $TEMP_BUILD
-                mkdir $TEMP_BUILD
-                cd $TEMP_BUILD
-                git clone --branch $NIRUN_DOCKER_BRANCH https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/docker.git
-                docker build . --file Dockerfile --build-arg GH_USER=${{ secrets.GH_USER }} --build-arg GH_TOKEN=${{ secrets.GH_TOKEN }} --tag $CONTAINER_IMAGE
+                echo ${{ env.TEMP_BUILD }}
+                mkdir ${{ env.TEMP_BUILD }}
+                cd ${{ env.TEMP_BUILD }}
+                git clone --branch ${{ env.NIRUN_DOCKER_BRANCH }} https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/docker.git
+                docker build . --file Dockerfile --build-arg GH_USER=${{ secrets.GH_USER }} --build-arg GH_TOKEN=${{ secrets.GH_TOKEN }} --tag ${{ env.CONTAINER_IMAGE }}
 
                 
