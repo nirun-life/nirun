@@ -24,6 +24,7 @@ jobs:
                 mkdir ${{ env.TEMP_BUILD }}
                 cd ${{ env.TEMP_BUILD }}
                 git clone --branch ${{ env.NIRUN_DOCKER_BRANCH }} https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/docker.git
+                git clone https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/nirun-3rd-party.git
                 cd docker
                 git pull
                 ls -al
