@@ -25,6 +25,7 @@ jobs:
             port: ${{ secrets.SSH_PORT }}
             script: |
                 cd ${{ env.TEMP_BUILD }}/docker
+                git pull
                 pwd
                 mkdir odoo
                 mkdir addons
@@ -39,3 +40,6 @@ jobs:
                 docker image rm ${{ env.CONTAINER_IMAGE_DEPLOY }} || true
                 docker tag ${{ env.CONTAINER_IMAGE }} ${{ env.CONTAINER_IMAGE_DEPLOY }}
                 docker stack deploy -c ./stack.yml ${{ env.CONTAINER_NAME }}
+                sleep 8
+                docker stack ps ${{ env.CONTAINER_NAME }}
+                docker service logs ${{ env.CONTAINER_NAME }}_opd-16
