@@ -39,6 +39,7 @@ jobs:
                 sed -i 's/db_name = .*/db_name = ${{ secrets.POSTGRES_DB }}/g' ./config-run/odoo.conf
                 sed -i 's/db_user = .*/db_user = ${{ secrets.POSTGRES_USER }}/g' ./config-run/odoo.conf
                 sed -i 's/db_password = .*/db_password = ${{ secrets.POSTGRES_PASSWORD }}/g' ./config-run/odoo.conf
+                sed -i 's/admin_passwd= .*/admin_passwd = ${{ secrets.POSTGRES_PASSWORD }}/g' ./config-run/odoo.conf
                 docker image rm ${{ env.CONTAINER_IMAGE_DEPLOY }} || true
                 docker tag ${{ env.CONTAINER_IMAGE }} ${{ env.CONTAINER_IMAGE_DEPLOY }}
                 docker stack deploy -c ./stack.yml ${{ env.CONTAINER_NAME }}
