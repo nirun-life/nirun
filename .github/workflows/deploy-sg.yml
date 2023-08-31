@@ -44,6 +44,4 @@ jobs:
                 docker stack deploy -c ./stack.yml ${{ env.CONTAINER_NAME }}
                 sleep 8
                 docker stack ps ${{ env.CONTAINER_NAME }}
-                sleep 15
-                docker service logs --details --no-trunc ${{ env.CONTAINER_NAME }}_opd-16
                 echo "Done"
