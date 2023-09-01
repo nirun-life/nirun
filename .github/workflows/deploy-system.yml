@@ -1,4 +1,4 @@
-name: build-docker-deploy
+name: deploy-system
 on:
   pull_request:
     branches:
@@ -7,14 +7,20 @@ on:
     branches:
       - "16.0*"
 env:
+  # folder สำหรับเก็บไฟล์ของระบบ
   TEMP_BUILD: opd-16-temp
+  # ชื่อ docker ที่จะทำงาน ในที่นี้จะใช้ docker stack deploy
   CONTAINER_NAME: opd-16
+  # ชื่อ image เมื่อ build เสร็จ เช็คได้โดย docker image ls
   CONTAINER_IMAGE: nirun:latest
+  # ชื่อ image เมื่อตอน deploy โดยจะทำการคัดลอกตัว image CONTAINER_IMAGE มาสร้าง เป็นชื่อใหม่
   CONTAINER_IMAGE_DEPLOY: nirun:deploy
+  # ในส่วนของ docker ให้ใช้ข้อมูลจาก branch ที่กำหนดในการ build
   NIRUN_DOCKER_BRANCH: max-dev 
 jobs:
-  build-deploy:
+  build-image:
     runs-on: self-hosted
+    # environment secrets-nirun กำหนดค่าได้ที่ตัวแปร secret github โดยเจ้าของโปรเจค
     environment: secrets-nirun
     steps:
       - name: Build docker
@@ -36,7 +42,11 @@ jobs:
                 export DOCKER_BUILDKIT=1
                 docker image ls |grep '<none>' |awk '{ print "docker image rm "$3 }' | sh
                 docker build --secret id=GH_USER,env=GH_USER --secret id=GH_TOKEN,env=GH_TOKEN --no-cache --tag ${{ env.CONTAINER_IMAGE }} --file Dockerfile .
-                
+  deploy:
+    runs-on: self-hosted
+    environment: secrets-nirun
+    needs: build-image
+    steps:
       - name: Deploy staging
         uses: appleboy/ssh-action@v1.0.0
         with:
