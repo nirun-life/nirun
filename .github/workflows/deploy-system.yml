@@ -75,5 +75,6 @@ jobs:
                 sed -i 's/image: "nirun:deploy"/image: "${{ env.CONTAINER_IMAGE_DEPLOY }}:${{  github.ref_name }}"/g' ./stack-run.yml
                 docker stack deploy -c ./stack-run.yml ${{ env.CONTAINER_NAME }}
                 sleep 8
+                docker image ls
                 docker stack ps ${{ env.CONTAINER_NAME }}
                 echo "Done"
