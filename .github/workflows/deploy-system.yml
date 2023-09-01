@@ -87,6 +87,9 @@ jobs:
                 echo "ทำการ Deploy ระบบใหม่"
                 docker stack deploy -c ./stack-run.yml ${{ env.CONTAINER_NAME }}
                 sleep 8
-                docker image ls
-                docker stack ps ${{ env.CONTAINER_NAME }}
+                docker image ls | grep nirun
+                echo "สถานะการทำงาน stack"
+                docker stack ps ${{ env.CONTAINER_NAME }} |grep nirun
+                echo "สถานะการทำงาน service"
+                docker service ls |grep nirun
                 echo "Done"
