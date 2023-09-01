@@ -1,11 +1,8 @@
 name: deploy-system
 on:
-  pull_request:
-    branches:
-      - "16.0*"
   push:
-    branches:
-      - "16.0*"
+    tags:
+      - '*'
 env:
   # folder สำหรับเก็บไฟล์ของระบบ
   TEMP_BUILD: opd-16-temp
@@ -14,7 +11,7 @@ env:
   # ชื่อ image เมื่อ build เสร็จ เช็คได้โดย docker image ls
   CONTAINER_IMAGE: nirun:latest
   # ชื่อ image เมื่อตอน deploy โดยจะทำการคัดลอกตัว image CONTAINER_IMAGE มาสร้าง เป็นชื่อใหม่
-  CONTAINER_IMAGE_DEPLOY: nirun:deploy
+  CONTAINER_IMAGE_DEPLOY: nirun/deploy
   # ในส่วนของ docker ให้ใช้ข้อมูลจาก branch ที่กำหนดในการ build
   NIRUN_DOCKER_BRANCH: max-dev 
 jobs:
@@ -71,9 +68,12 @@ jobs:
                 sed -i 's/db_user = .*/db_user = ${{ secrets.POSTGRES_USER }}/g' ./config-run/odoo.conf
                 sed -i 's/db_password = .*/db_password = ${{ secrets.POSTGRES_PASSWORD }}/g' ./config-run/odoo.conf
                 sed -i 's/admin_passwd= .*/admin_passwd = ${{ secrets.POSTGRES_PASSWORD }}/g' ./config-run/odoo.conf
-                docker image rm ${{ env.CONTAINER_IMAGE_DEPLOY }} || true
-                docker tag ${{ env.CONTAINER_IMAGE }} ${{ env.CONTAINER_IMAGE_DEPLOY }}
-                docker stack deploy -c ./stack.yml ${{ env.CONTAINER_NAME }}
+                docker image rm ${{  github.ref_name }} || true
+                docker tag ${{ env.CONTAINER_IMAGE }} ${{ env.CONTAINER_IMAGE_DEPLOY }}:${{  github.ref_name }}
+                diff stack.yml stack-run.yml || true
+                rsync -av stack.yml stack-run.yml
+                sed -i 's/image: "nirun:deploy"/image: "${{ env.CONTAINER_IMAGE_DEPLOY }}:${{  github.ref_name }}"/g' ./stack-run.yml
+                docker stack deploy -c ./stack-run.yml ${{ env.CONTAINER_NAME }}
                 sleep 8
                 docker stack ps ${{ env.CONTAINER_NAME }}
                 echo "Done"
