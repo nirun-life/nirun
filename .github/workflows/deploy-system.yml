@@ -31,6 +31,7 @@ jobs:
                 echo ${{ env.TEMP_BUILD }}
                 mkdir ${{ env.TEMP_BUILD }}
                 cd ${{ env.TEMP_BUILD }}
+                echo "ทำการ git clone ตัว docker ของ nirun"
                 git clone --branch ${{ env.NIRUN_DOCKER_BRANCH }} https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/docker.git
                 cd docker && git pull
                 ls -al
@@ -38,6 +39,7 @@ jobs:
                 export GH_TOKEN=${{ secrets.GH_TOKEN }}
                 export DOCKER_BUILDKIT=1
                 docker image ls |grep '<none>' |awk '{ print "docker image rm "$3 }' | sh
+                echo "ทำการ build docker"
                 docker build --secret id=GH_USER,env=GH_USER --secret id=GH_TOKEN,env=GH_TOKEN --no-cache --tag ${{ env.CONTAINER_IMAGE }} --file Dockerfile .
   deploy:
     runs-on: self-hosted
@@ -58,21 +60,31 @@ jobs:
                 mkdir odoo
                 mkdir addons
                 ls -alh
+                echo "หยุดการทำงานของระบบ ${{ env.CONTAINER_NAME }}"
                 docker stack rm ${{ env.CONTAINER_NAME }} || true
+                echo "รอ 8 วิ"
                 sleep 8
                 mkdir config-run
-                rsync -av --delete config/ config-run/
+                echo "คัดลอก config ไปยัง config-run"
+                rsync -av --delete config config-run
+                echo "ปรับแก้ไขค่า config-run ให้เป็นค่าที่ถูกกำหนดโดย nirun-secret"
                 sed -i 's/db_host = .*/db_host = ${{ secrets.POSTGRES_HOST }}/g' ./config-run/odoo.conf
                 sed -i 's/db_port = .*/db_port = ${{ secrets.POSTGRES_PORT }}/g' ./config-run/odoo.conf
                 sed -i 's/db_name = .*/db_name = ${{ secrets.POSTGRES_DB }}/g' ./config-run/odoo.conf
                 sed -i 's/db_user = .*/db_user = ${{ secrets.POSTGRES_USER }}/g' ./config-run/odoo.conf
                 sed -i 's/db_password = .*/db_password = ${{ secrets.POSTGRES_PASSWORD }}/g' ./config-run/odoo.conf
                 sed -i 's/admin_passwd= .*/admin_passwd = ${{ secrets.POSTGRES_PASSWORD }}/g' ./config-run/odoo.conf
+                echo "ลบ image:tag เก่าที่ซ้ำกับอันใหม่"
                 docker image rm "${{ env.CONTAINER_IMAGE_DEPLOY }}" || true
+                echo "เพิ่มชื่ออ้างอิง ${{ env.CONTAINER_IMAGE_DEPLOY }} เข้ากับ ${{ env.CONTAINER_IMAGE }}"
                 docker tag "${{ env.CONTAINER_IMAGE }}" "${{ env.CONTAINER_IMAGE_DEPLOY }}"
+                echo "ตรวจเช็คความแตกต่างของ config stack.yml"
                 diff stack.yml stack-run.yml || true
+                echo "คัดลอก stack.yml ไปยัง stack-run.yml"
                 rsync -av stack.yml stack-run.yml
+                echo "ปรับชื่อ image ที่ใช้ทำงานใน stack-run.yml ให้เป็น ${{ env.CONTAINER_IMAGE_DEPLOY }}"
                 sed -i 's/image: .*/image: "${{ env.CONTAINER_IMAGE_DEPLOY }}"/g' ./stack-run.yml
+                echo "ทำการ Deploy ระบบใหม่"
                 docker stack deploy -c ./stack-run.yml ${{ env.CONTAINER_NAME }}
                 sleep 8
                 docker image ls
