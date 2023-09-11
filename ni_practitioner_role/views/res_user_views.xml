@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="res_users_view_tree_inherit" model="ir.ui.view">
+        <field name="name">res.users.view.tree.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="verified" widget="boolean_toggle" />
+                <field name="active" widget="boolean_toggle" />
+            </field>
+        </field>
+    </record>
+    <record id="res_users_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.users.view.form.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_simple_form" />
+        <field name="arch" type="xml">
+            <field position="after" name="id">
+                <header>
+                    <field name="share" invisible="1" />
+                    <field name="employee_ids" invisible="1" />
+                    <field name="employee_id" invisible="1" />
+                    <button
+                        string="Create employee"
+                        type="object"
+                        name="action_create_employee"
+                        attrs="{'invisible': ['|', '|', ('id', '=', False), ('share', '=', True), ('employee_id', '!=', False)]}"
+                    />
+                    <!-- share is not correctly recomputed because it depends on fields of reified view => invisible before saving (id=False) -->
+                    <field name="state" widget="statusbar" statusbar_visible="new,active" />
+                </header>
+            </field>
+        </field>
+    </record>
+    <record id="res_users_view_form_inherit_simple_hr" model="ir.ui.view">
+        <field name="name">res.users.view.form.inherit.simple.hr</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="hr.view_users_simple_form_inherit_hr" />
+        <field name="arch" type="xml">
+            <field name="create_employee" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
