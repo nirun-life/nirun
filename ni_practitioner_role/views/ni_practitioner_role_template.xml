@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <template id="register_form" name="Practitioner Register Form">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_footer" t-value="1" />
+            <t t-if="error">
+                <div class="alert alert-warning text-center" role="alert">
+                    <t t-esc="error" />
+                </div>
+            </t>
+            <div class="container mt-4">
+                <h1 class="text-center">Practitioner Register</h1>
+                <div class="mt-4 row" id="company">
+                    <div class="col-10" id="company-info">
+                        <div>
+                            as
+                            <b t-out="role.name" />
+                            at
+                        </div>
+                        <h5 class="display-6 text-primary">
+                            <t t-out="company.name" />
+                        </h5>
+                        <div class="small">
+                            <t t-out="company.partner_id._display_address(without_company=True)" />
+                        </div>
+                        <t t-if="company.phone">
+                            <div class="small">
+                                <i class="fa fa-phone" aria-hidden="true" />
+                                <a t-att-href="'tel:%s' % company.phone.replace(' ', '')">
+                                    <t t-out="company.phone" />
+                                </a>
+                                <t t-if="company.mobile">
+                                    <span>,</span>
+                                    <a t-att-href="'tel:%s' % company.mobile.replace(' ', '')">
+                                        <t t-out="company.mobile" />
+                                    </a>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="col-2" id="company-logo">
+                        <img
+                            class="img-fluid rounded-start float-end"
+                            t-if="company.logo"
+                            t-att-src="image_data_uri(company.logo)"
+                            t-att-alt="'%s\'s logo' % company.name "
+                            style="height:90px;width:90px"
+                        />
+                    </div>
+                </div>
+                <form class="mt-4" action="/practitioner/register/submit" method="post" id="practitioner-info">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                    <input type="hidden" name="company_id" t-att-value="company.id" />
+                    <input type="hidden" name="role_id" t-att-value="role.id" />
+                    <input type="hidden" name="token" t-att-value="token" />
+                    <input type="text" name="captcha" value="" class="form-control d-none" />
+                    <div class="mb-3">
+                        <label class="form-label" for="practitioner_name">
+                            <i class="fa fa-certificate" aria-hidden="true" />
+                            License No.
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input
+                            class="form-control"
+                            id="practitioner_license_no"
+                            name="license_no"
+                            required="1"
+                            placeholder="License No."
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="practitioner_password">
+                            <i class="fa fa-lock" aria-hidden="true" />
+                            Password
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="practitioner_password"
+                            name="password"
+                            placeholder="Password"
+                            required="1"
+                        />
+                        <div class="invalid-feedback">Please provide a valid city.</div>
+                    </div>
+                    <hr class="mt24" />
+                    <div class="mb-3 mt-3">
+                        <label class="form-label" for="practitioner_name">
+                            Name
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <select id="practitioner_title" name="title_id" class="form-select w-25">
+                                <option selected="True" value="">-- Select title --</option>
+                                <option t-foreach="titles" t-as="e" t-att-value="e.id">
+                                    <t t-out="e.name" />
+                                </option>
+                            </select>
+                            <input
+                                class="form-control w-75"
+                                id="practitioner_name"
+                                name="name"
+                                required="1"
+                                placeholder="Firstname Lastname"
+                            />
+                        </div>
+                    </div>
+                    <div class="row pb-3 mb-3" id="practitioner-telecom">
+                        <div class="col-6">
+                            <div class="row">
+                                <label class="form-label col-6" for="practitioner_mobile">
+                                    <i class="fa fa-mobile" aria-hidden="true" />
+                                    Mobile
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <label class="form-label col-6" for="practitioner_phone">
+                                    <i class="fa fa-phone" aria-hidden="true" />
+                                    Phone
+                                </label>
+                            </div>
+                            <div class="input-group">
+                                <input
+                                    class="form-control"
+                                    id="practitioner_mobile"
+                                    name="practitioner_mobile"
+                                    placeholder="Mobile"
+                                    required="1"
+                                />
+                                <input
+                                    class="form-control"
+                                    id="practitioner_phone"
+                                    name="practitioner_phone"
+                                    placeholder="Phone"
+                                />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="practitioner_email" class="form-label">
+                                <i class="fa fa-envelope" aria-hidden="true" />
+                                Email
+                            </label>
+                            <input
+                                class="form-control"
+                                id="practitioner_email"
+                                name="practitioner_email"
+                                type="email"
+                                placeholder="yourname@mail.com"
+                            />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fa fa-cloud-upload" aria-hidden="true" />
+                        Submit
+                    </button>
+                </form>
+            </div>
+        </t>
+    </template>
+    <template id="register_successful" name="Appointment Submit">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_footer" t-value="1" />
+            <t t-if="error">
+                <div class="alert alert-warning text-center" role="alert">
+                    <t t-esc="error" />
+                </div>
+            </t>
+            <div class="container mt-4 p-4">
+                <h1 class="text-center ">Congratulations</h1>
+                <div class="text-center mb24">Your signup was successful.</div>
+                <p class="px-4 mx-4">
+                    Before you can start using our platform,
+                    <b t-out="company.name" />
+                    's administrator need to verify your account for security purposes. This process typically takes a
+                    short amount of time, and you will receive an email notification once your account has been
+                    successfully verified.
+                </p>
+            </div>
+        </t>
+    </template>
+</odoo>
