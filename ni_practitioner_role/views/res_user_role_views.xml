@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="res_users_role_action" model="ir.actions.act_window">
+        <field name="name">Role</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.users.role</field>
+        <field name="view_mode">kanban,form</field>
+    </record>
+    <record id="res_users_in_role_action" model="ir.actions.act_window">
+        <field name="name">Users</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('role_ids', '=', active_id)]</field>
+    </record>
+    <record id="res_users_role_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.users.role.view.form.inherit</field>
+        <field name="model">res.users.role</field>
+        <field name="inherit_id" ref="base_user_role.view_res_users_role_form" />
+        <field name="arch" type="xml">
+            <field name="group_id" position="after">
+                <field name="access_token" invisible="1" />
+                <field name="register_location" widget="CopyClipboardURL" />
+                <field name="register_qr_code" widget='image' />
+            </field>
+        </field>
+    </record>
+    <record id="res_users_role_view_kanban" model="ir.ui.view">
+        <field name="name">res.users.role.view.kanban</field>
+        <field name="model">res.users.role</field>
+        <field name="arch" type="xml">
+            <kanban
+                class="oe_background_grey o_kanban_dashboard o_hr_department_kanban o_kanban_small_column"
+                create="0"
+            >
+                <field name="name" />
+                <field name="color" />
+                <field name="user_count" />
+                <field name="user_to_verify_count" />
+                <field name="access_token" />
+                <field name="register_location" />
+                <field name="register_qr_code" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''}">
+                            <div t-attf-class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="name" />
+                                    </div>
+                                    <div class="o_secondary">
+                                        <small>
+                                            <field name="comment" />
+                                        </small>
+                                    </div>
+                                </div>
+                                <div
+                                    class="o_kanban_manage_button_section"
+                                    t-if="!selection_mode"
+                                    groups="base.group_system"
+                                >
+                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                        <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage" />
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content" t-if="!selection_mode">
+                                <div class="row o_kanban_card_upper_content">
+                                    <!-- placeholder for top content -->
+                                </div>
+                                <div class="o_kanban_card_lower_content d-flex" style="justify-content: end">
+                                    <!-- placeholder for bottom content -->
+                                    <div class="col-6 px-4">
+                                        <button class="btn btn-primary w-100 " name="action_user_in_role" type="object">
+                                            <i class="fa fa-users me-2" aria-hidden="true" title="Users" />
+                                            <t t-out="record.user_count.raw_value" />
+                                            Users
+                                            <t t-if="record.user_to_verify_count.raw_value > 0">
+                                                <span class="ms-1 badge bg-danger">
+                                                    <t t-out="record.user_to_verify_count.raw_value" />
+                                                </span>
+                                            </t>
+                                        </button>
+                                    </div>
+                                    <div class="col-6 px-4">
+                                        <button
+                                            class="btn-outline-primary w-100"
+                                            name="action_download_qrcode"
+                                            type="object"
+                                            string="Download"
+                                            icon="fa-qrcode"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                <div class="o_kanban_card_manage_section">
+                                    <div role="menuitem" class="o_kanban_manage_reports">
+                                        <div class="o_kanban_card_manage_title ps-4 pb-1">
+                                            <span class="fw-bolder">Configuration</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a t-if="widget.editable" role="menuitem" class="dropdown-item" type="edit">
+                                    Configuration
+                                </a>
+                                <ul
+                                    t-if="widget.editable"
+                                    class="oe_kanban_colorpicker"
+                                    data-field="color"
+                                    role="menu"
+                                />
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <menuitem
+        id="menu_res_user_role"
+        action="res_users_role_action"
+        groups="base.group_erp_manager"
+        web_icon="ni_practitioner_role,static/description/icon.png"
+    />
+    <record id="base.menu_users" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]" />
+    </record>
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]" />
+    </record>
+</odoo>
