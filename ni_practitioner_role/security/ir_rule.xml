@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="system_res_users_company_rule" model="ir.rule">
+        <field name="name">Users: [Settings] Administrator access all companies</field>
+        <field name="model_id" ref="base_user_role.model_res_users" />
+        <field name="global" eval="True" />
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="erp_manager_res_users_company_rule" model="ir.rule">
+        <field name="name">Users: [Access Rights] Administrator access only own companies</field>
+        <field name="model_id" ref="base_user_role.model_res_users" />
+        <field name="global" eval="True" />
+        <field name="groups" eval="[(4, ref('base.group_erp_manager'))]" />
+        <field name="domain_force">
+            ['|', ('company_ids', 'in', company_ids), ('name', '=', 'Default User Template')]
+        </field>
+    </record>
+</odoo>
