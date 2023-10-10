@@ -91,7 +91,7 @@
                         attrs="{'invisible': [('state', '!=', 'finished')]}"
                     />
                     <div class="oe_title mb-4">
-                        <div class="mb-2" groups="base.group_multi_company">
+                        <div name="company" class="mb-2" groups="base.group_multi_company">
                             <i class="fa fa-building text-primary" title="Company" />
                             <field
                                 class="w-50 mx-2"
@@ -101,33 +101,36 @@
                                 attrs="{'readonly': [('id', '!=', False)]}"
                             />
                         </div>
-                        <div class="mb-2 text-muted" attrs="{'invisible': [('state', '!=', 'draft')]}">
-                            <i class="fa fa-search " title="Search" />
-                            <span class="mx-2">
-                                <b>Search Patient</b>
-                            </span>
+                        <div name="partner" attrs="{'invisible': [('state', '!=', 'draft')]}">
+                            <div class="mb-2 text-muted">
+                                <i class="fa fa-search " title="Search" />
+                                <span class="mx-2">
+                                    <b>Search Patient</b>
+                                </span>
+                            </div>
+                            <h3>
+                                <field
+                                    class="w-100 mt-2"
+                                    name="partner_id"
+                                    domain="[('patient', '=', True)]"
+                                    options="{'no_create': True, 'no_open': True}"
+                                    placeholder="e.g. John Smith"
+                                />
+                            </h3>
                         </div>
-                        <h3>
-                            <field
-                                class="w-100 mt-2"
-                                name="partner_id"
-                                domain="[('patient', '=', True)]"
-                                options="{'no_create': True, 'no_open': True}"
-                                attrs="{'invisible': [('state', '!=', 'draft')]}"
-                                placeholder="e.g. John Smith"
-                            />
-                        </h3>
-                        <label for="identifier" attrs="{'invisible': [('state', '=', 'draft')]}" />
-                        <h3>
-                            <field
-                                class="w-100 mt-1"
-                                name="identifier"
-                                attrs="{'invisible': [('state', '=', 'draft')], 'readonly': [('state', '!=', 'draft')]}"
-                            />
-                        </h3>
-                        <div class="small mt-4" attrs="{'invisible': [('id', '=', False)]}">
-                            <field name="write_uid" widget="many2one_avatar_user" />
-                            <field name="write_date" class="text-muted ms-2" />
+                        <div name="identifier" attrs="{'invisible': [('state', '=', 'draft')]}">
+                            <label for="identifier" />
+                            <h3>
+                                <field
+                                    class="w-100 mt-1"
+                                    name="identifier"
+                                    attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                />
+                            </h3>
+                            <div class="small mt-4" attrs="{'invisible': [('id', '=', False)]}">
+                                <field name="write_uid" widget="many2one_avatar_user" />
+                                <field name="write_date" class="text-muted ms-2" />
+                            </div>
                         </div>
                     </div>
                     <group>
