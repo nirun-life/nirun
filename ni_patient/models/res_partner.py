@@ -23,6 +23,30 @@ class Partner(models.Model):
         compute_sudo=True,
         groups="ni_patient.group_user",
     )
+    identification_id = fields.Char(
+        string="Identification No",
+        copy=False,
+        tracking=True,
+        help="ID related to patient's nationality",
+    )
+
+    def _name_search(
+        self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
+        args = list(args or [])
+        if name:
+            name = name.split(" / ")[-1]
+        if not (name == "" and operator == "ilike"):
+            args += [
+                "|",
+                "|",
+                "|",
+                ("name", operator, name),
+                ("mobile", "=", name),
+                ("phone", "=", name),
+                ("identification_id", "=", name),
+            ]
+        return self._search(args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.model
     def default_get(self, default_fields):
