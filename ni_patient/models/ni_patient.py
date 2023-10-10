@@ -81,8 +81,10 @@ class Patient(models.Model):
     )
     identification_id = fields.Char(
         string="Identification No",
+        related="partner_id.identification_id",
         copy=False,
         tracking=True,
+        readonly=False,
         help="ID related to patient's nationality",
     )
     gender = fields.Selection(
