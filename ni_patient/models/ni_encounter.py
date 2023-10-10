@@ -27,6 +27,22 @@ class Encounter(models.Model):
     _check_company_auto = True
     _order = "period_start DESC, name DESC"
 
+    @api.model
+    def default_get(self, fields):
+        comp = self.env.company
+        if self.env.context.get("default_company_id"):
+            comp_id = self.env.context["default_company_id"]
+            comp = self.env["res.company"].browse(comp_id)[0]
+        if self.env.context.get("default_patient_id"):
+            pat_id = self.env.context["default_patient_id"]
+            comp = self.env["ni.patient"].browse(pat_id)[0].company_id
+
+        if "default_class_id" not in self.env.context and comp.encounter_class_id:
+            self = self.with_context(
+                default_class_id=comp.encounter_class_id.id,
+            )
+        return super(Encounter, self).default_get(fields)
+
     company_id = fields.Many2one(
         related="patient_id.company_id",
         index=True,
