@@ -8,9 +8,15 @@
         <field name="model">ni.reception</field>
         <field name="inherit_id" ref="ni_reception.ni_reception_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//div[@name='partner']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
             <xpath expr="//field[@name='identification_id']" position="after">
                 <button name="action_nhso_authen" type="object" string="Authen" icon="fa-id-badge" />
             </xpath>
+            <field name="nationality_id" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
             <field name="period_start" position="before">
                 <field name="claim_code" readonly="True" />
             </field>
