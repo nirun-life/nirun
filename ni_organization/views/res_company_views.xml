@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+~ Copyright (c) 2023 NSTDA
+-->
+<odoo>
+    <record id="res_company_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.company.view.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div/h1" position="after">
+                <field name="identifier" placeholder="Identifier" />
+                <div>
+                    <field name="type_id" placeholder="Type" options="{'no_open': True}" />
+                    <label class="ms-4" for="capacity" />
+                    <field class="ms-1" name="capacity" />
+                    <field name="capacity_unit" />
+                </div>
+            </xpath>
+        </field>
+    </record>
+    <record id="res_company_view_tree_inherit" model="ir.ui.view">
+        <field name="name">res.company.view.tree.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_tree" />
+        <field name="arch" type="xml">
+            <field name="partner_id" position="before">
+                <field name="identifier" optional="show" />
+                <field name="type_id" />
+                <field name="display_capacity" />
+                <field name="phone" optional="show" />
+                <field name="email" optional="show" />
+            </field>
+            <field name="partner_id" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="base.action_res_company_form">
+        <field name="name">Organization</field>
+    </record>
+    <record model="ir.ui.menu" id="base.menu_users">
+        <field name="name">Users &amp; Organizations</field>
+    </record>
+    <record model="ir.ui.menu" id="base.menu_action_res_company_form">
+        <field name="name">Organization</field>
+    </record>
+</odoo>
