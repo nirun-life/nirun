@@ -2,7 +2,7 @@
 
 import base64
 
-from odoo import fields, http
+from odoo import _, fields, http
 from odoo.http import request
 
 
@@ -41,10 +41,11 @@ class PractitionerRoleController(http.Controller):
             .search([("access_token", "=", token)])
         )
         if role:
+            public_user = request.env.user.login == "public"
             vals = {
                 "company": role.env.company,
                 "role": role,
-                "user": request.env.user,
+                "user": request.env.user if not public_user else None,
                 "titles": request.env["res.partner.title"].search([]),
                 "token": token,
                 "error": kwargs.get("error"),
@@ -62,24 +63,49 @@ class PractitionerRoleController(http.Controller):
 
         comp_id = int(post.get("company_id"))
         token = post.get("token")
-
         license_no = post.get("license_no").strip()
+
         user = (
             request.env["res.users"]
             .sudo()
             .search([("login", "=", license_no)], limit=1)
         )
         if user:
-            return self.form_register(comp_id, token, error="License No. already exist")
+            if not post.get("registered"):
+                return self.form_register(
+                    comp_id, token, error=_("License No. already exist")
+                )
+            else:
+                user.write(
+                    {
+                        "role_line_ids": [
+                            fields.Command.create(
+                                {
+                                    "role_id": int(post.get("role_id")),
+                                    "date_from": fields.Date.today(),
+                                    "company_id": comp_id,
+                                }
+                            )
+                        ],
+                    }
+                )
+                return request.render(
+                    "ni_practitioner_role.register_successful",
+                    {
+                        "company": request.env["res.company"].browse(comp_id),
+                    },
+                )
 
         name = post.get("name").strip()
         if not name:
-            return self.form_register(comp_id, token, error="Must provide patient name")
+            return self.form_register(
+                comp_id, token, error=_("Must provide patient name")
+            )
         if len(name.split()) != 2:
             return self.form_register(
                 comp_id,
                 token,
-                error="Patient name must be in format 'Fistname Lastname'",
+                error=_("Patient name must be in format 'Fistname Lastname'"),
             )
 
         val = self._prepare_user_value(post)
@@ -88,7 +114,7 @@ class PractitionerRoleController(http.Controller):
         return request.render(
             "ni_practitioner_role.register_successful",
             {
-                "company": request.env["res.company"].browse(comp_id),
+                "company": request.env["res.company"].sudo().browse(comp_id),
             },
         )
 
