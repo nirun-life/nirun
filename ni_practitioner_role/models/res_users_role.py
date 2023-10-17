@@ -56,7 +56,7 @@ class Roles(models.Model):
             users = rec.line_ids.mapped("user_id").filtered_domain(
                 [("company_ids", "=", self.env.company.id)]
             )
-            rec.user_count = len(users.filtered_domain([("verified", "=", True)]))
+            rec.user_count = len(users)
             rec.user_to_verify_count = len(
                 users.filtered_domain([("verified", "=", False)])
             )
