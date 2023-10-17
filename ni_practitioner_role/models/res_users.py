@@ -9,6 +9,18 @@ class Users(models.Model):
 
     verified = fields.Boolean(default=True)
 
+    def action_verify(self):
+        for rec in self:
+            rec.verified = True
+            if not rec.employee_id:
+                rec.action_create_employee()
+                rec.employee_id.license_no = rec.login
+
+    def action_verify_employee(self):
+        for rec in self:
+            rec.action_create_employee()
+            rec.employee_id.license_no = rec.login
+
     def _check_credentials(self, password, env):
         if not self.verified:
             raise AccessDenied(_("Waiting for verify"))

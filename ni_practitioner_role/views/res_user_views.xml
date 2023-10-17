@@ -9,8 +9,24 @@
         <field name="inherit_id" ref="base.view_users_tree" />
         <field name="arch" type="xml">
             <field name="company_id" position="after">
-                <field name="verified" widget="boolean_toggle" />
                 <field name="active" widget="boolean_toggle" />
+                <field name="verified" />
+                <button
+                    name="action_verify"
+                    type="object"
+                    string="Verify"
+                    icon="fa-check"
+                    class="text-success"
+                    attrs="{'invisible': [('verified', '=', True)]}"
+                />
+                <button
+                    name="action_create_employee"
+                    type="object"
+                    string="Employee"
+                    icon="fa-id-badge"
+                    attrs="{'invisible': [('employee_id', '!=', False)]}"
+                />
+                <field name="employee_id" invisible="1" />
             </field>
         </field>
     </record>
