@@ -60,13 +60,13 @@ class Encounter(models.Model):
         if vals_list:
             return self.env["ni.observation"].create(vals_list)
 
-    def _observation_vals(self, occurrence, type, value):
+    def _observation_vals(self, occurrence, ob_type, value):
         return {
             "occurrence": occurrence,
             "patient_id": self.patient_id.id,
             "encounter_id": self.id,
-            "type_id": type.id,
-            "value_type": type.value_type,
+            "type_id": ob_type.id,
+            "value_type": ob_type.value_type,
             "value": value,
         }
 
