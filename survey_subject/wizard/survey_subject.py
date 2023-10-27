@@ -36,11 +36,11 @@ class SurveySubjectWizard(models.TransientModel):
         try:
             subject_field = "subject_" + self.type.replace(".", "_")
             subject = getattr(self, subject_field)
-        except AttributeError:
+        except AttributeError as err:
             _logger.error(self.type + ": Not found field value for this subject type")
             raise ValidationError(
                 _("%s : Not found field value for this subject type") % self.type
-            )
+            ) from err
         else:
             if not subject:
                 raise ValidationError(

@@ -77,8 +77,8 @@ class Reception(models.Model):
                 break
 
             return data
-        except RequestException as e:
-            raise ValidationError(e)
+        except RequestException as err:
+            raise ValidationError(err) from err
 
     def _test_env(self):
         return (
