@@ -32,6 +32,7 @@ jobs:
             mkdir ${{ env.TEMP_BUILD }}
             cd ${{ env.TEMP_BUILD }}
             echo "ทำการ git clone ตัว docker ของ nirun"
+            rm -rf docker
             git clone --branch ${{ env.NIRUN_DOCKER_BRANCH }} https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/nirun-life/docker.git
             cd docker && git pull
             ls -al
