@@ -11,17 +11,17 @@ class Partner(models.Model):
         store=True,
         help="Check this box if this contact is an Patient.",
         compute_sudo=True,
-        groups="ni_patient.group_user",
+        groups="ni_patient.group_viewer",
     )
     patient_ids = fields.One2many(
-        "ni.patient", "partner_id", "Patient Records", groups="ni_patient.group_user"
+        "ni.patient", "partner_id", "Patient Records", groups="ni_patient.group_viewer"
     )
     patient_id = fields.Many2one(
         "ni.patient",
         "Patient Record",
         compute="_compute_patient",
         compute_sudo=True,
-        groups="ni_patient.group_user",
+        groups="ni_patient.group_viewer",
     )
     identification_id = fields.Char(
         string="Identification No",
