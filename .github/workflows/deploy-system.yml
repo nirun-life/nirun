@@ -13,7 +13,7 @@ env:
   # ชื่อ image เมื่อตอน deploy โดยจะทำการคัดลอกตัว image CONTAINER_IMAGE มาสร้าง เป็นชื่อใหม่
   CONTAINER_IMAGE_DEPLOY: nirun-deploy:${{  github.ref_name }}
   # ในส่วนของ docker ให้ใช้ข้อมูลจาก branch ที่กำหนดในการ build
-  NIRUN_DOCKER_BRANCH: 16.0
+  NIRUN_DOCKER_BRANCH: "16.0"
 jobs:
   build-image:
     runs-on: self-hosted
@@ -66,7 +66,7 @@ jobs:
             sleep 8
             mkdir config-run
             echo "คัดลอก config ไปยัง config-run"
-            rsync -av --delete config config-run
+            rsync -av --delete odoo.conf config-run/odoo.conf
             echo "ปรับแก้ไขค่า config-run ให้เป็นค่าที่ถูกกำหนดโดย nirun-secret"
             sed -i 's/db_host = .*/db_host = ${{ secrets.POSTGRES_HOST }}/g' ./config-run/odoo.conf
             sed -i 's/db_port = .*/db_port = ${{ secrets.POSTGRES_PORT }}/g' ./config-run/odoo.conf
