@@ -7,20 +7,19 @@ from odoo.http import request
 
 
 class PractitionerRoleController(http.Controller):
-    @http.route("/practitioner-role/<int:role_id>/qrcode/", type="http", auth="user")
+    @http.route("/practitioner-role/<int:role_id>/qrcode", type="http", auth="user")
     def get_qrcode(self, role_id, **kw):
         role = request.env["res.users.role"].browse(role_id)
         if role:
             if role.register_qr_code:
                 file_data = base64.b64decode(role.register_qr_code)
-                comp_name = role.env.company.name.replace(" ", "_")
                 return request.make_response(
                     file_data,
                     [
                         ("Content-Type", "application/octet-stream"),
                         (
                             "Content-Disposition",
-                            f"attachment; filename={comp_name}_{role.name}.png",
+                            f"attachment; filename={role.name}.png",
                         ),
                     ],
                 )
@@ -49,6 +48,7 @@ class PractitionerRoleController(http.Controller):
                 "titles": request.env["res.partner.title"].search([]),
                 "token": token,
                 "error": kwargs.get("error"),
+                "post": kwargs.get("post"),
             }
             return request.render("ni_practitioner_role.register_form", vals)
         else:
@@ -63,17 +63,13 @@ class PractitionerRoleController(http.Controller):
 
         comp_id = int(post.get("company_id"))
         token = post.get("token")
-        license_no = post.get("license_no").strip()
+        login = post.get("login").strip()
 
-        user = (
-            request.env["res.users"]
-            .sudo()
-            .search([("login", "=", license_no)], limit=1)
-        )
+        user = request.env["res.users"].sudo().search([("login", "=", login)], limit=1)
         if user:
             if not post.get("registered"):
                 return self.form_register(
-                    comp_id, token, error=_("License No. already exist")
+                    comp_id, token, error=_("License No. already exist"), post=post
                 )
             else:
                 user.write(
@@ -99,13 +95,7 @@ class PractitionerRoleController(http.Controller):
         name = post.get("name").strip()
         if not name:
             return self.form_register(
-                comp_id, token, error=_("Must provide patient name")
-            )
-        if len(name.split()) != 2:
-            return self.form_register(
-                comp_id,
-                token,
-                error=_("Patient name must be in format 'Fistname Lastname'"),
+                comp_id, token, error=_("Must provide patient name"), post=post
             )
 
         val = self._prepare_user_value(post)
@@ -122,7 +112,7 @@ class PractitionerRoleController(http.Controller):
         comp_id = int(post.get("company_id"))
         role_id = int(post.get("role_id"))
         return {
-            "login": post.get("license_no").strip(),
+            "login": post.get("login").strip(),
             "password": post.get("password").strip(),
             "title": int(post.get("title_id")) if post.get("title_id") else False,
             "name": post.get("name").strip(),
