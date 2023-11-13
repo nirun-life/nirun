@@ -82,6 +82,6 @@ class Roles(models.Model):
         if self.register_qr_code:
             return {
                 "type": "ir.actions.act_url",
-                "url": "/practitioner-role/%d/qrcode/" % self.id,
+                "url": "/practitioner-role/%d/qrcode" % self.id,
                 "target": "self",
             }
