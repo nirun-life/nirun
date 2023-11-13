@@ -58,6 +58,7 @@
                     <input type="hidden" name="token" t-att-value="token" />
                     <input type="text" name="captcha" value="" class="form-control d-none" />
                     <input type="hidden" name="registered" t-att-value="True" t-if="user" />
+                    <t t-set="values" t-value="post or user" />
                     <div class="mb-3">
                         <label class="form-label" for="practitioner_name">
                             <i class="fa fa-certificate" aria-hidden="true" />
@@ -67,10 +68,10 @@
                         <input
                             class="form-control"
                             id="practitioner_license_no"
-                            name="license_no"
+                            name="login"
                             required="1"
                             placeholder="License No."
-                            t-att-value="user.login if user else ''"
+                            t-att-value="values['login'] if values else ''"
                             t-att-readonly="bool(user)"
                         />
                     </div>
@@ -87,6 +88,7 @@
                             name="password"
                             placeholder="Password"
                             required="1"
+                            t-att-value="values['password'] if values else ''"
                         />
                         <div class="invalid-password">Incorrect Password</div>
                     </div>
@@ -100,7 +102,7 @@
                             <t t-if="not user">
                                 <select
                                     id="practitioner_title"
-                                    name="title_id"
+                                    name="title"
                                     class="form-select w-25"
                                     t-att-readonly="bool(user)"
                                 >
@@ -109,7 +111,7 @@
                                         t-foreach="titles"
                                         t-as="e"
                                         t-att-value="e.id"
-                                        t-att-selected="e.name == (user.title.name if user else '')"
+                                        t-att-selected="e.id == (int(values['title']) if values and values.get('title') else '')"
                                     >
                                         <t t-out="e.name" />
                                     </option>
@@ -131,7 +133,7 @@
                                 name="name"
                                 required="1"
                                 placeholder="Firstname Lastname"
-                                t-att-value="user.name if user else ''"
+                                t-att-value="values['name'] if values else ''"
                                 t-att-readonly="bool(user)"
                             />
                         </div>
@@ -153,18 +155,18 @@
                                 <input
                                     class="form-control"
                                     id="practitioner_mobile"
-                                    name="practitioner_mobile"
+                                    name="mobile"
                                     placeholder="Mobile"
                                     required="1"
-                                    t-att-value="user.mobile if user else ''"
+                                    t-att-value="values['mobile'] if values else ''"
                                     t-att-readonly="bool(user)"
                                 />
                                 <input
                                     class="form-control"
                                     id="practitioner_phone"
-                                    name="practitioner_phone"
+                                    name="phone"
                                     placeholder="Phone"
-                                    t-att-value="user.phone if user else ''"
+                                    t-att-value="values['phone'] if values else ''"
                                     t-att-readonly="bool(user)"
                                 />
                             </div>
@@ -177,10 +179,10 @@
                             <input
                                 class="form-control"
                                 id="practitioner_email"
-                                name="practitioner_email"
+                                name="email"
                                 type="email"
                                 placeholder="yourname@mail.com"
-                                t-att-value="user.email if user else ''"
+                                t-att-value="values['email'] if values else ''"
                                 t-att-readonly="bool(user)"
                             />
                         </div>
