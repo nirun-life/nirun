@@ -5,13 +5,12 @@
 <odoo>
     <template id="register_form" name="Practitioner Register Form">
         <t t-call="web.frontend_layout">
-            <t t-set="no_footer" t-value="1" />
             <t t-if="error">
                 <div class="alert alert-danger text-center" role="alert">
                     <t t-esc="error" />
                 </div>
             </t>
-            <div class="container mt-4">
+            <div class="container mt48 mb48">
                 <h1 class="text-center">Practitioner Register</h1>
                 <div class="mt-4 row" id="company">
                     <div class="col-lg-10 col-8" id="company-info">
@@ -66,7 +65,7 @@
                             <span class="text-danger">*</span>
                         </label>
                         <input
-                            class="form-control"
+                            t-attf-class="form-control {{ 'is-invalid' if err and err.get('login') else '' }}"
                             id="practitioner_license_no"
                             name="login"
                             required="1"
@@ -74,6 +73,7 @@
                             t-att-value="values['login'] if values else ''"
                             t-att-readonly="bool(user)"
                         />
+                        <div class="invalid-feedback" t-out="err['login']" t-if="err.get('login')" />
                     </div>
                     <div class="mb-3" t-if="not user">
                         <label class="form-label" for="practitioner_password">
@@ -83,14 +83,14 @@
                         </label>
                         <input
                             type="password"
-                            class="form-control"
+                            t-attf-class="form-control {{ 'is-invalid' if err and err.get('password') else '' }}"
                             id="practitioner_password"
                             name="password"
                             placeholder="Password"
                             required="1"
                             t-att-value="values['password'] if values else ''"
                         />
-                        <div class="invalid-password">Incorrect Password</div>
+                        <div class="invalid-feedback" t-out="err['password']" t-if="err.get('password')" />
                     </div>
                     <hr class="mt24" />
                     <div class="mb-3 mt-3">
@@ -128,7 +128,7 @@
                                 />
                             </t>
                             <input
-                                class="form-control w-75"
+                                t-attf-class="form-control w-75 {{ 'is-invalid' if err and err.get('name') else '' }}"
                                 id="practitioner_name"
                                 name="name"
                                 required="1"
@@ -139,37 +139,37 @@
                         </div>
                     </div>
                     <div class="row pb-3" id="practitioner-telecom">
-                        <div class="col-lg-6 col-12 mb-3">
-                            <div class="row">
-                                <label class="form-label col-6" for="practitioner_mobile">
-                                    <i class="fa fa-mobile" aria-hidden="true" />
-                                    Mobile
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <label class="form-label col-6" for="practitioner_phone">
-                                    <i class="fa fa-phone" aria-hidden="true" />
-                                    Phone
-                                </label>
-                            </div>
-                            <div class="input-group">
-                                <input
-                                    class="form-control"
-                                    id="practitioner_mobile"
-                                    name="mobile"
-                                    placeholder="Mobile"
-                                    required="1"
-                                    t-att-value="values['mobile'] if values else ''"
-                                    t-att-readonly="bool(user)"
-                                />
-                                <input
-                                    class="form-control"
-                                    id="practitioner_phone"
-                                    name="phone"
-                                    placeholder="Phone"
-                                    t-att-value="values['phone'] if values else ''"
-                                    t-att-readonly="bool(user)"
-                                />
-                            </div>
+                        <div class="col-lg-3 col-6 mb-2">
+                            <label for="practitioner_mobile" class="form-label">
+                                <i class="fa fa-mobile" aria-hidden="true" />
+                                Mobile
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input
+                                t-attf-class="form-control {{ 'is-invalid' if err.get('mobile') else '' }}"
+                                id="practitioner_mobile"
+                                name="mobile"
+                                placeholder="Mobile"
+                                required="1"
+                                t-att-value="values['mobile'] if values else ''"
+                                t-att-readonly="bool(user)"
+                            />
+                            <div class="invalid-feedback" t-out="err['mobile']" t-if="err.get('mobile')" />
+                        </div>
+                        <div class="col-lg-3 col-6 mb-3">
+                            <label class="form-label col-6" for="practitioner_phone">
+                                <i class="fa fa-phone" aria-hidden="true" />
+                                Phone
+                            </label>
+                            <input
+                                t-attf-class="form-control {{ 'is-invalid' if err.get('phone') else '' }}"
+                                id="practitioner_phone"
+                                name="phone"
+                                placeholder="Phone"
+                                t-att-value="values['phone'] if values else ''"
+                                t-att-readonly="bool(user)"
+                            />
+                            <div class="invalid-feedback" t-out="err['phone']" t-if="err.get('phone')" />
                         </div>
                         <div class="col-lg-6 col-12 mb-3">
                             <label for="practitioner_email" class="form-label">
@@ -177,7 +177,7 @@
                                 Email
                             </label>
                             <input
-                                class="form-control"
+                                t-attf-class="form-control {{ 'is-invalid' if err.get('email') else '' }}"
                                 id="practitioner_email"
                                 name="email"
                                 type="email"
@@ -185,17 +185,33 @@
                                 t-att-value="values['email'] if values else ''"
                                 t-att-readonly="bool(user)"
                             />
+                            <div class="invalid-feedback" t-out="err['email']" t-if="err.get('email')" />
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary px-4">
+                    <div class="mt-2 small">
+                        By clicking Sign Up, I agree to
+                        <a href="/privacy">terms of service</a>
+                        ,
+                        <a href="/privacy">privacy policy</a>
+                        and
+                        <a href="/privacy">use of cookies</a>
+                        .
+                    </div>
+                    <button type="submit" class="btn btn-primary px-4 my-3">
                         <i class="fa fa-cloud-upload" aria-hidden="true" />
-                        Submit
+                        Sign up
                     </button>
+                    <div class="mb96 text-muted">
+                        <t t-if="not user">
+                            Already have an account?
+                            <a href="/web/login">Login</a>
+                        </t>
+                    </div>
                 </form>
             </div>
         </t>
     </template>
-    <template id="register_successful" name="Appointment Submit">
+    <template id="register_successful" name="Practitioner Register | Submit">
         <t t-call="web.frontend_layout">
             <t t-set="no_footer" t-value="1" />
             <t t-if="error">
@@ -203,7 +219,7 @@
                     <t t-esc="error" />
                 </div>
             </t>
-            <div class="container mt-4 p-4">
+            <div class="container mt48 p-4">
                 <h1 class="text-center display-1">
                     <i class="fa fa-check-circle-o text-success" aria-hidden="true" />
                 </h1>
@@ -221,6 +237,7 @@
                         </p>
                     </div>
                 </div>
+                <div class="mb96" />
             </div>
         </t>
     </template>
