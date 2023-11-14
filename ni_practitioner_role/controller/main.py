@@ -48,6 +48,7 @@ class PractitionerRoleController(http.Controller):
                 "titles": request.env["res.partner.title"].search([]),
                 "token": token,
                 "error": kwargs.get("error"),
+                "err": kwargs.get("err") or dict(),
                 "post": kwargs.get("post"),
             }
             return request.render("ni_practitioner_role.register_form", vals)
@@ -69,7 +70,11 @@ class PractitionerRoleController(http.Controller):
         if user:
             if not post.get("registered"):
                 return self.form_register(
-                    comp_id, token, error=_("License No. already exist"), post=post
+                    comp_id,
+                    token,
+                    error=_("License No. already exist"),
+                    err={"login": _("License No. already exist")},
+                    post=post,
                 )
             else:
                 user.write(
@@ -95,7 +100,11 @@ class PractitionerRoleController(http.Controller):
         name = post.get("name").strip()
         if not name:
             return self.form_register(
-                comp_id, token, error=_("Must provide patient name"), post=post
+                comp_id,
+                token,
+                error=_("Must provide patient name"),
+                err={"name": _("Must provide patient name")},
+                post=post,
             )
 
         val = self._prepare_user_value(post)
