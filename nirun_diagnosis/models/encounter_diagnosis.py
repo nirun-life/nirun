@@ -13,8 +13,8 @@ class Diagnosis(models.Model):
     def _get_default_seq_role(self):
         if not self.env.context.get("default_role_id"):
             return 99
-        id = self.env.context.get("default_role_id")
-        role = self.env["ni.diagnosis.role"].search([("id", "=", id)])
+        role_id = self.env.context.get("default_role_id")
+        role = self.env["ni.diagnosis.role"].search([("id", "=", role_id)])
         return role.sequence * 10 if role else 99
 
     @api.model
