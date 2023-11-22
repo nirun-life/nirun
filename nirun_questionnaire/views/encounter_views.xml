@@ -9,38 +9,25 @@
         <field name="groups_id" eval="[(4, ref('survey.group_survey_user'))]" />
         <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='button_box']" position="inside">
-                <button
-                    name="action_start_survey"
-                    class="oe_stat_button"
-                    attrs="{'invisible':['|', ('survey_id','=',False), ('response_id', '!=', False)]}"
-                    type="object"
-                    context="{'survey_id': survey_id}"
-                    help="Questionnaire relate to  encounter classification"
-                    icon="fa-commenting-o"
-                >
-                    <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_text">Start</span>
-                        <span class="o_stat_text">Questionnaire</span>
-                    </div>
-                </button>
-                <button
-                    name="action_print_survey"
-                    attrs="{'invisible':[('survey_id','=',False)]}"
-                    class="oe_stat_button"
-                    help="Print questionnaire response"
-                    icon="fa-commenting"
-                    type="object"
-                >
-                    <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_text">Print</span>
-                        <span class="o_stat_text">Questionnaire</span>
-                    </div>
-                </button>
-            </xpath>
             <field name="reason_ids" position="after">
+                <field
+                    name="response_latest_id"
+                    options="{'no_open': True}"
+                    attrs="{'invisible': [('survey_id', '=', False)]}"
+                />
                 <field name="survey_id" invisible="1" />
                 <field name="response_id" invisible="1" />
+            </field>
+        </field>
+    </record>
+    <record id="ni_encounter_view_tree_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.tree.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_tree" />
+        <field name="arch" type="xml">
+            <field name="period_start" position="before">
+                <field name="response_latest_grade_id" string="Grade" optional="show" />
+                <field name="response_latest_date" string="At" optional="show" />
             </field>
         </field>
     </record>

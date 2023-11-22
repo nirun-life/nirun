@@ -4,9 +4,9 @@ from odoo import _, fields, models, tools
 from odoo.exceptions import ValidationError
 
 
-class PatientSurveyLatest(models.Model):
-    _name = "ni.patient.survey_latest"
-    _description = "Patient's latest survey result"
+class PatientSurveyPrevious(models.Model):
+    _name = "ni.patient.survey_previous"
+    _description = "Patient's previous survey result"
     _auto = False
 
     company_id = fields.Many2one("res.company", readonly=True)
@@ -36,18 +36,18 @@ class PatientSurveyLatest(models.Model):
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)
         self.env.cr.execute(
-            """CREATE OR REPLACE VIEW %s AS (
-            SELECT *
+            f"""CREATE OR REPLACE VIEW {self._table} AS
+        WITH ranked_survey_input AS (
+            SELECT
+                ROW_NUMBER() OVER
+                (PARTITION BY patient_id,survey_id ORDER BY id DESC) AS rn,
+                *
             FROM survey_user_input
-            WHERE id IN (
-                SELECT max(id)
-                FROM survey_user_input
-                WHERE state = 'done'
-                GROUP BY patient_id, survey_id
-            )
         )
+        SELECT *
+        FROM ranked_survey_input
+        WHERE rn = 2
         """
-            % (self._table)
         )
 
     def name_get(self):

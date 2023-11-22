@@ -19,6 +19,7 @@ class Patient(models.Model):
         groups="survey.group_survey_user",
     )
     response_latest_ids = fields.One2many("ni.patient.survey_latest", "patient_id")
+    response_previous_ids = fields.One2many("ni.patient.survey_previous", "patient_id")
 
     @api.depends("response_ids")
     def _compute_response_count(self):
