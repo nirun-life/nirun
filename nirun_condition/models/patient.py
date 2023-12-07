@@ -18,6 +18,14 @@ class Patient(models.Model):
         inverse="_inverse_condition_problem_ids",
         readonly=False,
     )
+    condition_problem_display = fields.Char(compute="_compute_problem_display")
+
+    @api.depends("condition_problem_ids")
+    def _compute_problem_display(self):
+        for rec in self:
+            rec.condition_problem_display = ", ".join(
+                rec.condition_problem_ids.mapped("name")
+            )
 
     @api.depends("condition_ids")
     def _compute_condition_problem_ids(self):
