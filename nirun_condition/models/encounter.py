@@ -9,6 +9,7 @@ class Encounter(models.Model):
     condition_ids = fields.One2many(
         "ni.condition", "encounter_id", string="Diagnosis", check_company=True
     )
+    condition_display = fields.Char(compute="_compute_condition_display")
     condition_problem_ids = fields.One2many(
         related="patient_id.condition_problem_ids", readonly=False
     )
@@ -36,3 +37,8 @@ class Encounter(models.Model):
                 ],
                 order="encounter_id desc",
             )
+
+    @api.depends("condition_ids")
+    def _compute_condition_display(self):
+        for rec in self:
+            rec.condition_display = ", ".join(rec.condition_report_ids.mapped("name"))
