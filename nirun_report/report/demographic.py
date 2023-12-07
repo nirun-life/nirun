@@ -70,7 +70,7 @@ class Demographic(models.Model):
 
     @api.model
     def cron_report_last_month(self):
-        last_month = fields.date.today() - relativedelta(month=1)
+        last_month = fields.date.today() - relativedelta(months=1)
         self.monthly_report(start_of(last_month, "month"), end_of(last_month, "month"))
 
     @api.model
@@ -86,6 +86,7 @@ class Demographic(models.Model):
             end = end_of(start, "month")
         _logger.info("Generating %s (%s -> %s)...", self._description, start, end)
         vals = {
+            "name": f"DR-{start.year}{start.month}",
             "period_start": start,
             "period_end": end,
             "note": "Auto-generate report",
