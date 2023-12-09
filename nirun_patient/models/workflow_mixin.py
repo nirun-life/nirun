@@ -1,7 +1,5 @@
 #  Copyright (c) 2023. NSTDA
 
-from typing import Optional
-
 from odoo import api, fields, models
 
 
@@ -17,11 +15,11 @@ class WorkflowMixin(models.AbstractModel):
         return "ni.workflow.{}".format(self._workflow_type)
 
     @property
-    def _workflow_name(self) -> str:
+    def _workflow_name(self):
         return self._description
 
     @property
-    def _workflow_summary(self) -> Optional[str]:
+    def _workflow_summary(self):
         return None
 
     @property
