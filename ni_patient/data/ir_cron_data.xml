@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="ir_cron_ni_encounter_auto_close" model="ir.cron">
+        <field name="name">Encounter class: Auto-close</field>
+        <field name="model_id" ref="ni_patient.model_ni_encounter_class" />
+        <field name="state">code</field>
+        <field name="code">model.cron_auto_close()</field>
+        <field name="user_id" ref="base.user_root" />
+        <field name="interval_number">12</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False" />
+    </record>
+</odoo>
