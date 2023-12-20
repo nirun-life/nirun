@@ -3,22 +3,33 @@
   ~ Copyright (c) 2021-2023 NSTDA
   -->
 <odoo>
-    <record id="ni_encounter_action_entered_in_error" model="ir.actions.server">
+    <record id="ni_encounter_action_server_entered_in_error" model="ir.actions.server">
         <field name="name">Error Entry</field>
         <field name="model_id" ref="model_ni_encounter" />
         <field name="binding_model_id" ref="model_ni_encounter" />
         <field name="binding_view_types">list,form</field>
         <field name="state">code</field>
+        <field name="groups_id" eval="[(4, ref('group_manager'))]" />
+        <field name="sequence" eval="99" />
         <field name="code">action = records.action_entered_in_error()</field>
     </record>
-    <record id="ni_encounter_action_encounter_location" model="ir.actions.server">
+    <record id="ni_encounter_action_server_encounter_location" model="ir.actions.server">
         <field name="name">Location History</field>
-        <field name="sequence" eval="0" />
+        <field name="sequence" eval="1" />
         <field name="model_id" ref="model_ni_encounter" />
         <field name="binding_model_id" ref="model_ni_encounter" />
         <field name="binding_view_types">form</field>
         <field name="state">code</field>
         <field name="code">action = records.action_encounter_location()</field>
+    </record>
+    <record id="ni_encounter_action_server_encounter_participant" model="ir.actions.server">
+        <field name="name">Participant History</field>
+        <field name="sequence" eval="0" />
+        <field name="model_id" ref="model_ni_encounter" />
+        <field name="binding_model_id" ref="model_ni_encounter" />
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_encounter_participant()</field>
     </record>
     <record id="ni_encounter_action" model="ir.actions.act_window">
         <field name="name">Encounter</field>
@@ -121,8 +132,18 @@
                 <field
                     name="state"
                     widget="badge"
-                    decoration-primary="state in ['in-progress', 'finished']"
+                    decoration-primary="state in ['finished']"
+                    decoration-muted="state in ['cancelled']"
+                    decoration-danger="state in ['entered-in-error']"
+                    decoration-warning="state in ['in-progress']"
                     decoration-info="state == ['draft', 'planned']"
+                />
+                <field name="participate" invisible="1" />
+                <field
+                    name="participant_count"
+                    optional="hide"
+                    decoration-success="participate == True"
+                    decoration-bf="participate == True"
                 />
                 <field name="company_id" groups="base.group_multi_company" />
             </tree>
@@ -146,8 +167,23 @@
         <field name="arch" type="xml">
             <form duplicate="0">
                 <field name="id" invisible="1" />
+                <field name="active" invisible="1" />
                 <field name="partner_id" invisible="1" />
                 <field name="patient_identifier" invisible="1" />
+                <field name="participate" invisible="1" />
+                <field name="is_admission" invisible="1" />
+                <field name="show_special" invisible="1" />
+                <field name="show_history" invisible="1" />
+                <field name="show_chief_complaint" invisible="1" />
+                <field name="show_history_of_present_illness" invisible="1" />
+                <field name="show_review_of_systems" invisible="1" />
+                <field name="show_vital_signs" invisible="1" />
+                <field name="show_physical_exam" invisible="1" />
+                <field name="show_problem_list" invisible="1" />
+                <field name="show_medication" invisible="1" />
+                <field name="show_procedure" invisible="1" />
+                <field name="show_document_ref" invisible="1" />
+                <field name="show_communication" invisible="1" />
                 <header>
                     <button
                         name="action_confirm"
@@ -162,19 +198,30 @@
                         name="action_confirm"
                         string="Start"
                         attrs="{'invisible': [('state', 'not in', [ 'planned'])]}"
-                        class="btn-primary"
+                        class="btn-warning"
                         confirm="Are you sure you want to start this?"
                         type="object"
+                        icon="fa-check-square-o"
                         groups="ni_patient.group_user"
                     />
                     <button
                         name="%(ni_encounter_discharge_wizard_action)d"
-                        attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
+                        attrs="{'invisible': ['|', ('is_admission', '=', False),('state', 'not in', ['in-progress'])]}"
                         string="Discharge"
                         class="btn-primary"
                         context="{'default_encounter_id': id}"
+                        icon="fa-share-square-o"
                         type="action"
                         groups="ni_patient.group_user"
+                    />
+                    <button
+                        name="action_close"
+                        type="object"
+                        string="Finish"
+                        class="btn-primary"
+                        attrs="{'invisible': ['|', ('is_admission', '=', True), ('state', 'not in', ['in-progress'])]}"
+                        icon="fa-share-square-o"
+                        confirm="Are you sure to finish this encounter?"
                     />
                     <button
                         name="action_cancel"
@@ -191,6 +238,21 @@
                         type="object"
                         confirm="Are you sure you want to reset this to draft?"
                         groups="ni_patient.group_admin"
+                    />
+                    <button
+                        name="action_participate"
+                        type="object"
+                        string="Participate"
+                        icon="fa-user-plus"
+                        attrs="{'invisible': ['|', ('participate', '=', True),('state', 'not in', ['in-progress', 'draft'])]}"
+                    />
+                    <button
+                        name="action_quit"
+                        type="object"
+                        string="Quit"
+                        icon="fa-user-times"
+                        confirm="Are you sure to stop the participation of this encounter?"
+                        attrs="{'invisible': ['|', ('participate', '=', False), ('state', 'not in', ['in-progress', 'draft'])]}"
                     />
                     <field name="state" statusbar_visible="draft,in-progress,finished" widget="statusbar" />
                 </header>
@@ -261,7 +323,6 @@
                                 options="{'no_create': True, 'no_open':True, 'always_reload': True}"
                                 context="{'show_parent': True}"
                             />
-                            <field name="hospitalization" invisible="1" />
                             <field
                                 name="location_id"
                                 domain="[('company_id', '=', company_id)]"
@@ -282,34 +343,37 @@
                     </group>
                     <notebook attrs="{'invisible': [('id', '=', False)]}">
                         <page
-                            name="hospitalization"
-                            string="Hospitalization"
+                            name="admission"
+                            string="Admission"
                             icon="fa-bed"
-                            attrs="{'invisible': [('hospitalization', '=', False)]}"
+                            attrs="{'invisible': [('is_admission', '=', False)]}"
                         >
                             <group>
                                 <group string="Admission">
                                     <field name="admit_source_id" />
                                     <field
                                         name="origin_partner_id"
-                                        context="{'default_type': 'contact', 'default_is_company': False}"
+                                        context="{'default_type': 'contact', 'default_show_company': False}"
                                         options='{"always_reload": True}'
                                     />
                                     <field
                                         name="origin_date"
                                         attrs="{'invisible': [('origin_partner_id', '=', False)]}"
                                     />
-                                    <field name="re_admit" />
-                                    <field name="re_admit_reason" attrs="{'invisible': [('re_admit', '=', False)]}" />
+                                    <field name="re_admission" />
                                     <field
-                                        name="re_admit_encounter_id"
-                                        attrs="{'invisible': [('re_admit', '=', False)]}"
+                                        name="re_admission_reason"
+                                        attrs="{'invisible': [('re_admission', '=', False)]}"
+                                    />
+                                    <field
+                                        name="re_admission_encounter_id"
+                                        attrs="{'invisible': [('re_admission', '=', False)]}"
                                         context="{'order_display': 'period_end desc, period_start desc'}"
                                         options="{'always_reload': True, 'no_create': True, 'no_create_edit': True}"
                                     />
-                                    <field name="pre_admit_identifier" />
+                                    <field name="pre_admission_identifier" />
                                 </group>
-                                <group string="Special">
+                                <group string="Special" attrs="{'invisible': [('show_special', '=', False)]}">
                                     <field
                                         name="arrangement_ids"
                                         options="{'color_field': 'color', 'no_edit': True}"
@@ -327,9 +391,29 @@
                                     />
                                 </group>
                             </group>
+                            <group string="Discharge" attrs="{'invisible': [('state', '!=', 'finished')]}">
+                                <group>
+                                    <field name="discharge_status_id" options="{'no_open': True}" />
+                                    <field name="discharge_disposition_id" options="{'no_open': True}" />
+                                    <field name="discharge_partner_id" />
+                                </group>
+                                <div>
+                                    <field name="discharge_note" placeholder="Discharging note..." />
+                                </div>
+                            </group>
                         </page>
-                        <page name="history" string="History" icon="fa-history" />
-                        <page name="cc" string="Chief Complaint" icon="fa-star-half-o">
+                        <page
+                            name="history"
+                            string="History"
+                            icon="fa-history"
+                            attrs="{'invisible': [('show_history', '=', False)]}"
+                        />
+                        <page
+                            name="cc"
+                            string="Chief Complaint"
+                            icon="fa-star-half-o"
+                            attrs="{'invisible': [('show_chief_complaint', '=', False)]}"
+                        >
                             <field name="chief_complaint" placeholder="Chief Complaint" />
                             <div class="my-1">
                                 <i class="fa fa-tags" aria-hidden="true" title="Reasons" />
@@ -351,7 +435,12 @@
                                 <field name="chief_complaint_date" class="text-muted mx-2" />
                             </div>
                         </page>
-                        <page name="hpi" string="History of Present Illness" icon="fa-hourglass-start">
+                        <page
+                            name="hpi"
+                            string="History of Present Illness"
+                            icon="fa-hourglass-start"
+                            attrs="{'invisible': [('show_history_of_present_illness', '=', False)]}"
+                        >
                             <field name="history_of_present_illness" placeholder="History of Present Illness" />
                             <div class="my-2">
                                 <field
@@ -363,7 +452,12 @@
                                 <field name="history_of_present_illness_date" class="text-muted mx-2" />
                             </div>
                         </page>
-                        <page name="ros" string="Review of Systems" icon="fa-stethoscope">
+                        <page
+                            name="ros"
+                            string="Review of Systems"
+                            icon="fa-stethoscope"
+                            attrs="{'invisible': [('show_review_of_systems', '=', False)]}"
+                        >
                             <field name="review_of_systems" placeholder="Review of Systems" />
                             <div class="my-2">
                                 <field
@@ -375,7 +469,12 @@
                                 <field name="review_of_systems_date" class="text-muted mx-2" />
                             </div>
                         </page>
-                        <page name="pe" string="Physical Examination" icon="fa-gavel">
+                        <page
+                            name="pe"
+                            string="Physical Examination"
+                            icon="fa-gavel"
+                            attrs="{'invisible': [('show_physical_exam', '=', False)]}"
+                        >
                             <field name="physical_exam" placeholder="Physical Examination" />
                             <div class="my-2">
                                 <field
@@ -387,27 +486,36 @@
                                 <field name="physical_exam_date" class="text-muted mx-2" />
                             </div>
                         </page>
-                        <page name="vital-signs" string="Vital Sign" icon="fa-heartbeat" />
-                        <page name="problem" string="Problem List" icon="fa-list-ul" />
-                        <page name="medication" string="Medication" icon="fa-minus-circle" />
-                        <page name="procedure" string="Procedure" icon="fa-scissors" />
                         <page
-                            name="discharge"
-                            string="Discharge"
-                            icon="fa-sign-out"
-                            attrs="{'invisible': [('state', '!=', 'finished')]}"
-                        >
-                            <group>
-                                <group>
-                                    <field name="discharge_status_id" options="{'no_open': True}" />
-                                    <field name="discharge_disposition_id" options="{'no_open': True}" />
-                                    <field name="discharge_partner_id" />
-                                </group>
-                                <div>
-                                    <field name="discharge_note" placeholder="Discharging note..." />
-                                </div>
-                            </group>
-                        </page>
+                            name="vital-signs"
+                            string="Vital Signs"
+                            icon="fa-heartbeat"
+                            attrs="{'invisible': [('show_vital_signs', '=', False)]}"
+                        />
+                        <page
+                            name="problem"
+                            string="Problem List"
+                            icon="fa-list-ul"
+                            attrs="{'invisible': [('show_problem_list', '=', False)]}"
+                        />
+                        <page
+                            name="medication"
+                            string="Medication"
+                            icon="fa-minus-circle"
+                            attrs="{'invisible': [('show_medication', '=', False)]}"
+                        />
+                        <page
+                            name="procedure"
+                            string="Procedure"
+                            icon="fa-scissors"
+                            attrs="{'invisible': [('show_procedure', '=', False)]}"
+                        />
+                        <page
+                            name="document_ref"
+                            string="Document"
+                            icon="fa-file-text"
+                            attrs="{'invisible': [('show_document_ref', '=', False)]}"
+                        />
                     </notebook>
                 </sheet>
                 <div name="chatter" class="oe_chatter">
