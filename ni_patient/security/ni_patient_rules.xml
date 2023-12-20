@@ -13,13 +13,19 @@
         <field name="name">Encounter: multi-company</field>
         <field name="model_id" ref="model_ni_encounter" />
         <field name="global" eval="True" />
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
     <record id="encounter_location_company_rule" model="ir.rule">
         <field name="name">Encounter/Location: multi-company</field>
         <field name="model_id" ref="model_ni_encounter_location" />
         <field name="global" eval="True" />
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="encounter_participant_company_rule" model="ir.rule">
+        <field name="name">Encounter/Participant: multi-company</field>
+        <field name="model_id" ref="model_ni_encounter_participant" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
     <record id="encounter_cls_company_rule" model="ir.rule">
         <field name="name">Encounter Classification: multi-company</field>

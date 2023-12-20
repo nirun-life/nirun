@@ -30,6 +30,7 @@
                 <field name="parent_id" optional="show" />
                 <field name="color" optional="hide" widget="color_picker" />
                 <field name="active" optional="hide" />
+                <field name="auto_close" optional="hide" />
             </tree>
         </field>
     </record>
@@ -51,7 +52,6 @@
                         <group>
                             <field name="name" />
                             <field name="parent_id" />
-                            <field name="hospitalization" />
                         </group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
@@ -59,6 +59,30 @@
                         </group>
                     </group>
                     <notebook>
+                        <page string="Configuration">
+                            <group string="">
+                                <group string="Notebook">
+                                    <field name="admission" />
+                                    <field name="special" />
+                                    <field name="history" />
+                                    <field name="chief_complaint" />
+                                    <field name="history_of_present_illness" />
+                                    <field name="review_of_systems" />
+                                    <field name="physical_exam" />
+                                    <field name="vital_signs" />
+                                    <field name="problem_list" />
+                                    <field name="medication" />
+                                    <field name="procedure" />
+                                    <field name="document_ref" />
+                                </group>
+                                <group string="Auto-close" attrs="{'invisible': [('admission', '=', True)]}">
+                                    <field name="auto_close" />
+                                    <field name="auto_close_midnight" />
+                                    <field name="auto_close_offset_number" />
+                                    <field name="auto_close_offset_type" />
+                                </group>
+                            </group>
+                        </page>
                         <page string="Definition">
                             <field name="definition" />
                         </page>
