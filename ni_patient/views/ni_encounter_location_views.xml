@@ -8,6 +8,7 @@
         <field name="res_model">ni.encounter.location</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('encounter_id', '=', active_id)]</field>
+        <field name="context">{'default_encounter_id': active_id}</field>
     </record>
     <record id="ni_encounter_location_view_search" model="ir.ui.view">
         <field name="name">ni.encounter.location.view.search</field>
