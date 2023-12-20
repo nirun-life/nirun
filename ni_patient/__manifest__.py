@@ -2,7 +2,7 @@
 
 {
     "name": "Patient",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.2.0",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
@@ -23,6 +23,7 @@
         "security/ni_patient_group.xml",
         "security/ni_patient_rules.xml",
         "security/ir.model.access.csv",
+        "data/ir_cron_data.xml",
         "data/ir_sequence_data.xml",
         "data/ni_location_type_data.xml",
         "data/ni_encounter_admit_data.xml",
@@ -37,6 +38,7 @@
         "views/ni_location_views.xml",
         "views/ni_location_type_views.xml",
         "views/ni_encounter_location_views.xml",
+        "views/ni_encounter_participant_views.xml",
         "views/ni_encounter_reason_views.xml",
         "views/ni_encounter_admit_views.xml",
         "views/ni_encounter_arrangement_views.xml",

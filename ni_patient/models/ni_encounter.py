@@ -56,7 +56,9 @@ class Encounter(models.Model):
         index=True,
         compute="_compute_name",
     )
-    identifier = fields.Char("Encounter No.")
+    identifier = fields.Char(
+        "Encounter No.", readonly=True, states={"draft": [("readonly", False)]}
+    )
     color = fields.Integer()
     class_id = fields.Many2one(
         "ni.encounter.class",
@@ -68,6 +70,7 @@ class Encounter(models.Model):
         ondelete="restrict",
         tracking=True,
     )
+    auto_close = fields.Boolean(related="class_id.auto_close")
     period_start = fields.Datetime(
         readonly=True, states={"draft": [("readonly", False)]}
     )
@@ -183,53 +186,7 @@ class Encounter(models.Model):
     physical_exam_uid = fields.Many2one("res.users", readonly=True, copy=False)
     physical_exam_date = fields.Datetime(readonly=True, copy=False)
 
-    # Hospitalization
-    hospitalization = fields.Boolean(related="class_id.hospitalization", store=True)
-    pre_admit_identifier = fields.Char(
-        states=LOCK_STATE_DICT, tracking=True, help="Pre-admission identifier"
-    )
-    origin_partner_id = fields.Many2one(
-        "res.partner",
-        string="Transfer from",
-        states=LOCK_STATE_DICT,
-        tracking=True,
-        help="organization which the patient came before admission",
-        copy=True,
-    )
-    origin_date = fields.Date(
-        string="Transfer At",
-        states=LOCK_STATE_DICT,
-        tracking=True,
-        help="When origin organization request to transfer",
-    )
-    admit_source_id = fields.Many2one(
-        "ni.encounter.admit",
-        "Admission Source",
-        states=LOCK_STATE_DICT,
-        tracking=True,
-        help="From where patient was admitted (physician referral, transfer)",
-    )
-    re_admit = fields.Boolean(
-        "Re-Admission",
-        states=LOCK_STATE_DICT,
-        tracking=True,
-        help="The type of hospital re-admission that has occurred (if any). "
-        "If the value is absent, then this is not identified as a readmission",
-    )
-    re_admit_reason = fields.Text(
-        "Re-Admission Reason",
-        states=LOCK_STATE_DICT,
-        tracking=True,
-    )
-    re_admit_encounter_id = fields.Many2one(
-        "ni.encounter",
-        "Re-Admission Of",
-        states=LOCK_STATE_DICT,
-        tracking=True,
-        domain="[('patient_id', '=', patient_id),"
-        " ('id', '!=', id),"
-        " ('state', '=', 'finished')]",
-    )
+    show_special = fields.Boolean(related="class_id.special")
     diet_ids = fields.Many2many(
         "ni.encounter.diet",
         "ni_encounter_diet_rel",
@@ -253,6 +210,54 @@ class Encounter(models.Model):
         "courtesy_id",
         string="Special Courtesy",
         states=LOCK_STATE_DICT,
+    )
+
+    # Admission
+    is_admission = fields.Boolean(related="class_id.admission", store=True)
+    pre_admission_identifier = fields.Char(
+        states=LOCK_STATE_DICT, tracking=True, help="Pre-admission identifier"
+    )
+    origin_partner_id = fields.Many2one(
+        "res.partner",
+        string="Transfer from",
+        states=LOCK_STATE_DICT,
+        tracking=True,
+        help="organization which the patient came before admission",
+        copy=True,
+    )
+    origin_date = fields.Date(
+        string="Transfer At",
+        states=LOCK_STATE_DICT,
+        tracking=True,
+        help="When origin organization request to transfer",
+    )
+    admit_source_id = fields.Many2one(
+        "ni.encounter.admit",
+        "Admission Source",
+        states=LOCK_STATE_DICT,
+        tracking=True,
+        help="From where patient was admitted (physician referral, transfer)",
+    )
+    re_admission = fields.Boolean(
+        "Re-Admission",
+        states=LOCK_STATE_DICT,
+        tracking=True,
+        help="The type of hospital re-admission that has occurred (if any). "
+        "If the value is absent, then this is not identified as a readmission",
+    )
+    re_admission_reason = fields.Text(
+        "Re-Admission Reason",
+        states=LOCK_STATE_DICT,
+        tracking=True,
+    )
+    re_admission_encounter_id = fields.Many2one(
+        "ni.encounter",
+        "Re-Admission Of",
+        states=LOCK_STATE_DICT,
+        tracking=True,
+        domain="[('patient_id', '=', patient_id),"
+        " ('id', '!=', id),"
+        " ('state', '=', 'finished')]",
     )
     discharge_status_id = fields.Many2one(
         "ni.encounter.discharge.status",
@@ -278,11 +283,29 @@ class Encounter(models.Model):
     )
     discharge_note = fields.Text("Note", tracking=True)
 
+    # Encounter Class configuration
+    show_history = fields.Boolean(related="class_id.history")
+    show_chief_complaint = fields.Boolean(related="class_id.chief_complaint")
+    show_history_of_present_illness = fields.Boolean(
+        related="class_id.history_of_present_illness"
+    )
+    show_review_of_systems = fields.Boolean(related="class_id.review_of_systems")
+    show_physical_exam = fields.Boolean(related="class_id.physical_exam")
+    show_vital_signs = fields.Boolean(related="class_id.vital_signs")
+    show_problem_list = fields.Boolean(related="class_id.problem_list")
+    show_medication = fields.Boolean(related="class_id.medication")
+    show_procedure = fields.Boolean(related="class_id.procedure")
+    show_document_ref = fields.Boolean(related="class_id.document_ref")
+
     # Participant
     participant_ids = fields.One2many(
         "ni.encounter.participant", "encounter_id", states=LOCK_STATE_DICT
     )
     participant_count = fields.Integer(compute="_compute_participant")
+    participate = fields.Boolean(
+        compute="_compute_participant",
+        help="Indicate whether current user is already participated",
+    )
 
     workflow_event_ids = fields.One2many("ni.workflow.event", "encounter_id")
     workflow_request_ids = fields.One2many("ni.workflow.request", "encounter_id")
@@ -307,8 +330,17 @@ class Encounter(models.Model):
 
     @api.depends("participant_ids")
     def _compute_participant(self):
+        uid = self.env.uid
         for rec in self:
-            rec.participant_count = len(rec.participant_ids)
+            if rec.state in ["finished"]:
+                user_ids = rec.participant_ids.mapped("user_id")
+            else:
+                user_ids = rec.participant_ids.filtered(
+                    lambda p: not p.period_end
+                ).mapped("user_id")
+            rec.update(
+                {"participant_count": len(user_ids), "participate": uid in user_ids.ids}
+            )
 
     @api.onchange("patient_id")
     def onchange_patient(self):
@@ -339,12 +371,12 @@ class Encounter(models.Model):
                     % self.patient_id.name,
                 }
                 return {"warning": warning}
-            self.pre_admit_identifier = self.patient_id.identifier
+            self.pre_admission_identifier = self.patient_id.identifier
 
-    @api.onchange("re_admit")
+    @api.onchange("re_admission")
     def onchange_re_admit(self):
         for rec in self:
-            if rec.re_admit:
+            if rec.re_admission:
                 last_enc = self.search(
                     [
                         ("patient_id", "=", rec.patient_id.id),
@@ -354,7 +386,7 @@ class Encounter(models.Model):
                     limit=1,
                 )
                 if last_enc:
-                    rec.re_admit_encounter_id = last_enc[0]
+                    rec.re_admission_encounter_id = last_enc[0]
 
     @api.onchange("country_id")
     def _onchange_country_id(self):
@@ -511,21 +543,23 @@ class Encounter(models.Model):
         )
 
     def action_confirm(self):
-        today = fields.datetime.now()
+        now = fields.datetime.now()
         for enc in self:
             if not enc.period_start:
                 raise ValidationError(
                     _("Verified encounter must defined start date (since)")
                 )
             if enc.state == "draft":
-                if today < enc.period_start:
+                if now < enc.period_start:
                     enc.update({"state": "planned"})
                 else:
                     enc.update({"state": "in-progress"})
+                enc.action_participate()
             elif enc.state == "planned":
                 enc.update(
-                    {"state": "in-progress", "period_start": fields.Date.today()}
+                    {"state": "in-progress", "period_start": fields.Datetime.now()}
                 )
+                enc.action_participate()
             else:
                 raise ValidationError(
                     _("Invalid State!, Please contact your system administrator")
@@ -536,12 +570,12 @@ class Encounter(models.Model):
             if enc.state != "in-progress":
                 raise ValidationError(_("Must be in-progress state"))
 
-        vals = dict(vals or {"state": "finished", "period_end": fields.date.today()})
+        vals = dict(vals or {"state": "finished", "period_end": fields.datetime.now()})
         self.participant_ids.action_stop()
         self.write(vals)
 
     def action_entered_in_error(self):
-        self.write({"state": "entered-in-error"})
+        self.write({"state": "entered-in-error", "active": False})
 
     def action_reset_to_draft(self):
         self.write({"state": "draft"})
@@ -550,6 +584,7 @@ class Encounter(models.Model):
         self.write({"state": "cancelled"})
 
     def action_encounter_location(self):
+        self.ensure_one()
         action_rec = self.env.ref("ni_patient.ni_encounter_location_action").sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
@@ -561,3 +596,35 @@ class Encounter(models.Model):
         )
         action["context"] = ctx
         return action
+
+    def action_encounter_participant(self):
+        self.ensure_one()
+        action_rec = self.env.ref("ni_patient.ni_encounter_participant_action").sudo()
+        action = action_rec.read()[0]
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "search_default_encounter_id": self.ids[0],
+                "default_encounter_id": self.ids[0],
+            }
+        )
+        action["context"] = ctx
+        return action
+
+    def action_participate(self, type_id=None, start=None):
+        period_start = start or fields.Datetime.now()
+        user = self.env["res.users"].browse(self.env.uid)
+        val = {
+            "user_id": user.id,
+            "employee_id": user.employee_id.id,
+            "period_start": period_start,
+        }
+        if type_id:
+            val.update({"type_id": type_id if isinstance(type_id, int) else type_id.id})
+
+        self.write({"participant_ids": [models.Command.create(val)]})
+
+    def action_quit(self):
+        self.participant_ids.filtered(
+            lambda p: p.user_id.id == self.env.uid
+        ).action_stop()
