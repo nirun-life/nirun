@@ -236,9 +236,7 @@ class PeriodMixin(models.AbstractModel):
         self.ensure_one()
         domain = domain or []
         domain += [("id", "!=", self.id)]
-        return self.get_intercept_period(
-            self.period_start_date, self.period_end_date, domain
-        )
+        return self.get_intercept_period(self.period_start, self.period_end, domain)
 
     @api.depends("period_start_date", "period_start_date")
     def _compute_period_end_date_calendar(self):
