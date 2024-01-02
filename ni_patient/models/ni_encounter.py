@@ -1,9 +1,9 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.models import Command
 
 LOCK_STATE_DICT = {
     "cancelled": [("readonly", True)],
@@ -479,68 +479,64 @@ class Encounter(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            self._update_sign_fields(vals)
+            vals.update(self._prepare_sign_field_vals(vals))
+
+            if "location_id" in vals:
+                vals.update(
+                    self._prepare_new_location_hist_vals(
+                        vals["location_id"], vals.get("period_start")
+                    )
+                )
 
         result = super().create(vals_list)
-        if result.location_id:
-            result._create_location_hist(
-                location=result.location_id.id, start=result.period_start
-            )
         result.patient_id._compute_encounter()
         return result
 
     def write(self, vals):
-        if "location_id" in vals:
-            origin_location = self._origin.location_id
-            new_location = vals.get("location_id")
-            if new_location and not origin_location:
-                self._create_location_hist(new_location, self.period_start)
-            if (new_location and origin_location) and (new_location != origin_location):
-                last_location = self.get_last_location()
-                if last_location.period_start != fields.date.today():
-                    self._create_location_hist(new_location)
-                    last_location.update(
-                        {"period_end": fields.date.today() - relativedelta(days=1)}
-                    )
-                else:
-                    last_location.update({"location_id": new_location})
-        self._update_sign_fields(vals)
+        vals.update(self._prepare_sign_field_vals(vals))
 
-        res = super().write(vals)
+        if "location_id" in vals:
+            vals.update(self._prepare_new_location_hist_vals(vals["location_id"]))
+            enc = self.filtered_domain([("location_id", "!=", vals["location_id"])])
+            enc.location_history_ids.filtered_domain(
+                [("period_end", "=", False)]
+            ).action_stop()
+
+        result = super().write(vals)
+
         if "state" in vals:
             for enc in self:
                 enc.patient_id._compute_encounter()
-        return res
+        return result
 
-    def _update_sign_fields(self, vals):
+    @api.model
+    def _prepare_sign_field_vals(self, vals):
+        value = {}
         ts = fields.Datetime.now()
         for f in SIGN_FILEDS:
             if f in vals and vals[f]:
                 f_uid = "{}_uid".format(f)
                 f_date = "{}_date".format(f)
                 if f_uid not in vals:
-                    vals[f_uid] = self.env.uid
+                    value[f_uid] = self.env.uid
                 if f_date not in vals:
-                    vals[f_date] = ts
-        return vals
+                    value[f_date] = ts
+        return value
 
-    def get_last_location(self):
-        enc_location = self.env["ni.encounter.location"].sudo()
-        return enc_location.search(
-            [("encounter_id", "=", self.id)], order="period_start DESC", limit=1
-        )
-
-    def _create_location_hist(self, location, start=None):
-        self.ensure_one()
-        encounter_location = self.env["ni.encounter.location"].sudo()
-        encounter_location.create(
-            {
-                "company_id": self.company_id.id,
-                "encounter_id": self.id,
-                "location_id": location,
-                "period_start": start or fields.Datetime.now(),
-            }
-        )
+    @api.model
+    def _prepare_new_location_hist_vals(self, location, start=None):
+        return {
+            "location_history_ids": [
+                Command.create(
+                    {
+                        "company_id": self.company_id.id,
+                        "encounter_id": self.id,
+                        "location_id": location,
+                        "period_start": start or fields.Datetime.now(),
+                    }
+                )
+            ]
+        }
 
     def action_confirm(self):
         now = fields.datetime.now()
@@ -554,12 +550,14 @@ class Encounter(models.Model):
                     enc.update({"state": "planned"})
                 else:
                     enc.update({"state": "in-progress"})
-                enc.action_participate()
+                if not enc.participate:
+                    enc.action_participate()
             elif enc.state == "planned":
                 enc.update(
                     {"state": "in-progress", "period_start": fields.Datetime.now()}
                 )
-                enc.action_participate()
+                if not enc.participate:
+                    enc.action_participate()
             else:
                 raise ValidationError(
                     _("Invalid State!, Please contact your system administrator")

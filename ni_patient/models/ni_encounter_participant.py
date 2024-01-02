@@ -48,9 +48,10 @@ class EncounterParticipant(models.Model):
         ),
     ]
 
-    def action_stop(self):
+    def action_stop(self, dt=None):
+        period_end = dt or fields.Datetime.now()
         self.filtered_domain([("period_end", "=", False)]).write(
-            {"period_end": fields.datetime.now().replace(microsecond=0)}
+            {"period_end": period_end.replace(microsecond=0)}
         )
 
     @api.depends("employee_id")
@@ -92,8 +93,6 @@ class EncounterParticipant(models.Model):
     def check_period_end(self):
         now = fields.Datetime.now()
         for rec in self.filtered_domain([("period_end", "!=", False)]):
-            if rec.period_end < rec.period_start:
-                raise ValidationError(_("Participant end time must be "))
             limit_date = rec.encounter_id.period_end or now
             if rec.period_end > limit_date:
                 raise ValidationError(
