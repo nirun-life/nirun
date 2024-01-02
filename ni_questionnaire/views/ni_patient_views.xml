@@ -19,6 +19,30 @@
                     <field name="response_count" string="Answers" widget="statinfo" />
                 </button>
             </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="questionnaire" string="Questionnaire">
+                    <field name="response_latest_ids" mode="tree">
+                        <tree>
+                            <field name="survey_id" />
+                            <field name="grade_id" />
+                            <field name="scoring_percentage" widget="progressbar" optional="show" />
+                            <field name="scoring_total" optional="hide" />
+                            <field name="create_uid" optional="show" />
+                            <field name="create_date" optional="show" />
+                            <button name="action_print_answers" type="object" icon="fa-print" title="View Answer" />
+                            <button name="action_graph_view" type="object" icon="fa-bar-chart" title="View Graph" />
+                            <button
+                                name="action_survey_subject_wizard"
+                                string="Survey"
+                                type="object"
+                                icon="fa-commenting"
+                                title="Start Questionnaire"
+                                attrs="{'column_invisible': [('parent.deceased', '=', True)]}"
+                            />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
         </field>
     </record>
 </odoo>
