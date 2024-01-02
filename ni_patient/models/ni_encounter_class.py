@@ -41,18 +41,20 @@ class EncounterClassification(models.Model):
     special = fields.Boolean(
         default=False, help="Diet preferences, Special courtesies and arrangement"
     )
-    history = fields.Boolean(help="History")
-    chief_complaint = fields.Boolean(default=True, help="Chief Complaint")
+    history = fields.Boolean(help="Show/Hide History")
+    chief_complaint = fields.Boolean(default=True, help="Show/Hide Chief Complaint")
     history_of_present_illness = fields.Boolean(
-        default=True, help="History of Present Illness"
+        default=True, help="Show/Hide History of Present Illness"
     )
-    review_of_systems = fields.Boolean(default=True, help="Review of Systems")
-    physical_exam = fields.Boolean(default=True, help="Physical Examination")
-    vital_signs = fields.Boolean(default=True, help="Vital Signs")
-    problem_list = fields.Boolean(default=True, help="Problem List")
-    medication = fields.Boolean(default=True, help="Medication")
-    procedure = fields.Boolean(default=True, help="Procedure")
-    document_ref = fields.Boolean(default=True, help="Document Reference")
+    review_of_systems = fields.Boolean(default=True, help="Show/Hide Review of Systems")
+    physical_exam = fields.Boolean(default=True, help="Show/Hide Physical Examination")
+    vital_signs = fields.Boolean(default=True, help="Show/Hide Vital Signs")
+    laboratory = fields.Boolean(default=True, help="Show/Hide Laboratory")
+    problem_list = fields.Boolean(default=True, help="Show/Hide Problem List")
+    medication = fields.Boolean(default=True, help="Show/Hide Medication")
+    procedure = fields.Boolean(default=True, help="Show/Hide Procedure")
+    questionnaire = fields.Boolean(default=True, help="Show/Hide Questionnaire")
+    document_ref = fields.Boolean(default=True, help="Show/Hide Document Reference")
 
     @api.onchange("admission")
     def _onchange_admission(self):
