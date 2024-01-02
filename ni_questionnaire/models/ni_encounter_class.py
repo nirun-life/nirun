@@ -11,4 +11,5 @@ class EncounterClassification(models.Model):
         "Questionnaire",
         help="Questionnaire relate for this class of encounter",
         groups="survey.group_survey_user",
+        domain="[('subject_type', 'in', ['ni.encounter', 'ni.patient'])]",
     )
