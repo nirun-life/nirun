@@ -17,17 +17,25 @@ class Encounter(models.Model):
     )
     observation_sheet_count = fields.Integer(compute="_compute_observation_sheet_count")
     observation_ids = fields.One2many("ni.observation", "encounter_id")
+
     observation_latest_ids = fields.One2many("ni.encounter.observation", "encounter_id")
-    observation_line_vital_sign_ids = fields.One2many(
+    observation_latest_count = fields.Integer(
+        compute="_compute_observation_latest",
+    )
+    observation_latest_vital_sign_ids = fields.One2many(
         "ni.encounter.observation",
         "encounter_id",
-        compute="_compute_observation_line_vital_sign_ids",
+        compute="_compute_observation_latest",
     )
-    observation_lab_ids = fields.One2many(
+    observation_latest_vital_sign_count = fields.Integer(
+        compute="_compute_observation_latest",
+    )
+    observation_latest_lab_ids = fields.One2many(
         "ni.encounter.observation",
         "encounter_id",
-        compute="_compute_observation_lab_ids",
+        compute="_compute_observation_latest",
     )
+    observation_latest_lab_count = fields.Integer(compute="_compute_observation_latest")
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -80,23 +88,28 @@ class Encounter(models.Model):
             encounter.observation_sheet_count = data.get(encounter.id, 0)
 
     @api.depends("observation_latest_ids")
-    def _compute_observation_line_vital_sign_ids(self):
-        ob_lines = self.env["ni.encounter.observation"].search(
-            [("encounter_id", "in", self.ids), ("category_id.code", "=", "vital-signs")]
-        )
+    def _compute_observation_latest(self):
+        observations = self.env["ni.encounter.observation"]
         for rec in self:
-            rec.observation_line_vital_sign_ids = ob_lines.filtered_domain(
-                [("encounter_id", "=", rec.id)]
+            vs_lines = observations.search(
+                [
+                    ("encounter_id", "=", rec.id),
+                    ("category_id.code", "=", "vital-signs"),
+                ]
             )
-
-    @api.depends("observation_latest_ids")
-    def _compute_observation_lab_ids(self):
-        ob_lines = self.env["ni.encounter.observation"].search(
-            [("encounter_id", "in", self.ids), ("category_id.code", "=", "laboratory")]
-        )
-        for rec in self:
-            rec.observation_lab_ids = ob_lines.filtered_domain(
-                [("encounter_id", "=", rec.id)]
+            lab_lines = observations.search(
+                [("encounter_id", "=", rec.id), ("category_id.code", "=", "laboratory")]
+            )
+            rec.write(
+                {
+                    "observation_latest_count": len(rec.observation_latest_ids),
+                    "observation_latest_vital_sign_ids": [
+                        fields.Command.set(vs_lines.ids)
+                    ],
+                    "observation_latest_vital_sign_count": len(vs_lines),
+                    "observation_latest_lab_ids": [fields.Command.set(lab_lines.ids)],
+                    "observation_latest_lab_count": len(lab_lines),
+                }
             )
 
     def action_observation(self):
