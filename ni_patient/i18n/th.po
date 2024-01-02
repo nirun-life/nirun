@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-10 10:02+0000\n"
-"PO-Revision-Date: 2023-08-10 10:02+0000\n"
+"POT-Creation-Date: 2024-01-02 09:06+0000\n"
+"PO-Revision-Date: 2024-01-02 09:06+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -72,7 +72,7 @@ msgstr ""
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "<i class=\"fa fa-building text-primary\" title=\"Company\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-building text-primary\" title=\"Company\"/>"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
@@ -135,6 +135,7 @@ msgstr ""
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_location_view_form
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_participant_view_form
 msgid "<span>-</span>"
 msgstr ""
 
@@ -318,12 +319,6 @@ msgid "Additional bedding"
 msgstr "เตียงเสริม"
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__additional_info
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__additional_info
-msgid "Additional info"
-msgstr "ข้อมูลเพิ่มเติม"
-
-#. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
 msgid "Address"
 msgstr "ที่อยู่"
@@ -340,6 +335,8 @@ msgid "Admin"
 msgstr "ผู้ดูแลระบบ"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__is_admission
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__admission
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_kanban
@@ -470,6 +467,16 @@ msgstr "ถูกเก็บ"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
+msgid "Are you sure to finish this encounter?"
+msgstr "คุณต้องการสิ้นสุดการให้บริการนี้"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
+msgid "Are you sure to stop the participation of this encounter?"
+msgstr "คุณต้องการออกจากการมีส่วนร่วมการให้บริการนี้"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Are you sure you want to cancel this?"
 msgstr "คุณแน่ใจหรือไม่ว่าต้องการยกเลิก?"
 
@@ -509,6 +516,27 @@ msgstr "จำนวนไฟล์แนบ"
 #: model:ni.encounter.arrangement,name:ni_patient.arrg_att
 msgid "Attendant"
 msgstr "พี่เลี้ยง"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__auto_close
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__auto_close
+msgid "Auto Close"
+msgstr "สิ้นสุดอัตโนมัติ"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__auto_close_midnight
+msgid "Auto Close Midnight"
+msgstr "สิ้นสุดหลังเที่ยงคืน"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__auto_close_offset_number
+msgid "Auto Close Offset Number"
+msgstr "สิ้นสุดหลัง"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_class_view_form
+msgid "Auto-close"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__avatar_1920
@@ -675,6 +703,8 @@ msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__chief_complaint
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_chief_complaint
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__chief_complaint
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Chief Complaint"
 msgstr "อาการสำคัญ"
@@ -758,9 +788,11 @@ msgid "Commercial Entity"
 msgstr ""
 
 #. module: ni_patient
+#: model:ir.model,name:ni_patient.model_res_company
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_location__company_id
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_participant__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_location__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_res__company_id
@@ -805,12 +837,6 @@ msgid "Company Type"
 msgstr ""
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__partner_gid
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__partner_gid
-msgid "Company database ID"
-msgstr ""
-
-#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__contact_address
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__contact_address
 msgid "Complete Address"
@@ -829,6 +855,7 @@ msgstr "เสร็จสิ้น"
 
 #. module: ni_patient
 #: model:ir.ui.menu,name:ni_patient.configuration_menu
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_class_view_form
 msgid "Configuration"
 msgstr "การกำหนดค่า"
 
@@ -946,6 +973,11 @@ msgid "Date of Birth"
 msgstr "วัน/เดือน/ปี เกิด"
 
 #. module: ni_patient
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter_class__auto_close_offset_type__days
+msgid "Days"
+msgstr "วัน"
+
+#. module: ni_patient
 #: model:ni.encounter.discharge.status,name:ni_patient.discharge_status_9
 msgid "Dead"
 msgstr ""
@@ -1049,6 +1081,12 @@ msgid "Diet Preferences"
 msgstr "อาหาร"
 
 #. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_special
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__special
+msgid "Diet preferences, Special courtesies and arrangement"
+msgstr ""
+
+#. module: ni_patient
 #: model:ir.actions.act_window,name:ni_patient.ni_encounter_discharge_wizard_action
 #: model:ir.model,name:ni_patient.model_ni_encounter_discharge_wizard
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_discharge_wizard_view_form
@@ -1139,6 +1177,17 @@ msgstr "หย่าร้าง"
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_patient__education_level__8
 msgid "Doctor"
 msgstr "ปริญญา เอก"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
+msgid "Document"
+msgstr "เอกสาร"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_document_ref
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__document_ref
+msgid "Document Ref"
+msgstr "เอกสาร"
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter__state__draft
@@ -1272,8 +1321,14 @@ msgstr "จำนวนบุคลากร"
 #: model:ir.ui.menu,name:ni_patient.ni_encounter_menu_section
 #: model_terms:ir.ui.view,arch_db:ni_patient.location_view_form
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.res_company_view_form_inherit
 msgid "Encounter"
 msgstr "ข้อมูลรับบริการ"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_res_company__encounter_class_id
+msgid "Encounter Class"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.actions.act_window,name:ni_patient.ni_encounter_class_action
@@ -1303,6 +1358,7 @@ msgid "Encounter No."
 msgstr "รหัสรับบริการ"
 
 #. module: ni_patient
+#: model:ir.actions.act_window,name:ni_patient.ni_encounter_participant_action
 #: model:ir.model,name:ni_patient.model_ni_encounter_participant
 msgid "Encounter Participant"
 msgstr "ผู้มีส่วนร่วม"
@@ -1320,6 +1376,14 @@ msgid "Encounter Start"
 msgstr "วันที่เข้ารับบริการ"
 
 #. module: ni_patient
+#: model:ir.actions.server,name:ni_patient.ir_cron_ni_encounter_auto_close_ir_actions_server
+#: model:ir.actions.server,name:ni_patient.ir_cron_ni_timing_garbage_collect_ir_actions_server
+#: model:ir.cron,cron_name:ni_patient.ir_cron_ni_encounter_auto_close
+#: model:ir.cron,cron_name:ni_patient.ir_cron_ni_timing_garbage_collect
+msgid "Encounter class: Auto-close"
+msgstr ""
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__encounter_ids
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__encounter_ids
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
@@ -1332,7 +1396,7 @@ msgid "End"
 msgstr "สิ้นสุด"
 
 #. module: ni_patient
-#: model:ir.actions.server,name:ni_patient.ni_encounter_action_entered_in_error
+#: model:ir.actions.server,name:ni_patient.ni_encounter_action_server_entered_in_error
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter__state__entered-in-error
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_search
@@ -1439,6 +1503,11 @@ msgstr ""
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
+msgid "Finish"
+msgstr "สิ้นสุด"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Finished"
 msgstr "สิ้นสุดแล้ว"
 
@@ -1522,7 +1591,12 @@ msgstr "จากศูนย์บำบัดฟื้นฟู"
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__admit_source_id
 msgid "From where patient was admitted (physician referral, transfer)"
-msgstr ""
+msgstr "ผู้ป่วยถูกส่งตัวมาจากไหน"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_participant_view_form
+msgid "Further information about this participation..."
+msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับการมีส่วนร่วมนี้"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__gender
@@ -1568,6 +1642,7 @@ msgstr ""
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.location_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_location_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_participant_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_search
 msgid "Group by"
 msgstr "จัดกลุ่มโดย"
@@ -1589,10 +1664,18 @@ msgid "Has Message"
 msgstr ""
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_history
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__history
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
 msgid "History"
 msgstr "ประวัติสุขภาพ"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_history_of_present_illness
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__history_of_present_illness
+msgid "History Of Present Illness"
+msgstr "ประวัติการเจ็บป่วยในปัจจุบัน"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__history_of_present_illness_date
@@ -1602,7 +1685,7 @@ msgstr "บันทึกประวัติการเจ็บป่วย
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__history_of_present_illness_uid
 msgid "History Of Present Illness Uid"
-msgstr "ผู้บันทึกประวัติการเจ็บป่วยในปัจจุบัน "
+msgstr "ผู้บันทึกประวัติการเจ็บป่วยในปัจจุบัน"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__history_of_present_illness
@@ -1616,11 +1699,9 @@ msgid "Home Health"
 msgstr "เยี่ยมบ้าน"
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__hospitalization
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__hospitalization
-#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
-msgid "Hospitalization"
-msgstr "การเข้ารับบริการ"
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter_class__auto_close_offset_type__hours
+msgid "Hours"
+msgstr "ชั่วโมง"
 
 #. module: ni_patient
 #: model:ni.location.type,name:ni_patient.ho
@@ -1652,6 +1733,7 @@ msgstr "รหัส"
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__identification_id
 #: model:ir.model.fields,help:ni_patient.field_ni_patient__identification_id
+#: model:ir.model.fields,help:ni_patient.field_res_partner__identification_id
 msgid "ID related to patient's nationality"
 msgstr ""
 
@@ -1676,6 +1758,7 @@ msgstr "ไอคอนเพื่อระบุกิจกรรมข้อ
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__identification_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__identification_id
+#: model:ir.model.fields,field_description:ni_patient.field_res_partner__identification_id
 msgid "Identification No"
 msgstr "รหัสประจำตัวประชาชน"
 
@@ -1792,6 +1875,11 @@ msgstr ""
 #, python-format
 msgid "Inconsistent patient and encounter references"
 msgstr "ข้อมูลอ้างอิงระหว่างผู้ป่วยและข้อมูลรับบริการไม่สอดคล้องกัน"
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__participate
+msgid "Indicate whether current user is already participated"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter_discharge_disposition__deceased
@@ -1915,10 +2003,10 @@ msgid "Is a Company"
 msgstr "บริษัท"
 
 #. module: ni_patient
-#: model:ir.model.fields,help:ni_patient.field_ni_encounter__hospitalization
-#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__hospitalization
-msgid "Is hospitalization classification?"
-msgstr "เป็นประเภทบริการสำหรับผู้ป่วยในหรือไม่?"
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__is_admission
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__admission
+msgid "Is this encounter class have the admission detail"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__function
@@ -1935,6 +2023,13 @@ msgstr "เขตการปกครอง"
 #: model:ni.encounter.diet,name:ni_patient.diet_kosher
 msgid "Kosher"
 msgstr "อาหารโคเชอร์"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_laboratory
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__laboratory
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
+msgid "Laboratory"
+msgstr "ผลแล็ป"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__lang
@@ -2051,7 +2146,7 @@ msgstr "อาคาร"
 
 #. module: ni_patient
 #: model:ir.actions.act_window,name:ni_patient.ni_encounter_location_action
-#: model:ir.actions.server,name:ni_patient.ni_encounter_action_encounter_location
+#: model:ir.actions.server,name:ni_patient.ni_encounter_action_server_encounter_location
 #: model:ir.model,name:ni_patient.model_ni_encounter_location
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__location_history_ids
 msgid "Location History"
@@ -2137,6 +2232,8 @@ msgid "Medical Practitioner/physician referral"
 msgstr "ส่งตัวโดยแพทย์ผู้ดูแล"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_medication
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__medication
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Medication"
 msgstr "ยา"
@@ -2160,10 +2257,20 @@ msgid "Messages"
 msgstr "ข้อความ"
 
 #. module: ni_patient
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter_class__auto_close_offset_type__minutes
+msgid "Minutes"
+msgstr "นาที"
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__mobile
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__mobile
 msgid "Mobile"
 msgstr "มือถือ"
+
+#. module: ni_patient
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter_class__auto_close_offset_type__months
+msgid "Months"
+msgstr "เดือน"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__mother_name
@@ -2304,6 +2411,8 @@ msgstr "ไม่เสร็จ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__discharge_note
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_discharge_wizard__note
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_location__note
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_participant__note
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_participant_view_form
 msgid "Note"
 msgstr "หมายเหตุ"
 
@@ -2312,6 +2421,11 @@ msgstr "หมายเหตุ"
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_location_view_form
 msgid "Note..."
 msgstr "หมายเหตุ..."
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_class_view_form
+msgid "Notebook"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__comment
@@ -2353,7 +2467,7 @@ msgstr "จำนวนข้อผิดพลาด"
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__message_needaction_counter
 #: model:ir.model.fields,help:ni_patient.field_ni_patient__message_needaction_counter
-msgid "Number of messages which requires an action"
+msgid "Number of messages requiring action"
 msgstr "จํานวนข้อความที่ต้องการการดําเนินการ"
 
 #. module: ni_patient
@@ -2387,6 +2501,11 @@ msgstr "เกิดขึ้นเมื่อ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__occurrence_date
 msgid "Occurrence Date"
 msgstr "วันที่เกิดขึ้น"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__auto_close_offset_type
+msgid "Offset Unit"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_request__state__on-hold
@@ -2453,6 +2572,11 @@ msgid "Participant Count"
 msgstr "ผู้มีส่วนร่วม"
 
 #. module: ni_patient
+#: model:ir.actions.server,name:ni_patient.ni_encounter_action_server_encounter_participant
+msgid "Participant History"
+msgstr "ประวัติการมีส่วนร่วม"
+
+#. module: ni_patient
 #: model:ir.actions.act_window,name:ni_patient.participant_type_action
 #: model:ir.model,name:ni_patient.model_ni_participant_type
 #: model:ir.ui.menu,name:ni_patient.participant_type_menu
@@ -2461,12 +2585,30 @@ msgstr "ประเภทการมีส่วนร่วม"
 
 #. module: ni_patient
 #. odoo-python
+#: code:addons/ni_patient/models/ni_encounter_location.py:0
 #: code:addons/ni_patient/models/ni_encounter_participant.py:0
 #, python-format
 msgid ""
-"Participant end date must not be in the future or after the encounter have "
-"ended"
+"Participant end time (%s) must not be in the future or after the encounter "
+"have ended (%s) "
 msgstr ""
+"เวลาสิ้นสุดการมีส่วนร่วม (%s) ต้องไม่เป็นเวลาในอนาคตหรือหลังจากบริการสิ้นสุดแล้ว (%s)"
+
+#. module: ni_patient
+#. odoo-python
+#: code:addons/ni_patient/models/ni_encounter_location.py:0
+#: code:addons/ni_patient/models/ni_encounter_participant.py:0
+#: model:ir.model.constraint,message:ni_patient.constraint_ni_encounter_location_period_start_end_check
+#: model:ir.model.constraint,message:ni_patient.constraint_ni_encounter_participant_period_start_end_check
+#, python-format
+msgid "Participant end time must be after start time"
+msgstr "เวลาสิ้นสุดการมีส่วนร่วมต้องเกิดหลังเวลาเริ่ม"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__participate
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
+msgid "Participate"
+msgstr "ผู้มีส่วนร่วม"
 
 #. module: ni_patient
 #: model:ni.participant.type,name:ni_patient.PART
@@ -2582,6 +2724,7 @@ msgstr "ข้อมูลผู้ป่วย"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_location__period_mode
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_participant__period_mode
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_location_view_form
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_participant_view_form
 msgid "Period"
 msgstr "ช่วงเวลา"
 
@@ -2609,6 +2752,12 @@ msgstr "โทรศัพท์ที่ขึ้นบัญชีดำ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__phone_mobile_search
 msgid "Phone/Mobile"
 msgstr "เบอร์โทร"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_physical_exam
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__physical_exam
+msgid "Physical Exam"
+msgstr "ผลการตรวจร่างกาย"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__physical_exam_date
@@ -2650,9 +2799,9 @@ msgid "Post-Secondary"
 msgstr "ปวส."
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__pre_admit_identifier
-msgid "Pre Admit Identifier"
-msgstr "เลขทะเบียน"
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__pre_admission_identifier
+msgid "Pre Admission Identifier"
+msgstr ""
 
 #. module: ni_patient
 #: model:ni.encounter.class,name:ni_patient.class_PRENC
@@ -2660,9 +2809,9 @@ msgid "Pre-Admission"
 msgstr "ก่อนเข้ารับบริการ"
 
 #. module: ni_patient
-#: model:ir.model.fields,help:ni_patient.field_ni_encounter__pre_admit_identifier
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__pre_admission_identifier
 msgid "Pre-admission identifier"
-msgstr "รหัสอ้างอิงก่อนเข้ารับบริการ"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_event__state__preparation
@@ -2724,11 +2873,15 @@ msgid "Private Information"
 msgstr "ข้อมูลส่วนบุคคล"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_problem_list
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__problem_list
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Problem List"
 msgstr "รายการปัญหา (Problem List)"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_procedure
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__procedure
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Procedure"
 msgstr "หัตถการ"
@@ -2739,19 +2892,31 @@ msgid "Proposal"
 msgstr "ข้อเสนอ"
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__re_admit
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_questionnaire
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
+msgid "Questionnaire"
+msgstr "แบบประเมิน"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
+msgid "Quit"
+msgstr "ออก"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__re_admission
 msgid "Re-Admission"
-msgstr "เข้ารับบริการซ้ำ"
+msgstr ""
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__re_admit_encounter_id
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__re_admission_encounter_id
 msgid "Re-Admission Of"
-msgstr "ข้อมูลรับบริการครั้งก่อน"
+msgstr ""
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__re_admit_reason
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__re_admission_reason
 msgid "Re-Admission Reason"
-msgstr "เหตุผลการเข้ารับบริการซ้ำ"
+msgstr "เหตุผลประกอบ Re-Admission"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__reason_ids
@@ -2863,9 +3028,15 @@ msgid "Responsible User"
 msgstr "ผู้ใช้ที่รับผิดชอบ"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_review_of_systems
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__review_of_systems
+msgid "Review Of Systems"
+msgstr "ทบทวนอาการตามระบบ"
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__review_of_systems_date
 msgid "Review Of Systems Date"
-msgstr "ผู้ทบทวนอาการตามระบบเมื่อ"
+msgstr "ทบทวนอาการตามระบบเมื่อ"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__review_of_systems_uid
@@ -2876,7 +3047,7 @@ msgstr "ผู้ทบทวนอาการตามระบบ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__review_of_systems
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Review of Systems"
-msgstr "การทบทวนอาการตามระบบ"
+msgstr "ทบทวนอาการตามระบบ"
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_request__state__revoked
@@ -2927,7 +3098,7 @@ msgstr "ผู้ขาย"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__phone_sanitized
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__phone_sanitized
 msgid "Sanitized Number"
-msgstr ""
+msgstr "ทีมขาย"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
@@ -2965,6 +3136,11 @@ msgid "Sequence"
 msgstr "ลำดับ"
 
 #. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.res_company_view_form_inherit
+msgid "Set default value for Encounter"
+msgstr "กำหนดค่าเริ่มต้นของข้อมูลรับบริการ"
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__partner_share
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__partner_share
 msgid "Share Partner"
@@ -2979,6 +3155,78 @@ msgstr "พักระยะสั้น"
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_patient__education_level__5
 msgid "Short-cycle Tertiary"
 msgstr "อนุปริญญา"
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_chief_complaint
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__chief_complaint
+msgid "Show/Hide Chief Complaint"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_document_ref
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__document_ref
+msgid "Show/Hide Document Reference"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_history
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__history
+msgid "Show/Hide History"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_history_of_present_illness
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__history_of_present_illness
+msgid "Show/Hide History of Present Illness"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_laboratory
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__laboratory
+msgid "Show/Hide Laboratory"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_medication
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__medication
+msgid "Show/Hide Medication"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_physical_exam
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__physical_exam
+msgid "Show/Hide Physical Examination"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_problem_list
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__problem_list
+msgid "Show/Hide Problem List"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_procedure
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__procedure
+msgid "Show/Hide Procedure"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_questionnaire
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__questionnaire
+msgid "Show/Hide Questionnaire"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_review_of_systems
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__review_of_systems
+msgid "Show/Hide Review of Systems"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_vital_signs
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter_class__vital_signs
+msgid "Show/Hide Vital Signs"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__signup_expiration
@@ -3053,6 +3301,8 @@ msgid "Site"
 msgstr "สถานที่ตั้ง"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_special
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__special
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Special"
 msgstr "การดูแล"
@@ -3321,7 +3571,7 @@ msgid ""
 msgstr ""
 
 #. module: ni_patient
-#: model:ir.model.fields,help:ni_patient.field_ni_encounter__re_admit
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__re_admission
 msgid ""
 "The type of hospital re-admission that has occurred (if any). If the value "
 "is absent, then this is not identified as a readmission"
@@ -3422,6 +3672,7 @@ msgstr "การคัดแยกผู้ป่วย"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__type
 #: model:ir.ui.menu,name:ni_patient.location_type_menu
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_location_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_participant_view_search
 msgid "Type"
 msgstr "ประเภท"
 
@@ -3548,8 +3799,10 @@ msgid "Virtual"
 msgstr "ทางไกล"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_vital_signs
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__vital_signs
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
-msgid "Vital Sign"
+msgid "Vital Signs"
 msgstr "สัญญาณชีพ"
 
 #. module: ni_patient
@@ -3583,6 +3836,11 @@ msgstr ""
 #: model:ir.model.fields,help:ni_patient.field_ni_patient__website_message_ids
 msgid "Website communication history"
 msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter_class__auto_close_offset_type__weeks
+msgid "Weeks"
+msgstr "สัปดาห์"
 
 #. module: ni_patient
 #: model:ni.encounter.arrangement,name:ni_patient.arrg_wheel
@@ -3627,12 +3885,12 @@ msgstr ""
 #. module: ni_patient
 #: model:ir.model,name:ni_patient.model_ni_workflow
 msgid "Workflow"
-msgstr ""
+msgstr "กระบวนการ"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__workflow_event_ids
 msgid "Workflow Event"
-msgstr ""
+msgstr "กระบวนการ - เหตุการณ์"
 
 #. module: ni_patient
 #: model:ir.model,name:ni_patient.model_ni_workflow_mixin
@@ -3642,17 +3900,17 @@ msgstr ""
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__workflow_request_ids
 msgid "Workflow Request"
-msgstr ""
+msgstr "กระบวนการ - คำขอ"
 
 #. module: ni_patient
 #: model:ir.model,name:ni_patient.model_ni_workflow_event
 msgid "Workflow: Event"
-msgstr ""
+msgstr "กระบวนการ: เหตุการณ์"
 
 #. module: ni_patient
 #: model:ir.model,name:ni_patient.model_ni_workflow_request
 msgid "Workflow: Reqeust"
-msgstr ""
+msgstr "กระบวนการ: คำขอ"
 
 #. module: ni_patient
 #: model_terms:ir.actions.act_window,help:ni_patient.ni_workflow_event_action
@@ -3769,11 +4027,11 @@ msgstr "ปี"
 #: code:addons/ni_patient/models/ni_encounter_participant.py:0
 #, python-format
 msgid ""
-"{} already involved for given time!\n"
+"{} already involved for given time! {}\n"
 "\n"
 "\t{} ({} → {})"
 msgstr ""
-"{} มีส่วนร่วมอยู่แล้ว!\n"
+"{} มีส่วนร่วมในช่วงเวลาที่ระบบอยู่แล้ว! {}\n"
 "\n"
 "\t{} ({} → {})"
 
