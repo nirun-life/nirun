@@ -104,33 +104,4 @@
             </tree>
         </field>
     </record>
-    <record id="ni_patient_view_form_inherit_overview" model="ir.ui.view">
-        <field name="name">ni.patient.view.form.inherit</field>
-        <field name="model">ni.patient</field>
-        <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
-        <field name="arch" type="xml">
-            <xpath expr="//notebook/page[@name='history']" position="inside">
-                <separator string="Questionnaire" />
-                <field name="response_latest_ids" mode="tree">
-                    <tree>
-                        <field name="survey_id" />
-                        <field name="grade_id" />
-                        <field name="scoring_percentage" widget="progressbar" optional="show" />
-                        <field name="scoring_total" optional="hide" />
-                        <field name="create_uid" optional="show" />
-                        <field name="create_date" optional="show" />
-                        <button name="action_print_answers" type="object" icon="fa-print" />
-                        <button name="action_graph_view" type="object" icon="fa-bar-chart" />
-                        <button
-                            name="action_survey_subject_wizard"
-                            string="Survey"
-                            type="object"
-                            icon="fa-commenting"
-                            attrs="{'column_invisible': [('parent.deceased', '=', True)]}"
-                        />
-                    </tree>
-                </field>
-            </xpath>
-        </field>
-    </record>
 </odoo>
