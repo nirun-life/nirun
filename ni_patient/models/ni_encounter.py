@@ -292,9 +292,11 @@ class Encounter(models.Model):
     show_review_of_systems = fields.Boolean(related="class_id.review_of_systems")
     show_physical_exam = fields.Boolean(related="class_id.physical_exam")
     show_vital_signs = fields.Boolean(related="class_id.vital_signs")
+    show_laboratory = fields.Boolean(related="class_id.laboratory")
     show_problem_list = fields.Boolean(related="class_id.problem_list")
     show_medication = fields.Boolean(related="class_id.medication")
     show_procedure = fields.Boolean(related="class_id.procedure")
+    show_questionnaire = fields.Boolean(related="class_id.questionnaire")
     show_document_ref = fields.Boolean(related="class_id.document_ref")
 
     # Participant

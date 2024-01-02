@@ -178,10 +178,12 @@
                 <field name="show_history_of_present_illness" invisible="1" />
                 <field name="show_review_of_systems" invisible="1" />
                 <field name="show_vital_signs" invisible="1" />
+                <field name="show_laboratory" invisible="1" />
                 <field name="show_physical_exam" invisible="1" />
                 <field name="show_problem_list" invisible="1" />
                 <field name="show_medication" invisible="1" />
                 <field name="show_procedure" invisible="1" />
+                <field name="show_questionnaire" invisible="1" />
                 <field name="show_document_ref" invisible="1" />
                 <header>
                     <button
@@ -492,6 +494,12 @@
                             attrs="{'invisible': [('show_vital_signs', '=', False)]}"
                         />
                         <page
+                            name="laboratory"
+                            string="Laboratory"
+                            icon="fa-flask"
+                            attrs="{'invisible': [('show_laboratory', '=', False)]}"
+                        />
+                        <page
                             name="problem"
                             string="Problem List"
                             icon="fa-list-ul"
@@ -508,6 +516,12 @@
                             string="Procedure"
                             icon="fa-scissors"
                             attrs="{'invisible': [('show_procedure', '=', False)]}"
+                        />
+                        <page
+                            name="questionnaire"
+                            string="Questionnaire"
+                            icon="fa-pencil-square-o"
+                            attrs="{'invisible': [('show_questionnaire', '=', False)]}"
                         />
                         <page
                             name="document_ref"
