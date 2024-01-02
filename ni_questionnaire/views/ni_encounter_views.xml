@@ -3,6 +3,17 @@
   ~ Copyright (c) 2021 NSTDA
   -->
 <odoo>
+    <record id="ni_encounter_view_tree_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.tree.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_tree" />
+        <field name="arch" type="xml">
+            <field name="location_id" position="after">
+                <field name="response_latest_grade_id" optional="hide" />
+                <field name="response_latest_date" optional="hide" />
+            </field>
+        </field>
+    </record>
     <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
         <field name="name">ni.encounter.view.form.inherit</field>
         <field name="model">ni.encounter</field>
@@ -25,7 +36,7 @@
                 </button>
                 <button
                     name="action_print_survey"
-                    attrs="{'invisible':[('survey_id','=',False)]}"
+                    attrs="{'invisible':[('response_latest_id', '=', False)]}"
                     class="oe_stat_button"
                     help="Print questionnaire response"
                     icon="fa-commenting"
@@ -40,7 +51,46 @@
             <field name="reason_ids" position="after">
                 <field name="survey_id" invisible="1" />
                 <field name="response_id" invisible="1" />
+                <field name="response_latest_ids" invisible="1" />
+                <field name="response_latest_id" invisible="1" />
+                <field name="response_latest_date" invisible="1" />
+                <field name="response_latest_grade_id" invisible="1" />
             </field>
+            <xpath expr="//page[@name='laboratory']" position="attributes">
+                <attribute name="badge">response_count</attribute>
+            </xpath>
+            <xpath expr="//page[@name='questionnaire']" position="inside">
+                <field name="response_count" invisible="1" />
+                <field name="response_latest_ids">
+                    <tree>
+                        <field name="survey_id" />
+                        <field name="grade_id" />
+                        <field name="scoring_percentage" widget="progressbar" optional="show" />
+                        <field name="scoring_total" optional="hide" />
+                        <field name="create_uid" optional="show" />
+                        <field name="create_date" optional="show" />
+                        <button name="action_print_answers" type="object" icon="fa-print" title="View Answer" />
+                        <button name="action_graph_view" type="object" icon="fa-bar-chart" title="View Graph" />
+                        <button
+                            name="action_survey_subject_wizard"
+                            string="Survey"
+                            type="object"
+                            icon="fa-commenting"
+                            title="Start Questionnaire"
+                            attrs="{'column_invisible': [('parent.state', 'not in', ['in-progress'])]}"
+                        />
+                    </tree>
+                </field>
+                <button type="object" name="action_survey_user_input_completed" string="See More" />
+                <button
+                    name="action_survey_subject"
+                    class="btn-primary"
+                    type="object"
+                    icon="fa-commenting"
+                    string="Survey"
+                    attrs="{'invisible': [('state', '!=', 'in-progress')]}"
+                />
+            </xpath>
         </field>
     </record>
     <record id="ni_encounter_class_view_form_inherit" model="ir.ui.view">
