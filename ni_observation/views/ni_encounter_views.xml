@@ -77,8 +77,12 @@
                     <field name="vital_sign" />
                 </group>
             </xpath>
+            <xpath expr="//page[@name='vital-signs']" position="attributes">
+                <attribute name="badge">observation_latest_vital_sign_count</attribute>
+            </xpath>
             <xpath expr="//page[@name='vital-signs']" position="inside">
-                <field name="observation_line_vital_sign_ids" />
+                <field name="observation_latest_vital_sign_count" invisible="1" />
+                <field name="observation_latest_vital_sign_ids" />
                 <button
                     name="action_observation"
                     type="object"
@@ -95,25 +99,27 @@
                     attrs="{'invisible': [('state', '=', 'finished')]}"
                 />
             </xpath>
-            <xpath expr="//page[@name='vital-signs']" position="after">
-                <page name="laboratory" string="Laboratory" icon="fa-flask">
-                    <field name="observation_lab_ids" />
-                    <button
-                        name="action_observation"
-                        type="object"
-                        string="See More"
-                        class="btn-secondary"
-                        context="{'category_id': %(category_laboratory)d}"
-                    />
-                    <button
-                        name="%(ni_observation_sheet_action_form)d"
-                        type="action"
-                        string="New"
-                        class="btn-primary"
-                        context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(category_laboratory)d]}"
-                        attrs="{'invisible': [('state', '=', 'finished')]}"
-                    />
-                </page>
+            <xpath expr="//page[@name='laboratory']" position="attributes">
+                <attribute name="badge">observation_latest_lab_count</attribute>
+            </xpath>
+            <xpath expr="//page[@name='laboratory']" position="inside">
+                <field name="observation_latest_lab_count" invisible="1" />
+                <field name="observation_latest_lab_ids" />
+                <button
+                    name="action_observation"
+                    type="object"
+                    string="See More"
+                    class="btn-secondary"
+                    context="{'category_id': %(category_laboratory)d}"
+                />
+                <button
+                    name="%(ni_observation_sheet_action_form)d"
+                    type="action"
+                    string="New"
+                    class="btn-primary"
+                    context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(category_laboratory)d]}"
+                    attrs="{'invisible': [('state', '=', 'finished')]}"
+                />
             </xpath>
         </field>
     </record>
