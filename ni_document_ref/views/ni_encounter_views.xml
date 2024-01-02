@@ -9,15 +9,13 @@
         <field name="priority">99</field>
         <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='discharge']" position="before">
-                <page name="document" string="Document" badge="document_count" icon="fa-file-text">
-                    <field name="document_count" invisible="1" />
-                    <field
-                        name="document_ids"
-                        context="{'default_patient_id': patient_id, 'default_encounter_id':id}"
-                    />
-                    <button name="action_document_ref" type="object" string="See More" />
-                </page>
+            <xpath expr="//page[@name='document_ref']" position="attributes">
+                <attribute name="badge">document_count</attribute>
+            </xpath>
+            <xpath expr="//page[@name='document_ref']" position="inside">
+                <field name="document_count" invisible="1" />
+                <field name="document_ids" context="{'default_patient_id': patient_id, 'default_encounter_id':id}" />
+                <button name="action_document_ref" type="object" string="See More" />
             </xpath>
         </field>
     </record>
