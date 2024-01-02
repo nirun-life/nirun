@@ -2,7 +2,7 @@
 
 {
     "name": "Questionnaire",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.2.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
