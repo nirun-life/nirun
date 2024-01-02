@@ -26,7 +26,7 @@
         <field name="name">ni.encounter.location.view.tree</field>
         <field name="model">ni.encounter.location</field>
         <field name="arch" type="xml">
-            <tree editable="bottom" default_order="period_end desc">
+            <tree editable="bottom" default_order="period_end desc" create="0" edit="0">
                 <field name="company_id" invisible="1" />
                 <field
                     name="encounter_id"
@@ -37,9 +37,9 @@
                 <field name="physical_type_id" optional="show" />
                 <field name="period_start" />
                 <field name="period_end" optional="hide" />
-                <field name="duration_days" optional="hide" />
+                <field name="duration" optional="show" />
                 <field name="note" optional="show" />
-                <field name="write_uid" widget="many2one_avatar_user" optional="show" />
+                <field name="write_uid" widget="many2one_avatar_user" optional="hide" />
                 <field name="write_date" optional="hide" />
             </tree>
         </field>
@@ -49,9 +49,9 @@
         <field name="model">ni.encounter.location</field>
         <field name="arch" type="xml">
             <form>
+                <field name="company_id" invisible="1" />
                 <group>
                     <group>
-                        <field name="company_id" invisible="1" />
                         <field name="encounter_id" context="{'show_patient':True}" />
                         <field name="location_id" />
                         <field name="physical_type_id" />
