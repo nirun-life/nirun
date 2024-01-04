@@ -22,7 +22,13 @@ SIGN_FILEDS = [
 class Encounter(models.Model):
     _name = "ni.encounter"
     _description = "Encounter"
-    _inherit = ["mail.thread", "ni.period.mixin", "image.mixin", "ni.identifier.mixin"]
+    _inherit = [
+        "mail.thread",
+        "ni.period.mixin",
+        "image.mixin",
+        "ni.identifier.mixin",
+        "ni.export.data.logger",
+    ]
     _inherits = {"ni.patient": "patient_id"}
     _check_company_auto = True
     _order = "period_start DESC, name DESC"
