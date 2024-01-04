@@ -10,7 +10,7 @@ class PatientResource(models.AbstractModel):
     _check_company_auto = True
 
     """Set this param to enforce period start follow the encounter start date"""
-    _check_period_start = False
+    _check_period_start = True
 
     def _active_id_of(self, model: str):
         if model == self.env.context.get("active_model"):
@@ -90,23 +90,12 @@ class PatientResource(models.AbstractModel):
         # So, we can't use @api.constraints to check this and have to manual
         # check it on create() and write()
         for vals in vals_list:
-            if (
-                self._check_period_start
-                and vals.get("period_start")
-                and vals.get("encounter_id")
-            ):
-                res_start = fields.Datetime.to_datetime(vals.get("period_start"))
-                encounters = self.env["ni.encounter"]
-                enc_start = encounters.browse(vals.get("encounter_id")).period_start
-                if res_start < enc_start:
-                    raise ValidationError(
-                        _(
-                            "Since date must not before the encounter start date\n"
-                            "\n\tEncounter Since: %s"
-                            "\n\t%s Since: %s"
-                        )
-                        % (enc_start, self._description, res_start)
-                    )
+            if self._check_period_start:
+                self.__check_period_start(
+                    vals.get("encounter_id") or self.encounter_id.id,
+                    vals.get("period_start"),
+                )
+
             if self.env.user.has_group("base.group_multi_company"):
                 # we need to explicit company_id for multi_company user to make sure
                 # ni.identifier.mixin work as expected
@@ -119,26 +108,28 @@ class PatientResource(models.AbstractModel):
         # Because ni.patient.res may not inherit period.mixin.
         # So, we can't use @api.constraints to check this and have to manual
         # check it on create() and write()
-        if (
-            self._check_period_start
-            and (vals.get("period_start"))
-            and (vals.get("encounter_id") or self.encounter_id)
-            and not ("encounter_id" in vals and not vals.get("encounter_id"))
-        ):
-            res_start = fields.Datetime.to_datetime(vals.get("period_start"))
-            encounters = self.encounter_id or self.env["ni.encounter"].browse(
-                vals.get("encounter_id")
+        if self._check_period_start:
+            self.__check_period_start(
+                vals.get("encounter_id") or self.encounter_id.id,
+                vals.get("period_start"),
             )
-            if res_start < encounters.period_start:
-                raise ValidationError(
-                    _(
-                        "Since date must not before the encounter start date\n"
-                        "\n\tEncounter Since: %s"
-                        "\n\t%s Since: %s"
-                    )
-                    % (encounters.period_start, self._description, res_start)
-                )
         return super().write(vals)
+
+    def __check_period_start(self, encounter_id, period_start):
+        if not encounter_id or not period_start:
+            return
+
+        enc = self.env["ni.encounter"].browse(encounter_id)
+        start = fields.Datetime.to_datetime(period_start)
+        if start.replace(microsecond=0) < enc.period_start.replace(microsecond=0):
+            raise ValidationError(
+                _(
+                    "Since date must not before the encounter start date\n"
+                    "\n\tEncounter Since: %s"
+                    "\n\t%s Since: %s"
+                )
+                % (enc.period_start, self._description, start)
+            )
 
     @api.constrains("patient_id", "encounter_id")
     def _check_patient_encounter(self):
