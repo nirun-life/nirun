@@ -16,6 +16,7 @@ class Patient(models.Model):
         "mail.activity.mixin",
         "image.mixin",
         "ni.identifier.mixin",
+        "ni.export.data.logger",
     ]
     _inherits = {"res.partner": "partner_id"}
     _check_company_auto = True
