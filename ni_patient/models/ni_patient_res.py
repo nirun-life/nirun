@@ -6,6 +6,7 @@ from odoo.exceptions import ValidationError
 
 class PatientResource(models.AbstractModel):
     _name = "ni.patient.res"
+    _inherit = ["ni.export.data.logger"]
     _description = "Patient Resource"
     _check_company_auto = True
 
