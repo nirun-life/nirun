@@ -483,7 +483,7 @@ class Encounter(models.Model):
         for vals in vals_list:
             vals.update(self._prepare_sign_field_vals(vals))
 
-            if "location_id" in vals:
+            if "location_id" in vals and vals.get("location_id"):
                 vals.update(
                     self._prepare_new_location_hist_vals(
                         vals["location_id"], vals.get("period_start")
@@ -497,7 +497,7 @@ class Encounter(models.Model):
     def write(self, vals):
         vals.update(self._prepare_sign_field_vals(vals))
 
-        if "location_id" in vals:
+        if "location_id" in vals and vals.get("location_id"):
             vals.update(self._prepare_new_location_hist_vals(vals["location_id"]))
             enc = self.filtered_domain([("location_id", "!=", vals["location_id"])])
             enc.location_history_ids.filtered_domain(
