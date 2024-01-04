@@ -37,7 +37,7 @@ class Encounter(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if "performer_id" in vals:
+            if "performer_id" in vals and vals.get("performer_id"):
                 vals.update(
                     self._prepare_participant_vals(
                         vals["performer_id"], vals.get("period_start")
@@ -46,11 +46,10 @@ class Encounter(models.Model):
         return super(Encounter, self).create(vals_list)
 
     def write(self, vals):
-        if "performer_id" not in vals:
+        if "performer_id" not in vals or not vals.get("performer_id"):
             return super(Encounter, self).write(vals)
 
         vals.update(self._prepare_participant_vals(vals["performer_id"]))
-
         enc = self.filtered_domain(
             [
                 ("performer_id", "!=", vals["performer_id"]),
