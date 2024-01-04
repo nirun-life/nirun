@@ -1,7 +1,5 @@
 #  Copyright (c) 2023 NSTDA
 
-from typing import Optional
-
 from odoo import api, fields, models
 
 
@@ -15,7 +13,7 @@ class WorkflowMixin(models.AbstractModel):
     _workflow_type = False
 
     @property
-    def _workflow_table(self):
+    def _workflow_table(self) -> str:
         return "ni.workflow.{}".format(self._workflow_type)
 
     @property
@@ -23,8 +21,8 @@ class WorkflowMixin(models.AbstractModel):
         return self._description
 
     @property
-    def _workflow_summary(self) -> Optional[str]:
-        return None
+    def _workflow_summary(self) -> str:
+        return str()
 
     @property
     def _workflow_occurrence(self) -> fields.Datetime:
