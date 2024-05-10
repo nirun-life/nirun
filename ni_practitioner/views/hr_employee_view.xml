@@ -79,4 +79,14 @@
             </xpath>
         </field>
     </record>
+    <record id="hr_employee_view_search_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.view.search.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="category_ids" string="Role" select="multi" icon="fa-briefcase" enable_counters="1" />
+            </xpath>
+        </field>
+    </record>
 </odoo>
