@@ -14,6 +14,7 @@ class Roles(models.Model):
 
     REGISTER_ROUTE = "practitioner/register"
 
+    employee_category_ids = fields.Many2many("hr.employee.category")
     user_count = fields.Integer(compute="_compute_user_count")
     user_to_verify_count = fields.Integer(compute="_compute_user_count")
     access_token = fields.Char("Invitation Token", company_dependent=True)
