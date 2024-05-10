@@ -14,7 +14,9 @@ class Users(models.Model):
             rec.verified = True
             if not rec.employee_id:
                 rec.action_create_employee()
-                rec.employee_id.license_no = rec.login
+                emp = rec.employee_id
+                emp.license_no = rec.login
+                emp.category_ids = rec.role_ids.mapped("employee_category_ids")
 
     def action_verify_employee(self):
         for rec in self:
