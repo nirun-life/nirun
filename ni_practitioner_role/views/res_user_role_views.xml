@@ -22,6 +22,7 @@
         <field name="inherit_id" ref="base_user_role.view_res_users_role_form" />
         <field name="arch" type="xml">
             <field name="group_id" position="after">
+                <field name="employee_category_ids" widget="many2many_tags" />
                 <field name="access_token" invisible="1" />
                 <field name="register_location" widget="CopyClipboardURL" />
                 <field name="register_qr_code" widget='image' />
@@ -104,9 +105,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a t-if="widget.editable" role="menuitem" class="dropdown-item" type="edit">
-                                    Configuration
-                                </a>
+                                <a t-if="widget.editable" role="menuitem" class="dropdown-item" type="edit">Settings</a>
                                 <ul
                                     t-if="widget.editable"
                                     class="oe_kanban_colorpicker"
