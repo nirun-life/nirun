@@ -102,8 +102,8 @@ class PractitionerRoleController(http.Controller):
             return self.form_register(
                 comp_id,
                 token,
-                error=_("Must provide patient name"),
-                err={"name": _("Must provide patient name")},
+                error=_("Must provide practitioner name"),
+                err={"name": _("Must provide practitioner name")},
                 post=post,
             )
 
