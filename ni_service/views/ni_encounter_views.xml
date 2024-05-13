@@ -34,11 +34,13 @@
         <field name="model">ni.encounter.service.resource</field>
         <field name="arch" type="xml">
             <tree editable="bottom">
+                <field name="editable" invisible="1" />
                 <field name="encounter_id" invisible="1" />
                 <field name="encounter_date" invisible="1" />
                 <field name="resource_calendar_id" invisible="1" />
-                <field name="attendance_id" />
-                <field name="service_id" />
+                <field name="service_id" invisible="1" />
+                <field name="attendance_id" attrs="{'readonly': [('editable', '=', False)]}" />
+                <field name="service_id" attrs="{'readonly': [('editable', '=', False)]}" />
             </tree>
         </field>
     </record>
