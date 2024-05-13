@@ -56,6 +56,7 @@ class Encounter(models.Model):
                     "encounter_id": self.id,
                     "attendance_id": attendance_id,
                     "service_id": service_id,
+                    "editable": service_ids.browse(service_id).editable,
                 }
             )
             for attendance_id, service_id in attendance_service_map.items()
@@ -83,6 +84,7 @@ class EncounterServiceResource(models.Model):
         domain="[('attendance_ids', '=', attendance_id), '|', ('date', '=', False), ('date', '=', encounter_date)]",
         check_company=True,
     )
+    editable = fields.Boolean(default=True)
 
     _sql_constraints = [
         (

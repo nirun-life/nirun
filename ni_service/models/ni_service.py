@@ -70,6 +70,9 @@ class Service(models.Model):
     calendar = fields.Boolean(
         default=False, help="Indicate this service will be booking in to calendar"
     )
+    editable = fields.Boolean(
+        default=True, help="Indicate user can edit this service or not when generate"
+    )
 
     @api.depends("encounter_ids")
     def _compute_patient(self):
