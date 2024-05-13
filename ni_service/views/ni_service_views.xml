@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="ni_service_view_tree" model="ir.ui.view">
+        <field name="name">ni.service.view.tree</field>
+        <field name="model">ni.service</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="company_id" invisible="1" />
+                <field name="calendar_id" invisible="1" />
+                <field name="attendance_id" />
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_service_view_form" model="ir.ui.view">
+        <field name="name">ni.service.view.form</field>
+        <field name="model">ni.service</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="company_id" invisible="1" />
+                <sheet>
+                    <header>
+
+                    </header>
+                    <div class="oe_title mb24">
+                        <label for="name" />
+                        <h1>
+                            <field name="name" placeholder="Service Name..." />
+                        </h1>
+                        <div class="small text-muted">
+
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="date" />
+                            <field name="calendar_id" />
+                            <field name="attendance_id" />
+                        </group>
+                        <group>
+                            <field name="dayofweek" widget="radio" />
+                            <label for="hour_from" string="Time" />
+                            <div class="o_row">
+                                <field name="hour_from" widget="float_time" />
+                                <span class="mx-2">-</span>
+                                <field name="hour_to" widget="float_time" />
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="description" string="Description">
+                            <field name="description" />
+                        </page>
+                        <page name="employee" string="Employee">
+                            <field name="employee_ids" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_service_action" model="ir.actions.act_window">
+        <field name="name">Services</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">No Service</p>
+            <p>
+
+            </p>
+        </field>
+    </record>
+    <menuitem id="service_menu_root" name="Services" sequence="6" />
+    <menuitem
+        id="service_menu"
+        name="Services"
+        parent="service_menu_root"
+        action="ni_service.ni_service_action"
+        sequence="0"
+    />
+</odoo>
