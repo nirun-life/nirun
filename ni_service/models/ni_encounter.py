@@ -1,5 +1,7 @@
 #  Copyright (c) 2024 NSTDA
 
+from pytz import timezone
+
 from odoo import api, fields, models
 
 
@@ -25,10 +27,14 @@ class Encounter(models.Model):
         attendance_ids = self.env["resource.calendar.attendance"].search(
             [
                 ("calendar_id", "=", self.resource_calendar_id.id),
-                ("dayofweek", "=", self.period_start.weekday()),
+                (
+                    "dayofweek",
+                    "=",
+                    self.period_start.astimezone(timezone(self.env.user.tz)).weekday(),
+                ),
             ]
         )
-        service = self.env["ni.service"].search(
+        service_ids = self.env["ni.service"].search(
             [
                 ("attendance_ids", "in", attendance_ids.ids),
                 "|",
@@ -36,11 +42,13 @@ class Encounter(models.Model):
                 ("date", "=", fields.Date.today()),
             ]
         )
-        dict = {}
+        attendance_service_map = {}
         for attendance in attendance_ids:
-            service = service.filtered_domain([("attendance_ids", "=", attendance.id)])
+            service = service_ids.filtered_domain(
+                [("attendance_ids", "=", attendance.id)]
+            )
             if service:
-                dict.update({attendance.id: service[0].id})
+                attendance_service_map.update({attendance.id: service[0].id})
 
         self.service_resource_ids = [
             fields.Command.create(
@@ -50,7 +58,7 @@ class Encounter(models.Model):
                     "service_id": service_id,
                 }
             )
-            for attendance_id, service_id in dict.items()
+            for attendance_id, service_id in attendance_service_map.items()
         ]
 
 
