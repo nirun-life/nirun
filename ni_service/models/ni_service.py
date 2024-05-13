@@ -22,15 +22,17 @@ class Service(models.Model):
     company_id = fields.Many2one(
         "res.company", required=True, default=lambda self: self.env.company
     )
-    name = fields.Char()
+    name = fields.Char("Service", equired=True)
     description = fields.Html()
     calendar_id = fields.Many2one(
-        "resource.calendar", domain="[('company_id', '=', company_id)]"
+        "resource.calendar", required=True, domain="[('company_id', '=', company_id)]"
     )
-    attendance_id = fields.Many2one(
+    attendance_ids = fields.Many2many(
         "resource.calendar.attendance",
+        "ni_service_calendar_attendance_rel",
+        "service_id",
+        "attendance_id",
         domain="[('calendar_id', '=', calendar_id)]",
-        require=True,
     )
     dayofweek = fields.Selection(
         [
@@ -68,19 +70,6 @@ class Service(models.Model):
     calendar = fields.Boolean(
         default=False, help="Indicate this service will be booking in to calendar"
     )
-
-    @api.onchange("attendance_id")
-    def _onchange_attendance_id(self):
-        for rec in self:
-            if rec.attendance_id:
-                rec.update(
-                    {
-                        "dayofweek": rec.attendance_id.dayofweek,
-                        "hour_from": rec.attendance_id.hour_from,
-                        "hour_to": rec.attendance_id.hour_to,
-                        "sequence": rec.sequence,
-                    }
-                )
 
     @api.depends("encounter_ids")
     def _compute_patient(self):
