@@ -1,5 +1,4 @@
 #  Copyright (c) 2024 NSTDA
-import pprint
 
 from odoo import api, fields, models
 
@@ -7,7 +6,7 @@ from odoo import api, fields, models
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
-    resource_calendar_id = fields.Many2one("resource.calendar")
+    resource_calendar_id = fields.Many2one("resource.calendar", check_company=True)
     service_ids = fields.Many2many(
         "ni.service", domain="[('company_id', '=', company_id)]"
     )
@@ -23,26 +22,35 @@ class Encounter(models.Model):
 
     def action_generate_service_resource(self):
         self.ensure_one()
-        pprint.pprint("Weekday() = {}".format(self.encounter_start.weekday()))
-        service = self.env["ni.service"].search(
+        attendance_ids = self.env["resource.calendar.attendance"].search(
             [
                 ("calendar_id", "=", self.resource_calendar_id.id),
-                ("dayofweek", "=", self.encounter_start.weekday()),
+                ("dayofweek", "=", self.period_start.weekday()),
+            ]
+        )
+        service = self.env["ni.service"].search(
+            [
+                ("attendance_ids", "in", attendance_ids.ids),
                 "|",
                 ("date", "=", False),
                 ("date", "=", fields.Date.today()),
             ]
         )
+        dict = {}
+        for attendance in attendance_ids:
+            service = service.filtered_domain([("attendance_ids", "=", attendance.id)])
+            if service:
+                dict.update({attendance.id: service[0].id})
 
         self.service_resource_ids = [
             fields.Command.create(
                 {
                     "encounter_id": self.id,
-                    "attendance_id": s.attendance_id.id,
-                    "service_id": s.id,
+                    "attendance_id": attendance_id,
+                    "service_id": service_id,
                 }
             )
-            for s in service
+            for attendance_id, service_id in dict.items()
         ]
 
 
@@ -64,7 +72,8 @@ class EncounterServiceResource(models.Model):
     service_id = fields.Many2one(
         "ni.service",
         required=True,
-        domain="[('attendance_id', '=', attendance_id), '|', ('date', '=', False), ('date', '=', encounter_date)]",
+        domain="[('attendance_ids', '=', attendance_id), '|', ('date', '=', False), ('date', '=', encounter_date)]",
+        check_company=True,
     )
 
     _sql_constraints = [
