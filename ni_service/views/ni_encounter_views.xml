@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="service" string="Services">
+                    <field name="resource_calendar_id" />
+                    <field name="service_resource_ids" />
+                    <button name="action_generate_service_resource" type="object" string="Generate" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_encounter_class_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.class.view.form.inherit</field>
+        <field name="model">ni.encounter.class</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_class_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[2]" position="after">
+                <page name="service" string="Services">
+
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_encounter_service_resource_view_tree" model="ir.ui.view">
+        <field name="name">ni.encounter.service.resource.view.tree</field>
+        <field name="model">ni.encounter.service.resource</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="encounter_id" invisible="1" />
+                <field name="encounter_date" invisible="1" />
+                <field name="resource_calendar_id" invisible="1" />
+                <field name="attendance_id" />
+                <field name="service_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_encounter_service_resource_view_form" model="ir.ui.view">
+        <field name="name">ni.encounter.service.resource.view.form</field>
+        <field name="model">ni.encounter.service.resource</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <field name="encounter_id" invisible="1" required="False" />
+                <sheet>
+                    <group>
+                        <field name="encounter_date" />
+                        <field name="resource_calendar_id" />
+                        <field name="attendance_id" />
+                        <field name="service_id" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
