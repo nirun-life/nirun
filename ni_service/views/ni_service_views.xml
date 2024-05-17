@@ -39,6 +39,7 @@
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
                             <field name="calendar_id" />
+                            <field name="employee_id" widget="many2one_avatar" />
                         </group>
                         <group>
                             <field name="date" />
@@ -63,8 +64,20 @@
                         <page name="description" string="Description" icon="fa-file-text-o">
                             <field name="description" />
                         </page>
-                        <page name="employee" string="Employee" icon="fa-users">
-                            <field name="employee_ids" />
+                        <page name="employee" string="Participant" icon="fa-users" badge="employee_count">
+                            <field name="employee_count" invisible="1" />
+                            <field name="employee_ids">
+                                <tree default_order="department_id, name">
+                                    <field name="company_id" invisible="1" />
+                                    <field name="department_color" widget="color_picker" nolabel="1" />
+                                    <field name="company_id" groups="base.group_multi_company" />
+                                    <field name="name" />
+                                    <field name="job_title" optional="show" />
+                                    <field name="department_id" />
+                                    <field name="work_phone" optional="show" />
+                                    <field name="work_email" optional="hide" />
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>

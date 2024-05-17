@@ -64,7 +64,14 @@ class Service(models.Model):
     )
     patient_ids = fields.Many2many("ni.patient", compute="_compute_patient")
     employee_ids = fields.Many2many(
-        "hr.employee", domain="[('company_id', '=', company_id)]"
+        "hr.employee",
+        string="Participant",
+        domain="[('company_id', '=', company_id)]",
+        check_company=True,
+    )
+    employee_id = fields.Many2one("hr.employee", "Responsible", check_company=True)
+    employee_count = fields.Integer(
+        "Participant Count", compute="_compute_employee_count"
     )
     recurrence = fields.Boolean(default=True)
     calendar = fields.Boolean(
@@ -78,3 +85,14 @@ class Service(models.Model):
     def _compute_patient(self):
         for rec in self:
             rec.patient_ids = rec.encounter_ids.mapped("patient_id")
+
+    @api.constrains("employee_id", "employee_ids")
+    def _check_employee_id(self):
+        for rec in self:
+            if rec.employee_id and rec.employee_id not in rec.employee_ids:
+                rec.employee_ids = [fields.Command.link(rec.employee_id.id)]
+
+    @api.depends("employee_ids")
+    def _compute_employee_count(self):
+        for rec in self:
+            rec.employee_count = len(rec.employee_ids)
