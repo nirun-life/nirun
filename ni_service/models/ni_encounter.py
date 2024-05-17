@@ -84,6 +84,8 @@ class EncounterServiceResource(models.Model):
         domain="[('attendance_ids', '=', attendance_id), '|', ('date', '=', False), ('date', '=', encounter_date)]",
         check_company=True,
     )
+    employee_id = fields.Many2one(related="service_id.employee_id")
+    employee_ids = fields.Many2many(related="service_id.employee_ids")
     editable = fields.Boolean(default=True)
 
     _sql_constraints = [
