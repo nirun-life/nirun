@@ -10,7 +10,16 @@
         <field name="priority">2</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='physical_exam']" position="before">
-                <group class="mb-4">
+                <div class="text-center d-none d-lg-block">
+                    <label for="pain_score_enum" />
+                    <div class="mt-2">
+                        <field name="pain_score_enum" widget="radio" options="{'horizontal': True}" />
+                    </div>
+                    <div>
+                        <field name="pain_area" placeholder="บริเวณที่เจ็บปวด" class="w-75" />
+                    </div>
+                </div>
+                <group class="my-4">
                     <group>
                         <label for="body_temp" />
                         <div class="o_row">
@@ -72,9 +81,6 @@
                             <span class="text-muted me-4">mg/dl</span>
                         </div>
                     </group>
-                </group>
-                <group groups="base.group_no_one">
-                    <field name="vital_sign" />
                 </group>
             </xpath>
             <xpath expr="//page[@name='vital-signs']" position="attributes">
