@@ -1,6 +1,7 @@
 #  Copyright (c) 2023 NSTDA
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 VITALSIGN_FIELDS = [
     "bp_s",
@@ -64,6 +65,42 @@ class ObservationVitalsignMixin(models.AbstractModel):
     )
     dtx = fields.Float("Dextrostix", digits=(3, 1), help="Dextrostix (mg/dl)")
     oxygen_sat = fields.Float("Oxygen Saturation", digits=(4, 1), help="Oxygen sat (%)")
+    pain_score = fields.Integer(
+        "ความเจ็บปวด (0-10)",
+        default="0",
+        compute="_compute_pain_score",
+        inverse="_inverse_pain_score",
+        copy=False,
+    )
+    pain_score_enum = fields.Selection(
+        [
+            ("0", "0"),
+            ("1", "1"),
+            ("2", "2"),
+            ("3", "3"),
+            ("4", "4"),
+            ("5", "5"),
+            ("6", "6"),
+            ("7", "7"),
+            ("8", "8"),
+            ("9", "9"),
+            ("10", "10"),
+        ],
+        "ความเจ็บปวด",
+        default="0",
+        copy=False,
+    )
+    pain_area = fields.Char("บริเวณที่เจ็บปวด")
+
+    @api.depends("pain_score_enum")
+    def _compute_pain_score(self):
+        for rec in self:
+            rec.pain_score = int(rec.pain_score_enum)
+
+    def _inverse_pain_score(self):
+        for rec in self:
+            if 0 <= rec.pain_score <= 10:
+                rec.pain_score_enum = str(rec.pain_score)
 
     @api.depends(*VITALSIGN_FIELDS)
     def _compute_vital_sign(self):
@@ -107,3 +144,9 @@ class ObservationVitalsignMixin(models.AbstractModel):
                 rec.bmi = round(rec.body_weight / pow(body_height_m, 2), 1)
             else:
                 rec.bmi = 0.0
+
+    @api.constrains("pain_score", "pain_area")
+    def _check_pain_score(self):
+        for rec in self:
+            if rec.pain_area and not any([rec.pain_score, rec.pain_score_enum != "0"]):
+                raise UserError(_("กรุณาระบุระดับความเจ็บปวด"))
