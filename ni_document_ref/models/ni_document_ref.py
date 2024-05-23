@@ -63,7 +63,10 @@ class DocumentReference(models.Model):
             if "author_id" in vals and vals["author_id"]:
                 cmd = [fields.Command.link(vals["author_id"])]
                 # Add user as co-author if author_id is not user themselves
-                if vals["author_id"] != self.env.user.employee_id.id:
+                if (
+                    vals["author_id"] != self.env.user.employee_id.id
+                    and self.env.user.employee_id
+                ):
                     cmd.append(fields.Command.link(self.env.user.employee_id.id))
                 vals["author_ids"] = cmd
 
