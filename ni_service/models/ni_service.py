@@ -5,6 +5,7 @@ from odoo import api, fields, models
 class Service(models.Model):
     _name = "ni.service"
     _description = "Service"
+    _inherit = "ni.coding"
 
     sequence = fields.Integer()
 
@@ -24,6 +25,8 @@ class Service(models.Model):
     )
     name = fields.Char("Service", equired=True)
     description = fields.Html()
+    category_id = fields.Many2one("ni.service.category")
+    type_id = fields.Many2one("ni.service.type")
     calendar_id = fields.Many2one(
         "resource.calendar", required=True, domain="[('company_id', '=', company_id)]"
     )
@@ -49,14 +52,6 @@ class Service(models.Model):
         index=True,
         default="0",
     )
-    hour_from = fields.Float(
-        string="Work from",
-        required=True,
-        index=True,
-        help="Start and End time of working.\n"
-        "A specific value of 24:00 is interpreted as 23:59:59.999999.",
-    )
-    hour_to = fields.Float(string="Work to", required=True)
 
     date = fields.Date()
     encounter_ids = fields.Many2many(
