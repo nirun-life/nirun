@@ -558,13 +558,13 @@ class Encounter(models.Model):
                     enc.update({"state": "planned"})
                 else:
                     enc.update({"state": "in-progress"})
-                if not enc.participate:
+                if not enc.participate and self.env.user.employee_id:
                     enc.action_participate()
             elif enc.state == "planned":
                 enc.update(
                     {"state": "in-progress", "period_start": fields.Datetime.now()}
                 )
-                if not enc.participate:
+                if not enc.participate and self.env.user.employee_id:
                     enc.action_participate()
             else:
                 raise ValidationError(
@@ -620,6 +620,12 @@ class Encounter(models.Model):
     def action_participate(self, type_id=None, start=None):
         period_start = start or fields.Datetime.now()
         user = self.env["res.users"].browse(self.env.uid)
+        if not user.employee_id:
+            raise ValidationError(
+                _(
+                    "กรุณาติดต่อผู้ดูแลระบบเพือเพิ่มทะเบียนผู้ปฎิบัติงานก่อนบันทึกเป็นผู้มีส่วนร่วมในงานให้บริการ"
+                )
+            )
         val = {
             "user_id": user.id,
             "employee_id": user.employee_id.id,
