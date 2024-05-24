@@ -3,29 +3,37 @@
   ~ Copyright (c) 2024 NSTDA
   -->
 <odoo noupdate="1">
-    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
-        <field name="name">ni.encounter.view.form.inherit</field>
-        <field name="model">ni.encounter</field>
-        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
-        <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
-                <page name="service" string="Services">
-                    <field name="resource_calendar_id" />
-                    <field name="service_resource_ids" />
-                    <button name="action_generate_service_resource" type="object" string="Generate" />
-                </page>
-            </xpath>
-        </field>
-    </record>
     <record id="ni_encounter_class_view_form_inherit" model="ir.ui.view">
         <field name="name">ni.encounter.class.view.form.inherit</field>
         <field name="model">ni.encounter.class</field>
         <field name="inherit_id" ref="ni_patient.ni_encounter_class_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//notebook/page[2]" position="after">
-                <page name="service" string="Services">
-
-                </page>
+            <xpath expr="//notebook/page[1]/group" position="after">
+                <group string="Service" attrs="{'invisible': [('service', '=', False)]}">
+                    <field name="service_calendar_id" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='service']" position="inside">
+                <group>
+                    <label for="resource_calendar_id" />
+                    <div class="o_row">
+                        <field name="resource_calendar_id" options="{'no_create': True, 'no_open':True}" />
+                        <button
+                            name="action_generate_service_resource"
+                            type="object"
+                            string="สร้างกิจกรรม"
+                            icon="fa-refresh"
+                        />
+                    </div>
+                </group>
+                <field name="service_resource_ids" context="{'default_encounter_id': id}" />
             </xpath>
         </field>
     </record>
@@ -33,16 +41,25 @@
         <field name="name">ni.encounter.service.resource.view.tree</field>
         <field name="model">ni.encounter.service.resource</field>
         <field name="arch" type="xml">
-            <tree editable="bottom">
+            <tree decoration-muted="editable == False" decoration-info="editable == True" default_order="sequence">
+                <field name="sequence" invisible="1" />
                 <field name="editable" invisible="1" />
                 <field name="encounter_id" invisible="1" />
                 <field name="encounter_date" invisible="1" />
                 <field name="resource_calendar_id" invisible="1" />
                 <field name="service_id" invisible="1" />
-                <field name="attendance_id" attrs="{'readonly': [('editable', '=', False)]}" />
-                <field name="service_id" attrs="{'readonly': [('editable', '=', False)]}" />
-                <field name="employee_id" widget="many2one_avatar" />
-                <field name="employee_ids" widget="many2many_avatar_user" />
+                <field
+                    name="attendance_id"
+                    attrs="{'readonly': [('editable', '=', False)]}"
+                    options="{'no_open': True}"
+                />
+                <field name="service_id" attrs="{'readonly': [('editable', '=', False)]}" options="{'no_open': True}" />
+                <field name="employee_id" widget="many2one_avatar" optional="hide" />
+                <field name="employee_ids" widget="many2many_avatar_user" optional="show" />
+                <field name="note" widget="char" optional="show" />
+                <control>
+                    <create string="Add Service" context="{}" />
+                </control>
             </tree>
         </field>
     </record>
@@ -54,11 +71,23 @@
                 <field name="encounter_id" invisible="1" required="False" />
                 <sheet>
                     <group>
-                        <field name="encounter_date" />
-                        <field name="resource_calendar_id" />
-                        <field name="attendance_id" />
-                        <field name="service_id" />
+                        <field name="editable" invisible="1" />
+                        <field name="encounter_date" invisible="1" />
+                        <field name="resource_calendar_id" invisible="1" />
+                        <field name="dayofweek" invisible="1" />
+                        <field
+                            name="attendance_id"
+                            options="{'no_create': True, 'no_open':True}"
+                            domain="[('calendar_id', '=', resource_calendar_id),('dayofweek', '=', dayofweek)]"
+                            attrs="{'readonly': [('editable', '=', False)]}"
+                        />
+                        <field
+                            name="service_id"
+                            options="{'no_create': True, 'no_open':True}"
+                            attrs="{'readonly': [('editable', '=', False)]}"
+                        />
                     </group>
+                    <field name="note" placeholder="Additional note..." />
                 </sheet>
             </form>
         </field>
