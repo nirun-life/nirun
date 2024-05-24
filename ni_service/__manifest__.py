@@ -15,8 +15,11 @@
     "data": [
         "security/ir.model.access.csv",
         "datas/ir_sequence_data.xml",
+        "datas/ni_service_category_data.xml",
+        "datas/ni_service_type_data.xml",
         "views/ni_service_views.xml",
         "views/ni_encounter_views.xml",
+        "views/ni_service_menu.xml",
     ],
     "application": True,
     "auto_install": False,
