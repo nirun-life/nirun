@@ -185,6 +185,7 @@
                 <field name="show_procedure" invisible="1" />
                 <field name="show_questionnaire" invisible="1" />
                 <field name="show_document_ref" invisible="1" />
+                <field name="show_service" invisible="1" />
                 <header>
                     <button
                         name="action_confirm"
@@ -327,7 +328,7 @@
                             <field
                                 name="location_id"
                                 domain="[('company_id', '=', company_id)]"
-                                options="{'no_create': True, 'always_reload': True}"
+                                options="{'no_create': True, 'always_reload': True, 'no_open': True}"
                                 context="{'show_parent': True}"
                             />
                             <field name="priority" />
@@ -504,6 +505,12 @@
                             string="Problem List"
                             icon="fa-list-ul"
                             attrs="{'invisible': [('show_problem_list', '=', False)]}"
+                        />
+                        <page
+                            name="service"
+                            string="กิจกรรมการดูแลสุขภาพ"
+                            icon="fa-list-alt"
+                            attrs="{'invisible': [('show_service', '=', False)]}"
                         />
                         <page
                             name="medication"

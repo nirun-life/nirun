@@ -76,12 +76,22 @@
                                     <field name="procedure" />
                                     <field name="questionnaire" />
                                     <field name="document_ref" />
+                                    <field name="service" />
                                 </group>
                                 <group string="Auto-close" attrs="{'invisible': [('admission', '=', True)]}">
                                     <field name="auto_close" />
-                                    <field name="auto_close_midnight" />
-                                    <field name="auto_close_offset_number" />
-                                    <field name="auto_close_offset_type" />
+                                    <field
+                                        name="auto_close_midnight"
+                                        attrs="{'invisible': [('auto_close', '=', False)]}"
+                                    />
+                                    <field
+                                        name="auto_close_offset_number"
+                                        attrs="{'invisible': [('auto_close', '=', False)]}"
+                                    />
+                                    <field
+                                        name="auto_close_offset_type"
+                                        attrs="{'invisible': [('auto_close', '=', False)]}"
+                                    />
                                 </group>
                             </group>
                         </page>
