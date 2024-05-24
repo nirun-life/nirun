@@ -304,6 +304,7 @@ class Encounter(models.Model):
     show_procedure = fields.Boolean(related="class_id.procedure")
     show_questionnaire = fields.Boolean(related="class_id.questionnaire")
     show_document_ref = fields.Boolean(related="class_id.document_ref")
+    show_service = fields.Boolean(related="class_id.service")
 
     # Participant
     participant_ids = fields.One2many(
