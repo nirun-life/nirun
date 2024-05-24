@@ -3,6 +3,21 @@
   ~ Copyright (c) 2024 NSTDA
   -->
 <odoo>
+    <record id="ni_service_view_search" model="ir.ui.view">
+        <field name="name">ni.service.view.search</field>
+        <field name="model">ni.service</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="employee_ids" />
+                <searchpanel>
+                    <field name="company_id" groups="base.group_multi_company" />
+                    <field name="category_id" />
+                    <field name="type_id" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
     <record id="ni_service_view_tree" model="ir.ui.view">
         <field name="name">ni.service.view.tree</field>
         <field name="model">ni.service</field>
@@ -10,6 +25,7 @@
             <tree>
                 <field name="company_id" invisible="1" />
                 <field name="company_id" groups="base.group_multi_company" />
+                <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="calendar_id" invisible="1" />
                 <field name="attendance_ids" widget="many2many_tags" />
@@ -32,18 +48,19 @@
                             <field name="name" placeholder="Service Name..." />
                         </h1>
                         <div class="small text-muted">
-
+                            <field name="category_id" placeholder="Category..." options="{'no_open': True}" />
                         </div>
                     </div>
                     <group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
+                            <field name="type_id" options="{ 'no_open': True}" />
                             <field name="calendar_id" />
                             <field name="employee_id" widget="many2one_avatar" />
                         </group>
                         <group>
                             <field name="date" />
-                            <field name="editable" />
+                            <field name="editable" widget="boolean_toggle" class="ms-4" />
                         </group>
                     </group>
                     <notebook>
@@ -79,6 +96,12 @@
                                 </tree>
                             </field>
                         </page>
+                        <page name="extra" string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <field name="sequence" />
+                                <field name="color" widget="color_picker" />
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
@@ -90,18 +113,36 @@
         <field name="res_model">ni.service</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
-            <p class="oe_view_nocontent_create">No Service</p>
-            <p>
-
-            </p>
+            <p class="oe_view_nocontent_create">No Service found</p>
         </field>
     </record>
-    <menuitem id="service_menu_root" name="Services" sequence="6" />
+    <record id="ni_service_category_action" model="ir.actions.act_window">
+        <field name="name">Service Category</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">No Service Category Found</p>
+        </field>
+    </record>
+    <record id="ni_service_type_action" model="ir.actions.act_window">
+        <field name="name">Service Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">No Service Type Found</p>
+        </field>
+    </record>
+    <menuitem id="service_menu_root" name="Service" sequence="6" web_icon="ni_service,static/description/icon.png" />
     <menuitem
         id="service_menu"
-        name="Services"
+        name="Service"
         parent="service_menu_root"
         action="ni_service.ni_service_action"
         sequence="0"
     />
+    <menuitem id="configuration_menu" name="Configuration" parent="service_menu_root" sequence="0" />
+    <menuitem id="category_menu" name="Category" parent="configuration_menu" action="ni_service_category_action" />
+    <menuitem id="type_menu" name="Type" parent="configuration_menu" action="ni_service_type_action" />
 </odoo>
