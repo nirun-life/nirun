@@ -55,6 +55,7 @@ class EncounterClassification(models.Model):
     procedure = fields.Boolean(default=True, help="Show/Hide Procedure")
     questionnaire = fields.Boolean(default=True, help="Show/Hide Questionnaire")
     document_ref = fields.Boolean(default=True, help="Show/Hide Document Reference")
+    service = fields.Boolean(default=True, help="Show/HIde Service")
 
     @api.onchange("admission")
     def _onchange_admission(self):
