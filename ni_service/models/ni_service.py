@@ -108,9 +108,8 @@ class Service(models.Model):
             "name": "Event",
             "res_model": "ni.service.event",
             "type": "ir.actions.act_window",
-            "target": self.env.context.get("target", "new"),
-            "view_mode": "form",
-            "views": [[False, "form"]],
+            "target": self.env.context.get("target", "current"),
+            "view_mode": "calendar,form",
             "context": ctx,
         }
         return view
