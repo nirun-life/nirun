@@ -1,4 +1,6 @@
 #  Copyright (c) 2024 NSTDA
+import pprint
+from datetime import date, datetime
 
 from pytz import timezone
 
@@ -44,8 +46,27 @@ class Encounter(models.Model):
                 ("date", "=", fields.Date.today()),
             ]
         )
+        date_start = datetime.combine(date.today(), datetime.min.time()).strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        date_end = datetime.combine(date.today(), datetime.max.time()).strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+        event_ids = self.env["ni.service.event"].search(
+            [
+                ("attendance_id", "in", attendance_ids.ids),
+                ("start", ">=", date_start),
+                ("start", "<=", date_end),
+            ]
+        )
+        pprint.pprint(event_ids)
         attendance_service_map = {}
         for attendance in attendance_ids:
+            event = event_ids.filtered_domain([("attendance_id", "=", attendance.id)])
+            if event:
+                attendance_service_map.update({attendance.id: event[0].service_id.id})
+                continue
             service = service_ids.filtered_domain(
                 [("attendance_ids", "=", attendance.id)]
             )

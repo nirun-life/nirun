@@ -11,6 +11,7 @@
     "maintainers": ["piruin"],
     "depends": [
         "ni_patient",
+        "calendar",
     ],
     "data": [
         "security/ir.model.access.csv",
@@ -18,6 +19,7 @@
         "datas/ni_service_category_data.xml",
         "datas/ni_service_type_data.xml",
         "views/ni_service_views.xml",
+        "views/ni_service_event_views.xml",
         "views/ni_encounter_views.xml",
         "views/ni_service_menu.xml",
     ],
