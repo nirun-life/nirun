@@ -3,15 +3,16 @@
   ~ Copyright (c) 2024 NSTDA
   -->
 <odoo>
-    <menuitem id="root_menu" name="Service" sequence="6" web_icon="ni_service,static/description/icon.png" />
-    <menuitem id="service_menu" name="Service" parent="root_menu" action="ni_service.ni_service_action" sequence="1" />
+    <menuitem id="root_menu" name="Service" sequence="3" web_icon="ni_service,static/description/icon.png" />
+    <menuitem id="service_menu" name="Service" parent="root_menu" action="ni_service.ni_service_action" sequence="2" />
     <menuitem
         id="routine_menu"
         name="Routine"
-        parent="root_menu"
+        parent="configuration_menu"
         action="ni_service.ni_service_routine_action"
         sequence="2"
     />
+    <menuitem id="event_menu" name="Event" parent="root_menu" action="ni_service_event_action" sequence="1" />
     <menuitem id="configuration_menu" name="Configuration" parent="root_menu" sequence="99" />
     <menuitem id="category_menu" name="Category" parent="configuration_menu" action="ni_service_category_action" />
     <menuitem id="type_menu" name="Type" parent="configuration_menu" action="ni_service_type_action" />
