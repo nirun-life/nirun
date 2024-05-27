@@ -46,7 +46,12 @@
                 <field name="company_id" invisible="1" />
                 <sheet>
                     <header>
-
+                        <button
+                            name="create_event"
+                            type="object"
+                            string="Event"
+                            attrs="{'invisible': [('category_id', '=', %(ni_service.categ_routine)d)]}"
+                        />
                     </header>
                     <div class="oe_title mb24">
                         <label for="name" />

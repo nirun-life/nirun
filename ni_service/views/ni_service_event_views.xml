@@ -4,25 +4,22 @@
   -->
 <odoo>
     <record id="ni_service_event_action" model="ir.actions.act_window">
-        <field name="name">Calendar</field>
+        <field name="name">Event</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service.event</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">calendar,tree,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">No Schedule</p>
-            <p>
-
-            </p>
         </field>
     </record>
-    <record id="ni_service_event_view_tree" model="ir.ui.view">
-        <field name="name">ni.service.event.view.tree</field>
+    <record id="ni_service_event_view_search" model="ir.ui.view">
+        <field name="name">ni.service.event.view.search</field>
         <field name="model">ni.service.event</field>
         <field name="arch" type="xml">
-            <tree>
+            <search>
                 <field name="service_id" />
-                <field name="event_id" />
-            </tree>
+                <field name="partner_ids" />
+            </search>
         </field>
     </record>
     <record id="ni_service_event_view_form" model="ir.ui.view">
@@ -33,15 +30,6 @@
             <form string="Meetings" js_class="calendar_form">
                 <field name="service_attendance_id" invisible="1" />
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button
-                            string="Document"
-                            icon="fa-bars"
-                            type="object"
-                            name="action_open_calendar_event"
-                            attrs="{'invisible': ['|', ('res_model', '=', False), ('res_id', '=', False)]}"
-                        />
-                    </div>
                     <widget
                         name="web_ribbon"
                         title="Archived"
@@ -74,15 +62,6 @@
                             domain="[('type','!=','private')]"
                             class="oe_inline o_calendar_attendees"
                         />
-                        <div name="send_buttons" class="sm-2">
-                            <button
-                                name="action_open_composer"
-                                help="Send Email to attendees"
-                                type="object"
-                                string=" EMAIL"
-                                icon="fa-envelope"
-                            />
-                        </div>
                     </div>
                     <div
                         class="alert alert-warning o_form_header mt-2"
@@ -92,7 +71,7 @@
                         <p>
                             <strong>
                                 The following attendees have invalid email addresses and won't receive any email
-                            notifications:
+                                notifications:
                             </strong>
                         </p>
                         <field
@@ -101,38 +80,84 @@
                             class="oe_inline o_calendar_attendees"
                         />
                     </div>
-                    <notebook>
-                        <page name="page_details" string="Details" icon="fa-calendar-o">
-                            <group>
-                                <group>
-                                    <field name="dayofweek" invisible="1" />
-                                    <field name="start" string="Starting at" />
-                                    <field name="stop" string="Ending At" />
-                                    <field name="attendance_id" widget="radio" force_save="1" />
-                                    <field name="allday" force_save="1" invisible="1" />
-                                </group>
-                                <group>
-                                    <field
-                                        name="user_id"
-                                        widget="many2one_avatar_user"
-                                        options="{'no_create': True, 'no_open':True}"
-                                    />
-                                    <field name="location" />
-                                    <field
-                                        name="categ_ids"
-                                        widget="many2many_tags"
-                                        options="{'color_field': 'color', 'no_create_edit': True}"
-                                    />
-                                </group>
-                            </group>
-                        </page>
-                    </notebook>
+                    <group class="mt-4">
+                        <group>
+                            <field name="dayofweek" invisible="1" />
+                            <field name="start" string="Starting at" />
+                            <field name="stop" string="Ending At" />
+                            <field name="attendance_id" widget="radio" force_save="1" />
+                            <field name="allday" force_save="1" invisible="1" />
+                        </group>
+                        <group>
+                            <field
+                                name="user_id"
+                                widget="many2one_avatar_user"
+                                options="{'no_create': True, 'no_open':True}"
+                            />
+                            <field name="location" />
+                            <field
+                                name="categ_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color', 'no_create_edit': True}"
+                            />
+                        </group>
+                    </group>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" />
                     <field name="message_ids" />
                 </div>
             </form>
+        </field>
+    </record>
+    <record id="ni_service_event_view_calendar" model="ir.ui.view">
+        <field name="name">ni.service.event.view.calendar</field>
+        <field name="model">ni.service.event</field>
+        <field name="arch" type="xml">
+            <calendar
+                string="Event"
+                date_start="start"
+                date_stop="stop"
+                date_delay="duration"
+                all_day="allday"
+                mode="month"
+                quick_add="0"
+                event_open_popup="1"
+                color="user_id"
+            >
+                <field name="attendee_status" invisible="1" />
+                <field
+                    name="user_id"
+                    filters="1"
+                    widget="many2one_avatar_user"
+                    options="{'block': True, 'icon': 'fa fa-user-md'}"
+                    avatar_field="avatar_128"
+                />
+                <field name="is_highlighted" invisible="1" />
+                <field name="is_organizer_alone" invisible="1" />
+                <field name="display_description" invisible="1" />
+                <field name="location" attrs="{'invisible': [('location', '=', False)]}" />
+                <field name="description" attrs="{'invisible': [('display_description', '=', False)]}" />
+                <field
+                    name="categ_ids"
+                    attrs="{'invisible': [('categ_ids', '=', [])]}"
+                    options="{'color_field': 'color'}"
+                />
+            </calendar>
+        </field>
+    </record>
+    <record id="ni_service_event_view_tree" model="ir.ui.view">
+        <field name="name">ni.service.event.view.tree</field>
+        <field name="model">ni.service.event</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" decoration-bf="1" />
+                <field name="start" string="Start Date" readonly="1" />
+                <field name="user_id" widget="many2one_avatar_user" optional="hide" />
+                <field name="partner_ids" widget="many2many_tags" optional="show" options="{'color_field': 'color'}" />
+                <field name="categ_ids" widget="many2many_tags" optional="hide" options="{'color_field': 'color'}" />
+                <field name="description" optional="hide" />
+            </tree>
         </field>
     </record>
 </odoo>
