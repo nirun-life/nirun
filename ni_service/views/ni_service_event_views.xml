@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="ni_service_event_action" model="ir.actions.act_window">
+        <field name="name">Calendar</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service.event</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">No Schedule</p>
+            <p>
+
+            </p>
+        </field>
+    </record>
+    <record id="ni_service_event_view_tree" model="ir.ui.view">
+        <field name="name">ni.service.event.view.tree</field>
+        <field name="model">ni.service.event</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="service_id" />
+                <field name="event_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_service_event_view_form" model="ir.ui.view">
+        <field name="name">ni.service.event.view.form</field>
+        <field name="model">ni.service.event</field>
+        <field name="priority" eval="1" />
+        <field name="arch" type="xml">
+            <form string="Meetings" js_class="calendar_form">
+                <field name="service_attendance_id" invisible="1" />
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            string="Document"
+                            icon="fa-bars"
+                            type="object"
+                            name="action_open_calendar_event"
+                            attrs="{'invisible': ['|', ('res_model', '=', False), ('res_id', '=', False)]}"
+                        />
+                    </div>
+                    <widget
+                        name="web_ribbon"
+                        title="Archived"
+                        bg_color="bg-danger"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                    />
+                    <field name="res_model" invisible="1" />
+                    <field name="res_id" invisible="1" />
+                    <field name="attendee_status" invisible="1" />
+                    <field name="active" invisible="1" />
+                    <div class="oe_title mb-3">
+                        <field name="name" invisible="1" />
+                        <field name="company_id" invisible="1" />
+                        <div>
+                            <label for="service_id" />
+                        </div>
+                        <h1>
+                            <field name="service_id" class="w-75" placeholder="Service Name..." />
+                        </h1>
+                    </div>
+                    <div groups="base.group_multi_company">
+                        <field name="company_id" />
+                    </div>
+                    <div class="d-flex align-items-baseline">
+                        <field
+                            name="partner_ids"
+                            widget="many2manyattendee"
+                            placeholder="Select attendees..."
+                            context="{'force_email':True}"
+                            domain="[('type','!=','private')]"
+                            class="oe_inline o_calendar_attendees"
+                        />
+                        <div name="send_buttons" class="sm-2">
+                            <button
+                                name="action_open_composer"
+                                help="Send Email to attendees"
+                                type="object"
+                                string=" EMAIL"
+                                icon="fa-envelope"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        class="alert alert-warning o_form_header mt-2"
+                        attrs="{'invisible': [('invalid_email_partner_ids', '=', [])]}"
+                        role="status"
+                    >
+                        <p>
+                            <strong>
+                                The following attendees have invalid email addresses and won't receive any email
+                            notifications:
+                            </strong>
+                        </p>
+                        <field
+                            name="invalid_email_partner_ids"
+                            widget="many2manyattendee"
+                            class="oe_inline o_calendar_attendees"
+                        />
+                    </div>
+                    <notebook>
+                        <page name="page_details" string="Details" icon="fa-calendar-o">
+                            <group>
+                                <group>
+                                    <field name="dayofweek" invisible="1" />
+                                    <field name="start" string="Starting at" />
+                                    <field name="stop" string="Ending At" />
+                                    <field name="attendance_id" widget="radio" force_save="1" />
+                                    <field name="allday" force_save="1" invisible="1" />
+                                </group>
+                                <group>
+                                    <field
+                                        name="user_id"
+                                        widget="many2one_avatar_user"
+                                        options="{'no_create': True, 'no_open':True}"
+                                    />
+                                    <field name="location" />
+                                    <field
+                                        name="categ_ids"
+                                        widget="many2many_tags"
+                                        options="{'color_field': 'color', 'no_create_edit': True}"
+                                    />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>
