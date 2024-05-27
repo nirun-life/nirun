@@ -7,11 +7,12 @@ from odoo import api, fields, models
 from odoo.tools import pytz
 
 
-class ServiceCalendar(models.Model):
+class ServiceEvent(models.Model):
     _name = "ni.service.event"
     _description = "Calendar"
     _inherit = "mail.thread"
     _inherits = {"calendar.event": "event_id"}
+    _rec_name = "service_id"
 
     event_id = fields.Many2one("calendar.event")
     company_id = fields.Many2one(
@@ -26,6 +27,7 @@ class ServiceCalendar(models.Model):
             ("category_id", "!=", self.env.ref("ni_service.categ_routine").id)
         ],
     )
+    employee_ids = fields.Many2many("hr.employee")
     service_attendance_id = fields.Many2many(related="service_id.attendance_ids")
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
@@ -54,6 +56,7 @@ class ServiceCalendar(models.Model):
         for rec in self:
             if not rec.service_id:
                 continue
+            rec.name = rec.service_id.name
             rec.partner_ids = rec.service_id.employee_ids.mapped(
                 lambda r: r.user_partner_id | r.work_contact_id
             )
