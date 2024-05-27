@@ -32,7 +32,7 @@ class Service(models.Model):
     )
     attendance_ids = fields.Many2many(
         "resource.calendar.attendance",
-        "ni_service_calendar_attendance_rel",
+        "ni_service_event_attendance_rel",
         "service_id",
         "attendance_id",
         domain="[('calendar_id', '=', calendar_id)]",
@@ -75,6 +75,7 @@ class Service(models.Model):
     editable = fields.Boolean(
         default=True, help="Indicate user can edit this service or not when generate"
     )
+    event_ids = fields.One2many("ni.service.event", "service_id")
 
     @api.depends("encounter_ids")
     def _compute_patient(self):
@@ -91,3 +92,25 @@ class Service(models.Model):
     def _compute_employee_count(self):
         for rec in self:
             rec.employee_count = len(rec.employee_ids)
+
+    def create_event(self):
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "default_name": self.name,
+                "default_service_id": self.id,
+                "default_start_date": fields.Date.today(),
+                "default_res_model": self._name,
+                "default_res_id": self.id,
+            }
+        )
+        view = {
+            "name": "Event",
+            "res_model": "ni.service.event",
+            "type": "ir.actions.act_window",
+            "target": self.env.context.get("target", "new"),
+            "view_mode": "form",
+            "views": [[False, "form"]],
+            "context": ctx,
+        }
+        return view
