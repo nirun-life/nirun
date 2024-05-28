@@ -91,7 +91,7 @@
                         <group>
                             <field
                                 name="user_id"
-                                widget="many2one_avatar_user"
+                                widget="many2one_avatar"
                                 options="{'no_create': True, 'no_open':True}"
                             />
                             <field name="location" />
@@ -102,6 +102,25 @@
                             />
                         </group>
                     </group>
+                    <notebook>
+                        <page
+                            name="encounter"
+                            string="Encounter"
+                            badge="encounter_count"
+                            icon="fa-users"
+                            attrs="{'invisible': [('encounter_count', '=', 0)]}"
+                        >
+                            <field name="encounter_count" invisible="1" />
+                            <field name="encounter_ids">
+                                <tree>
+                                    <field name="identifier" />
+                                    <field name="patient_id" widget="many2one_avatar" />
+                                    <field name="gender" />
+                                    <field name="age" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" />
@@ -132,6 +151,13 @@
                     widget="many2one_avatar_user"
                     options="{'block': True, 'icon': 'fa fa-user-md'}"
                     avatar_field="avatar_128"
+                />
+                <field name="patient_count" invisible="1" />
+                <field
+                    name="patient_ids"
+                    widget="many2many_tags_avatar"
+                    options="{'block': True, 'icon': 'fa fa-users'}"
+                    attrs="{'invisible': [('patient_count', '=', 0)]}"
                 />
                 <field name="is_highlighted" invisible="1" />
                 <field name="is_organizer_alone" invisible="1" />
