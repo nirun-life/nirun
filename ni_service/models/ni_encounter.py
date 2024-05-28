@@ -65,24 +65,34 @@ class Encounter(models.Model):
         for attendance in attendance_ids:
             event = event_ids.filtered_domain([("attendance_id", "=", attendance.id)])
             if event:
-                attendance_service_map.update({attendance.id: event[0].service_id.id})
+                attendance_service_map.update(
+                    {
+                        attendance.id: {
+                            "service_id": event[0].service_id.id,
+                            "service_event_id": event[0].id,
+                        }
+                    }
+                )
                 continue
             service = service_ids.filtered_domain(
                 [("attendance_ids", "=", attendance.id)]
             )
             if service:
-                attendance_service_map.update({attendance.id: service[0].id})
-
+                attendance_service_map.update(
+                    {attendance.id: {"service_id": service[0].id}}
+                )
+        self.service_resource_ids = [fields.Command.clear()]
         self.service_resource_ids = [
             fields.Command.create(
                 {
                     "encounter_id": self.id,
                     "attendance_id": attendance_id,
-                    "service_id": service_id,
-                    "editable": service_ids.browse(service_id).editable,
+                    "service_id": dict.get("service_id"),
+                    "service_event_id": dict.get("service_event_id") or None,
+                    "editable": service_ids.browse(dict.get("service_id")).editable,
                 }
             )
-            for attendance_id, service_id in attendance_service_map.items()
+            for attendance_id, dict in attendance_service_map.items()
         ]
 
 
@@ -122,6 +132,10 @@ class EncounterServiceResource(models.Model):
         domain="[('attendance_ids', '=', attendance_id), '|', ('date', '=', False), ('date', '=', encounter_date)]",
         check_company=True,
     )
+    service_event_id = fields.Many2one(
+        "ni.service.event", domain="[('service_id', '=', service_id)]"
+    )
+    calendar_event_id = fields.Many2one(related="service_event_id.event_id")
     employee_id = fields.Many2one(related="service_id.employee_id")
     employee_ids = fields.Many2many(related="service_id.employee_ids")
     editable = fields.Boolean(default=True)
