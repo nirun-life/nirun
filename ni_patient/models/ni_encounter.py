@@ -14,6 +14,7 @@ LOCK_STATE_DICT = {
 SIGN_FILEDS = [
     "chief_complaint",
     "history_of_present_illness",
+    "past_medical_history",
     "review_of_systems",
     "physical_exam",
 ]
@@ -179,6 +180,12 @@ class Encounter(models.Model):
         "res.users", readonly=True, copy=False
     )
     history_of_present_illness_date = fields.Datetime(readonly=True, copy=False)
+
+    past_medical_history = fields.Html(
+        "Past Medical History", tracking=True, states=LOCK_STATE_DICT
+    )
+    past_medical_history_uid = fields.Many2one("res.users", readonly=True, copy=False)
+    past_medical_history_date = fields.Datetime(readonly=True, copy=False)
 
     review_of_systems = fields.Html(
         "Review of Systems", tracking=True, states=LOCK_STATE_DICT
