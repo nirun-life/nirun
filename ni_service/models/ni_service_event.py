@@ -27,6 +27,13 @@ class ServiceEvent(models.Model):
             ("category_id", "!=", self.env.ref("ni_service.categ_routine").id)
         ],
     )
+    encounter_service_ids = fields.One2many(
+        "ni.encounter.service.resource", "service_event_id"
+    )
+    encounter_ids = fields.Many2many("ni.encounter", compute="_compute_encounter")
+    encounter_count = fields.Integer(compute="_compute_encounter")
+    patient_ids = fields.Many2many("ni.patient", compute="_compute_encounter")
+    patient_count = fields.Integer(compute="_compute_encounter")
     employee_ids = fields.Many2many("hr.employee")
     service_attendance_id = fields.Many2many(related="service_id.attendance_ids")
     attendance_id = fields.Many2one(
@@ -50,6 +57,14 @@ class ServiceEvent(models.Model):
 
     message_follower_ids = fields.One2many(related="event_id.message_follower_ids")
     message_ids = fields.One2many(related="event_id.message_ids")
+
+    @api.depends("encounter_service_ids")
+    def _compute_encounter(self):
+        for rec in self:
+            rec.encounter_ids = rec.encounter_service_ids.mapped("encounter_id")
+            rec.encounter_count = len(rec.encounter_ids)
+            rec.patient_ids = rec.encounter_ids.mapped("patient_id")
+            rec.patient_count = len(rec.patient_ids)
 
     @api.onchange("service_id")
     def _onchange_service_id(self):
