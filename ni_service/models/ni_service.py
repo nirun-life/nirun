@@ -23,7 +23,7 @@ class Service(models.Model):
     company_id = fields.Many2one(
         "res.company", required=True, default=lambda self: self.env.company
     )
-    name = fields.Char("Service", equired=True)
+    name = fields.Char("Service", required=True)
     description = fields.Html()
     category_id = fields.Many2one("ni.service.category")
     type_id = fields.Many2one("ni.service.type")
