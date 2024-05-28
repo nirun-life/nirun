@@ -33,63 +33,8 @@
                         />
                     </div>
                 </group>
-                <field name="service_resource_ids" context="{'default_encounter_id': id}" />
+                <field name="service_attendance_ids" context="{'default_encounter_id': id}" />
             </xpath>
-        </field>
-    </record>
-    <record id="ni_encounter_service_resource_view_tree" model="ir.ui.view">
-        <field name="name">ni.encounter.service.resource.view.tree</field>
-        <field name="model">ni.encounter.service.resource</field>
-        <field name="arch" type="xml">
-            <tree decoration-muted="editable == False" decoration-info="editable == True" default_order="sequence">
-                <field name="sequence" invisible="1" />
-                <field name="editable" invisible="1" />
-                <field name="encounter_id" invisible="1" />
-                <field name="encounter_date" invisible="1" />
-                <field name="resource_calendar_id" invisible="1" />
-                <field name="service_id" invisible="1" />
-                <field
-                    name="attendance_id"
-                    attrs="{'readonly': [('editable', '=', False)]}"
-                    options="{'no_open': True}"
-                />
-                <field name="service_id" attrs="{'readonly': [('editable', '=', False)]}" options="{'no_open': True}" />
-                <field name="employee_id" widget="many2one_avatar" optional="hide" />
-                <field name="employee_ids" widget="many2many_avatar_user" optional="show" />
-                <field name="note" widget="char" optional="show" />
-                <control>
-                    <create string="Add Service" context="{}" />
-                </control>
-            </tree>
-        </field>
-    </record>
-    <record id="ni_encounter_service_resource_view_form" model="ir.ui.view">
-        <field name="name">ni.encounter.service.resource.view.form</field>
-        <field name="model">ni.encounter.service.resource</field>
-        <field name="arch" type="xml">
-            <form string="">
-                <field name="encounter_id" invisible="1" required="False" />
-                <sheet>
-                    <group>
-                        <field name="editable" invisible="1" />
-                        <field name="encounter_date" invisible="1" />
-                        <field name="resource_calendar_id" invisible="1" />
-                        <field name="dayofweek" invisible="1" />
-                        <field
-                            name="attendance_id"
-                            options="{'no_create': True, 'no_open':True}"
-                            domain="[('calendar_id', '=', resource_calendar_id),('dayofweek', '=', dayofweek)]"
-                            attrs="{'readonly': [('editable', '=', False)]}"
-                        />
-                        <field
-                            name="service_id"
-                            options="{'no_create': True, 'no_open':True}"
-                            attrs="{'readonly': [('editable', '=', False)]}"
-                        />
-                    </group>
-                    <field name="note" placeholder="Additional note..." />
-                </sheet>
-            </form>
         </field>
     </record>
 </odoo>
