@@ -7,4 +7,3 @@ from . import ni_encounter
 from . import ni_encounter_class
 from . import ni_encounter_service_attendance
 from . import res_company
-from . import hr_employee
