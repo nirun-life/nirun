@@ -21,6 +21,7 @@
         "views/ni_service_views.xml",
         "views/ni_service_event_views.xml",
         "views/ni_encounter_views.xml",
+        "views/ni_encounter_service_attendance_views.xml",
         "views/ni_service_menu.xml",
     ],
     "application": True,
