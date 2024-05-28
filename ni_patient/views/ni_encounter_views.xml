@@ -409,7 +409,18 @@
                             string="History"
                             icon="fa-history"
                             attrs="{'invisible': [('show_history', '=', False)]}"
-                        />
+                        >
+                            <field name="past_medical_history" placeholder="Past Medical History" />
+                            <div class="my-2">
+                                <field
+                                    name="past_medical_history_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field name="past_medical_history_date" class="text-muted mx-2" />
+                            </div>
+                        </page>
                         <page
                             name="cc"
                             string="Chief Complaint"
