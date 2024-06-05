@@ -37,6 +37,7 @@ class Service(models.Model):
         "attendance_id",
         domain="[('calendar_id', '=', calendar_id)]",
     )
+    attendance_count = fields.Integer(compute="_compute_attendance_count")
     dayofweek = fields.Selection(
         [
             ("0", "Monday"),
@@ -77,6 +78,11 @@ class Service(models.Model):
     )
     event_ids = fields.One2many("ni.service.event", "service_id")
 
+    @api.depends("attendance_ids")
+    def _compute_attendance_count(self):
+        for rec in self:
+            rec.attendance_count = len(rec.attendance_ids)
+
     @api.depends("encounter_ids")
     def _compute_patient(self):
         for rec in self:
@@ -109,7 +115,8 @@ class Service(models.Model):
             "res_model": "ni.service.event",
             "type": "ir.actions.act_window",
             "target": self.env.context.get("target", "current"),
-            "view_mode": "calendar,form",
+            "view_mode": "calendar,tree,form",
+            "domain": [("service_id", "=", self.id)],
             "context": ctx,
         }
         return view
