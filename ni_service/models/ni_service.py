@@ -30,6 +30,7 @@ class Service(models.Model):
     calendar_id = fields.Many2one(
         "resource.calendar", required=True, domain="[('company_id', '=', company_id)]"
     )
+    duration = fields.Float()
     attendance_ids = fields.Many2many(
         "resource.calendar.attendance",
         "ni_service_event_attendance_rel",
@@ -77,6 +78,19 @@ class Service(models.Model):
         default=True, help="Indicate user can edit this service or not when generate"
     )
     event_ids = fields.One2many("ni.service.event", "service_id")
+
+    @api.onchange("attendance_ids")
+    def _onchange_attendance_ids(self):
+        for rec in self:
+            if rec.attendance_ids:
+                att = rec.attendance_ids[0]
+                rec.duration = att.hour_to - att.hour_from
+
+    @api.constrains("attendance_ids", "duration")
+    def _check_duration(self):
+        for rec in self:
+            if rec.attendance_ids and not rec.duration:
+                rec._onchange_attendance_ids()
 
     @api.depends("attendance_ids")
     def _compute_attendance_count(self):
