@@ -66,10 +66,13 @@
                     </div>
                     <group>
                         <group>
-                            <field name="company_id" groups="base.group_multi_company" />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                options="{'no_create': True, 'no_open':True}"
+                            />
                             <field name="type_id" options="{ 'no_open': True}" />
-                            <field name="calendar_id" />
-                            <field name="employee_id" widget="many2one_avatar" />
+                            <field name="employee_id" widget="many2one_avatar" options="{'no_open': True}" />
                         </group>
                         <group>
                             <field name="date" />
@@ -81,6 +84,9 @@
                             <field name="description" />
                         </page>
                         <page name="calendar" string="Calendar" icon="fa-calendar" badge="attendance_count">
+                            <group>
+                                <field name="calendar_id" options="{'no_open': True}" />
+                            </group>
                             <field name="attendance_count" invisible="1" />
                             <field name="attendance_ids" attrs="{'invisible': [('calendar_id', '=', False)]}">
                                 <tree>
@@ -95,7 +101,7 @@
                                 Please choose calendar resource for this service
                             </p>
                         </page>
-                        <page name="employee" string="Participant" icon="fa-users" badge="employee_count">
+                        <page name="employee" string="Practitioner" icon="fa-users" badge="employee_count">
                             <field name="employee_count" invisible="1" />
                             <field name="employee_ids">
                                 <tree default_order="department_id, name">
@@ -114,7 +120,6 @@
                                 <field name="sequence" />
                                 <field name="color" widget="color_picker" />
                                 <field name="editable" widget="boolean_toggle" class="ms-4" />
-                                s
                             </group>
                         </page>
                     </notebook>
