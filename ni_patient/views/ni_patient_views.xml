@@ -179,12 +179,25 @@
                         <group name="encounter">
                             <field
                                 name="partner_id"
-                                attrs="{'readonly':[('id', '!=', False)]}"
+                                attrs="{'readonly':[('id', '!=', False)], 'invisible': [('id', '!=', False)]}"
                                 options='{"always_reload": True, "no_create": True}'
                                 required="False"
                                 placeholder="from Contacts..."
                             />
+                            <field
+                                name="partner_id"
+                                groups="base.group_no_one"
+                                attrs="{'invisible': [('id', '=', False)]}"
+                                options='{"always_reload": True, "no_create": True}'
+                                readonly="True"
+                                required="False"
+                            />
                             <field name="company_id" invisible="1" />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                options="{'no_create': True, 'no_open':True}"
+                            />
                             <field
                                 name="encounter_id"
                                 attrs="{'invisible': [('is_encountering', '=', False)]}"
