@@ -7,8 +7,6 @@ class Service(models.Model):
     _description = "Service"
     _inherit = "ni.coding"
 
-    sequence = fields.Integer()
-
     @api.model
     def default_get(self, fields):
         res = super(Service, self).default_get(fields)
@@ -20,6 +18,7 @@ class Service(models.Model):
                 )
         return res
 
+    sequence = fields.Integer()
     company_id = fields.Many2one(
         "res.company", required=True, default=lambda self: self.env.company
     )
@@ -55,7 +54,7 @@ class Service(models.Model):
         default="0",
     )
 
-    date = fields.Date()
+    date = fields.Date("Next Date")
     encounter_ids = fields.Many2many(
         "ni.encounter", domain="[('company_id', '=', company_id)]"
     )
@@ -78,6 +77,15 @@ class Service(models.Model):
         default=True, help="Indicate user can edit this service or not when generate"
     )
     event_ids = fields.One2many("ni.service.event", "service_id")
+
+    @api.depends("event_ids")
+    def _compute_date(self):
+        now = fields.Datetime.now()
+        today = now.replace(hour=0, minute=0, second=0)
+        event = self.env["ni.service.event"].sudo()
+        for rec in self:
+            event = event.search([("start", ">", today)], limit=1)
+            rec.date = event.start.date() if event else None
 
     @api.onchange("attendance_ids")
     def _onchange_attendance_ids(self):
