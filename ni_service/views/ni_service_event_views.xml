@@ -28,7 +28,6 @@
         <field name="priority" eval="1" />
         <field name="arch" type="xml">
             <form string="Meetings" js_class="calendar_form">
-                <field name="service_attendance_id" invisible="1" />
                 <sheet>
                     <widget
                         name="web_ribbon"
@@ -82,11 +81,12 @@
                     </div>
                     <group class="mt-4">
                         <group>
-                            <field name="dayofweek" invisible="1" />
+                            <field name="allday" force_save="1" invisible="1" />
                             <field name="start" string="Starting at" />
                             <field name="stop" string="Ending At" />
+                            <field name="dayofweek" invisible="1" />
+                            <field name="service_attendance_id" invisible="1" />
                             <field name="attendance_id" widget="radio" force_save="1" />
-                            <field name="allday" force_save="1" invisible="1" />
                         </group>
                         <group>
                             <field
