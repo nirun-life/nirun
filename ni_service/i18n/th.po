@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-28 03:45+0000\n"
-"PO-Revision-Date: 2024-05-28 03:45+0000\n"
+"POT-Creation-Date: 2024-06-07 04:37+0000\n"
+"PO-Revision-Date: 2024-06-07 04:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -54,11 +54,13 @@ msgstr ""
 
 #. module: ni_service
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_encounter_service_attendance_view_tree
+#: model_terms:ir.ui.view,arch_db:ni_service.ni_encounter_service_resource_view_tree
 msgid "Add Service"
 msgstr "เพิ่มกิจกรรม"
 
 #. module: ni_service
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_encounter_service_attendance_view_form
+#: model_terms:ir.ui.view,arch_db:ni_service.ni_encounter_service_resource_view_form
 msgid "Additional note..."
 msgstr "หมายเหตุ..."
 
@@ -85,6 +87,11 @@ msgid "Attendance"
 msgstr "ช่วงเวลา"
 
 #. module: ni_service
+#: model:ir.model.fields,field_description:ni_service.field_ni_service__attendance_count
+msgid "Attendance Count"
+msgstr "จำนวนผู้เข้าร่วม"
+
+#. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__attendee_status
 msgid "Attendee Status"
 msgstr "สถานะการเข้าร่วม"
@@ -100,7 +107,6 @@ msgid "By day"
 msgstr ""
 
 #. module: ni_service
-#: model:ir.model,name:ni_service.model_ni_service_event
 #: model:ir.model.fields,field_description:ni_service.field_ni_service__calendar
 #: model:ir.model.fields,field_description:ni_service.field_ni_service__calendar_id
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_service_view_form
@@ -221,12 +227,6 @@ msgid "Definition"
 msgstr "คำอธิบาย"
 
 #. module: ni_service
-#: model:ir.model.fields,field_description:ni_service.field_hr_employee__department_color
-msgid "Department Color"
-msgstr "สีประจำแผนก"
-
-#. module: ni_service
-#: model:ir.model.fields,field_description:ni_service.field_ni_service__description
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__description
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_service_view_form
 msgid "Description"
@@ -267,6 +267,7 @@ msgid "Document Model Name"
 msgstr ""
 
 #. module: ni_service
+#: model:ir.model.fields,field_description:ni_service.field_ni_service__duration
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__duration
 msgid "Duration"
 msgstr "ระยะเวลา"
@@ -276,12 +277,6 @@ msgstr "ระยะเวลา"
 #: model:ir.model.fields,field_description:ni_service.field_ni_service__editable
 msgid "Editable"
 msgstr "แก้ไขได้"
-
-#. module: ni_service
-#: model:ir.model,name:ni_service.model_hr_employee
-#: model:ir.model.fields,field_description:ni_service.field_ni_service_event__employee_ids
-msgid "Employee"
-msgstr "พนักงาน"
 
 #. module: ni_service
 #: model:ir.model,name:ni_service.model_ni_encounter
@@ -300,11 +295,11 @@ msgstr "ประเภทการรับบริการ"
 #. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__encounter_count
 msgid "Encounter Count"
-msgstr ""
+msgstr "จำนวนผู้รับบริการ"
 
 #. module: ni_service
-#: model:ir.model.fields,field_description:ni_service.field_ni_service_event__encounter_service_ids
-msgid "Encounter Service"
+#: model:ir.model.fields,field_description:ni_service.field_ni_service_event__encounter_service_attendance_ids
+msgid "Encounter Service Attendance"
 msgstr ""
 
 #. module: ni_service
@@ -318,20 +313,17 @@ msgid "Ending At"
 msgstr "สิ้นสุดเมื่อ"
 
 #. module: ni_service
-#: model:ir.actions.act_window,name:ni_service.ni_service_event_action
 #: model:ir.model.fields,field_description:ni_service.field_ni_encounter_service_attendance__calendar_event_id
 #: model:ir.model.fields,field_description:ni_service.field_ni_service__event_ids
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__event_id
-#: model:ir.ui.menu,name:ni_service.event_menu
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_service_event_view_calendar
-#: model_terms:ir.ui.view,arch_db:ni_service.ni_service_view_form
 msgid "Event"
-msgstr ""
+msgstr "กิจกรรม"
 
 #. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__display_time
 msgid "Event Time"
-msgstr ""
+msgstr "เวลา่"
 
 #. module: ni_service
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_service_view_form
@@ -373,7 +365,7 @@ msgstr ""
 #. module: ni_service
 #: model:ni.service.category,name:ni_service.categ_group
 msgid "Group Activity"
-msgstr ""
+msgstr "กิจกรรมกลุ่ม"
 
 #. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__has_message
@@ -427,7 +419,7 @@ msgstr ""
 #. module: ni_service
 #: model:ni.service.category,name:ni_service.categ_individual
 msgid "Individual Activity"
-msgstr ""
+msgstr "กิจกรรมเดี่ยว"
 
 #. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__invalid_email_partner_ids
@@ -538,11 +530,6 @@ msgstr "วันจันทร์"
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_type__name
 msgid "Name"
 msgstr "ชื่อ"
-
-#. module: ni_service
-#: model_terms:ir.ui.view,arch_db:ni_service.ni_service_view_form
-msgid "New Event"
-msgstr "ใหม่"
 
 #. module: ni_service
 #: model_terms:ir.actions.act_window,help:ni_service.ni_service_routine_action
@@ -776,10 +763,19 @@ msgid "Service"
 msgstr "กิจกรรม"
 
 #. module: ni_service
+#: model:ir.model,name:ni_service.model_ni_encounter_service_attendance
+#: model:ir.model.fields,field_description:ni_service.field_ni_encounter__service_attendance_ids
+msgid "Service Attendance"
+msgstr "การเข้าร่วมกิจกรรม"
+
+#. module: ni_service
+#: model:ir.actions.act_window,name:ni_service.ni_service_event_action
+#: model:ir.model,name:ni_service.model_ni_service_event
 #: model:ir.model.fields,field_description:ni_service.field_ni_encounter_class__service_calendar_id
 #: model:ir.model.fields,field_description:ni_service.field_res_company__service_calendar_id
+#: model:ir.ui.menu,name:ni_service.event_menu
 msgid "Service Calendar"
-msgstr "ตารางเวลากิจกรรม"
+msgstr "ปฎิทินกิจกรรม"
 
 #. module: ni_service
 #: model:ir.actions.act_window,name:ni_service.ni_service_category_action
@@ -944,6 +940,11 @@ msgid "Weekday"
 msgstr "จ.-ศ."
 
 #. module: ni_service
+#: model_terms:ir.ui.view,arch_db:ni_service.ni_service_view_form
+msgid "calendar"
+msgstr "ปฎิทิน"
+
+#. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_encounter_service_attendance__service_id
 msgid "กิจกรรม"
 msgstr ""
@@ -957,6 +958,11 @@ msgstr ""
 #. module: ni_service
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_encounter_view_form_inherit
 msgid "สร้างกิจกรรม"
+msgstr ""
+
+#. module: ni_service
+#: model:ir.model.fields,field_description:ni_service.field_ni_service__description
+msgid "หมายเหตุ"
 msgstr ""
 
 #. module: ni_service
