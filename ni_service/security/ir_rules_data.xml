@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_service_company_rule" model="ir.rule">
+        <field name="name">Service: multi-company</field>
+        <field name="model_id" ref="model_ni_service" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="ni_service_event_company_rule" model="ir.rule">
+        <field name="name">Service Calendar: multi-company</field>
+        <field name="model_id" ref="model_ni_service_event" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

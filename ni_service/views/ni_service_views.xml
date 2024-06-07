@@ -16,6 +16,8 @@
                     domain="[('category_id', '!=', %(ni_service.categ_routine)d)]"
                 />
                 <filter name="routine" string="Routine" domain="[('category_id', '=', %(ni_service.categ_routine)d)]" />
+                <filter name="group_type_id" context="{'group_by': 'type_id'}" />
+                <filter name="group_category_id" context="{'group_by': 'category_id'}" />
                 <searchpanel>
                     <field name="company_id" groups="base.group_multi_company" />
                     <field name="category_id" enable_counters="1" />
@@ -30,12 +32,15 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="company_id" invisible="1" />
-                <field name="company_id" groups="base.group_multi_company" />
+                <field name="calendar_id" invisible="1" />
+                <field name="company_id" groups="base.group_multi_company" optional="show" />
                 <field name="sequence" widget="handle" />
                 <field name="name" />
-                <field name="duration" widget="float_time" />
-                <field name="calendar_id" invisible="1" />
-                <field name="attendance_ids" widget="many2many_tags" />
+                <field name="category_id" optional="hide" />
+                <field name="type_id" optional="hide" />
+                <field name="duration" widget="float_time" optional="show" />
+                <field name="attendance_ids" widget="many2many_tags" optional="hide" />
+                <field name="employee_id" widget="many2one_avatar" optional="show" />
             </tree>
         </field>
     </record>
@@ -48,13 +53,7 @@
                 <header />
                 <sheet>
                     <div name="button_box" class="oe_button_box">
-                        <button
-                            name="create_event"
-                            icon="fa-calendar"
-                            type="object"
-                            string="calendar"
-                            attrs="{'invisible': [('attendance_count', '=', 0)]}"
-                        />
+                        <button name="create_event" icon="fa-calendar" type="object" string="calendar" />
                     </div>
                     <div class="oe_title mb24">
                         <label for="name" />
