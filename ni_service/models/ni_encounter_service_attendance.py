@@ -10,7 +10,7 @@ class EncounterServiceAttendance(models.Model):
     _description = "Service Attendance"
     _order = "sequence"
 
-    sequence = fields.Integer(related="attendance_id.sequence")
+    sequence = fields.Integer(related="attendance_id.sequence", store=True)
     encounter_id = fields.Many2one("ni.encounter", required=True, ondelete="cascade")
     encounter_date = fields.Datetime(related="encounter_id.period_start", string="Date")
     dayofweek = fields.Selection(
