@@ -38,13 +38,12 @@ class EncounterServiceAttendance(models.Model):
         "ni.service",
         "กิจกรรม",
         required=True,
-        domain="[('attendance_ids', '=', attendance_id), '|', ('date', '=', False), ('date', '=', encounter_date)]",
+        domain="[('attendance_ids', '=', attendance_id)]",
         check_company=True,
     )
     service_event_id = fields.Many2one(
         "ni.service.event", domain="[('service_id', '=', service_id)]"
     )
-    calendar_event_id = fields.Many2one(related="service_event_id.event_id")
     employee_id = fields.Many2one(related="service_id.employee_id")
     employee_ids = fields.Many2many(related="service_id.employee_ids")
     editable = fields.Boolean(default=True)
