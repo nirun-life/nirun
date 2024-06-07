@@ -27,18 +27,14 @@ class ServiceEvent(models.Model):
             ("category_id", "!=", self.env.ref("ni_service.categ_routine").id)
         ],
     )
-    service_attendance_id = fields.Many2many(related="service_id.attendance_ids")
-    encounter_service_attendance_ids = fields.One2many(
-        "ni.encounter.service.attendance", "service_event_id"
-    )
-    encounter_ids = fields.Many2many("ni.encounter", compute="_compute_encounter")
-    encounter_count = fields.Integer(compute="_compute_encounter")
-    patient_ids = fields.Many2many("ni.patient", compute="_compute_encounter")
-    patient_count = fields.Integer(compute="_compute_encounter")
+
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
         required=True,
         domain="[('id', 'in', service_attendance_id), ('dayofweek', '=?', dayofweek)]",
+    )
+    service_attendance_id = fields.Many2many(
+        related="service_id.attendance_ids", help="Use to filter attendance_id"
     )
     dayofweek = fields.Selection(
         [
@@ -52,7 +48,18 @@ class ServiceEvent(models.Model):
         ],
         "Day of Week",
         compute="_compute_dayofweek",
+        help="Use to filter attendance_id",
     )
+
+    encounter_service_attendance_ids = fields.One2many(
+        "ni.encounter.service.attendance",
+        "service_event_id",
+        help="Encounter relate to this event",
+    )
+    encounter_ids = fields.Many2many("ni.encounter", compute="_compute_encounter")
+    encounter_count = fields.Integer(compute="_compute_encounter")
+    patient_ids = fields.Many2many("ni.patient", compute="_compute_encounter")
+    patient_count = fields.Integer(compute="_compute_encounter")
 
     message_follower_ids = fields.One2many(related="event_id.message_follower_ids")
     message_ids = fields.One2many(related="event_id.message_ids")

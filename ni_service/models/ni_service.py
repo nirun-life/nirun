@@ -53,8 +53,7 @@ class Service(models.Model):
         index=True,
         default="0",
     )
-
-    date = fields.Date("Next Date")
+    next_date = fields.Date(compute="_compute_date")
     encounter_ids = fields.Many2many(
         "ni.encounter", domain="[('company_id', '=', company_id)]"
     )
@@ -84,8 +83,10 @@ class Service(models.Model):
         today = now.replace(hour=0, minute=0, second=0)
         event = self.env["ni.service.event"].sudo()
         for rec in self:
-            event = event.search([("start", ">", today)], limit=1)
-            rec.date = event.start.date() if event else None
+            event = event.search(
+                [("service_id", "=", rec.id), ("start", ">", today)], limit=1
+            )
+            rec.next_date = event.start.date() if event else None
 
     @api.onchange("attendance_ids")
     def _onchange_attendance_ids(self):
@@ -127,13 +128,12 @@ class Service(models.Model):
             {
                 "default_name": self.name,
                 "default_service_id": self.id,
-                "default_start_date": fields.Date.today(),
                 "default_res_model": self._name,
                 "default_res_id": self.id,
             }
         )
         view = {
-            "name": "Event",
+            "name": "Calendar",
             "res_model": "ni.service.event",
             "type": "ir.actions.act_window",
             "target": self.env.context.get("target", "current"),
