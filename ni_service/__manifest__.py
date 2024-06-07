@@ -15,6 +15,7 @@
     ],
     "data": [
         "security/ir.model.access.csv",
+        "security/ir_rules_data.xml",
         "datas/ir_sequence_data.xml",
         "datas/ni_service_category_data.xml",
         "datas/ni_service_type_data.xml",

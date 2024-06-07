@@ -9,12 +9,12 @@ from odoo.tools import pytz
 
 class ServiceEvent(models.Model):
     _name = "ni.service.event"
-    _description = "Calendar"
+    _description = "Service Calendar"
     _inherit = "mail.thread"
     _inherits = {"calendar.event": "event_id"}
     _rec_name = "service_id"
 
-    event_id = fields.Many2one("calendar.event")
+    event_id = fields.Many2one("calendar.event", required=True, ondelete="cascade")
     company_id = fields.Many2one(
         "res.company", required=True, default=lambda self: self.env.company
     )
