@@ -46,36 +46,23 @@
                             <label for="service_id" />
                         </div>
                         <h1>
-                            <field name="service_id" class="w-75" placeholder="Service Name..." />
+                            <field
+                                name="service_id"
+                                class="w-100"
+                                placeholder="Service Name..."
+                                options="{'no_create': True}"
+                            />
                         </h1>
                     </div>
                     <div groups="base.group_multi_company">
-                        <field name="company_id" />
+                        <field name="company_id" options="{'no_create': True, 'no_open':True}" class="w-75" />
                     </div>
                     <div class="d-flex align-items-baseline">
                         <field
                             name="partner_ids"
                             widget="many2manyattendee"
-                            placeholder="Select attendees..."
-                            context="{'force_email':True}"
+                            placeholder="ระบุผู้ปฎิบัติงาน..."
                             domain="[('type','!=','private')]"
-                            class="oe_inline o_calendar_attendees"
-                        />
-                    </div>
-                    <div
-                        class="alert alert-warning o_form_header mt-2"
-                        attrs="{'invisible': [('invalid_email_partner_ids', '=', [])]}"
-                        role="status"
-                    >
-                        <p>
-                            <strong>
-                                The following attendees have invalid email addresses and won't receive any email
-                                notifications:
-                            </strong>
-                        </p>
-                        <field
-                            name="invalid_email_partner_ids"
-                            widget="many2manyattendee"
                             class="oe_inline o_calendar_attendees"
                         />
                     </div>
@@ -101,6 +88,13 @@
                                 options="{'color_field': 'color', 'no_create_edit': True}"
                             />
                         </group>
+                    </group>
+                    <group>
+                        <field
+                            name="plan_patient_ids"
+                            widget="many2many_tags_avatar"
+                            placeholder="ระบุผู้รับบริการ..."
+                        />
                     </group>
                     <notebook>
                         <page
@@ -164,6 +158,13 @@
                 <field name="display_description" invisible="1" />
                 <field name="location" attrs="{'invisible': [('location', '=', False)]}" />
                 <field name="description" attrs="{'invisible': [('display_description', '=', False)]}" />
+                <field
+                    name="plan_patient_ids"
+                    options="{'block': True, 'icon': 'fa fa-address-book-o'}"
+                    widget="many2many_tags"
+                    attrs="{'invisible': [('display_plan_patient', '=', False)]}"
+                />
+                <field name="display_plan_patient" invisible="1" />
                 <field
                     name="categ_ids"
                     attrs="{'invisible': [('categ_ids', '=', [])]}"

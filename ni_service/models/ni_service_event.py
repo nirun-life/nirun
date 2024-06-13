@@ -24,7 +24,7 @@ class ServiceEvent(models.Model):
         ondelete="restrict",
         check_company=True,
         domain=lambda self: [
-            ("category_id", "!=", self.env.ref("ni_service.categ_routine").id)
+            ("category_id", "!=", self.env.ref("ni_service.categ_routine").id),
         ],
     )
 
@@ -63,6 +63,25 @@ class ServiceEvent(models.Model):
 
     message_follower_ids = fields.One2many(related="event_id.message_follower_ids")
     message_ids = fields.One2many(related="event_id.message_ids")
+
+    plan_patient_ids = fields.Many2many(
+        "ni.patient",
+        string="ผู้รับบริการ (วางแผน)",
+        check_company=True,
+        domain="[('presence_state', '!=', 'deceased')]",
+    )
+    plan_patient_count = fields.Integer(compute="_compute_plan_patient")
+    display_plan_patient = fields.Boolean(compute="_compute_plan_patient")
+
+    @api.depends("plan_patient_ids", "stop")
+    def _compute_plan_patient(self):
+        for rec in self:
+            rec.plan_patient_count = len(rec.plan_patient_ids)
+            if not rec.plan_patient_count:
+                rec.display_plan_patient = False
+            else:
+                now = fields.Datetime.now()
+                rec.display_plan_patient = now < rec.stop
 
     @api.depends("encounter_service_attendance_ids")
     def _compute_encounter(self):

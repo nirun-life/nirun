@@ -6,5 +6,7 @@ class Company(models.Model):
     _inherit = "res.company"
 
     service_calendar_id = fields.Many2one(
-        "resource.calendar", help="Default service resource calendar"
+        "resource.calendar",
+        help="Default service resource calendar",
+        domain="[('company_id', '=', id)]",
     )
