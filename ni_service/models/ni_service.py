@@ -80,6 +80,16 @@ class Service(models.Model):
     )
     event_ids = fields.One2many("ni.service.event", "service_id")
 
+    def action_default_attendance(self):
+        for rec in self:
+            if (
+                rec.calendar_id == rec.company_id.service_calendar_id
+                and rec.company_id.service_attendance_ids
+            ):
+                rec.attendance_ids = rec.company_id.service_attendance_ids
+            else:
+                rec.attendance_ids = rec.calendar_id.attendance_ids
+
     @api.depends("event_ids")
     def _compute_date(self):
         now = fields.Datetime.now()
