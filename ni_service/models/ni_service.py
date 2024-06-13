@@ -57,6 +57,9 @@ class Service(models.Model):
     encounter_ids = fields.Many2many(
         "ni.encounter", domain="[('company_id', '=', company_id)]"
     )
+    specialty_ids = fields.Many2many(
+        "hr.job", "ni_service_specialty", "service_id", "job_id"
+    )
     patient_ids = fields.Many2many("ni.patient", compute="_compute_patient")
     employee_ids = fields.Many2many(
         "hr.employee",
