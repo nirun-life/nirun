@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2023-2024 NSTDA
+  -->
+<odoo>
+    <record id="res_company_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.company.view.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <field name="encounter_class_id" position="after">
+                <field name="service_calendar_id" options="{'no_create': True, 'no_open':True}" />
+            </field>
+        </field>
+    </record>
+</odoo>

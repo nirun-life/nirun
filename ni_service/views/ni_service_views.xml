@@ -72,11 +72,15 @@
                                 options="{'no_create': True, 'no_open':True}"
                             />
                             <field name="type_id" options="{ 'no_open': True}" />
-                            <field name="employee_id" widget="many2one_avatar" options="{'no_open': True}" />
+                            <field name="employee_id" widget="many2one_avatar_employee" options="{'no_open': True}" />
                         </group>
                         <group>
-                            <field name="next_date" />
-                            <field name="duration" widget="float_time" />
+                            <field name="next_date" attrs="{'invisible': [('next_date', '=', False)]}" />
+                            <label for="duration" />
+                            <div class="o_row">
+                                <field name="duration" widget="float_time" class="oe_inline" />
+                                <span>hours</span>
+                            </div>
                         </group>
                     </group>
                     <notebook>
@@ -106,7 +110,6 @@
                             <field name="employee_ids">
                                 <tree default_order="department_id, name">
                                     <field name="company_id" invisible="1" />
-                                    <field name="company_id" groups="base.group_multi_company" />
                                     <field name="name" />
                                     <field name="job_title" optional="show" />
                                     <field name="department_id" />

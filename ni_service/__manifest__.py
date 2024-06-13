@@ -24,6 +24,7 @@
         "views/ni_encounter_views.xml",
         "views/ni_encounter_service_attendance_views.xml",
         "views/ni_service_menu.xml",
+        "views/res_company_views.xml",
     ],
     "application": True,
     "auto_install": False,
