@@ -90,7 +90,17 @@
                         </page>
                         <page name="calendar" string="Calendar" icon="fa-calendar" badge="attendance_count">
                             <group>
-                                <field name="calendar_id" options="{'no_open': True}" />
+                                <label for="calendar_id" />
+                                <div class="o_row">
+                                    <field name="calendar_id" options="{'no_create': True, 'no_open':True}" />
+                                    <button
+                                        name="action_default_attendance"
+                                        type="object"
+                                        string="Apply"
+                                        confirm="This action will override already selected attendance. Do you want to continue?"
+                                        attrs="{'invisible': [('calendar_id', '=', False)]}"
+                                    />
+                                </div>
                             </group>
                             <field name="attendance_count" invisible="1" />
                             <field name="attendance_ids" attrs="{'invisible': [('calendar_id', '=', False)]}">
