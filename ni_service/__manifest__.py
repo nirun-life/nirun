@@ -23,6 +23,8 @@
         "views/ni_service_event_views.xml",
         "views/ni_encounter_views.xml",
         "views/ni_encounter_service_attendance_views.xml",
+        "views/ni_service_category_views.xml",
+        "views/ni_service_type_views.xml",
         "views/ni_service_menu.xml",
         "views/res_company_views.xml",
     ],
