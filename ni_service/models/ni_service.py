@@ -27,7 +27,7 @@ class Service(models.Model):
     category_id = fields.Many2one("ni.service.category")
     type_id = fields.Many2one("ni.service.type")
     calendar_id = fields.Many2one(
-        "resource.calendar", required=True, domain="[('company_id', '=', company_id)]"
+        "resource.calendar", required=False, domain="[('company_id', '=', company_id)]"
     )
     duration = fields.Float()
     attendance_ids = fields.Many2many(
@@ -79,6 +79,14 @@ class Service(models.Model):
         default=True, help="Indicate user can edit this service or not when generate"
     )
     event_ids = fields.One2many("ni.service.event", "service_id")
+
+    _sql_constraints = [
+        (
+            "system_name_uniq",
+            "unique (company_id, name, type_id)",
+            "This name already exists!",
+        )
+    ]
 
     def action_default_attendance(self):
         for rec in self:
