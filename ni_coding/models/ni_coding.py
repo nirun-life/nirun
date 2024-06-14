@@ -93,6 +93,6 @@ class Coding(models.AbstractModel):
         default = default or {}
         if "name" not in default:
             default["name"] = "%s (copy)" % self.name
-        if "code" not in default:
+        if "code" not in default and self.code:
             default["code"] = "%s (copy)" % self.code
         return super(Coding, self).copy(default)
