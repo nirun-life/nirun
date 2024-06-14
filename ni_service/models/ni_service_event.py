@@ -27,6 +27,8 @@ class ServiceEvent(models.Model):
             ("category_id", "!=", self.env.ref("ni_service.categ_routine").id),
         ],
     )
+    service_type_id = fields.Many2one(related="service_id.type_id")
+    service_category_id = fields.Many2one(related="service_id.category_id")
 
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
@@ -80,8 +82,11 @@ class ServiceEvent(models.Model):
             if not rec.plan_patient_count:
                 rec.display_plan_patient = False
             else:
-                now = fields.Datetime.now()
-                rec.display_plan_patient = now < rec.stop
+                today = fields.Date.today()
+                rec.display_plan_patient = (
+                    today <= rec.stop.date()
+                    and not rec.encounter_service_attendance_ids
+                )
 
     @api.depends("encounter_service_attendance_ids")
     def _compute_encounter(self):
