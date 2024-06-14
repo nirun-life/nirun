@@ -27,6 +27,9 @@ class ServiceEvent(models.Model):
             ("category_id", "!=", self.env.ref("ni_service.categ_routine").id),
         ],
     )
+    user_specialty = fields.Many2one(
+        "hr.job", default=lambda self: self.env.user.employee_id.job_id, store=False
+    )
     service_type_id = fields.Many2one(related="service_id.type_id")
     service_category_id = fields.Many2one(related="service_id.category_id")
 
@@ -87,6 +90,14 @@ class ServiceEvent(models.Model):
                     today <= rec.stop.date()
                     and not rec.encounter_service_attendance_ids
                 )
+
+    @api.depends("create_uid")
+    def _compute_user_specialty(self):
+        user = self.env.user
+        if user.employee_id and user.employee_id.job_id:
+            self.user_specialty = user.employee_id.job_id
+        else:
+            self.user_specialty = None
 
     @api.depends("encounter_service_attendance_ids")
     def _compute_encounter(self):
