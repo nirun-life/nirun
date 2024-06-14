@@ -36,11 +36,13 @@
                 <field name="company_id" groups="base.group_multi_company" optional="show" />
                 <field name="sequence" widget="handle" />
                 <field name="name" />
-                <field name="category_id" optional="hide" />
+                <field name="category_id" optional="hide" hierarchize="1" />
                 <field name="type_id" optional="hide" />
                 <field name="duration" widget="float_time" optional="show" />
                 <field name="attendance_ids" widget="many2many_tags" optional="hide" />
                 <field name="employee_id" widget="many2one_avatar" optional="show" />
+                <field name="next_date" optional="show" />
+                <button name="create_event" icon="fa-calendar" type="object" title="Calendar" />
             </tree>
         </field>
     </record>
@@ -159,24 +161,6 @@
         <field name="context">{'search_default_routine': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">No Routine found</p>
-        </field>
-    </record>
-    <record id="ni_service_category_action" model="ir.actions.act_window">
-        <field name="name">Service Category</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">ni.service.category</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">No Service Category Found</p>
-        </field>
-    </record>
-    <record id="ni_service_type_action" model="ir.actions.act_window">
-        <field name="name">Service Type</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">ni.service.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">No Service Type Found</p>
         </field>
     </record>
 </odoo>
