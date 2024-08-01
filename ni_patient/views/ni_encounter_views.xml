@@ -89,7 +89,6 @@
                 </group>
                 <searchpanel>
                     <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" />
-                    <field name="priority" icon="fa-flag" enable_counters="1" />
                     <field name="class_id" enable_counters="1" />
                     <field name="location_id" icon="fa-map-marker" enable_counters="1" />
                     <field name="gender" icon="fa-venus-mars" enable_counters="1" />
@@ -109,14 +108,20 @@
                 decoration-info="state in ['draft','planned']"
                 decoration-muted="state in ['cancelled', 'entered-in-error', 'finished']"
             >
+                <field name="company_id" groups="base.group_multi_company" optional="hide" />
                 <field name="name" />
                 <field name="patient_id" widget="many2one_avatar" />
-                <field name="gender" />
+                <field
+                    name="gender"
+                    widget="badge"
+                    decoration-danger="gender == 'female'"
+                    decoration-info="gender == 'male'"
+                />
                 <field name="age" />
                 <field name="class_id" optional="show" />
                 <field
                     name="priority"
-                    optional="show"
+                    optional="hide"
                     widget="badge"
                     decoration-danger="priority=='stat'"
                     decoration-warning="priority=='asap'"
@@ -124,9 +129,9 @@
                 />
                 <field name="location_id" optional="show" />
                 <field name="period_start" optional="show" />
-                <field name="period_start_date" optional="show" />
-                <field name="period_end" optional="hide" />
-                <field name="period_end_date" optional="show" />
+                <field name="period_start_date" optional="hide" />
+                <field name="period_end" optional="show" />
+                <field name="period_end_date" optional="hide" />
                 <field name="duration" optional="hide" />
                 <field name="duration_hours" optional="hide" widget="float_time" />
                 <field
@@ -145,7 +150,6 @@
                     decoration-success="participate == True"
                     decoration-bf="participate == True"
                 />
-                <field name="company_id" groups="base.group_multi_company" />
             </tree>
         </field>
     </record>
@@ -186,6 +190,9 @@
                 <field name="show_questionnaire" invisible="1" />
                 <field name="show_document_ref" invisible="1" />
                 <field name="show_service" invisible="1" />
+                <field name="show_participant" invisible="1" />
+                <field name="show_careplan" invisible="1" />
+                <field name="show_order" invisible="1" />
                 <header>
                     <button
                         name="action_confirm"
@@ -246,7 +253,7 @@
                         type="object"
                         string="Participate"
                         icon="fa-user-plus"
-                        attrs="{'invisible': ['|', ('participate', '=', True),('state', 'not in', ['in-progress', 'draft'])]}"
+                        attrs="{'invisible': ['|', ('show_participant', '=', False), '|', ('participate', '=', True),('state', 'not in', ['in-progress', 'draft'])]}"
                     />
                     <button
                         name="action_quit"
@@ -254,7 +261,7 @@
                         string="Quit"
                         icon="fa-user-times"
                         confirm="Are you sure to stop the participation of this encounter?"
-                        attrs="{'invisible': ['|', ('participate', '=', False), ('state', 'not in', ['in-progress', 'draft'])]}"
+                        attrs="{'invisible': ['|', ('show_participant', '=', False), '|', ('participate', '=', False), ('state', 'not in', ['in-progress', 'draft'])]}"
                     />
                     <field name="state" statusbar_visible="in-progress,finished" widget="statusbar" />
                 </header>
@@ -405,23 +412,6 @@
                             </group>
                         </page>
                         <page
-                            name="history"
-                            string="History"
-                            icon="fa-history"
-                            attrs="{'invisible': [('show_history', '=', False)]}"
-                        >
-                            <field name="past_medical_history" placeholder="Past Medical History" />
-                            <div class="my-2">
-                                <field
-                                    name="past_medical_history_uid"
-                                    class="text-muted"
-                                    options="{'no_open': True}"
-                                    widget="many2one_avatar_user"
-                                />
-                                <field name="past_medical_history_date" class="text-muted mx-2" />
-                            </div>
-                        </page>
-                        <page
                             name="cc"
                             string="Chief Complaint"
                             icon="fa-star-half-o"
@@ -463,6 +453,24 @@
                                     widget="many2one_avatar_user"
                                 />
                                 <field name="history_of_present_illness_date" class="text-muted mx-2" />
+                            </div>
+                        </page>
+                        <page
+                            name="history"
+                            string="History"
+                            icon="fa-history"
+                            attrs="{'invisible': [('show_history', '=', False)]}"
+                        >
+                            <separator string="Past Medical History" />
+                            <field name="past_medical_history" placeholder="Past Medical History" />
+                            <div class="my-2">
+                                <field
+                                    name="past_medical_history_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field name="past_medical_history_date" class="text-muted mx-2" />
                             </div>
                         </page>
                         <page
@@ -518,6 +526,12 @@
                             attrs="{'invisible': [('show_problem_list', '=', False)]}"
                         />
                         <page
+                            name="order"
+                            string="Order"
+                            icon="fa-inbox"
+                            attrs="{'invisible': [('show_order', '=', False)]}"
+                        />
+                        <page
                             name="service"
                             string="กิจกรรมการดูแลสุขภาพ"
                             icon="fa-list-alt"
@@ -547,6 +561,14 @@
                             icon="fa-file-text"
                             attrs="{'invisible': [('show_document_ref', '=', False)]}"
                         />
+                        <page
+                            name="careplan"
+                            icon="fa-bullseye"
+                            string="Care Plan"
+                            attrs="{'invisible': [('show_careplan', '=', False)]}"
+                        >
+
+                        </page>
                     </notebook>
                 </sheet>
                 <div name="chatter" class="oe_chatter">
