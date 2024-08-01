@@ -51,11 +51,14 @@ class EncounterClassification(models.Model):
     vital_signs = fields.Boolean(default=True, help="Show/Hide Vital Signs")
     laboratory = fields.Boolean(default=True, help="Show/Hide Laboratory")
     problem_list = fields.Boolean(default=True, help="Show/Hide Problem List")
+    order = fields.Boolean(default=True, help="Show/Hide Order")
     medication = fields.Boolean(default=True, help="Show/Hide Medication")
     procedure = fields.Boolean(default=True, help="Show/Hide Procedure")
     questionnaire = fields.Boolean(default=True, help="Show/Hide Questionnaire")
     document_ref = fields.Boolean(default=True, help="Show/Hide Document Reference")
-    service = fields.Boolean(default=True, help="Show/HIde Service")
+    service = fields.Boolean(default=True, help="Show/Hide Service")
+    participant = fields.Boolean(default=True, help="Show/Hide Participant feature")
+    careplan = fields.Boolean(default=True, help="Show/Hide Careplan feature")
 
     @api.onchange("admission")
     def _onchange_admission(self):
