@@ -2,7 +2,7 @@
 
 {
     "name": "Document Reference",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.2.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -23,6 +23,7 @@
         "views/ni_encounter_views.xml",
         "reports/ni_document_ref_report.xml",
         "reports/ni_document_ref_templates.xml",
+        "views/hr_job_views.xml",
     ],
     "assets": {
         "web.assets_backend": [
