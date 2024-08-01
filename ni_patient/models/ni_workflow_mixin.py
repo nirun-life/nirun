@@ -200,7 +200,9 @@ class RequestMixin(models.AbstractModel):
             {
                 "priority": self.priority or "routine",
                 "intent": self.intent or "order",
-                "parent_id": self.parent_id.request_id.id or None,
+                "parent_id": self._fields["parent_id"].request_id.id
+                if self._fields.get("parent_id")
+                else None,
             }
         )
         return data

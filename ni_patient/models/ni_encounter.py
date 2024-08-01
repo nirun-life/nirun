@@ -11,14 +11,6 @@ LOCK_STATE_DICT = {
     "finished": [("readonly", True)],
 }
 
-SIGN_FILEDS = [
-    "chief_complaint",
-    "history_of_present_illness",
-    "past_medical_history",
-    "review_of_systems",
-    "physical_exam",
-]
-
 
 class Encounter(models.Model):
     _name = "ni.encounter"
@@ -33,6 +25,13 @@ class Encounter(models.Model):
     _inherits = {"ni.patient": "patient_id"}
     _check_company_auto = True
     _order = "period_start DESC, name DESC"
+    _sign_fields = [
+        "chief_complaint",
+        "history_of_present_illness",
+        "past_medical_history",
+        "review_of_systems",
+        "physical_exam",
+    ]
 
     @api.model
     def default_get(self, fields):
@@ -312,6 +311,9 @@ class Encounter(models.Model):
     show_questionnaire = fields.Boolean(related="class_id.questionnaire")
     show_document_ref = fields.Boolean(related="class_id.document_ref")
     show_service = fields.Boolean(related="class_id.service")
+    show_participant = fields.Boolean(related="class_id.participant")
+    show_careplan = fields.Boolean(related="class_id.careplan")
+    show_order = fields.Boolean(related="class_id.order")
 
     # Participant
     participant_ids = fields.One2many(
@@ -388,6 +390,9 @@ class Encounter(models.Model):
                 }
                 return {"warning": warning}
             self.pre_admission_identifier = self.patient_id.identifier
+            self.past_medical_history = self.patient_id.past_medical_history
+            self.past_medical_history_uid = self.patient_id.past_medical_history_uid
+            self.past_medical_history_date = self.patient_id.past_medical_history_date
 
     @api.onchange("re_admission")
     def onchange_re_admit(self):
@@ -529,7 +534,7 @@ class Encounter(models.Model):
     def _prepare_sign_field_vals(self, vals):
         value = {}
         ts = fields.Datetime.now()
-        for f in SIGN_FILEDS:
+        for f in self._sign_fields:
             if f in vals and vals[f]:
                 f_uid = "{}_uid".format(f)
                 f_date = "{}_date".format(f)
@@ -587,6 +592,16 @@ class Encounter(models.Model):
         vals = dict(vals or {"state": "finished", "period_end": fields.datetime.now()})
         self.participant_ids.action_stop()
         self.write(vals)
+        for enc in self.filtered(
+            lambda e: e.past_medical_history != e.patient_id.past_medical_history
+        ):
+            enc.patient_id.write(
+                {
+                    "past_medical_history": enc.past_medical_history,
+                    "past_medical_history_uid": enc.past_medical_history_uid.id,
+                    "past_medical_history_date": enc.past_medical_history_date,
+                }
+            )
 
     def action_entered_in_error(self):
         self.write({"state": "entered-in-error", "active": False})

@@ -3,9 +3,20 @@
   ~ Copyright (c) 2021-2023 NSTDA
   -->
 <odoo>
-    <menuitem id="patient_menu_root" name="Patients" sequence="0" web_icon="ni_patient,static/description/icon.png" />
+    <menuitem
+        id="encounter_menu_root"
+        name="Encounter"
+        sequence="0"
+        web_icon="ni_patient,static/description/encounter.png"
+    />
+    <menuitem
+        id="patient_menu_root"
+        name="Patient Record"
+        sequence="1"
+        web_icon="ni_patient,static/description/patient.png"
+    />
     <!-- Patient -->
-    <menuitem id="patient_menu_section" name="Patients" parent="patient_menu_root" sequence="2" />
+    <menuitem id="patient_menu_section" name="Patient Record" parent="patient_menu_root" sequence="2" />
     <menuitem
         id="patient_menu_in_progress"
         name="Patients"
@@ -21,10 +32,10 @@
         sequence="2"
     />
     <!-- Encounter -->
-    <menuitem id="ni_encounter_menu_section" name="Encounter" parent="patient_menu_root" sequence="1" />
+    <menuitem id="ni_encounter_menu_section" name="Encounter" parent="encounter_menu_root" sequence="1" />
     <menuitem
         id="ni_encounter_menu"
-        name="Encounter"
+        name="In-Progress"
         action="ni_encounter_action"
         parent="ni_encounter_menu_section"
         sequence="1"
@@ -48,7 +59,7 @@
     <menuitem id="location_menu" name="Location" action="location_action" parent="location_menu_section" />
     <menuitem id="location_type_menu" name="Type" action="location_type_action" parent="location_menu_section" />
     <!-- Encounter Configuration-->
-    <menuitem id="ni_encounter_configuration_menu_section" name="Encounter" parent="configuration_menu" />
+    <menuitem id="ni_encounter_configuration_menu_section" name="Configuration" parent="encounter_menu_root" />
     <menuitem
         id="ni_encounter_class_menu"
         name="Classification"
