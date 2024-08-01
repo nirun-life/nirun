@@ -9,6 +9,19 @@ class ServiceCategory(models.Model):
 
     _parent_store = True
 
+    decoration = fields.Selection(
+        [
+            ("primary", "Primary"),
+            ("success", "Success"),
+            ("info", "Info"),
+            ("warning", "Warning"),
+            ("danger", "Danger"),
+            ("muted", "Muted"),
+        ],
+        default="muted",
+        required=True,
+    )
+
     parent_id = fields.Many2one("ni.service.category", index=True, ondelete="set null")
     parent_path = fields.Char(index=True, unaccent=False)
     service_ids = fields.One2many("ni.service", "category_id")

@@ -6,6 +6,7 @@ class Service(models.Model):
     _name = "ni.service"
     _description = "Service"
     _inherit = "ni.coding"
+    _order = "sequence"
 
     @api.model
     def default_get(self, fields):
@@ -25,7 +26,10 @@ class Service(models.Model):
     name = fields.Char("Service", required=True)
     description = fields.Html()
     category_id = fields.Many2one("ni.service.category")
+    category = fields.Char(related="category_id.name", store=True)
+    category_decoration = fields.Selection(related="category_id.decoration")
     type_id = fields.Many2one("ni.service.type")
+    type_decoration = fields.Selection(related="type_id.decoration")
     calendar_id = fields.Many2one(
         "resource.calendar", required=False, domain="[('company_id', '=', company_id)]"
     )
@@ -151,6 +155,7 @@ class Service(models.Model):
                 "default_service_id": self.id,
                 "default_res_model": self._name,
                 "default_res_id": self.id,
+                "default_mode": "multi",
             }
         )
         view = {
@@ -159,7 +164,7 @@ class Service(models.Model):
             "type": "ir.actions.act_window",
             "target": self.env.context.get("target", "current"),
             "view_mode": "calendar,tree,form",
-            "domain": [("service_id", "=", self.id)],
+            "domain": [("service_ids", "=", self.id)],
             "context": ctx,
         }
         return view
