@@ -2,7 +2,7 @@
 
 {
     "name": "Condition (Problem)",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.2.0",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
@@ -11,13 +11,13 @@
     "maintainers": ["piruin"],
     "depends": ["ni_patient"],
     "data": [
-        "data/ni_condition_class_data.xml",
+        "data/ni_condition_category_data.xml",
         "data/ni_condition_verification_data.xml",
         "data/ni_encounter_diagnosis_role_data.xml",
         "security/ir.model.access.csv",
         "security/condition_rules.xml",
         "views/ni_condition_code_views.xml",
-        "views/ni_condition_class_views.xml",
+        "views/ni_condition_category_views.xml",
         "views/ni_condition_verification_views.xml",
         "views/ni_condition_views.xml",
         "views/ni_patient_views.xml",

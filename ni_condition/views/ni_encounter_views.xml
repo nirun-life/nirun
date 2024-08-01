@@ -9,11 +9,39 @@
         <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
         <field name="priority">3</field>
         <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='history']" position="inside">
+                <separator string="Chronic" />
+                <field name="problem_count" invisible="1" />
+                <p
+                    class="h4 mt-4"
+                    attrs="{'invisible': ['|', ('show_problem_list', '=', False), ('problem_count', '!=', 0)]}"
+                >
+                    No chronic recorded!
+                </p>
+                <p class="text-muted small" attrs="{'invisible': [('show_problem_list', '=', False)]}">
+                    You can add more chronics at Problem-List section
+                </p>
+                <field
+                    name="condition_problem_ids"
+                    mode="kanban"
+                    context="{'default_is_problem': True, 'default_encounter_id':id }"
+                    attrs="{'invisible': [('show_problem_list', '=', False)]}"
+                />
+                <field
+                    name="condition_ids"
+                    mode="kanban"
+                    context="{'default_is_problem': True, 'default_encounter_id':id }"
+                    attrs="{'invisible': [('show_problem_list', '=', True)]}"
+                />
+            </xpath>
             <xpath expr="//notebook/page[@name='problem']" position="attributes">
                 <attribute name="badge">diagnosis_count</attribute>
             </xpath>
             <xpath expr="//notebook/page[@name='problem']" position="inside">
-                <field name="diagnosis_ids" context="{'default_encounter_id': id, 'default_patient_id': patient_id}" />
+                <field
+                    name="diagnosis_ids"
+                    context="{'default_encounter_id': id, 'default_patient_id': patient_id, 'default_is_diagnosis':True}"
+                />
                 <field name="diagnosis_count" invisible="1" />
                 <button name="action_condition" type="object" string="See More" />
             </xpath>

@@ -21,7 +21,7 @@ class Diagnosis(models.Model):
     encounter_start = fields.Datetime(related="encounter_id.period_start")
     role_id = fields.Many2one("ni.encounter.diagnosis.role", ondelete="restrict")
     role_decoration = fields.Selection(related="role_id.decoration")
-    condition_id = fields.Many2one("ni.condition", required=True, ondelete="cascade")
+    condition_id = fields.Many2one("ni.condition", required=True, ondelete="restrict")
 
     _sql_constraints = [
         (
@@ -30,6 +30,11 @@ class Diagnosis(models.Model):
             _("Condition must be unique!"),
         ),
     ]
+
+    @api.onchange("code_id")
+    def _onchange_code_id(self):
+        for rec in self.filtered(lambda r: r.code_id):
+            rec.name = rec.code_id.name
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -58,11 +63,6 @@ class Diagnosis(models.Model):
     def _onchange_is_diagnosis(self):
         if not self.is_diagnosis and self.role_id:
             self.role_id = None
-
-    @api.onchange("class_id")
-    def _onchange_class_id(self):
-        if self.class_id:
-            self.sequence = self.class_id.sequence
 
     @api.constrains("is_diagnosis", "role_id")
     def _check_is_diagnosis(self):

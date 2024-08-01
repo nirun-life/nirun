@@ -1,6 +1,11 @@
 #  Copyright (c) 2021-2023 NSTDA
+import pprint
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class Condition(models.Model):
@@ -8,45 +13,74 @@ class Condition(models.Model):
     _description = "Condition"
     _inherit = ["ni.period.mixin", "ni.patient.res"]
     _workflow_occurrence = "create_date"
+    _check_period_start = False
 
-    def _get_default_condition_class(self):
-        return (
-            self.env["ni.condition.class"].search([], order="sequence", limit=1).id
-            or None
-        )
-
-    name = fields.Char(related="code_id.name", store=True)
-
-    is_problem = fields.Boolean("Chronic", help="Save on Problem List Item")
-    is_diagnosis = fields.Boolean(
-        "Diagnosis", help="Condition that relate to encounter"
+    name = fields.Char("Condition Name", required=True)
+    is_problem = fields.Boolean(
+        "Chronic",
+        compute="_compute_category",
+        inverse="_inverse_is_problem",
+        store=True,
+        help="Save on Problem List Item",
     )
-
+    is_diagnosis = fields.Boolean(
+        "Diagnosis",
+        compute="_compute_category",
+        inverse="_inverse_is_diagnosis",
+        store=True,
+        help="Condition that relate to encounter",
+    )
     code_id = fields.Many2one(
         "ni.condition.code",
-        "Name",
+        "Condition Code",
         required=True,
         ondelete="restrict",
         index=True,
     )
-    code = fields.Char(related="code_id.code", store=True)
-    class_id = fields.Many2one(
-        "ni.condition.class",
-        default=lambda self: self._get_default_condition_class(),
-        required=True,
+
+    category_ids = fields.Many2many(
+        "ni.condition.category",
+        "ni_condition_category_rel",
+        "condition_id",
+        "category_id",
     )
+    code = fields.Char(related="code_id.code", store=True)
     severity = fields.Selection(
         [("mild", "Mild"), ("moderate", "Moderate"), ("severe", "Severe")],
         required=False,
     )
+    period_type = fields.Selection(
+        [
+            ("date", "Condition Date"),
+            ("datetime", "Condition Datetime"),
+            ("age", "Condition Age"),
+        ],
+        required=True,
+        default="age",
+    )
     period_start = fields.Datetime("Onset", default=None)
-    period_start_date = fields.Date("Onset Date", default=None)
+    period_start_date = fields.Date(
+        "Onset Date",
+        default=None,
+        compute="_compute_period_start_date",
+        inverse="_inverse_period_start_date",
+    )
     period_end = fields.Datetime("Abatement")
-    period_end_date = fields.Datetime("Abatement Date")
+    period_end_date = fields.Date(
+        "Abatement Date",
+        compute="_compute_period_end_date",
+        inverse="_inverse_period_end_date",
+    )
+    age_start = fields.Integer(
+        "Onset Age", compute="_compute_age", inverse="_inverse_age_start"
+    )
+    age_end = fields.Integer(
+        "Abatement Age", compute="_compute_age", inverse="_inverse_age_end"
+    )
     clinical_state = fields.Selection(
         [
             ("active", "Suffering"),
-            ("recurrence", "Recurrence "),
+            ("recurrence", "Recurrence"),
             ("relapse", "Relapse"),
             ("inactive", "Inactive"),
             ("remission", "Remission"),
@@ -58,7 +92,6 @@ class Condition(models.Model):
         default="active",
     )
     verification_id = fields.Many2one("ni.condition.verification")
-    recurrence = fields.Boolean()
     note = fields.Text()
     diagnosis_ids = fields.One2many(
         "ni.encounter.diagnosis", "condition_id", readonly=True
@@ -71,6 +104,70 @@ class Condition(models.Model):
             "Patient already have this condition!",
         ),
     ]
+
+    @api.depends("period_start", "period_end")
+    def _compute_age(self):
+        for rec in self:
+            dt = relativedelta(self.period_start, self.patient_id.birthdate)
+            rec.age_start = dt.years
+            dt = relativedelta(self.period_end, self.patient_id.birthdate)
+            rec.age_end = dt.years
+
+    def _inverse_age_start(self):
+        pprint.pprint("age_start inverse")
+        for rec in self:
+            start = rec.patient_id.birthdate + relativedelta(years=rec.age_start)
+            rec.period_start = datetime.combine(start, datetime.min.time())
+            rec.period_start_date = start
+
+    def _inverse_age_end(self):
+        pprint.pprint("age_end inverse")
+        for rec in self:
+            end = rec.partner_id.birthdate + relativedelta(years=rec.age_end)
+            rec.period_end = datetime.combine(end, datetime.min.time())
+            rec.period_end_date = end
+
+    @api.depends("category_ids")
+    def _compute_category(self):
+        self.filtered_domain(
+            [
+                (
+                    "category_ids",
+                    "child_of",
+                    self.env.ref("ni_condition.problem_list_item").id,
+                )
+            ]
+        ).is_problem = True
+        self.filtered_domain(
+            [
+                (
+                    "category_ids",
+                    "child_of",
+                    self.env.ref("ni_condition.encounter_diagnosis").id,
+                )
+            ]
+        ).is_diagnosis = True
+
+    def _inverse_is_problem(self):
+        self.filtered_domain([("is_problem", "=", True)]).category_ids = [
+            fields.Command.link(self.env.ref("ni_condition.problem_list_item").id)
+        ]
+        self.filtered_domain([("is_problem", "=", False)]).category_ids = [
+            fields.Command.unlink(self.env.ref("ni_condition.problem_list_item").id)
+        ]
+
+    def _inverse_is_diagnosis(self):
+        self.filtered_domain([("is_diagnosis", "=", True)]).category_ids = [
+            fields.Command.link(self.env.ref("ni_condition.encounter_diagnosis").id)
+        ]
+        self.filtered_domain([("is_diagnosis", "=", False)]).category_ids = [
+            fields.Command.unlink(self.env.ref("ni_condition.encounter_diagnosis").id)
+        ]
+
+    @api.onchange("code_id")
+    def _onchange_code_id(self):
+        for rec in self.filtered(lambda r: r.code_id):
+            rec.name = rec.code_id.name
 
     def name_get(self):
         return [(rec.id, rec._name_get()) for rec in self]
@@ -122,15 +219,10 @@ class Condition(models.Model):
         self.write({"clinical_state": "active", "period_end": False})
         return True
 
-    @api.onchange("code_id")
-    def onchange_code_id(self):
-        if self.code_id.class_id:
-            self.class_id = self.code_id.class_id
-
     @property
     def _workflow_name(self) -> str:
         if self.is_diagnosis:
-            return _("Diagnosis")
+            return _("Diagnosis Encounter")
         elif self.is_problem:
             return _("Problem List Item")
         else:
@@ -144,3 +236,13 @@ class Condition(models.Model):
         if self.verification_id:
             summary = "{} - {}".format(summary, self.verification_id.display_name)
         return summary
+
+    @api.constrains("age_start", "age_end")
+    def _check_age(self):
+        for rec in self:
+            if rec.age_start and rec.age_start > rec.patient_id.age:
+                raise UserError(_("Onset age must not be more than patient age"))
+            if rec.age_end and rec.age_end > rec.patient_id.age:
+                raise UserError(_("Abatement age must not be more than patient age"))
+            if rec.age_start and rec.age_end and rec.age_end < rec.age_start:
+                raise UserError(_("Abatement age must be more than onset age"))
