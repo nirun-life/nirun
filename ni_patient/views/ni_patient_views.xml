@@ -278,7 +278,19 @@
                                 </group>
                             </group>
                         </page>
-                        <page name="history" string="History" />
+                        <page name="history" string="History">
+                            <separator string="Past Medical History" />
+                            <field name="past_medical_history" placeholder="Past Medical History" />
+                            <div class="my-2">
+                                <field
+                                    name="past_medical_history_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field name="past_medical_history_date" class="text-muted mx-2" />
+                            </div>
+                        </page>
                     </notebook>
                 </sheet>
                 <div name="chatter" class="oe_chatter">
@@ -376,10 +388,10 @@
                                         <span class="o_kanban_record_title">
                                             <field name="name" placeholder="Patient's Name" />
                                         </span>
-                                        <span class="o_kanban_record_subtitle" t-if="record.identifier.value">
+                                        <span class="o_kanban_record_subtitle small" t-if="record.identifier.value">
                                             <t t-esc="record.identifier.value" />
                                         </span>
-                                        <span class="o_kanban_record_subtitle" t-if="record.encounter_id.value">
+                                        <span class="o_kanban_record_subtitle small" t-if="record.encounter_id.value">
                                             <t t-esc="record.encounter_id.value" />
                                             <t
                                                 t-if="record.presence_state.raw_value == 'draft' or record.presence_state.raw_value == 'planned'"
@@ -413,7 +425,6 @@
                                         <field name="location_id" />
                                     </li>
                                 </ul>
-                                <div class="oe_kanban_partner_links" />
                                 <div class="o_kanban_card_actions mt-1" t-if="!selection_mode">
                                     <button
                                         name="%(ni_encounter_action_from_patient)d"
