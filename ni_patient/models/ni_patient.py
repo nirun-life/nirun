@@ -7,6 +7,10 @@ from odoo.modules.module import get_module_resource
 
 ENCOUNTER_INACTIVE_STATE = ["entered-in-error", "cancelled"]
 
+SIGN_FILEDS = [
+    "past_medical_history",
+]
+
 
 class Patient(models.Model):
     _name = "ni.patient"
@@ -21,6 +25,9 @@ class Patient(models.Model):
     _inherits = {"res.partner": "partner_id"}
     _check_company_auto = True
     _order = "name"
+    _sign_fields = [
+        "past_medical_history",
+    ]
 
     @api.model
     def _default_image(self):
@@ -183,6 +190,34 @@ class Patient(models.Model):
     )
     location_id = fields.Many2one(related="encounter_id.location_id")
     active = fields.Boolean(default=True)
+
+    past_medical_history = fields.Html("Past Medical History", tracking=True)
+    past_medical_history_uid = fields.Many2one("res.users", readonly=True, copy=False)
+    past_medical_history_date = fields.Datetime(readonly=True, copy=False)
+
+    @api.model
+    def _prepare_sign_field_vals(self, vals):
+        value = {}
+        ts = fields.Datetime.now()
+        for f in self._sign_fields:
+            if f in vals and vals[f]:
+                f_uid = "{}_uid".format(f)
+                f_date = "{}_date".format(f)
+                if f_uid not in vals:
+                    value[f_uid] = self.env.uid
+                if f_date not in vals:
+                    value[f_date] = ts
+        return value
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals.update(self._prepare_sign_field_vals(vals))
+        return super().create(vals_list)
+
+    def write(self, vals):
+        vals.update(self._prepare_sign_field_vals(vals))
+        return super().write(vals)
 
     _sql_constraints = [
         (
