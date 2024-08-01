@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<odoo noupdate="1">
+    <!-- prettier-ignore-start -->
+
+    <record id="goal_state_proposed" model="ni.goal.state">
+        <field name="code">proposed</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="name">Proposed</field>
+        <field name="definition">A goal is proposed for this patient.</field>
+        <field name="abbr">~proposed</field>
+    </record>
+
+    <record id="goal_state_planned" model="ni.goal.state">
+        <field name="code">planned</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="name">Planned</field>
+        <field name="definition">A goal is planned for this patient.</field>
+        <field name="abbr">~planned</field>
+    </record>
+
+    <record id="goal_state_accepted" model="ni.goal.state">
+        <field name="code">accepted</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="name">Accepted</field>
+        <field name="definition">A proposed goal was accepted or acknowledged.</field>
+        <field name="abbr">~accepted</field>
+    </record>
+
+    <record id="goal_state_active" model="ni.goal.state">
+        <field name="code">active</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="name">Active</field>
+        <field name="definition">The goal is being sought actively.</field>
+        <field name="abbr">~active</field>
+        <field name="achievable" eval="1"/>
+        <field name="parent_id" ref="ni_goal.goal_state_accepted" />
+        <field name="achievement_id" ref="ni_goal.goal_in_progress" />
+        <field name="achievement_ids" eval="[( 6, 0, [ref('ni_goal.goal_in_progress')])]" />
+    </record>
+
+    <record id="goal_state_on_hold" model="ni.goal.state">
+        <field name="code">on-hold</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="name">On Hold</field>
+        <field name="definition">The goal remains a long term objective but is no longer being actively pursued for a
+            temporary period of time.
+        </field>
+        <field name="abbr">~suspended</field>
+        <field name="parent_id" ref="ni_goal.goal_state_accepted" />
+    </record>
+
+    <record id="goal_state_completed" model="ni.goal.state">
+        <field name="code">completed</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="name">Completed</field>
+        <field name="definition">The goal is no longer being sought.</field>
+        <field name="abbr">~complete</field>
+        <field name="parent_id" ref="ni_goal.goal_state_accepted" />
+        <field name="achievement_id" ref="goal_achieved" />
+        <field name="achievement_ids" eval="[(6, 0, [ref('goal_achieved'), ref('goal_not_achieved')])]" />
+    </record>
+
+    <record id="goal_state_cancelled" model="ni.goal.state">
+        <field name="code">cancelled</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="name">Cancelled</field>
+        <field name="definition">The goal has been abandoned.</field>
+        <field name="abbr">~abandoned</field>
+        <field name="achievement_id" ref="goal_not_attainable" />
+        <field name="achievement_ids" eval="[(6, 0, [ref('goal_not_attainable')])]" />
+    </record>
+
+    <record id="goal_state_entered_in_error" model="ni.goal.state">
+        <field name="code">entered-in-error</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="name">Entered in Error</field>
+        <field name="definition">The goal was entered in error and voided.</field>
+        <field name="abbr">~error</field>
+    </record>
+
+    <record id="goal_state_rejected" model="ni.goal.state">
+        <field name="code">rejected</field>
+        <field name="system_id" ref="ni_coding.system_hl7_fhir" />
+        <field name="name">Rejected</field>
+        <field name="definition">A proposed goal was rejected.</field>
+        <field name="abbr">~declined</field>
+    </record>
+
+    <!-- prettier-ignore-end -->
+</odoo>

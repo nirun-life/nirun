@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="ni_goal_view_form" model="ir.ui.view">
+        <field name="name">ni.goal.view.form</field>
+        <field name="model">ni.goal</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <field name="patient_id" invisible="1" />
+                <field name="encounter_id" invisible="1" />
+                <field name="company_id" invisible="1" />
+                <field name="user_specialty" invisible="1" />
+                <header>
+                    <button
+                        name="action_mark_achieved"
+                        type="object"
+                        icon="fa-check"
+                        class="text-success"
+                        string="Achieved"
+                        attrs="{'invisible': [('state_achievable', '=', False)]}"
+                    />
+                    <button
+                        name="action_mark_not_achieved"
+                        type="object"
+                        icon="fa-times"
+                        string="Not achieve"
+                        class="text-danger"
+                        attrs="{'invisible': [('state_achievable', '=', False)]}"
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <field
+                            name="category_id"
+                            widget="radio"
+                            options="{'horizontal': True, 'no_open': True}"
+                            invisible="context.get('default_category_id')"
+                        />
+                        <field name="category_name" invisible="not context.get('default_category_id')" />
+                        <field
+                            name="code_id"
+                            context="{'default_category_id': category_id}"
+                            placeholder="Search for predefined goal..."
+                            options="{'no_open': True}"
+                        />
+                        <field name="name" placeholder="Describe goal" />
+                    </group>
+                    <group>
+                        <group>
+                            <field name="state_id" widget="radio" options="{'no_open': True}" />
+                            <field name="state_achievement_ids" invisible="1" />
+                            <field name="state_decoration" invisible="1" />
+                            <field name="state_achievable" invisible="1" />
+                        </group>
+                        <group attrs="{'invisible': [('state_achievement_ids', '=', False)]}">
+                            <field name="achievement_id" options="{'no_open': True}" />
+                            <field name="achievement_decoration" invisible="1" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_goal_view_tree" model="ir.ui.view">
+        <field name="name">ni.goal.view.tree</field>
+        <field name="model">ni.goal</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-primary="state_decoration == 'primary'"
+                decoration-success="state_decoration == 'success'"
+                decoration-info="state_decoration == 'info'"
+                decoration-warning="state_decoration == 'warning'"
+                decoration-danger="state_decoration == 'danger'"
+                decoration-muted="state_decoration == 'muted'"
+            >
+                <field name="encounter_id" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="company_id" invisible="0" />
+                <field name="user_specialty" invisible="1" />
+                <field name="name" />
+                <field
+                    name="state_id"
+                    widget="badge"
+                    decoration-primary="state_decoration == 'primary'"
+                    decoration-success="state_decoration == 'success'"
+                    decoration-info="state_decoration == 'info'"
+                    decoration-warning="state_decoration == 'warning'"
+                    decoration-danger="state_decoration == 'danger'"
+                    decoration-muted="state_decoration == 'muted'"
+                    optional="show"
+                />
+                <field name="state_decoration" invisible="1" />
+                <field name="state_achievement_ids" invisible="1" />
+                <field name="state_achievable" invisible="1" />
+                <field
+                    name="achievement_id"
+                    widget="badge"
+                    decoration-primary="achievement_decoration == 'primary'"
+                    decoration-success="achievement_decoration == 'success'"
+                    decoration-info="achievement_decoration == 'info'"
+                    decoration-warning="achievement_decoration == 'warning'"
+                    decoration-danger="achievement_decoration == 'danger'"
+                    decoration-muted="achievement_decoration == 'muted'"
+                    attrs="{'invisible': [('state_achievement_ids', '=', False)]}"
+                />
+                <field name="achievement_decoration" invisible="1" />
+                <button
+                    name="action_mark_achieved"
+                    type="object"
+                    icon="fa-check"
+                    class="text-success"
+                    title="Mark achieved"
+                    attrs="{'invisible': [('state_achievable', '=', False)]}"
+                />
+                <button
+                    name="action_mark_not_achieved"
+                    type="object"
+                    icon="fa-times"
+                    class="text-danger"
+                    title="Mark not achieved"
+                    attrs="{'invisible': [('state_achievable', '=', False)]}"
+                />
+                <control>
+                    <create string="Add goal" context="{}" />
+                </control>
+            </tree>
+        </field>
+    </record>
+    <record id="ni_goal_view_kanban" model="ir.ui.view">
+        <field name="name">ni.goal.view.kanban</field>
+        <field name="model">ni.goal</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name" />
+                <field name="code_id" />
+                <field name="state_id" />
+                <field name="state_decoration" invisible="1" />
+                <field name="achievement_id" />
+                <field name="achievement_decoration" invisible="1" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <ul>
+                                    <li>
+                                        <field class="h6" name="name" />
+                                    </li>
+                                    <li>
+                                        <label for="state_id" class="small text-muted me-2">State :</label>
+                                        <field
+                                            name="state_id"
+                                            widget="badge"
+                                            decoration-primary="state_decoration == 'primary'"
+                                            decoration-success="state_decoration == 'success'"
+                                            decoration-info="state_decoration == 'info'"
+                                            decoration-warning="state_decoration == 'warning'"
+                                            decoration-danger="state_decoration == 'danger'"
+                                            decoration-muted="state_decoration == 'muted'"
+                                        />
+                                    </li>
+                                    <li>
+                                        <label for="achievement_id" class="small text-muted me-2">Achievement :</label>
+                                        <field
+                                            name="achievement_id"
+                                            widget="badge"
+                                            decoration-primary="achievement_decoration == 'primary'"
+                                            decoration-success="achievement_decoration == 'success'"
+                                            decoration-info="achievement_decoration == 'info'"
+                                            decoration-warning="achievement_decoration == 'warning'"
+                                            decoration-danger="achievement_decoration == 'danger'"
+                                            decoration-muted="achievement_decoration == 'muted'"
+                                        />
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

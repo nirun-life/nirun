@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+<odoo noupdate="1">
+    <!-- prettier-ignore-start -->
+
+   <record id="goal_in_progress" model="ni.goal.achievement">
+       <field name="code">in-progress</field>
+       <field name="name">In Progress</field>
+       <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
+       <field name="definition">The goal is being sought but has not yet been reached. (Also applies if the goal was reached in the past but there has been regression and the goal is again being sought).</field>
+       <field name="abbr">active</field>
+    </record>
+
+   <record id="goal_improving" model="ni.goal.achievement">
+       <field name="code">improving</field>
+       <field name="name">Improving</field>
+       <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
+       <field name="definition">The goal is being sought, and is progressing.</field>
+       <field name="abbr">active</field>
+       <field name="parent_id" ref="ni_goal.goal_in_progress"/>
+    </record>
+
+   <record id="goal_worsening" model="ni.goal.achievement">
+       <field name="code">worsening</field>
+       <field name="name">Worsening</field>
+       <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
+       <field name="definition">The goal is being sought, but is regressing.</field>
+       <field name="abbr">active</field>
+       <field name="parent_id" ref="ni_goal.goal_in_progress"/>
+    </record>
+
+   <record id="goal_no_change" model="ni.goal.achievement">
+       <field name="code">no-change</field>
+       <field name="name">No Change</field>
+       <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
+       <field name="definition">The goal is being sought, but the trend is flat.</field>
+       <field name="abbr">active</field>
+       <field name="parent_id" ref="ni_goal.goal_in_progress"/>
+    </record>
+
+   <record id="goal_achieved" model="ni.goal.achievement">
+       <field name="code">achieved</field>
+       <field name="name">Achieved</field>
+       <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
+       <field name="definition">The goal has been met.</field>
+       <field name="abbr">complete</field>
+    </record>
+
+   <record id="goal_sustaining" model="ni.goal.achievement">
+       <field name="code">sustaining</field>
+       <field name="name">Sustaining</field>
+       <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
+       <field name="definition">The goal has been met, but ongoing activity is needed to sustain the goal objective.</field>
+       <field name="abbr">active</field>
+       <field name="parent_id" ref="ni_goal.goal_achieved"/>
+    </record>
+
+   <record id="goal_not_achieved" model="ni.goal.achievement">
+       <field name="code">not-achieved</field>
+       <field name="name">Not Achieved</field>
+       <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
+       <field name="definition">The goal has not been met and there might or might not have been progress towards target.</field>
+       <field name="abbr">not-done</field>
+    </record>
+
+   <record id="goal_no_progress" model="ni.goal.achievement">
+       <field name="code">no-progress</field>
+       <field name="name">No Progress</field>
+       <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
+       <field name="definition">The goal has not been met and little to no progress towards target.</field>
+       <field name="abbr">not-done</field>
+       <field name="parent_id" ref="ni_goal.goal_not_achieved"/>
+    </record>
+
+   <record id="goal_not_attainable" model="ni.goal.achievement">
+       <field name="code">not-attainable</field>
+       <field name="name">Not Attainable</field>
+       <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
+       <field name="definition">The goal is not possible to be met.</field>
+       <field name="abbr">abandoned</field>
+       <field name="parent_id" ref="ni_goal.goal_not_achieved"/>
+    </record>
+
+    <!-- prettier-ignore-end -->
+</odoo>
