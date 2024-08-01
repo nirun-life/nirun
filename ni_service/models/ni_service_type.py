@@ -8,3 +8,15 @@ class ServiceType(models.Model):
     _inherit = "ni.coding"
 
     service_ids = fields.One2many("ni.service", "type_id")
+    decoration = fields.Selection(
+        [
+            ("primary", "Primary"),
+            ("success", "Success"),
+            ("info", "Info"),
+            ("warning", "Warning"),
+            ("danger", "Danger"),
+            ("muted", "Muted"),
+        ],
+        default="muted",
+        required=True,
+    )

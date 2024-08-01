@@ -12,6 +12,7 @@
     "depends": [
         "ni_patient",
         "calendar",
+        "ni_timing",
     ],
     "data": [
         "security/ir.model.access.csv",
@@ -26,6 +27,7 @@
         "views/ni_service_category_views.xml",
         "views/ni_service_type_views.xml",
         "views/ni_service_menu.xml",
+        "views/ni_service_request_views.xml",
         "views/res_company_views.xml",
     ],
     "application": True,
