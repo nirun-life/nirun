@@ -31,6 +31,7 @@
                 <field name="system_id" optional="show" />
                 <field name="color" optional="hide" widget="color_picker" />
                 <field name="active" optional="hide" />
+                <field name="service_ids" />
             </tree>
         </field>
     </record>
@@ -52,6 +53,7 @@
                         <group>
                             <field name="name" />
                             <field name="parent_id" />
+                            <field name="decoration" />
                         </group>
                         <group>
                             <field name="code" />
@@ -60,7 +62,7 @@
                     </group>
                     <notebook>
                         <page name="service" string="Service">
-                            <field name="service_ids" />
+                            <field name="service_ids" widget="many2many" />
                         </page>
                         <page string="Definition">
                             <field name="definition" placeholder="Definition..." />

@@ -3,8 +3,32 @@
   ~ Copyright (c) 2024 NSTDA
   -->
 <odoo>
-    <menuitem id="root_menu" name="Service" sequence="3" web_icon="ni_service,static/description/icon.png" />
-    <menuitem id="service_menu" name="Service" parent="root_menu" action="ni_service.ni_service_action" sequence="2" />
+    <menuitem
+        id="event_menu_categ"
+        name="Calendar"
+        sequence="2"
+        web_icon="ni_service,static/description/calendar.png"
+    />
+    <menuitem
+        id="service_event_menu"
+        name="Service Calendar"
+        parent="event_menu_categ"
+        action="ni_service_event_action"
+        sequence="1"
+    />
+    <menuitem
+        id="calendar_event_menu"
+        name="Personal Calendar"
+        parent="event_menu_categ"
+        action="calendar.action_calendar_event"
+        sequence="2"
+    />
+    <record model="ir.ui.menu" id="calendar.mail_menu_calendar">
+        <field name="active">0</field>
+    </record>
+    <menuitem id="root_menu" name="Service" sequence="3" web_icon="ni_service,static/description/service.png" />
+    <menuitem id="service_menu" name="Service" parent="root_menu" action="ni_service.ni_service_action" sequence="3" />
+    <menuitem id="configuration_menu" name="Configuration" parent="root_menu" sequence="99" />
     <menuitem
         id="routine_menu"
         name="Routine"
@@ -12,14 +36,6 @@
         action="ni_service.ni_service_routine_action"
         sequence="2"
     />
-    <menuitem
-        id="event_menu"
-        name="Service Calendar"
-        parent="root_menu"
-        action="ni_service_event_action"
-        sequence="1"
-    />
-    <menuitem id="configuration_menu" name="Configuration" parent="root_menu" sequence="99" />
     <menuitem id="category_menu" name="Category" parent="configuration_menu" action="ni_service_category_action" />
     <menuitem id="type_menu" name="Type" parent="configuration_menu" action="ni_service_type_action" />
 </odoo>

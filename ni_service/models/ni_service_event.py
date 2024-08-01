@@ -3,8 +3,19 @@ from datetime import datetime, timedelta
 
 from pytz import timezone
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
+from odoo.fields import Command
 from odoo.tools import pytz
+
+
+class Event(models.Model):
+    _inherit = "calendar.event"
+
+    @api.model
+    def _get_public_fields(self):
+        # Work around to prevent maximum recursive errors when open event from other user who not service event's creator
+        return super(Event, self)._get_public_fields() | {"attendee_ids"}
 
 
 class ServiceEvent(models.Model):
@@ -12,11 +23,29 @@ class ServiceEvent(models.Model):
     _description = "Service Calendar"
     _inherit = "mail.thread"
     _inherits = {"calendar.event": "event_id"}
-    _rec_name = "service_id"
+
+    @api.model
+    def default_get(self, fields):
+        res = super(ServiceEvent, self).default_get(fields)
+        if "service_ids" in fields and "service_ids" not in res:
+            if self.env.context.get("default_service_id"):
+                res["service_ids"] = [
+                    Command.link(self.env.context["default_service_id"])
+                ]
+        return res
+
+    user_specialty = fields.Many2one(
+        "hr.job", default=lambda self: self.env.user.employee_id.job_id, store=False
+    )
 
     event_id = fields.Many2one("calendar.event", required=True, ondelete="cascade")
     company_id = fields.Many2one(
         "res.company", required=True, default=lambda self: self.env.company
+    )
+    mode = fields.Selection(
+        [("single", "Single Service"), ("multi", "Multi-Services")],
+        default="multi",
+        required=True,
     )
     service_id = fields.Many2one(
         "ni.service",
@@ -27,9 +56,20 @@ class ServiceEvent(models.Model):
             ("category_id", "!=", self.env.ref("ni_service.categ_routine").id),
         ],
     )
-    user_specialty = fields.Many2one(
-        "hr.job", default=lambda self: self.env.user.employee_id.job_id, store=False
+    service_ids = fields.Many2many(
+        "ni.service",
+        "ni_service_event_rel",
+        "event_id",
+        "service_id",
+        domain=lambda self: [
+            ("category_id", "!=", self.env.ref("ni_service.categ_routine").id),
+        ],
     )
+    service_count = fields.Integer(compute="_compute_service_count")
+    user_id = fields.Many2one(
+        related="event_id.user_id", string="ผู้รับผิดชอบหลัก", readonly=False
+    )
+
     service_type_id = fields.Many2one(related="service_id.type_id")
     service_category_id = fields.Many2one(related="service_id.category_id")
 
@@ -78,6 +118,22 @@ class ServiceEvent(models.Model):
     plan_patient_count = fields.Integer(compute="_compute_plan_patient")
     display_plan_patient = fields.Boolean(compute="_compute_plan_patient")
 
+    @api.depends("service_id", "service_ids")
+    def _compute_service_count(self):
+        for rec in self:
+            rec.service_count = (
+                len(rec.service_ids) if rec.service_ids else 1 if rec.service_id else 0
+            )
+
+    @api.onchange("service_ids", "mode")
+    def _onchange_service_ids(self):
+        for rec in self:
+            if rec.service_ids:
+                if not rec.service_id or rec.service_id not in rec.service_ids.mapped(
+                    "id"
+                ):
+                    rec.service_id = rec.service_ids[0]
+
     @api.depends("plan_patient_ids", "stop")
     def _compute_plan_patient(self):
         for rec in self:
@@ -90,14 +146,6 @@ class ServiceEvent(models.Model):
                     today <= rec.stop.date()
                     and not rec.encounter_service_attendance_ids
                 )
-
-    @api.depends("create_uid")
-    def _compute_user_specialty(self):
-        user = self.env.user
-        if user.employee_id and user.employee_id.job_id:
-            self.user_specialty = user.employee_id.job_id
-        else:
-            self.user_specialty = None
 
     @api.depends("encounter_service_attendance_ids")
     def _compute_encounter(self):
@@ -114,6 +162,8 @@ class ServiceEvent(models.Model):
         for rec in self:
             if not rec.service_id:
                 continue
+            if len(rec.service_ids) <= 1:
+                rec.service_ids = [Command.set([rec.service_id.id])]
             rec.name = rec.service_id.name
             rec.partner_ids = rec.service_id.employee_ids.mapped(
                 lambda r: r.user_partner_id | r.work_contact_id
@@ -122,6 +172,14 @@ class ServiceEvent(models.Model):
                 rec.user_id = rec.service_id.employee_id.user_id
             else:
                 rec.user_id = self.env.user
+
+    @api.constrains("user_id", "partner_ids")
+    def _check_user_partner(self):
+        for rec in self:
+            if not rec.user_id:
+                continue
+            if rec.user_id.partner_id and rec.user_id.partner_id not in rec.partner_ids:
+                rec.partner_ids = [fields.Command.link(rec.user_id.partner_id.id)]
 
     @api.onchange("attendance_id")
     @api.constrains("attendance_id", "start_date")
@@ -183,3 +241,23 @@ class ServiceEvent(models.Model):
 
     def action_sendmail(self):
         return self.event_id.action_sendmail()
+
+    @api.constrains("service_id", "service_ids", "mode")
+    def _check_service_name(self):
+        for rec in self:
+            if (rec.mode == "single" and not rec.service_id) or (
+                rec.mode == "multi" and not rec.service_ids
+            ):
+                raise UserError(_("Please select at least one service"))
+            if rec.mode == "single" and rec.service_count > 1:
+                rec.service_ids = [Command.set([rec.service_id.id])]
+            if rec.mode == "multi":
+                if not rec.service_id:
+                    rec.service_id = rec.service_ids[0]
+                if rec.service_count == 1:
+                    rec.mode = "single"
+
+            if rec.service_count > 1:
+                rec.name = ", ".join(rec.service_ids.mapped("name"))
+            else:
+                rec.name = rec.service_id.name

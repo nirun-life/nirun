@@ -39,33 +39,38 @@
                     <field name="res_id" invisible="1" />
                     <field name="attendee_status" invisible="1" />
                     <field name="active" invisible="1" />
+                    <field name="event_id" invisible="1" />
+                    <field name="privacy" invisible="1" />
+                    <field name="name" invisible="1" />
+                    <field name="company_id" invisible="1" />
+                    <field name="mode" widget="radio" options="{'horizontal': True}" />
                     <div class="oe_title mb-3">
-                        <field name="name" invisible="1" />
-                        <field name="company_id" invisible="1" />
                         <div>
                             <label for="service_id" />
                         </div>
-                        <h1>
+                        <h2>
                             <field
                                 name="service_id"
                                 class="w-100"
                                 placeholder="Service Name..."
-                                options="{'no_create': True}"
+                                options="{'no_create': True, 'no_open': True}"
                                 domain="[('category_id', '!=', %(ni_service.categ_routine)d), '|', ('specialty_ids', '=', False), ('specialty_ids', '=', user_specialty)]"
+                                attrs="{'invisible': [('mode', '!=', 'single')], 'required': [('mode', '=', 'single')]}"
                             />
-                        </h1>
+                            <field
+                                name="service_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color', 'always_reload': True}"
+                                force_save="1"
+                                attrs="{'invisible': [('mode', '!=', 'multi')], 'required': [('mode', '=', 'multi')]}"
+                            />
+                        </h2>
                     </div>
                     <div groups="base.group_multi_company">
                         <field name="company_id" options="{'no_create': True, 'no_open':True}" class="w-75" />
                     </div>
                     <div class="d-flex align-items-baseline">
-                        <field
-                            name="partner_ids"
-                            widget="many2manyattendee"
-                            placeholder="ระบุผู้ปฎิบัติงาน..."
-                            domain="[('type','!=','private')]"
-                            class="oe_inline o_calendar_attendees"
-                        />
+
                     </div>
                     <group class="mt-4">
                         <group>
@@ -83,12 +88,18 @@
                                 widget="many2one_avatar"
                                 options="{'no_create': True, 'no_open':True}"
                             />
+                            <label for="partner_ids" />
+                            <div>
+                                <field
+                                    name="partner_ids"
+                                    widget="many2manyattendee"
+                                    placeholder="ระบุผู้ปฎิบัติงาน..."
+                                    string="ผู้ปฎิบัติงาน"
+                                    domain="[('type','!=','private'), ('user_id', '!=', False)]"
+                                />
+                                <p class="text-muted small">ระบุผู้ปฎิบัติงานเพื่อแสดงกำหนดการบนปฎิทินส่วนตัวของเค้า</p>
+                            </div>
                             <field name="location" />
-                            <field
-                                name="categ_ids"
-                                widget="many2many_tags"
-                                options="{'color_field': 'color', 'no_create_edit': True}"
-                            />
                         </group>
                     </group>
                     <group>
