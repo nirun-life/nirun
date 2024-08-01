@@ -13,8 +13,8 @@
         <field name="model">ni.allergy</field>
         <field name="arch" type="xml">
             <search>
-                <field name="patient_id" />
-                <field name="code_id" />
+                <field name="name" />
+                <field name="patient_id" invisible="context.get('default_patient_id')" />
                 <separator />
                 <filter name="active" string="Active" domain="[('state', '=', 'active')]" />
                 <filter name="inactive" string="Inactive" domain="[('state', '=', 'inactive')]" />
@@ -31,6 +31,9 @@
                     <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
                     <filter name="group_by_code" string="Allergy / Intolerance" context="{'group_by': 'code_id'}" />
                 </group>
+                <searchpanel>
+                    <field name="category" enable_counters="1" />
+                </searchpanel>
             </search>
         </field>
     </record>
@@ -38,15 +41,21 @@
         <field name="name">ni.allergy.view.tree</field>
         <field name="model">ni.allergy</field>
         <field name="arch" type="xml">
-            <tree decoration-muted="state in ['inactive','resolved']" editable="top">
+            <tree decoration-muted="state in ['inactive','resolved']">
                 <field name="company_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
                 <field name="sequence" widget="handle" />
                 <field name="type" optional="hide" />
                 <field name="category" optional="hide" />
-                <field name="code_id" />
-                <field name="criticality" optional="show" />
+                <field name="name" />
+                <field
+                    name="criticality"
+                    optional="show"
+                    widget="badge"
+                    decoration-info="criticality == 'low'"
+                    decoration-danger="criticality == 'high'"
+                />
                 <field
                     name="state"
                     optional="hide"
@@ -54,6 +63,7 @@
                     decoration-info="state=='active'"
                     decoration-success="state=='resolved'"
                 />
+                <field name="note" optional="show" />
                 <button
                     icon="fa-check"
                     name="action_resolve"
@@ -81,7 +91,7 @@
                 <field name="company_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
-                <field name="sequence" invisible="0" />
+                <field name="sequence" invisible="1" />
                 <header class="oe_read_only" invisible="context.get('no_header')">
                     <button name="action_active" string="Active" states="resolved" type="object" />
                     <button name="action_resolve" string="Resolve" states="active" type="object" />
@@ -100,34 +110,46 @@
                         bg_color="bg-success"
                         title="Resolved"
                     />
-                    <div class="oe_title mb-4">
-                        <label for="code_id" />
+                    <group>
+                        <field name="category" widget="radio" options="{'horizontal': True}" />
+                        <label for="name" />
                         <div>
                             <field
                                 name="code_id"
-                                nolabel="1"
-                                placeholder="Allergy / Intolerance"
+                                placeholder="Search Substance/Product..."
                                 class="w-100"
                                 options="{'no_open': True}"
+                                domain="[('category', '=', category)]"
+                                context="{'default_category': category}"
                             />
+                            <field name="name" string="Substance" placeholder="Type Substance/Product name" />
                         </div>
-                    </div>
+                    </group>
                     <group>
-                        <group>
-                            <field name="type" />
-                        </group>
                         <group>
                             <field name="criticality" widget="radio" options="{'horizontal': True}" />
                         </group>
+                        <group>
+                            <field
+                                name="type"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                                attrs="{'invisible': [('category', 'not in', ['food', 'medication'])]}"
+                            />
+                        </group>
                     </group>
                     <notebook>
-                        <page name="note" string="Note">
-                            <field name="note" placeholder="Additional note" />
+                        <page name="note" string="Note" icon="fa-pencil-square-o">
+                            <field name="note" placeholder="Additional note..." />
                         </page>
-                        <page name="reaction" string="Event">
+                        <page name="reaction" string="Reaction Event" icon="fa-life-ring" badge="reaction_count">
+                            <group attrs="{'invisible': [('reaction_ids', '=', False)]}">
+                                <field name="last_occurrence" />
+                            </group>
+                            <field name="reaction_count" invisible="1" />
                             <field name="reaction_ids" context="{'default_allergy_id': id}" mode="tree">
                                 <tree editable="top">
-                                    <field name="onset" />
+                                    <field name="onset" width="1" />
                                     <field name="description" placeholder="Description of the event as a whole" />
                                     <field name="severity" optional="show" />
                                     <field name="note" optional="hide" />
@@ -147,6 +169,62 @@
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+    <record id="ni_allergy_view_kanban" model="ir.ui.view">
+        <field name="name">ni.allergy.view.kanban</field>
+        <field name="model">ni.allergy</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name" />
+                <field name="type" />
+                <field name="criticality" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <ul>
+                                    <li>
+                                        <label for="name" class="small">
+                                            <t t-if="record.type.value">
+                                                <field name="type" />
+                                            </t>
+                                            <t t-else="">Allergy</t>
+                                        </label>
+                                        <div class="float-end">
+                                            <field
+                                                name="category"
+                                                widget="badge"
+                                                decoration-info="category=='biologic'"
+                                                decoration-danger="category=='medication'"
+                                                decoration-warning="category=='food'"
+                                                decoration-success="category=='environment'"
+                                            />
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <field class="h4" name="name" />
+                                    </li>
+                                    <li>
+                                        <label for="criticality" class="small text-muted me-2">Criticality :</label>
+                                        <t t-if="record.criticality.value">
+                                            <field
+                                                name="criticality"
+                                                widget="badge"
+                                                decoration-info="criticality=='low'"
+                                                decoration-danger="criticality=='high'"
+                                            />
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted">N/A</span>
+                                        </t>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
     <record id="condition_view_pivot" model="ir.ui.view">
