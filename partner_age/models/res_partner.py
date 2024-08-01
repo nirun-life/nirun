@@ -1,8 +1,12 @@
 #  Copyright (c) 2021-2023 NSTDA
+import logging
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
 
 
 class Partner(models.Model):
@@ -18,6 +22,22 @@ class Partner(models.Model):
     )
     age = fields.Integer(
         "Age (years)",
+        compute="_compute_age",
+        compute_sudo=True,
+        store=True,
+        readonly=False,
+        group_operator="avg",
+    )
+    age_month = fields.Integer(
+        "Age (month)",
+        compute="_compute_age",
+        compute_sudo=True,
+        store=True,
+        readonly=False,
+        group_operator="avg",
+    )
+    age_day = fields.Integer(
+        "Age (day)",
         compute="_compute_age",
         compute_sudo=True,
         store=True,
@@ -84,12 +104,14 @@ class Partner(models.Model):
                     if rec.deceased_date
                     else fields.Date.context_today(self)
                 )
-                year_diff = dt.year - rec.age_init_date.year
-                year = rec.age_init + year_diff
-                rec.display_age = _("%s Years") % year
-                if rec.age != year:
+                time_passed = dt - relativedelta(rec.age_init_date)
+                age_year = rec.age_init + time_passed.year
+                rec.display_age = _("%s Years") % age_year
+                if rec.age != age_year:
                     # check this for reduce chance to call `_inverse_age()`
-                    rec.age = year
+                    rec.age = age_year
+                rec.age_month = 0
+                rec.age_day = 0
 
     def _compute_age_from_birthdate(self):
         for rec in self:
@@ -104,6 +126,11 @@ class Partner(models.Model):
                 if rec.age != rd.years:
                     # check this for reduce chance to call `_inverse_age()`
                     rec.age = rd.years
+                rec.age_month = rd.months
+                rec.age_day = rd.days
+                _logger.debug(
+                    "age = {}Y {}M {}D".format(rec.age, rec.age_month, rec.age_day)
+                )
 
     @api.model
     def _format_age(self, delta):
