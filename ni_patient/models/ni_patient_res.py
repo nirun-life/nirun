@@ -30,6 +30,12 @@ class PatientResource(models.AbstractModel):
                 res["patient_id"] = self.env.context["active_id"]
         return res
 
+    user_specialty = fields.Many2one(
+        "hr.job", default=lambda self: self.env.user.employee_id.job_id, store=False
+    )
+    enforce_specialty = fields.Boolean(
+        default=lambda self: self.env.context.get("enforce_specialty"), store=False
+    )
     company_id = fields.Many2one(
         related="patient_id.company_id", store=True, readonly=True, index=True
     )
