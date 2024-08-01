@@ -9,19 +9,27 @@ class AllergyIntolerance(models.Model):
     _order = "sequence, name"
 
     sequence = fields.Integer(default=0)
-    name = fields.Char(related="code_id.name", store=True)
+    name = fields.Char("Allergy Name", required=True)
     code_id = fields.Many2one(
         "ni.allergy.code",
-        required=True,
+        required=False,
         string="Substance",
     )
+    code = fields.Char(related="code_id.code", store=True)
     category = fields.Selection(
-        related="code_id.category",
-        store=True,
+        [
+            ("food", "Food"),
+            ("environment", "Environment"),
+            ("biologic", "Biologic"),
+            ("medication", "Medication"),
+        ],
+        default="food",
+        required=True,
+        index=True,
     )
     type = fields.Selection(
         [("allergy", "Allergy"), ("intolerance", "Intolerance")],
-        required=False,
+        default="allergy",
         help="""
         Underlying mechanism, [Allergy] - A propensity for hypersensitive
         reaction(s) to a substance, [Intolerance] - not judged to be allergic or
@@ -40,6 +48,7 @@ class AllergyIntolerance(models.Model):
     note = fields.Text()
 
     reaction_ids = fields.One2many("ni.allergy.reaction", "allergy_id", "Reaction")
+    reaction_count = fields.Integer(compute="_compute_reaction_count")
     last_occurrence = fields.Datetime(compute="_compute_last_occurrence", store=True)
 
     _sql_constraints = [
@@ -49,6 +58,18 @@ class AllergyIntolerance(models.Model):
             "Patient already have this allergy recorded!",
         ),
     ]
+
+    def create(self, vals_list):
+        for val in vals_list:
+            if "name" not in val and "code_id" in val:
+                code = self.env["ni.allergy.code"].browse(val["code_id"])
+                val["name"] = code.name
+        return super(AllergyIntolerance, self).create(vals_list)
+
+    @api.onchange("code_id")
+    def _onchange_code_id(self):
+        for rec in self.filtered(lambda r: r.code_id):
+            rec.name = rec.code_id.name
 
     def name_get(self):
         return [(rec.id, rec._name_get()) for rec in self]
@@ -76,6 +97,11 @@ class AllergyIntolerance(models.Model):
             if ref.startswith("ni.medication"):
                 rec.category = "medication"
 
+    @api.depends("reaction_ids")
+    def _compute_reaction_count(self):
+        for rec in self:
+            rec.reaction_count = len(rec.reaction_ids)
+
     @api.depends("reaction_ids.onset")
     def _compute_last_occurrence(self):
         reactions = self.env["ni.allergy.reaction"].read_group(
@@ -84,9 +110,6 @@ class AllergyIntolerance(models.Model):
             groupby=["allergy_id"],
             orderby="allergy_id",
         )
-        import pprint
-
-        pprint.pprint(reactions)
         result = {data["allergy_id"][0]: data["onset"] for data in reactions}
         for allergy in self:
             allergy.last_occurrence = result.get(allergy.id, 0)

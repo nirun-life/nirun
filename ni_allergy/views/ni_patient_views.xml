@@ -10,8 +10,11 @@
         <field name="priority">1</field>
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[@name='history']" position="inside">
-                <separator name="allergy" string="Allergy / Intolerance" />
-                <field name="allergy_ids" context="{'default_patient_id': id}" mode="tree" />
+                <group class="mt-4" string="Allergy / Intolerance">
+                    <field name="allergy_count" invisible="1" />
+                    <field name="allergy" widget="radio" options="{'horizontal': True}" />
+                </group>
+                <field name="allergy_ids" mode="kanban" attrs="{'invisible': [('allergy', '!=', 'identified')]}" />
             </xpath>
         </field>
     </record>
