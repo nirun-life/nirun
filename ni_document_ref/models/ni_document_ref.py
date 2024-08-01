@@ -17,6 +17,14 @@ class DocumentReference(models.Model):
     _order = "occurrence desc"
     _identifier_ts_field = "occurrence"
 
+    @api.model
+    def default_get(self, fields):
+        res = super(DocumentReference, self).default_get(fields)
+        if "type_id" in fields and "type_id" not in res:
+            type_id = self.env.user.employee_id.job_id.document_ref_type_id.id
+            res["type_id"] = type_id or None
+        return res
+
     type_id = fields.Many2one(
         "ni.document.ref.type", index=True, required=True, states=LOCK_STATE_DICT
     )
