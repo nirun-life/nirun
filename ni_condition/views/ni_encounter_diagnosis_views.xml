@@ -15,7 +15,20 @@
                     <field name="sequence" invisible="1" />
                     <field name="role_decoration" invisible="1" />
                     <group>
-                        <field name="code_id" attrs="{'readonly': [('id', '!=', False)]}" options="{'no_open': True}" />
+                        <field
+                            name="code_id"
+                            placeholder="Search for condition by name or code..."
+                            attrs="{'readonly': [('id', '!=', False)]}"
+                            options="{'no_open': True}"
+                        />
+                        <label for="name" />
+                        <div>
+                            <field name="name" placeholder="Condition name use for display" />
+                            <p class="text-muted small" attrs="{'invisible': [('id', '!=', False)]}">
+                                Specify condition name here if not found on selectable choice
+                                above
+                            </p>
+                        </div>
                     </group>
                     <group>
                         <group>
@@ -25,10 +38,10 @@
                                 options="{'no_open': True}"
                                 attrs="{'required': [('is_diagnosis', '=', True)], 'invisible': [('is_diagnosis', '=', False)]}"
                             />
-                            <field name="class_id" options="{'no_open': True}" />
                             <field name="severity" widget="radio" options="{'horizontal': True}" />
                         </group>
                         <group>
+                            <field name="category_ids" widget="many2many_checkboxes" />
                             <field name="is_diagnosis" />
                             <field name="is_problem" />
                         </group>
@@ -49,12 +62,14 @@
                 <field name="is_diagnosis" invisible="1" />
                 <field name="is_problem" invisible="1" />
                 <field name="sequence" widget="handle" />
+                <field name="name" />
                 <field name="code_id" />
                 <field
                     name="severity"
                     optional="hide"
                     decoration-danger="severity == 'severe'"
                     decoration-warning="severity == 'moderate'"
+                    widget="badge"
                 />
                 <field
                     name="role_id"
@@ -66,7 +81,6 @@
                     decoration-danger="role_decoration == 'danger'"
                     decoration-muted="role_decoration == 'muted'"
                 />
-                <field name="class_id" optional="show" />
                 <field name="create_uid" optional="hide" />
                 <field name="create_date" optional="hide" />
                 <control>
