@@ -10,11 +10,8 @@
         <field name="priority">30</field>
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[@name='history']" position="inside">
-                <separator name="problem" string="Problem List Item" />
-                <field
-                    name="condition_problem_ids"
-                    context="{'default_encounter_id': encounter_id, 'default_patient_id': id, 'no_category':True, 'no_header': True }"
-                />
+                <separator string="Condition / Problem" />
+                <field name="condition_ids" mode="kanban" context="{'default_is_problem': True}" />
             </xpath>
         </field>
     </record>

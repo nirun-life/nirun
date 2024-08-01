@@ -12,7 +12,13 @@ class ConditionCode(models.Model):
     parent_id = fields.Many2one("ni.condition.code", index=True, ondelete="cascade")
     parent_path = fields.Char(index=True, unaccent=False)
 
-    class_id = fields.Many2one("ni.condition.class", required=False)
+    specialty_ids = fields.Many2many(
+        "hr.job",
+        "ni_condition_code_specialty",
+        "code_id",
+        "job_id",
+        help="Specialty who can use this code",
+    )
 
     _sql_constraints = [
         (
@@ -26,3 +32,25 @@ class ConditionCode(models.Model):
     def _check_parent_id(self):
         if not self._check_recursion():
             raise models.ValidationError(_("Error! You cannot create recursive data."))
+
+    def _get_name(self):
+        coding = self
+        name = coding.name
+        if (
+            self._context.get("show_parent")
+            and "parent_id" in self._fields
+            and coding._fields["parent_id"]
+        ):
+            names = []
+            current = coding
+            while current:
+                names.append(current.name)
+                current = current.parent_id
+            name = self._display_name_separator.join(reversed(names))
+        if self._context.get("show_abbr") and self.abbr:
+            name = "{} ({})".format(name, coding.abbr)
+        if self._context.get("show_code") and self.code:
+            name = "{}  {}".format(coding.code, name)
+        if self._context.get("only_abbr") and self.abbr:
+            name = coding.abbr
+        return name

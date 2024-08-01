@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo noupdate="1">
+    <record model="ni.condition.category" id="problem_list_item">
+        <field name="name">Problem List Item</field>
+        <field name="code">px</field>
+        <field name="abbr">PB</field>
+        <field name="system_id" ref="ni_coding.system_hl7" />
+        <field name="definition">
+            An item on a problem list that can be managed over time and can be expressed by a practitioner (e.g.
+            physician, nurse), patient, or related person.
+        </field>
+    </record>
+    <record model="ni.condition.category" id="chronic_condition">
+        <field name="name">Chronic Condition</field>
+        <field name="code">cx</field>
+        <field name="abbr">CC</field>
+        <field name="system_id" ref="ni_coding.system_hl7" />
+        <field name="parent_id" ref="problem_list_item" />
+        <field name="definition">
+            Chronic conditions are long-lasting health issues that persist for an extended period (months, years, or a
+            lifetime).
+        </field>
+    </record>
+    <record model="ni.condition.category" id="encounter_diagnosis">
+        <field name="name">Encounter Diagnosis</field>
+        <field name="code">dx</field>
+        <field name="abbr">DX</field>
+        <field name="system_id" ref="ni_coding.system_hl7" />
+        <field name="definition">
+            A point in time diagnosis (e.g. from a physician or nurse) in context of an encounter.
+        </field>
+    </record>
+</odoo>
