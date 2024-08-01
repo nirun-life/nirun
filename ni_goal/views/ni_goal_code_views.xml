@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="ni_goal_code_action" model="ir.actions.act_window">
+        <field name="name">Goal Codeable Concept</field>
+        <field name="res_model">ni.goal.code</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="ni_goal_code_view_search" model="ir.ui.view">
+        <field name="name">ni.goal.code.view.search</field>
+        <field name="model">ni.goal.code</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <group name="group_by" string="Group By">
+                    <filter name="system" string="System" context="{'group_by': 'system_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_goal_code_view_tree" model="ir.ui.view">
+        <field name="name">ni.goal.code.view.tree</field>
+        <field name="model">ni.goal.code</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="category_id" widget="badge" />
+                <field name="code" optional="show" />
+                <field name="system_id" optional="show" />
+                <field name="color" optional="hide" widget="color_picker" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_goal_code_view_form" model="ir.ui.view">
+        <field name="name">ni.goal.code.view.form</field>
+        <field name="model">ni.goal.code</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="category_id" />
+                            <field name="specialty_ids" widget="many2many_tags" />
+                        </group>
+                        <group>
+                            <field name="code" />
+                            <field name="system_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Definition">
+                            <field name="definition" placeholder="Definition..." />
+                        </page>
+                        <page string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <group>
+                                    <field name="color" widget="color_picker" />
+                                    <field name="sequence" />
+                                </group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
