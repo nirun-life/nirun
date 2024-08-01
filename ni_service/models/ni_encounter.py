@@ -1,22 +1,26 @@
 #  Copyright (c) 2024 NSTDA
-from datetime import date, datetime
+from datetime import datetime
 
 from pytz import timezone
 
 from odoo import api, fields, models
+
+from odoo.addons.ni_patient.models.ni_encounter import LOCK_STATE_DICT
 
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
     resource_calendar_id = fields.Many2one(
-        "resource.calendar", "ตารางเวลา", check_company=True
-    )
-    service_ids = fields.Many2many(
-        "ni.service", domain="[('company_id', '=', company_id)]"
+        "resource.calendar",
+        "ตารางเวลา",
+        check_company=True,
+        states=LOCK_STATE_DICT,
     )
     service_attendance_ids = fields.One2many(
-        "ni.encounter.service.attendance", "encounter_id"
+        "ni.encounter.service.attendance",
+        "encounter_id",
+        states=LOCK_STATE_DICT,
     )
 
     @api.onchange("class_id")
@@ -40,10 +44,10 @@ class Encounter(models.Model):
         service_ids = self.env["ni.service"].search(
             [("attendance_ids", "in", attendance_ids.ids)]
         )
-        date_start = datetime.combine(date.today(), datetime.min.time()).strftime(
+        date_start = datetime.combine(self.period_start, datetime.min.time()).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        date_end = datetime.combine(date.today(), datetime.max.time()).strftime(
+        date_end = datetime.combine(self.period_start, datetime.max.time()).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
 
@@ -56,26 +60,28 @@ class Encounter(models.Model):
         )
         attendance_service_map = {}
         for attendance in attendance_ids:
-            event = event_ids.filtered_domain([("attendance_id", "=", attendance.id)])
-            planned_event = event.filtered_domain(
+
+            scheduled_event = event_ids.filtered_domain(
+                [("attendance_id", "=", attendance.id)]
+            )
+            planned_event = scheduled_event.filtered_domain(
                 [("plan_patient_ids", "=", self.patient_id.id)]
             )
+            e = None
             if planned_event:
+                e = planned_event[0]
+            elif scheduled_event:
+                e = scheduled_event[0]
+            if e:
                 attendance_service_map.update(
                     {
                         attendance.id: {
-                            "service_id": planned_event[0].service_id.id,
-                            "service_event_id": planned_event[0].id,
-                        }
-                    }
-                )
-                continue
-            if event:
-                attendance_service_map.update(
-                    {
-                        attendance.id: {
-                            "service_id": event[0].service_id.id,
-                            "service_event_id": event[0].id,
+                            "name": e.name,
+                            "service_id": e.service_id.id,
+                            "service_ids": [
+                                fields.Command.set(e.service_ids.mapped("id"))
+                            ],
+                            "service_event_id": e.id,
                         }
                     }
                 )
@@ -91,12 +97,16 @@ class Encounter(models.Model):
         self.service_attendance_ids = [
             fields.Command.create(
                 {
+                    "name": dict.get("name"),
                     "encounter_id": self.id,
                     "attendance_id": attendance_id,
                     "service_id": dict.get("service_id"),
+                    "service_ids": dict.get("service_ids"),
                     "service_event_id": dict.get("service_event_id") or None,
                     "editable": service_ids.browse(dict.get("service_id")).editable,
                 }
             )
             for attendance_id, dict in attendance_service_map.items()
         ]
+
+    service_request_ids = fields.One2many("ni.service.request", "encounter_id")

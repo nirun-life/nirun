@@ -35,6 +35,9 @@
                 </group>
                 <field name="service_attendance_ids" context="{'default_encounter_id': id}" />
             </xpath>
+            <xpath expr="//page[@name='order']" position="inside">
+                <field name="service_request_ids" context="{'default_intent': 'order'}" />
+            </xpath>
         </field>
     </record>
 </odoo>
