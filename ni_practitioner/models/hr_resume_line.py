@@ -7,7 +7,7 @@ from odoo.exceptions import ValidationError
 class ResumeLine(models.Model):
     _inherit = "hr.resume.line"
 
-    code_id = fields.Many2one("hr.resume.line.code", required=True, index=True)
+    code_id = fields.Many2one("hr.resume.line.code", required=False, index=True)
     code_require_identifier = fields.Boolean(related="code_id.require_identifier")
     line_type_id = fields.Many2one("hr.resume.line.type", string="Type", index=True)
     identifier = fields.Char("Credential ID")
