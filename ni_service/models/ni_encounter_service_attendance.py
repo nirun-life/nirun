@@ -12,6 +12,9 @@ class EncounterServiceAttendance(models.Model):
 
     sequence = fields.Integer(related="attendance_id.sequence", store=True)
     encounter_id = fields.Many2one("ni.encounter", required=True, ondelete="cascade")
+    patient_id = fields.Many2one(
+        related="encounter_id.patient_id", store=True, index=True
+    )
     encounter_date = fields.Datetime(related="encounter_id.period_start", string="Date")
     dayofweek = fields.Selection(
         [
@@ -28,6 +31,8 @@ class EncounterServiceAttendance(models.Model):
     )
     resource_calendar_id = fields.Many2one(related="encounter_id.resource_calendar_id")
 
+    name = fields.Char()
+
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
         "เวลา",
@@ -40,9 +45,16 @@ class EncounterServiceAttendance(models.Model):
         required=True,
         domain="[('attendance_ids', '=', attendance_id)]",
         check_company=True,
+        ondelete="restrict",
+    )
+    service_ids = fields.Many2many(
+        "ni.service",
+        "ni_encounter_service_attendance_rel",
+        "attendance_id",
+        "service_id",
     )
     service_event_id = fields.Many2one(
-        "ni.service.event", domain="[('service_id', '=', service_id)]"
+        "ni.service.event", index=True, domain="[('service_id', '=', service_id)]"
     )
     employee_id = fields.Many2one(related="service_id.employee_id")
     employee_ids = fields.Many2many(related="service_id.employee_ids")
@@ -63,3 +75,14 @@ class EncounterServiceAttendance(models.Model):
             rec.dayofweek = str(
                 rec.encounter_date.astimezone(timezone(self.env.user.tz)).weekday()
             )
+
+    @api.constrains(
+        "service_id",
+        "service_ids",
+    )
+    def _check_service_name(self):
+        for rec in self:
+            if len(rec.service_ids) > 1:
+                rec.name = ", ".join(rec.service_ids.mapped("name"))
+            else:
+                rec.name = rec.service_id.name

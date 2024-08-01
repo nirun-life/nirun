@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="ni_service_request_view_form" model="ir.ui.view">
+        <field name="name">ni.service.request.view.form</field>
+        <field name="model">ni.service.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="name" invisible="1" />
+                <field name="user_specialty" invisible="1" />
+                <field name="intent" invisible="1" />
+                <sheet>
+                    <group>
+                        <field name="patient_id" invisible="1" />
+                        <field name="encounter_id" invisible="1" />
+                        <field name="category_id" options="{'no_open': True}" />
+                        <field name="service_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                        <field name="timing_tmpl_id" options="{'no_open': True}" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_service_request_view_tree" model="ir.ui.view">
+        <field name="name">ni.service.request.view.tree</field>
+        <field name="model">ni.service.request</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="encounter_id" invisible="1" />
+                <field name="service_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                <field name="category_id" widget="badge" />
+                <field name="timing_id" />
+                <control>
+                    <create string="Add order" context="{'default_intent': 'order'}" />
+                </control>
+            </tree>
+        </field>
+    </record>
+    <record id="ni_service_request_view_kanban" model="ir.ui.view">
+        <field name="name">ni.service.request.view.kanban</field>
+        <field name="model">ni.service.request</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name" />
+                <field name="service_ids" />
+                <field name="timing_id" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <ul>
+                                    <li>
+                                        <field
+                                            class="h6 lh-base"
+                                            name="service_ids"
+                                            widget="many2many_tags"
+                                            options="{'color_field': 'color'}"
+                                        />
+                                    </li>
+                                    <li>
+                                        <label for="timing_id" class="small text-muted me-2">Occurrence :</label>
+                                        <field name="timing_id" />
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>
