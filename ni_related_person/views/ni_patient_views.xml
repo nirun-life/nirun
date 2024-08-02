@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <record id="ni_patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='private']" position="after">
+                <page
+                    name="related_person"
+                    string="Related Person"
+                    icon="fa-address-book-o"
+                    badge="related_person_count"
+                >
+                    <field name="related_person_count" invisible="1" />
+                    <field name="related_person_ids" mode="kanban" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
