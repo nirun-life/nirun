@@ -1,5 +1,4 @@
 #  Copyright (c) 2021-2023 NSTDA
-import pprint
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
@@ -51,12 +50,12 @@ class Condition(models.Model):
     )
     period_type = fields.Selection(
         [
-            ("date", "Condition Date"),
-            ("datetime", "Condition Datetime"),
-            ("age", "Condition Age"),
+            ("age", "Onset Age"),
+            ("date", "Onset Date"),
+            ("datetime", "Onset"),
         ],
         required=True,
-        default="age",
+        default="date",
     )
     period_start = fields.Datetime("Onset", default=None)
     period_start_date = fields.Date(
@@ -91,7 +90,7 @@ class Condition(models.Model):
         index=True,
         default="active",
     )
-    verification_id = fields.Many2one("ni.condition.verification")
+    verification_id = fields.Many2one("ni.condition.verification", "")
     note = fields.Text()
     diagnosis_ids = fields.One2many(
         "ni.encounter.diagnosis", "condition_id", readonly=True
@@ -105,6 +104,18 @@ class Condition(models.Model):
         ),
     ]
 
+    @api.onchange("period_type")
+    def _onchange_period_type(self):
+        if self.period_type == "age" and not self.patient_id.birthdate:
+            self.period_type = "date"
+            return {
+                "warning": {
+                    "title": _("Warning!"),
+                    "message": _("%s must specify birthday to set onset age")
+                    % self.patient_id.name,
+                }
+            }
+
     @api.depends("period_start", "period_end")
     def _compute_age(self):
         for rec in self:
@@ -114,15 +125,13 @@ class Condition(models.Model):
             rec.age_end = dt.years
 
     def _inverse_age_start(self):
-        pprint.pprint("age_start inverse")
-        for rec in self:
+        for rec in self.filtered(lambda r: r.age_start):
             start = rec.patient_id.birthdate + relativedelta(years=rec.age_start)
             rec.period_start = datetime.combine(start, datetime.min.time())
             rec.period_start_date = start
 
     def _inverse_age_end(self):
-        pprint.pprint("age_end inverse")
-        for rec in self:
+        for rec in self.filtered(lambda r: r.age_end):
             end = rec.partner_id.birthdate + relativedelta(years=rec.age_end)
             rec.period_end = datetime.combine(end, datetime.min.time())
             rec.period_end_date = end
