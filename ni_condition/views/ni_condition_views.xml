@@ -148,41 +148,39 @@
                     </div>
                     <group class="mt-4">
                         <group>
-                            <span class="o_form_label o_td_label" name="glucose_type">
+                            <span class="o_form_label o_td_label" name="period_type">
                                 <field name="period_type" class="fw-bold" />
                             </span>
                             <div>
                                 <div class="o_row" attrs="{'invisible': [('period_type', '!=', 'age')]}">
                                     <field name="age_start" class="o_narrow_field" placeholder="Onset Age" />
                                     <span>Year</span>
-                                    <field
-                                        name="age_end"
-                                        class="o_narrow_field"
-                                        placeholder="Abatement Age"
-                                        attrs="{'invisible': [('clinical_state', 'not in', ['inactive','resolved'])]}"
-                                    />
-                                    <span
-                                        attrs="{'invisible': [('clinical_state', 'not in', ['inactive','resolved'])]}"
-                                    >
-                                        Year
-                                    </span>
                                 </div>
                                 <div class="o_row" attrs="{'invisible': [('period_type', '!=', 'date')]}">
                                     <field name="period_start_date" placeholder="Onset Date" />
-                                    <field
-                                        name="period_end_date"
-                                        placeholder="Abatement Date"
-                                        attrs="{'invisible': [('clinical_state', 'not in', ['inactive','resolved'])]}"
-                                    />
                                 </div>
                                 <div class="o_row" attrs="{'invisible': [('period_type', '!=', 'datetime')]}">
-                                    <field name="period_start" placeholder="Onset Datetime" />
-                                    <field
-                                        name="period_end"
-                                        placeholder="Abatement Datetime"
-                                        attrs="{'invisible': [('clinical_state', 'not in', ['inactive','resolved'])]}"
-                                    />
+                                    <field name="period_start" placeholder="Onset" />
                                 </div>
+                            </div>
+                            <label for="period_end" />
+                            <div class="o_row">
+                                <span attrs="{'invisible': [('period_type', '!=', 'age')]}">
+                                    <field
+                                        name="age_end"
+                                        class="o_narrow_field"
+                                        attrs="{'readonly': [('clinical_state', 'not in', ['inactive','resolved'])]}"
+                                    />
+                                    <span>Year</span>
+                                </span>
+                                <field
+                                    name="period_end_date"
+                                    attrs="{'invisible': [('period_type', '!=', 'date')], 'readonly': [('clinical_state', 'not in', ['inactive','resolved'])]}"
+                                />
+                                <field
+                                    name="period_end"
+                                    attrs="{'invisible': [('period_type', '!=', 'datetime')], 'readonly': [('clinical_state', 'not in', ['inactive','resolved'])]}"
+                                />
                             </div>
                             <field name="severity" widget="radio" options="{'horizontal': True}" />
                         </group>
