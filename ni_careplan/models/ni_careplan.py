@@ -57,8 +57,9 @@ class Careplan(models.Model):
         "careplan_id",
         domain="[('category_id', '=?', service_category_id), ('intent', '=', 'plan')]",
         options="{'create': true}",
-        context={"default_careplan_id": "id", "default_patient_id": "patient_id"},
     )
+    document_ids = fields.One2many("ni.document.ref", "careplan_id")
+    document_count = fields.Integer(compute="_compute_document_count")
     achievement_id = fields.Many2one(
         "ni.goal.achievement", domain=[("careplan", "=", True)]
     )
@@ -95,6 +96,11 @@ class Careplan(models.Model):
             vals["achievement_uid"] = self.env.user.id
             vals["state"] = "completed"
         return super(Careplan, self).write(vals)
+
+    @api.depends("document_ids")
+    def _compute_document_count(self):
+        for rec in self:
+            rec.document_count = len(rec.document_ids)
 
     @api.constrains("service_request_ids")
     def _check_service_request(self):

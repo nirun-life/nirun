@@ -103,9 +103,16 @@
                         options="{'create': True}"
                         widget="one2many"
                         mode="kanban"
-                        context="{'default_patient_id': patient_id, 'default_encounter_id': None, 'default_careplan_id': id}"
+                        context="{'default_patient_id': patient_id, 'default_careplan_id': id}"
                     />
                     <notebook>
+                        <page name="progress-note" string="Progress Note" icon="fa-clipboard" badg="document_count">
+                            <field
+                                name="document_ids"
+                                context="{'default_careplan_id': id, 'default_patient_id': patient_id}"
+                            />
+                            <field name="document_count" />
+                        </page>
                         <page name="achievement" string="Achievement" icon="fa-podcast">
                             <div class="row">
                                 <div class="col-12 col-lg-5">
