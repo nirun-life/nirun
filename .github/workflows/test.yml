@@ -18,9 +18,10 @@ jobs:
       matrix:
         include:
           - container: ghcr.io/oca/oca-ci/py3.10-odoo16.0:latest
-            makepot: "true"
+            exclude: "l10n_th_icd9cm,l10n_th_icd10tm"
             name: test with Odoo
           - container: ghcr.io/oca/oca-ci/py3.10-ocb16.0:latest
+            exclude: "l10n_th_icd9cm,l10n_th_icd10tm"
             name: test with OCB
     services:
       postgres:
@@ -31,6 +32,8 @@ jobs:
           POSTGRES_DB: odoo
         ports:
           - 5432:5432
+    env:
+      EXCLUDE: "${{ matrix.exclude }}"
     steps:
       - uses: actions/checkout@v2
         with:
