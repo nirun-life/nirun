@@ -23,6 +23,7 @@ class Partner(models.Model):
     age = fields.Integer(
         "Age (years)",
         compute="_compute_age",
+        inverse="_inverse_age",
         compute_sudo=True,
         store=True,
         readonly=False,
@@ -86,6 +87,15 @@ class Partner(models.Model):
             )
         return super().write(vals)
 
+    def _inverse_age(self):
+        for rec in self:
+            if not rec.birthdate:
+                rec.age_init = rec.age
+                rec.age_init_date = fields.Date.context_today(self)
+            if rec.birthdate:
+                rec.age_init = 0
+                rec.age_init_date = None
+
     @api.depends("birthdate", "deceased_date", "age_init")
     def _compute_age(self):
         for rec in self:
@@ -104,8 +114,8 @@ class Partner(models.Model):
                     if rec.deceased_date
                     else fields.Date.context_today(self)
                 )
-                time_passed = dt - relativedelta(rec.age_init_date)
-                age_year = rec.age_init + time_passed.year
+                year_diff = dt.year - rec.age_init_date.year
+                age_year = rec.age_init + year_diff
                 rec.display_age = _("%s Years") % age_year
                 if rec.age != age_year:
                     # check this for reduce chance to call `_inverse_age()`
