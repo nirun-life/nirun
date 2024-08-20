@@ -25,9 +25,9 @@ class TestPartnerAge(common.TransactionCase):
     def test_age_from_age(self):
         partner = self.partners.create({"name": "partner", "age": 34})
 
-        self.assertEqual(partner.display_age, "34 Years")
         self.assertEqual(partner.age_init, 34)
         self.assertEqual(partner.age_init_date, self.today)
+        self.assertEqual(partner.display_age, "34 Years")
 
     def test_update_from_age_to_birthdate(self):
         partner = self.partners.create({"name": "partner", "age": 34})
