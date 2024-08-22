@@ -4,10 +4,26 @@
   -->
 <odoo noupdate="1">
     <data>
+        <record id="seq_ni_medication_request" model="ir.sequence">
+            <field name="name">Medication Request (RX) Sequence</field>
+            <field name="code">ni.medication.request</field>
+            <field name="prefix">RX-%(range_year)s</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False" />
+            <field name="use_date_range" eval="True" />
+        </record>
         <record id="seq_ni_medication_dispense" model="ir.sequence">
-            <field name="name">Medication Dispense Sequence</field>
+            <field name="name">Medication Dispense Record Sequence</field>
             <field name="code">ni.medication.dispense</field>
-            <field name="prefix">MDS-%(range_year)s</field>
+            <field name="prefix">MDR-%(range_year)s</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False" />
+            <field name="use_date_range" eval="True" />
+        </record>
+        <record id="seq_ni_medication_administration" model="ir.sequence">
+            <field name="name">Medication Administration Record Sequence</field>
+            <field name="code">ni.medication.administration</field>
+            <field name="prefix">MAR-%(range_year)s</field>
             <field name="padding">6</field>
             <field name="company_id" eval="False" />
             <field name="use_date_range" eval="True" />

@@ -13,6 +13,7 @@ from . import ni_medication_unit
 from . import ni_medication_ingredient
 from . import ni_medication_statement
 from . import ni_medication_dispense
+from . import ni_medication_request
 from . import ni_condition
 from . import ni_patient
 from . import ni_encounter

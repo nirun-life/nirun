@@ -6,6 +6,7 @@ class MedicationAbstract(models.AbstractModel):
     _name = "ni.medication.abstract"
     _description = "Medication Abstract Resource"
     _inherits = {"ni.medication.dosage": "dosage_id"}
+    _rec_name = "name"
 
     name = fields.Char("Medication Name", required=True)
     category_id = fields.Many2one("ni.medication.admin.location")

@@ -2,7 +2,7 @@
 
 {
     "name": "Medication",
-    "version": "16.0.0.4.0",
+    "version": "16.0.0.5.0",
     "development_status": "Alpha",
     "category": "Medical/Medication",
     "author": "NSTDA, Piruin P.",
@@ -33,8 +33,12 @@
         "views/ni_medication_views.xml",
         "views/ni_medication_admin_location_views.xml",
         "views/ni_medication_statement_views.xml",
+        "views/ni_medication_reqeust_views.xml",
         "views/ni_medication_dispense_views.xml",
         "views/ni_medication_dosage_views.xml",
+        "views/ni_medication_dosage_route_views.xml",
+        "views/ni_medication_dosage_method_views.xml",
+        "views/ni_medication_dosage_additional_views.xml",
         "views/ni_medication_unit_views.xml",
         "views/ni_medication_menus.xml",
         "views/ni_patient_views.xml",

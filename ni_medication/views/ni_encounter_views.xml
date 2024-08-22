@@ -15,21 +15,38 @@
                     name="medication_statement_ids"
                     context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'default_category_id': %(ni_medication.admin_location_patient_specified)d, 'show_dosage': 1}"
                     groups="ni_medication.group_viewer"
-                    widget="many2many_tags"
                     string="Patient Specified"
                 />
-                <button name="action_medication_statement" type="object" string="See More" icon="fa-th-list" />
             </xpath>
             <xpath expr="//page[@name='medication']" position="attributes">
-                <attribute name="badge">medication_dispense_count</attribute>
+                <attribute name="badge">medication_request_count</attribute>
                 <attribute name="groups">ni_medication.group_viewer</attribute>
             </xpath>
             <xpath expr="//page[@name='medication']" position="inside">
-                <field
-                    name="medication_dispense_ids"
-                    context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'default_dose': 1.0, 'default_category_id': %(ni_medication.admin_location_community)d}"
-                />
-                <field name="medication_dispense_count" invisible="1" />
+                <notebook orientation="original" class="no_controller">
+                    <page name="rx" string="Rx" icon="fa-inbox" badge="medication_request_count">
+                        <field
+                            name="medication_request_ids"
+                            context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'default_dose': 1.0, 'default_category_id': %(ni_medication.admin_location_community)d}"
+                        />
+                        <field name="medication_request_count" invisible="1" />
+                    </page>
+                    <page name="mdr" string="Dispense" icon="fa-paper-plane-o" badge="medication_dispense_count">
+                        <field
+                            name="medication_dispense_ids"
+                            context="{'default_patient_id': patient_id, 'default_encounter_id': id, 'default_dose': 1.0, 'default_category_id': %(ni_medication.admin_location_community)d}"
+                        />
+                        <field name="medication_dispense_count" invisible="1" />
+                        <button
+                            name="action_view_dispense"
+                            type="object"
+                            icon="fa-paper-plane-o"
+                            string="View Dispense"
+                            attrs="{'invisible': [('medication_request_count', '=', 0)]}"
+                            groups="base.group_no_one"
+                        />
+                    </page>
+                </notebook>
             </xpath>
         </field>
     </record>

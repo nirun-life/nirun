@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <odoo>
+        <record id="ni_medication_dosage_route_action" model="ir.actions.act_window">
+            <field name="name">Medication Route</field>
+            <field name="res_model">ni.medication.dosage.route</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="ni_medication_dosage_route_view_search" model="ir.ui.view">
+            <field name="name">ni.medication.dosage.route.view.search</field>
+            <field name="model">ni.medication.dosage.route</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
+                    <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                    <group name="group_by" string="Group By">
+                        <filter name="system" string="System" context="{'group_by': 'system_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="ni_medication_dosage_route_view_tree" model="ir.ui.view">
+            <field name="name">ni.medication.dosage.route.view.tree</field>
+            <field name="model">ni.medication.dosage.route</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sequence" widget="handle" />
+                    <field name="name" />
+                    <field name="code" optional="show" />
+                    <field name="system_id" optional="show" />
+                    <field name="color" optional="hide" widget="color_picker" />
+                    <field name="active" optional="hide" />
+                </tree>
+            </field>
+        </record>
+        <record id="ni_medication_dosage_route_view_form" model="ir.ui.view">
+            <field name="name">ni.medication.dosage.route.view.form</field>
+            <field name="model">ni.medication.dosage.route</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="id" invisible="True" />
+                    <field name="active" invisible="True" />
+                    <sheet>
+                        <widget
+                            name="web_ribbon"
+                            attrs="{'invisible': [('active', '=', True)]}"
+                            bg_color="bg-danger"
+                            title="Archived"
+                        />
+                        <group>
+                            <field name="name" />
+                        </group>
+                        <group>
+                            <group>
+                                <field name="abbr" string="Abbr." />
+                            </group>
+                            <group>
+                                <field name="code" />
+                            </group>
+                        </group>
+                        <field name="definition" placeholder="Definition..." />
+                        <notebook groups="base.group_no_one">
+                            <page string="Extra Info" groups="base.group_no_one">
+                                <group string="Configuration">
+                                    <group>
+                                        <field name="method_id" />
+                                    </group>
+                                    <group>
+                                        <field name="system_id" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Display">
+                                        <field name="color" widget="color_picker" />
+                                        <field name="sequence" />
+                                    </group>
+                                    <group string="Metadata">
+                                        <field name="create_date" />
+                                        <field name="create_uid" widget="many2one_avatar_user" />
+                                        <field name="write_date" />
+                                        <field name="write_uid" widget="many2one_avatar_user" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </odoo>
+</odoo>

@@ -11,7 +11,7 @@ class Dosage(models.Model):
     sequence = fields.Integer(default=16)
     name = fields.Char()
     display_name = fields.Char(compute="_compute_display_name")
-    color = fields.Integer()
+    color = fields.Integer(related="route_id.color")
     text = fields.Text(
         help="How the medication is/was taken or should be taken",
     )
@@ -48,12 +48,11 @@ class Dosage(models.Model):
     def _compute_display_dose(self):
         for rec in self:
             if rec.dose and rec.dose_unit_id:
+                unit = rec.dose_unit_id.alias or rec.dose_unit_id.name
                 if rec.dose.is_integer():
-                    rec.display_dose = "{:d} {}".format(
-                        int(rec.dose), rec.dose_unit_id.name
-                    )
+                    rec.display_dose = "{:d} {}".format(int(rec.dose), unit)
                 else:
-                    rec.display_dose = "{} {}".format(rec.dose, rec.dose_unit_id.name)
+                    rec.display_dose = "{} {}".format(rec.dose, unit)
             else:
                 rec.display_dose = None
 
@@ -70,8 +69,10 @@ class Dosage(models.Model):
     def _name_get(self):
         rec = self
         name = rec.timing_id.name
+        if self.route_id:
+            name = "{} {}".format(self.route_id.abbr or self.route_id.name, name)
         if self.display_dose:
-            name = "{} - {}".format(self.display_dose, name)
+            name = "{} {}".format(self.display_dose, name)
         if self._context.get("show_text") and self.text:
             name = "{}\n{}".format(name, rec.text)
         if self._context.get("show_additional") and self.additional_ids:

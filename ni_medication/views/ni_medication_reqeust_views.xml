@@ -1,102 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (c) 2021-2023 NSTDA
+  ~ Copyright (c) 2021-2024 NSTDA
   -->
 <odoo>
-    <record id="ni_medication_dispense_action" model="ir.actions.act_window">
-        <field name="name">Medications Dispense</field>
-        <field name="res_model">ni.medication.dispense</field>
-        <field name="view_mode">tree,form,pivot,graph,activity</field>
-        <field name="context">{'search_default_period_today': True}</field>
-    </record>
-    <record id="ni_medication_dispense_action_completed" model="ir.actions.act_window">
-        <field name="name">Medications dispense</field>
-        <field name="res_model">ni.medication.dispense</field>
-        <field name="view_mode">tree,form,pivot,graph,activity</field>
-        <field name="context">{'search_default_state_completed': True}</field>
-    </record>
-    <record id="ni_medication_dispense_view_search" model="ir.ui.view">
-        <field name="name">ni.medication.dispense.view.search</field>
-        <field name="model">ni.medication.dispense</field>
+    <record id="ni_medication_request_view_tree" model="ir.ui.view">
+        <field name="name">ni.medication.request.view.tree</field>
+        <field name="model">ni.medication.request</field>
         <field name="arch" type="xml">
-            <search>
-                <field name="medication_id" />
-                <field name="patient_id" />
-                <field name="encounter_id" />
-                <separator />
-                <filter
-                    name="occurrence_today"
-                    string="Today"
-                    domain="[('occurrence', '=', context_today().strftime('%Y-%m-%d'))]"
-                />
-                <filter name="occurrence" string="Occurrence" date="occurrence" />
-                <separator />
-                <filter
-                    name="at_morning"
-                    string="At morning"
-                    domain="[('dosage_when.code', 'in', ['WAKE', 'CM', 'ACM', 'PCM', 'MORN'])]"
-                />
-                <filter
-                    name="at_noon"
-                    string="At noon"
-                    domain="[('dosage_when.code', 'in', ['CD', 'ACD', 'PCD', 'AFT'])]"
-                />
-                <filter
-                    name="at_evening"
-                    string="At evening"
-                    domain="[('dosage_when.code', 'in', ['CV', 'ACV', 'PCV', 'EVE'])]"
-                />
-                <filter name="at_night" string="At night" domain="[('dosage_when.code', 'in', ['HS'])]" />
-                <separator />
-                <filter
-                    name="state_to_dispense"
-                    string="To Dispense"
-                    domain="[('state', 'in', ['preparation', 'in-progress', 'suspended'])]"
-                />
-                <filter name="state_dispensed" string="Dispensed" domain="[('state', '=', 'completed')]" />
-                <filter name="state_abort" string="Abort" domain="[('state', 'in', ['not-done', 'abort'])]" />
-                <separator />
-                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
-                <group string="Group by">
-                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
-                    <filter name="group_by_medication" string="Medication" context="{'group_by': 'medication_id'}" />
-                    <filter name="group_by_category" string="Category" context="{'group_by': 'category_id'}" />
-                </group>
-            </search>
-        </field>
-    </record>
-    <record id="ni_medication_dispense_view_tree" model="ir.ui.view">
-        <field name="name">ni.medication.dispense.view.tree</field>
-        <field name="model">ni.medication.dispense</field>
-        <field name="arch" type="xml">
-            <tree decoration-info="state in ['preparation']" multi_edit="1">
-                <field name="company_id" invisible="1" />
+            <tree>
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
+                <field name="medication_dispense_count" invisible="1" />
                 <field name="identifier" optional="hide" />
-                <field name="category_id" optional="hide" />
-                <field name="occurrence" optional="show" />
-                <field name="medication_request_id" groups="base.group_no_one" optional="hide" />
                 <field name="name" />
-                <field name="dosage_id" optional="show" />
-                <field name="quantity_display" optional="show" />
-                <field name="state" optional="hide" />
-                <button name="action_print_label" class="oe_stat_button" icon="fa-print" type="object" string="Print" />
-                <field name="active" invisible="1" />
+                <field name="dosage_id" />
+                <field name="quantity_display" string="Quantity" optional="show" />
+                <field name="state" widget="badge" optional="hide" />
+                <button
+                    name="action_dispense"
+                    type="object"
+                    string="Dispense"
+                    icon="fa-paper-plane-o"
+                    attrs="{'invisible': [('state', 'in', ['completed', 'revoked'])]}"
+                    groups="ni_medication.group_dispenser"
+                />
                 <control>
-                    <create string="Add dispense" context="{}" />
+                    <create string="Add Prescription" context="{}" />
                 </control>
             </tree>
         </field>
     </record>
-    <record id="ni_medication_dispense_view_form" model="ir.ui.view">
-        <field name="name">ni.medication.dispense.view.form</field>
-        <field name="model">ni.medication.dispense</field>
+    <record id="ni_medication_request_view_form" model="ir.ui.view">
+        <field name="name">ni.medication.request.view.form</field>
+        <field name="model">ni.medication.request</field>
         <field name="arch" type="xml">
             <form>
-                <field name="id" invisible="True" />
-                <field name="active" invisible="True" />
                 <field name="state" invisible="1" />
+                <field name="medication_dispense_count" invisible="1" />
+                <header>
+                    <button
+                        name="action_dispense"
+                        icon="fa-paper-plane-o"
+                        string="Dispense"
+                        class="oe_highlight"
+                        groups="ni_medication.group_dispenser"
+                        type="object"
+                        attrs="{'invisible': [('state', 'in', ['completed', 'revoked'])]}"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="active,completed" />
+                </header>
                 <sheet>
                     <field
                         name="medication_image_1920"
@@ -131,7 +83,7 @@
                             />
                             <field
                                 name="encounter_id"
-                                invisible="context.get('default_encounter_id')"
+                                invisible="context.get('default_encounter_id') or context.get('hide_encounter_id')"
                                 options="{'no_open': True}"
                             />
                             <field
@@ -146,9 +98,6 @@
                                 <field name="quantity" class="narrow_field" />
                                 <field name="medication_dose_unit_id" class="oe_inline" options="{'no_open': True}" />
                             </div>
-                        </group>
-                        <group>
-                            <field name="occurrence" />
                         </group>
                     </group>
                     <notebook>
@@ -235,27 +184,34 @@
                                 </div>
                             </div>
                         </page>
+                        <page
+                            name="dispense"
+                            string="Dispense"
+                            icon="fa-paper-plane-o"
+                            badge="medication_dispense_count"
+                            groups="base.group_no_one"
+                        >
+                            <field name="medication_dispense_count" invisible="1" />
+                            <field name="medication_dispense_ids" />
+                        </page>
                         <page name="note" string="Note">
                             <field name="note" placeholder="Further information about the dispense" />
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" groups="base.group_user" />
-                    <field name="message_ids" />
-                </div>
             </form>
         </field>
     </record>
-    <record id="ni_medication_dispense_view_kanban" model="ir.ui.view">
-        <field name="name">ni.medication.dispense.view.kanban</field>
-        <field name="model">ni.medication.dispense</field>
+    <record id="ni_medication_request_view_kanban" model="ir.ui.view">
+        <field name="name">ni.medication.request.view.kanban</field>
+        <field name="model">ni.medication.request</field>
         <field name="arch" type="xml">
             <kanban>
                 <field name="name" />
                 <field name="quantity" />
                 <field name="quantity_display" />
                 <field name="dosage_id" />
+                <field name="state" />
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_global_click">
@@ -265,15 +221,29 @@
                                         <field name="name" />
                                     </strong>
                                 </div>
-                                <div class="me-1 text-body" t-if="record.quantity">
-                                    <field name="quantity_display" />
-                                </div>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <ul>
+                                    <li>
+                                        <label for="dosage_id" class="small text-muted me-2">Sig :</label>
+                                        <field name="dosage_id" />
+                                    </li>
+                                    <li t-if="record.quantity">
+                                        <label for="quantity_display" class="small text-muted me-2">Disp :</label>
+                                        <field name="quantity_display" />
+                                    </li>
+                                </ul>
                             </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
-                                    <div class="small">
-                                        <field name="dosage_id" />
-                                    </div>
+                                    <button
+                                        name="action_dispense"
+                                        type="object"
+                                        string="Dispense"
+                                        icon="fa-paper-plane-o"
+                                        groups="ni_medication.group_dispenser"
+                                        attrs="{'invisible': [('state', 'in', ['completed', 'revoked'])]}"
+                                    />
                                 </div>
                                 <div class="oe_kanban_bottom_right mr4">
 
@@ -283,48 +253,6 @@
                     </t>
                 </templates>
             </kanban>
-        </field>
-    </record>
-    <record id="ni_medication_dispense_view_activity" model="ir.ui.view">
-        <field name="name">ni.medication.dispense.view.activity</field>
-        <field name="model">ni.medication.dispense</field>
-        <field name="arch" type="xml">
-            <activity string="Medication dispense">
-                <field name="patient_id" />
-                <templates>
-                    <div t-name="activity-box">
-                        <div>
-                            <field name="name" display="full" />
-                            <field
-                                name="patient_id"
-                                display="full"
-                                invisible="context.get('default_patient_id', False)"
-                                muted="1"
-                            />
-                        </div>
-                    </div>
-                </templates>
-            </activity>
-        </field>
-    </record>
-    <record id="ni_medication_dispense_view_pivot" model="ir.ui.view">
-        <field name="name">ni.medication.dispense.view.pivot</field>
-        <field name="model">ni.medication.dispense</field>
-        <field name="arch" type="xml">
-            <pivot>
-                <field name="medication_id" type="row" />
-                <field name="category_id" type="col" />
-            </pivot>
-        </field>
-    </record>
-    <record id="ni_medication_dispense_view_graph" model="ir.ui.view">
-        <field name="name">ni.medication.dispense.view.graph</field>
-        <field name="model">ni.medication.dispense</field>
-        <field name="arch" type="xml">
-            <graph>
-                <field name="medication_id" type="col" />
-                <field name="category_id" type="col" />
-            </graph>
         </field>
     </record>
 </odoo>

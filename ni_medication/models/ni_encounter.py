@@ -1,6 +1,7 @@
 #  Copyright (c) 2021-2023 NSTDA
+import ast
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class Encounter(models.Model):
@@ -9,9 +10,19 @@ class Encounter(models.Model):
     medication_dispense_ids = fields.One2many(
         "ni.medication.dispense",
         "encounter_id",
-        "Dispense",
     )
     medication_dispense_count = fields.Integer(compute="_compute_medication_dispense")
+
+    medication_request_ids = fields.One2many(
+        "ni.medication.request",
+        "encounter_id",
+    )
+    medication_request_count = fields.Integer(compute="_compute_medication_request")
+
+    @api.depends("medication_request_ids")
+    def _compute_medication_request(self):
+        for rec in self:
+            rec.medication_request_count = len(rec.medication_request_ids)
 
     @api.depends("medication_dispense_ids")
     def _compute_medication_dispense(self):
@@ -37,4 +48,38 @@ class Encounter(models.Model):
             }
         )
         action["context"] = ctx
+        return action
+
+    def action_dispense(self):
+        self.ensure_one()
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "default_patient_id": self.patient_id.id,
+                "default_encounter_id": self.id,
+                "create": False,
+            }
+        )
+        view = {
+            "name": "Medication Dispense",
+            "res_model": "ni.medication.dispense",
+            "type": "ir.actions.act_window",
+            "target": self.env.context.get("target", "current"),
+            "view_mode": "list,kanban,form",
+            "context": ctx,
+        }
+        return view
+
+    def action_view_dispense(self):
+        action = (
+            self.env["ir.actions.act_window"]
+            .sudo()
+            ._for_xml_id("ni_medication.ni_medication_dispense_action")
+        )
+        action["display_name"] = _("Dispense")
+        context = action["context"].replace("active_id", str(self.id))
+        context = ast.literal_eval(context)
+        context.update({"create": self.active, "active_test": self.active})
+        action["context"] = context
+        action["domain"] = [("encounter_id", "=", self.id)]
         return action
