@@ -56,6 +56,8 @@ class WorkflowMixin(models.AbstractModel):
             "write_date": self.write_date,
             "write_uid": self.write_uid.id,
         }
+        if self._safe_get_parent():
+            data["parent_id"] = self._safe_get_parent().id
         self._workflow_replace_id(data)
         return data
 
@@ -95,6 +97,12 @@ class WorkflowMixin(models.AbstractModel):
         self.ensure_one()
         return dict(self._fields["state"].selection).get(self.state)
 
+    def _safe_get_parent(self):
+        if "parent_id" in self._fields and self.parent_id:
+            return self.partner_id
+        else:
+            return None
+
 
 class EventMixin(models.AbstractModel):
     _name = "ni.workflow.event.mixin"
@@ -133,12 +141,7 @@ class EventMixin(models.AbstractModel):
     def _to_workflow(self):
         res = super(EventMixin, self)._to_workflow()
         if self._workflow_request_id:
-            res.update(
-                {
-                    "request_id": self._workflow_request_id.id,
-                    "parent_id": self.parent_id.event_id.id or None,
-                }
-            )
+            res.update({"request_id": self._workflow_request_id.id})
         return res
 
     def action_not_done(self):
@@ -200,9 +203,6 @@ class RequestMixin(models.AbstractModel):
             {
                 "priority": self.priority or "routine",
                 "intent": self.intent or "order",
-                "parent_id": self._fields["parent_id"].request_id.id
-                if self._fields.get("parent_id")
-                else None,
             }
         )
         return data
