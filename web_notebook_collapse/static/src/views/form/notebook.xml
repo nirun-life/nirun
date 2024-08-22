@@ -5,7 +5,7 @@
 <templates xml:space="preserve">
     <t t-inherit="web.Notebook" t-inherit-mode="extension" owl="1">
         <xpath expr="//div" position="replace">
-            <div class="o_notebook_collapse_control btn-group">
+            <div t-attf-class="o_notebook_collapse_control btn-group {{ props.className }}">
                 <button
                     type="button"
                     id="btnCollapse"
@@ -26,7 +26,10 @@
                 </button>
             </div>
             <t t-if="props.orientation === 'horizontal'">
-                <div class="accordion o_notebook o_notebook_collapse" id="notebookCollapse">
+                <div
+                    t-attf-class="accordion o_notebook o_notebook_collapse {{ props.className }}"
+                    id="notebookCollapse"
+                >
                     <div
                         class="accordion-item o_notebook_item"
                         t-foreach="pages"
