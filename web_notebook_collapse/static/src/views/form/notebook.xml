@@ -134,13 +134,60 @@
                         </div>
                     </div>
                 </div>
+                <script
+                    async=""
+                    src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
+                    integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D"
+                    crossorigin="anonymous"
+                />
             </t>
-            <script
-                async=""
-                src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
-                integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D"
-                crossorigin="anonymous"
-            />
+            <t t-if="props.orientation === 'original'">
+                <div
+                    t-attf-class="o_notebook d-flex w-100 horizontal flex-column {{ props.className }}"
+                    t-if="state.currentPage"
+                >
+                    <div class="o_notebook_headers" t-att-class="{ 'm-0': props.orientation === 'vertical' }">
+                        <ul t-attf-class="nav nav-tabs flex-row flex-nowrap }}">
+                            <li
+                                t-foreach="navItems"
+                                t-as="navItem"
+                                t-key="navItem[0]"
+                                class="nav-item flex-nowrap cursor-pointer"
+                                t-if="navItem[1].isVisible"
+                            >
+                                <a
+                                    class="nav-link"
+                                    t-attf-class="{{ navItem[0] === state.currentPage ? 'active' : '' }} {{ navItem[1].className }}"
+                                    t-att-name="navItem[1].name"
+                                    t-on-click.prevent="() => this.activatePage(navItem[0])"
+                                    href="#"
+                                    role="tab"
+                                    tabindex="0"
+                                >
+                                    <i t-if="navItem[1].icon" t-attf-class="fa {{navItem[1].icon}} me-3" />
+                                    <t t-out="navItem[1].title" />
+                                    <span
+                                        t-if="navItem[1].badge"
+                                        class="ms-2 badge text-bg-primary"
+                                        t-esc="navItem[1].badge"
+                                    />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="o_notebook_content tab-content">
+                        <div class="tab-pane active" t-ref="activePane">
+                            <t
+                                t-if="page"
+                                t-component="page.Component"
+                                t-key="state.currentPage"
+                                t-props="page.props"
+                            />
+                            <t t-else="" t-slot="{{ state.currentPage }}" />
+                        </div>
+                    </div>
+                </div>
+            </t>
         </xpath>
     </t>
 </templates>
