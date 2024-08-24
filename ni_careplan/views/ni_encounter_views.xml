@@ -8,12 +8,16 @@
         <field name="model">ni.encounter</field>
         <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//page[@name='careplan']" position="attributes">
+                <attribute name="badge">careplan_count</attribute>
+            </xpath>
             <xpath expr="//page[@name='careplan']" position="inside">
                 <field
                     name="careplan_ids"
                     context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
                     mode="kanban"
                 />
+                <field name="careplan_count" invisible="1" />
             </xpath>
         </field>
     </record>

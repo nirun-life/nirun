@@ -2,7 +2,7 @@
 
 {
     "name": "Care Plan",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.1.1",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
@@ -15,6 +15,7 @@
         "ni_service",
         "ni_goal",
         "ni_document_ref",
+        "ni_medication",
     ],
     "data": [
         "security/ir.model.access.csv",

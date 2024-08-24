@@ -51,6 +51,14 @@ class Careplan(models.Model):
     goal_achieved_count = fields.Integer(compute="_compute_goal_ratio")
     goal_ratio = fields.Float(compute="_compute_goal_ratio")
 
+    action_count = fields.Integer(compute="_compute_action_count")
+    action_display = fields.Selection(
+        [
+            ("service", "Service"),
+            ("medication", "Medication"),
+        ],
+        default="service",
+    )
     service_category_id = fields.Many2one(related="category_id.service_category_id")
     service_request_ids = fields.One2many(
         "ni.service.request",
@@ -58,6 +66,9 @@ class Careplan(models.Model):
         domain="[('category_id', '=?', service_category_id), ('intent', '=', 'plan')]",
         options="{'create': true}",
     )
+    service_request_count = fields.Integer(compute="_compute_action_count")
+    medication_request_ids = fields.One2many("ni.medication.request", "careplan_id")
+    medication_request_count = fields.Integer(compute="_compute_action_count")
     document_ids = fields.One2many("ni.document.ref", "careplan_id")
     document_count = fields.Integer(compute="_compute_document_count")
     achievement_id = fields.Many2one(
@@ -68,6 +79,15 @@ class Careplan(models.Model):
         help="When achievement status took effect", readonly=1
     )
     achievement_uid = fields.Many2one("res.users", readonly=1)
+
+    @api.depends("service_request_ids", "medication_request_ids")
+    def _compute_action_count(self):
+        for rec in self:
+            rec.service_request_count = len(rec.service_request_ids)
+            rec.medication_request_count = len(rec.medication_request_ids)
+            rec.action_count = sum(
+                [rec.service_request_count, rec.medication_request_count]
+            )
 
     @api.depends("goal_ids")
     def _compute_goal_ratio(self):

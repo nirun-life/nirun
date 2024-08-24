@@ -75,89 +75,104 @@
                         context="{'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'enforce_specialty': 1}"
                         domain="[('patient_id', '=', patient_id), ('clinical_state', 'not in', ['inactive', 'resolved']), '|', ('code_id.specialty_ids', '=', False), ('code_id.specialty_ids', '=', user_specialty)]"
                     />
-                    <separator string="Goal" />
-                    <field name="goal_mode" invisible="1" />
-                    <field name="goal_mode" widget="radio" options="{'horizontal': True}" groups="base.group_no_one" />
-                    <field name="goal_category_id" invisible="1" />
-                    <div attrs="{'invisible': [('goal_mode', '!=', 'advance')]}">
-                        <field
-                            name="goal_ids"
-                            mode="kanban"
-                            class="w-100"
-                            context="{'default_patient_id': patient_id, 'default_encounter_id': encounter_id}"
-                        />
-                    </div>
-                    <div attrs="{'invisible': [('goal_mode', '!=', 'simple')]}">
-                        <field
-                            name="goal_code_ids"
-                            widget="many2many_tags"
-                            placeholder="Search for predefined goal..."
-                            class="w-100"
-                        />
-                        <field name="goal_text" placeholder="Describe goal" />
-                    </div>
-                    <separator string="Service" />
-                    <field name="service_category_id" invisible="1" />
-                    <field
-                        name="service_request_ids"
-                        options="{'create': True}"
-                        widget="one2many"
-                        mode="kanban"
-                        context="{'default_patient_id': patient_id, 'default_careplan_id': id}"
-                    />
                     <notebook>
+                        <page name="goal" string="Goal" badge="goal_count" icon="fa-bullseye">
+                            <field name="goal_count" invisible="1" />
+                            <field name="goal_mode" invisible="1" />
+                            <field
+                                name="goal_mode"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                                groups="base.group_no_one"
+                            />
+                            <field name="goal_category_id" invisible="1" />
+                            <div attrs="{'invisible': [('goal_mode', '!=', 'advance')]}">
+                                <field
+                                    name="goal_ids"
+                                    mode="kanban"
+                                    class="w-100"
+                                    context="{'default_patient_id': patient_id, 'default_encounter_id': encounter_id}"
+                                />
+                            </div>
+                            <div attrs="{'invisible': [('goal_mode', '!=', 'simple')]}">
+                                <field
+                                    name="goal_code_ids"
+                                    widget="many2many_tags"
+                                    placeholder="Search for predefined goal..."
+                                    class="w-100"
+                                />
+                                <field name="goal_text" placeholder="Describe goal" />
+                            </div>
+                            />
+                        </page>
+                        <page name="action" string="Action" badge="action_count" icon="fa-inbox">
+                            <field name="action_count" invisible="1" />
+                            <notebook class="no_controller" orientation="original">
+                                <page name="service" string="Service" badge="service_request_count">
+                                    <field name="service_category_id" invisible="1" />
+                                    <field name="service_request_count" invisible="1" />
+                                    <field
+                                        name="service_request_ids"
+                                        options="{'create': True}"
+                                        widget="one2many"
+                                        mode="kanban"
+                                        context="{'default_patient_id': patient_id, 'default_careplan_id': id}"
+                                    />
+                                </page>
+                                <page name="medication" string="Medication" badge="medication_request_count">
+                                    <field name="medication_request_count" invisible="1" />
+                                    <field
+                                        name="medication_request_ids"
+                                        options="{'create': True}"
+                                        mode="kanban"
+                                        context="{'default_patient_id': patient_id, 'default_careplan_id': id, 'hide_encounter_id': 1}"
+                                    />
+                                </page>
+                            </notebook>
+                        </page>
                         <page name="progress-note" string="Progress Note" icon="fa-clipboard" badg="document_count">
                             <field
                                 name="document_ids"
                                 context="{'default_careplan_id': id, 'default_patient_id': patient_id}"
                             />
-                            <field name="document_count" />
+                            <field name="document_count" invisible="1" />
                         </page>
                         <page name="achievement" string="Achievement" icon="fa-podcast">
                             <div class="row">
                                 <div class="col-12 col-lg-5">
                                     <label for="goal_review_ids" />
-                                    <field name="goal_review_ids" readonly="1">
-                                        <tree decoration-success="is_achieved" decoration-danger="not is_achieved">
-                                            <button
-                                                icon="fa-check"
-                                                class="text-success"
-                                                title="Achieved"
-                                                attrs="{'invisible': [('is_achieved', '=', False)]}"
-                                            />
-                                            <button
-                                                name="action_mark_achieved"
-                                                type="object"
-                                                icon="fa-check"
-                                                class="text-success"
-                                                title="Achieved"
-                                                attrs="{'invisible': [('state_achievable', '=', False)]}"
-                                            />
-                                            <button
-                                                name="action_mark_not_achieved"
-                                                type="object"
-                                                icon="fa-times"
-                                                title="Not achieve"
-                                                class="text-danger"
-                                                attrs="{'invisible': [('state_achievable', '=', False)]}"
-                                            />
-                                            <field name="is_achieved" invisible="1" />
-                                            <field name="name" string="Goal" />
-                                            <field
-                                                name="achievement_id"
-                                                widget="badge"
-                                                invisible="1"
-                                                decoration-primary="achievement_decoration == 'primary'"
-                                                decoration-success="achievement_decoration == 'success'"
-                                                decoration-info="achievement_decoration == 'info'"
-                                                decoration-warning="achievement_decoration == 'warning'"
-                                                decoration-danger="achievement_decoration == 'danger'"
-                                                decoration-muted="achievement_decoration == 'muted'"
-                                            />
-                                            <field name="achievement_decoration" invisible="1" />
-                                            <field name="state_achievable" invisible="1" />
-                                            <field name="state_id" invisible="1" />
-                                        </tree>
+                                    <field name="goal_review_ids" readonly="1" mode="kanban">
+                                        <kanban>
+                                            <field name="name" />
+                                            <field name="is_achieved" />
+                                            <field name="state_achievable" />
+                                            <templates>
+                                                <t t-name="kanban-box">
+                                                    <div t-attf-class="oe_kanban_card">
+                                                        <div class="oe_kanban_details">
+                                                            <button
+                                                                name="action_mark_achieved"
+                                                                type="object"
+                                                                icon="fa-check"
+                                                                t-attf-class="{{ (record.is_achieved.raw_value === true) ? 'text-success': 'text-muted'}}"
+                                                                title="Achieved"
+                                                            />
+                                                            <button
+                                                                name="action_mark_not_achieved"
+                                                                type="object"
+                                                                icon="fa-times"
+                                                                t-attf-class="{{ (record.is_achieved.raw_value === false &amp;&amp; record.state_achievable.raw_value === false) ? 'text-danger': 'text-muted'}}"
+                                                                title="Not Achieved"
+                                                            />
+                                                            <span
+                                                                t-attf-class="ms-2 record.is_achieved.raw_value === false &amp;&amp; record.state_achievable.raw_value === false) ? 'text-danger': ''"
+                                                                t-esc="record.name.raw_value"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </templates>
+                                        </kanban>
                                     </field>
                                 </div>
                                 <div class="col-12 col-lg-7">
@@ -198,6 +213,8 @@
                 <field name="condition_ids" />
                 <field name="goal_ids" />
                 <field name="service_request_ids" />
+                <field name="medication_request_ids" />
+                <field name="action_count" />
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click">
@@ -239,13 +256,19 @@
                                     <li>
                                         <i class="fa fa-inbox text-primary" aria-hidden="true" title="service" />
                                         <span class="small mx-2">Activity :</span>
-                                        <span
-                                            t-if="record.service_request_ids.raw_value == false"
-                                            class="text-muted small"
-                                        >
+                                        <span t-if="record.action_count.raw_value == 0" class="text-muted small">
                                             Not specify
                                         </span>
-                                        <field name="service_request_ids" widget="many2many_tags" />
+                                        <field
+                                            name="service_request_ids"
+                                            widget="many2many_tags"
+                                            options="{'color_field': 'color'}"
+                                        />
+                                        <field
+                                            name="medication_request_ids"
+                                            widget="many2many_tags"
+                                            options="{'color_field': 'color'}"
+                                        />
                                     </li>
                                 </ul>
                             </div>
@@ -268,8 +291,18 @@
         <field name="model">ni.service.request</field>
         <field name="inherit_id" ref="ni_service.ni_service_request_view_form" />
         <field name="arch" type="xml">
-            <field position="after" name="timing_tmpl_id">
-                <field name="careplan_id" />
+            <field name="category_id" position="after">
+                <field name="careplan_id" invisible="1" />
+            </field>
+        </field>
+    </record>
+    <record id="ni_medication_request_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.medication.request.view.form.inherit</field>
+        <field name="model">ni.medication.request</field>
+        <field name="inherit_id" ref="ni_medication.ni_medication_request_view_form" />
+        <field name="arch" type="xml">
+            <field name="category_id" position="after">
+                <field name="careplan_id" invisible="1" />
             </field>
         </field>
     </record>

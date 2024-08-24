@@ -2,19 +2,17 @@
 from odoo import api, fields, models
 
 
-class ServiceRequest(models.Model):
-    _inherit = "ni.service.request"
+class MedicationRequest(models.Model):
+    _inherit = "ni.medication.request"
 
     @api.model
     def default_get(self, fields):
-        res = super(ServiceRequest, self).default_get(fields)
+        res = super(MedicationRequest, self).default_get(fields)
         if "careplan_id" in res:
             res["intent"] = "plan"
         return res
 
-    careplan_id = fields.Many2one(
-        "ni.careplan", index=True, help="What request fulfills", ondelete="cascade"
-    )
+    careplan_id = fields.Many2one("ni.careplan", index=True, ondelete="cascade")
 
     @api.constrains("careplan_id", "encounter_id")
     def _check_careplan_encounter(self):
