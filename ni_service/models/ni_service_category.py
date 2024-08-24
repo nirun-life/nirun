@@ -25,6 +25,9 @@ class ServiceCategory(models.Model):
     parent_id = fields.Many2one("ni.service.category", index=True, ondelete="set null")
     parent_path = fields.Char(index=True, unaccent=False)
     service_ids = fields.One2many("ni.service", "category_id")
+    specialty_ids = fields.Many2many(
+        "hr.job", "ni_service_category_specialty", "category_id", "job_id"
+    )
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
