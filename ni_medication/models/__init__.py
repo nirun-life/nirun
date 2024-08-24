@@ -1,5 +1,4 @@
 #  Copyright (c) 2023 NSTDA
-
 from . import ni_medication_dosage
 from . import ni_medication_dosage_additional
 from . import ni_medication_dosage_method
@@ -14,6 +13,7 @@ from . import ni_medication_ingredient
 from . import ni_medication_statement
 from . import ni_medication_dispense
 from . import ni_medication_request
+from . import ni_medication_suggest
 from . import ni_condition
 from . import ni_patient
 from . import ni_encounter

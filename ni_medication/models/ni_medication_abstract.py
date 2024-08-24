@@ -1,5 +1,8 @@
 #  Copyright (c) 2023 NSTDA
-from odoo import api, fields, models
+import pprint
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class MedicationAbstract(models.AbstractModel):
@@ -73,3 +76,14 @@ class MedicationAbstract(models.AbstractModel):
         for rec in self:
             if rec.route_id and rec.route_id.method_id:
                 rec.method_id = rec.route_id.method_id
+
+    def save_dosage_as_template(self):
+        if not self.medication_id:
+            raise UserError(_("Must save medication link"))
+        dosage = self.env["ni.medication.dosage"]
+        def_val = {"name": self.dosage_name}
+        dosage_val = {
+            k: v for k, v in self.copy_data(def_val)[0].items() if k in dosage._fields
+        }
+        pprint.pprint(dosage_val)
+        self.medication_id.write({"dosage_ids": [fields.Command.create(dosage_val)]})

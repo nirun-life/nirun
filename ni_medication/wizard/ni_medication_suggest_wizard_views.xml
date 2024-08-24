@@ -34,7 +34,7 @@
                             />
                         </h2>
                     </div>
-                    <notebook>
+                    <notebook class="no_controller">
                         <page name="line" string="Detail" icon="fa-minus-circle" badge="suggest_line_count">
                             <field name="suggest_line_ids" />
                             <field name="suggest_line_count" invisible="1" />
@@ -51,22 +51,6 @@
                     <button special="cancel" type="object" string="Discard" />
                 </footer>
             </form>
-        </field>
-    </record>
-    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
-        <field name="name">ni.encounter.view.form.inherit</field>
-        <field name="model">ni.encounter</field>
-        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
-        <field name="arch" type="xml">
-            <xpath expr="//page[@name='medication']" position="inside">
-                <button
-                    name="%(ni_medication_suggest_wizard_action)d"
-                    type="action"
-                    string="Suggestion"
-                    icon="fa-briefcase"
-                    attrs="{'invisible': [('state', '!=', 'in-progress')]}"
-                />
-            </xpath>
         </field>
     </record>
 </odoo>

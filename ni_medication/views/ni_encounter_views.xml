@@ -23,7 +23,16 @@
                 <attribute name="groups">ni_medication.group_viewer</attribute>
             </xpath>
             <xpath expr="//page[@name='medication']" position="inside">
-                <notebook orientation="original" class="no_controller">
+                <div class="float-end">
+                    <button
+                        name="%(ni_medication_suggest_wizard_action)d"
+                        type="action"
+                        string="Suggestion"
+                        icon="fa-briefcase"
+                        attrs="{'invisible': [('state', '!=', 'in-progress')]}"
+                    />
+                </div>
+                <notebook name="med-detail" orientation="original" class="no_controller">
                     <page name="rx" string="Rx" icon="fa-inbox" badge="medication_request_count">
                         <field
                             name="medication_request_ids"

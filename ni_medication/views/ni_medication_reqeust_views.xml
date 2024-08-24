@@ -147,6 +147,12 @@
                                         />
                                     </group>
                                     <field name="text" placeholder="Describe more additional dosage here..." />
+                                    <button
+                                        name="save_dosage_as_template"
+                                        type="object"
+                                        string="Save as templete"
+                                        attrs="{'invisible': ['|',('medication_id', '=', False),('dosage_tmpl_id', '!=', False)]}"
+                                    />
                                 </div>
                                 <div class="col-lg-4 px-0 ps-lg-5 pe-lg-0">
                                     <separator string="Template" />
@@ -164,21 +170,6 @@
                                             context="{'show_text': True, 'show_additional':True}"
                                             options="{'no_create':True}"
                                             widget="radio"
-                                        />
-                                        <label
-                                            class="oe_edit_only"
-                                            for="dosage_id"
-                                            string="or"
-                                            attrs="{'invisible': ['|', '|',  ('medication_dosage_count', '=', 0), ('dosage_tmpl_id', '!=', False), ('dosage_id', '!=', False)]}"
-                                        />
-                                        <field
-                                            name="dosage_id"
-                                            domain="[('id', '=', False)]"
-                                            context="{'show_text': True, 'show_additional':True, 'default_dose_unit_id': medication_dose_unit_id}"
-                                            placeholder="create new..."
-                                            attrs="{'invisible': [('dosage_tmpl_id', '!=', False)]}"
-                                            options="{'no_quick_create':True, 'always_reload':True}"
-                                            invisible="1"
                                         />
                                     </div>
                                 </div>

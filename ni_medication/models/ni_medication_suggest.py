@@ -7,6 +7,9 @@ class MedicationSuggestion(models.Model):
     _description = "Medication Suggestion"
     _inherit = ["ni.coding"]
 
+    user_id = fields.Many2one(
+        "res.users", required=False, help="this suggestion belong to user"
+    )
     line_ids = fields.One2many("ni.medication.suggest.line", "suggest_id", "Medication")
     line_count = fields.Integer(compute="_compute_line_display", store=True)
     line_display = fields.Char(
@@ -36,7 +39,6 @@ class MedicationSuggestionLine(models.Model):
     category_id = fields.Many2one(
         "ni.medication.admin.location", required=False, copy=False
     )
-
     quantity = fields.Float(required=True)
     reason_id = fields.Many2one(
         "ni.encounter.reason", domain="[('id', 'in', reason_ids)]"
