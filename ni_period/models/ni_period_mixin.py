@@ -10,6 +10,7 @@ from odoo.exceptions import ValidationError
 class PeriodMixin(models.AbstractModel):
     _name = "ni.period.mixin"
     _description = "Period"
+    _workflow_occurrence_field = "period_start"
 
     period_mode = fields.Selection(
         [("datetime", "Date / Time"), ("date", "Date")],
