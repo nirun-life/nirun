@@ -26,7 +26,7 @@ class Dosage(models.Model):
     )
 
     site_id = fields.Many2one(
-        "ni.medication.dosage.site", "Body Site", help="Body site to administer to"
+        "ni.body.site", "Body Site", help="Body site to administer to"
     )
     route_id = fields.Many2one(
         "ni.medication.dosage.route", "Route", help="How drug should enter body"

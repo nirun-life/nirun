@@ -10,6 +10,7 @@
     "license": "LGPL-3",
     "maintainers": ["piruin"],
     "depends": [
+        "ni_body_site",
         "ni_timing",
         "ni_patient",
         "ni_condition",
