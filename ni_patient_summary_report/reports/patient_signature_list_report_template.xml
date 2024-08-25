@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024. NSTDA
+  -->
+<odoo>
+    <template id="patient_signature_list_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <t t-set="rec" t-value="docs[0]" />
+                    <div class="oe_structure" />
+                    <h2>
+                        <span>ใบเซนต์ชื่อผู้ที่มารับบริการ</span>
+                    </h2>
+                    <div>
+                        <strong>รูปแบบบริการ:</strong>
+                        <span class="me-3" t-esc="rec.class_id.name" />
+                    </div>
+                    <table class="table table-sm o_main_table table-borderless mt-4" id="-table">
+                        <thead style="display: table-row-group">
+                            <tr class="py-4">
+                                <th name="th_date" class="text-start">วันที่</th>
+                                <th name="th_time" class="text-start">เวลา</th>
+                                <th name="th_name" class="text-start">ชื่อ-นามสกุล</th>
+                                <th name="th_sig" class="text-start">ลงชื่อ</th>
+                                <th name="th_note" class="text-start">หมายเหตุ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="date" t-value="" />
+                            <tr t-foreach="docs" t-as="line" style="height: 3rem" class="py-2">
+                                <td name="td_date">
+                                    <t t-if="line.period_start_date != date">
+                                        <span t-field="line.period_start_date" />
+                                    </t>
+                                </td>
+                                <td name="td_time">
+                                    <span>08:30 - 16:00</span>
+                                </td>
+                                <td name="td_name">
+                                    <span t-field="line.patient_id.display_name" />
+                                </td>
+                                <td name="td_sig" class="w-25">
+                                    <span />
+                                </td>
+                                <td name="th_note" class="w-auto">
+                                    <span />
+                                </td>
+                                <t t-set="date" t-value="line.period_start_date" />
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

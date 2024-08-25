@@ -28,6 +28,8 @@
         "reports/summary_report.xml",
         "reports/medical_certificate_templates.xml",
         "reports/medical_certificate_report.xml",
+        "reports/patient_signature_list_report_template.xml",
+        "reports/patient_signature_list_report.xml",
         "views/res_company_views.xml",
     ],
     "assets": {
