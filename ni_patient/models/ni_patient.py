@@ -334,7 +334,7 @@ class Patient(models.Model):
             self.country_id = self.state_id.country_id
 
     def action_encounter(self):
-        action_rec = self.env.ref("ni_patient.ni_encounter_action")
+        action_rec = self.env.ref("ni_patient.ni_encounter_action").sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
         ctx.update(
