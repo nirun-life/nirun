@@ -69,7 +69,6 @@ class ServiceEvent(models.Model):
     user_id = fields.Many2one(
         related="event_id.user_id", string="ผู้รับผิดชอบหลัก", readonly=False
     )
-
     service_type_id = fields.Many2one(related="service_id.type_id")
     service_category_id = fields.Many2one(related="service_id.category_id")
 
