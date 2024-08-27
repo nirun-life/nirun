@@ -63,20 +63,28 @@
                 <separator />
                 <filter
                     name="encounter"
-                    string="Encounter"
+                    string="Active"
                     domain="[('state', 'in', ['draft', 'planned', 'in-progress'])]"
                 />
+                <separator />
                 <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
                 <filter name="planned" string="Planned" domain="[('state', '=', 'planned')]" />
                 <filter name="in_progress" string="In-Progress" domain="[('state', '=', 'in-progress')]" />
                 <filter name="discharged" string="Discharged" domain="[('state', '=', 'finished')]" />
                 <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]" />
-                <filter name="entered-in-error" string="Error Entry" domain="[('state', '=', 'entered-in-error')]" />
+                <filter
+                    name="entered-in-error"
+                    string="Error Entry"
+                    domain="[('state', '=', 'entered-in-error')]"
+                    groups="ni_patient.group_manager"
+                />
                 <separator />
-                <filter name="stat" string="Priority: STAT" domain="[('priority', '=', 'stat')]" />
-                <filter name="asap" string="Priority: ASAP" domain="[('priority', '=', 'asap')]" />
-                <filter name="urgent" string="Priority: Urgent" domain="[('priority', '=', 'urgent')]" />
-                <filter name="routine" string="Priority: Routine" domain="[('priority', '=', 'routine')]" />
+                <group name="priority" groups="base.group_no_one">
+                    <filter name="stat" string="Priority: STAT" domain="[('priority', '=', 'stat')]" />
+                    <filter name="asap" string="Priority: ASAP" domain="[('priority', '=', 'asap')]" />
+                    <filter name="urgent" string="Priority: Urgent" domain="[('priority', '=', 'urgent')]" />
+                    <filter name="routine" string="Priority: Routine" domain="[('priority', '=', 'routine')]" />
+                </group>
                 <group name="Group by">
                     <filter name="Priority" context="{'group_by': 'priority'}" />
                     <filter name="Classification" context="{'group_by': 'class_id'}" />
@@ -90,6 +98,7 @@
                 <searchpanel>
                     <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" />
                     <field name="class_id" enable_counters="1" />
+                    <field name="priority" icon="fa-flag" />
                     <field name="location_id" icon="fa-map-marker" enable_counters="1" />
                     <field name="gender" icon="fa-venus-mars" enable_counters="1" />
                     <field name="age_range_id" icon="fa-birthday-cake" enable_counters="1" />
@@ -583,10 +592,13 @@
         <field name="name">ni.encounter.view.kanban</field>
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
-            <kanban archivable="false" class="o_kanban_mobile" default_group_by="state">
+            <kanban archivable="false" class="o_kanban_mobile">
                 <field name="name" />
+                <field name="class_id" />
+                <field name="class_decoration" />
                 <field name="patient_id" />
                 <field name="priority" />
+                <field name="priority_decoration" />
                 <field name="location_id" />
                 <field name="state" />
                 <field name="period_start" />
@@ -626,6 +638,13 @@
                                     </strong>
                                 </div>
                                 <div>
+                                    <span
+                                        t-attf-class="o_kanban_record_subtitle text-{{record.class_decoration.raw_value}}"
+                                    >
+                                        <field name="class_id" />
+                                    </span>
+                                </div>
+                                <div>
                                     <span class="text-muted o_kanban_record_subtitle">
                                         <field name="patient_id" />
                                     </span>
@@ -639,6 +658,11 @@
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
+                                        <i
+                                            t-attf-class="fa fa-flag text-{{record.priority_decoration.value}}"
+                                            aria-hidden="true"
+                                            title="priority"
+                                        />
                                         <field name="priority" />
                                     </div>
                                     <div class="oe_kanban_bottom_right">
@@ -741,7 +765,7 @@
     <record id="ni_encounter_action_discharged" model="ir.actions.act_window">
         <field name="name">Discharged</field>
         <field name="res_model">ni.encounter</field>
-        <field name="view_mode">pivot,graph,tree,calendar</field>
+        <field name="view_mode">pivot,graph,tree,calendar,form</field>
         <field name="domain">[('state', '=', 'finished')]</field>
         <field name="context">
             {
