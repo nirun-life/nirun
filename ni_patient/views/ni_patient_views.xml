@@ -6,7 +6,7 @@
     <record id="patient_action" model="ir.actions.act_window">
         <field name="name">Patients</field>
         <field name="res_model">ni.patient</field>
-        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create a new patient record</p>
         </field>
@@ -127,7 +127,7 @@
                     >
                         <button
                             name="action_encounter"
-                            attrs="{'invisible': [('presence_state', 'not in', ['deceased', 'finished'])]}"
+                            attrs="{'invisible': [('encounter_count', '=', 0)]}"
                             class="oe_stat_button"
                             icon="fa-hospital-o"
                             type="object"
@@ -318,6 +318,7 @@
                 <field name="is_encountering" />
                 <field name="location_id" />
                 <field name="image_128" />
+                <field name="company_id" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
@@ -406,10 +407,21 @@
                                     </div>
                                 </div>
                                 <ul>
-                                    <li>
-                                        <field name="company_id" groups="base.group_multi_company" />
+                                    <li groups="base.group_multi_company" class="text-truncate">
+                                        <i class="fa fa-hospital-o me-2" aria-hidden="true" title="company" />
+                                        <!--                                        <span t-esc="record.company_id.value" />-->
+                                        <field name="company_id" />
                                     </li>
                                     <li class="o_force_ltr" t-if="record.gender.value or record.age.value &gt; 0">
+                                        <t t-if="record.gender.raw_value == 'male'">
+                                            <i class="fa fa-mars me-2 text-info" aria-hidden="true" />
+                                        </t>
+                                        <t t-elif="record.gender.raw_value == 'female'">
+                                            <i class="fa fa-venus me-2 text-danger" aria-hidden="true" />
+                                        </t>
+                                        <t t-else="">
+                                            <i class="fa fa-genderless me-2" aria-hidden="true" />
+                                        </t>
                                         <field name="gender" />
                                         <t t-if="record.age.value &gt; 0">
                                             <t t-if="record.gender.value">,</t>
@@ -422,14 +434,15 @@
                                         <field name="deceased_date" />
                                     </li>
                                     <li class="o_text_overflow" t-if="record.location_id.value">
+                                        <i class="fa fa-map-marker me-2" aria-hidden="true" title="location" />
                                         <field name="location_id" />
                                     </li>
                                 </ul>
-                                <div class="o_kanban_card_actions mt-1" t-if="!selection_mode">
+                                <div class="o_kanban_card_actions mt-4" t-if="!selection_mode">
                                     <button
                                         name="%(ni_encounter_action_from_patient)d"
                                         attrs="{'invisible': [('presence_state', 'not in', ['unknown', 'finished'])]}"
-                                        class="btn btn-primary"
+                                        class="btn-outline-primary"
                                         icon="fa-sign-in"
                                         type="action"
                                         groups="ni_patient.group_user"
@@ -440,7 +453,7 @@
                                         name="%(ni_encounter_action)d"
                                         string="Validate"
                                         attrs="{'invisible': [('presence_state', 'not in', ['draft', 'planned'])]}"
-                                        class="btn btn-info"
+                                        class="btn btn-outline-info"
                                         context="{'search_default_patient_id': active_id}"
                                         icon="fa-file-o"
                                         type="action"
