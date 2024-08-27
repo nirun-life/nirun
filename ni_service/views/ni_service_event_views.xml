@@ -59,6 +59,8 @@
                             />
                             <field
                                 name="service_ids"
+                                class="w-100"
+                                placeholder="Services..."
                                 widget="many2many_tags"
                                 options="{'color_field': 'color', 'always_reload': True}"
                                 force_save="1"
@@ -96,6 +98,7 @@
                                     placeholder="ระบุผู้ปฎิบัติงาน..."
                                     string="ผู้ปฎิบัติงาน"
                                     domain="[('type','!=','private'), ('user_id', '!=', False)]"
+                                    options="{'no_create': True}"
                                 />
                                 <p class="text-muted small">ระบุผู้ปฎิบัติงานเพื่อแสดงกำหนดการบนปฎิทินส่วนตัวของเค้า</p>
                             </div>
