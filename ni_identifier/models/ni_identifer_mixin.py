@@ -1,6 +1,10 @@
 #  Copyright (c) 2023 NSTDA
 
+import logging
+
 from odoo import _, api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class IdentifierMixin(models.AbstractModel):
@@ -18,9 +22,12 @@ class IdentifierMixin(models.AbstractModel):
     def create(self, vals_list):
         for vals in vals_list:
             if (
-                vals.get(self._identifier_field, self._identifier_default)
+                self._identifier_field not in vals
+                or (
+                    vals.get(self._identifier_field, self._identifier_default)
+                    or self._identifier_default
+                )
                 == self._identifier_default
-                or self._identifier_field not in vals
             ):
                 seq_date = fields.Date.today()
                 if self._identifier_ts_field in vals:
@@ -30,15 +37,14 @@ class IdentifierMixin(models.AbstractModel):
                     )
                 seq = self.env["ir.sequence"]
                 if "company_id" in vals:
-                    vals[self._identifier_field] = (
-                        seq.with_context(with_company=vals["company_id"]).next_by_code(
-                            self._name, sequence_date=seq_date
+                    seq = seq.with_context(with_company=vals["company_id"])
+                vals[self._identifier_field] = seq.next_by_code(self._name, seq_date)
+                if not vals[self._identifier_field]:
+                    vals[self._identifier_field] = self._identifier_default
+                    _logger.warning(
+                        "Not found ir.sequence code={}, used default '{}' instead".format(
+                            self._name, self._identifier_default
                         )
-                        or self._identifier_default
                     )
-                else:
-                    vals[self._identifier_field] = (
-                        seq.next_by_code(self._name, sequence_date=seq_date)
-                        or self._identifier_default
-                    )
+
         return super().create(vals_list)
