@@ -15,10 +15,27 @@ class EncounterClassification(models.Model):
     _inherit = ["ni.coding"]
     _parent_store = True
 
+    decoration = fields.Selection(
+        [
+            ("primary", "Primary"),
+            ("success", "Success"),
+            ("info", "Info"),
+            ("warning", "Warning"),
+            ("danger", "Danger"),
+            ("muted", "Muted"),
+        ],
+        default="muted",
+        required=True,
+    )
+
     company_id = fields.Many2one("res.company", required=False)
 
     parent_id = fields.Many2one("ni.encounter.class", string="Parent Class", index=True)
     parent_path = fields.Char(index=True, unaccent=False)
+
+    sequence_id = fields.Many2one(
+        "ir.sequence", help="Fallback to default sequence when leave this field empty"
+    )
 
     auto_close = fields.Boolean(default=False)
     auto_close_midnight = fields.Boolean(default=True)

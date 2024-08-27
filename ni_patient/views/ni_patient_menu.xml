@@ -3,54 +3,48 @@
   ~ Copyright (c) 2021-2023 NSTDA
   -->
 <odoo>
-    <menuitem
-        id="encounter_menu_root"
-        name="Encounter"
-        sequence="0"
-        web_icon="ni_patient,static/description/encounter.png"
-    />
+    <!-- Patient -->
     <menuitem
         id="patient_menu_root"
         name="Patient Record"
         sequence="1"
         web_icon="ni_patient,static/description/patient.png"
     />
-    <!-- Patient -->
     <menuitem id="patient_menu_section" name="Patient Record" parent="patient_menu_root" sequence="2" />
+    <menuitem id="patient_menu" name="All Patients" action="patient_action" parent="patient_menu_root" sequence="1" />
     <menuitem
         id="patient_menu_in_progress"
-        name="Patients"
+        name="Patient In-Progress"
         action="patient_action_in_progress"
-        parent="patient_menu_section"
-        sequence="1"
-    />
-    <menuitem
-        id="patient_menu"
-        name="All Patients"
-        action="patient_action"
-        parent="patient_menu_section"
+        parent="patient_menu_root"
         sequence="2"
     />
     <!-- Encounter -->
+    <menuitem
+        id="encounter_menu_root"
+        name="Encounter"
+        sequence="0"
+        web_icon="ni_patient,static/description/encounter.png"
+    />
     <menuitem id="ni_encounter_menu_section" name="Encounter" parent="encounter_menu_root" sequence="1" />
     <menuitem
         id="ni_encounter_menu"
         name="In-Progress"
         action="ni_encounter_action"
-        parent="ni_encounter_menu_section"
+        parent="encounter_menu_root"
         sequence="1"
     />
     <menuitem
         id="ni_encounter_menu_discharged"
         name="Discharged"
         action="ni_encounter_action_discharged"
-        parent="ni_encounter_menu_section"
+        parent="encounter_menu_root"
     />
     <!-- Configuration -->
     <menuitem
         id="configuration_menu"
         name="Configuration"
-        groups="ni_patient.group_manager"
+        groups="ni_patient.group_admin"
         parent="patient_menu_root"
         sequence="100"
     />
@@ -59,7 +53,12 @@
     <menuitem id="location_menu" name="Location" action="location_action" parent="location_menu_section" />
     <menuitem id="location_type_menu" name="Type" action="location_type_action" parent="location_menu_section" />
     <!-- Encounter Configuration-->
-    <menuitem id="ni_encounter_configuration_menu_section" name="Configuration" parent="encounter_menu_root" />
+    <menuitem
+        id="ni_encounter_configuration_menu_section"
+        name="Configuration"
+        parent="encounter_menu_root"
+        groups="ni_patient.group_admin"
+    />
     <menuitem
         id="ni_encounter_class_menu"
         name="Classification"

@@ -1,6 +1,5 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.models import Command
@@ -63,7 +62,10 @@ class Encounter(models.Model):
         compute="_compute_name",
     )
     identifier = fields.Char(
-        "Encounter No.", readonly=True, states={"draft": [("readonly", False)]}
+        "Encounter No.",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
+        help="ใส่เลขรับบริการที่ทางหน่วยงานต้องการ หากไม่ระบุระบบจะสร้างให้อัตโนมัติ",
     )
     color = fields.Integer()
     class_id = fields.Many2one(
@@ -76,6 +78,7 @@ class Encounter(models.Model):
         ondelete="restrict",
         tracking=True,
     )
+    class_decoration = fields.Selection(related="class_id.decoration")
     auto_close = fields.Boolean(related="class_id.auto_close")
     period_start = fields.Datetime(
         readonly=True, states={"draft": [("readonly", False)]}
@@ -125,6 +128,21 @@ class Encounter(models.Model):
         required=True,
         states=LOCK_STATE_DICT,
     )
+    priority_decoration = fields.Selection(
+        [
+            ("routine", "muted"),
+            ("urgent", "info"),
+            ("asap", "warning"),
+            ("stat", "danger"),
+        ],
+        compute="_compute_priority_decoration",
+    )
+
+    @api.depends("priority")
+    def _compute_priority_decoration(self):
+        for rec in self:
+            rec.priority_decoration = rec.priority
+
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -507,6 +525,26 @@ class Encounter(models.Model):
                     self._prepare_new_location_hist_vals(
                         vals["location_id"], vals.get("period_start")
                     )
+                )
+            if (
+                self._identifier_field not in vals
+                or (
+                    vals.get(self._identifier_field, self._identifier_default)
+                    or self._identifier_default
+                )
+                == self._identifier_default
+            ):
+                enc_class = self.env["ni.encounter.class"].browse(vals["class_id"])
+                if not enc_class or not enc_class.sequence_id:
+                    continue
+                seq_date = fields.Date.today()
+                if self._identifier_ts_field in vals:
+                    seq_date = fields.Datetime.context_timestamp(
+                        self,
+                        fields.Datetime.to_datetime(vals[self._identifier_ts_field]),
+                    )
+                vals[self._identifier_field] = enc_class.sequence_id.next_by_id(
+                    seq_date
                 )
 
         result = super().create(vals_list)
