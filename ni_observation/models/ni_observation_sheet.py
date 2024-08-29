@@ -65,13 +65,30 @@ class ObservationSheet(models.Model):
                 order="category_id, sequence, id",
             )
             line_types = self.observation_ids.mapped("type_id")
-            self.update(
-                {
-                    "observation_ids": [
-                        (0, 0, self.line_data(t)) for t in types if t not in line_types
-                    ]
-                }
-            )
+            section_name = self.observation_ids.filtered("display_type").mapped("name")
+            line = []
+            for cat in self.category_ids:
+                if cat.name not in section_name:
+                    line.append(self.line_section(cat))
+                line = line + [
+                    self.line_data(t)
+                    for t in types.filtered(lambda s: s.category_id.id == cat.id)
+                    if t not in line_types
+                ]
+            # Apply sequence to each line
+            for i in range(len(line)):
+                line[i]["sequence"] = i
+            self.update({"observation_ids": [(0, 0, data) for data in line]})
+
+    def line_section(self, category_id):
+        return {
+            "sheet_id": self.id,
+            "name": category_id.name,
+            "patient_id": self.patient_id.id,
+            "occurrence": self.occurrence,
+            "encounter_id": self.encounter_id.id,
+            "display_type": "line_section",
+        }
 
     def line_data(self, type_id):
         return {
@@ -80,5 +97,6 @@ class ObservationSheet(models.Model):
             "patient_id": self.patient_id.id,
             "encounter_id": self.encounter_id.id,
             "type_id": type_id.id,
+            "value_type": type_id.value_type,
             "sequence": type_id.sequence,
         }
