@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 NSTDA
 from odoo import _, api, fields, models, tools
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools.date_utils import get_timedelta
 
 
@@ -10,6 +10,25 @@ class Observation(models.Model):
     _inherit = ["ni.workflow.event.mixin"]
     _order = "occurrence DESC,patient_id,sequence"
 
+    @api.model
+    def default_get(self, fields):
+        res = super(Observation, self).default_get(fields)
+        if "patient_id" in fields and "patient_id" not in res:
+            if self.env.context.get("active_model") == "ni.observation.sheet":
+                res["sheet_id"] = self.env.context["active_id"]
+            if self.env.context.get("active_model") == "ni.encounter":
+                res["encounter_id"] = self.env.context["active_id"]
+            if self.env.context.get("active_model") == "ni.patient":
+                res["patient_id"] = self.env.context["active_id"]
+        return res
+
+    display_type = fields.Selection(
+        [("line_section", "Section"), ("line_note", "Note")],
+        default=False,
+        help="Technical field for UX purpose.",
+    )
+    name = fields.Char()
+
     sheet_id = fields.Many2one(
         "ni.observation.sheet",
         required=False,
@@ -18,11 +37,12 @@ class Observation(models.Model):
         ondelete="cascade",
     )
     occurrence = fields.Datetime(default=lambda _: fields.datetime.now(), index=True)
-    type_id = fields.Many2one("ni.observation.type", required=True, index=True)
+    type_id = fields.Many2one("ni.observation.type", required=False, index=True)
     sequence = fields.Integer(default=0)
     category_id = fields.Many2one(
         related="type_id.category_id", readonly=True, store=True, index=True
     )
+
     value_type = fields.Selection(
         [("char", "Char"), ("float", "Float"), ("int", "Integer"), ("code_id", "Code")],
         default="float",
@@ -210,7 +230,7 @@ class Observation(models.Model):
     @api.constrains("type_id", "value_type")
     def _check_value_type(self):
         for rec in self:
-            if rec.type_id.value_type != rec.value_type:
+            if rec.type_id and rec.type_id.value_type != rec.value_type:
                 raise ValidationError(
                     _("Value type is mismatch! please contact your administrator")
                 )
@@ -224,3 +244,11 @@ class Observation(models.Model):
                 ("write_date", "<", limit_date),
             ]
         ).unlink()
+
+    @api.constrains("display_type", "name", "type_id")
+    def _check_name_type(self):
+        for rec in self:
+            if not rec.display_type and not rec.type_id:
+                raise UserError(_("Must specify code type"))
+            if rec.display_type and not rec.name:
+                raise UserError(_("Must specify section name"))
