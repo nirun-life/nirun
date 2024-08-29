@@ -67,11 +67,26 @@
                         </group>
                         <group>
                             <field name="unit_id" />
-                            <field name="min" />
-                            <field name="max" />
+                            <field name="value_type" />
+                            <field name="min" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}" />
+                            <field name="max" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}" />
                         </group>
                     </group>
                     <notebook>
+                        <page
+                            name="concept"
+                            string="Concept"
+                            attrs="{'invisible': [('value_type', 'not in', ['code_id'])]}"
+                        >
+                            <field name="value_code_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="name" />
+                                    <field name="code" optional="show" />
+                                    <field name="system_id" optional="show" />
+                                </tree>
+                            </field>
+                        </page>
                         <page string="Reference Range">
                             <field name="ref_range_ids" context="{'default_type_id': id}">
                                 <tree editable="bottom">
