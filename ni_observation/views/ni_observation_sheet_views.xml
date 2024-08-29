@@ -123,7 +123,22 @@
                             <field
                                 name="observation_ids"
                                 context="{'default_sheet_id':id, 'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_occurrence': occurrence}"
-                            />
+                                widget="ob_section_and_note_one2many"
+                            >
+                                <tree editable="bottom">
+                                    <field name="display_type" invisible="1" />
+                                    <field name="value_type" invisible="1" />
+                                    <field name="sequence" widget="handle" />
+                                    <field name="type_id" />
+                                    <field name="name" widget="ob_section_and_note_text" optional="show" nolabel="1" />
+                                    <field name="value_char" />
+                                    <field name="value_int" nolabel="1" />
+                                    <field name="value_float" nolabel="1" />
+                                    <field name="value_code_id" nolabel="1" />
+                                    <field name="unit_id" />
+                                    <field name="interpretation_id" />
+                                </tree>
+                            </field>
                         </page>
                         <page string="Note">
                             <field name="note" placeholder="Additional Note..." />

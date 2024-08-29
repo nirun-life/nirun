@@ -2,7 +2,7 @@
 
 {
     "name": "Observation",
-    "version": "16.0.0.2.0",
+    "version": "16.0.0.3.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -34,6 +34,7 @@
     ],
     "assets": {
         "web.assets_backend": [
+            "/ni_observation/static/src/component/**/*",
             "/ni_observation/static/src/scss/observation.scss",
         ],
     },
