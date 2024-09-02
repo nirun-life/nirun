@@ -32,7 +32,7 @@ export class SectionAndNoteListRenderer extends ListRenderer {
     }
 
     isValueColumn(column) {
-        return ["value_char", "value_int", "value_float", "value_code_id"].includes(column.name);
+        return ["value_char", "value_int", "value_float", "value_code_id", "value_code_ids"].includes(column.name);
     }
 
     isSectionOrNote(record = null) {

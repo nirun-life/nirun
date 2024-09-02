@@ -21,10 +21,25 @@ class ObservationType(models.Model):
     )
     ref_range_count = fields.Integer(compute="_compute_ref_range_count", store=True)
     value_type = fields.Selection(
-        [("char", "Char"), ("float", "Float"), ("int", "Integer"), ("code_id", "Code")],
+        [
+            ("char", "Char"),
+            ("float", "Float"),
+            ("int", "Integer"),
+            ("code_id", "Code"),
+            ("code_ids", "Multi-Code"),
+        ],
         default="float",
     )
-    value_code_ids = fields.One2many("ni.observation.value.code", "type_id")
+    value_code_ids = fields.Many2many(
+        "ni.observation.value.code",
+        "ni_observation_type_value_code_rel",
+        "type_id",
+        "value_id",
+    )
+
+    compute = fields.Boolean(
+        default=False, help="Type value by compute from other ob type not by user input"
+    )
 
     @api.depends("ref_range_ids")
     def _compute_ref_range_count(self):
