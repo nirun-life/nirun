@@ -1,5 +1,9 @@
 #  Copyright (c) 2024 NSTDA
+import logging
+
 from odoo import api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class Goal(models.Model):
@@ -37,6 +41,58 @@ class Goal(models.Model):
     state_achievement_ids = fields.Many2many(related="state_id.achievement_ids")
     state_decoration = fields.Selection(related="state_id.decoration")
 
+    observation_type_id = fields.Many2one(
+        "ni.observation.type",
+        "Measure",
+        domain=[("value_type", "in", ["int", "float"])],
+    )
+    target_min = fields.Float(default=0.0)
+    target_max = fields.Float(default=100.0)
+    observation_id = fields.Many2one(
+        "ni.observation", "Current", compute="_compute_observation"
+    )
+    observation_ids = fields.Many2many("ni.observation", compute="_compute_observation")
+
+    @api.onchange("observation_type_id")
+    def _onchange_observation_type_id(self):
+        for rec in self:
+            rec.update(
+                {
+                    "target_min": rec.observation_type_id.min,
+                    "target_max": rec.observation_type_id.max,
+                }
+            )
+
+    @api.depends("observation_type_id")
+    def _compute_observation(self):
+        no_ob = self.filtered_domain([("observation_type_id", "=", False)])
+        if no_ob:
+            no_ob.update({"observation_id": False, "observation_ids": False})
+            _logger.info("Setted not ob")
+        ob = self - no_ob
+        if not ob:
+            _logger.info("Not found ob")
+            return
+        for rec in ob:
+            obs = self.env["ni.observation"].search(
+                [
+                    ("patient_id", "=", rec.patient_id.id),
+                    ("type_id", "=", rec.observation_type_id.id),
+                ],
+                order="occurrence desc",
+            )
+            _logger.info("Query")
+            if not obs:
+                rec.update({"observation_id": False, "observation_ids": False})
+            else:
+                _logger.debug("Updated ob")
+                rec.update(
+                    {
+                        "observation_id": obs[0].id,
+                        "observation_ids": [fields.Command.set(obs.ids)],
+                    }
+                )
+
     @api.depends("achievement_id")
     def _compute_is_achieved(self):
         achieved = self.filtered_domain(
@@ -53,6 +109,7 @@ class Goal(models.Model):
         for rec in self.filtered(lambda c: c.code_id):
             rec.name = rec.code_id.name
             rec.category_id = rec.code_id.category_id
+            rec.observation_type_id = rec.code_id.observation_type_id
 
     @api.onchange("state_id")
     def _onchange_state_id(self):
