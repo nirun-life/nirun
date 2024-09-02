@@ -15,3 +15,4 @@ class GoalCodeableConcept(models.Model):
         "job_id",
         help="Specialty who can assign this goal",
     )
+    observation_type_id = fields.Many2one("ni.observation.type")
