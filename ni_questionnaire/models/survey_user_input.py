@@ -13,6 +13,35 @@ class SurveyUserInput(models.Model):
     patient_id = fields.Many2one("ni.patient", required=False)
     encounter_id = fields.Many2one("ni.encounter", required=False)
 
+    observation_type_id = fields.Many2one(related="survey_id.observation_type_id")
+    observation_score_type = fields.Selection(
+        related="survey_id.observation_score_type"
+    )
+
+    def write(self, vals):
+        state = vals.get("state")
+        if state and state == "done":
+            self._onchange_state_done()
+        return super().write(vals)
+
+    def _onchange_state_done(self):
+        ob = self.env["ni.observation"]
+        for rec in self.filtered_domain([("observation_type_id", "!=", False)]):
+            val = {
+                "encounter_id": rec.encounter_id.id,
+                "patient_id": rec.patient_id.id,
+                "occurrence": fields.Datetime.now(),
+                "type_id": rec.observation_type_id.id,
+                "value_type": rec.observation_type_id.value_type,
+            }
+            if rec.observation_score_type == "percentage":
+                val.update({"value_float": rec.scoring_percentage})
+            else:
+                val.update(
+                    {"value_int": (rec.scoring_percentage / 100) * rec.scoring_total}
+                )
+            ob.create(val)
+
     @api.constrains("encounter_id")
     def check_encounter_id(self):
         for rec in self:
