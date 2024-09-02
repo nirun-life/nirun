@@ -43,7 +43,13 @@ class Observation(models.Model):
         related="type_id.category_id", readonly=True, store=True, index=True
     )
     value_type = fields.Selection(
-        [("char", "Char"), ("float", "Float"), ("int", "Integer"), ("code_id", "Code")],
+        [
+            ("char", "Char"),
+            ("float", "Float"),
+            ("int", "Integer"),
+            ("code_id", "Code"),
+            ("code_ids", "Multi-Code"),
+        ],
         default="float",
     )
     value = fields.Char(compute="_compute_value", inverse="_inverse_value", store=True)
@@ -51,7 +57,14 @@ class Observation(models.Model):
     value_char = fields.Char("Value")
     value_int = fields.Integer("Value", group_operator="avg")
     value_code_id = fields.Many2one(
-        "ni.observation.value.code", "Value", domain="[('type_id', '=', type_id)]"
+        "ni.observation.value.code", "Value", domain="[('type_ids', '=', type_id)]"
+    )
+    value_code_ids = fields.Many2many(
+        "ni.observation.value.code",
+        "ni_observation_value_code_rel",
+        "observation_id",
+        "value_id",
+        domain="[('type_ids', '=', type_id)]",
     )
     unit_id = fields.Many2one(related="type_id.unit_id")
     interpretation_id = fields.Many2one(
@@ -144,7 +157,12 @@ class Observation(models.Model):
             return self.env.ref("ni_observation.interpretation_EX")
 
     @api.depends(
-        "value_type", "value_char", "value_int", "value_float", "value_code_id"
+        "value_type",
+        "value_char",
+        "value_int",
+        "value_float",
+        "value_code_id",
+        "value_code_ids",
     )
     def _compute_value(self):
         for rec in self:
@@ -159,6 +177,8 @@ class Observation(models.Model):
                     rec.value = str(rec.value_float)
                 case "code_id":
                     rec.value = rec.value_code_id.name
+                case "code_ids":
+                    rec.value = ", ".join(rec.value_code_ids.mapped("name"))
 
     def _inverse_value(self):
         for rec in self:
@@ -182,7 +202,7 @@ class Observation(models.Model):
                     else:
                         code = self.env["ni.observation.value.code"].search(
                             [
-                                ("type_id", "=", rec.type_id.id),
+                                ("type_ids", "=", rec.type_id.id),
                                 ("name", "ilike", rec.value),
                             ],
                             limit=1,

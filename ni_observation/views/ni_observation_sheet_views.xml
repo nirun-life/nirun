@@ -127,6 +127,7 @@
                             >
                                 <tree editable="bottom">
                                     <field name="display_type" invisible="1" />
+                                    <field name="display_class" invisible="1" />
                                     <field name="value_type" invisible="1" />
                                     <field name="sequence" widget="handle" />
                                     <field name="type_id" />
@@ -135,8 +136,29 @@
                                     <field name="value_int" nolabel="1" />
                                     <field name="value_float" nolabel="1" />
                                     <field name="value_code_id" nolabel="1" />
-                                    <field name="unit_id" />
-                                    <field name="interpretation_id" />
+                                    <field
+                                        name="value_code_ids"
+                                        nolabel="1"
+                                        widget="many2many_tags"
+                                        options="{'color_field': 'color'}"
+                                    />
+                                    <field
+                                        name="unit_id"
+                                        optional="show"
+                                        decoration-muted="1"
+                                        attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                                    />
+                                    <field
+                                        name="interpretation_id"
+                                        widget="badge"
+                                        decoration-danger="display_class == 'danger'"
+                                        decoration-info="display_class == 'info'"
+                                        decoration-muted="display_class == 'muted'"
+                                        decoration-primary="display_class == 'primary'"
+                                        decoration-success="display_class == 'success'"
+                                        decoration-warning="display_class == 'warning'"
+                                        optional="show"
+                                    />
                                 </tree>
                             </field>
                         </page>

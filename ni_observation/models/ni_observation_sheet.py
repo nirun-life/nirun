@@ -61,7 +61,7 @@ class ObservationSheet(models.Model):
     def action_line_by_category_ids(self):
         if self.category_ids:
             types = self.env["ni.observation.type"].search(
-                [("category_id", "in", self.category_ids.ids)],
+                [("category_id", "in", self.category_ids.ids), ("compute", "=", False)],
                 order="category_id, sequence, id",
             )
             line_types = self.observation_ids.mapped("type_id")

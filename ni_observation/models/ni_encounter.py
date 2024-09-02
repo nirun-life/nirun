@@ -53,7 +53,7 @@ class Encounter(models.Model):
     def _create_observation(self, vals):
         ts = fields.Datetime.now()
         vals_list = []
-        types = self.env["ni.observation.type"]
+        types = self.env["ni.observation.type"].with_context({"readonly_test": False})
         for f in VITALSIGN_FIELDS:
             if f in vals and vals[f]:
                 ob_type = types.search([("code", "=", f.replace("_", "-"))])
