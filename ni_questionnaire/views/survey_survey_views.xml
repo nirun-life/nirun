@@ -3,6 +3,23 @@
 ~ Copyright (c) 2021 NSTDA
 -->
 <odoo>
+    <record id="survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.view.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='options']/group/group[4]" position="after">
+                <group
+                    name="observation"
+                    string="Observation"
+                    attrs="{'invisible': [('scoring_type', '=', 'no_scoring')]}"
+                >
+                    <field name="observation_type_id" context="{'default_value_type': 'int'}" />
+                    <field name="observation_score_type" widget="radio" />
+                </group>
+            </xpath>
+        </field>
+    </record>
     <record id="survey_view_search_inherit" model="ir.ui.view">
         <field name="name">survey.survey.view.search</field>
         <field name="model">survey.survey</field>

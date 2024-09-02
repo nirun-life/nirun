@@ -9,7 +9,13 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["ni_patient", "survey", "survey_subject", "survey_grading"],
+    "depends": [
+        "ni_patient",
+        "survey",
+        "survey_subject",
+        "survey_grading",
+        "ni_observation",
+    ],
     "data": [
         "security/res_groups.xml",
         "security/ir_rules.xml",
