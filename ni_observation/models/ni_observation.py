@@ -27,7 +27,7 @@ class Observation(models.Model):
         default=False,
         help="Technical field for UX purpose.",
     )
-    name = fields.Char()
+    name = fields.Char(compute="_compute_name")
 
     sheet_id = fields.Many2one(
         "ni.observation.sheet",
@@ -42,7 +42,6 @@ class Observation(models.Model):
     category_id = fields.Many2one(
         related="type_id.category_id", readonly=True, store=True, index=True
     )
-
     value_type = fields.Selection(
         [("char", "Char"), ("float", "Float"), ("int", "Integer"), ("code_id", "Code")],
         default="float",
@@ -84,6 +83,11 @@ class Observation(models.Model):
             "Duplication observation type!",
         ),
     ]
+
+    @api.depends("type_id", "value")
+    def _compute_name(self):
+        for rec in self:
+            rec.name = "{} {}".format(rec.value, rec.unit_id.name or "").strip()
 
     def init(self):
         tools.create_index(
