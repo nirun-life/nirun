@@ -59,6 +59,26 @@
                             <field name="achievement_decoration" invisible="1" />
                         </group>
                     </group>
+                    <notebook>
+                        <page name="target" string="Target" icon="fa-bullseye">
+                            <group>
+                                <group>
+                                    <field name="observation_type_id" />
+                                    <label for="target_min" string="Target Value" />
+                                    <div class="o_row">
+                                        <field name="target_min" />
+                                        <span class="mx-2">-</span>
+                                        <field name="target_max" />
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="observation_id" options="{'no_open': True}" />
+                                </group>
+                            </group>
+                            <separator string="History" />
+                            <field name="observation_ids" />
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -139,6 +159,8 @@
                 <field name="state_decoration" invisible="1" />
                 <field name="achievement_id" />
                 <field name="achievement_decoration" invisible="1" />
+                <field name="observation_type_id" />
+                <field name="observation_id" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
@@ -147,11 +169,22 @@
                                     <li>
                                         <field class="h6" name="name" />
                                     </li>
+                                    <li t-if="record.observation_type_id.raw_value">
+                                        <label for="observation_id" class="small text-muted me-2">
+                                            <field name="observation_type_id" />
+                                            :
+                                        </label>
+                                        <t t-if="record.observation_id.raw_value">
+                                            <field name="observation_id" />
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted">N/A</span>
+                                        </t>
+                                    </li>
                                     <li>
                                         <label for="state_id" class="small text-muted me-2">State :</label>
                                         <field
                                             name="state_id"
-                                            widget="badge"
                                             decoration-primary="state_decoration == 'primary'"
                                             decoration-success="state_decoration == 'success'"
                                             decoration-info="state_decoration == 'info'"
