@@ -27,7 +27,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="sequence" widget="handle" />
-                <field name="type_id" />
+                <field name="type_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show" />
                 <field name="name" />
                 <field name="code" optional="show" />
                 <field name="system_id" optional="show" />
@@ -52,7 +52,6 @@
                     />
                     <group>
                         <field name="name" />
-                        <field name="type_id" />
                     </group>
                     <group>
                         <group>
@@ -64,6 +63,9 @@
                     </group>
                     <field name="definition" placeholder="Definition..." />
                     <notebook groups="base.group_no_one">
+                        <page name="type" string="Type">
+                            <field name="type_ids" />
+                        </page>
                         <page string="Extra Info" groups="base.group_no_one">
                             <group name="configuration" string="Configuration">
                                 <group>

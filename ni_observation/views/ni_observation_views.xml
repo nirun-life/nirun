@@ -96,6 +96,7 @@
                     name="unit_id"
                     decoration-muted="1"
                     attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                    optional="show"
                 />
                 <field
                     name="interpretation_id"
@@ -106,6 +107,7 @@
                     decoration-primary="display_class == 'primary'"
                     decoration-success="display_class == 'success'"
                     decoration-warning="display_class == 'warning'"
+                    optional="show"
                 />
                 <field name="display_class" invisible="1" />
                 <field name="create_date" optional="hide" />
@@ -143,6 +145,10 @@
                                 <field name="value_int" attrs="{'invisible': [('value_type', '!=', 'int')]}" />
                                 <field name="value_float" attrs="{'invisible': [('value_type', '!=', 'float')]}" />
                                 <field name="value_code_id" attrs="{'invisible': [('value_type', '!=', 'code_id')]}" />
+                                <field
+                                    name="value_code_ids"
+                                    attrs="{'invisible': [('value_type', '!=', 'code_ids')]}"
+                                />
                                 <field
                                     name="unit_id"
                                     options="{'no_open': True}"
