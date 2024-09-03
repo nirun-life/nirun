@@ -161,13 +161,17 @@
                 <field name="achievement_decoration" invisible="1" />
                 <field name="observation_type_id" />
                 <field name="observation_id" />
+                <field name="category_id" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
                             <div class="oe_kanban_details">
                                 <ul>
-                                    <li>
-                                        <field class="h6" name="name" />
+                                    <li t-if="record.category_id.raw_value">
+                                        <field class="text-muted" name="category_id" />
+                                    </li>
+                                    <li class="mb-2">
+                                        <field class="h5" name="name" />
                                     </li>
                                     <li t-if="record.observation_type_id.raw_value">
                                         <label for="observation_id" class="small text-muted me-2">
