@@ -125,7 +125,13 @@ class Observation(models.Model):
         # effective date must always depend on observation sheet
         for rec in self.filtered(lambda r: r.sheet_id):
             if rec.occurrence != rec.sheet_id.occurrence:
-                raise ValidationError(_("Effective date not follow the sheet"))
+                rec.occurrence = rec.sheet_id.occurrence
+
+    @api.constrains("sheet_id", "patient_id")
+    def _check_sheet_patient(self):
+        for rec in self.filtered(lambda r: r.sheet_id):
+            if rec.patient_id != rec.sheet_id.patient_id:
+                rec.patient_id = rec.sheet_id.patient_id
 
     @api.onchange("type_id")
     def _onchange_type(self):
