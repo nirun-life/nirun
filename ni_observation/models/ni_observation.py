@@ -28,6 +28,7 @@ class Observation(models.Model):
         help="Technical field for UX purpose.",
     )
     name = fields.Char(compute="_compute_name")
+    title = fields.Char()
 
     sheet_id = fields.Many2one(
         "ni.observation.sheet",
@@ -97,10 +98,13 @@ class Observation(models.Model):
         ),
     ]
 
-    @api.depends("type_id", "value")
+    @api.depends("type_id", "value", "display_type", "title")
     def _compute_name(self):
         for rec in self:
-            rec.name = "{} {}".format(rec.value, rec.unit_id.name or "").strip()
+            if not rec.display_type:
+                rec.name = "{} {}".format(rec.value, rec.unit_id.name or "").strip()
+            else:
+                rec.name = rec.title
 
     def init(self):
         tools.create_index(
