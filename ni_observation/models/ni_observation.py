@@ -143,16 +143,16 @@ class Observation(models.Model):
         if self.type_id.ref_range_count == 0:
             return None
 
-        ranges = self.env["ni.observation.reference.range"].search(
-            [
-                ("type_id", "=", self.type_id.id),
-                ("low", "<=", self.value),
-                ("high", ">", self.value),
-            ],
-            limit=1,
+        ranges = self.env["ni.observation.reference.range"].range_for(
+            self.type_id.id, self.patient_id.age, self.patient_id.gender
         )
-        if ranges:
-            return ranges[0].interpretation_id
+        ref = None
+        if self.value_type == "int":
+            ref = ranges.interpret(self.value_int)
+        elif self.value_type == "float":
+            ref = ranges.interpret(self.value_float)
+        if ref:
+            return ref.interpretation_id
         else:
             return self.env.ref("ni_observation.interpretation_EX")
 
