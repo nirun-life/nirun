@@ -9,7 +9,15 @@
         <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//page[@name='procedure']" position="after">
-                <page name="communication" string="Communication" badge="communication_count" icon="fa-comments">
+                <page
+                    name="communication"
+                    string="Communication"
+                    badge="communication_count"
+                    icon="fa-comments"
+                    groups="ni_communication.group_viewer"
+                    attrs="{'invisible': [('show_communication', '=', False)]}"
+                >
+                    <field name="show_communication" invisible="1" />
                     <field name="communication_count" invisible="1" />
                     <field
                         name="communication_ids"
