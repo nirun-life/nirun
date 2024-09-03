@@ -10,11 +10,16 @@ class EncounterObservationLatest(models.Model):
     _auto = False
     _order = "occurrence desc"
 
+    name = fields.Char()
+    title = fields.Char()
     sheet_id = fields.Many2one("ni.observation.sheet", readonly=True)
     company_id = fields.Many2one("res.company", readonly=True)
     patient_id = fields.Many2one("ni.patient", readonly=True)
     encounter_id = fields.Many2one("ni.encounter")
     occurrence = fields.Datetime(readonly=True)
+    display_type = fields.Selection(
+        [("line_section", "Section"), ("line_note", "Note")]
+    )
     type_id = fields.Many2one("ni.observation.type", readonly=True, required=True)
     sequence = fields.Integer(related="type_id.sequence", readonly=True)
     category_id = fields.Many2one(related="type_id.category_id", readonly=True)

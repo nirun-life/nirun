@@ -16,7 +16,29 @@ class Encounter(models.Model):
         groups="ni_observation.group_user",
     )
     observation_sheet_count = fields.Integer(compute="_compute_observation_sheet_count")
-    observation_ids = fields.One2many("ni.observation", "encounter_id")
+    observation_category_id = fields.Many2one(
+        "ni.observation.category",
+        default=lambda self: self.env.ref("ni_observation.category_vital_signs").id,
+        domain=[("type_count", ">", 0)],
+    )
+    encounter_observation_ids = fields.One2many(
+        "ni.encounter.observation", "encounter_id"
+    )
+    filtered_encounter_observation_ids = fields.One2many(
+        "ni.encounter.observation", compute="_compute_display_observation"
+    )
+    filtered_patient_observation_ids = fields.One2many(
+        "ni.patient.observation", compute="_compute_display_observation"
+    )
+
+    observation_filter = fields.Selection(
+        [
+            ("encounter", "This Encounter"),
+            ("patient", "All"),
+        ],
+        default="encounter",
+        required=True,
+    )
 
     observation_latest_ids = fields.One2many("ni.encounter.observation", "encounter_id")
     observation_latest_count = fields.Integer(
@@ -36,6 +58,21 @@ class Encounter(models.Model):
         compute="_compute_observation_latest",
     )
     observation_latest_lab_count = fields.Integer(compute="_compute_observation_latest")
+
+    @api.depends("observation_category_id", "observation_filter")
+    def _compute_display_observation(self):
+        for rec in self:
+            domain = [("category_id", "=", rec.observation_category_id.id)]
+            if rec.observation_filter == "encounter":
+                rec.filtered_encounter_observation_ids = (
+                    rec.encounter_observation_ids.filtered_domain(domain)
+                )
+                rec.filtered_patient_observation_ids = None
+            else:
+                rec.filtered_patient_observation_ids = (
+                    rec.patient_observation_ids.filtered_domain(domain)
+                )
+                rec.filtered_encounter_observation_ids = None
 
     @api.model_create_multi
     def create(self, vals_list):

@@ -14,6 +14,7 @@ class Patient(models.Model):
         groups="ni_observation.group_user",
     )
     observation_sheet_count = fields.Integer(compute="_compute_observation_sheet_count")
+    patient_observation_ids = fields.One2many("ni.patient.observation", "patient_id")
 
     def _compute_observation_sheet_count(self):
         observations = self.env["ni.observation.sheet"].sudo()
