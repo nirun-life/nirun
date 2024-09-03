@@ -68,7 +68,7 @@ class ObservationSheet(models.Model):
             section_name = self.observation_ids.filtered("display_type").mapped("name")
             line = []
             for cat in self.category_ids:
-                if cat.name not in section_name:
+                if cat.name not in section_name and len(self.category_ids) > 1:
                     line.append(self.line_section(cat))
                 line = line + [
                     self.line_data(t)
@@ -83,7 +83,7 @@ class ObservationSheet(models.Model):
     def line_section(self, category_id):
         return {
             "sheet_id": self.id,
-            "name": category_id.name,
+            "title": category_id.name,
             "patient_id": self.patient_id.id,
             "occurrence": self.occurrence,
             "encounter_id": self.encounter_id.id,
