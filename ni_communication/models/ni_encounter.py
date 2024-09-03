@@ -19,6 +19,7 @@ class Encounter(models.Model):
     discharge_communication_content_ids = fields.Many2many(
         related="discharge_communication_id.content_ids"
     )
+    show_communication = fields.Boolean(related="class_id.communication")
 
     def _compute_communication_count(self):
         communication = self.env["ni.communication"].sudo()

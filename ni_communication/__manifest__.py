@@ -2,7 +2,7 @@
 
 {
     "name": "Communication",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.1.1",
     "development_status": "Alpha",
     "category": "Medical/Summary",
     "author": "NSTDA, Piruin P.",
@@ -21,6 +21,7 @@
         "views/ni_communication_views.xml",
         "views/ni_communication_menu.xml",
         "views/ni_encounter_views.xml",
+        "views/ni_encounter_class_views.xml",
         "wizard/ni_encounter_discharge_wizard_views.xml",
     ],
     "demo": [],
