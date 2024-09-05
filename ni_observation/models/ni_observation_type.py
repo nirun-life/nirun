@@ -55,3 +55,12 @@ class ObservationType(models.Model):
     def _check_parent_id(self):
         if not self._check_recursion():
             raise models.ValidationError(_("Error! You cannot create recursive data."))
+
+    def copy_data(self, default=None):
+        default = default or {}
+        if "ref_range_ids" not in default and self.ref_range_ids:
+            default["ref_range_ids"] = [
+                fields.Command.create(r.copy_data({"type_id": None})[0])
+                for r in self[0].ref_range_ids
+            ]
+        return super().copy_data(default)
