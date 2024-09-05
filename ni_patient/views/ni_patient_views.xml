@@ -414,13 +414,13 @@
                                     </li>
                                     <li class="o_force_ltr" t-if="record.gender.value or record.age.value &gt; 0">
                                         <t t-if="record.gender.raw_value == 'male'">
-                                            <i class="fa fa-mars me-2 text-info" aria-hidden="true" />
+                                            <i class="fa fa-mars me-2 text-info" aria-hidden="true" title="male" />
                                         </t>
                                         <t t-elif="record.gender.raw_value == 'female'">
-                                            <i class="fa fa-venus me-2 text-danger" aria-hidden="true" />
+                                            <i class="fa fa-venus me-2 text-danger" aria-hidden="true" title="female" />
                                         </t>
                                         <t t-else="">
-                                            <i class="fa fa-genderless me-2" aria-hidden="true" />
+                                            <i class="fa fa-genderless me-2" aria-hidden="true" title="Undefined" />
                                         </t>
                                         <field name="gender" />
                                         <t t-if="record.age.value &gt; 0">
