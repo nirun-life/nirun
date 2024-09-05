@@ -91,12 +91,28 @@
                         <page string="Reference Range">
                             <field name="ref_range_ids" context="{'default_type_id': id}">
                                 <tree editable="bottom">
-                                    <field name="gender" optional="show" />
+                                    <field
+                                        name="gender"
+                                        optional="show"
+                                        decoration-info="gender=='male'"
+                                        decoration-danger="gender=='female'"
+                                    />
                                     <field name="age_low" optional="show" />
                                     <field name="age_high" optional="show" />
                                     <field name="low" />
                                     <field name="high" />
-                                    <field name="interpretation_id" context="{'show_code': True}" />
+                                    <field
+                                        name="interpretation_id"
+                                        context="{'show_code': True}"
+                                        decoration-danger="display_class == 'danger'"
+                                        decoration-info="display_class == 'info'"
+                                        decoration-muted="display_class == 'muted'"
+                                        decoration-primary="display_class == 'primary'"
+                                        decoration-success="display_class == 'success'"
+                                        decoration-warning="display_class == 'warning'"
+                                    />
+                                    <field name="display_class" invisible="1" />
+                                    <button name="copy" type="object" icon="fa-files-o" />
                                 </tree>
                             </field>
                         </page>
