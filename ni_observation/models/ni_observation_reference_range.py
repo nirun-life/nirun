@@ -7,10 +7,9 @@ from odoo.exceptions import ValidationError
 class ReferenceRange(models.Model):
     _name = "ni.observation.reference.range"
     _description = "Observation Reference Range"
-    _order = "type_id,gender,age_low,low"
+    _order = "type_id,gender,age_low,age_high,low,high"
 
     _parent_store = True
-
     parent_id = fields.Many2one(
         "ni.observation.reference.range", index=True, ondelete="set null"
     )
