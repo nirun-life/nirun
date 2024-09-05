@@ -44,12 +44,16 @@ class Goal(models.Model):
     observation_type_id = fields.Many2one(
         "ni.observation.type",
         "Measure",
-        domain=[("value_type", "in", ["int", "float"])],
+        domain=[("value_type", "in", ["int", "float", "code_id", "code_ids"])],
     )
+    target_value_type = fields.Selection(related="observation_type_id.value_type")
     target_min = fields.Float(default=0.0)
     target_max = fields.Float(default=100.0)
+    target_code_ids = fields.Many2many(
+        "ni.observation.value.code", domain="[('type_ids', '=', observation_type_id)]"
+    )
     observation_id = fields.Many2one(
-        "ni.observation", "Current", compute="_compute_observation"
+        "ni.observation", "Latest", compute="_compute_observation"
     )
     observation_ids = fields.Many2many("ni.observation", compute="_compute_observation")
 
