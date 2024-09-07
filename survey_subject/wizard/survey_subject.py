@@ -27,6 +27,10 @@ class SurveySubjectWizard(models.TransientModel):
     subject_res_partner = fields.Many2one("res.partner", string="Partner")
     subject_res_users = fields.Many2one("res.users", string="User")
 
+    state = fields.Selection(
+        [("choose", "Choose"), ("survey", "Survey")], default="choose"
+    )
+
     @api.depends("survey_id")
     def _compute_type(self):
         for rec in self:
@@ -59,5 +63,17 @@ class SurveySubjectWizard(models.TransientModel):
             "target": "new",
             "url": "/survey/start/%s?answer_token=%s"
             % (self.survey_id.access_token, answer.access_token),
-            "close_on_report_download": True,
+        }
+
+    def prepare_answer(self):
+        this = self[0]
+        this.write({"state": "survey"})
+        return {
+            "name": _("Start Survey"),
+            "type": "ir.actions.act_window",
+            "res_model": "survey.subject.wizard",
+            "view_mode": "form",
+            "res_id": this.id,
+            "views": [(False, "form")],
+            "target": "new",
         }
