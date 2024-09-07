@@ -14,7 +14,8 @@
         <field name="model">survey.subject.wizard</field>
         <field name="arch" type="xml">
             <form>
-                <group name="main">
+                <field name="state" invisible="1" />
+                <group name="main" states="choose">
                     <group>
                         <field
                             name="survey_id"
@@ -34,9 +35,35 @@
                         />
                     </group>
                 </group>
-                <footer>
-                    <button name="action_survey" string="Survey" class="oe_highlight" type="object" />
+                <div attrs="{'invisible': [('state', '!=', 'survey')]}">
+                    <h2 class="mb-4">Survey Prepared</h2>
+                    <p>Here is button to start survey</p>
+                    <button
+                        name="action_survey"
+                        type="object"
+                        string="Start Survey"
+                        icon="fa-pencil-square-o"
+                        class="btn-primary"
+                    />
+                    <p class="mt-4 ">
+                        Clicking the button above will open a new tab for you to start a
+                        <b>
+                            <field
+                                name="survey_id"
+                                attrs="{'readonly': [('state', '=', 'survey')]}"
+                                options="{'no_open': True}"
+                            />
+                        </b>
+                        ,
+                        after submitting your answers, please close the tab and go back to this page.
+                    </p>
+                </div>
+                <footer states="choose">
+                    <button name="prepare_answer" string="Start Survey" class="oe_highlight" type="object" />
                     <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+                <footer states="survey">
+                    <button special="cancel" data-hotkey="z" string="Close" type="object" class="btn-secondary" />
                 </footer>
             </form>
         </field>

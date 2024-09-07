@@ -4,36 +4,37 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 13.0\n"
+"Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-14 09:14+0000\n"
-"PO-Revision-Date: 2021-05-14 16:20+0700\n"
+"POT-Creation-Date: 2024-09-07 11:13+0000\n"
+"PO-Revision-Date: 2024-09-07 11:13+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
-"Language: th\n"
-"X-Generator: Poedit 2.4.2\n"
 
 #. module: survey_subject
+#. odoo-python
 #: code:addons/survey_subject/wizard/survey_subject.py:0
 #, python-format
 msgid "%s : Not found field value for this subject type"
 msgstr "%s : ไม่พบค่าของเป้าหมายที่ระบุ"
 
 #. module: survey_subject
-#: model_terms:ir.ui.view,arch_db:survey_subject.back
+#: model_terms:ir.ui.view,arch_db:survey_subject.survey_subject_view_form
 msgid ""
-"<i class=\"fa fa-fw fa-arrow-right\"/>\n"
-"                    Back to Survey."
+",\n"
+"                        after submitting your answers, please close the tab and go back to this page."
 msgstr ""
-"<i class=\"fa fa-fw fa-arrow-right\"/>\n"
-"                    กลับไปที่แบบประเมิน"
+",\n"
+"                        หลังจากส่งคำตอบของแล้ว กรุณาปิดแท็บและกลับมาที่หน้านี้"
 
 #. module: survey_subject
+#: model_terms:ir.ui.view,arch_db:survey_subject.survey_user_input_view_tree_inherit_wizard
 #: model_terms:ir.ui.view,arch_db:survey_subject.survey_view_form_inherit_wizard
+#: model_terms:ir.ui.view,arch_db:survey_subject.survey_view_tree_inherit_wizard
 msgid "Answer Survey"
 msgstr "ทำแบบประเมิน"
 
@@ -43,7 +44,18 @@ msgid "Cancel"
 msgstr "ยกเลิก"
 
 #. module: survey_subject
-#: model_terms:ir.ui.view,arch_db:survey_subject.back
+#: model:ir.model.fields.selection,name:survey_subject.selection__survey_subject_wizard__state__choose
+msgid "Choose"
+msgstr "เลือกเป้าหมาย"
+
+#. module: survey_subject
+#: model_terms:ir.ui.view,arch_db:survey_subject.survey_subject_view_form
+msgid "Clicking the button above will open a new tab for you to start a"
+msgstr ""
+"หลังจากกดปุ่มด้านบน โปรแกรมจะเปิดแท็บใหม่ให้ท่านเพื่อเริ่มการทำแบบประเมิน"
+
+#. module: survey_subject
+#: model_terms:ir.ui.view,arch_db:survey_subject.survey_subject_view_form
 msgid "Close"
 msgstr "ปิด"
 
@@ -61,6 +73,11 @@ msgstr "สร้างเมื่อ"
 #: model:ir.model.fields,field_description:survey_subject.field_survey_subject_wizard__display_name
 msgid "Display Name"
 msgstr "ชื่อที่ใช้แสดง"
+
+#. module: survey_subject
+#: model_terms:ir.ui.view,arch_db:survey_subject.survey_subject_view_form
+msgid "Here is button to start survey"
+msgstr "กดปุ่มนี้เพื่อเริ่มการทำแบบประเมิน"
 
 #. module: survey_subject
 #: model:ir.model.fields,field_description:survey_subject.field_survey_subject_wizard__id
@@ -89,6 +106,7 @@ msgid "Partner"
 msgstr "รายชื่อ"
 
 #. module: survey_subject
+#. odoo-python
 #: code:addons/survey_subject/wizard/survey_subject.py:0
 #, python-format
 msgid "Please select %s"
@@ -98,6 +116,19 @@ msgstr "กรุณาระบุ %s"
 #: model:ir.actions.act_window,name:survey_subject.survey_subject_action
 msgid "Select survey subject"
 msgstr "ระบุเป้าหมายของแบบประเมิน"
+
+#. module: survey_subject
+#. odoo-python
+#: code:addons/survey_subject/wizard/survey_subject.py:0
+#: model_terms:ir.ui.view,arch_db:survey_subject.survey_subject_view_form
+#, python-format
+msgid "Start Survey"
+msgstr "ทำแบบประเมิน"
+
+#. module: survey_subject
+#: model:ir.model.fields,field_description:survey_subject.field_survey_subject_wizard__state
+msgid "State"
+msgstr "สถานะ"
 
 #. module: survey_subject
 #: model:ir.model.fields,field_description:survey_subject.field_survey_user_input__subject_ref
@@ -122,19 +153,24 @@ msgstr "ชนิดของเป้าหมาย"
 #. module: survey_subject
 #: model:ir.model,name:survey_subject.model_survey_survey
 #: model:ir.model.fields,field_description:survey_subject.field_survey_subject_wizard__survey_id
-#: model_terms:ir.ui.view,arch_db:survey_subject.survey_subject_view_form
+#: model:ir.model.fields.selection,name:survey_subject.selection__survey_subject_wizard__state__survey
 msgid "Survey"
 msgstr "แบบประเมิน"
 
 #. module: survey_subject
+#: model_terms:ir.ui.view,arch_db:survey_subject.survey_subject_view_form
+msgid "Survey Prepared"
+msgstr "แบบประเมินพร้อมแล้ว"
+
+#. module: survey_subject
 #: model:ir.model,name:survey_subject.model_survey_subject_wizard
 msgid "Survey Subject Wizard"
-msgstr ""
+msgstr "เป้าหมายการประเมิน"
 
 #. module: survey_subject
 #: model:ir.model,name:survey_subject.model_survey_user_input
 msgid "Survey User Input"
-msgstr "คำตอบแบบประประเมิน"
+msgstr "แบบสำรวจข้อมูลผู้ใช้"
 
 #. module: survey_subject
 #: model:ir.model.fields,help:survey_subject.field_survey_survey__subject_type
