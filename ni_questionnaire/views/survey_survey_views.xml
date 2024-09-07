@@ -20,6 +20,29 @@
             </xpath>
         </field>
     </record>
+    <record id="survey_grading_survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey_grading.survey_view_form_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='name']" position="after">
+                <field
+                    name="gender"
+                    decoration-danger="gender == 'female'"
+                    decoration-primary="gender == 'male'"
+                    attrs="{'column_invisible': [('parent.subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                />
+                <field
+                    name="age_low"
+                    attrs="{'column_invisible': [('parent.subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                />
+                <field
+                    name="age_high"
+                    attrs="{'column_invisible': [('parent.subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                />
+            </xpath>
+        </field>
+    </record>
     <record id="survey_view_search_inherit" model="ir.ui.view">
         <field name="name">survey.survey.view.search</field>
         <field name="model">survey.survey</field>
