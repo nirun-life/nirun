@@ -2,7 +2,7 @@
 
 {
     "name": "Survey - Subject",
-    "version": "16.0.0.1.1",
+    "version": "16.0.0.2.0",
     "development_status": "Alpha",
     "category": "Marketing/Surveys",
     "author": "NSTDA, Piruin P.",
