@@ -80,3 +80,19 @@ class SurveyUserInput(models.Model):
             },
             "views": [[False, "graph"]],
         }
+
+    def _quizz_grade(self):
+        # Override survey_grading.survey.user_input._quizz_grade()
+        self.ensure_one()
+        if self.grade_ids == 0:
+            return None
+        if self.subject_model in ["ni.patient", "ni.encounter"]:
+            grades = self.grade_ids.grade_for(
+                self.patient_id.age, self.patient_id.gender
+            )
+            for grade in grades:
+                if grade.is_cover(self.scoring_percentage):
+                    return grade
+            return None
+        else:
+            return super()._quizz_grade()
