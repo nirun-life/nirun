@@ -103,36 +103,30 @@
                 </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box" groups="base.group_user" />
-                    <group>
-                        <field name="enforce_specialty" invisible="1" />
-                        <field name="user_specialty" invisible="1" />
-                        <field
-                            name="code_id"
-                            placeholder="Search for condition by name or code..."
-                            options="{'no_open': True, 'always_reload': True}"
-                            context="{'show_code': True}"
-                            attrs="{'invisible': [('enforce_specialty', '=', True)]}"
-                        />
-                        <field
-                            name="code_id"
-                            placeholder="Search for condition by name or code by specialty..."
-                            options="{'no_open': True, 'always_reload': True}"
-                            context="{'show_code': True}"
-                            attrs="{'invisible': [('enforce_specialty', '=', False)]}"
-                            domain="['|', ('specialty_ids', '=', False), ('specialty_ids', '=', user_specialty)]"
-                        />
+                    <field name="system_ids" invisible="1" />
+                    <div class="mb24">
                         <label for="name" />
+                        <field name="system_id" widget="radio" options="{'horizontal': True}" class="float-end" />
                         <div>
-                            <field name="name" placeholder="Condition name use for display" />
-                            <p
-                                class="text-muted small"
-                                attrs="{'invisible': ['|', ('code_id', '!=', False), ('name', '!=', False)]}"
-                            >
-                                Specify condition name here if not found on selectable choice
-                                above
-                            </p>
+                            <field
+                                name="code_id"
+                                class="w-100"
+                                placeholder="Search for condition by name or code..."
+                                options="{'no_open': True, 'always_reload': True}"
+                                context="{'show_code': True}"
+                            />
                         </div>
-                    </group>
+                        <div>
+                            <field name="name" class="w-100" placeholder="Condition name use for display" />
+                        </div>
+                        <p
+                            class="text-muted small"
+                            attrs="{'invisible': ['|', ('code_id', '!=', False), ('name', '!=', False)]}"
+                        >
+                            Specify condition name here if not found on selectable choice
+                            above
+                        </p>
+                    </div>
                     <div name="category" invisible="not context.get('show_category', False)">
                         <field name="is_problem" />
                         <label for="is_problem" />
@@ -141,11 +135,11 @@
                             <label for="is_diagnosis" />
                         </span>
                     </div>
-                    <div attrs="{'invisible': [('period_start_date', '=', False)]}" class="o_row">
-                        <i class="fa fa-clock-o me-2 text-primary" title="Duration" />
-                        <span>Duration</span>
-                        <field name="duration" />
-                    </div>
+                    <!--                    <div attrs="{'invisible': [('period_start_date', '=', False)]}" class="o_row">-->
+                    <!--                        <i class="fa fa-clock-o me-2 text-primary" title="Duration" />-->
+                    <!--                        <span>Duration</span>-->
+                    <!--                        <field name="duration" />-->
+                    <!--                    </div>-->
                     <group class="mt-4">
                         <group>
                             <span class="o_form_label o_td_label" name="period_type">
@@ -163,37 +157,30 @@
                                     <field name="period_start" placeholder="Onset" />
                                 </div>
                             </div>
-                            <label for="period_end" />
-                            <div class="o_row">
+                            <label
+                                for="period_end"
+                                attrs="{'invisible': [('clinical_state', 'not in', ['inactive','resolved'])]}"
+                            />
+                            <div
+                                class="o_row"
+                                attrs="{'invisible': [('clinical_state', 'not in', ['inactive','resolved'])]}"
+                            >
                                 <span attrs="{'invisible': [('period_type', '!=', 'age')]}">
-                                    <field
-                                        name="age_end"
-                                        class="o_narrow_field"
-                                        attrs="{'readonly': [('clinical_state', 'not in', ['inactive','resolved'])]}"
-                                    />
+                                    <field name="age_end" class="o_narrow_field" />
                                     <span>Year</span>
                                 </span>
-                                <field
-                                    name="period_end_date"
-                                    attrs="{'invisible': [('period_type', '!=', 'date')], 'readonly': [('clinical_state', 'not in', ['inactive','resolved'])]}"
-                                />
-                                <field
-                                    name="period_end"
-                                    attrs="{'invisible': [('period_type', '!=', 'datetime')], 'readonly': [('clinical_state', 'not in', ['inactive','resolved'])]}"
-                                />
+                                <span attrs="{'invisible': [('period_type', '!=', 'date')]}">
+                                    <field name="period_end_date" />
+                                </span>
+                                <span attrs="{'invisible': [('period_type', '!=', 'datetime')]}">
+                                    <field name="period_end" />
+                                </span>
                             </div>
                             <field name="severity" widget="radio" options="{'horizontal': True}" />
                         </group>
-                        <group>
-                            <field
-                                name="verification_id"
-                                options="{'no_open': True,'no_create': True, 'no_create_edit': True}"
-                                widget="radio"
-                            />
-                        </group>
                     </group>
-                    <notebook attrs="{'invisible': [('id', '=', False)]}">
-                        <page name="history" string="Diagnosis History" icon="fa-history">
+                    <notebook>
+                        <page name="history" string="Diagnosis History" icon="fa-history" groups="base.group_no_one">
                             <field name="diagnosis_ids">
                                 <tree default_order="encounter_start desc">
                                     <field name="encounter_id" />
@@ -213,9 +200,9 @@
                             </field>
                         </page>
                         <page name="note" string="Note" icon="fa-sticky-note-o">
-                            <field name="note" />
+                            <field name="note" placeholder="Additional note..." />
                         </page>
-                        <page name="extra_info" string="Extra Info" groups="base.group_system">
+                        <page name="extra_info" string="Extra Info" groups="base.group_no_one">
                             <group>
                                 <group>
                                     <field name="create_date" readonly="1" />
