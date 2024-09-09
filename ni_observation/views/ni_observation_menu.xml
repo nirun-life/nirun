@@ -7,7 +7,7 @@
         id="observation_menu_root"
         name="Observations"
         sequence="4"
-        web_icon="ni_observation,static/description/icon.png"
+        web_icon="ni_observation,static/description/observation.png"
         groups="base.group_no_one"
     />
     <menuitem id="observation_menu_main" name="Observation" parent="observation_menu_root" />
@@ -30,36 +30,30 @@
         parent="observation_menu_root"
         sequence="100"
     />
-    <menuitem id="configuration_ob_menu" name="Observation" parent="configuration_menu" />
     <menuitem
         id="observation_category_menu"
         name="Category"
         action="ni_observation_category_action"
-        parent="configuration_ob_menu"
+        parent="configuration_menu"
     />
-    <menuitem
-        id="observation_type_menu"
-        name="Type"
-        action="ni_observation_type_action"
-        parent="configuration_ob_menu"
-    />
+    <menuitem id="observation_type_menu" name="Type" action="ni_observation_type_action" parent="configuration_menu" />
     <menuitem
         id="observation_value_menu"
         name="Value"
-        parent="configuration_ob_menu"
         action="ni_observation_value_code_action"
+        parent="configuration_menu"
     />
     <menuitem
         id="interpretation_menu"
         name="Interpretation"
         action="ni_observation_interpretation_action"
-        parent="configuration_ob_menu"
+        parent="configuration_menu"
     />
     <menuitem
         id="reference_range_menu"
         name="Reference Range"
         action="ni_observation_reference_range_action"
-        parent="configuration_ob_menu"
+        parent="configuration_menu"
     />
-    <menuitem id="uom_menu" name="Unit" action="uom.product_uom_form_action" parent="configuration_ob_menu" />
+    <menuitem id="uom_menu" name="Unit" action="uom.product_uom_form_action" parent="configuration_menu" />
 </odoo>
