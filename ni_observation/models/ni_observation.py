@@ -76,6 +76,7 @@ class Observation(models.Model):
         store=True,
         default=None,
     )
+    is_problem = fields.Boolean(related="interpretation_id.is_problem", store=True)
     display_class = fields.Selection(
         [
             ("text", "Text"),
