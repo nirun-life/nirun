@@ -94,7 +94,7 @@
                                 options="{'horizontal': True}"
                             />
                         </div>
-                        <div class="col-12 col-lg-3">
+                        <div class="col-12 col-lg-3 text-end">
                             <i class="fa fa-filter me-2" aria-hidden="true" title="Filter" />
                             <field name="observation_filter" />
                         </div>
@@ -107,6 +107,10 @@
                         name="filtered_encounter_observation_ids"
                         attrs="{'invisible': [('observation_filter', '!=', 'encounter')]}"
                     />
+                    <div class="mb-4">
+                        <field name="observation_problem_only" />
+                        <label for="observation_problem_only" string="Problem only" />
+                    </div>
                     <button
                         name="%(ni_observation_sheet_action_form)d"
                         type="action"
