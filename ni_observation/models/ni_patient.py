@@ -26,7 +26,7 @@ class Patient(models.Model):
             patient.observation_sheet_count = data.get(patient.id, 0)
 
     def action_observation(self):
-        action_rec = self.env.ref("ni_observation.ni_observation_action")
+        action_rec = self.env.ref("ni_observation.ni_observation_action").sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
         ctx.update(
