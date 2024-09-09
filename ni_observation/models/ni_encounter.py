@@ -21,6 +21,11 @@ class Encounter(models.Model):
         default=lambda self: self.env.ref("ni_observation.category_vital_signs").id,
         domain=[("type_count", ">", 0)],
     )
+    observation_problem_only = fields.Boolean(
+        default=False,
+        store=False,
+        help="Check here to display only the problem observations",
+    )
     encounter_observation_ids = fields.One2many(
         "ni.encounter.observation", "encounter_id"
     )
@@ -37,7 +42,7 @@ class Encounter(models.Model):
             ("patient", "All"),
         ],
         default="encounter",
-        required=True,
+        require=True,
     )
 
     observation_latest_ids = fields.One2many("ni.encounter.observation", "encounter_id")
@@ -59,10 +64,14 @@ class Encounter(models.Model):
     )
     observation_latest_lab_count = fields.Integer(compute="_compute_observation_latest")
 
-    @api.depends("observation_category_id", "observation_filter")
+    @api.depends(
+        "observation_category_id", "observation_filter", "observation_problem_only"
+    )
     def _compute_display_observation(self):
         for rec in self:
             domain = [("category_id", "=", rec.observation_category_id.id)]
+            if rec.observation_problem_only:
+                domain += [("is_problem", "=", True)]
             if rec.observation_filter == "encounter":
                 rec.filtered_encounter_observation_ids = (
                     rec.encounter_observation_ids.filtered_domain(domain)
