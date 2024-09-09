@@ -89,12 +89,15 @@
                         </group>
                         <group>
                             <field name="value_type" invisible="1" />
-                            <field name="value" />
-                            <field
-                                name="unit_id"
-                                options="{'no_open': True}"
-                                attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
-                            />
+                            <label for="value" />
+                            <div class="o_row">
+                                <field name="value" />
+                                <field
+                                    name="unit_id"
+                                    options="{'no_open': True}"
+                                    attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                                />
+                            </div>
                             <field
                                 name="interpretation_id"
                                 widget="badge"

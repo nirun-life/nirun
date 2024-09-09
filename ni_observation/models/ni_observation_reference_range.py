@@ -25,6 +25,7 @@ class ReferenceRange(models.Model):
     interpretation_id = fields.Many2one("ni.observation.interpretation", required=True)
     display_class = fields.Selection(related="interpretation_id.display_class")
     active = fields.Boolean(default="True")
+    is_problem = fields.Boolean(related="interpretation_id.is_problem")
 
     def name_get(self):
         return [
