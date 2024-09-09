@@ -32,10 +32,22 @@ class Condition(models.Model):
     code_id = fields.Many2one(
         "ni.condition.code",
         "Condition Code",
-        required=True,
+        required=False,
         ondelete="restrict",
         index=True,
+        domain="[('system_id', '=', system_id)]",
     )
+
+    def _get_default_system_id(self):
+        system_ids = self.env.company.condition_system_ids
+        return system_ids and system_ids[0].id or None
+
+    system_id = fields.Many2one(
+        "ni.coding.system",
+        domain="[('id', 'in', system_ids)]",
+        default=lambda self: self._get_default_system_id(),
+    )
+    system_ids = fields.Many2many(related="company_id.condition_system_ids")
 
     category_ids = fields.Many2many(
         "ni.condition.category",

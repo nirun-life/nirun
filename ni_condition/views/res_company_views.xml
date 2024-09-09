@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="res_company_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.company.view.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="ni_patient.res_company_view_form_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='encounter']/group" position="inside">
+                <field
+                    name="condition_system_ids"
+                    widget="many2many_tags"
+                    options="{'no_create': True, 'no_open':True}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
