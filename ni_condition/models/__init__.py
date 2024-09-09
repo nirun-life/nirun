@@ -9,3 +9,4 @@ from . import ni_patient
 from . import ni_encounter
 from . import ni_encounter_diagnosis
 from . import ni_encounter_diagnosis_role
+from . import res_company
