@@ -14,22 +14,30 @@
                     <field name="company_id" invisible="1" />
                     <field name="sequence" invisible="1" />
                     <field name="role_decoration" invisible="1" />
-                    <group>
-                        <field
-                            name="code_id"
-                            placeholder="Search for condition by name or code..."
-                            attrs="{'readonly': [('id', '!=', False)]}"
-                            options="{'no_open': True}"
-                        />
+                    <field name="system_ids" invisible="1" />
+                    <div class="mb24">
                         <label for="name" />
+                        <field name="system_id" widget="radio" options="{'horizontal': True}" class="float-end" />
                         <div>
-                            <field name="name" placeholder="Condition name use for display" />
-                            <p class="text-muted small" attrs="{'invisible': [('id', '!=', False)]}">
-                                Specify condition name here if not found on selectable choice
-                                above
-                            </p>
+                            <field
+                                name="code_id"
+                                class="w-100"
+                                placeholder="Search for condition by name or code..."
+                                options="{'no_open': True, 'always_reload': True}"
+                                context="{'show_code': True}"
+                            />
                         </div>
-                    </group>
+                        <div>
+                            <field name="name" class="w-100" placeholder="Condition name use for display" />
+                        </div>
+                        <p
+                            class="text-muted small"
+                            attrs="{'invisible': ['|', ('code_id', '!=', False), ('name', '!=', False)]}"
+                        >
+                            Specify condition name here if not found on selectable choice
+                            above
+                        </p>
+                    </div>
                     <group>
                         <group>
                             <field
@@ -41,11 +49,12 @@
                             <field name="severity" widget="radio" options="{'horizontal': True}" />
                         </group>
                         <group>
-                            <field name="category_ids" widget="many2many_checkboxes" />
-                            <field name="is_diagnosis" />
-                            <field name="is_problem" />
+                            <field name="category_ids" widget="many2many_checkboxes" invisible="1" />
+                            <field name="is_diagnosis" invisible="1" />
+                            <field name="is_problem" invisible="1" />
                         </group>
                     </group>
+                    <field name="note" placeholder="Additional note..." />
                 </sheet>
             </form>
         </field>
