@@ -1,6 +1,6 @@
 #  Copyright (c) 2022 Piruin P.
 
-from odoo import _, api, fields, models, tools
+from odoo import _, fields, models, tools
 from odoo.exceptions import ValidationError
 
 
@@ -9,9 +9,8 @@ class EncounterObservationLatest(models.Model):
     _description = "Patient Latest Observation"
     _auto = False
     _order = "occurrence desc"
+    _inherit = ["ni.observation.abstract"]
 
-    name = fields.Char(compute="_compute_name")
-    title = fields.Char()
     sheet_id = fields.Many2one("ni.observation.sheet", readonly=True)
     company_id = fields.Many2one("res.company", readonly=True)
     patient_id = fields.Many2one("ni.patient")
@@ -68,11 +67,3 @@ class EncounterObservationLatest(models.Model):
         if not line_id:
             raise ValidationError(_("Not found observation!"))
         return line_id
-
-    @api.depends("type_id", "value", "display_type", "title")
-    def _compute_name(self):
-        for rec in self:
-            if not rec.display_type:
-                rec.name = "{} {}".format(rec.value, rec.unit_id.name or "").strip()
-            else:
-                rec.name = rec.title
