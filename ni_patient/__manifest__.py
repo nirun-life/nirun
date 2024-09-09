@@ -55,7 +55,7 @@
         "views/ni_workflow_event_views.xml",
         "views/ni_workflow_request_views.xml",
     ],
-    "demo": ["data/ni_patient_demo.xml", "data/ni_location_demo.xml"],
+    "demo": ["demo/ni_patient_demo.xml", "demo/ni_location_demo.xml"],
     "application": True,
     "auto_install": False,
     "installable": True,
