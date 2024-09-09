@@ -25,6 +25,7 @@ class ObservationInterpretation(models.Model):
         ],
         default="text",
     )
+    is_problem = fields.Boolean(default=False, help="Indicator patient problem")
 
     @api.constrains("parent_id")
     def _check_hierarchy(self):
