@@ -33,6 +33,7 @@ class SurveyUserInput(models.Model):
                 "occurrence": fields.Datetime.now(),
                 "type_id": rec.observation_type_id.id,
                 "value_type": rec.observation_type_id.value_type,
+                "survey_response_id": rec.id,
             }
             if rec.observation_score_type == "percentage":
                 val.update({"value_float": rec.scoring_percentage})

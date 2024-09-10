@@ -26,7 +26,9 @@ class Patient(models.Model):
             rec.response_count = len(rec.response_ids)
 
     def action_survey_user_input_completed(self):
-        action_rec = self.env.ref("ni_questionnaire.questionnaire_response_action")
+        action_rec = self.env.ref(
+            "ni_questionnaire.questionnaire_response_action"
+        ).sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
         ctx.update(
