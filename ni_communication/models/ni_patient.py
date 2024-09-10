@@ -19,7 +19,7 @@ class Patient(models.Model):
             patient.communication_count = data.get(patient.id, 0)
 
     def action_communication(self):
-        action_rec = self.env.ref("ni_communication.ni_communication_action")
+        action_rec = self.env.ref("ni_communication.ni_communication_action").sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
         ctx.update(
