@@ -100,7 +100,7 @@ class Encounter(models.Model):
             return action
 
     def action_survey_subject(self):
-        action_rec = self.env.ref("survey_subject.survey_subject_action")
+        action_rec = self.env.ref("survey_subject.survey_subject_action").sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
         ctx.update(
