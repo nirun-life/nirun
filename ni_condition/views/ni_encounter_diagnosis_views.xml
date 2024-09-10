@@ -17,14 +17,19 @@
                     <field name="system_ids" invisible="1" />
                     <div class="mb24">
                         <label for="name" />
-                        <field name="system_id" widget="radio" options="{'horizontal': True}" class="float-end" />
+                        <field
+                            name="system_id"
+                            widget="radio"
+                            options="{'horizontal': True}"
+                            class="float-end oe_edit_only"
+                        />
                         <div>
                             <field
                                 name="code_id"
-                                class="w-100"
+                                class="w-100 oe_edit_only"
                                 placeholder="Search for condition by name or code..."
                                 options="{'no_open': True, 'always_reload': True}"
-                                context="{'show_code': True}"
+                                context="{'show_code': True, 'default_system_id': system_id}"
                             />
                         </div>
                         <div>
