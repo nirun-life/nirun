@@ -267,3 +267,9 @@ class Condition(models.Model):
                 raise UserError(_("Abatement age must not be more than patient age"))
             if rec.age_start and rec.age_end and rec.age_end < rec.age_start:
                 raise UserError(_("Abatement age must be more than onset age"))
+
+    @api.constrains("code_id", "system_id")
+    def _check_(self):
+        for rec in self:
+            if rec.code_id and rec.code_id.system_id != rec.system_id:
+                rec.system_id = rec.code_id.system_id
