@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_observation_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.observation.view.form.inherit</field>
+        <field name="model">ni.encounter.observation</field>
+        <field name="inherit_id" ref="ni_observation.ni_encounter_ob_line_view_form" />
+        <field name="arch" type="xml">
+            <field name="interpretation_id" position="after">
+                <label for="survey_response_id" attrs="{'invisible': [('survey_response_id', '=', False)]}" />
+                <div class="o_row" attrs="{'invisible': [('survey_response_id', '=', False)]}">
+                    <field name="survey_response_id" />
+                    <button name="action_print_survey" type="object" icon="fa-print" />
+                </div>
+            </field>
+        </field>
+    </record>
+    <record id="ni_encounter_observation_view_tree_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.observation.view.tree.inherit</field>
+        <field name="model">ni.encounter.observation</field>
+        <field name="inherit_id" ref="ni_observation.ni_encounter_ob_line_view_tree" />
+        <field name="arch" type="xml">
+            <field name="occurrence" position="after">
+                <field name="survey_id" invisible="1" />
+                <field name="survey_response_id" invisible="1" />
+                <button
+                    name="action_print_survey"
+                    type="object"
+                    icon="fa-print"
+                    class="text-primary"
+                    attrs="{'invisible': [('survey_response_id', '=', False)]}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
