@@ -27,6 +27,8 @@
         "views/ni_encounter_views.xml",
         "report/ni_patient_survey_latest_views.xml",
         "report/ni_encounter_survey_latest_views.xml",
+        "report/ni_patient_observation_views.xml",
+        "report/ni_encounter_observation_views.xml",
     ],
     "application": True,
     "auto_install": False,
