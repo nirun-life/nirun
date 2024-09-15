@@ -108,6 +108,11 @@ class Condition(models.Model):
         "ni.encounter.diagnosis", "condition_id", readonly=True
     )
 
+    observation_ids = fields.One2many(
+        "ni.patient.observation", compute="_compute_observation"
+    )
+    observation_count = fields.Integer(compute="_compute_observation")
+
     _sql_constraints = [
         (
             "patient_id_code_id_uniq",
@@ -115,6 +120,22 @@ class Condition(models.Model):
             "Patient already have this condition!",
         ),
     ]
+
+    @api.depends("code_id", "patient_id")
+    def _compute_observation(self):
+        for rec in self:
+            if rec.patient_id and rec.code_id and rec.code_id.observation_code_ids:
+                observation = self.env["ni.patient.observation"].search(
+                    [
+                        ("patient_id", "=", rec.patient_id.ids[0]),
+                        ("type_id", "in", rec.code_id.observation_code_ids.ids),
+                    ]
+                )
+                rec.observation_ids = observation
+                rec.observation_count = len(observation)
+            else:
+                rec.observation_ids = None
+                rec.observation_count = 0
 
     @api.onchange("period_type")
     def _onchange_period_type(self):

@@ -15,6 +15,9 @@
             <search>
                 <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <group name="group_by" string="Group By">
+                    <filter name="system" string="System" context="{'group_by': 'system_id'}" />
+                </group>
             </search>
         </field>
     </record>
@@ -24,9 +27,10 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="sequence" widget="handle" />
-                <field name="code" optional="show" />
                 <field name="name" />
+                <field name="code" optional="show" />
                 <field name="system_id" optional="show" />
+                <field name="color" optional="hide" widget="color_picker" />
                 <field name="active" optional="hide" />
             </tree>
         </field>
@@ -46,30 +50,37 @@
                         title="Archived"
                     />
                     <group>
+                        <field name="name" />
+                    </group>
+                    <group>
                         <group>
-                            <field name="name" />
-                            <field name="parent_id" />
+                            <field name="abbr" string="abbr." />
                         </group>
                         <group>
-                            <field name="system_id" />
                             <field name="code" />
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Definition">
-                            <field name="definition" />
+                    <field name="definition" placeholder="Definition..." />
+                    <notebook groups="base.group_no_one">
+                        <page name="observation" string="Observation" icon="fa-stethoscope">
+                            <field name="observation_code_ids" />
                         </page>
                         <page string="Extra Info" groups="base.group_no_one">
-                            <group>
+                            <group name="configuration" string="Configuration">
                                 <group>
+                                    <field name="system_id" />
+                                </group>
+                            </group>
+                            <group>
+                                <group name="display" string="Display">
                                     <field name="color" widget="color_picker" />
                                     <field name="sequence" />
                                 </group>
-                                <group>
+                                <group name="metadata" string="Metadata">
                                     <field name="create_date" />
-                                    <field name="create_uid" />
+                                    <field name="create_uid" widget="many2one_avatar_user" />
                                     <field name="write_date" />
-                                    <field name="write_uid" />
+                                    <field name="write_uid" widget="many2one_avatar_user" />
                                 </group>
                             </group>
                         </page>
