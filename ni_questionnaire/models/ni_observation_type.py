@@ -13,7 +13,10 @@ class Observation(models.AbstractModel):
 
     survey_id = fields.Many2one(related="type_id.survey_id")
     survey_response_id = fields.Many2one(
-        "survey.user_input", store=True, groups="survey.group_survey_user"
+        "survey.user_input",
+        "Derived From Survey",
+        store=True,
+        groups="survey.group_survey_user",
     )
 
     def action_print_survey(self):
