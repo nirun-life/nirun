@@ -19,5 +19,5 @@ class Survey(models.Model):
 
         ctx = dict(self._context)
         ctx.update({"default_survey_id": self.id})
-        action = self.env.ref("survey_subject.survey_subject_action").read()[0]
+        action = self.env.ref("survey_subject.survey_subject_action").sudo().read()[0]
         return dict(action, context=ctx)
