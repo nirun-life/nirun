@@ -60,6 +60,18 @@
                         </group>
                     </group>
                     <field name="note" placeholder="Additional note..." />
+                    <notebook>
+                        <page
+                            name="observation"
+                            string="Observation"
+                            icon="fa-stethoscope"
+                            badge="observation_count"
+                            attrs="{'invisible': [('code_id', '=', False)]}"
+                        >
+                            <field name="observation_ids" />
+                            <field name="observation_count" invisible="1" />
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -76,8 +88,8 @@
                 <field name="is_diagnosis" invisible="1" />
                 <field name="is_problem" invisible="1" />
                 <field name="sequence" widget="handle" />
+                <field name="code" />
                 <field name="name" />
-                <field name="code_id" />
                 <field
                     name="severity"
                     optional="hide"
