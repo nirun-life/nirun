@@ -53,7 +53,7 @@ class SurveyUserInput(models.Model):
 
     def action_survey_subject_wizard(self):
         res = super(SurveyUserInput, self).action_survey_subject_wizard()
-        if self.survey_id.category in ["ni_patient", "ni_encounter"]:
+        if self.survey_id.subject_type in ["ni.patient", "ni.encounter"]:
             res["context"].update(
                 {
                     "default_subject_ni_patient": self.patient_id.id,
@@ -65,7 +65,7 @@ class SurveyUserInput(models.Model):
     def action_graph_view(self):
         self.ensure_one()
         domain = [("test_entry", "=", False)]
-        if self.survey_id.category in ["ni_patient", "ni_encounter"]:
+        if self.survey_id.subject_type in ["ni.patient", "ni.encounter"]:
             domain.append(("patient_id", "=", self.patient_id.id))
         return {
             "type": "ir.actions.act_window",
