@@ -20,6 +20,17 @@ class ConditionCode(models.Model):
         help="Specialty who can use this code",
     )
 
+    observation_code_ids = fields.Many2many(
+        "ni.observation.type",
+        "ni_condition_code_observation_code",
+        "condition_code_id",
+        "observation_code_id",
+        string="Observation",
+    )
+    observation_code_count = fields.Integer(
+        "Observation Count", compute="_compute_observation_code_count"
+    )
+
     _sql_constraints = [
         (
             "system_name_uniq",
@@ -27,6 +38,11 @@ class ConditionCode(models.Model):
             "This name already exists!",
         ),
     ]
+
+    @api.depends("observation_code_ids")
+    def _compute_observation_code_count(self):
+        for rec in self:
+            rec.observation_code_count = len(rec.observation_code_ids)
 
     @api.constrains("parent_id")
     def _check_parent_id(self):

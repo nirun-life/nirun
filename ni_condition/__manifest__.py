@@ -9,7 +9,7 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["ni_patient"],
+    "depends": ["ni_patient", "ni_observation"],
     "data": [
         "data/ni_condition_category_data.xml",
         "data/ni_condition_verification_data.xml",
