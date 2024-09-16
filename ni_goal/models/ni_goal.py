@@ -56,6 +56,13 @@ class Goal(models.Model):
         "ni.observation", "Latest", compute="_compute_observation"
     )
     observation_ids = fields.Many2many("ni.observation", compute="_compute_observation")
+    condition_ids = fields.Many2many(
+        "ni.condition",
+        "ni_goal_addresses_condition",
+        "goal_id",
+        "condition_id",
+        domain="[('patient_id', '=', patient_id), ('clinical_state', '=', 'active')]",
+    )
 
     @api.onchange("observation_type_id")
     def _onchange_observation_type_id(self):
@@ -114,6 +121,19 @@ class Goal(models.Model):
             rec.name = rec.code_id.name
             rec.category_id = rec.code_id.category_id
             rec.observation_type_id = rec.code_id.observation_type_id
+            rec._mapping_condition()
+
+    def _mapping_condition(self):
+        for rec in self:
+            if rec.patient_id and rec.code_id and rec.code_id.condition_code_ids:
+                cond = self.env["ni.condition"].search(
+                    [
+                        ("patient_id", "=", rec.patient_id.ids[0]),
+                        ("code_id", "in", rec.code_id.condition_code_ids.ids),
+                        ("clinical_state", "in", ["active"]),
+                    ]
+                )
+                rec.condition_ids = cond
 
     @api.onchange("state_id")
     def _onchange_state_id(self):

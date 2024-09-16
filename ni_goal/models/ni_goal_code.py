@@ -16,3 +16,9 @@ class GoalCodeableConcept(models.Model):
         help="Specialty who can assign this goal",
     )
     observation_type_id = fields.Many2one("ni.observation.type")
+    condition_code_ids = fields.Many2many(
+        "ni.condition.code",
+        "ni_condition_code_goal_code_rel",
+        "goal_code_id",
+        "condition_code_id",
+    )
