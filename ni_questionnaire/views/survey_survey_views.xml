@@ -14,7 +14,19 @@
                     string="Observation"
                     attrs="{'invisible': [('scoring_type', '=', 'no_scoring')]}"
                 >
-                    <field name="observation_type_id" context="{'default_value_type': 'int'}" />
+                    <label for="observation_type_id" />
+                    <div>
+                        <field name="observation_type_id" context="{'default_value_type': 'int'}" />
+                        <button
+                            name="action_sync_observation_range"
+                            type="object"
+                            string="Ref. Range"
+                            icon="fa-clone"
+                            title="Clone Reference Range"
+                            confirm="Clone reference range from observation will replace existing grades"
+                            attrs="{'invisible': [('observation_type_id', '=', False)]}"
+                        />
+                    </div>
                     <field name="observation_score_type" widget="radio" />
                 </group>
             </xpath>
