@@ -5,7 +5,8 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class Survey(models.Model):
-    _inherit = "survey.survey"
+    _name = "survey.survey"
+    _inherit = ["survey.survey", "ni.specialty.mixin"]
 
     subject_type = fields.Selection(
         selection=[
