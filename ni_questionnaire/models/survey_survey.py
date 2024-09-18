@@ -1,7 +1,7 @@
 #  Copyright (c) 2021 NSTDA
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class Survey(models.Model):
@@ -24,6 +24,28 @@ class Survey(models.Model):
         default="raw",
         required=True,
     )
+
+    def action_sync_observation_range(self):
+        if not self.observation_type_id:
+            raise ValidationError(_("Please specify observation"))
+        if not self.observation_type_id.ref_range_ids:
+            raise ValidationError(_("Observation not have reference range"))
+
+        _max = self.observation_type_id.max
+        self.grade_ids = [fields.Command.clear()] + [
+            fields.Command.create(
+                {
+                    "name": ref.interpretation_id.name,
+                    "gender": ref.gender,
+                    "age_low": ref.age_low,
+                    "age_high": ref.age_high,
+                    "low": (ref.low / _max) * 100,
+                    "high": (ref.high / _max) * 100,
+                    "color_class": ref.interpretation_id.display_class,
+                }
+            )
+            for ref in self.observation_type_id.ref_range_ids
+        ]
 
     @api.constrains("observation_type_id")
     def _check_observation_type(self):
