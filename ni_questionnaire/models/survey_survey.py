@@ -26,6 +26,8 @@ class Survey(models.Model):
         required=True,
     )
 
+    question_group_ids = fields.One2many("survey.question.group", "survey_id")
+
     def action_sync_observation_range(self):
         if not self.observation_type_id:
             raise ValidationError(_("Please specify observation"))
