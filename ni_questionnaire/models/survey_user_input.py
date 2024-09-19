@@ -1,4 +1,5 @@
 #  Copyright (c) 2021-2023. NSTDA
+import pprint
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -17,6 +18,7 @@ class SurveyUserInput(models.Model):
     observation_score_type = fields.Selection(
         related="survey_id.observation_score_type"
     )
+    observation_group_ids = fields.One2many(related="survey_id.question_group_ids")
 
     def write(self, vals):
         state = vals.get("state")
@@ -25,66 +27,112 @@ class SurveyUserInput(models.Model):
         return super().write(vals)
 
     def _onchange_state_done(self):
-        ob = self.env["ni.observation"]
         for rec in self:
+            vals = []
             if rec.observation_type_id:
-                val = {
-                    "encounter_id": rec.encounter_id.id,
-                    "patient_id": rec.patient_id.id,
-                    "type_id": rec.observation_type_id.id,
-                    "value_type": rec.observation_type_id.value_type,
-                    "survey_response_id": rec.id,
-                }
-                if rec.observation_score_type == "percentage":
-                    val.update({"value_float": rec.scoring_percentage})
-                else:
-                    val.update(
-                        {
-                            "value_int": (rec.scoring_percentage / 100)
-                            * rec.scoring_total
-                        }
-                    )
-                ob.create(val)
+                vals.append(self._score_observation(rec))
 
             for line in rec.user_input_line_ids.filtered_domain(
                 [("skipped", "=", False)]
             ):
-                question = line.question_id
-                code = question.observation_code_id
-                if not code:
-                    continue
-                val = {
+                vals.append(self._answer_line_observation(rec, line))
+
+            for grp in rec.observation_group_ids:
+                vals.append(self._answer_group_observation(rec, grp))
+            vals = [val for val in vals if val is not None]
+            if len(vals) > 1:
+                sheet_val = {
                     "encounter_id": rec.encounter_id.id,
                     "patient_id": rec.patient_id.id,
-                    "type_id": code.id,
-                    "value_type": code.value_type,
-                    "survey_response_id": rec.id,
+                    "observation_ids": [fields.Command.create(val) for val in vals],
                 }
-                if question.observation_answer_type == "score":
-                    if code.value_type == "int":
-                        val.update({"value_int": int(line.answer_score)})
-                    elif code.value_type == "float":
-                        val.update({"value_float": line.answer_score})
-                    else:
-                        raise ValidationError(
-                            _("{} value type is [{}], not support score input").format(
-                                code.name, code.value_type
-                            )
-                        )
-                elif question.observation_answer_type == "value":
-                    if line.suggested_answer_id:
-                        val.update({"value": line.suggested_answer_id.value})
-                    elif line.value_date:
-                        val.update({"value": str(line.value_date)})
-                    elif line.value_char_box:
-                        val.update({"value_char": line.value_char_box})
-                    elif line.value_text_box:
-                        val.update({"value_char": line.value_text_box})
-                    elif line.value_numerical_box:
-                        val.update({"value": str(line.value_numerical_box)})
-                    else:
-                        raise ValidationError(_("Not support this type of answer"))
-                ob.create(val)
+                pprint.pprint(sheet_val)
+                self.env["ni.observation.sheet"].create(sheet_val)
+            elif len(vals) == 1:
+                self.env["ni.observation"].create(vals)
+
+    def _base_observation(self, code):
+        return {
+            "encounter_id": self.encounter_id.id,
+            "patient_id": self.patient_id.id,
+            "type_id": code.id,
+            "value_type": code.value_type,
+            "survey_response_id": self.id,
+        }
+
+    @staticmethod
+    def _score_observation(rec):
+        val = rec._base_observation(rec.observation_type_id)
+        if rec.observation_score_type == "percentage":
+            result = rec.scoring_percentage
+        else:
+            result = (rec.scoring_percentage / 100) * rec.scoring_total
+
+        if rec.observation_type_id.value_type == "float":
+            val.update({"value_float": result})
+        elif rec.observation_type_id.value_type == "int":
+            val.update({"value_int": int(result)})
+        else:
+            val.update({"value": str(result)})
+        return val
+
+    @staticmethod
+    def _answer_line_observation(_input, line):
+        question = line.question_id
+        code = question.observation_code_id
+        if not code:
+            return None
+        val = _input._base_observation(code)
+
+        if question.observation_answer_type == "score":
+            if code.value_type == "int":
+                val.update({"value_int": int(line.answer_score)})
+            elif code.value_type == "float":
+                val.update({"value_float": line.answer_score})
+            else:
+                raise ValidationError(
+                    _("{} value type is [{}], not support score input").format(
+                        code.name, code.value_type
+                    )
+                )
+        elif question.observation_answer_type == "value":
+            if line.suggested_answer_id:
+                val.update({"value": line.suggested_answer_id.value})
+            elif line.value_date:
+                val.update({"value": str(line.value_date)})
+            elif line.value_char_box:
+                val.update({"value_char": line.value_char_box})
+            elif line.value_text_box:
+                val.update({"value_char": line.value_text_box})
+            elif line.value_numerical_box:
+                val.update({"value": str(line.value_numerical_box)})
+            else:
+                raise ValidationError(_("Not support this type of answer"))
+        return val
+
+    @staticmethod
+    def _answer_group_observation(_input, group):
+        code = group.observation_code_id
+        val = _input._base_observation(code)
+
+        lines = _input.user_input_line_ids.filtered_domain(
+            [("question_id", "in", group.question_ids.ids), ("skipped", "=", False)]
+        )
+        result = 0
+        if group.operator == "sum":
+            result = sum(lines.mapped("answer_score"))
+        if group.operator == "avg":
+            result = sum(lines.mapped("answer_score")) / len(lines)
+        if group.operator == "min":
+            result = min(lines.mapped("answer_score"))
+        if group.operator == "max":
+            result = max(lines.mapped("answer_score"))
+
+        if code.value_type == "int":
+            val.update({"value_int": int(result)})
+        elif code.value_type == "float":
+            val.update({"value_float": result})
+        return val
 
     @api.constrains("encounter_id")
     def check_encounter_id(self):
