@@ -11,13 +11,13 @@
             <field name="subject_type" position="after">
                 <field name="specialty_ids" widget="many2many_tags" />
             </field>
-            <xpath expr="//page[@name='options']/group/group[4]" position="after">
+            <xpath expr="//page[@name='options']/group" position="after">
                 <group
                     name="observation"
                     string="Observation"
                     attrs="{'invisible': [('scoring_type', '=', 'no_scoring')]}"
                 >
-                    <label for="observation_type_id" />
+                    <label for="observation_type_id" string="Observation" />
                     <div>
                         <field name="observation_type_id" context="{'default_value_type': 'int'}" />
                         <button
@@ -30,8 +30,23 @@
                             attrs="{'invisible': [('observation_type_id', '=', False)]}"
                         />
                     </div>
-                    <field name="observation_score_type" widget="radio" />
+                    <field
+                        name="observation_score_type"
+                        widget="radio"
+                        options="{'horizontal': True}"
+                        string="Score Type"
+                        attrs="{'invisible': [('observation_type_id', '=', False)]}"
+                    />
                 </group>
+                <field name="question_group_ids" nolabel="1">
+                    <tree editable="bottom">
+                        <field name="survey_id" invisible="1" />
+                        <field name="sequence" widget="handle" />
+                        <field name="operator" />
+                        <field name="question_ids" widget="many2many_tags" />
+                        <field name="observation_code_id" />
+                    </tree>
+                </field>
             </xpath>
         </field>
     </record>
