@@ -7,12 +7,12 @@
         <field name="name">Survey user input: multi-company</field>
         <field name="model_id" ref="survey.model_survey_user_input" />
         <field name="global" eval="True" />
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', '=', company_ids)]</field>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
     <record id="survey_user_input_line_company_rule" model="ir.rule">
         <field name="name">Survey user input line: multi-company</field>
         <field name="model_id" ref="survey.model_survey_user_input_line" />
         <field name="global" eval="True" />
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', '=', company_ids)]</field>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
 </odoo>
