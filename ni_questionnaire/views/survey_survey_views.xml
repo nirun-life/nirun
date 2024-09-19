@@ -8,6 +8,9 @@
         <field name="model">survey.survey</field>
         <field name="inherit_id" ref="survey.survey_survey_view_form" />
         <field name="arch" type="xml">
+            <field name="subject_type" position="after">
+                <field name="specialty_ids" widget="many2many_tags" />
+            </field>
             <xpath expr="//page[@name='options']/group/group[4]" position="after">
                 <group
                     name="observation"
@@ -28,9 +31,6 @@
                         />
                     </div>
                     <field name="observation_score_type" widget="radio" />
-                </group>
-                <group>
-                    <field name="specialty_ids" widget="many2many_tags" />
                 </group>
             </xpath>
         </field>
@@ -91,5 +91,21 @@
         <field name="res_model">survey.survey</field>
         <field name="view_mode">tree,kanban,form,activity</field>
         <field name="context">{'search_default_patient': 1}</field>
+    </record>
+    <record id="survey_question_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.question.view.form.inherit</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='options']/group[2]" position="inside">
+                <group string="Observation">
+                    <field name="observation_code_id" string="Observation" />
+                    <field
+                        name="observation_answer_type"
+                        attrs="{'invisible': [('observation_code_id', '=', False)]}"
+                    />
+                </group>
+            </xpath>
+        </field>
     </record>
 </odoo>
