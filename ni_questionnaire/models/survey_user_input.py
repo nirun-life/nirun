@@ -26,22 +26,65 @@ class SurveyUserInput(models.Model):
 
     def _onchange_state_done(self):
         ob = self.env["ni.observation"]
-        for rec in self.filtered_domain([("observation_type_id", "!=", False)]):
-            val = {
-                "encounter_id": rec.encounter_id.id,
-                "patient_id": rec.patient_id.id,
-                "occurrence": fields.Datetime.now(),
-                "type_id": rec.observation_type_id.id,
-                "value_type": rec.observation_type_id.value_type,
-                "survey_response_id": rec.id,
-            }
-            if rec.observation_score_type == "percentage":
-                val.update({"value_float": rec.scoring_percentage})
-            else:
-                val.update(
-                    {"value_int": (rec.scoring_percentage / 100) * rec.scoring_total}
-                )
-            ob.create(val)
+        for rec in self:
+            if rec.observation_type_id:
+                val = {
+                    "encounter_id": rec.encounter_id.id,
+                    "patient_id": rec.patient_id.id,
+                    "type_id": rec.observation_type_id.id,
+                    "value_type": rec.observation_type_id.value_type,
+                    "survey_response_id": rec.id,
+                }
+                if rec.observation_score_type == "percentage":
+                    val.update({"value_float": rec.scoring_percentage})
+                else:
+                    val.update(
+                        {
+                            "value_int": (rec.scoring_percentage / 100)
+                            * rec.scoring_total
+                        }
+                    )
+                ob.create(val)
+
+            for line in rec.user_input_line_ids.filtered_domain(
+                [("skipped", "=", False)]
+            ):
+                question = line.question_id
+                code = question.observation_code_id
+                if not code:
+                    continue
+                val = {
+                    "encounter_id": rec.encounter_id.id,
+                    "patient_id": rec.patient_id.id,
+                    "type_id": code.id,
+                    "value_type": code.value_type,
+                    "survey_response_id": rec.id,
+                }
+                if question.observation_answer_type == "score":
+                    if code.value_type == "int":
+                        val.update({"value_int": int(line.answer_score)})
+                    elif code.value_type == "float":
+                        val.update({"value_float": line.answer_score})
+                    else:
+                        raise ValidationError(
+                            _("{} value type is [{}], not support score input").format(
+                                code.name, code.value_type
+                            )
+                        )
+                elif question.observation_answer_type == "value":
+                    if line.suggested_answer_id:
+                        val.update({"value": line.suggested_answer_id.value})
+                    elif line.value_date:
+                        val.update({"value": str(line.value_date)})
+                    elif line.value_char_box:
+                        val.update({"value_char": line.value_char_box})
+                    elif line.value_text_box:
+                        val.update({"value_char": line.value_text_box})
+                    elif line.value_numerical_box:
+                        val.update({"value": str(line.value_numerical_box)})
+                    else:
+                        raise ValidationError(_("Not support this type of answer"))
+                ob.create(val)
 
     @api.constrains("encounter_id")
     def check_encounter_id(self):
