@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="ni_observation_type_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.observation.type.view.form.inherit</field>
+        <field name="model">ni.observation.type</field>
+        <field name="inherit_id" ref="ni_observation.ni_observation_type_view_form" />
+        <field name="arch" type="xml">
+            <field name="compute" position="before">
+                <field name="survey_id" />
+            </field>
+        </field>
+    </record>
+</odoo>
