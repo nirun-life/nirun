@@ -10,3 +10,4 @@ from . import ni_patient
 from . import ni_encounter
 from . import ni_encounter_class
 from . import ni_observation_type
+from . import ni_observation_abstract
