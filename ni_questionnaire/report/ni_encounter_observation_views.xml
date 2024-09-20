@@ -31,7 +31,14 @@
                     icon="fa-eye"
                     title="See Result"
                     class="text-primary"
-                    attrs="{'invisible': [('survey_response_id', '=', False)]}"
+                    attrs="{'invisible': ['|',('survey_id', '=', False), ('survey_response_id', '=', False)]}"
+                />
+                <button
+                    name="action_survey_subject"
+                    type="object"
+                    icon="fa-commenting"
+                    title="Start Survey"
+                    attrs="{'invisible': [('survey_id', '=', False)]}"
                 />
             </field>
         </field>

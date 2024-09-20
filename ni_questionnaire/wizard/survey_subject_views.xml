@@ -8,11 +8,13 @@
             <field name="subject_res_users" position="after">
                 <field
                     name="subject_ni_patient"
+                    invisible="context.get('default_subject_ni_patient')"
                     attrs="{'invisible': [('type', 'not in', ['ni.patient', 'ni.encounter'])], 'required': [('type', '=', 'ni.patient')]}"
                     options="{'no_create': True, 'no_create_edit': True}"
                 />
                 <field
                     name="subject_ni_encounter"
+                    invisible="context.get('default_subject_ni_encounter')"
                     attrs="{'invisible': [('type', 'not in', ['ni.patient', 'ni.encounter'])] }"
                     options="{'no_create': True, 'no_create_edit': True}"
                 />
