@@ -42,7 +42,7 @@ class Encounter(models.Model):
             ("patient", "All"),
         ],
         default="encounter",
-        require=True,
+        required=True,
     )
 
     observation_latest_ids = fields.One2many("ni.encounter.observation", "encounter_id")
