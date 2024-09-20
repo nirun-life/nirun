@@ -28,8 +28,13 @@ class SurveySubjectWizard(models.TransientModel):
     subject_res_users = fields.Many2one("res.users", string="User")
 
     state = fields.Selection(
-        [("choose", "Choose"), ("survey", "Survey")], default="choose"
+        [
+            ("choose", "Choose"),
+            ("survey", "Survey"),
+        ],
+        default="choose",
     )
+    started = fields.Boolean(default=False)
 
     @api.depends("survey_id")
     def _compute_type(self):
@@ -58,6 +63,7 @@ class SurveySubjectWizard(models.TransientModel):
             partner=self.subject_res_partner,
             **self.subject_get()
         )
+        self.write({"started": True})
         return {
             "type": "ir.actions.act_url",
             "target": "new",
