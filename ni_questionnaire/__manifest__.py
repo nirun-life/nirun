@@ -26,6 +26,7 @@
         "views/survey_user_input_views.xml",
         "views/ni_patient_views.xml",
         "views/ni_encounter_views.xml",
+        "views/ni_observation_type_views.xml",
         "report/ni_patient_survey_latest_views.xml",
         "report/ni_encounter_survey_latest_views.xml",
         "report/ni_patient_observation_views.xml",

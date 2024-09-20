@@ -56,7 +56,7 @@
                 <field name="response_latest_date" invisible="1" />
                 <field name="response_latest_grade_id" invisible="1" />
             </field>
-            <xpath expr="//page[@name='laboratory']" position="attributes">
+            <xpath expr="//page[@name='questionnaire']" position="attributes">
                 <attribute name="badge">response_count</attribute>
             </xpath>
             <xpath expr="//page[@name='questionnaire']" position="inside">
@@ -85,6 +85,23 @@
                 <button
                     name="action_survey_subject"
                     class="btn-primary"
+                    type="object"
+                    icon="fa-commenting"
+                    string="Survey"
+                    attrs="{'invisible': [('state', '!=', 'in-progress')]}"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_encounter_view_form_inherit_observation" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit.observation</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_observation.ni_encounter_view_form_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='observation']" position="inside">
+                <button
+                    name="action_survey_subject"
+                    class="btn-outline-primary mx-2"
                     type="object"
                     icon="fa-commenting"
                     string="Survey"
