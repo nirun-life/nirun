@@ -44,7 +44,16 @@
                         string="Start Survey"
                         icon="fa-pencil-square-o"
                         class="btn-primary"
+                        attrs="{'invisible': [('started', '=', True)]}"
                     />
+                    <button
+                        name="action_survey"
+                        type="object"
+                        string="Start Survey"
+                        icon="fa-pencil-square-o"
+                        attrs="{'invisible': [('started', '=', False)]}"
+                    />
+                    <field name="started" invisible="1" />
                     <p class="mt-4 ">
                         Clicking the button above will open a new tab for you to start a
                         <b>
@@ -63,7 +72,23 @@
                     <button string="Cancel" class="btn-secondary" special="cancel" />
                 </footer>
                 <footer states="survey">
-                    <button special="cancel" data-hotkey="z" string="Close" type="object" class="btn-secondary" />
+                    <button
+                        special="cancel"
+                        data-hotkey="z"
+                        string="Cancel"
+                        type="object"
+                        class="btn-secondary"
+                        attrs="{'invisible': [('started', '=', True)]}"
+                        confirm="Are you sure to cancel this survey?"
+                    />
+                    <button
+                        special="cancel"
+                        data-hotkey="z"
+                        string="Close"
+                        type="object"
+                        class="btn-primary"
+                        attrs="{'invisible': [('started', '=', False)]}"
+                    />
                 </footer>
             </form>
         </field>
