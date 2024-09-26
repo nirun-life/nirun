@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <template
+        id="encounter_summary_report_inherit"
+        inherit_id="ni_patient.encounter_summary_report_template"
+        priority="90"
+    >
+        <xpath expr="//div[@id='detail']" position="after">
+            <t id="service" t-if="o.show_document_ref">
+                <t t-foreach="o.document_ids" t-as="line">
+                    <t t-if="line.data">
+                        <div class="row mt-2" t-attf-id="doc-{{line.id}}">
+                            <div class="col-auto col-12 mw-100">
+                                <strong>
+                                    <t t-esc="line.type_id.name" />
+                                    :
+                                </strong>
+                                <p class="m-0" t-field="line.data" />
+                                <div class="mt-1 text-muted">
+                                    <span t-field="line.author_id" />
+                                    <span class='mx-2 small' t-field="line.occurrence" />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>
