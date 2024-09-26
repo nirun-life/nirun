@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-27 07:40+0000\n"
-"PO-Revision-Date: 2024-08-27 07:40+0000\n"
+"POT-Creation-Date: 2024-09-26 10:31+0000\n"
+"PO-Revision-Date: 2024-09-26 10:31+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -32,16 +32,29 @@ msgid ""
 "                                or\n"
 "                            </span>"
 msgstr ""
+"<span class=\"oe_edit_only\" attrs=\"{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}\">\n"
+"                                หรือ\n"
+"                            </span>"
 
 #. module: ni_service
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_service_view_form
 msgid "<span class=\"ps-2\">hours</span>"
-msgstr "<span class=\"ps-2\">ชั่วโมง</span>"
+msgstr "<span> hours</span>"
 
 #. module: ni_service
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_service_request_view_kanban
 msgid "<span>...</span>"
-msgstr "<span>...</span>"
+msgstr ""
+
+#. module: ni_service
+#: model_terms:ir.ui.view,arch_db:ni_service.encounter_summary_report_inherit
+msgid "<strong class=\"me-1 text-body\">Note:</strong>"
+msgstr "<strong class=\"me-1 text-body\">หมายเหตุ:</strong>"
+
+#. module: ni_service
+#: model_terms:ir.ui.view,arch_db:ni_service.encounter_summary_report_inherit
+msgid "<strong>Service:</strong>"
+msgstr "<strong>กิจกรรมการดูแลสุขภาพ:</strong>"
 
 #. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service__abbr
@@ -1111,10 +1124,12 @@ msgstr "ประเภทกิจกรรม"
 
 #. module: ni_service
 #: model:ir.actions.act_window,name:ni_service.ni_service_action
+#: model_terms:ir.ui.view,arch_db:ni_service.encounter_summary_report_inherit
 msgid "Services"
 msgstr "กิจกรรม"
 
 #. module: ni_service
+#: model_terms:ir.ui.view,arch_db:ni_service.ni_service_event_view_form
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_service_request_view_form
 msgid "Services..."
 msgstr "กิจกรรม..."
@@ -1142,6 +1157,7 @@ msgstr "หนึ่งกิจกรรม"
 #. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service__specialty_ids
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_category__specialty_ids
+#: model:ir.model.fields,field_description:ni_service.field_ni_service_type__specialty_ids
 msgid "Specialty"
 msgstr "บทบาท"
 
@@ -1256,9 +1272,14 @@ msgid "Thursday"
 msgstr "พฤหัสบดี"
 
 #. module: ni_service
+#: model_terms:ir.ui.view,arch_db:ni_service.encounter_summary_report_inherit
+msgid "Time"
+msgstr "เวลา"
+
+#. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_request__timing_tod
 msgid "Time Of Day"
-msgstr ""
+msgstr "เวลา"
 
 #. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__event_tz
@@ -1333,6 +1354,16 @@ msgstr ""
 #: model:ir.model.fields.selection,name:ni_service.selection__ni_service_category__decoration__warning
 #: model:ir.model.fields.selection,name:ni_service.selection__ni_service_type__decoration__warning
 msgid "Warning"
+msgstr ""
+
+#. module: ni_service
+#: model:ir.model.fields,field_description:ni_service.field_ni_service_event__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: ni_service
+#: model:ir.model.fields,help:ni_service.field_ni_service_event__website_message_ids
+msgid "Website communication history"
 msgstr ""
 
 #. module: ni_service
