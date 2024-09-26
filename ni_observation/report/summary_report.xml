@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <template id="encounter_summary_report_inherit" inherit_id="ni_patient.encounter_summary_report_template">
+        <xpath expr="//div[@id='pe']/div/strong" position="after">
+            <div id="vital-sign">
+                <strong>BT:</strong>
+                <t t-if="o.body_temp">
+                    <span t-field="o.body_temp" />
+                </t>
+                <t t-else="">
+                    <span class="text-muted mx-1">-</span>
+                </t>
+                <span class="me-3">°C</span>
+                <strong>PR:</strong>
+                <t t-if="o.heart_rate">
+                    <span t-field="o.heart_rate" />
+                </t>
+                <t t-else="">
+                    <span class="text-muted mx-1">-</span>
+                </t>
+                <span class="me-3">/min</span>
+                <strong>RR:</strong>
+                <t t-if="o.respiratory_rate">
+                    <span t-field="o.respiratory_rate" />
+                </t>
+                <t t-else="">
+                    <span class="text-muted mx-1">-</span>
+                </t>
+                <span class="me-3">/min</span>
+                <strong>
+                    <span>O</span>
+                    <sub style="margin-left: -0.25rem">2</sub>
+                    <span>sat:</span>
+                </strong>
+                <t t-if="o.oxygen_sat">
+                    <span t-field="o.oxygen_sat" />
+                </t>
+                <t t-else="">
+                    <span class="text-muted mx-1">-</span>
+                </t>
+                <span class="me-3">%</span>
+                <strong>BT:</strong>
+                <t t-if="o.bp">
+                    <span t-field="o.bp" />
+                </t>
+                <t t-else="">
+                    <span class="text-muted mx-1">-</span>
+                </t>
+                <span class="me-3">mmHg</span>
+                <strong>
+                    <span t-field="o.glucose_type" />
+                    :
+                </strong>
+                <t t-if="o.glucose_type == 'fbs'">
+                    <t t-if="o.fbs">
+                        <span t-field="o.fbs" />
+                    </t>
+                    <t t-else="">
+                        <span class="text-muted mx-1">-</span>
+                    </t>
+                </t>
+                <t t-else="">
+                    <t t-if="o.dtx">
+                        <span t-field="o.dtx" />
+                    </t>
+                    <t t-else="">
+                        <span class="text-muted mx-1">-</span>
+                    </t>
+                </t>
+                <span class="me-3">mg/dl</span>
+                <strong>BMI:</strong>
+                <t t-if="o.bmi">
+                    <span t-field="o.bmi" />
+                </t>
+                <t t-else="">
+                    <span class="text-muted mx-1">-</span>
+                </t>
+                <span class="me-3">
+                    kg/m
+                    <sup style="margin-left: -0.25rem">2</sup>
+                </span>
+            </div>
+            <div id="pain" t-if="o.pain_score">
+                <strong>Pain Score:</strong>
+                <span class="me-2" t-field="o.pain_score" />
+                <strong>Area:</strong>
+                <t t-if="o.pain_area">
+                    <span t-field="o.pain_area" />
+                </t>
+                <t t-else="">
+                    <span class="text-muted mx-1">-</span>
+                </t>
+            </div>
+        </xpath>
+    </template>
+</odoo>
