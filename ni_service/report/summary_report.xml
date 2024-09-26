@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <template
+        id="encounter_summary_report_inherit"
+        inherit_id="ni_patient.encounter_summary_report_template"
+        priority="100"
+    >
+        <xpath expr="//div[@id='detail']" position="after">
+            <t id="service" t-if="o.show_service">
+                <div class="mt-2">
+                    <strong>Service:</strong>
+                    <table
+                        class="table table-sm o_main_table table-borderless"
+                        id="service-table"
+                        t-if="o.service_attendance_ids"
+                    >
+                        <thead style="display: table-row-group">
+                            <tr>
+                                <th name="th_time" class="text-start">Time</th>
+                                <th name="th_name" class="text-start">Services</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.service_attendance_ids" t-as="line">
+                                <td name="td_time">
+                                    <span t-field="line.attendance_id" />
+                                </td>
+                                <td name="td_name">
+                                    <span t-field="line.name" />
+                                    <t t-if="line.note">
+                                        <br />
+                                        <span>
+                                            <strong class="me-1 text-body">Note:</strong>
+                                            <t t-esc="line.note" />
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>
