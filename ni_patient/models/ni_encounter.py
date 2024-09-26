@@ -353,6 +353,12 @@ class Encounter(models.Model):
     participant_ids = fields.One2many(
         "ni.encounter.participant", "encounter_id", states=LOCK_STATE_DICT
     )
+    participant_id = fields.Many2one(
+        "ni.encounter.participant", compute="_compute_participant_id"
+    )
+    participant_title = fields.Many2one(
+        "hr.job", related="participant_id.employee_id.job_id"
+    )
     participant_count = fields.Integer(compute="_compute_participant")
     participate = fields.Boolean(
         compute="_compute_participant",
@@ -369,6 +375,20 @@ class Encounter(models.Model):
             "This Encounter No. already exists!",
         ),
     ]
+
+    @api.depends("participant_ids")
+    def _compute_participant_id(self):
+        for rec in self:
+            if not rec.participant_ids:
+                rec.participant_id = None
+                continue
+            active_participant = rec.participant_ids.filtered_domain(
+                [("period_end", "=", False)]
+            )
+            if active_participant:
+                rec.participant_id = active_participant[0].id
+            else:
+                rec.participant_id = rec.participant_ids[0].id
 
     @api.depends("identifier")
     def _compute_name(self):
