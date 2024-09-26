@@ -20,6 +20,7 @@ class Encounter(models.Model):
         "image.mixin",
         "ni.identifier.mixin",
         "ni.export.data.logger",
+        "age.mixin",
     ]
     _inherits = {"ni.patient": "patient_id"}
     _check_company_auto = True
@@ -95,7 +96,22 @@ class Encounter(models.Model):
         index=True,
     )
     patient_name = fields.Char(related="patient_id.name", readonly=False)
+    birthdate = fields.Date(related="patient_id.birthdate")
+    age_init = fields.Integer(related="patient_id.age_init")
+    age_init_date = fields.Date(related="patient_id.age_init_date")
+    display_age = fields.Char(string="At Age")
+
     patient_identifier = fields.Char(related="patient_id.identifier")
+
+    @api.depends("birthdate", "deceased_date", "age_init", "period_start")
+    def _compute_age(self):
+        for rec in self:
+            if rec.birthdate:
+                rec._compute_age_from_birthdate(rec.period_start)
+            elif rec.age_init:
+                rec._compute_age_from_init(rec.period_start)
+            else:
+                rec.update({"age": 0, "display_age": None})
 
     other_address_id = fields.Many2one(
         "res.partner",
