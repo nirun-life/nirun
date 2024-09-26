@@ -17,6 +17,7 @@ class EncounterParticipant(models.Model):
         else:
             return self.env["ni.participant.type"].search([], limit=1)
 
+    name = fields.Char(related="employee_id.name")
     encounter_id = fields.Many2one("ni.encounter", required=True, ondelete="cascade")
     company_id = fields.Many2one(related="encounter_id.company_id")
     employee_id = fields.Many2one("hr.employee", required=True, ondelete="restrict")
