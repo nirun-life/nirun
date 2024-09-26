@@ -36,6 +36,7 @@ class EncounterClassification(models.Model):
     sequence_id = fields.Many2one(
         "ir.sequence", help="Fallback to default sequence when leave this field empty"
     )
+    report_title = fields.Char(default="Summary Report")
 
     auto_close = fields.Boolean(default=False)
     auto_close_midnight = fields.Boolean(default=True)

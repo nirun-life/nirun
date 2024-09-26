@@ -54,6 +54,8 @@
         "views/ni_patient_menu.xml",
         "views/ni_workflow_event_views.xml",
         "views/ni_workflow_request_views.xml",
+        "report/summary_report_templates.xml",
+        "report/summary_report.xml",
     ],
     "demo": ["demo/ni_patient_demo.xml", "demo/ni_location_demo.xml"],
     "application": True,

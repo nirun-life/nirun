@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <template id="encounter_summary_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="ni_patient.encounter_summary_report_template" />
+            </t>
+        </t>
+    </template>
+    <template id="encounter_summary_report_template">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div class="oe_structure" />
+                <h2 name="title">
+                    <span t-out="o.class_id.report_title" />
+                    <small class="text-muted mx-2" t-field="o.identifier" />
+                </h2>
+                <div name="hosp">
+                    <strong>Provider:</strong>
+                    <span class="me-3 " t-field="o.company_id.name" />
+                    <strong>Code:</strong>
+                    <span class="me-3" t-field="o.company_id.identifier" />
+                </div>
+                <div class="mt-2" name="period">
+                    <strong>Class:</strong>
+                    <span class="me-3 " t-field="o.class_id.name" />
+                    <strong>Date:</strong>
+                    <span t-field="o.period_start" />
+                    <t t-if="o.duration_days > 0">
+                        <span class="mx-1">-</span>
+                        <span t-field="o.period_end" />
+                    </t>
+                </div>
+                <div class="mt-2" id="person">
+                    <strong>Patient:</strong>
+                    <span class="me-3 " t-field="o.patient_id.display_name" />
+                    <strong>Gender:</strong>
+                    <span class="me-3" t-field="o.gender" />
+                    <strong>Birthdate:</strong>
+                    <span class="me-3" t-field="o.patient_id.birthdate" />
+                    <strong>Age:</strong>
+                    <span class="me-3" t-field="o.display_age" />
+                </div>
+                <p class="pt-2" />
+                <div class="row mt-2" id="cc" t-if="o.show_chief_complaint">
+                    <strong>Chief Complaint:</strong>
+                    <span t-field="o.chief_complaint" />
+                    <t t-if="not o.physical_exam">
+                        <span>-</span>
+                    </t>
+                </div>
+                <div class="row mt-2" id="hpi" t-if="o.show_history_of_present_illness">
+                    <div class="col-auto col-12 mw-100">
+                        <strong>History of Present Illness:</strong>
+                        <p class="m-0" t-field="o.history_of_present_illness" />
+                        <t t-if="not o.history_of_present_illness">
+                            <span>-</span>
+                        </t>
+                    </div>
+                </div>
+                <div class="row mt-2" id="pme" t-if="o.show_history">
+                    <div class="col-auto col-12 mw-100">
+                        <strong>Past Medical History:</strong>
+                        <p class="m-0" t-field="o.past_medical_history" />
+                        <t t-if="not o.past_medical_history">
+                            <span>-</span>
+                        </t>
+                    </div>
+                </div>
+                <div class="row mt-2" id="ros" t-if="o.show_review_of_systems">
+                    <div class="col-auto col-12 mw-100">
+                        <strong>Review of Systems:</strong>
+                        <p class="m-0" t-field="o.review_of_systems" />
+                        <t t-if="not o.review_of_systems">
+                            <span>-</span>
+                        </t>
+                    </div>
+                </div>
+                <div class="row mt-2" id="pe" t-if="o.show_physical_exam">
+                    <div class="col-auto col-12 mw-100">
+                        <strong>Physical Examination:</strong>
+                        <p class="m-0" t-field="o.physical_exam" />
+                        <t t-if="not o.physical_exam">
+                            <span>-</span>
+                        </t>
+                    </div>
+                </div>
+                <div id="detail" />
+                <div id="tail" />
+                <t t-if="o.participant_id" id="signature">
+                    <p class="pt-4" />
+                    <p class="pt-4" />
+                    <div class="mt-4 ml64 mr4" id="signature">
+                        <div class="offset-8 pb-4">
+                            <strong>Signature</strong>
+                        </div>
+                        <div class="offset-8 mt-4 pt-4">
+                            <hr style="border-bottom: 1px dotted black; width: 100%;" />
+                        </div>
+                        <div class="offset-8 text-center">
+                            <p t-field="o.participant_id" class="mb-0" />
+                            <p t-field="o.participant_title" class="mb-0" />
+                            <strong>Practitioner</strong>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
