@@ -2,7 +2,7 @@
 
 {
     "name": "Service",
-    "version": "16.0.0.3.0",
+    "version": "16.0.0.3.1",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
@@ -30,6 +30,7 @@
         "views/ni_service_menu.xml",
         "views/ni_service_request_views.xml",
         "views/res_company_views.xml",
+        "report/summary_report.xml",
     ],
     "application": True,
     "auto_install": False,
