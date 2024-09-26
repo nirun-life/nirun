@@ -2,7 +2,7 @@
 
 {
     "name": "Observation",
-    "version": "16.0.0.4.0",
+    "version": "16.0.0.4.1",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -33,6 +33,7 @@
         "views/ni_encounter_views.xml",
         "report/ni_encounter_observation_view.xml",
         "report/ni_patient_observation_view.xml",
+        "report/summary_report.xml",
         "views/uom_uom_views.xml",
     ],
     "assets": {
