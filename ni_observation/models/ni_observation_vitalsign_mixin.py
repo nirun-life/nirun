@@ -57,7 +57,7 @@ class ObservationVitalsignMixin(models.AbstractModel):
     )
     glucose_type = fields.Selection(
         [("fbs", "FBS"), ("dtx", "DTX")],
-        default="fbs",
+        default="dtx",
         required=True,
     )
     fbs = fields.Float(
