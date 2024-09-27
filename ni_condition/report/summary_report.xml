@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <template id="encounter_summary_report_inherit" inherit_id="ni_patient.encounter_summary_report_template">
+        <xpath expr="//div[@id='pme']/div/strong" position="after">
+            <div id="chronic">
+                <strong>Chronic:</strong>
+                <span class="me-2">
+                    <t t-foreach="o.condition_problem_ids" t-as="condition">
+                        <t t-esc="condition.code_id.name" />
+                        <t t-if="not condition_last" t-esc="', '" />
+                    </t>
+                </span>
+            </div>
+        </xpath>
+        <xpath expr="//div[@id='pe']" position="after">
+            <t id="problem" t-if="o.show_problem_list">
+                <div class="mt-2" id="problem">
+                    <strong>Problem List:</strong>
+                    <table class="table table-sm o_main_table table-borderless" id="-table">
+                        <thead style="display: table-row-group">
+                            <tr>
+                                <th name="th_category" class="text-start">Category</th>
+                                <th name="th_name" class="text-start">Problem</th>
+                                <th name="th_code" class="text-start">Code</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.diagnosis_ids" t-as="line">
+                                <td name="td_category">
+                                    <span t-field="line.role_id" />
+                                </td>
+                                <td name="td_name">
+                                    <span t-field="line.name" />
+                                </td>
+                                <td name="td_code">
+                                    <span t-field="line.code" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>
