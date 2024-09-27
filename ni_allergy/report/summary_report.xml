@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <template id="encounter_summary_report_inherit" inherit_id="ni_patient.encounter_summary_report_template">
+        <xpath expr="//div[@id='pme']/div/strong" position="after">
+            <div id="allergy">
+                <strong>Allergy:</strong>
+                <span class="me-2" t-if="o.allergy == 'identified'">
+                    <t t-foreach="o.allergy_ids" t-as="allergy">
+                        <t t-esc="allergy.code_id.name" />
+                        <t t-if="not allergy_last" t-esc="','" />
+                    </t>
+                </span>
+                <span t-else="" t-field="o.allergy">
+
+                </span>
+            </div>
+        </xpath>
+    </template>
+</odoo>
