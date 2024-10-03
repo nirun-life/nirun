@@ -7,7 +7,7 @@
         <field name="name">Service Calendar</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service.event</field>
-        <field name="view_mode">calendar,tree,form</field>
+        <field name="view_mode">calendar,tree,kanban,pivot,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">No Schedule</p>
         </field>
@@ -70,9 +70,6 @@
                     </div>
                     <div groups="base.group_multi_company">
                         <field name="company_id" options="{'no_create': True, 'no_open':True}" class="w-75" />
-                    </div>
-                    <div class="d-flex align-items-baseline">
-
                     </div>
                     <group class="mt-4">
                         <group>
@@ -213,6 +210,119 @@
                 <field name="categ_ids" widget="many2many_tags" optional="hide" options="{'color_field': 'color'}" />
                 <field name="description" optional="hide" />
             </tree>
+        </field>
+    </record>
+    <record id="ni_service_event_view_form_quick_create" model="ir.ui.view">
+        <field name="name">ni.service.event.view.form.quick.create</field>
+        <field name="model">ni.service.event</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <group>
+                    <field name="mode" invisible="1" />
+                    <field name="company_id" invisible="1" />
+                    <field name="service_category_id" options="{'no_open': True}" invisible="1" />
+                    <field name="service_id" invisible="1" />
+                    <field
+                        name="service_ids"
+                        widget="many2many_checkboxes"
+                        domain="[('category_id', '=', service_category_id)]"
+                    />
+                    <field name="name" invisible="1" />
+                    <field name="plan_patient_ids" widget="many2many_tags_avatar" />
+                    <field name="start" />
+                    <field name="color" invisible="1" />
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="ni_service_event_view_kanban" model="ir.ui.view">
+        <field name="name">ni.service.event.view.kanban</field>
+        <field name="model">ni.service.event</field>
+        <field name="arch" type="xml">
+            <kanban
+                quick_create_view="ni_service.ni_service_event_view_form_quick_create"
+                default_group_by="service_category_id"
+            >
+                <field name="name" />
+                <field name="plan_patient_ids" />
+                <field name="color" />
+                <field name="start" />
+                <field name="start_date" />
+                <field name="service_ids" />
+                <field name="service_id" />
+                <field name="mode" />
+                <field name="service_category_id" />
+                <field name="company_id" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) : ''}} oe_kanban_card oe_kanban_global_click"
+                        >
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <div>
+                                            <field
+                                                name="service_category_ids"
+                                                widget="many2many_tags"
+                                                options="{'color_field': 'color'}"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="o_dropdown_kanban dropdown"
+                                        t-if="!selection_mode"
+                                        groups="base.group_user"
+                                    >
+                                        <a
+                                            role="button"
+                                            class="dropdown-toggle o-no-caret btn"
+                                            data-bs-toggle="dropdown"
+                                            data-bs-display="static"
+                                            href="#"
+                                            aria-label="Dropdown menu"
+                                            title="Dropdown menu"
+                                        >
+                                            <span class="fa fa-ellipsis-v" />
+                                        </a>
+                                        <div class="dropdown-menu" role="menu">
+                                            <a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">
+                                                Edit
+                                            </a>
+                                            <div role="separator" class="dropdown-divider" />
+                                            <ul class="oe_kanban_colorpicker" data-field="color" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <field name="name" />
+                                <div class="o_kanban_record_body mt-2">
+                                    <div class="small text-muted">
+                                        <i class="fa fa-clock-o me-1" aria-hidden="true" title="start" />
+                                        <field name="start" widget="remaining_days" />
+                                    </div>
+                                    <t t-if="record.plan_patient_ids.raw_value != 0">
+                                        <span t-out="record.plan_patient_ids.value" />
+                                    </t>
+                                    <div class="mt-1">
+                                        <field name="plan_patient_ids" widget="many2many_tags_avatar" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="ni_service_event_view_pivot" model="ir.ui.view">
+        <field name="name">ni.service.event.view.pivot</field>
+        <field name="model">ni.service.event</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="service_category_id" type="row" />
+                <field name="service_id" type="row" />
+                <field name="start" type="col" interval="month" />
+            </pivot>
         </field>
     </record>
 </odoo>
