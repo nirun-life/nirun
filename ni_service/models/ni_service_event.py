@@ -23,6 +23,7 @@ class ServiceEvent(models.Model):
     _description = "Service Calendar"
     _inherit = "mail.thread"
     _inherits = {"calendar.event": "event_id"}
+    _order = "start desc, id desc"
 
     @api.model
     def default_get(self, fields):
@@ -70,11 +71,14 @@ class ServiceEvent(models.Model):
         related="event_id.user_id", string="ผู้รับผิดชอบหลัก", readonly=False
     )
     service_type_id = fields.Many2one(related="service_id.type_id")
-    service_category_id = fields.Many2one(related="service_id.category_id")
+    service_category_ids = fields.Many2many(
+        "ni.service.category", compute="_compute_service_category_ids", store=True
+    )
+    service_category_id = fields.Many2one("ni.service.category")
 
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
-        required=True,
+        required=False,
         domain="[('id', 'in', service_attendance_id), ('dayofweek', '=?', dayofweek)]",
     )
     service_attendance_id = fields.Many2many(
@@ -116,6 +120,24 @@ class ServiceEvent(models.Model):
     )
     plan_patient_count = fields.Integer(compute="_compute_plan_patient")
     display_plan_patient = fields.Boolean(compute="_compute_plan_patient")
+    color = fields.Integer()
+
+    @api.depends("service_ids")
+    def _compute_service_category_ids(self):
+        for rec in self:
+            rec.service_category_ids = (
+                [fields.Command.set(rec.service_ids.mapped("category_id").ids)]
+                if rec.service_ids
+                else [fields.Command.set(rec.service_id.mapped("category_id").ids)]
+            )
+
+    @api.constrains("service_category_id", "service_id", "color")
+    def _check_color(self):
+        for rec in self:
+            if not rec.service_category_id and rec.service_category_ids:
+                rec.service_category_id = rec.service_category_ids[0]
+            if rec.service_category_id and rec.color != rec.service_category_id.color:
+                rec.color = rec.service_category_id.color
 
     @api.depends("service_id", "service_ids")
     def _compute_service_count(self):
