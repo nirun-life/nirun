@@ -220,6 +220,7 @@
                 <group>
                     <field name="mode" invisible="1" />
                     <field name="company_id" invisible="1" />
+                    <field name="name" invisible="1" />
                     <field name="service_category_id" options="{'no_open': True}" invisible="1" />
                     <field name="service_id" invisible="1" />
                     <field
@@ -227,9 +228,14 @@
                         widget="many2many_checkboxes"
                         domain="[('category_id', '=', service_category_id)]"
                     />
-                    <field name="name" invisible="1" />
                     <field name="plan_patient_ids" widget="many2many_tags_avatar" />
                     <field name="start" />
+                    <label for="image_1" string="ภาพประกอบ" />
+                    <field name="has_image" invisible="1" />
+                    <div>
+                        <field name="image_1" widget="image" />
+                        <field name="image_2" widget="image" attrs="{'invisible': [('image_1', '=', False)]}" />
+                    </div>
                     <field name="color" invisible="1" />
                 </group>
             </form>
@@ -253,6 +259,7 @@
                 <field name="mode" />
                 <field name="service_category_id" />
                 <field name="company_id" />
+                <field name="has_image" />
                 <templates>
                     <t t-name="kanban-box">
                         <div
@@ -294,16 +301,16 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div t-if="record.has_image.raw_value">
+                                    <field name="image_1" widget="image" style="margin: 4px -8px;" />
+                                </div>
                                 <field name="name" />
                                 <div class="o_kanban_record_body mt-2">
                                     <div class="small text-muted">
                                         <i class="fa fa-clock-o me-1" aria-hidden="true" title="start" />
                                         <field name="start" widget="remaining_days" />
                                     </div>
-                                    <t t-if="record.plan_patient_ids.raw_value != 0">
-                                        <span t-out="record.plan_patient_ids.value" />
-                                    </t>
-                                    <div class="mt-1">
+                                    <div class="mt-2">
                                         <field name="plan_patient_ids" widget="many2many_tags_avatar" />
                                     </div>
                                 </div>
