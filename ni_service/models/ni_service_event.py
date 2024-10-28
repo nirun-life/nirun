@@ -122,6 +122,19 @@ class ServiceEvent(models.Model):
     display_plan_patient = fields.Boolean(compute="_compute_plan_patient")
     color = fields.Integer()
 
+    image_1 = fields.Image()
+    image_2 = fields.Image()
+    has_image = fields.Boolean(compute="_compute_attachment")
+    attachment_ids = fields.Many2many("ir.attachment", compute="_compute_attachment")
+
+    @api.depends("image_1", "image_2")
+    def _compute_attachment(self):
+        for rec in self:
+            rec.attachment_ids = self.env["ir.attachment"].search(
+                [("res_model", "=", self._name), ("res_id", "=", rec.id)]
+            )
+            rec.has_image = any([rec.image_1, rec.image_2])
+
     @api.depends("service_ids")
     def _compute_service_category_ids(self):
         for rec in self:
