@@ -28,6 +28,7 @@ class ServiceCategory(models.Model):
     specialty_ids = fields.Many2many(
         "hr.job", "ni_service_category_specialty", "category_id", "job_id"
     )
+    fold = fields.Boolean(default=False)
 
     @api.constrains("parent_id")
     def _check_parent_id(self):

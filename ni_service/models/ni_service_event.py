@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from pytz import timezone
 
-from odoo import _, api, fields, models
+from odoo import SUPERUSER_ID, _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.tools import pytz
@@ -34,6 +34,12 @@ class ServiceEvent(models.Model):
                     Command.link(self.env.context["default_service_id"])
                 ]
         return res
+
+    @api.model
+    def _read_group_category_ids(self, category, domain, order):
+        # We need this to show all service category on kanban view
+        category_ids = category._search([], order=order, access_rights_uid=SUPERUSER_ID)
+        return category.browse(category_ids)
 
     user_specialty = fields.Many2one(
         "hr.job", default=lambda self: self.env.user.employee_id.job_id, store=False
@@ -72,9 +78,16 @@ class ServiceEvent(models.Model):
     )
     service_type_id = fields.Many2one(related="service_id.type_id")
     service_category_ids = fields.Many2many(
-        "ni.service.category", compute="_compute_service_category_ids", store=True
+        "ni.service.category",
+        string="Category Tags",
+        compute="_compute_service_category_ids",
+        store=True,
     )
-    service_category_id = fields.Many2one("ni.service.category")
+    service_category_id = fields.Many2one(
+        "ni.service.category",
+        string="Category",
+        group_expand="_read_group_category_ids",
+    )
 
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
