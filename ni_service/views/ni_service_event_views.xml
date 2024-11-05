@@ -19,6 +19,33 @@
             <search>
                 <field name="service_id" />
                 <field name="partner_ids" />
+                <filter name="start" date="start" default_period="this_month" />
+                <filter
+                    string="This Month"
+                    name="this_month"
+                    domain="[('start', '&gt;=', (context_today() + relativedelta(months=0)).strftime('%Y-%m-01')), ('start', '&lt;', (context_today() + relativedelta(months=1)).strftime('%Y-%m-01'))]"
+                />
+                <filter
+                    string="This Fiscal Year"
+                    name="this_fiscal_year"
+                    domain="[('start', '&gt;=', (context_today().strftime('%Y-10-01') if context_today().month &gt;= 10 else (context_today() - relativedelta(years=1)).strftime('%Y-10-01'))), ('start', '&lt;', ((context_today() + relativedelta(years=1)).strftime('%Y-10-01') if context_today().month &gt;= 10 else context_today().strftime('%Y-10-01')))]"
+                />
+                <filter
+                    string="Last Month"
+                    name="last_month"
+                    domain="[('start', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01')), ('start', '&lt;', (context_today() + relativedelta(months=0)).strftime('%Y-%m-01'))]"
+                />
+                <filter
+                    string="Last Fiscal Year"
+                    name="last_fiscal_year"
+                    domain="[('start', '&gt;=', ((context_today() - relativedelta(years=1)).strftime('%Y-10-01') if context_today().month &gt;= 10 else (context_today() - relativedelta(years=2)).strftime('%Y-10-01'))), ('start', '&lt;', (context_today().strftime('%Y-10-01') if context_today().month &gt;= 10 else (context_today() - relativedelta(years=1)).strftime('%Y-10-01')))]"
+                />
+                <filter name="group_service_category_id" context="{'group_by': 'service_category_id'}" />
+                <filter name="group_plan_patient_ids" context="{'group_by': 'plan_patient_ids'}" />
+                <filter name="group_start" context="{'group_by': 'start:month'}" />
+                <searchpanel view_types="list">
+                    <field name="service_category_id" invisible="context.get('default_service_category_id')" />
+                </searchpanel>
             </search>
         </field>
     </record>
