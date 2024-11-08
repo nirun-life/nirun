@@ -250,13 +250,15 @@
                     <field name="name" invisible="1" />
                     <field name="service_category_id" options="{'no_open': True}" invisible="1" />
                     <field name="service_id" invisible="1" />
+                    <field name="plan_patient_ids" widget="many2many_tags_avatar" />
                     <field
                         name="service_ids"
                         widget="many2many_checkboxes"
                         domain="[('category_id', '=', service_category_id)]"
                     />
-                    <field name="plan_patient_ids" widget="many2many_tags_avatar" />
-                    <field name="start" />
+                    <field name="start" force_save="1" />
+                    <field name="stop" invisible="1" />
+                    <field name="duration" widget="float_time" invisible="1" />
                     <label for="image_1" string="ภาพประกอบ" />
                     <field name="has_image" invisible="1" />
                     <div>
@@ -354,8 +356,9 @@
         <field name="arch" type="xml">
             <pivot>
                 <field name="service_category_id" type="row" />
-                <field name="service_id" type="row" />
+                <field name="service_ids" type="row" />
                 <field name="start" type="col" interval="month" />
+                <field name="start" type="col" interval="day" />
             </pivot>
         </field>
     </record>
