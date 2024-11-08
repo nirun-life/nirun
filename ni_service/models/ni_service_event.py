@@ -44,6 +44,15 @@ class ServiceEvent(models.Model):
     user_specialty = fields.Many2one(
         "hr.job", default=lambda self: self.env.user.employee_id.job_id, store=False
     )
+    start = fields.Datetime(
+        related="event_id.start", inherited=True, store=True, readonly=False, index=True
+    )
+    stop = fields.Datetime(
+        related="event_id.stop", inherited=True, store=True, readonly=False
+    )
+    duration = fields.Float(
+        related="event_id.duration", inherited=True, store=True, readonly=False
+    )
 
     event_id = fields.Many2one("calendar.event", required=True, ondelete="cascade")
     company_id = fields.Many2one(
