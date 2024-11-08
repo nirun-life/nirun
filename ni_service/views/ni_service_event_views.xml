@@ -7,7 +7,7 @@
         <field name="name">Service Calendar</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service.event</field>
-        <field name="view_mode">calendar,tree,kanban,pivot,form</field>
+        <field name="view_mode">calendar,tree,kanban,pivot,graph,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">No Schedule</p>
         </field>
@@ -360,6 +360,16 @@
                 <field name="start" type="col" interval="month" />
                 <field name="start" type="col" interval="day" />
             </pivot>
+        </field>
+    </record>
+    <record id="ni_service_event_view_graph" model="ir.ui.view">
+        <field name="name">ni.service.event.view.graph</field>
+        <field name="model">ni.service.event</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="start" type="col" interval="day" />
+                <field name="service_category_id" type="row" />
+            </graph>
         </field>
     </record>
 </odoo>
