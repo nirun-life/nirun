@@ -1,5 +1,6 @@
 #  Copyright (c) 2024 NSTDA
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class Service(models.Model):
@@ -33,6 +34,40 @@ class Service(models.Model):
     calendar_id = fields.Many2one(
         "resource.calendar", required=False, domain="[('company_id', '=', company_id)]"
     )
+    calendar_ids = fields.Many2many(
+        "resource.calendar", compute="_compute_calendar_ids"
+    )
+    calendar_count = fields.Integer(compute="_compute_calendar_ids")
+
+    def get_default_calendar(self):
+        self.ensure_one()
+        if self.calendar_id:
+            return self.calendar_id
+        elif self.calendar_ids:
+            return self.calendar_ids[0]
+        else:
+            raise ValidationError(
+                _("Misconfiguration on {}, please contact the administrator").format(
+                    self.name
+                )
+            )
+
+    @api.depends("attendance_ids")
+    def _compute_calendar_ids(self):
+        for rec in self:
+            if rec.attendance_ids:
+                calendar = rec.attendance_ids.mapped("calendar_id")
+                rec.update(
+                    {
+                        "calendar_ids": [fields.Command.set(calendar.ids)],
+                        "calendar_count": len(calendar),
+                    }
+                )
+            else:
+                rec.update(
+                    {"calendar_ids": [fields.Command.clear()], "calendar_count": 0}
+                )
+
     duration = fields.Float()
     attendance_ids = fields.Many2many(
         "resource.calendar.attendance",
@@ -40,6 +75,7 @@ class Service(models.Model):
         "service_id",
         "attendance_id",
         domain="[('calendar_id', '=', calendar_id)]",
+        index=True,
     )
     attendance_count = fields.Integer(compute="_compute_attendance_count")
     dayofweek = fields.Selection(

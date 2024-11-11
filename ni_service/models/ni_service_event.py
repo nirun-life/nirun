@@ -97,11 +97,18 @@ class ServiceEvent(models.Model):
         string="Category",
         group_expand="_read_group_category_ids",
     )
+    calendar_id = fields.Many2one(
+        "resource.calendar", domain="[('id', 'in', service_calendar_ids)]"
+    )
+    service_calendar_ids = fields.Many2many(
+        related="service_id.calendar_ids", help="Use to filter calendar_id"
+    )
+    service_calendar_count = fields.Integer(related="service_id.calendar_count")
 
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
         required=False,
-        domain="[('id', 'in', service_attendance_id), ('dayofweek', '=?', dayofweek)]",
+        domain="[('id', 'in', service_attendance_id), ('dayofweek', '=?', dayofweek), ('calendar_id', '=', calendar_id)]",
     )
     service_attendance_id = fields.Many2many(
         related="service_id.attendance_ids", help="Use to filter attendance_id"
@@ -224,6 +231,7 @@ class ServiceEvent(models.Model):
             rec.partner_ids = rec.service_id.employee_ids.mapped(
                 lambda r: r.user_partner_id | r.work_contact_id
             )
+            rec.calendar_id = rec.service_id.get_default_calendar()
             if rec.service_id.employee_id and rec.service_id.employee_id.user_id:
                 rec.user_id = rec.service_id.employee_id.user_id
             else:
