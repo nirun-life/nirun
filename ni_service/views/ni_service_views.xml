@@ -122,7 +122,8 @@
                             </group>
                             <field name="attendance_count" invisible="1" />
                             <field name="attendance_ids" attrs="{'invisible': [('calendar_id', '=', False)]}">
-                                <tree>
+                                <tree default_order="calendar_id, dayofweek, hour_from">
+                                    <field name="calendar_id" optional="hide" />
                                     <field name="name" optional="hide" />
                                     <field name="dayofweek" />
                                     <field name="day_period" optional="show" />
