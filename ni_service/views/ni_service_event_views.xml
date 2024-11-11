@@ -54,7 +54,7 @@
         <field name="model">ni.service.event</field>
         <field name="priority" eval="1" />
         <field name="arch" type="xml">
-            <form string="Meetings" js_class="calendar_form">
+            <form string="Event" js_class="calendar_form">
                 <sheet>
                     <widget
                         name="web_ribbon"
@@ -96,7 +96,12 @@
                         </h2>
                     </div>
                     <div groups="base.group_multi_company">
-                        <field name="company_id" options="{'no_create': True, 'no_open':True}" class="w-75" />
+                        <field
+                            name="company_id"
+                            options="{'no_create': True, 'no_open':True}"
+                            class="w-75"
+                            placeholder="Company"
+                        />
                     </div>
                     <group class="mt-4">
                         <group>
@@ -104,9 +109,17 @@
                             <field name="allday" force_save="1" invisible="1" />
                             <field name="start" string="Starting at" />
                             <field name="stop" string="Ending At" />
+                            <field name="duration" invisible="1" widget="float_time" />
                             <field name="dayofweek" invisible="1" />
                             <field name="service_attendance_id" invisible="1" />
-                            <field name="attendance_id" widget="radio" force_save="1" />
+                            <field name="service_calendar_ids" invisible="1" />
+                            <field name="service_calendar_count" invisible="1" />
+                            <field
+                                name="calendar_id"
+                                attrs="{'invisible': [('service_calendar_count', '&lt;', 2)]}"
+                                widget="radio"
+                            />
+                            <field name="attendance_id" widget="radio" force_save="1" required="1" />
                         </group>
                         <group>
                             <field
