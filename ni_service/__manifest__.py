@@ -31,6 +31,7 @@
         "views/ni_service_request_views.xml",
         "views/res_company_views.xml",
         "report/summary_report.xml",
+        "views/resource_calendar_attendance_views.xml",
     ],
     "application": True,
     "auto_install": False,
