@@ -8,6 +8,9 @@
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form" />
         <field name="arch" type="xml">
+            <xpath expr="//div/h1" position="after">
+                <field name="identifier" placeholder="Identifier" />
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page name="encounter" string="Encounter">
                     <p class="text-muted mb-3">Set default value for Encounter</p>
