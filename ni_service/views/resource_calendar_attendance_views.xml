@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="resource_calendar_attendance_view_form_inherit" model="ir.ui.view">
+        <field name="name">resource.calendar.attendance.view.form.inherit</field>
+        <field name="model">resource.calendar.attendance</field>
+        <field name="inherit_id" ref="resource.view_resource_calendar_attendance_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group" position="after">
+                <separator string="Service" />
+                <field name="service_ids" />
+            </xpath>
+        </field>
+    </record>
+    <record id="resource_calendar_attendance_view_tree_inherit" model="ir.ui.view">
+        <field name="name">resource.calendar.attendance.view.tree.inherit</field>
+        <field name="model">resource.calendar.attendance</field>
+        <field name="inherit_id" ref="resource.view_resource_calendar_attendance_tree" />
+        <field name="arch" type="xml">
+            <field name="week_type" position="after">
+                <button name="action_edit" type="object" icon="fa-pencil" title="Edit" />
+            </field>
+        </field>
+    </record>
+</odoo>
