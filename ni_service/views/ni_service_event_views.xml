@@ -206,6 +206,11 @@
                 event_open_popup="1"
                 color="user_id"
             >
+                <field
+                    name="calendar_id"
+                    filters="1"
+                    options="{'block': True, 'icon': 'fa fa-calendar', 'no_open': True}"
+                />
                 <field name="attendee_status" invisible="1" />
                 <field
                     name="user_id"
@@ -218,18 +223,20 @@
                 <field
                     name="patient_ids"
                     widget="many2many_tags_avatar"
-                    options="{'block': True, 'icon': 'fa fa-users'}"
+                    options="{'block': True, 'icon': 'fa fa-users', 'color_field': 'color'}"
                     attrs="{'invisible': [('patient_count', '=', 0)]}"
                 />
                 <field
-                    name="service_type_id"
-                    options="{'block': True, 'icon': 'fa fa-th-large'}"
+                    name="service_category_id"
+                    options="{'block': True, 'icon': 'fa fa-folder', 'color_field': 'color'}"
+                    attrs="{'invisible': [('service_category_id', '=', False)]}"
                     widget="badge"
                     filters="1"
                 />
                 <field
-                    name="service_category_id"
-                    options="{'block': True, 'icon': 'fa fa-folder'}"
+                    name="service_type_id"
+                    options="{'block': True, 'icon': 'fa fa-th-large', 'color_field': 'color'}"
+                    attrs="{'invisible': [('service_type_id', '=', False)]}"
                     widget="badge"
                     filters="1"
                 />
@@ -245,11 +252,6 @@
                     attrs="{'invisible': [('display_plan_patient', '=', False)]}"
                 />
                 <field name="display_plan_patient" invisible="1" />
-                <field
-                    name="categ_ids"
-                    attrs="{'invisible': [('categ_ids', '=', [])]}"
-                    options="{'color_field': 'color'}"
-                />
             </calendar>
         </field>
     </record>
