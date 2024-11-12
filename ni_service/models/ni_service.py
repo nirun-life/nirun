@@ -38,36 +38,6 @@ class Service(models.Model):
         "resource.calendar", compute="_compute_calendar_ids"
     )
     calendar_count = fields.Integer(compute="_compute_calendar_ids")
-
-    def get_default_calendar(self):
-        self.ensure_one()
-        if self.calendar_id:
-            return self.calendar_id
-        elif self.calendar_ids:
-            return self.calendar_ids[0]
-        else:
-            raise ValidationError(
-                _("Misconfiguration on {}, please contact the administrator").format(
-                    self.name
-                )
-            )
-
-    @api.depends("attendance_ids")
-    def _compute_calendar_ids(self):
-        for rec in self:
-            if rec.attendance_ids:
-                calendar = rec.attendance_ids.mapped("calendar_id")
-                rec.update(
-                    {
-                        "calendar_ids": [fields.Command.set(calendar.ids)],
-                        "calendar_count": len(calendar),
-                    }
-                )
-            else:
-                rec.update(
-                    {"calendar_ids": [fields.Command.clear()], "calendar_count": 0}
-                )
-
     duration = fields.Float()
     attendance_ids = fields.Many2many(
         "resource.calendar.attendance",
@@ -127,6 +97,37 @@ class Service(models.Model):
             "This name already exists!",
         )
     ]
+
+    def get_default_calendar(self, raise_err=False):
+        self.ensure_one()
+        if self.calendar_id:
+            return self.calendar_id
+        elif self.calendar_ids:
+            return self.calendar_ids[0]
+        elif raise_err:
+            raise ValidationError(
+                _("Misconfiguration on {}, please contact the administrator").format(
+                    self.name
+                )
+            )
+        else:
+            return None
+
+    @api.depends("attendance_ids")
+    def _compute_calendar_ids(self):
+        for rec in self:
+            if rec.attendance_ids:
+                calendar = rec.attendance_ids.mapped("calendar_id")
+                rec.update(
+                    {
+                        "calendar_ids": [fields.Command.set(calendar.ids)],
+                        "calendar_count": len(calendar),
+                    }
+                )
+            else:
+                rec.update(
+                    {"calendar_ids": [fields.Command.clear()], "calendar_count": 0}
+                )
 
     def action_default_attendance(self):
         for rec in self:
