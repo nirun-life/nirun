@@ -22,6 +22,7 @@ class Encounter(models.Model):
         "encounter_id",
         states=LOCK_STATE_DICT,
     )
+    service_request_ids = fields.One2many("ni.service.request", "encounter_id")
 
     @api.onchange("class_id")
     def _onchange_class_id(self):
@@ -71,7 +72,7 @@ class Encounter(models.Model):
             if planned_event:
                 e = planned_event[0]
             elif scheduled_event:
-                e = scheduled_event[0]
+                e = scheduled_event.sorted("plan_patient_count")[0]
             if e:
                 attendance_service_map.update(
                     {
@@ -108,5 +109,3 @@ class Encounter(models.Model):
             )
             for attendance_id, dict in attendance_service_map.items()
         ]
-
-    service_request_ids = fields.One2many("ni.service.request", "encounter_id")
