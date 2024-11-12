@@ -113,6 +113,7 @@ class ServiceEvent(models.Model):
     service_attendance_id = fields.Many2many(
         related="service_id.attendance_ids", help="Use to filter attendance_id"
     )
+    service_attendance_count = fields.Integer(related="service_id.attendance_count")
     dayofweek = fields.Selection(
         [
             ("0", "Monday"),
