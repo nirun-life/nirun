@@ -37,6 +37,7 @@ class EncounterObservationLatest(models.Model):
         readonly=True,
     )
     is_problem = fields.Boolean(readonly=True)
+
     display_class = fields.Selection(
         related="interpretation_id.display_class",
     )
