@@ -36,6 +36,13 @@ class ObservationType(models.Model):
         "type_id",
         "value_id",
     )
+    compare = fields.Selection(
+        [
+            ("low", "Lower is better"),
+            ("high", "Higher is better"),
+        ],
+        default="high",
+    )
 
     compute = fields.Boolean(
         default=False, help="Type value by compute from other ob type not by user input"

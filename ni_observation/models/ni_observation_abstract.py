@@ -54,6 +54,21 @@ class ObservationAbstract(models.AbstractModel):
         store=True,
         default=None,
     )
+    compare = fields.Selection(
+        [
+            ("lt", "Lesser"),
+            ("eq", "Equal"),
+            ("gt", "Greater"),
+        ],
+        store=True,
+        default=None,
+        help="Compare this observation value to previous observation",
+    )
+    compare_interpret = fields.Selection(
+        [("neutral", "Neutral"), ("better", "Better"), ("worsen", "Worsen")],
+        store=True,
+        default="neutral",
+    )
     is_problem = fields.Boolean(related="interpretation_id.is_problem", store=True)
     display_class = fields.Selection(
         [
