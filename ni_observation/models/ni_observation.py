@@ -28,6 +28,8 @@ class Observation(models.Model):
         index=True,
         ondelete="cascade",
     )
+    compare = fields.Selection(compute="_compute_compare")
+    compare_interpret = fields.Selection(compute="_compute_compare")
 
     _sql_constraints = [
         (
@@ -36,6 +38,45 @@ class Observation(models.Model):
             "Duplication observation type!",
         ),
     ]
+
+    @api.depends("value_float", "value_int", "occurrence", "type_id", "type_id.compare")
+    def _compute_compare(self):
+        for rec in self:
+            if rec.type_id.value_type not in ["int", "float"]:
+                rec.compare = None
+                continue
+
+            prev = self.search(
+                [
+                    ("patient_id", "=", rec.patient_id.id),
+                    ("type_id", "=", rec.type_id.id),
+                    ("occurrence", "<", rec.occurrence),
+                ],
+                order="occurrence desc",
+                limit=1,
+            )
+            if not prev:
+                rec.compare = None
+                continue
+
+            # Get the value based on the type_id's value_type
+            field_name = f"value_{rec.type_id.value_type}"
+            current_value = getattr(rec, field_name)
+            previous_value = getattr(prev, field_name)
+
+            if current_value == previous_value:
+                rec.compare = "eq"
+                rec.compare_interpret = "neutral"
+            elif current_value < previous_value:
+                rec.compare = "lt"
+                rec.compare_interpret = (
+                    "better" if rec.type_id.compare == "low" else "worsen"
+                )
+            else:
+                rec.compare = "gt"
+                rec.compare_interpret = (
+                    "better" if rec.type_id.compare == "high" else "worsen"
+                )
 
     def init(self):
         tools.create_index(
