@@ -11,7 +11,7 @@
     <record id="ni_observation_action_graph" model="ir.actions.act_window">
         <field name="name">Observation</field>
         <field name="res_model">ni.observation</field>
-        <field name="view_mode">graph</field>
+        <field name="view_mode">graph,pivot,tree</field>
     </record>
     <record id="ni_observation_view_search" model="ir.ui.view">
         <field name="name">ni.observation.view.search</field>
@@ -61,7 +61,8 @@
             <graph stacked="False" type="bar">
                 <field name="occurrence" interval="day" type="col" />
                 <field name="type_id" type="row" />
-                <field name="value_float" type="measure" />
+                <field name="value_float" type="measure" invisible="context.get('value_type') != 'float'" />
+                <field name="value_int" type="measure" invisible="context.get('value_type') != 'int'" />
             </graph>
         </field>
     </record>
@@ -74,7 +75,8 @@
                 <field name="occurrence" interval="day" type="col" />
                 <field name="occurrence" interval="hour" type="col" />
                 <field name="type_id" type="row" />
-                <field name="value_float" type="measure" />
+                <field name="value_float" type="measure" invisible="context.get('value_type') != 'float'" />
+                <field name="value_int" type="measure" invisible="context.get('value_type') != 'int'" />
             </pivot>
         </field>
     </record>
