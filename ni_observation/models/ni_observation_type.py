@@ -41,7 +41,7 @@ class ObservationType(models.Model):
             ("low", "Lower is better"),
             ("high", "Higher is better"),
         ],
-        default="high",
+        default=None,
     )
 
     compute = fields.Boolean(
