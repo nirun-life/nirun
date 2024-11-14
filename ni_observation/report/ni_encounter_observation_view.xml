@@ -68,14 +68,18 @@
                 />
                 <field name="display_class" invisible="1" />
                 <field
-                    name="compare"
-                    widget="badge"
+                    name="compare_interpret"
                     decoration-success="compare_interpret == 'better'"
                     decoration-danger="compare_interpret == 'worsen'"
                 />
-                <field name="compare_interpret" invisible="1" />
                 <field name="occurrence" widget="remaining_days" optional="show" />
-                <button name="action_graph_view" icon="fa-bar-chart" title="View graph" type="object" />
+                <button
+                    name="action_graph_view"
+                    icon="fa-bar-chart"
+                    title="View graph"
+                    type="object"
+                    attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                />
             </tree>
         </field>
     </record>
@@ -133,31 +137,45 @@
                 <field name="interpretation_id" />
                 <field name="display_class" />
                 <field name="occurrence" />
+                <field name="compare_interpret" />
                 <template>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_global_click">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
                                     <div class="o_kanban_record_title">
-                                        <strong>
-                                            <field name="type_id" />
-                                            <field
-                                                name="interpretation_id"
-                                                class="ms-2"
-                                                widget="badge"
-                                                decoration-danger="display_class == 'danger'"
-                                                decoration-info="display_class == 'info'"
-                                                decoration-muted="display_class == 'muted'"
-                                                decoration-primary="display_class == 'primary'"
-                                                decoration-success="display_class == 'success'"
-                                                decoration-warning="display_class == 'warning'"
-                                            />
-                                        </strong>
+                                        <field name="type_id" />
                                     </div>
                                 </div>
-                                <div class="me-1 text-body display-5">
+                                <div class="me-1 mt-2 text-body display-6">
                                     <field name="value" />
                                 </div>
+                            </div>
+                            <div style="margin-top: -1.5rem" class="mb-1">
+                                <t t-if="record.compare_interpret.raw_value">
+                                    <i
+                                        class="fa fa-line-chart small me-1 text-muted"
+                                        aria-hidden="true"
+                                        title="Trend"
+                                    />
+                                    <span
+                                        t-esc="record.compare_interpret.value"
+                                        t-attf-class="text-{{(record.compare_interpret.raw_value == 'better')? 'success' : ((record.compare_interpret.raw_value == 'worsen')? 'danger' : 'body')}}"
+                                    >
+
+                                    </span>
+                                </t>
+                                <field
+                                    name="interpretation_id"
+                                    class="ms-3"
+                                    widget="badge"
+                                    decoration-danger="display_class == 'danger'"
+                                    decoration-info="display_class == 'info'"
+                                    decoration-muted="display_class == 'muted'"
+                                    decoration-primary="display_class == 'primary'"
+                                    decoration-success="display_class == 'success'"
+                                    decoration-warning="display_class == 'warning'"
+                                />
                             </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
