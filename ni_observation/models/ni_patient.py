@@ -1,4 +1,5 @@
 #  Copyright (c) 2021 NSTDA
+import ast
 
 from odoo import _, fields, models
 
@@ -47,3 +48,23 @@ class Patient(models.Model):
         ):
             name = _("{} • Blood group {}").format(name, self.blood_group)
         return name
+
+    def action_view_observation_sheet(self):
+        self.ensure_one()
+        action = (
+            self.env["ir.actions.act_window"]
+            .sudo()
+            ._for_xml_id("ni_observation.ni_observation_sheet_action")
+        )
+        context = action["context"].replace("active_id", str(self.id))
+        context = ast.literal_eval(context)
+        context.update(
+            {
+                "create": self.active,
+                "active_test": self.active,
+                "default_patient_id": self.id,
+            }
+        )
+        action["context"] = context
+        action["domain"] = [("patient_id", "=", self.id)]
+        return action
