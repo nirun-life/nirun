@@ -326,3 +326,14 @@ class ServiceEvent(models.Model):
                 rec.name = ", ".join(rec.service_ids.mapped("name"))
             else:
                 rec.name = rec.service_id.name
+
+    @api.constrains("service_id", "calendar_id", "attendance_id")
+    def _check_calendar_attendance_rel(self):
+        for rec in self:
+            if not rec.service_id:
+                continue
+            if not rec.calendar_id or not rec.attendance_id:
+                raise UserError(_("Please specify calendar and attendance"))
+
+            if rec.attendance_id.calendar_id != rec.calendar_id:
+                rec.attendance_id = None
