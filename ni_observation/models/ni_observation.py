@@ -42,8 +42,12 @@ class Observation(models.Model):
     @api.depends("value_float", "value_int", "occurrence", "type_id", "type_id.compare")
     def _compute_compare(self):
         for rec in self:
-            if rec.type_id.value_type not in ["int", "float"]:
-                rec.compare = None
+            if (
+                not rec.type_id
+                or not rec.type_id.compare
+                or rec.type_id.value_type not in ["int", "float"]
+            ):
+                rec.update({"compare": None, "compare_interpret": None})
                 continue
 
             prev = self.search(
@@ -56,7 +60,7 @@ class Observation(models.Model):
                 limit=1,
             )
             if not prev:
-                rec.compare = None
+                rec.update({"compare": None, "compare_interpret": None})
                 continue
 
             # Get the value based on the type_id's value_type
@@ -65,17 +69,25 @@ class Observation(models.Model):
             previous_value = getattr(prev, field_name)
 
             if current_value == previous_value:
-                rec.compare = "eq"
-                rec.compare_interpret = "neutral"
+                rec.update({"compare": "eq", "compare_interpret": "neutral"})
+
             elif current_value < previous_value:
-                rec.compare = "lt"
-                rec.compare_interpret = (
-                    "better" if rec.type_id.compare == "low" else "worsen"
+                rec.update(
+                    {
+                        "compare": "lt",
+                        "compare_interpret": "better"
+                        if rec.type_id.compare == "low"
+                        else "worsen",
+                    }
                 )
             else:
-                rec.compare = "gt"
-                rec.compare_interpret = (
-                    "better" if rec.type_id.compare == "high" else "worsen"
+                rec.update(
+                    {
+                        "compare": "gt",
+                        "compare_interpret": "better"
+                        if rec.type_id.compare == "high"
+                        else "worsen",
+                    }
                 )
 
     def init(self):
@@ -115,6 +127,7 @@ class Observation(models.Model):
                 "search_default_type_id": self.type_id.id,
                 "default_patient_id": self.patient_id.id,
                 "search_default_occurrence_hour": True,
+                "value_type": self.type_id.value_type,
             }
         )
         action["context"] = ctx
