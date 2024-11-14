@@ -6,14 +6,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-24 08:24+0000\n"
-"PO-Revision-Date: 2023-05-24 08:24+0000\n"
+"POT-Creation-Date: 2024-11-14 08:09+0000\n"
+"PO-Revision-Date: 2024-11-14 08:09+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_grade.py:0
+#, python-format
+msgid "%s high value must be in between 0.0-100.0"
+msgstr "%s ค่าสูงสุดต้องอยยู่ระหว่าง 0.0-100.0"
 
 #. module: ni_questionnaire
 #. odoo-python
@@ -25,6 +32,27 @@ msgid ""
 msgstr ""
 "%s ถูกบันทึกว่าเสียชีวิตแล้ว "
 "การอ้างอิงถึงอาจทำให้เกิดความไม่สอดคล้องในฐานข้อมูล"
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_grade.py:0
+#, python-format
+msgid "%s is not a valid range (%s >= %s)"
+msgstr "%s ไม่อยู่ในช่วง (%s >= %s)"
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_grade.py:0
+#, python-format
+msgid "%s is overlapping with %s"
+msgstr "ค่า %s ซ้อนกับ %s"
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_grade.py:0
+#, python-format
+msgid "%s low value must be in between 0.0-100.0"
+msgstr "%s ค่าต่ำสุดต้องอยู่ระหว่าง 0.0-100.0"
 
 #. module: ni_questionnaire
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit
@@ -45,11 +73,25 @@ msgstr ""
 "                        <span class=\"o_stat_text\">ประเมิน</span>"
 
 #. module: ni_questionnaire
+#: model:ir.model.constraint,message:ni_questionnaire.constraint_survey_grade_name_uniq
+msgid "A grading name must be unique!"
+msgstr "ชื่อเกณฑ์ต้องไม่ซ้ำกัน"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_grade__age_high
+msgid "Age High"
+msgstr "อายุสูงสุด"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_grade__age_low
+msgid "Age Low"
+msgstr "อายุต่ำสุด"
+
+#. module: ni_questionnaire
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_survey_latest_view_form
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_survey_latest_view_tree
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_survey_latest_view_form
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_survey_latest_view_tree
-#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_view_form_inherit_overview
 msgid "Answer Survey"
 msgstr "ประเมิน"
 
@@ -73,6 +115,28 @@ msgid "Authored"
 msgstr "ประเมินเมื่อ"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_question_group__operator__avg
+msgid "Average"
+msgstr "ค่าเฉลี่ย"
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/ni_observation_abstract.py:0
+#, python-format
+msgid "Can't start survey! This may cause by misconfiguration"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_view_form_inherit
+msgid "Clone Reference Range"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_view_form_inherit
+msgid "Clone reference range from observation will replace existing grades"
+msgstr ""
+
+#. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest__company_id
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_survey_latest__company_id
 #: model:ir.model.fields,field_description:ni_questionnaire.field_survey_user_input__company_id
@@ -87,14 +151,33 @@ msgid "Completed survey's response"
 msgstr "ผลการทำแบบประเมิน"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__create_uid
+msgid "Created by"
+msgstr "สร้างโดย"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__create_date
+msgid "Created on"
+msgstr "สร้างเมื่อ"
+
+#. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest__deceased
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_survey_latest__deceased
 msgid "Deceased"
 msgstr "เสียชีวิต"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_observation__survey_response_id
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_observation__survey_response_id
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_observation_abstract__survey_response_id
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_observation__survey_response_id
+msgid "Derived From Survey"
+msgstr ""
+
+#. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest__display_name
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_survey_latest__display_name
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__display_name
 msgid "Display Name"
 msgstr "ผลประเมิน"
 
@@ -111,7 +194,7 @@ msgstr "ข้อมูลรับบริการ"
 #. module: ni_questionnaire
 #: model:ir.model,name:ni_questionnaire.model_ni_encounter_class
 msgid "Encounter Classification"
-msgstr ""
+msgstr "ประเภทการรับบริการ"
 
 #. module: ni_questionnaire
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_view_search_inherit
@@ -124,8 +207,14 @@ msgid "Encounter's latest survey result"
 msgstr "ผลประเมินล่าสุด"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_grade__gender__female
+msgid "Female"
+msgstr "หญิง"
+
+#. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest__gender
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_survey_latest__gender
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_grade__gender
 msgid "Gender"
 msgstr "เพศ"
 
@@ -140,14 +229,68 @@ msgstr "เกณฑ์"
 #. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest__id
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_survey_latest__id
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__id
 msgid "ID"
 msgstr "รหัส"
 
 #. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest____last_update
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_survey_latest____last_update
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group____last_update
 msgid "Last Modified on"
 msgstr "แก้ไขล่าสุดเมื่อ"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter__response_latest_id
+msgid "Latest Survey"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter__response_latest_date
+msgid "Latest Survey Date"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter__response_latest_grade_id
+msgid "Latest Survey Grade"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter__response_latest_ids
+msgid "Latest Surveys"
+msgstr "ผลประเมินล่าสุด"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_grade__gender__male
+msgid "Male"
+msgstr "ชาย"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_question_group__operator__max
+msgid "Maximum"
+msgstr "ค่าสูงสุด"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_question_group__operator__min
+msgid "Minimum"
+msgstr "ค่าต่ำสุด"
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_question_group.py:0
+#, python-format
+msgid "Must specify at least 2 question"
+msgstr "ต้องระบุอย่างน้อย 2 คำถาม"
 
 #. module: ni_questionnaire
 #. odoo-python
@@ -155,6 +298,58 @@ msgstr "แก้ไขล่าสุดเมื่อ"
 #, python-format
 msgid "Not found requested survey's response!"
 msgstr "ไม่พบแบบประเมินที่เกี่ยวข้อง!"
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_user_input.py:0
+#, python-format
+msgid "Not support this type of answer"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question__observation_code_id
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__observation_code_id
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_question_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_view_form_inherit
+msgid "Observation"
+msgstr "ผลตรวจ"
+
+#. module: ni_questionnaire
+#: model:ir.model,name:ni_questionnaire.model_ni_observation_abstract
+msgid "Observation Abstract"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_survey__observation_score_type
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_user_input__observation_score_type
+msgid "Observation Score Type"
+msgstr "รูปแบบผลตรวจ"
+
+#. module: ni_questionnaire
+#: model:ir.model,name:ni_questionnaire.model_ni_observation_type
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_survey__observation_type_id
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_user_input__observation_type_id
+msgid "Observation Type"
+msgstr "ประภทการตรวจร่างกาย"
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_survey.py:0
+#, python-format
+msgid "Observation but be Int or Float"
+msgstr ""
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_survey.py:0
+#, python-format
+msgid "Observation not have reference range"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__operator
+msgid "Operator"
+msgstr ""
 
 #. module: ni_questionnaire
 #: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_survey__subject_type__res_partner
@@ -187,6 +382,18 @@ msgid "Patient's latest survey result"
 msgstr "ผลประเมินล่าสุดของผู้รับบริการ"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_survey__observation_score_type__percentage
+msgid "Percentage"
+msgstr ""
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_survey.py:0
+#, python-format
+msgid "Please specify observation"
+msgstr "กรุณาระบุผลตรวจ"
+
+#. module: ni_questionnaire
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_survey_latest_view_form
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_survey_latest_view_tree
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_survey_latest_view_form
@@ -200,11 +407,21 @@ msgid "Print questionnaire response"
 msgstr "พิมพ์ผลประเมิน"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__question_ids
+msgid "Question"
+msgstr "คำถาม"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_survey__question_group_ids
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_user_input__observation_group_ids
+msgid "Question Group"
+msgstr "กลุ่มคำถาม"
+
+#. module: ni_questionnaire
 #: model:ir.actions.act_window,name:ni_questionnaire.ni_patient_survey_latest_action
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter__survey_id
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_class__survey_id
-#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit_overview
-#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_view_form_inherit_overview
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_view_form_inherit
 msgid "Questionnaire"
 msgstr "แบบประเมิน"
 
@@ -230,6 +447,16 @@ msgid "Questionnaire response Not found!"
 msgstr "ไม่พบผลการประเมิน!"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_survey__observation_score_type__raw
+msgid "Raw Value"
+msgstr "ผลคะแนน"
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_view_form_inherit
+msgid "Ref. Range"
+msgstr "ค่าอ้างอิง"
+
+#. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter__response_id
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter__response_ids
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient__response_ids
@@ -243,7 +470,6 @@ msgid "Response Count"
 msgstr "ประเมิน (ครั้ง)"
 
 #. module: ni_questionnaire
-#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter__response_latest_ids
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient__response_latest_ids
 msgid "Response Latest"
 msgstr "ผลประเมินล่าสุด"
@@ -251,6 +477,7 @@ msgstr "ผลประเมินล่าสุด"
 #. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest__scoring_total
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_survey_latest__scoring_total
+#: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_question__observation_answer_type__score
 msgid "Score"
 msgstr "คะแนน"
 
@@ -261,9 +488,24 @@ msgid "Score (%)"
 msgstr "คะแนน (%)"
 
 #. module: ni_questionnaire
-#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit_overview
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_view_form_inherit
+msgid "Score Type"
+msgstr "รูปแบบคะแนน"
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit
 msgid "See More"
 msgstr "ดูเพิ่มเติม"
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_observation_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_observation_view_tree_inherit
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_survey_latest_view_tree
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_observation_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_observation_view_tree_inherit
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_survey_latest_view_tree
+msgid "See Result"
+msgstr "ดูผลประเมิน"
 
 #. module: ni_questionnaire
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_survey_latest_view_form
@@ -272,6 +514,29 @@ msgstr "ดูเพิ่มเติม"
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_survey_latest_view_tree
 msgid "See results"
 msgstr "ดูผลประเมิน"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__sequence
+msgid "Sequence"
+msgstr "ลำดับ"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_survey__specialty_ids
+msgid "Specialty"
+msgstr "บทบาท"
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit_observation
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_view_form_inherit
+msgid "Start Questionnaire"
+msgstr "เริ่มการประเมิน"
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_observation_view_tree_inherit
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_observation_view_tree_inherit
+msgid "Start Survey"
+msgstr "เริ่มการประเมิน"
 
 #. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest__encounter_state
@@ -285,12 +550,34 @@ msgid "Subject Type"
 msgstr "ชนิดของเป้าหมาย"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_question_group__operator__sum
+msgid "Summary"
+msgstr "สรุป"
+
+#. module: ni_questionnaire
 #: model:ir.model,name:ni_questionnaire.model_survey_survey
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_observation__survey_id
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest__survey_id
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_observation__survey_id
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_observation_abstract__survey_id
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_observation_type__survey_id
+#: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_observation__survey_id
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_survey_latest__survey_id
-#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit_overview
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group__survey_id
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_view_form_inherit
 msgid "Survey"
-msgstr "แบบประเมิน"
+msgstr "การสำรวจ"
+
+#. module: ni_questionnaire
+#: model:ir.model,name:ni_questionnaire.model_survey_question
+msgid "Survey Question"
+msgstr "คำถามแบบสอบถาม"
+
+#. module: ni_questionnaire
+#: model:ir.model,name:ni_questionnaire.model_survey_grade
+msgid "Survey Scoring Grade"
+msgstr "เกณฑ์การประเมิน"
 
 #. module: ni_questionnaire
 #: model:ir.model,name:ni_questionnaire.model_survey_subject_wizard
@@ -300,12 +587,17 @@ msgstr "เป้าหมายการประเมิน"
 #. module: ni_questionnaire
 #: model:ir.model,name:ni_questionnaire.model_survey_user_input
 msgid "Survey User Input"
-msgstr "คำตอบแบบประประเมิน"
+msgstr "แบบสำรวจข้อมูลผู้ใช้"
 
 #. module: ni_questionnaire
 #: model:ir.model,name:ni_questionnaire.model_survey_user_input_line
 msgid "Survey User Input Line"
-msgstr "รายละเอียดการประเมิน"
+msgstr "บรรทัดอินพุตของผู้ใช้แบบสอบถาม"
+
+#. module: ni_questionnaire
+#: model:ir.model,name:ni_questionnaire.model_survey_question_group
+msgid "Survey answer group"
+msgstr "กลุ่มคำตอบการประเมิน"
 
 #. module: ni_questionnaire
 #: model:ir.actions.act_window,name:ni_questionnaire.survey_action_patient
@@ -325,9 +617,38 @@ msgid "The referencing encounter is not belong to patient"
 msgstr "รหัสรับบริการที่ระบุไม่สอดคล้องกับผู้รับบริการ"
 
 #. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/ni_observation_abstract.py:0
+#, python-format
+msgid "This observation not have survey"
+msgstr "ผลตรวจนี้ไม่ได้อ้างอิงการประเมิน"
+
+#. module: ni_questionnaire
 #: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_survey__subject_type__res_users
 msgid "Users"
 msgstr "บัญชีผู้ใช้"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_question__observation_answer_type__value
+msgid "Value"
+msgstr "ค่า"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question__observation_answer_type
+msgid "Value type"
+msgstr "รูปแบบค่า"
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_view_form_inherit
+msgid "View Answer"
+msgstr "ดูคำตอบ"
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_patient_view_form_inherit
+msgid "View Graph"
+msgstr "ดูกราฟ"
 
 #. module: ni_questionnaire
 #. odoo-python
@@ -335,3 +656,10 @@ msgstr "บัญชีผู้ใช้"
 #, python-format
 msgid "Warning!"
 msgstr "คำเตือน!"
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_user_input.py:0
+#, python-format
+msgid "{} value type is [{}], not support score input"
+msgstr ""
