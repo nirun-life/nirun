@@ -1,4 +1,5 @@
 #  Copyright (c) 2021-2023. NSTDA
+from pprint import pprint
 
 from odoo import api, fields, models
 
@@ -41,7 +42,7 @@ class Encounter(models.Model):
             ("encounter", "This Encounter"),
             ("patient", "All"),
         ],
-        default="encounter",
+        default="patient",
         required=True,
     )
 
@@ -177,4 +178,9 @@ class Encounter(models.Model):
 
         action["context"] = ctx
         action["domain"] = domain
+        return action
+
+    def action_view_observation_sheet(self):
+        action = self.patient_id.action_view_observation_sheet()
+        pprint(action["context"])
         return action

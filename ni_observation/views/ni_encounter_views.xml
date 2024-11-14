@@ -96,7 +96,7 @@
                         </div>
                         <div class="col-12 col-lg-3 text-end">
                             <i class="fa fa-filter me-2" aria-hidden="true" title="Filter" />
-                            <field name="observation_filter" />
+                            <field name="observation_filter" widget="radio" options="{'horizontal': True}" />
                         </div>
                     </div>
                     <field
@@ -112,9 +112,17 @@
                         <label for="observation_problem_only" string="Problem only" />
                     </div>
                     <button
+                        name="action_view_observation_sheet"
+                        type="object"
+                        string="See More"
+                        class="btn-secondary"
+                        context="{'default_patient_id': patient_id ,'default_encounter_id': id}"
+                    />
+                    <button
                         name="%(ni_observation_sheet_action_form)d"
                         type="action"
-                        string="New"
+                        string="New Observation"
+                        icon="fa-pencil"
                         class="btn-primary"
                         context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [observation_category_id]}"
                         attrs="{'invisible': [('state', '=', 'finished')]}"
@@ -132,12 +140,13 @@
                     type="object"
                     string="See More"
                     class="btn-secondary"
-                    context="{'category_id': %(category_vital_signs)d}"
+                    context="{'category_id': %(ni_observation.category_vital_signs)d}"
                 />
                 <button
                     name="%(ni_observation_sheet_action_form)d"
                     type="action"
-                    string="New"
+                    string="New Vital Sign"
+                    icon="fa-pencil"
                     class="btn-primary"
                     context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(category_vital_signs)d]}"
                     attrs="{'invisible': [('state', '=', 'finished')]}"
@@ -154,14 +163,15 @@
                     type="object"
                     string="See More"
                     class="btn-secondary"
-                    context="{'category_id': %(category_laboratory)d}"
+                    context="{'category_id': %(ni_observation.category_laboratory)d}"
                 />
                 <button
                     name="%(ni_observation_sheet_action_form)d"
                     type="action"
-                    string="New"
+                    string="New Laboratory"
                     class="btn-primary"
-                    context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(category_laboratory)d]}"
+                    icon="fa-pencil"
+                    context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(ni_observation.category_laboratory)d]}"
                     attrs="{'invisible': [('state', '=', 'finished')]}"
                 />
             </xpath>
