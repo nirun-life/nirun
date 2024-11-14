@@ -67,7 +67,7 @@ class ObservationAbstract(models.AbstractModel):
     compare_interpret = fields.Selection(
         [("neutral", "Neutral"), ("better", "Better"), ("worsen", "Worsen")],
         store=True,
-        default="neutral",
+        default=None,
     )
     is_problem = fields.Boolean(related="interpretation_id.is_problem", store=True)
     display_class = fields.Selection(
