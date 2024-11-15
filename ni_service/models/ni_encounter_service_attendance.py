@@ -31,7 +31,7 @@ class EncounterServiceAttendance(models.Model):
     )
     resource_calendar_id = fields.Many2one(related="encounter_id.resource_calendar_id")
 
-    name = fields.Char()
+    name = fields.Char(compute="_compute_name", store=True)
 
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
@@ -52,6 +52,9 @@ class EncounterServiceAttendance(models.Model):
         "ni_encounter_service_attendance_rel",
         "attendance_id",
         "service_id",
+        domain="[('attendance_ids', '=', attendance_id)]",
+        check_company=True,
+        ondelete="restrict",
     )
     service_event_id = fields.Many2one(
         "ni.service.event", index=True, domain="[('service_id', '=', service_id)]"
@@ -76,11 +79,8 @@ class EncounterServiceAttendance(models.Model):
                 rec.encounter_date.astimezone(timezone(self.env.user.tz)).weekday()
             )
 
-    @api.constrains(
-        "service_id",
-        "service_ids",
-    )
-    def _check_service_name(self):
+    @api.depends("service_id", "service_ids")
+    def _compute_name(self):
         for rec in self:
             if len(rec.service_ids) > 1:
                 rec.name = ", ".join(rec.service_ids.mapped("name"))

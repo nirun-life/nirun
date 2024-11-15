@@ -330,7 +330,7 @@ class ServiceEvent(models.Model):
     @api.constrains("service_id", "calendar_id", "attendance_id")
     def _check_calendar_attendance_rel(self):
         for rec in self:
-            if not rec.service_id:
+            if not rec.service_id or not rec.service_attendance_id:
                 continue
             if not rec.calendar_id or not rec.attendance_id:
                 raise UserError(_("Please specify calendar and attendance"))
