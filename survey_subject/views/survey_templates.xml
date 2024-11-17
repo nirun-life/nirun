@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <template id="survey_fill_form_done_inherit" name="Survey: finished" inherit_id="survey.survey_fill_form_done">
+        <xpath expr="//div/div[1]/div[2]/div[1]" position="inside">
+            <t t-if="answer.survey_id.subject_type != 'res.partner'">
+                <a
+                    href="/"
+                    class="btn btn-primary btn-lg"
+                    role="button"
+                    onclick="setTimeout(function(){var wd = window.open(window.location, '_self'); wd.close(); }, 600);"
+                >
+                    Acknowledge Results
+                </a>
+            </t>
+        </xpath>
+    </template>
+</odoo>
