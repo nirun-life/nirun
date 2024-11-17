@@ -2,7 +2,7 @@
 
 {
     "name": "Survey - Subject",
-    "version": "16.0.0.2.0",
+    "version": "16.0.0.3.0",
     "development_status": "Alpha",
     "category": "Marketing/Surveys",
     "author": "NSTDA, Piruin P.",
@@ -14,6 +14,7 @@
         "security/ir.model.access.csv",
         "views/survey_survey_views.xml",
         "views/survey_user_views.xml",
+        "views/survey_templates.xml",
         "wizard/survey_subject_views.xml",
     ],
     "demo": [],
