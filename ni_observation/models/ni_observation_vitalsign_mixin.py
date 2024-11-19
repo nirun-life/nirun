@@ -15,6 +15,8 @@ VITALSIGN_FIELDS = [
     "fbs",
     "dtx",
     "oxygen_sat",
+    "waist",
+    "hip",
 ]
 
 REPLACE_FIELDS = {
@@ -72,6 +74,16 @@ class ObservationVitalsignMixin(models.AbstractModel):
         inverse="_inverse_pain_score",
         copy=False,
     )
+    waist = fields.Float(digits=(4, 1))
+    hip = fields.Float(digits=(4, 1))
+    whr = fields.Float(
+        "Waist to Hip Ratio",
+        digits=(5, 3),
+        compute="_compute_whr",
+        store=True,
+        help="The WHO defines abdominal obesity as a waist–hip ratio "
+        ">0.90 for males and >0.85 for females",
+    )
     pain_score_enum = fields.Selection(
         [
             ("0", "0"),
@@ -91,6 +103,14 @@ class ObservationVitalsignMixin(models.AbstractModel):
         copy=False,
     )
     pain_area = fields.Char("บริเวณที่เจ็บปวด")
+
+    @api.depends("hip", "waist")
+    def _compute_whr(self):
+        for rec in self:
+            if rec.waist and rec.hip:
+                rec.whr = rec.waist / rec.hip
+            else:
+                rec.whr = 0.0
 
     @api.depends("pain_score_enum")
     def _compute_pain_score(self):
