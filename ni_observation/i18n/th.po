@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-14 07:43+0000\n"
-"PO-Revision-Date: 2024-11-14 07:43+0000\n"
+"POT-Creation-Date: 2024-11-19 04:15+0000\n"
+"PO-Revision-Date: 2024-11-19 04:15+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -147,6 +147,14 @@ msgid "<i class=\"fa fa-filter me-2\" aria-hidden=\"true\" title=\"Filter\"/>"
 msgstr ""
 
 #. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_ob_line_view_kanban
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_patient_ob_line_view_kanban
+msgid ""
+"<i class=\"fa fa-line-chart small me-1 text-muted\" aria-hidden=\"true\" "
+"title=\"Trend\"/>"
+msgstr ""
+
+#. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.encounter_summary_report_inherit
 msgid ""
 "<span class=\"me-3\">\n"
@@ -206,6 +214,11 @@ msgstr ""
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
+msgid "<span class=\"text-muted me-4\">%</span>"
+msgstr ""
+
+#. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
 msgid "<span class=\"text-muted me-4\">/min</span>"
 msgstr "<span class=\"text-muted me-4\">/นาที</span>"
 
@@ -216,8 +229,10 @@ msgstr "<span class=\"text-muted me-4\">ซม.</span>"
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
-msgid "<span class=\"text-muted me-4\">kg/m²</span>"
-msgstr ""
+msgid ""
+"<span class=\"text-muted me-4\">kg/m²</span>\n"
+"                            \\"
+msgstr "<span class=\"text-muted me-4\">kg/m²</span>"
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
@@ -881,6 +896,13 @@ msgid "Higher is better"
 msgstr ""
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__hip
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_vitalsign_mixin__hip
+#: model:ni.observation.type,name:ni_observation.type_hip
+msgid "Hip"
+msgstr "รอบสะโพก"
+
+#. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__id
@@ -1287,13 +1309,13 @@ msgstr "เกินเกณฑ์ที่กำหนด"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_vitalsign_mixin__oxygen_sat
 #: model:ni.observation.type,name:ni_observation.type_oxygen_sat
 msgid "Oxygen Saturation"
-msgstr "ออกซิเจนในเลือด"
+msgstr "ความอิ่มตัวออกซิเจน"
 
 #. module: ni_observation
 #: model:ir.model.fields,help:ni_observation.field_ni_encounter__oxygen_sat
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_vitalsign_mixin__oxygen_sat
 msgid "Oxygen sat (%)"
-msgstr "ออกซิเจนในเลือด (%)"
+msgstr "ความอิ่มตัวออกซิเจน SpO2 (%)"
 
 #. module: ni_observation
 #: model:ni.observation.type,name:ni_observation.type_pain_score
@@ -1551,6 +1573,14 @@ msgid "Text"
 msgstr "ข้อความ"
 
 #. module: ni_observation
+#: model:ir.model.fields,help:ni_observation.field_ni_encounter__whr
+#: model:ir.model.fields,help:ni_observation.field_ni_observation_vitalsign_mixin__whr
+msgid ""
+"The WHO defines abdominal obesity as a waist–hip ratio   >0.90 for males  "
+">0.85 for females"
+msgstr "WHO กำหนดให้เป็นโรคอ้วนถ้า ผู้ชายมีค่ามากกว่า 0.90 และผู้หญิงมีค่ามากกว่า 0.85"
+
+#. module: ni_observation
 #: model:ni.observation.category,name:ni_observation.category_therapy
 msgid "Therapy"
 msgstr "การบำบัด"
@@ -1709,6 +1739,19 @@ msgstr ""
 #: model:ni.observation.category,name:ni_observation.category_vital_signs
 msgid "Vital Signs"
 msgstr "สัญญาณชีพ"
+
+#. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__waist
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_vitalsign_mixin__waist
+#: model:ni.observation.type,name:ni_observation.type_waist
+msgid "Waist"
+msgstr "รอบเอว"
+
+#. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__whr
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_vitalsign_mixin__whr
+msgid "Waist to Hip Ratio"
+msgstr "อัตราส่วนรอบเอวต่อรอบสะโพก"
 
 #. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_interpretation__display_class__warning
