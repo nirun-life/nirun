@@ -86,6 +86,8 @@ class Patient(models.Model):
 
     @api.constrains("allergy_ids", "allergy")
     def _check_allergy(self):
+        if self.env.context.get("active_model") != "ni.patient":
+            return
         for rec in self:
             if rec.allergy != "identified" and rec.allergy_ids:
                 rec.allergy_ids = [fields.Command.clear()]
