@@ -24,6 +24,7 @@ class ObservationInterpretation(models.Model):
             ("danger", "Danger"),
         ],
         default="text",
+        required=True,
     )
     is_problem = fields.Boolean(default=False, help="Indicator patient problem")
 
