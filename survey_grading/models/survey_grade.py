@@ -27,14 +27,15 @@ class SurveyGrade(models.Model):
     passing_grade = fields.Boolean(compute="_compute_passing_grade", default=False)
     color_class = fields.Selection(
         [
+            ("text", "Text"),
             ("primary", "Primary"),
             ("success", "Success"),
-            ("danger", "Danger"),
-            ("warning", "Warning"),
             ("info", "Info"),
+            ("warning", "Warning"),
+            ("danger", "Danger"),
             ("muted", "Muted"),
         ],
-        default="primary",
+        default="text",
         required=True,
         help="Bootstrap's classes to change the appearance of "
         "this grade's badge at survey result screen",
