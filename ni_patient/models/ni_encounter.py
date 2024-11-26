@@ -356,9 +356,6 @@ class Encounter(models.Model):
     participant_id = fields.Many2one(
         "ni.encounter.participant", compute="_compute_participant_id"
     )
-    participant_title = fields.Many2one(
-        "hr.job", related="participant_id.employee_id.job_id"
-    )
     participant_count = fields.Integer(compute="_compute_participant")
     participate = fields.Boolean(
         compute="_compute_participant",
