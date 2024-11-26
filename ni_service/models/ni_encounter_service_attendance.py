@@ -59,8 +59,7 @@ class EncounterServiceAttendance(models.Model):
     service_event_id = fields.Many2one(
         "ni.service.event", index=True, domain="[('service_id', '=', service_id)]"
     )
-    employee_id = fields.Many2one(related="service_id.employee_id")
-    employee_ids = fields.Many2many(related="service_id.employee_ids")
+    partner_ids = fields.Many2many(related="service_event_id.partner_ids")
     editable = fields.Boolean(default=True)
     note = fields.Text()
 
