@@ -89,7 +89,7 @@
                                 class="w-100"
                                 placeholder="Services..."
                                 widget="many2many_tags"
-                                options="{'color_field': 'color', 'always_reload': True}"
+                                options="{'color_field': 'color', 'always_reload': True, 'no_create': True}"
                                 force_save="1"
                                 attrs="{'invisible': [('mode', '!=', 'multi')], 'required': [('mode', '=', 'multi')]}"
                             />
@@ -125,7 +125,7 @@
                             <field name="service_calendar_count" invisible="1" />
                             <field
                                 name="calendar_id"
-                                attrs="{'invisible': [('service_calendar_count', '&lt;', 2)]}"
+                                attrs="{'invisible': [('service_calendar_count', '&lt;', 1)]}"
                                 widget="radio"
                             />
                             <field name="service_attendance_count" invisible="1" />
