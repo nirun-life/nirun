@@ -266,7 +266,6 @@ class Timing(models.Model):
     @api.onchange("bound_start", "bound_end")
     def _compute_bound_duration(self):
         for rec in self:
-            rec.duration_days = 0
             if rec.bound_start and rec.bound_end:
                 if rec.bound_start > rec.bound_end:
                     return {
@@ -277,6 +276,8 @@ class Timing(models.Model):
                     }
                 delta = rec.bound_end - rec.bound_start
                 rec.bound_duration_days = delta.days
+            else:
+                rec.bound_duration_days = 0
 
     @api.onchange("bound_duration_days")
     def _inverse_bound_duration(self):
