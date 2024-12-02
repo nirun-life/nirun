@@ -108,7 +108,13 @@ class ServiceEvent(models.Model):
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
         required=False,
-        domain="[('id', 'in', service_attendance_id), ('dayofweek', '=?', dayofweek), ('calendar_id', '=', calendar_id)]",
+        domain="[('calendar_id', '=', calendar_id), ('dayofweek', '=?', dayofweek), ('id', 'in', service_attendance_id),  ]",
+        compute="_compute_attendance_id",
+        inverse="_inverse_attendance_id",
+    )
+    attendance_ids = fields.Many2many(
+        "resource.calendar.attendance",
+        domain="[('calendar_id', '=', calendar_id),  ('dayofweek', '=?', dayofweek), ('id', 'in', service_attendance_id),]",
     )
     service_attendance_id = fields.Many2many(
         related="service_id.attendance_ids", help="Use to filter attendance_id"
@@ -156,6 +162,16 @@ class ServiceEvent(models.Model):
     image_2 = fields.Image()
     has_image = fields.Boolean(compute="_compute_attachment")
     attachment_ids = fields.Many2many("ir.attachment", compute="_compute_attachment")
+
+    @api.depends("attendance_id")
+    def _compute_attendance_id(self):
+        for rec in self:
+            rec.attendance_id = rec.attendance_ids[0] if rec.attendance_ids else None
+
+    def _inverse_attendance_id(self):
+        for rec in self:
+            if rec.attendance_id and rec.attendance_id not in rec.attendance_ids:
+                rec.attendance_ids = [(fields.Command.link(rec.attendance_id.id))]
 
     @api.depends("image_1", "image_2")
     def _compute_attachment(self):
@@ -327,13 +343,13 @@ class ServiceEvent(models.Model):
             else:
                 rec.name = rec.service_id.name
 
-    @api.constrains("service_id", "calendar_id", "attendance_id")
+    @api.constrains("service_id", "calendar_id", "attendance_ids")
     def _check_calendar_attendance_rel(self):
         for rec in self:
             if not rec.service_id or not rec.service_attendance_id:
                 continue
-            if not rec.calendar_id or not rec.attendance_id:
+            if not rec.calendar_id or not rec.attendance_ids:
                 raise UserError(_("Please specify calendar and attendance"))
 
-            if rec.attendance_id.calendar_id != rec.calendar_id:
-                rec.attendance_id = None
+            if rec.attendance_ids[0].calendar_id != rec.calendar_id:
+                rec.attendance_ids = None
