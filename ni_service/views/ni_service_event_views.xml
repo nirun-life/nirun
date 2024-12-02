@@ -129,9 +129,10 @@
                                 widget="radio"
                             />
                             <field name="service_attendance_count" invisible="1" />
+                            <field name="attendance_id" invisible="1" />
                             <field
-                                name="attendance_id"
-                                widget="radio"
+                                name="attendance_ids"
+                                widget="many2many_checkboxes"
                                 force_save="1"
                                 attrs="{'required': [('service_attendance_count', '&gt;', 0)],'invisible': [('service_attendance_count', '=', 0)]}"
                             />
