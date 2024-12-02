@@ -61,9 +61,8 @@ class Encounter(models.Model):
         )
         attendance_service_map = {}
         for attendance in attendance_ids:
-
             scheduled_event = event_ids.filtered_domain(
-                [("attendance_id", "=", attendance.id)]
+                [("attendance_ids", "=", attendance.id)]
             )
             planned_event = scheduled_event.filtered_domain(
                 [("plan_patient_ids", "=", self.patient_id.id)]
