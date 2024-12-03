@@ -77,6 +77,8 @@ class ServiceEvent(models.Model):
         "ni_service_event_rel",
         "event_id",
         "service_id",
+        ondelete="restrict",
+        check_company=True,
         domain=lambda self: [
             ("category_id", "!=", self.env.ref("ni_service.categ_routine").id),
         ],
@@ -160,8 +162,39 @@ class ServiceEvent(models.Model):
 
     image_1 = fields.Image()
     image_2 = fields.Image()
-    has_image = fields.Boolean(compute="_compute_attachment")
-    attachment_ids = fields.Many2many("ir.attachment", compute="_compute_attachment")
+    has_image = fields.Boolean(compute="_compute_attachment_ids")
+    attachment_ids = fields.One2many(
+        "ir.attachment",
+        compute="_compute_attachment_ids",
+        string="Main Attachments",
+        help="Attachments that don't come from a message.",
+    )
+    displayed_image_id = fields.Many2one(
+        "ir.attachment",
+        domain="[('res_model', '=', 'ni.service.event'),"
+        "('res_id', '=', id), "
+        "('mimetype', 'ilike', 'image')]",
+        string="Cover Image",
+    )
+
+    def _get_attachments_search_domain(self):
+        self.ensure_one()
+        return [("res_id", "=", self.id), ("res_model", "=", "ni.service.event")]
+
+    def _compute_attachment_ids(self):
+        for task in self:
+            attachment_ids = (
+                self.env["ir.attachment"]
+                .search(task._get_attachments_search_domain())
+                .ids
+            )
+            message_attachment_ids = task.mapped(
+                "message_ids.attachment_ids"
+            ).ids  # from mail_thread
+            task.attachment_ids = [
+                (6, 0, list(set(attachment_ids) - set(message_attachment_ids)))
+            ]
+            task.has_image = bool(attachment_ids)
 
     @api.depends("attendance_id")
     def _compute_attendance_id(self):
@@ -172,14 +205,6 @@ class ServiceEvent(models.Model):
         for rec in self:
             if rec.attendance_id and rec.attendance_id not in rec.attendance_ids:
                 rec.attendance_ids = [(fields.Command.link(rec.attendance_id.id))]
-
-    @api.depends("image_1", "image_2")
-    def _compute_attachment(self):
-        for rec in self:
-            rec.attachment_ids = self.env["ir.attachment"].search(
-                [("res_model", "=", self._name), ("res_id", "=", rec.id)]
-            )
-            rec.has_image = any([rec.image_1, rec.image_2])
 
     @api.depends("service_ids")
     def _compute_service_category_ids(self):
