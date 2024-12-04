@@ -121,15 +121,28 @@ class Observation(models.Model):
         action_rec = self.env.ref("ni_observation.ni_observation_action_graph").sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
+        group_type = (
+            self.type_id.parent_id.child_ids
+            if self.patient_id
+            else self.type_id.child_ids
+            if self.type_id.child_ids
+            else None
+        )
         ctx.update(
             {
                 "search_default_patient_id": self.patient_id.id,
-                "search_default_type_id": self.type_id.id,
+                "search_default_type_id": self.type_id.id if not group_type else None,
                 "default_patient_id": self.patient_id.id,
                 "search_default_occurrence_hour": True,
                 "value_type": self.type_id.value_type,
+                "graph_default_type": self.type_id.graph_type,
+                "type": self.type_id.graph_type,
+                "stacked": True,
+                "graph_view_ref": self.type_id.get_graph_view_ref(),
             }
         )
+        if group_type:
+            action["domain"] = [("type_id", "in", group_type.ids)]
         action["context"] = ctx
         return action
 
