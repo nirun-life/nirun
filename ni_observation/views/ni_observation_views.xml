@@ -54,11 +54,23 @@
             </search>
         </field>
     </record>
-    <record id="ni_observation_view_graph" model="ir.ui.view">
-        <field name="name">ni.observation.view.graph</field>
+    <record id="ni_observation_view_graph_line" model="ir.ui.view">
+        <field name="name">ni.observation.view.graph.line</field>
         <field name="model">ni.observation</field>
         <field name="arch" type="xml">
-            <graph stacked="False" type="bar">
+            <graph type="line">
+                <field name="occurrence" interval="day" type="col" />
+                <field name="type_id" type="row" />
+                <field name="value_float" type="measure" invisible="context.get('value_type') != 'float'" />
+                <field name="value_int" type="measure" invisible="context.get('value_type') != 'int'" />
+            </graph>
+        </field>
+    </record>
+    <record id="ni_observation_view_graph_bar" model="ir.ui.view">
+        <field name="name">ni.observation.view.graph.bar</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
                 <field name="occurrence" interval="day" type="col" />
                 <field name="type_id" type="row" />
                 <field name="value_float" type="measure" invisible="context.get('value_type') != 'float'" />
@@ -114,7 +126,13 @@
                 <field name="display_class" invisible="1" />
                 <field name="create_date" optional="hide" />
                 <field name="create_uid" widget="many2one_avatar_user" optional="hide" />
-                <button name="view_graph" icon="fa-bar-chart" type="object" title="View graph" />
+                <button
+                    name="view_graph"
+                    icon="fa-bar-chart"
+                    type="object"
+                    title="View graph"
+                    attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                />
             </tree>
         </field>
     </record>
