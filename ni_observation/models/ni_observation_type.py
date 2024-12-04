@@ -9,8 +9,11 @@ class ObservationType(models.Model):
     _inherit = ["ni.coding"]
     _parent_store = True
 
-    parent_id = fields.Many2one("ni.observation.type", index=True, ondelete="restrict")
+    parent_id = fields.Many2one(
+        "ni.observation.type", "Part of", index=True, ondelete="restrict"
+    )
     parent_path = fields.Char(index=True, unaccent=False)
+    child_ids = fields.One2many("ni.observation.type", "parent_id", "Component")
 
     category_id = fields.Many2one("ni.observation.category", index=True)
     min = fields.Float()
@@ -43,9 +46,17 @@ class ObservationType(models.Model):
         ],
         default=None,
     )
-
     compute = fields.Boolean(
         default=False, help="Type value by compute from other ob type not by user input"
+    )
+    graph_type = fields.Selection(
+        [
+            ("line", "Line Chart"),
+            ("bar", "Bar Chart"),
+        ],
+        "Graph",
+        default="line",
+        help="How this observation should display on graph view",
     )
 
     @api.depends("ref_range_ids")
@@ -71,3 +82,10 @@ class ObservationType(models.Model):
                 for r in self[0].ref_range_ids
             ]
         return super().copy_data(default)
+
+    def get_graph_view_ref(self):
+        self.ensure_one()
+        if self.graph_type == "line":
+            return "ni_observation.ni_observation_view_graph_line"
+        else:
+            return "ni_observation.ni_observation_view_graph_bar"
