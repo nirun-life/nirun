@@ -65,6 +65,13 @@
                             <field name="code" />
                             <field name="category_id" />
                             <field name="compute" />
+                            <field name="parent_id" />
+                            <field
+                                name="graph_type"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                                attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                            />
                         </group>
                         <group>
                             <field name="unit_id" />
@@ -75,6 +82,9 @@
                         </group>
                     </group>
                     <notebook>
+                        <page name="component" string="Component">
+                            <field name="child_ids" />
+                        </page>
                         <page
                             name="concept"
                             string="Concept"
