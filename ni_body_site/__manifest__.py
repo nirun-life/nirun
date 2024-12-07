@@ -13,6 +13,7 @@
     "data": [
         "security/ir.model.access.csv",
         "views/ni_body_site_views.xml",
+        "data/ni_body_site_data.xml",
     ],
     "application": False,
     "auto_install": False,
