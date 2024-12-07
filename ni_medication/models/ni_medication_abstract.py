@@ -90,3 +90,49 @@ class MedicationAbstract(models.AbstractModel):
         }
         pprint.pprint(dosage_val)
         self.medication_id.write({"dosage_ids": [fields.Command.create(dosage_val)]})
+
+    # @api.onchange("meal_timing", "period_ids")
+    # def _update_timing_when(self):
+    #     for record in self:
+    #         raise UserError(f"Onchange triggered: {record.meal_timing}, {record.period_ids.ids}")
+
+    @api.onchange("meal_timing", "period_ids", "timing_type")
+    def _update_timing_when(self):
+        for record in self:
+            if record.timing_id:
+                record.timing_id.when = [(5, 0, 0)]
+                # เช็คเงื่อนไขก่อนว่า timing_type เป็น meal หรือ period
+                if (
+                    record.timing_type == "meal"
+                    and record.meal_timing
+                    and record.period_ids
+                ):
+                    # สร้าง code จาก meal_timing และ period.code
+                    codes_to_match = [
+                        f"{record.meal_timing}{period.code}"
+                        for period in record.period_ids
+                    ]
+
+                    # ค้นหา timing.when ที่ตรงกับ codes_to_match
+                    matching_when_ids = self.env["ni.timing.event"].search(
+                        [("code", "in", codes_to_match)]
+                    )
+
+                    # ล้างค่า timing_id.when ก่อนอัปเดต
+                    record.timing_id.when = [(6, 0, matching_when_ids.ids)]
+
+                elif record.timing_type == "period" and record.period_ids:
+                    # ใช้ period.code โดยตรง
+                    codes_to_match = [period.code for period in record.period_ids]
+
+                    # ค้นหา timing.when ที่ตรงกับ codes_to_match
+                    matching_when_ids = self.env["ni.timing.event"].search(
+                        [("code", "in", codes_to_match)]
+                    )
+
+                    # ล้างค่า timing_id.when ก่อนอัปเดต
+                    record.timing_id.when = [(6, 0, matching_when_ids.ids)]
+
+                else:
+                    # ไม่ต้องทำอะไรหาก timing_type ไม่ใช่ "meal" หรือ "period"
+                    pass

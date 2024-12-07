@@ -145,28 +145,6 @@
                             </group>
                             <group>
                                 <group class="w-75" string="Dosage">
-                                    <label for="timing_id" />
-                                    <div class="o_row">
-                                        <field
-                                            name="timing_tmpl_id"
-                                            options="{'no_create':True, 'no_create_edit':True}"
-                                            attrs="{'invisible': [('timing_id', '!=', False)]}"
-                                            placeholder="choose from..."
-                                        />
-                                        <span
-                                            class="oe_edit_only"
-                                            attrs="{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}"
-                                        >
-                                            or
-                                        </span>
-                                        <field
-                                            name="timing_id"
-                                            domain="[('id', '=', False)]"
-                                            options="{'no_quick_create':True}"
-                                            attrs="{'invisible': [('timing_tmpl_id', '!=', False)]}"
-                                            placeholder="create new..."
-                                        />
-                                    </div>
                                     <label for="dose" />
                                     <div class="o_row">
                                         <field name="dose" />
@@ -180,6 +158,68 @@
                                     <field name="route_id" placeholder="ex. IV, po" />
                                     <field name="method_id" placeholder="ex. Inj" />
                                     <field name="site_id" placeholder="ex. OD, OS" />
+                                    <field
+                                        name="timing_id"
+                                        domain="[('id', '=', False)]"
+                                        options="{'no_quick_create':True}"
+                                        placeholder="สรุปการใช้ยา..."
+                                    />
+                                    <field name="timing_type" widget="radio" options="{'horizontal':True}" />
+                                    <field
+                                        name="meal_timing"
+                                        widget="radio"
+                                        options="{'horizontal':True}"
+                                        attrs="{'invisible': [('timing_type', '!=', 'meal')]}"
+                                    />
+                                    <field
+                                        name="period_ids"
+                                        widget="many2many_checkboxes"
+                                        options="{'horizontal':True}"
+                                        attrs="{'invisible': [('timing_type', 'not in', ['meal','period'])]}"
+                                        domain="[('code', 'in', timing_type == 'meal' and ['M', 'D', 'V'] or ['MORN', 'AFT', 'EVE', 'HS','WAKE'])]"
+                                    />
+                                    <field
+                                        name="meal_offset"
+                                        attrs="{'invisible': ['|', ('timing_type', '!=', 'meal'), ('meal_timing', '=', 'C')]}"
+                                    />
+                                    <label
+                                        for="timing_frequency"
+                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
+                                    />
+                                    <div class="o_row" attrs="{'invisible': [('timing_type', '!=', 'custom')]}">
+                                        <field name="timing_frequency" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="timing_frequency_max" class="oe_inline" />
+                                        <span>Times</span>
+                                    </div>
+                                    <label
+                                        string="Duration"
+                                        for="timing_duration"
+                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
+                                    />
+                                    <div class="o_row" attrs="{'invisible': [('timing_type', '!=', 'custom')]}">
+                                        <field name="timing_duration" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="timing_duration_max" class="oe_inline" />
+                                        <field name="timing_duration_unit" nolabel="True" />
+                                    </div>
+                                    <label
+                                        string="Repeat Every"
+                                        for="timing_period"
+                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
+                                    />
+                                    <div class="o_row" attrs="{'invisible': [('timing_type', '!=', 'custom')]}">
+                                        <field name="timing_period" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="timing_period_max" class="oe_inline" />
+                                        <field name="timing_period_unit" string="Unit" />
+                                    </div>
+                                    <field
+                                        name="timing_tod"
+                                        context="{'default_timing_id': id}"
+                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
+                                    />
+                                    />
                                     <field
                                         name="additional_ids"
                                         widget="many2many_tags"

@@ -24,6 +24,29 @@ class Dosage(models.Model):
         help="Supplemental instruction or warnings to the patient - "
         'e.g. "with meals", "may cause drowsiness"',
     )
+    timing_type = fields.Selection(
+        [
+            ("meal", "Meal"),
+            ("period", "Period"),
+            ("custom", "Other"),
+        ],
+        string="Timing Type",
+    )
+    period_ids = fields.Many2many(
+        "ni.medication.dosage.period",
+        string="Dosage Periods",
+        help="Select the periods for medication intake (e.g., Morning, Afternoon, etc.).",
+    )
+    meal_timing = fields.Selection(
+        [
+            ("C", "With meal"),
+            ("AC", "Before a meal"),
+            ("PC", "After a meal"),
+        ],
+        string="Meal Timing",
+    )
+
+    meal_offset = fields.Integer()
 
     site_id = fields.Many2one(
         "ni.body.site", "Body Site", help="Body site to administer to"
