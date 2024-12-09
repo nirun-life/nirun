@@ -4,8 +4,16 @@
     <data noupdate="1">
         <record id="123037004" model="ni.body.site">
             <field name="code" eval="123037004" />
-            <field name="name">Head and neck</field>
-            <field name="abbr">HN</field>
+            <field name="name">Body structure</field>
+            <field name="abbr">BD</field>
+            <field name="system_id" ref="ni_coding.system_snomed" />
+        </record>
+
+        <record id="69536005" model="ni.body.site">
+            <field name="code" eval="69536005" />
+            <field name="name">Head</field>
+            <field name="abbr">HD</field>
+            <field name="parent_id" ref="123037004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -13,23 +21,23 @@
             <field name="code" eval="12738006" />
             <field name="name">Brain</field>
             <field name="abbr">CNS</field>
-            <field name="parent_id" ref="123037004" />
+            <field name="parent_id" ref="69536005" />
+            <field name="system_id" ref="ni_coding.system_snomed" />
+        </record>
+
+        <record id="89546000" model="ni.body.site">
+            <field name="code" eval="89546000" />
+            <field name="name">Skull</field>
+            <field name="abbr">CR</field>
+            <field name="parent_id" ref="69536005" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
         <record id="89545001" model="ni.body.site">
             <field name="code" eval="89545001" />
-            <field name="name">Skull</field>
-            <field name="abbr">CR</field>
-            <field name="parent_id" ref="123037004" />
-            <field name="system_id" ref="ni_coding.system_snomed" />
-        </record>
-
-        <record id="738992009" model="ni.body.site">
-            <field name="code" eval="738992009" />
             <field name="name">Face</field>
             <field name="abbr">FC</field>
-            <field name="parent_id" ref="123037004" />
+            <field name="parent_id" ref="69536005" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -37,20 +45,20 @@
             <field name="code" eval="81745001" />
             <field name="name">Eyes</field>
             <field name="abbr">OC</field>
-            <field name="parent_id" ref="738992009" />
+            <field name="parent_id" ref="89545001" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="111249003" model="ni.body.site">
-            <field name="code" eval="111249003" />
+        <record id="1290031003" model="ni.body.site">
+            <field name="code" eval="1290031003" />
             <field name="name">Left eye</field>
             <field name="abbr">OS</field>
             <field name="parent_id" ref="81745001" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="111250003" model="ni.body.site">
-            <field name="code" eval="111250003" />
+        <record id="1290032005" model="ni.body.site">
+            <field name="code" eval="1290032005" />
             <field name="name">Right eye</field>
             <field name="abbr">OD</field>
             <field name="parent_id" ref="81745001" />
@@ -61,39 +69,39 @@
             <field name="code" eval="45206002" />
             <field name="name">Nose</field>
             <field name="abbr">NR</field>
-            <field name="parent_id" ref="738992009" />
+            <field name="parent_id" ref="89545001" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="80243003" model="ni.body.site">
-            <field name="code" eval="80243003" />
+        <record id="123851003" model="ni.body.site">
+            <field name="code" eval="123851003" />
             <field name="name">Mouth</field>
             <field name="abbr">OR</field>
-            <field name="parent_id" ref="738992009" />
+            <field name="parent_id" ref="89545001" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="117620008" model="ni.body.site">
-            <field name="code" eval="117620008" />
+        <record id="117590005" model="ni.body.site">
+            <field name="code" eval="117590005" />
             <field name="name">Ears</field>
             <field name="abbr">AU</field>
-            <field name="parent_id" ref="738992009" />
+            <field name="parent_id" ref="89545001" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="272741003" model="ni.body.site">
-            <field name="code" eval="272741003" />
+        <record id="89644007" model="ni.body.site">
+            <field name="code" eval="89644007" />
             <field name="name">Left ear</field>
             <field name="abbr">AUL</field>
-            <field name="parent_id" ref="117620008" />
+            <field name="parent_id" ref="117590005" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="272742005" model="ni.body.site">
-            <field name="code" eval="272742005" />
+        <record id="25577004" model="ni.body.site">
+            <field name="code" eval="25577004" />
             <field name="name">Right ear</field>
             <field name="abbr">AUR</field>
-            <field name="parent_id" ref="117620008" />
+            <field name="parent_id" ref="117590005" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -105,16 +113,16 @@
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="40689003" model="ni.body.site">
-            <field name="code" eval="40689003" />
+        <record id="69748006" model="ni.body.site">
+            <field name="code" eval="69748006" />
             <field name="name">Thyroid gland</field>
             <field name="abbr">THY</field>
             <field name="parent_id" ref="45048000" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="403190006" model="ni.body.site">
-            <field name="code" eval="403190006" />
+        <record id="81105003" model="ni.body.site">
+            <field name="code" eval="81105003" />
             <field name="name">Cervical lymph nodes</field>
             <field name="abbr">CLN</field>
             <field name="parent_id" ref="45048000" />
@@ -125,6 +133,7 @@
             <field name="code" eval="51185008" />
             <field name="name">Chest</field>
             <field name="abbr">THX</field>
+            <field name="parent_id" ref="123037004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -144,16 +153,16 @@
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="123841001" model="ni.body.site">
-            <field name="code" eval="123841001" />
+        <record id="44029006" model="ni.body.site">
+            <field name="code" eval="44029006" />
             <field name="name">Left lung</field>
             <field name="abbr">PULS</field>
             <field name="parent_id" ref="39607008" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="123842008" model="ni.body.site">
-            <field name="code" eval="123842008" />
+        <record id="3341006" model="ni.body.site">
+            <field name="code" eval="3341006" />
             <field name="name">Right lung</field>
             <field name="abbr">PULD</field>
             <field name="parent_id" ref="39607008" />
@@ -176,18 +185,19 @@
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="29707007" model="ni.body.site">
-            <field name="code" eval="29707007" />
+        <record id="24201007" model="ni.body.site">
+            <field name="code" eval="24201007" />
             <field name="name">Ribs</field>
             <field name="abbr">COS</field>
             <field name="parent_id" ref="51185008" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="416550000" model="ni.body.site">
-            <field name="code" eval="416550000" />
+        <record id="818983003" model="ni.body.site">
+            <field name="code" eval="818983003" />
             <field name="name">Abdomen</field>
             <field name="abbr">ABD</field>
+            <field name="parent_id" ref="123037004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -195,7 +205,7 @@
             <field name="code" eval="10200004" />
             <field name="name">Liver</field>
             <field name="abbr">HEP</field>
-            <field name="parent_id" ref="416550000" />
+            <field name="parent_id" ref="818983003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -203,23 +213,23 @@
             <field name="code" eval="69695003" />
             <field name="name">Stomach</field>
             <field name="abbr">ST</field>
-            <field name="parent_id" ref="416550000" />
-            <field name="system_id" ref="ni_coding.system_snomed" />
-        </record>
-
-        <record id="181231003" model="ni.body.site">
-            <field name="code" eval="181231003" />
-            <field name="name">Small intestine</field>
-            <field name="abbr">INTS</field>
-            <field name="parent_id" ref="416550000" />
+            <field name="parent_id" ref="818983003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
         <record id="30315005" model="ni.body.site">
             <field name="code" eval="30315005" />
+            <field name="name">Small intestine</field>
+            <field name="abbr">INTS</field>
+            <field name="parent_id" ref="818983003" />
+            <field name="system_id" ref="ni_coding.system_snomed" />
+        </record>
+
+        <record id="14742008" model="ni.body.site">
+            <field name="code" eval="14742008" />
             <field name="name">Large intestine</field>
             <field name="abbr">INTD</field>
-            <field name="parent_id" ref="416550000" />
+            <field name="parent_id" ref="818983003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -227,7 +237,7 @@
             <field name="code" eval="28231008" />
             <field name="name">Gallbladder</field>
             <field name="abbr">CHOL</field>
-            <field name="parent_id" ref="416550000" />
+            <field name="parent_id" ref="818983003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -235,7 +245,7 @@
             <field name="code" eval="78961009" />
             <field name="name">Spleen</field>
             <field name="abbr">LIE</field>
-            <field name="parent_id" ref="416550000" />
+            <field name="parent_id" ref="818983003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -243,7 +253,7 @@
             <field name="code" eval="15776009" />
             <field name="name">Pancreas</field>
             <field name="abbr">PANC</field>
-            <field name="parent_id" ref="416550000" />
+            <field name="parent_id" ref="818983003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -251,7 +261,7 @@
             <field name="code" eval="64033007" />
             <field name="name">Kidneys</field>
             <field name="abbr">REN</field>
-            <field name="parent_id" ref="416550000" />
+            <field name="parent_id" ref="818983003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -259,126 +269,126 @@
             <field name="code" eval="89837001" />
             <field name="name">Bladder</field>
             <field name="abbr">VES</field>
-            <field name="parent_id" ref="416550000" />
+            <field name="parent_id" ref="818983003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="118169003" model="ni.body.site">
-            <field name="code" eval="118169003" />
+        <record id="26107004" model="ni.body.site">
+            <field name="code" eval="26107004" />
             <field name="name">Musculoskeletal system</field>
             <field name="abbr">MUS</field>
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="60944007" model="ni.body.site">
-            <field name="code" eval="60944007" />
+        <record id="421060004" model="ni.body.site">
+            <field name="code" eval="421060004" />
             <field name="name">Spine</field>
             <field name="abbr">SPN</field>
-            <field name="parent_id" ref="118169003" />
+            <field name="parent_id" ref="26107004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="85050009" model="ni.body.site">
-            <field name="code" eval="85050009" />
+        <record id="81087007" model="ni.body.site">
+            <field name="code" eval="81087007" />
             <field name="name">Joints</field>
             <field name="abbr">ART</field>
-            <field name="parent_id" ref="118169003" />
+            <field name="parent_id" ref="26107004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="255410000" model="ni.body.site">
-            <field name="code" eval="255410000" />
+        <record id="85537004" model="ni.body.site">
+            <field name="code" eval="85537004" />
             <field name="name">Shoulder joint</field>
             <field name="abbr">ARTS</field>
-            <field name="parent_id" ref="85050009" />
+            <field name="parent_id" ref="81087007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="312444006" model="ni.body.site">
-            <field name="code" eval="312444006" />
+        <record id="720592006" model="ni.body.site">
+            <field name="code" eval="720592006" />
             <field name="name">Left shoulder joint</field>
             <field name="abbr">ARTSL</field>
-            <field name="parent_id" ref="255410000" />
+            <field name="parent_id" ref="85537004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="312445007" model="ni.body.site">
-            <field name="code" eval="312445007" />
+        <record id="720593001" model="ni.body.site">
+            <field name="code" eval="720593001" />
             <field name="name">Right shoulder joint</field>
             <field name="abbr">ARTSD</field>
-            <field name="parent_id" ref="255410000" />
+            <field name="parent_id" ref="85537004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="182310007" model="ni.body.site">
-            <field name="code" eval="182310007" />
+        <record id="49076000" model="ni.body.site">
+            <field name="code" eval="49076000" />
             <field name="name">Knee joint</field>
             <field name="abbr">GEN</field>
-            <field name="parent_id" ref="85050009" />
+            <field name="parent_id" ref="81087007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="182311006" model="ni.body.site">
-            <field name="code" eval="182311006" />
+        <record id="719442003" model="ni.body.site">
+            <field name="code" eval="719442003" />
             <field name="name">Left knee joint</field>
             <field name="abbr">GENL</field>
-            <field name="parent_id" ref="182310007" />
+            <field name="parent_id" ref="49076000" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="182312004" model="ni.body.site">
-            <field name="code" eval="182312004" />
+        <record id="719443008" model="ni.body.site">
+            <field name="code" eval="719443008" />
             <field name="name">Right knee joint</field>
             <field name="abbr">GEND</field>
-            <field name="parent_id" ref="182310007" />
+            <field name="parent_id" ref="49076000" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="244310007" model="ni.body.site">
-            <field name="code" eval="244310007" />
+        <record id="70258002" model="ni.body.site">
+            <field name="code" eval="70258002" />
             <field name="name">Ankle joint</field>
             <field name="abbr">ARTT</field>
-            <field name="parent_id" ref="85050009" />
+            <field name="parent_id" ref="81087007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="244311006" model="ni.body.site">
-            <field name="code" eval="244311006" />
+        <record id="720532008" model="ni.body.site">
+            <field name="code" eval="720532008" />
             <field name="name">Left ankle joint</field>
             <field name="abbr">ARTTL</field>
-            <field name="parent_id" ref="244310007" />
+            <field name="parent_id" ref="70258002" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="244312004" model="ni.body.site">
-            <field name="code" eval="244312004" />
+        <record id="720533003" model="ni.body.site">
+            <field name="code" eval="720533003" />
             <field name="name">Right ankle joint</field>
             <field name="abbr">ARTTD</field>
-            <field name="parent_id" ref="244310007" />
+            <field name="parent_id" ref="70258002" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="284980008" model="ni.body.site">
-            <field name="code" eval="284980008" />
+        <record id="74670003" model="ni.body.site">
+            <field name="code" eval="74670003" />
             <field name="name">Wrist joint</field>
             <field name="abbr">ARTP</field>
-            <field name="parent_id" ref="85050009" />
+            <field name="parent_id" ref="81087007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="284981007" model="ni.body.site">
-            <field name="code" eval="284981007" />
+        <record id="720556007" model="ni.body.site">
+            <field name="code" eval="720556007" />
             <field name="name">Left wrist joint</field>
             <field name="abbr">ARTPL</field>
-            <field name="parent_id" ref="284980008" />
+            <field name="parent_id" ref="74670003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="284982000" model="ni.body.site">
-            <field name="code" eval="284982000" />
+        <record id="720555006" model="ni.body.site">
+            <field name="code" eval="720555006" />
             <field name="name">Right wrist joint</field>
             <field name="abbr">ARTPD</field>
-            <field name="parent_id" ref="284980008" />
+            <field name="parent_id" ref="74670003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -386,12 +396,12 @@
             <field name="code" eval="12921003" />
             <field name="name">Muscles</field>
             <field name="abbr">MUS</field>
-            <field name="parent_id" ref="118169003" />
+            <field name="parent_id" ref="26107004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="24516001" model="ni.body.site">
-            <field name="code" eval="24516001" />
+        <record id="110515001" model="ni.body.site">
+            <field name="code" eval="110515001" />
             <field name="name">Pectoral muscles</field>
             <field name="abbr">MUSP</field>
             <field name="parent_id" ref="12921003" />
@@ -406,26 +416,26 @@
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="110010001" model="ni.body.site">
-            <field name="code" eval="110010001" />
+        <record id="245500007" model="ni.body.site">
+            <field name="code" eval="245500007" />
             <field name="name">Reproductive system</field>
             <field name="abbr">REP</field>
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="28940006" model="ni.body.site">
-            <field name="code" eval="28940006" />
+        <record id="42774007" model="ni.body.site">
+            <field name="code" eval="42774007" />
             <field name="name">Testes</field>
             <field name="abbr">TEST</field>
-            <field name="parent_id" ref="110010001" />
+            <field name="parent_id" ref="245500007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="112230009" model="ni.body.site">
-            <field name="code" eval="112230009" />
+        <record id="127904003" model="ni.body.site">
+            <field name="code" eval="127904003" />
             <field name="name">Prostate gland</field>
             <field name="abbr">PROS</field>
-            <field name="parent_id" ref="110010001" />
+            <field name="parent_id" ref="245500007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -433,7 +443,7 @@
             <field name="code" eval="15497006" />
             <field name="name">Ovaries</field>
             <field name="abbr">OVAR</field>
-            <field name="parent_id" ref="110010001" />
+            <field name="parent_id" ref="245500007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -441,15 +451,15 @@
             <field name="code" eval="35039007" />
             <field name="name">Uterus</field>
             <field name="abbr">UTER</field>
-            <field name="parent_id" ref="110010001" />
+            <field name="parent_id" ref="245500007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="30330001" model="ni.body.site">
-            <field name="code" eval="30330001" />
+        <record id="76784001" model="ni.body.site">
+            <field name="code" eval="76784001" />
             <field name="name">Vagina</field>
             <field name="abbr">VAGI</field>
-            <field name="parent_id" ref="110010001" />
+            <field name="parent_id" ref="245500007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
@@ -460,175 +470,184 @@
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="31213002" model="ni.body.site">
-            <field name="code" eval="31213002" />
+        <record id="770802007" model="ni.body.site">
+            <field name="code" eval="770802007" />
             <field name="name">Nails</field>
             <field name="abbr">UNG</field>
             <field name="parent_id" ref="39937001" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="4421005" model="ni.body.site">
-            <field name="code" eval="4421005" />
+        <record id="386045008" model="ni.body.site">
+            <field name="code" eval="386045008" />
             <field name="name">Hair</field>
             <field name="abbr">PEL</field>
             <field name="parent_id" ref="39937001" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="12738006" model="ni.body.site">
-            <field name="code" eval="12738006" />
+        <record id="25087005" model="ni.body.site">
+            <field name="code" eval="25087005" />
             <field name="name">Nervous system</field>
             <field name="abbr">NS</field>
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="113305007" model="ni.body.site">
-            <field name="code" eval="113305007" />
+        <record id="2748008" model="ni.body.site">
+            <field name="code" eval="2748008" />
             <field name="name">Spinal cord</field>
             <field name="abbr">MYEL</field>
-            <field name="parent_id" ref="12738006" />
+            <field name="parent_id" ref="25087005" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="46866001" model="ni.body.site">
-            <field name="code" eval="46866001" />
+        <record id="3057000" model="ni.body.site">
+            <field name="code" eval="3057000" />
             <field name="name">Nerves</field>
             <field name="abbr">NEUR</field>
-            <field name="parent_id" ref="12738006" />
+            <field name="parent_id" ref="25087005" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="441590000" model="ni.body.site">
-            <field name="code" eval="441590000" />
+        <record id="66019005" model="ni.body.site">
+            <field name="code" eval="66019005" />
+            <field name="name">Limb</field>
+            <field name="abbr">LB</field>
+            <field name="parent_id" ref="123037004" />
+            <field name="system_id" ref="ni_coding.system_snomed" />
+        </record>
+
+        <record id="53120007" model="ni.body.site">
+            <field name="code" eval="53120007" />
             <field name="name">Arm</field>
             <field name="abbr">BRA</field>
+            <field name="parent_id" ref="66019005" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="442790000" model="ni.body.site">
-            <field name="code" eval="442790000" />
+        <record id="368208006" model="ni.body.site">
+            <field name="code" eval="368208006" />
             <field name="name">Left arm</field>
             <field name="abbr">BRAL</field>
-            <field name="parent_id" ref="441590000" />
+            <field name="parent_id" ref="53120007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="374210000" model="ni.body.site">
-            <field name="code" eval="374210000" />
+        <record id="368209003" model="ni.body.site">
+            <field name="code" eval="368209003" />
             <field name="name">Right arm</field>
             <field name="abbr">BRAR</field>
-            <field name="parent_id" ref="441590000" />
+            <field name="parent_id" ref="53120007" />
+            <field name="system_id" ref="ni_coding.system_snomed" />
+        </record>
+        <record id="127949000" model="ni.body.site">
+            <field name="code" eval="127949000" />
+            <field name="name">Elbow</field>
+            <field name="abbr">CUB</field>
+            <field name="parent_id" ref="53120007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="46680008" model="ni.body.site">
-            <field name="code" eval="46680008" />
+        <record id="368148009" model="ni.body.site">
+            <field name="code" eval="368148009" />
+            <field name="name">Left elbow</field>
+            <field name="abbr">CUBL</field>
+            <field name="parent_id" ref="127949000" />
+            <field name="system_id" ref="ni_coding.system_snomed" />
+        </record>
+
+        <record id="368149001" model="ni.body.site">
+            <field name="code" eval="368149001" />
+            <field name="name">Right elbow</field>
+            <field name="abbr">CUBR</field>
+            <field name="parent_id" ref="127949000" />
+            <field name="system_id" ref="ni_coding.system_snomed" />
+        </record>
+
+        <record id="85562004" model="ni.body.site">
+            <field name="code" eval="85562004" />
             <field name="name">Hand</field>
             <field name="abbr">MAN</field>
-            <field name="parent_id" ref="441590000" />
+            <field name="parent_id" ref="53120007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="71341001" model="ni.body.site">
-            <field name="code" eval="71341001" />
+        <record id="85151006" model="ni.body.site">
+            <field name="code" eval="85151006" />
             <field name="name">Left hand</field>
             <field name="abbr">MANL</field>
-            <field name="parent_id" ref="46680008" />
+            <field name="parent_id" ref="85562004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="87612001" model="ni.body.site">
-            <field name="code" eval="87612001" />
+        <record id="78791008" model="ni.body.site">
+            <field name="code" eval="78791008" />
             <field name="name">Right hand</field>
             <field name="abbr">MAND</field>
-            <field name="parent_id" ref="46680008" />
+            <field name="parent_id" ref="85562004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="30021000" model="ni.body.site">
-            <field name="code" eval="30021000" />
+        <record id="61685007" model="ni.body.site">
+            <field name="code" eval="61685007" />
             <field name="name">Leg</field>
             <field name="abbr">CRUS</field>
+            <field name="parent_id" ref="66019005" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="78723002" model="ni.body.site">
-            <field name="code" eval="78723002" />
+        <record id="32153003" model="ni.body.site">
+            <field name="code" eval="32153003" />
             <field name="name">Left leg</field>
             <field name="abbr">CRUSL</field>
-            <field name="parent_id" ref="30021000" />
+            <field name="parent_id" ref="61685007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="713410001" model="ni.body.site">
-            <field name="code" eval="713410001" />
+        <record id="62175007" model="ni.body.site">
+            <field name="code" eval="62175007" />
             <field name="name">Right leg</field>
             <field name="abbr">CRUSD</field>
-            <field name="parent_id" ref="30021000" />
+            <field name="parent_id" ref="61685007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="2653001" model="ni.body.site">
-            <field name="code" eval="2653001" />
+        <record id="61396006" model="ni.body.site">
+            <field name="code" eval="61396006" />
             <field name="name">Left thigh</field>
             <field name="abbr">FEML</field>
-            <field name="parent_id" ref="78723002" />
+            <field name="parent_id" ref="32153003" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="278080000" model="ni.body.site">
-            <field name="code" eval="278080000" />
+        <record id="11207009" model="ni.body.site">
+            <field name="code" eval="11207009" />
             <field name="name">Right thigh</field>
             <field name="abbr">FEMR</field>
-            <field name="parent_id" ref="713410001" />
+            <field name="parent_id" ref="61685007" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="73634005" model="ni.body.site">
-            <field name="code" eval="73634005" />
+        <record id="656459004" model="ni.body.site">
+            <field name="code" eval="656459004" />
             <field name="name">Foot</field>
             <field name="abbr">PED</field>
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="22036001" model="ni.body.site">
-            <field name="code" eval="22036001" />
+        <record id="22335008" model="ni.body.site">
+            <field name="code" eval="22335008" />
             <field name="name">Left foot</field>
             <field name="abbr">PEDL</field>
-            <field name="parent_id" ref="73634005" />
+            <field name="parent_id" ref="656459004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
 
-        <record id="87953007" model="ni.body.site">
-            <field name="code" eval="87953007" />
+        <record id="7769000" model="ni.body.site">
+            <field name="code" eval="7769000" />
             <field name="name">Right foot</field>
             <field name="abbr">PEDD</field>
-            <field name="parent_id" ref="73634005" />
-            <field name="system_id" ref="ni_coding.system_snomed" />
-        </record>
-
-        <record id="84225003" model="ni.body.site">
-            <field name="code" eval="84225003" />
-            <field name="name">Elbow</field>
-            <field name="abbr">CUB</field>
-            <field name="parent_id" ref="441590000" />
-            <field name="system_id" ref="ni_coding.system_snomed" />
-        </record>
-
-        <record id="169530009" model="ni.body.site">
-            <field name="code" eval="169530009" />
-            <field name="name">Left elbow</field>
-            <field name="abbr">CUBL</field>
-            <field name="parent_id" ref="442790000" />
-            <field name="system_id" ref="ni_coding.system_snomed" />
-        </record>
-
-        <record id="211150000" model="ni.body.site">
-            <field name="code" eval="211150000" />
-            <field name="name">Right elbow</field>
-            <field name="abbr">CUBR</field>
-            <field name="parent_id" ref="374210000" />
+            <field name="parent_id" ref="656459004" />
             <field name="system_id" ref="ni_coding.system_snomed" />
         </record>
     </data>
