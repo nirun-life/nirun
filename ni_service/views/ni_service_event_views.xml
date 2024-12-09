@@ -108,17 +108,11 @@
                             <field name="user_specialty" invisible="1" />
                             <field name="allday" force_save="1" invisible="1" />
                             <field name="start" string="Starting at" />
-                            <field name="stop" string="Ending At" />
-                            <label for="duration" />
-                            <div class="o_row">
-                                <field
-                                    name="duration"
-                                    class="oe_inline"
-                                    widget="float_time"
-                                    attrs="{'readonly': [('attendance_id', '!=', False)]}"
-                                />
-                                <span>hours</span>
-                            </div>
+                            <field
+                                name="stop"
+                                string="Ending At"
+                                attrs="{'invisible': [('service_calendar_count', '!=', 0)]}"
+                            />
                             <field name="dayofweek" invisible="1" />
                             <field name="service_attendance_id" invisible="1" />
                             <field name="service_calendar_ids" invisible="1" />
@@ -136,6 +130,16 @@
                                 force_save="1"
                                 attrs="{'required': [('service_attendance_count', '&gt;', 0)],'invisible': [('service_attendance_count', '=', 0)]}"
                             />
+                            <label for="duration" />
+                            <div class="o_row">
+                                <field
+                                    name="duration"
+                                    class="oe_inline"
+                                    widget="float_time"
+                                    attrs="{'readonly': [('attendance_id', '!=', False)]}"
+                                />
+                                <span>hours</span>
+                            </div>
                         </group>
                         <group>
                             <field
