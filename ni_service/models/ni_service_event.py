@@ -196,7 +196,7 @@ class ServiceEvent(models.Model):
             ]
             task.has_image = bool(attachment_ids)
 
-    @api.depends("attendance_id")
+    @api.depends("attendance_ids")
     def _compute_attendance_id(self):
         for rec in self:
             rec.attendance_id = rec.attendance_ids[0] if rec.attendance_ids else None
@@ -287,18 +287,25 @@ class ServiceEvent(models.Model):
             if rec.user_id.partner_id and rec.user_id.partner_id not in rec.partner_ids:
                 rec.partner_ids = [fields.Command.link(rec.user_id.partner_id.id)]
 
-    @api.onchange("attendance_id")
-    @api.constrains("attendance_id", "start_date")
+    @api.onchange("attendance_ids", "attendance_id", "start")
     def _onchange_attendance_id(self):
         for rec in self:
+            if rec.attendance_ids:
+                remove_att = rec.attendance_ids.filtered(
+                    lambda a: a.dayofweek != rec.dayofweek
+                )
+                if remove_att:
+                    rec.attendance_ids = [
+                        fields.Command.unlink(a.id) for a in remove_att
+                    ]
             if not rec.attendance_id:
                 continue
+
             date = rec.start_date or rec.start.date() or fields.Date.today()
             tz = rec.event_tz or self.env.user.tz
-            rec.start = self.float_time_to_datetime(
-                date, rec.attendance_id.hour_from, tz
-            )
-            rec.stop = self.float_time_to_datetime(date, rec.attendance_id.hour_to, tz)
+            attends = rec.attendance_ids.sorted("hour_from")
+            rec.start = self.float_time_to_datetime(date, attends[0].hour_from, tz)
+            rec.stop = self.float_time_to_datetime(date, attends[-1].hour_to, tz)
             rec.allday = False
 
     def float_time_to_datetime(self, date, float_time, tz=None):
@@ -378,3 +385,16 @@ class ServiceEvent(models.Model):
 
             if rec.attendance_ids[0].calendar_id != rec.calendar_id:
                 rec.attendance_ids = None
+
+    @api.constrains("attendance_ids")
+    def _check_sequence_attendance(self):
+        for rec in self:
+            if len(rec.attendance_ids) <= 1:
+                continue
+            attends = rec.attendance_ids.sorted("hour_from")
+            end_hour = attends[0].hour_from
+            for att in attends:
+                diff = att.hour_from - end_hour
+                if diff > 0.1668:
+                    raise UserError(_("Attendance times must be sequential"))
+                end_hour = att.hour_to
