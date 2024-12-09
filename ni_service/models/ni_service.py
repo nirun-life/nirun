@@ -89,6 +89,7 @@ class Service(models.Model):
         default=True, help="Indicate user can edit this service or not when generate"
     )
     event_ids = fields.One2many("ni.service.event", "service_id")
+    active = fields.Boolean(default=True)
 
     _sql_constraints = [
         (
