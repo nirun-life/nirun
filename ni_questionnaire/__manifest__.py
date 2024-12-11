@@ -15,7 +15,6 @@
         "survey_subject",
         "survey_grading",
         "ni_observation",
-        "ni_coding_specialty",
     ],
     "data": [
         "security/res_groups.xml",
