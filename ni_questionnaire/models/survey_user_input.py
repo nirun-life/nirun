@@ -62,18 +62,23 @@ class SurveyUserInput(models.Model):
 
     @staticmethod
     def _score_observation(rec):
-        val = rec._base_observation(rec.observation_type_id)
+        code = rec.observation_type_id
+        val = rec._base_observation(code)
         if rec.observation_score_type == "percentage":
             result = rec.scoring_percentage
         else:
             result = rec.scoring_total
 
-        if rec.observation_type_id.value_type == "float":
-            val.update({"value_float": result})
-        elif rec.observation_type_id.value_type == "int":
-            val.update({"value_int": int(result)})
-        else:
+        if code.value_type == "float":
             val.update({"value": str(result)})
+        elif code.value_type == "int":
+            val.update({"value": str(int(result))})
+        else:
+            raise ValidationError(
+                _("{} value type is [{}], not support score input").format(
+                    code.name, code.value_type
+                )
+            )
         return val
 
     @staticmethod
@@ -86,9 +91,9 @@ class SurveyUserInput(models.Model):
 
         if question.observation_answer_type == "score":
             if code.value_type == "int":
-                val.update({"value_int": int(line.answer_score)})
+                val.update({"value": str(int(line.answer_score))})
             elif code.value_type == "float":
-                val.update({"value_float": line.answer_score})
+                val.update({"value": str(line.answer_score)})
             else:
                 raise ValidationError(
                     _("{} value type is [{}], not support score input").format(
@@ -101,9 +106,9 @@ class SurveyUserInput(models.Model):
             elif line.value_date:
                 val.update({"value": str(line.value_date)})
             elif line.value_char_box:
-                val.update({"value_char": line.value_char_box})
+                val.update({"value": line.value_char_box})
             elif line.value_text_box:
-                val.update({"value_char": line.value_text_box})
+                val.update({"value": line.value_text_box})
             elif line.value_numerical_box:
                 val.update({"value": str(line.value_numerical_box)})
             else:
@@ -129,9 +134,15 @@ class SurveyUserInput(models.Model):
             result = max(lines.mapped("answer_score"))
 
         if code.value_type == "int":
-            val.update({"value_int": int(result)})
+            val.update({"value": str(int(result))})
         elif code.value_type == "float":
-            val.update({"value_float": result})
+            val.update({"value": str(result)})
+        else:
+            raise ValidationError(
+                _("{} value type is [{}], not support score input").format(
+                    code.observation_type_id.name, code.observation_type_id.value_type
+                )
+            )
         return val
 
     @api.constrains("encounter_id")
