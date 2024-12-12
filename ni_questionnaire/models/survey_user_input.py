@@ -66,7 +66,7 @@ class SurveyUserInput(models.Model):
         if rec.observation_score_type == "percentage":
             result = rec.scoring_percentage
         else:
-            result = (rec.scoring_percentage / 100) * rec.scoring_total
+            result = rec.scoring_total
 
         if rec.observation_type_id.value_type == "float":
             val.update({"value_float": result})
