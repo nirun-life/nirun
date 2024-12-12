@@ -58,7 +58,7 @@
         <field name="name">ni.observation.view.graph.line</field>
         <field name="model">ni.observation</field>
         <field name="arch" type="xml">
-            <graph type="line">
+            <graph type="line" stacked="0">
                 <field name="occurrence" interval="day" type="col" />
                 <field name="type_id" type="row" />
                 <field name="value_float" type="measure" invisible="context.get('value_type') != 'float'" />
@@ -70,7 +70,7 @@
         <field name="name">ni.observation.view.graph.bar</field>
         <field name="model">ni.observation</field>
         <field name="arch" type="xml">
-            <graph type="bar">
+            <graph type="bar" stacked="0">
                 <field name="occurrence" interval="day" type="col" />
                 <field name="type_id" type="row" />
                 <field name="value_float" type="measure" invisible="context.get('value_type') != 'float'" />

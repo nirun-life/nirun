@@ -66,19 +66,31 @@
                             <field name="category_id" />
                             <field name="compute" />
                             <field name="parent_id" />
+                        </group>
+                        <group>
+                            <field name="unit_id" />
+                            <field name="value_type" />
+                            <label
+                                for="min"
+                                string="Value Range"
+                                attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}"
+                            />
+                            <div class="o_row" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}">
+                                <field name="min" />
+                                <span class="mx-1">-</span>
+                                <field name="max" />
+                            </div>
+                            <field name="compare" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}" />
                             <field
                                 name="graph_type"
                                 widget="radio"
                                 options="{'horizontal': True}"
                                 attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
                             />
-                        </group>
-                        <group>
-                            <field name="unit_id" />
-                            <field name="value_type" />
-                            <field name="min" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}" />
-                            <field name="max" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}" />
-                            <field name="compare" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}" />
+                            <field
+                                name="keep_falsy"
+                                attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                            />
                         </group>
                     </group>
                     <notebook>
