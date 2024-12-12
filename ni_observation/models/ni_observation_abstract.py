@@ -135,7 +135,7 @@ class ObservationAbstract(models.AbstractModel):
     )
     def _compute_value(self):
         for rec in self:
-            if not rec["value_%s" % rec.value_type]:
+            if not rec["value_%s" % rec.value_type] and not rec.type_id.keep_falsy:
                 continue
             match rec.value_type:
                 case "char":
