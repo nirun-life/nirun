@@ -58,6 +58,10 @@ class ObservationType(models.Model):
         default="line",
         help="How this observation should display on graph view",
     )
+    keep_falsy = fields.Boolean(
+        default=False,
+        help="Check this if Falsy (0, 0.0 and empty) have meaning on this observation. Otherwise, It will see as garbage input",
+    )
 
     @api.depends("ref_range_ids")
     def _compute_ref_range_count(self):
