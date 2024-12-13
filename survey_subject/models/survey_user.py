@@ -27,6 +27,7 @@ class SurveyUserInput(models.Model):
         readonly=True,
         help="The subject of the questions",
     )
+    subject_name = fields.Char(compute="_compute_subject_ref")
 
     def _auto_init(self):
         res = super(SurveyUserInput, self)._auto_init()
@@ -41,11 +42,28 @@ class SurveyUserInput(models.Model):
     @api.depends("subject_model", "subject_id")
     def _compute_subject_ref(self):
         for rec in self:
-            rec.subject_ref = (
-                "{},{}".format(rec.subject_model, rec.subject_id)
-                if rec.subject_model and rec.subject_id
-                else None
-            )
+            if rec.subject_model and rec.subject_id:
+                rec.update(
+                    {
+                        "subject_ref": "{},{}".format(
+                            rec.subject_model, rec.subject_id
+                        ),
+                        "subject_name": rec._get_subject_name(),
+                    }
+                )
+            else:
+                rec.update(
+                    {
+                        "subject_ref": None,
+                        "subject_name": None,
+                    }
+                )
+
+    def _get_subject(self):
+        return self.env[self.subject_model].browse(self.subject_id)[0]
+
+    def _get_subject_name(self):
+        return self._get_subject().name
 
     def action_survey_subject_wizard(self):
         return self.survey_id.action_survey_subject_wizard()
