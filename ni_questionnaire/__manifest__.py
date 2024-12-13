@@ -22,6 +22,7 @@
         "security/ir.model.access.csv",
         "wizard/survey_subject_views.xml",
         "views/survey_survey_views.xml",
+        "views/survey_survey_menu.xml",
         "views/survey_user_input_views.xml",
         "views/ni_patient_views.xml",
         "views/ni_encounter_views.xml",
