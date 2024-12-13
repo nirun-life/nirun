@@ -6,9 +6,11 @@
     <template id="survey_fill_form_done_inherit" name="Survey: finished" inherit_id="survey.survey_fill_form_done">
         <xpath expr="//div/div[1]/div[2]/div[1]/t[1]/div" position="before">
             <t t-if="answer.grade_id">
-                <div t-attf-class="badge bg-#{answer.grade_id.color_class or 'primary'} text-wrap">
-                    <t t-esc="answer.grade_id.name" />
-                </div>
+                <h4>
+                    <span t-attf-class="badge bg-#{answer.grade_id.color_class or 'primary'} text-wrap">
+                        <t t-esc="answer.grade_id.name" />
+                    </span>
+                </h4>
             </t>
         </xpath>
     </template>
