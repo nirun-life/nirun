@@ -13,65 +13,114 @@
                 <div class="text-center d-none d-lg-block">
                     <label for="pain_score_enum" />
                     <div class="mt-2">
-                        <field name="pain_score_enum" widget="radio" options="{'horizontal': True}" />
+                        <field
+                            name="pain_score_enum"
+                            widget="radio"
+                            options="{'horizontal': True}"
+                            attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                        />
                     </div>
                     <div>
-                        <field name="pain_area" placeholder="บริเวณที่เจ็บปวด" class="w-75" />
+                        <field
+                            name="pain_area"
+                            placeholder="บริเวณที่เจ็บปวด"
+                            class="w-75"
+                            attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                        />
                     </div>
                 </div>
                 <group class="my-4">
                     <group>
                         <label for="body_temp" />
                         <div class="o_row">
-                            <field class="narrow_field" name="body_temp" />
+                            <field
+                                class="narrow_field"
+                                name="body_temp"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                            />
                             <span class="text-muted me-4">°C</span>
                         </div>
                         <label for="respiratory_rate" />
                         <div class="o_row">
-                            <field class="narrow_field" name="respiratory_rate" />
+                            <field
+                                class="narrow_field"
+                                name="respiratory_rate"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                            />
                             <span class="text-muted me-4">/min</span>
                         </div>
                         <label for="bp_s" string="Blood Pressure" />
                         <div class="o_row">
-                            <field class="narrow_field" name="bp_s" />
+                            <field
+                                class="narrow_field"
+                                name="bp_s"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                            />
                             <span class="mx-1">/</span>
-                            <field class="narrow_field" name="bp_d" />
+                            <field
+                                class="narrow_field"
+                                name="bp_d"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                            />
                             <span class="text-muted me-4">mmHg</span>
                         </div>
                         <label for="heart_rate" />
                         <div class="o_row">
-                            <field class="narrow_field" name="heart_rate" />
+                            <field
+                                class="narrow_field"
+                                name="heart_rate"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                            />
                             <span class="text-muted me-4">/min</span>
                         </div>
                         <label for="oxygen_sat" />
                         <div class="o_row">
-                            <field class="narrow_field" name="oxygen_sat" />
+                            <field
+                                class="narrow_field"
+                                name="oxygen_sat"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                            />
                             <span class="text-muted me-4">%</span>
                         </div>
                     </group>
                     <group>
-                        <label for="body_height" />
-                        <div class="o_row">
-                            <field class="narrow_field" name="body_height" />
-                            <span class="text-muted me-4">cm</span>
-                        </div>
                         <label for="body_weight" />
                         <div class="o_row">
-                            <field class="narrow_field" name="body_weight" />
+                            <field
+                                class="narrow_field"
+                                name="body_weight"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                            />
                             <span class="text-muted me-4">kg</span>
+                        </div>
+                        <label for="body_height" />
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="body_height"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                            />
+                            <span class="text-muted me-4">cm</span>
                             <label for="bmi" />
                             <field class="narrow_field mx-1" name="bmi" />
                             <span class="text-muted me-4">kg/m²</span>
-                            \
                         </div>
                         <label for="waist" />
                         <div class="o_row">
-                            <field class="narrow_field" name="waist" />
+                            <field
+                                class="narrow_field"
+                                name="waist"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                            />
                             <span class="text-muted me-4">in</span>
                         </div>
                         <label for="hip" />
                         <div class="o_row">
-                            <field class="narrow_field" name="hip" />
+                            <field
+                                class="narrow_field"
+                                name="hip"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
+                            />
                             <span class="text-muted me-4">in</span>
                             <label for="whr" />
                             <field class="narrow_field mx-1" name="whr" />
@@ -79,7 +128,7 @@
                         <span class="o_form_label o_td_label" name="glucose_type">
                             <field
                                 name="glucose_type"
-                                attrs="{'readonly': [('state', 'not in', ['in-progress', 'draft'])]}"
+                                attrs="{'readonly': [('state', 'not in', ['draft','in-progress'])]}"
                                 class="fw-bold"
                             />
                         </span>
@@ -87,12 +136,12 @@
                             <field
                                 class="narrow_field"
                                 name="fbs"
-                                attrs="{'invisible': [('glucose_type', '!=', 'fbs')]}"
+                                attrs="{'invisible': [('glucose_type', '!=', 'fbs')], 'readonly': [('state', 'not in', ['draft','in-progress'])]}"
                             />
                             <field
                                 class="narrow_field"
                                 name="dtx"
-                                attrs="{'invisible': [('glucose_type', '!=', 'dtx')]}"
+                                attrs="{'invisible': [('glucose_type', '!=', 'dtx')], 'readonly': [('state', 'not in', ['draft','in-progress'])]}"
                             />
                             <span class="text-muted me-4">mg/dl</span>
                         </div>
@@ -141,7 +190,7 @@
                         icon="fa-pencil"
                         class="btn-primary"
                         context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [observation_category_id]}"
-                        attrs="{'invisible': [('state', '=', 'finished')]}"
+                        attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
                     />
                 </page>
             </xpath>
@@ -165,7 +214,7 @@
                     icon="fa-pencil"
                     class="btn-primary"
                     context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(category_vital_signs)d]}"
-                    attrs="{'invisible': [('state', '=', 'finished')]}"
+                    attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
                 />
             </xpath>
             <xpath expr="//page[@name='laboratory']" position="attributes">
@@ -188,7 +237,7 @@
                     class="btn-primary"
                     icon="fa-pencil"
                     context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(ni_observation.category_laboratory)d]}"
-                    attrs="{'invisible': [('state', '=', 'finished')]}"
+                    attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
                 />
             </xpath>
         </field>
