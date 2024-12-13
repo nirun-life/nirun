@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-19 04:15+0000\n"
-"PO-Revision-Date: 2024-11-19 04:15+0000\n"
+"POT-Creation-Date: 2024-12-13 07:16+0000\n"
+"PO-Revision-Date: 2024-12-13 07:16+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -208,6 +208,11 @@ msgid ""
 msgstr ""
 
 #. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_type_view_form
+msgid "<span class=\"mx-1\">-</span>"
+msgstr ""
+
+#. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
 msgid "<span class=\"mx-1\">/</span>"
 msgstr ""
@@ -226,6 +231,11 @@ msgstr "<span class=\"text-muted me-4\">/นาที</span>"
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
 msgid "<span class=\"text-muted me-4\">cm</span>"
 msgstr "<span class=\"text-muted me-4\">ซม.</span>"
+
+#. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
+msgid "<span class=\"text-muted me-4\">in</span>"
+msgstr "<span class=\"text-muted me-4\">นิ้ว</span>"
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
@@ -369,6 +379,11 @@ msgid "Archived"
 msgstr "ถูกเก็บ"
 
 #. module: ni_observation
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_type__graph_type__bar
+msgid "Bar Chart"
+msgstr "กราฟแท่ง"
+
+#. module: ni_observation
 #: model:ni.observation.interpretation,name:ni_observation.interpretation_LX
 msgid "Below low threshold"
 msgstr "ต่ํากว่าขีดจํากัดต่ําสุด"
@@ -485,6 +500,13 @@ msgid "Check here to display only the problem observations"
 msgstr ""
 
 #. module: ni_observation
+#: model:ir.model.fields,help:ni_observation.field_ni_observation_type__keep_falsy
+msgid ""
+"Check this if Falsy (0, 0.0 and empty) have meaning on this observation. "
+"Otherwise, It will see as garbage input"
+msgstr ""
+
+#. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__child_ids
 msgid "Child"
 msgstr ""
@@ -542,6 +564,12 @@ msgstr "ผลการเปรียบเทียบ"
 #: model:ir.model.fields,help:ni_observation.field_ni_patient_observation__compare
 msgid "Compare this observation value to previous observation"
 msgstr "เปรียบเทียบผลการตรวจนี้กับครั้งก่อนหน้า"
+
+#. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__child_ids
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_type_view_form
+msgid "Component"
+msgstr ""
 
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__compute
@@ -847,6 +875,11 @@ msgid "Glucose Type"
 msgstr "วิธีวัดกลูโคส"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__graph_type
+msgid "Graph"
+msgstr "กราฟ"
+
+#. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__compare__gt
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__compare__gt
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__compare__gt
@@ -901,6 +934,11 @@ msgstr ""
 #: model:ni.observation.type,name:ni_observation.type_hip
 msgid "Hip"
 msgstr "รอบสะโพก"
+
+#. module: ni_observation
+#: model:ir.model.fields,help:ni_observation.field_ni_observation_type__graph_type
+msgid "How this observation should display on graph view"
+msgstr ""
 
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__id
@@ -982,6 +1020,11 @@ msgstr "การแปลผล"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__is_problem
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__is_problem
 msgid "Is Problem"
+msgstr "เป็นปัญหา"
+
+#. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__keep_falsy
+msgid "Keep Falsy"
 msgstr ""
 
 #. module: ni_observation
@@ -1031,6 +1074,11 @@ msgstr "อัพเดทครั้งสุดท้ายเมื่อ"
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__compare__lt
 msgid "Lesser"
 msgstr "น้อยกว่า"
+
+#. module: ni_observation
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_type__graph_type__line
+msgid "Line Chart"
+msgstr "กราฟเส้น"
 
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__low
@@ -1325,7 +1373,6 @@ msgstr "ระดับความเจ็บปวด"
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__parent_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__parent_id
-#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__parent_id
 msgid "Parent"
 msgstr ""
 
@@ -1335,6 +1382,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__parent_path
 msgid "Parent Path"
 msgstr ""
+
+#. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__parent_id
+msgid "Part of"
+msgstr "เป็นส่วนของ"
 
 #. module: ni_observation
 #: model:ir.model.fields,help:ni_observation.field_ni_observation__partner_id
@@ -1504,14 +1556,6 @@ msgid "Social History"
 msgstr "ทางสังคม"
 
 #. module: ni_observation
-#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__specialty_ids
-#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__specialty_ids
-#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__specialty_ids
-#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__specialty_ids
-msgid "Specialty"
-msgstr "บทบาท"
-
-#. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__state
 msgid "State"
 msgstr "สถานะ"
@@ -1576,9 +1620,11 @@ msgstr "ข้อความ"
 #: model:ir.model.fields,help:ni_observation.field_ni_encounter__whr
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_vitalsign_mixin__whr
 msgid ""
-"The WHO defines abdominal obesity as a waist–hip ratio   >0.90 for males  "
+"The WHO defines abdominal obesity as a waist–hip ratio >0.90 for males and "
 ">0.85 for females"
-msgstr "WHO กำหนดให้เป็นโรคอ้วนถ้า ผู้ชายมีค่ามากกว่า 0.90 และผู้หญิงมีค่ามากกว่า 0.85"
+msgstr ""
+"WHO กำหนดให้เป็นโรคอ้วนถ้า ผู้ชายมีค่ามากกว่า 0.90 และผู้หญิงมีค่ามากกว่า "
+"0.85"
 
 #. module: ni_observation
 #: model:ni.observation.category,name:ni_observation.category_therapy
@@ -1695,6 +1741,11 @@ msgstr "ค่า"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__value_code_ids
 msgid "Value Code"
 msgstr ""
+
+#. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_type_view_form
+msgid "Value Range"
+msgstr "ช่วงค่า"
 
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__value_type
