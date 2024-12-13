@@ -64,12 +64,13 @@ class SurveySubjectWizard(models.TransientModel):
             partner=self.subject_res_partner,
             **self.subject_get()
         )
+        lang = self.env.context["lang"].split("_")[0]
         self.write({"started": True})
         return {
             "type": "ir.actions.act_url",
             "target": "new",
-            "url": "/survey/start/%s?answer_token=%s"
-            % (self.survey_id.access_token, answer.access_token),
+            "url": "/%s/survey/%s/%s"
+            % (lang, self.survey_id.access_token, answer.access_token),
         }
 
     def prepare_answer(self):
