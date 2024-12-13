@@ -4,17 +4,68 @@
   -->
 <odoo>
     <template id="survey_fill_form_done_inherit" name="Survey: finished" inherit_id="survey.survey_fill_form_done">
+        <xpath expr="//div/div[1]/div[2]/div[1]/t[1]" position="replace">
+            <t t-set="is_partner_subject" t-value="survey.subject_type == 'res.partner'" />
+            <t t-if="survey.scoring_type != 'no_scoring' and survey.scoring_success_min">
+                <div>
+                    <t t-if="is_partner_subject">Your scored</t>
+                    <t t-else="">
+                        <t t-esc="answer.subject_name" />
+                        scored
+                    </t>
+                    <t t-esc="answer.scoring_total" />
+                    <span class="text-muted">
+                        (
+                        <t t-esc="answer.scoring_percentage" />
+                        %)
+                    </span>
+                </div>
+                <t t-if="is_partner_subject">
+                    <t t-if="answer.scoring_success">
+                        <div>Congratulations, you have passed the test!</div>
+                        <div t-if="survey.certification" class="mt16 mb16">
+                            <a
+                                role="button"
+                                class="btn btn-primary btn-lg"
+                                t-att-href="'/survey/%s/get_certification' % survey.id"
+                            >
+                                <i
+                                    class="fa fa-fw fa-trophy"
+                                    role="img"
+                                    aria-label="Download certification"
+                                    title="Download certification"
+                                />
+                                Download certification
+                            </a>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div>Unfortunately, you have failed the test.</div>
+                    </t>
+                </t>
+            </t>
+        </xpath>
         <xpath expr="//div/div[1]/div[2]/div[1]" position="inside">
-            <t t-if="answer.survey_id.subject_type != 'res.partner'">
+            <t t-if="survey.subject_type != 'res.partner'">
                 <a
                     href="/"
-                    class="btn btn-primary btn-lg"
+                    class="btn btn-primary btn-lg mt-2"
                     role="button"
                     onclick="setTimeout(function(){var wd = window.open(window.location, '_self'); wd.close(); }, 600);"
                 >
                     Acknowledge Results
                 </a>
             </t>
+        </xpath>
+        <xpath expr="//div[contains(@class, 'o_survey_result')]" position="attributes">
+            <attribute name="t-if">survey.subject_type == 'res.partner' and graph_data</attribute>
+        </xpath>
+    </template>
+    <template id="survey_button_retake_inherit" name="Survey: Retake button" inherit_id="survey.survey_button_retake">
+        <xpath expr="//div/t" position="attributes">
+            <attribute name="t-if">
+                survey.subject_type == 'res.partner' and not answer.scoring_success and not answer.is_session_answer
+            </attribute>
         </xpath>
     </template>
 </odoo>
