@@ -18,6 +18,7 @@ class SurveySubjectWizard(models.TransientModel):
         return [(model.model, model.name) for model in models]
 
     survey_id = fields.Many2one("survey.survey", required=True)
+    survey_name = fields.Char(related="survey_id.display_name", string="Survey Name")
     type = fields.Char(
         compute="_compute_type",
         readonly=True,
