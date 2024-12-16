@@ -356,6 +356,7 @@ class Encounter(models.Model):
     participant_id = fields.Many2one(
         "ni.encounter.participant", compute="_compute_participant_id"
     )
+    participant_title = fields.Char(compute="_compute_participant_id")
     participant_count = fields.Integer(compute="_compute_participant")
     participate = fields.Boolean(
         compute="_compute_participant",
@@ -384,8 +385,10 @@ class Encounter(models.Model):
             )
             if active_participant:
                 rec.participant_id = active_participant[0].id
+                rec.participant_title = active_participant[0].employee_id.job_title
             else:
                 rec.participant_id = rec.participant_ids[0].id
+                rec.participant_title = rec.participant_ids[0].employee_id.job_title
 
     @api.depends("identifier")
     def _compute_name(self):
