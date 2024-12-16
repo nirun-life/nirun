@@ -16,7 +16,7 @@ class IdentifierMixin(models.AbstractModel):
     _identifier_field = "identifier"
     _identifier_ts_field = "period_start"
 
-    identifier = fields.Char(default=_identifier_default)
+    identifier = fields.Char(default=_identifier_default, copy=False)
 
     @api.model_create_multi
     def create(self, vals_list):
