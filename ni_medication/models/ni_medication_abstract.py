@@ -22,6 +22,9 @@ class MedicationAbstract(models.AbstractModel):
     medication_image_512 = fields.Image(related="medication_id.image_512")
     medication_image_256 = fields.Image(related="medication_id.image_256")
     medication_image_128 = fields.Image(related="medication_id.image_128")
+
+    custom_checkbox_medication = fields.Boolean(string="Custom Checkbox", default=False)
+
     dosage_id = fields.Many2one(
         "ni.medication.dosage", required=True, ondelete="cascade"
     )

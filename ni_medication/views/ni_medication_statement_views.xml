@@ -105,12 +105,16 @@
                                 options="{'no_open': True}"
                             />
                         </div>
-                        <div>
-                            <field name="name" placeholder="ชื่อยา" />
-                        </div>
                     </div>
-                    <group>
+                    <group attrs="{'invisible': [('medication_id', '!=', False)]}">
+                        <field name="custom_checkbox_medication" string="กำหนดเอง" />
+                        กำหนดเอง
+                    </group>
+                    <group
+                        attrs="{'invisible': [('medication_id', '=', False), ('custom_checkbox_medication', '=', False)]}"
+                    >
                         <group>
+                            <field name="name" string="Display Name" placeholder="ชื่อยา" />
                             <field name="occurrence" />
                         </group>
                         <group>
@@ -132,7 +136,9 @@
                             />
                         </group>
                     </group>
-                    <notebook>
+                    <notebook
+                        attrs="{'invisible': [('medication_id', '=', False), ('custom_checkbox_medication', '=', False)]}"
+                    >
                         <page name="detail" string="Detail">
                             <group string="Condition">
                                 <field name="condition_ids" widget="many2many_tags" />

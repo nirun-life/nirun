@@ -117,12 +117,16 @@
                         <div>
                             <field name="medication_id" class="w-100" nolabel="True" placeholder="ค้นหาด้วยชื่อยา..." />
                         </div>
-                        <div>
-                            <field name="name" placeholder="ชื่อยา" />
-                        </div>
                     </div>
-                    <group>
+                    <group attrs="{'invisible': [('medication_id', '!=', False)]}">
+                        <field name="custom_checkbox_medication" string="กำหนดเอง" />
+                        กำหนดเอง
+                    </group>
+                    <group
+                        attrs="{'invisible': [('medication_id', '=', False), ('custom_checkbox_medication', '=', False)]}"
+                    >
                         <group>
+                            <field name="name" string="Display Name" placeholder="ชื่อยา" />
                             <field name="company_id" invisible="1" options="{'no_open': True}" />
                             <field
                                 name="patient_id"
@@ -151,7 +155,9 @@
                             <field name="occurrence" />
                         </group>
                     </group>
-                    <notebook>
+                    <notebook
+                        attrs="{'invisible': [('medication_id', '=', False), ('custom_checkbox_medication', '=', False)]}"
+                    >
                         <page name="dosage" string="Dosage" icon="fa-indent">
                             <div class="d-lg-flex">
                                 <!-- These two div are used to position org_chart -->
