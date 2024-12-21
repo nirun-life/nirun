@@ -40,6 +40,17 @@ class MedicationAbstract(models.AbstractModel):
         related="dosage_id.timing_when", help="Use for search filter with `When`"
     )
 
+    # Fields for bound
+    timing_bound_start = fields.Datetime(
+        related="dosage_id.timing_id.bound_start", readonly=False
+    )
+    timing_bound_end = fields.Datetime(
+        related="dosage_id.timing_id.bound_end", readonly=False
+    )
+    timing_bound_duration_days = fields.Integer(
+        related="dosage_id.timing_id.bound_duration_days", readonly=False
+    )
+
     @api.onchange("medication_id")
     def _onchange_medication_id(self):
         for rec in self:
@@ -91,48 +102,62 @@ class MedicationAbstract(models.AbstractModel):
         pprint.pprint(dosage_val)
         self.medication_id.write({"dosage_ids": [fields.Command.create(dosage_val)]})
 
-    # @api.onchange("meal_timing", "period_ids")
-    # def _update_timing_when(self):
-    #     for record in self:
-    #         raise UserError(f"Onchange triggered: {record.meal_timing}, {record.period_ids.ids}")
+    @api.onchange("timing_bound_start", "timing_bound_end")
+    def _onchange_timing_bounds(self):
+        if self.dosage_id and self.dosage_id.timing_id:
+            self.dosage_id.timing_id.bound_start = self.timing_bound_start
+            self.dosage_id.timing_id.bound_end = self.timing_bound_end
+            self.dosage_id.timing_id._compute_bound_duration()
+            self.timing_bound_duration_days = (
+                self.dosage_id.timing_id.bound_duration_days
+            )
+
+    @api.onchange("timing_bound_duration_days")
+    def _onchange_timing_bound_duration(self):
+        if self.dosage_id and self.dosage_id.timing_id:
+            self.dosage_id.timing_id.bound_duration_days = (
+                self.timing_bound_duration_days
+            )
+            self.dosage_id.timing_id._inverse_bound_duration()
+            self.timing_bound_start = self.dosage_id.timing_id.bound_start
+            self.timing_bound_end = self.dosage_id.timing_id.bound_end
 
     @api.onchange("meal_timing", "period_ids", "timing_type")
     def _update_timing_when(self):
         for record in self:
             if record.timing_id:
                 record.timing_id.when = [(5, 0, 0)]
-                # เช็คเงื่อนไขก่อนว่า timing_type เป็น meal หรือ period
-                if (
-                    record.timing_type == "meal"
-                    and record.meal_timing
-                    and record.period_ids
-                ):
-                    # สร้าง code จาก meal_timing และ period.code
-                    codes_to_match = [
-                        f"{record.meal_timing}{period.code}"
-                        for period in record.period_ids
-                    ]
+            # เช็คเงื่อนไขก่อนว่า timing_type เป็น meal หรือ period
+            if (
+                record.timing_type == "meal"
+                and record.meal_timing
+                and record.period_ids
+            ):
+                # สร้าง code จาก meal_timing และ period.code
+                codes_to_match = [
+                    f"{record.meal_timing}{period.code}" for period in record.period_ids
+                ]
 
-                    # ค้นหา timing.when ที่ตรงกับ codes_to_match
-                    matching_when_ids = self.env["ni.timing.event"].search(
-                        [("code", "in", codes_to_match)]
-                    )
+                # ค้นหา timing.when ที่ตรงกับ codes_to_match
+                matching_when_ids = self.env["ni.timing.event"].search(
+                    [("code", "in", codes_to_match)]
+                )
 
-                    # ล้างค่า timing_id.when ก่อนอัปเดต
-                    record.timing_id.when = [(6, 0, matching_when_ids.ids)]
+                # ล้างค่า timing_id.when ก่อนอัปเดต
+                record.timing_id.when = [(6, 0, matching_when_ids.ids)]
 
-                elif record.timing_type == "period" and record.period_ids:
-                    # ใช้ period.code โดยตรง
-                    codes_to_match = [period.code for period in record.period_ids]
+            elif record.timing_type == "period" and record.period_ids:
+                # ใช้ period.code โดยตรง
+                codes_to_match = [period.code for period in record.period_ids]
 
-                    # ค้นหา timing.when ที่ตรงกับ codes_to_match
-                    matching_when_ids = self.env["ni.timing.event"].search(
-                        [("code", "in", codes_to_match)]
-                    )
+                # ค้นหา timing.when ที่ตรงกับ codes_to_match
+                matching_when_ids = self.env["ni.timing.event"].search(
+                    [("code", "in", codes_to_match)]
+                )
 
-                    # ล้างค่า timing_id.when ก่อนอัปเดต
-                    record.timing_id.when = [(6, 0, matching_when_ids.ids)]
+                # ล้างค่า timing_id.when ก่อนอัปเดต
+                record.timing_id.when = [(6, 0, matching_when_ids.ids)]
 
-                else:
-                    # ไม่ต้องทำอะไรหาก timing_type ไม่ใช่ "meal" หรือ "period"
-                    pass
+            else:
+                # ไม่ต้องทำอะไรหาก timing_type ไม่ใช่ "meal" หรือ "period"
+                pass
