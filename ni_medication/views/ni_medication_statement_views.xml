@@ -271,6 +271,12 @@
                                 </div>
                             </group>
                             <field name="text" placeholder="Describe more additional dosage here..." />
+                            <button
+                                name="save_dosage_as_template"
+                                type="object"
+                                string="Save as template"
+                                attrs="{'invisible': ['|',('medication_id', '=', False),('dosage_tmpl_id', '!=', False)]}"
+                            />
                         </page>
                         <page name="note" string="Note">
                             <field name="note" placeholder="Further information about the statement" />
