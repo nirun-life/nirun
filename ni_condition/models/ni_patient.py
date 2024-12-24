@@ -39,6 +39,7 @@ class Patient(models.Model):
                     cmd += [
                         fields.Command.create(
                             {
+                                "name": code.name,
                                 "code_id": code.id,
                                 "is_problem": True,
                             }
