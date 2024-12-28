@@ -78,3 +78,12 @@ class MedicationDispense(models.Model):
             rx = rec.medication_request_id
             if rx.state in ["draft", "active"]:
                 rx.state = "completed"
+
+    def unlink(self):
+        for rec in self:
+            if (
+                rec.medication_request_id
+                and rec.medication_request_id.state == "completed"
+            ):
+                rec.medication_request_id.state = "active"
+        return super().unlink()

@@ -101,3 +101,67 @@ class Dosage(models.Model):
             additional = ", ".join(rec.additional_ids.mapped("name"))
             name = "{}\n{}".format(name, additional)
         return name
+
+    @api.onchange(
+        "meal_timing", "period_ids", "timing_type", "timing_offset", "meal_offset"
+    )
+    def _update_timing_when(self):
+        for record in self:
+            record.timing_id.offset = 0
+            if record.timing_id:
+                record.timing_id.when = [(5, 0, 0)]
+
+            # 🛠️ เช็ค timing_type เป็น meal หรือ period
+            if record.timing_type == "meal" and record.meal_timing:
+                record._update_timing_when_meal()
+            elif record.timing_type == "period" and record.period_ids:
+                record._update_timing_when_period()
+
+            # 🛠️ อัปเดต offset หลังสุด
+            record._update_timing_offset()
+
+            # 🛠️ อัปเดต display_name หลังสุด
+            record._compute_display_name()
+
+    # 🛠️ Method สำหรับ timing_type == "meal"
+    def _update_timing_when_meal(self):
+        for record in self:
+            # เช็คว่า period_ids มีค่าหนึ่งใน ['M', 'D', 'V']
+            if any(period.code in ["M", "D", "V"] for period in record.period_ids):
+                # ถ้ามี period_ids ที่ตรงกับ 'M', 'D', 'V', เอา meal_timing มาต่อกับ period.code
+                codes_to_match = [
+                    f"{record.meal_timing}{period.code}" for period in record.period_ids
+                ]
+            else:
+                # ถ้าไม่มี period_ids ที่ตรงกับ 'M', 'D', 'V', ใช้ meal_timing อย่างเดียว
+                codes_to_match = [record.meal_timing]
+
+            # ค้นหาจาก code ที่ได้จาก codes_to_match
+            matching_when_ids = self.env["ni.timing.event"].search(
+                [("code", "in", codes_to_match)]
+            )
+
+            # อัปเดต timing_id.when ด้วยผลลัพธ์จากการค้นหา
+            if matching_when_ids:
+                record.timing_id.when = [(6, 0, matching_when_ids.ids)]
+            else:
+                # ถ้าไม่พบการจับคู่ใดๆ ให้รีเซ็ต timing_id.when
+                record.timing_id.when = [(5, 0, 0)]  # หรือค่า default อื่นๆ
+
+    # 🛠️ Method สำหรับ timing_type == "period"
+    def _update_timing_when_period(self):
+        for record in self:
+            if record.period_ids:
+                codes_to_match = [period.code for period in record.period_ids]
+                matching_when_ids = self.env["ni.timing.event"].search(
+                    [("code", "in", codes_to_match)]
+                )
+                record.timing_id.when = [(6, 0, matching_when_ids.ids)]
+
+    # 🛠️ Method สำหรับการตั้งค่า offset
+    def _update_timing_offset(self):
+        for record in self:
+            if record.timing_type != "meal" or record.meal_timing == "C":
+                record.timing_id.offset = 0
+            else:
+                record.timing_id.offset = record.meal_offset

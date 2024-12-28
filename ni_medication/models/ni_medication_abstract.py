@@ -23,12 +23,19 @@ class MedicationAbstract(models.AbstractModel):
     medication_image_256 = fields.Image(related="medication_id.image_256")
     medication_image_128 = fields.Image(related="medication_id.image_128")
 
-    custom_checkbox_medication = fields.Boolean(string="Custom Checkbox", default=False)
+    custom_checkbox_medication = fields.Boolean(
+        string="Custom Medication", default=False
+    )
+    # custom_checkbox_dosage = fields.Boolean(string="Custom Dosage", default=False)
 
     dosage_id = fields.Many2one(
         "ni.medication.dosage", required=True, ondelete="cascade"
     )
     dosage_name = fields.Char(related="dosage_id.name")
+    dosage_display = fields.Char(
+        string="Dosage Summary", related="dosage_id.display_name"
+    )
+
     dosage_tmpl_id = fields.Many2one(
         "ni.medication.dosage",
         "Dosage Template",
@@ -42,13 +49,13 @@ class MedicationAbstract(models.AbstractModel):
 
     # Fields for bound
     timing_bound_start = fields.Datetime(
-        related="dosage_id.timing_id.bound_start", readonly=False
+        related="dosage_id.timing_id.bound_start", readonly=False, copy=False
     )
     timing_bound_end = fields.Datetime(
-        related="dosage_id.timing_id.bound_end", readonly=False
+        related="dosage_id.timing_id.bound_end", readonly=False, copy=False
     )
     timing_bound_duration_days = fields.Integer(
-        related="dosage_id.timing_id.bound_duration_days", readonly=False
+        related="dosage_id.timing_id.bound_duration_days", readonly=False, copy=False
     )
 
     @api.onchange("medication_id")
@@ -102,6 +109,14 @@ class MedicationAbstract(models.AbstractModel):
         pprint.pprint(dosage_val)
         self.medication_id.write({"dosage_ids": [fields.Command.create(dosage_val)]})
 
+    def reset_dosage_template(self):
+        for rec in self:
+            # Unlink dosage_id ถ้ามีอยู่
+            if rec.dosage_id:
+                rec.dosage_id = False
+            # เคลียร์ dosage_tmpl_id
+            rec.dosage_tmpl_id = False
+
     @api.onchange("timing_bound_start", "timing_bound_end")
     def _onchange_timing_bounds(self):
         if self.dosage_id and self.dosage_id.timing_id:
@@ -122,42 +137,9 @@ class MedicationAbstract(models.AbstractModel):
             self.timing_bound_start = self.dosage_id.timing_id.bound_start
             self.timing_bound_end = self.dosage_id.timing_id.bound_end
 
-    @api.onchange("meal_timing", "period_ids", "timing_type")
-    def _update_timing_when(self):
-        for record in self:
-            if record.timing_id:
-                record.timing_id.when = [(5, 0, 0)]
-            # เช็คเงื่อนไขก่อนว่า timing_type เป็น meal หรือ period
-            if (
-                record.timing_type == "meal"
-                and record.meal_timing
-                and record.period_ids
-            ):
-                # สร้าง code จาก meal_timing และ period.code
-                codes_to_match = [
-                    f"{record.meal_timing}{period.code}" for period in record.period_ids
-                ]
-
-                # ค้นหา timing.when ที่ตรงกับ codes_to_match
-                matching_when_ids = self.env["ni.timing.event"].search(
-                    [("code", "in", codes_to_match)]
-                )
-
-                # ล้างค่า timing_id.when ก่อนอัปเดต
-                record.timing_id.when = [(6, 0, matching_when_ids.ids)]
-
-            elif record.timing_type == "period" and record.period_ids:
-                # ใช้ period.code โดยตรง
-                codes_to_match = [period.code for period in record.period_ids]
-
-                # ค้นหา timing.when ที่ตรงกับ codes_to_match
-                matching_when_ids = self.env["ni.timing.event"].search(
-                    [("code", "in", codes_to_match)]
-                )
-
-                # ล้างค่า timing_id.when ก่อนอัปเดต
-                record.timing_id.when = [(6, 0, matching_when_ids.ids)]
-
-            else:
-                # ไม่ต้องทำอะไรหาก timing_type ไม่ใช่ "meal" หรือ "period"
-                pass
+    @api.onchange(
+        "meal_timing", "period_ids", "timing_type", "timing_offset", "meal_offset"
+    )
+    def _onchange_timing_when(self):
+        if self.dosage_id and self.dosage_id.timing_id:
+            self.dosage_id._update_timing_when()

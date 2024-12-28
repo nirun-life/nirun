@@ -18,8 +18,11 @@ class MedicationRequest(models.Model):
     reason_id = fields.Many2one(
         "ni.encounter.reason", "Indication", domain="[('id', 'in', reason_ids)]"
     )
+
     quantity = fields.Float(required=True)
-    quantity_display = fields.Char(compute="_compute_quantity_display")
+    quantity_display = fields.Char(
+        compute="_compute_quantity_display", store=True, readonly=False
+    )
     days_supply = fields.Integer()
     note = fields.Text()
     color = fields.Integer(related="dosage_id.color")
@@ -79,3 +82,8 @@ class MedicationRequest(models.Model):
             "context": ctx,
         }
         return view
+
+    @api.onchange("quantity", "medication_dose_unit_id")
+    def _onchange_quantity_display(self):
+        for rec in self:
+            rec._compute_quantity_display()

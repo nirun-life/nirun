@@ -38,14 +38,15 @@ class Timing(models.Model):
     template_id = fields.Many2one(
         "ni.timing.template", string="Template", required=False, index=True
     )
-    bound_start = fields.Datetime("Since", index=True)
-    bound_end = fields.Datetime("Until", index=True)
+    bound_start = fields.Datetime("Since", index=True, copy=False)
+    bound_end = fields.Datetime("Until", index=True, copy=False)
     bound_duration_days = fields.Integer(
         "Duration (Days)",
         compute="_compute_bound_duration",
         inverse="_inverse_bound_duration",
         readonly=False,
         store=True,
+        copy=False,
     )
 
     frequency = fields.Integer(

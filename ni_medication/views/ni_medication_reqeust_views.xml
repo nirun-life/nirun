@@ -13,7 +13,10 @@
                 <field name="medication_dispense_count" invisible="1" />
                 <field name="identifier" optional="hide" />
                 <field name="name" />
-                <field name="dosage_id" />
+                <!--                <field name="dosage_id" />-->
+                <field name="dosage_display" />
+                <field name="quantity" invisible="1" />
+                <field name="medication_dose_unit_id" invisible="1" />
                 <field name="quantity_display" string="Quantity" optional="show" />
                 <field name="state" widget="badge" optional="hide" />
                 <button
@@ -37,6 +40,9 @@
             <form>
                 <field name="state" invisible="1" />
                 <field name="medication_dispense_count" invisible="1" />
+                <field name="medication_dose_unit_id" invisible="1" />
+                <field name="quantity_display" invisible="1" />
+                <field name="display_name" invisible="1" />
                 <header>
                     <button
                         name="action_dispense"
@@ -117,6 +123,7 @@
                                 <!-- These two div are used to position org_chart -->
                                 <div class="flex-grow-1">
                                     <group>
+                                        <field name="dosage_display" />
                                         <label for="timing_id" />
                                         <div class="o_row">
                                             <field
