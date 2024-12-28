@@ -215,7 +215,7 @@
                                         name="period_ids"
                                         widget="many2many_checkboxes"
                                         options="{'horizontal':True}"
-                                        attrs="{'invisible': [('timing_type', '=', 'custom')]}"
+                                        attrs="{'invisible': [('timing_type', 'not in', ['meal', 'period'])]}"
                                         domain="[('code', 'in', timing_type == 'meal' and ['M', 'D', 'V'] or ['MORN', 'AFT', 'EVE', 'HS','WAKE'])]"
                                     />
                                     <field
