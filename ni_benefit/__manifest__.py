@@ -14,6 +14,7 @@
         "security/ir.model.access.csv",
         "data/ni_benefit_data.xml",
         "views/ni_benefit_views.xml",
+        "views/ni_benefit_menu.xml",
     ],
     "application": False,
     "auto_install": False,
