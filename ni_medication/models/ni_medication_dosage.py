@@ -1,4 +1,5 @@
 #  Copyright (c) 2021-2023 NSTDA
+
 from odoo import api, fields, models
 
 
@@ -44,6 +45,7 @@ class Dosage(models.Model):
             ("PC", "After a meal"),
         ],
         string="Meal Timing",
+        default="C",
     )
 
     meal_offset = fields.Integer()
@@ -102,28 +104,49 @@ class Dosage(models.Model):
             name = "{}\n{}".format(name, additional)
         return name
 
-    @api.onchange(
-        "meal_timing", "period_ids", "timing_type", "timing_offset", "meal_offset"
-    )
+    @api.onchange("timing_type")
+    def _update_timing_type(self):
+        for record in self:
+            record.meal_timing = "C"
+            record.period_ids = [(5, 0, 0)]
+            if record.timing_type in ["", "meal", "period"]:
+                # Clear timing fields for 'meal' and 'period'
+                record.timing_id.time_of_day = [(5, 0, 0)]
+                record.timing_frequency_max = 0
+                record.timing_frequency = 1
+                record.timing_duration_max = 0
+                record.timing_duration = 0
+                record.timing_duration_unit = False
+                record.timing_period_max = 0
+                record.timing_period = 1
+                record.timing_period_unit = "day"
+
+            elif record.timing_type == "custom" and record.timing_id:
+                # Clear timing_id.when and timing_id.offset for 'custom'
+                record.timing_id.when = [(5, 0, 0)]
+
+            record._update_timing_when()
+
+    @api.onchange("meal_timing", "period_ids", "meal_offset")
     def _update_timing_when(self):
         for record in self:
             record.timing_id.offset = 0
             if record.timing_id:
                 record.timing_id.when = [(5, 0, 0)]
 
-            # 🛠️ เช็ค timing_type เป็น meal หรือ period
+            # เช็ค timing_type เป็น meal หรือ period
             if record.timing_type == "meal" and record.meal_timing:
                 record._update_timing_when_meal()
             elif record.timing_type == "period" and record.period_ids:
                 record._update_timing_when_period()
 
-            # 🛠️ อัปเดต offset หลังสุด
+            # อัปเดต offset หลังสุด
             record._update_timing_offset()
 
-            # 🛠️ อัปเดต display_name หลังสุด
+            # อัปเดต display_name หลังสุด
             record._compute_display_name()
 
-    # 🛠️ Method สำหรับ timing_type == "meal"
+    # Method สำหรับ timing_type == "meal"
     def _update_timing_when_meal(self):
         for record in self:
             # เช็คว่า period_ids มีค่าหนึ่งใน ['M', 'D', 'V']
@@ -148,7 +171,7 @@ class Dosage(models.Model):
                 # ถ้าไม่พบการจับคู่ใดๆ ให้รีเซ็ต timing_id.when
                 record.timing_id.when = [(5, 0, 0)]  # หรือค่า default อื่นๆ
 
-    # 🛠️ Method สำหรับ timing_type == "period"
+    # Method สำหรับ timing_type == "period"
     def _update_timing_when_period(self):
         for record in self:
             if record.period_ids:
@@ -158,7 +181,7 @@ class Dosage(models.Model):
                 )
                 record.timing_id.when = [(6, 0, matching_when_ids.ids)]
 
-    # 🛠️ Method สำหรับการตั้งค่า offset
+    # Method สำหรับการตั้งค่า offset
     def _update_timing_offset(self):
         for record in self:
             if record.timing_type != "meal" or record.meal_timing == "C":

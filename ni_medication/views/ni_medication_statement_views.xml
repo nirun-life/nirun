@@ -196,14 +196,14 @@
                                             placeholder="ex. tab, ml"
                                         />
                                     </div>
-                                    <!--                                    <field-->
-                                    <!--                                        name="timing_id"-->
-                                    <!--                                        domain="[('id', '=', False)]"-->
-                                    <!--                                        options="{'no_quick_create':True}"-->
-                                    <!--                                        placeholder="สรุปการใช้ยา..."-->
-                                    <!--                                        groups="base.group_no_one"-->
-                                    <!--                                    />-->
-                                    <!--                                    <field name="dosage_when" groups="base.group_no_one" />-->
+                                    <field
+                                        name="timing_id"
+                                        domain="[('id', '=', False)]"
+                                        options="{'no_quick_create':True}"
+                                        placeholder="สรุปการใช้ยา..."
+                                        groups="base.group_no_one"
+                                    />
+                                    <field name="dosage_when" groups="base.group_no_one" />
                                     <field name="timing_type" widget="radio" options="{'horizontal':True}" />
                                     <field
                                         name="meal_timing"
@@ -241,7 +241,12 @@
                                         <field name="timing_duration" class="oe_inline" />
                                         <span>-</span>
                                         <field name="timing_duration_max" class="oe_inline" />
-                                        <field name="timing_duration_unit" nolabel="True" />
+                                        <field
+                                            name="timing_duration_unit"
+                                            nolabel="True"
+                                            placeholder="Select Duration Unit"
+                                            decoration-muted="timing_duration_unit == False"
+                                        />
                                     </div>
                                     <label
                                         string="Repeat Every"
