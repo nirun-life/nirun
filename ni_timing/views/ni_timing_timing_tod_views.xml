@@ -8,6 +8,7 @@
         <field name="model">ni.timing.timing.tod</field>
         <field name="arch" type="xml">
             <form string="">
+                <field name="name" invisible="1" />
                 <sheet>
                     <group>
                         <group>
@@ -37,7 +38,7 @@
         <field name="model">ni.timing.timing.tod</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name" string="time12" />
+                <field name="name" string="time" />
                 <field name="all_day" width="1" optional="hide" />
                 <field
                     name="start_time"
@@ -62,37 +63,41 @@
         <field name="model">ni.timing.timing.tod</field>
         <field name="arch" type="xml">
             <kanban>
-                <field name="name" string="time" />
+                <field name="name" />
+                <field name="color" widget="color_picker" />
                 <field name="all_day" invisible="1" />
-                <!-- แสดง start_time, end_time และ tz ตามค่าของ all_day -->
-                <field name="start_time" widget="float_time" attrs="{'invisible': [('all_day', '=', True)]}" />
-                <field name="end_time" widget="float_time" attrs="{'invisible': [('all_day', '=', True)]}" />
+                <field name="start_time" invisible="1" />
+                <field name="end_time" invisible="1" />
+                <field name="tz" invisible="1" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click">
-                            <!-- แสดง time (name) -->
-                            <div>
+                        <div
+                            t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''} oe_kanban_global_click"
+                        >
+                            <!-- Dropdown เมนูสำหรับ Edit -->
+                            <div class="o_dropdown_kanban dropdown" t-if="widget.editable">
+                                <a
+                                    class="dropdown-toggle o-no-caret btn"
+                                    data-toggle="dropdown"
+                                    href="#"
+                                    role="button"
+                                    aria-label="Dropdown menu"
+                                    title="Dropdown menu"
+                                >
+                                    <span class="fa fa-ellipsis-v" />
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <t t-if="widget.editable">
+                                        <a class="dropdown-item" role="menuitem" type="edit">Edit</a>
+                                    </t>
+                                    <ul class="oe_kanban_colorpicker" data-field="color" />
+                                </div>
+                            </div>
+                            <!-- แสดงข้อมูลหลัก -->
+                            <div class="o_kanban_content">
                                 <strong>
                                     <field name="name" />
                                 </strong>
-                            </div>
-                            <!-- แสดงค่า start_time, end_time, tz ถ้า all_day = False -->
-                            <div t-if="record.all_day.raw_value == False">
-                                <span>
-                                    <field name="start_time" />
-                                </span>
-                                -
-                                <span>
-                                    <field name="end_time" />
-                                </span>
-                                <br />
-                                <span>
-                                    <field name="tz" />
-                                </span>
-                            </div>
-                            <!-- แสดงสถานะ all_day (ถ้ามีค่าเป็น True) -->
-                            <div t-if="record.all_day.raw_value == True">
-                                <span>All Day</span>
                             </div>
                         </div>
                     </t>
