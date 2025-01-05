@@ -113,10 +113,10 @@ class MedicationAbstract(models.AbstractModel):
         for rec in self:
             if rec.dosage_id:
                 rec.timing_type = ""
-                rec.dosage_id._update_timing_when()
                 rec.dosage_id.dose = 0
                 rec.dosage_id.additional_ids = False
                 rec.dosage_id.as_need = False
+                rec.dosage_id._update_timing_type()
 
     @api.onchange("timing_bound_start", "timing_bound_end")
     def _onchange_timing_bounds(self):
@@ -150,8 +150,9 @@ class MedicationAbstract(models.AbstractModel):
 
     @api.onchange("timing_type")
     def _onchange_timing_type(self):
-        if self.dosage_id and self.dosage_id.timing_id:
-            self.dosage_id._update_timing_type()
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id._update_timing_type()
 
     @api.onchange(
         "timing_frequency",

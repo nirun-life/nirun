@@ -32,12 +32,15 @@ class Dosage(models.Model):
             ("custom", "Other"),
         ],
         string="Timing Type",
+        default="meal",
     )
+
     period_ids = fields.Many2many(
         "ni.medication.dosage.period",
         string="Dosage Periods",
         help="Select the periods for medication intake (e.g., Morning, Afternoon, etc.).",
     )
+
     meal_timing = fields.Selection(
         [
             ("C", "With meal"),
@@ -109,22 +112,16 @@ class Dosage(models.Model):
         for record in self:
             record.meal_timing = "C"
             record.period_ids = [(5, 0, 0)]
-            if record.timing_type in ["", "meal", "period"]:
-                # Clear timing fields for 'meal' and 'period'
-                record.timing_id.time_of_day = [(5, 0, 0)]
-                record.timing_frequency_max = 0
-                record.timing_frequency = 1
-                record.timing_duration_max = 0
-                record.timing_duration = 0
-                record.timing_duration_unit = False
-                record.timing_period_max = 0
-                record.timing_period = 1
-                record.timing_period_unit = "day"
-
-            elif record.timing_type == "custom" and record.timing_id:
-                # Clear timing_id.when and timing_id.offset for 'custom'
-                record.timing_id.when = [(5, 0, 0)]
-
+            record.timing_id.time_of_day = [(5, 0, 0)]
+            record.timing_frequency_max = 0
+            record.timing_frequency = 1
+            record.timing_duration_max = 0
+            record.timing_duration = 0
+            record.timing_duration_unit = False
+            record.timing_period_max = 0
+            record.timing_period = 1
+            record.timing_period_unit = "day"
+            record.timing_id.when = [(5, 0, 0)]
             record._update_timing_when()
 
     @api.onchange("meal_timing", "period_ids", "meal_offset")

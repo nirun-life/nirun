@@ -148,7 +148,7 @@
                             <group string="Condition">
                                 <field name="condition_ids" widget="many2many_tags" />
                             </group>
-                            <div>
+                            <div name="Dosage Template" attrs="{'invisible': [('medication_id', '=', False)]}">
                                 <separator string="Dosage Template" />
                                 <field name="medication_dosage_ids" invisible="1" />
                                 <field name="medication_dosage_count" invisible="1" />
@@ -159,33 +159,16 @@
                                 >
                                     There is no template for this medication
                                 </p>
-                                <div class="o_row">
-                                    <field
-                                        name="dosage_tmpl_id"
-                                        context="{'show_text': True, 'show_additional':True}"
-                                        options="{'no_create':True}"
-                                        widget="radio"
-                                    />
-                                    <label
-                                        class="oe_edit_only"
-                                        for="dosage_id"
-                                        string="or"
-                                        attrs="{'invisible': ['|', '|',  ('medication_dosage_count', '=', 0), ('dosage_tmpl_id', '!=', False), ('dosage_id', '!=', False)]}"
-                                    />
-                                    <field
-                                        name="dosage_id"
-                                        domain="[('id', '=', False)]"
-                                        context="{'show_text': True, 'show_additional':True, 'default_dose_unit_id': medication_dose_unit_id}"
-                                        placeholder="create new..."
-                                        attrs="{'invisible': [('dosage_tmpl_id', '!=', False)]}"
-                                        options="{'no_quick_create':True, 'always_reload':True}"
-                                        invisible="1"
-                                    />
-                                </div>
+                                <field
+                                    name="dosage_tmpl_id"
+                                    context="{'show_text': True, 'show_additional':True}"
+                                    options="{'no_create':True}"
+                                    widget="radio"
+                                />
                             </div>
-                            <group>
+                            <group name="Dosage">
                                 <group string="Dosage">
-                                    attrs="{'invisible': [('dosage_id', '=', False), ('dosage_tmpl_id', '=', False)]}">
+                                    <field name="dosage_id" invisible="1" />
                                     <field name="dosage_display" placeholder="สรุปการใช้ยา..." />
                                     <label for="dose" />
                                     <div class="o_row">
@@ -196,14 +179,14 @@
                                             placeholder="ex. tab, ml"
                                         />
                                     </div>
-                                    <field
-                                        name="timing_id"
-                                        domain="[('id', '=', False)]"
-                                        options="{'no_quick_create':True}"
-                                        placeholder="สรุปการใช้ยา..."
-                                        groups="base.group_no_one"
-                                    />
-                                    <field name="dosage_when" groups="base.group_no_one" />
+                                    <!--                                    <field-->
+                                    <!--                                        name="timing_id"-->
+                                    <!--                                        domain="[('id', '=', False)]"-->
+                                    <!--                                        options="{'no_quick_create':True}"-->
+                                    <!--                                        placeholder="สรุปการใช้ยา..."-->
+                                    <!--                                        groups="base.group_no_one"-->
+                                    <!--                                    />-->
+                                    <!--                                    <field name="dosage_when" groups="base.group_no_one" />-->
                                     <field name="timing_type" widget="radio" options="{'horizontal':True}" />
                                     <field
                                         name="meal_timing"
@@ -287,13 +270,7 @@
                                 string="Save as template"
                                 attrs="{'invisible': ['|',('medication_id', '=', False),('dosage_tmpl_id', '!=', False)]}"
                             />
-                            <button
-                                name="reset_dosage_template"
-                                type="object"
-                                string="Reset"
-                                icon="fa-trash-o"
-                                attrs="{'invisible': [('dosage_id', '=', False), ('dosage_tmpl_id', '=', False)]}"
-                            />
+                            <button name="reset_dosage_template" type="object" string="Reset" icon="fa-trash-o" />
                         </page>
                         <page name="note" string="Note">
                             <field name="note" placeholder="Further information about the statement" />
