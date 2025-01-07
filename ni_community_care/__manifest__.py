@@ -33,6 +33,8 @@
         "views/ni_cc_report_monthly.xml",
         "views/ni_service_event_view.xml",
         "views/ni_need_views.xml",
+        "views/ni_family_relation_views.xml",
+        "views/ni_patient_type_views.xml",
         "views/ni_patient_need_views.xml",
         "views/ni_risk_assessment_prediction_views.xml",
         "views/ni_risk_assessment_views.xml",
