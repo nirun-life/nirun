@@ -1,5 +1,4 @@
 #  Copyright (c) 2021-2023. NSTDA
-import pprint
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -45,8 +44,8 @@ class SurveyUserInput(models.Model):
                     "encounter_id": rec.encounter_id.id,
                     "patient_id": rec.patient_id.id,
                     "observation_ids": [fields.Command.create(val) for val in vals],
+                    "occurrence": rec.create_date,
                 }
-                pprint.pprint(sheet_val)
                 self.env["ni.observation.sheet"].create(sheet_val)
             elif len(vals) == 1:
                 self.env["ni.observation"].create(vals)
@@ -58,6 +57,7 @@ class SurveyUserInput(models.Model):
             "type_id": code.id,
             "value_type": code.value_type,
             "survey_response_id": self.id,
+            "occurrence": self.create_date,
         }
 
     @staticmethod
