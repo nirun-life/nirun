@@ -16,6 +16,7 @@
         "views/res_partner_views.xml",
         "views/res_partner_age_range_view.xml",
         "data/ir_cron_data.xml",
+        "data/res_partner_age_range_data.xml",
     ],
     "application": False,
     "auto_install": False,

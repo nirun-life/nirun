@@ -17,11 +17,12 @@ class ResPartnerDateRange(models.Model):
             age_from = last_age_range.age_to + 1
         return age_from
 
-    name = fields.Char(string="Name", required=True)
+    name = fields.Char(required=True, translate=True)
     age_from = fields.Integer(
         string="From", required=True, default=lambda self: self._default_age_from()
     )
     age_to = fields.Integer(string="To", required=True)
+    active = fields.Boolean(default=True)
 
     _sql_constraints = [("name_uniq", "unique (name)", "A name must be unique !")]
 
