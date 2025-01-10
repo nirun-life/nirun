@@ -60,6 +60,7 @@ class AgeMixin(models.AbstractModel):
         compute="_compute_age_range_id",
         index=True,
         store=True,
+        ondelete="set null",
     )
 
     @api.model_create_multi
