@@ -29,7 +29,9 @@ class EncounterServiceAttendance(models.Model):
         "Day of Week",
         compute="_compute_dayofweek",
     )
-    resource_calendar_id = fields.Many2one(related="encounter_id.resource_calendar_id")
+    resource_calendar_id = fields.Many2one(
+        related="encounter_id.resource_calendar_id", store=True
+    )
 
     name = fields.Char(compute="_compute_name", store=True)
 
@@ -38,6 +40,10 @@ class EncounterServiceAttendance(models.Model):
         "เวลา",
         required=True,
         domain="[('calendar_id','=?', resource_calendar_id)]",
+    )
+    category_id = fields.Many2one(
+        related="service_id.category_id",
+        store=True,
     )
     service_id = fields.Many2one(
         "ni.service",
@@ -59,6 +65,8 @@ class EncounterServiceAttendance(models.Model):
     service_event_id = fields.Many2one(
         "ni.service.event", index=True, domain="[('service_id', '=', service_id)]"
     )
+    start = fields.Datetime(related="service_event_id.start", store=True)
+    duration = fields.Float(related="service_event_id.duration", store=True)
     partner_ids = fields.Many2many(related="service_event_id.partner_ids")
     editable = fields.Boolean(default=True)
     note = fields.Text()
