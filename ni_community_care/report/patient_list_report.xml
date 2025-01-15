@@ -3,6 +3,18 @@
   ~ Copyright (c) 2023 NSTDA
   -->
 <odoo>
+    <record id="elder_action_report" model="ir.actions.report">
+        <field name="name">ข้อมูลพื้นฐานผู้สูงอายุ ศผ.01</field>
+        <field name="model">ni.patient</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ni_community_care.encounter_report_template</field>
+        <field name="report_file">ni_community_care.encounter_report_template</field>
+        <field name="print_report_name">("%s_report" % (object.identifier))</field>
+        <field name="binding_model_id" ref="ni_patient.model_ni_patient" />
+        <field name="binding_type">report</field>
+        <field name="binding_view_types">list</field>
+        <field name="paperformat_id" ref="report_paperformat_a4_landscape" />
+    </record>
     <template id="encounter_report_template">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
