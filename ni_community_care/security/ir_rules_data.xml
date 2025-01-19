@@ -21,4 +21,16 @@
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
     </record>
+    <record id="patient_user_area_rule" model="ir.rule">
+        <field name="name">Patient: user see only patient in area</field>
+        <field ref="model_ni_patient" name="model_id" />
+        <field name="domain_force">[('city_id', 'in', city_ids)]</field>
+        <field name="groups" eval="[(4, ref('ni_patient.group_user'))]" />
+    </record>
+    <record id="patient_admin_area_rule" model="ir.rule">
+        <field name="name">Patient: Admin can access all patient</field>
+        <field ref="model_ni_patient" name="model_id" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
+    </record>
 </odoo>

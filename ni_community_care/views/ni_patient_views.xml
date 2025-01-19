@@ -267,8 +267,15 @@
                                         <field
                                             name="zip_id"
                                             options="{'create_name_field': 'city', 'no_open': True, 'no_create': True}"
+                                            domain="[('city_id', 'in', user_city_ids)]"
                                             placeholder="ค้นหาด้วย รหัสไปษญีย์หรือชื่อตำบล/อำเภอ/จังหวัด..."
                                         />
+                                        <span
+                                            class="text-danger"
+                                            attrs="{'invisible': [('user_city_ids', '!=', False)]}"
+                                        >
+                                            บัญชีผู้ใช้งานของท่านยังไม่มีข้อมูลพื้นที่รับผิดชอบ กรุณาติดต่อผู้ดูแลระบบ
+                                        </span>
                                         <field name="city" class="o_address_city" placeholder="อำเภอ" invisible="1" />
                                         <field
                                             name="state_id"
@@ -291,6 +298,7 @@
                                             placeholder="ประเทศไทย"
                                             invisible="1"
                                         />
+                                        <field name="user_city_ids" invisible="1" />
                                     </div>
                                     <!--                                    <field-->
                                     <!--                                        name="other_address_id"-->

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
+<odoo>
+    <record id="res_users_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.users.view.form.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="before">
+                <group>
+                    <group string="พื้นที่รับผิดชอบ">
+                        <field name="country_id" options="{'no_open': True}" />
+                        <field name="state_ids" widget="many2many_tags" />
+                        <label for="city_ids" />
+                        <div>
+                            <div class="o_row">
+                                <field name="city_ids" widget="many2many_tags" />
+                                <button
+                                    name="action_add_response_state_cities"
+                                    type="object"
+                                    string=" ทั้งจังหวัด"
+                                    attrs="{'invisible': [('state_ids', '=', False)]}"
+                                    confirm="พื้นที่รับผิดชอบที่คุณเลือกไว้จะเขียนทับ"
+                                    icon="fa-map"
+                                />
+                            </div>
+                            <div>
+                                <span class="text-muted">ระบบจำกัดการเข้าถึงข้อมูลของผู้บริบาลด้วยข้อมูลนี้</span>
+                            </div>
+                        </div>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

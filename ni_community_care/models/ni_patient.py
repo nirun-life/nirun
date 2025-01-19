@@ -20,6 +20,10 @@ class Patient(models.Model):
     need_ids = fields.Many2many("ni.need", "ni_patient_need", "patient_id", "need_id")
     need_count = fields.Integer(compute="_compute_need_count")
 
+    user_city_ids = fields.Many2many(
+        "res.city", store=False, default=lambda self: self.env.user.city_ids
+    )
+
     @api.depends("need_ids")
     def _compute_need_count(self):
         for rec in self:
