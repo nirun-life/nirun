@@ -276,8 +276,9 @@ class Patient(models.Model):
         for rec in self:
             if rec.partner_id:
                 rec.name = rec.partner_id.name
-                rec.nationality_id = rec.partner_id.country_id
-                if not rec._origin.identification_id:
+                if not rec._origin.nationality_id and rec.partner_id.country_id:
+                    rec.nationality_id = rec.partner_id.country_id
+                if not rec._origin.identification_id and rec.partner_id.vat:
                     rec.identification_id = rec.partner_id.vat
 
     @api.depends("encounter_ids")
