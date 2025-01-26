@@ -143,7 +143,7 @@ class MedicationAbstract(models.AbstractModel):
         if self.dosage_id and self.dosage_id.timing_id:
             self.dosage_id._compute_display_name()
 
-    @api.onchange("meal_timing", "period_ids", "meal_offset")
+    @api.onchange("meal_timing", "meal_period_ids", "period_ids", "meal_offset")
     def _onchange_timing_when(self):
         if self.dosage_id and self.dosage_id.timing_id:
             self.dosage_id._update_timing_when()
