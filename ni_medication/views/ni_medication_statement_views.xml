@@ -195,11 +195,14 @@
                                         attrs="{'invisible': [('timing_type', '!=', 'meal')]}"
                                     />
                                     <field
+                                        name="meal_period_ids"
+                                        widget="many2many_checkboxes"
+                                        attrs="{'invisible': [('timing_type', 'not in', ['meal'])]}"
+                                    />
+                                    <field
                                         name="period_ids"
                                         widget="many2many_checkboxes"
-                                        options="{'horizontal':True}"
-                                        attrs="{'invisible': [('timing_type', 'not in', ['meal', 'period'])]}"
-                                        domain="[('code', 'in', timing_type == 'meal' and ['M', 'D', 'V'] or ['MORN', 'AFT', 'EVE', 'HS','WAKE'])]"
+                                        attrs="{'invisible': [('timing_type', 'not in', ['period'])]}"
                                     />
                                     <field
                                         name="meal_offset"

@@ -211,11 +211,14 @@
                                         attrs="{'invisible': [('timing_type', '!=', 'meal')]}"
                                     />
                                     <field
+                                        name="meal_period_ids"
+                                        widget="many2many_checkboxes"
+                                        attrs="{'invisible': [('timing_type', 'not in', ['meal'])]}"
+                                    />
+                                    <field
                                         name="period_ids"
                                         widget="many2many_checkboxes"
-                                        options="{'horizontal':True}"
-                                        attrs="{'invisible': [('timing_type', 'not in', ['meal', 'period'])]}"
-                                        domain="[('code', 'in', timing_type == 'meal' and ['M', 'D', 'V'] or ['MORN', 'AFT', 'EVE', 'HS','WAKE'])]"
+                                        attrs="{'invisible': [('timing_type', 'not in', ['period'])]}"
                                     />
                                     <field
                                         name="meal_offset"
@@ -286,7 +289,7 @@
                                 string="Save as template"
                                 attrs="{'invisible': ['|',('medication_id', '=', False),('dosage_tmpl_id', '!=', False)]}"
                             />
-                            <button name="reset_dosage_template" type="object" string="Reset" icon="fa-trash-o" />
+                            <!--                            <button name="reset_dosage_template" type="object" string="Reset" icon="fa-trash-o" />-->
                         </page>
                         <page name="note" string="Note">
                             <field name="note" placeholder="Further information about the dispense" />

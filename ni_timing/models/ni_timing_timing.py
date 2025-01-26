@@ -314,6 +314,8 @@ class Timing(models.Model):
 
     @api.constrains("duration", "duration_max")
     def check_duration(self):
+        if self.env.context.get("isCopy"):
+            return  # ถ้ามีการตั้งค่า isCopy ให้ข้ามการทำงานนี้
         for rec in self:
             if rec.duration and not rec.duration_unit:
                 raise ValidationError(
@@ -332,6 +334,8 @@ class Timing(models.Model):
 
     @api.constrains("frequency", "frequency_max")
     def check_frequency(self):
+        if self.env.context.get("isCopy"):
+            return  # ถ้ามีการตั้งค่า isCopy ให้ข้ามการทำงานนี้
         for rec in self:
             if rec.frequency < 0:
                 raise ValidationError(_("frequency SHALL be a non-negative value"))
@@ -346,6 +350,8 @@ class Timing(models.Model):
 
     @api.constrains("period", "period_max")
     def check_period(self):
+        if self.env.context.get("isCopy"):
+            return  # ถ้ามีการตั้งค่า isCopy ให้ข้ามการทำงานนี้
         for rec in self:
             if rec.period and not rec.period_unit:
                 raise ValidationError(

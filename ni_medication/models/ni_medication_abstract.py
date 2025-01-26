@@ -195,7 +195,7 @@ class MedicationAbstract(models.AbstractModel):
     )
     def _onchange_timing_period(self):
         if self.dosage_id and self.dosage_id.timing_id:
+            self.dosage_id.timing_id.period_unit = self.timing_period_unit
             self.dosage_id.timing_id.period = self.timing_period
             self.dosage_id.timing_id.period_max = self.timing_period_max
-            self.dosage_id.timing_id.period_unit = self.timing_period_unit
             self.dosage_id._compute_display_name()

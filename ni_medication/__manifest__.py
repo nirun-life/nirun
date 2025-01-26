@@ -30,6 +30,7 @@
         "data/ni_medication_dosage_method_data.xml",
         "data/ni_medication_dosage_route_data.xml",
         "data/ni_medication_dosage_period_data.xml",
+        "data/ni_medication_dosage_period_meal_data.xml",
         "wizard/ni_medication_suggest_wizard_views.xml",
         "views/ni_medication_form_views.xml",
         "views/ni_medication_ingredient_views.xml",

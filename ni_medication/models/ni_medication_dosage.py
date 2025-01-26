@@ -41,6 +41,12 @@ class Dosage(models.Model):
         help="Select the periods for medication intake (e.g., Morning, Afternoon, etc.).",
     )
 
+    meal_period_ids = fields.Many2many(
+        "ni.medication.dosage.period_meal",
+        string="Dosage Meal",
+        help="Select the meal for medication intake (e.g., Breakfast, lunch, etc.).",
+    )
+
     meal_timing = fields.Selection(
         [
             ("C", "With meal"),
@@ -109,22 +115,26 @@ class Dosage(models.Model):
 
     @api.onchange("timing_type")
     def _update_timing_type(self):
-        for record in self:
-            record.meal_timing = "C"
-            record.period_ids = [(5, 0, 0)]
-            record.timing_id.time_of_day = [(5, 0, 0)]
-            record.timing_frequency_max = 0
-            record.timing_frequency = 1
-            record.timing_duration_max = 0
-            record.timing_duration = 0
-            record.timing_duration_unit = False
-            record.timing_period_max = 0
-            record.timing_period = 1
-            record.timing_period_unit = "day"
-            record.timing_id.when = [(5, 0, 0)]
-            record._update_timing_when()
+        if self.env.context.get("isCopy"):
+            return  # ถ้ามีการตั้งค่า isCopy ให้ข้ามการทำงานนี้
+        else:
+            for record in self:
+                record.meal_timing = "C"
+                record.meal_period_ids = [(5, 0, 0)]
+                record.period_ids = [(5, 0, 0)]
+                record.timing_id.time_of_day = [(5, 0, 0)]
+                record.timing_frequency_max = 0
+                record.timing_frequency = 1
+                record.timing_duration_max = 0
+                record.timing_duration = 0
+                record.timing_duration_unit = False
+                record.timing_period_unit = "day"
+                record.timing_period_max = 0
+                record.timing_period = 1
+                record.timing_id.when = [(5, 0, 0)]
+                record._update_timing_when()
 
-    @api.onchange("meal_timing", "period_ids", "meal_offset")
+    @api.onchange("meal_timing", "meal_period_ids", "period_ids", "meal_offset")
     def _update_timing_when(self):
         for record in self:
             record.timing_id.offset = 0
@@ -143,29 +153,26 @@ class Dosage(models.Model):
             # อัปเดต display_name หลังสุด
             record._compute_display_name()
 
-    # Method สำหรับ timing_type == "meal"
     def _update_timing_when_meal(self):
         for record in self:
-            # เช็คว่า period_ids มีค่าหนึ่งใน ['M', 'D', 'V']
-            if any(period.code in ["M", "D", "V"] for period in record.period_ids):
-                # ถ้ามี period_ids ที่ตรงกับ 'M', 'D', 'V', เอา meal_timing มาต่อกับ period.code
-                codes_to_match = [
-                    f"{record.meal_timing}{period.code}" for period in record.period_ids
-                ]
-            else:
-                # ถ้าไม่มี period_ids ที่ตรงกับ 'M', 'D', 'V', ใช้ meal_timing อย่างเดียว
-                codes_to_match = [record.meal_timing]
+            # กำหนดค่าเริ่มต้นสำหรับ matching_when_ids
+            matching_when_ids = self.env["ni.timing.event"]
 
-            # ค้นหาจาก code ที่ได้จาก codes_to_match
-            matching_when_ids = self.env["ni.timing.event"].search(
-                [("code", "in", codes_to_match)]
-            )
+            if record.meal_period_ids:
+                codes_to_match = [
+                    f"{record.meal_timing}{period.code}"
+                    for period in record.meal_period_ids
+                ]
+                # ค้นหาจาก code ที่ได้จาก codes_to_match
+                matching_when_ids = self.env["ni.timing.event"].search(
+                    [("code", "in", codes_to_match)]
+                )
 
             # อัปเดต timing_id.when ด้วยผลลัพธ์จากการค้นหา
             if matching_when_ids:
                 record.timing_id.when = [(6, 0, matching_when_ids.ids)]
             else:
-                # ถ้าไม่พบการจับคู่ใดๆ ให้รีเซ็ต timing_id.when
+                # ถ้าไม่พบการจับคู่ใดๆ หรือ meal_period_ids ว่าง ให้รีเซ็ต timing_id.when
                 record.timing_id.when = [(5, 0, 0)]  # หรือค่า default อื่นๆ
 
     # Method สำหรับ timing_type == "period"

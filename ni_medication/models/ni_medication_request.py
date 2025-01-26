@@ -58,6 +58,8 @@ class MedicationRequest(models.Model):
         ctx = dict(self.env.context)
         request = self.copy_data()[0]
 
+        ctx.update({"isCopy": True})
+
         ctx.update(
             {
                 "default_{}".format(k): v
@@ -87,3 +89,7 @@ class MedicationRequest(models.Model):
     def _onchange_quantity_display(self):
         for rec in self:
             rec._compute_quantity_display()
+
+    def action_save_draft(self):
+        for rec in self:
+            rec.state = "draft"

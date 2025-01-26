@@ -53,7 +53,7 @@
                         type="object"
                         attrs="{'invisible': [('state', 'in', ['completed', 'revoked'])]}"
                     />
-                    <field name="state" widget="statusbar" statusbar_visible="active,completed" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,completed" />
                 </header>
                 <sheet>
                     <field
@@ -166,11 +166,14 @@
                                         attrs="{'invisible': [('timing_type', '!=', 'meal')]}"
                                     />
                                     <field
+                                        name="meal_period_ids"
+                                        widget="many2many_checkboxes"
+                                        attrs="{'invisible': [('timing_type', 'not in', ['meal'])]}"
+                                    />
+                                    <field
                                         name="period_ids"
                                         widget="many2many_checkboxes"
-                                        options="{'horizontal':True}"
-                                        attrs="{'invisible': [('timing_type', 'not in', ['meal', 'period'])]}"
-                                        domain="[('code', 'in', timing_type == 'meal' and ['M', 'D', 'V'] or ['MORN', 'AFT', 'EVE', 'HS','WAKE'])]"
+                                        attrs="{'invisible': [('timing_type', 'not in', ['period'])]}"
                                     />
                                     <field
                                         name="meal_offset"
@@ -251,13 +254,33 @@
                             groups="base.group_no_one"
                         >
                             <field name="medication_dispense_count" invisible="1" />
-                            <field name="medication_dispense_ids" />
+                            <field name="medication_dispense_ids" readonly="1" />
                         </page>
                         <page name="note" string="Note">
                             <field name="note" placeholder="Further information about the dispense" />
                         </page>
                     </notebook>
                 </sheet>
+                <!--                <footer>-->
+                <!--                    &lt;!&ndash; Default Buttons ของ Odoo &ndash;&gt;-->
+                <!--                    <button type="object"-->
+                <!--                            string="Save"-->
+                <!--                            class="btn-primary"-->
+                <!--                            special="save" />-->
+                <!--                    &lt;!&ndash;                <button type="action"&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                        string="Save New"&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                        class="btn-secondary"&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                        special="save_and_new" />&ndash;&gt;-->
+                <!--                    &lt;!&ndash; ปุ่ม Save Draft &ndash;&gt;-->
+                <!--                    <button name="action_save_draft"-->
+                <!--                            string="Save Draft"-->
+                <!--                            class="btn-secondary"-->
+                <!--                            type="object" />-->
+                <!--                    <button type="button"-->
+                <!--                            string="Discard"-->
+                <!--                            class="btn-secondary"-->
+                <!--                            special="cancel" />-->
+                <!--                </footer>-->
             </form>
         </field>
     </record>
