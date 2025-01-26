@@ -103,20 +103,20 @@
                                 name="medication_id"
                                 class="w-100 oe_edit_only"
                                 nolabel="True"
-                                placeholder="ค้นหาด้วยชื่อยา..."
+                                placeholder="Search by medication name..."
                                 options="{'no_open': True}"
                             />
                         </div>
                     </div>
                     <group attrs="{'invisible': [('medication_id', '!=', False)]}">
-                        <field name="custom_checkbox_medication" string="กำหนดเอง" />
-                        กำหนดเอง
+                        <field name="custom_checkbox_medication" string="Custom" />
+                        Custom
                     </group>
                     <group
                         attrs="{'invisible': [('medication_id', '=', False), ('custom_checkbox_medication', '=', False)]}"
                     >
                         <group>
-                            <field name="name" string="Display Name" placeholder="ชื่อยา" />
+                            <field name="name" string="Display Name" placeholder="Medication name" />
                             <field name="occurrence" />
                             <field name="timing_bound_start" />
                             <field name="timing_bound_end" />
@@ -169,7 +169,7 @@
                             <group name="Dosage">
                                 <group string="Dosage">
                                     <field name="dosage_id" invisible="1" />
-                                    <field name="dosage_display" placeholder="สรุปการใช้ยา..." />
+                                    <field name="dosage_display" placeholder="Summary of medication usage..." />
                                     <label for="dose" />
                                     <div class="o_row">
                                         <field name="dose" />
@@ -183,7 +183,7 @@
                                     <!--                                        name="timing_id"-->
                                     <!--                                        domain="[('id', '=', False)]"-->
                                     <!--                                        options="{'no_quick_create':True}"-->
-                                    <!--                                        placeholder="สรุปการใช้ยา..."-->
+                                    <!--                                        placeholder="Summary of medication usage..."-->
                                     <!--                                        groups="base.group_no_one"-->
                                     <!--                                    />-->
                                     <!--                                    <field name="dosage_when" groups="base.group_no_one" />-->
