@@ -93,3 +93,41 @@ class MedicationRequest(models.Model):
     def action_save_draft(self):
         for rec in self:
             rec.state = "draft"
+
+    def copy_data(self, default=None):
+        default = dict(default or {})
+
+        # คัดลอกค่าจาก original record
+        copied_vals = super().copy_data(default)[0]
+
+        # คัดลอกค่าจาก timing_id
+        if self.timing_id:
+            copied_vals.update(
+                {
+                    "timing_frequency": self.timing_frequency,
+                    "timing_frequency_max": self.timing_frequency_max,
+                    "timing_duration": self.timing_duration,
+                    "timing_duration_max": self.timing_duration_max,
+                    "timing_duration_unit": self.timing_duration_unit,
+                    "timing_period": self.timing_period,
+                    "timing_period_max": self.timing_period_max,
+                    "timing_period_unit": self.timing_period_unit,
+                    "timing_offset": self.timing_offset,
+                    "timing_tmpl_id": self.timing_tmpl_id.id
+                    if self.timing_tmpl_id
+                    else False,
+                }
+            )
+
+            # คัดลอก Many2many และ One2many
+            copied_vals["timing_when"] = (
+                [(6, 0, self.timing_when.ids)] if self.timing_when else [(5, 0, 0)]
+            )
+            copied_vals["timing_dow"] = (
+                [(6, 0, self.timing_dow.ids)] if self.timing_dow else [(5, 0, 0)]
+            )
+            copied_vals["timing_tod"] = (
+                [(6, 0, self.timing_tod.ids)] if self.timing_tod else [(5, 0, 0)]
+            )
+
+        return [copied_vals]

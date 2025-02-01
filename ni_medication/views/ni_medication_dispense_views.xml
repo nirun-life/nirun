@@ -289,7 +289,13 @@
                                 string="Save as template"
                                 attrs="{'invisible': ['|',('medication_id', '=', False),('dosage_tmpl_id', '!=', False)]}"
                             />
-                            <!--                            <button name="reset_dosage_template" type="object" string="Reset" icon="fa-trash-o" />-->
+                            <button
+                                name="reset_dosage_template"
+                                class="oe_edit_only"
+                                type="object"
+                                string="Reset"
+                                icon="fa-trash-o"
+                            />
                         </page>
                         <page name="note" string="Note">
                             <field name="note" placeholder="Further information about the dispense" />

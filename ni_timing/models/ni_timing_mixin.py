@@ -61,6 +61,8 @@ class TimingMixin(models.AbstractModel):
         related="timing_id.period_unit", readonly=False
     )
 
+    timing_offset = fields.Integer(related="timing_id.offset", readonly=False)
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
