@@ -90,9 +90,17 @@ class MedicationRequest(models.Model):
         for rec in self:
             rec._compute_quantity_display()
 
-    def action_save_draft(self):
+    def action_active_request(self):
         for rec in self:
-            rec.state = "draft"
+            rec.state = "active"
+
+    def action_onhold_request(self):
+        for rec in self:
+            rec.state = "on-hold"
+
+    def action_revoke_request(self):
+        for rec in self:
+            rec.state = "revoked"
 
     def copy_data(self, default=None):
         default = dict(default or {})

@@ -10,11 +10,20 @@
         web_icon="ni_medication,static/description/medication.png"
     />
     <menuitem
-        id="medication_statement_menu"
-        name="Statement"
+        id="medication_request_menu"
+        name="Request"
+        action="ni_medication_request_action"
         parent="medication_menu_root"
-        groups="base.group_no_one"
+        sequence="1"
     />
+    <menuitem
+        id="medication_dispense_menu"
+        name="Dispense"
+        action="ni_medication_dispense_action"
+        parent="medication_menu_root"
+        sequence="2"
+    />
+    <menuitem id="medication_statement_menu" name="Statement" parent="medication_menu_root" />
     <menuitem
         id="medication_statement_menu_default"
         name="Statement"

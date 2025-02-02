@@ -3,11 +3,43 @@
   ~ Copyright (c) 2021-2024 NSTDA
   -->
 <odoo>
+    <record id="ni_medication_request_view_search" model="ir.ui.view">
+        <field name="name">ni_medication_request.view.search</field>
+        <field name="model">ni.medication.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('patient_id', 'ilike', self)]" />
+                <filter
+                    name="active"
+                    string="Active"
+                    domain="[('state', '=', 'active')]"
+                    help="Show only Active requests"
+                />
+                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
+                <searchpanel>
+                    <field name="state" enable_counters="1" icon="fa-circle" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_medication_request_action" model="ir.actions.act_window">
+        <field name="name">Medication Request</field>
+        <field name="res_model">ni.medication.request</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <!--        <field name="context">{'search_default_period_today': True}</field>-->
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
     <record id="ni_medication_request_view_tree" model="ir.ui.view">
         <field name="name">ni.medication.request.view.tree</field>
         <field name="model">ni.medication.request</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree
+                duplicate="0"
+                decoration-bf="state in ['active']"
+                decoration-success="state in ['completed']"
+                decoration-info="state in ['active']"
+                decoration-muted="state in ['draft']"
+            >
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
                 <field name="medication_dispense_count" invisible="1" />
@@ -18,15 +50,47 @@
                 <field name="quantity" invisible="1" />
                 <field name="medication_dose_unit_id" invisible="1" />
                 <field name="quantity_display" string="Quantity" optional="show" />
-                <field name="state" widget="badge" optional="hide" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-success="state in ['completed']"
+                    decoration-info="state in ['active']"
+                    decoration-muted="state in ['draft']"
+                    decoration-warning="state in ['on-hold']"
+                    decoration-danger="state in ['revoked']"
+                />
+                <button
+                    name="action_active_request"
+                    type="object"
+                    string="Activate"
+                    icon="fa-check-circle"
+                    attrs="{'invisible': [('state', 'not in', ['draft','on-hold'])]}"
+                    groups="ni_medication.group_requester"
+                />
                 <button
                     name="action_dispense"
                     type="object"
                     string="Dispense"
                     icon="fa-paper-plane-o"
-                    attrs="{'invisible': [('state', 'in', ['completed', 'revoked'])]}"
+                    attrs="{'invisible': [('state', 'not in', ['active'])]}"
                     groups="ni_medication.group_dispenser"
                 />
+                <!--                <button-->
+                <!--                    name="action_onhold_request"-->
+                <!--                    type="object"-->
+                <!--                    string="Hold"-->
+                <!--                    icon="fa-hand-paper-o"-->
+                <!--                    attrs="{'invisible': [('state', 'not in', ['active'])]}"-->
+                <!--                    groups="ni_medication.group_requester"-->
+                <!--                />-->
+                <!--                <button-->
+                <!--                    name="action_revoke_request"-->
+                <!--                    type="object"-->
+                <!--                    string="Revoke"-->
+                <!--                    icon="fa-ban"-->
+                <!--                    attrs="{'invisible': [('state', 'not in', ['active'])]}"-->
+                <!--                    groups="ni_medication.group_dispenser"-->
+                <!--                />-->
                 <control>
                     <create string="Add Prescription" context="{}" />
                 </control>
@@ -45,13 +109,38 @@
                 <field name="display_name" invisible="1" />
                 <header>
                     <button
+                        name="action_active_request"
+                        type="object"
+                        string="Activate"
+                        class="oe_highlight"
+                        icon="fa-check-circle"
+                        attrs="{'invisible': [('state', 'not in', ['draft','on-hold'])]}"
+                        groups="ni_medication.group_requester"
+                    />
+                    <button
                         name="action_dispense"
                         icon="fa-paper-plane-o"
                         string="Dispense"
                         class="oe_highlight"
                         groups="ni_medication.group_dispenser"
                         type="object"
-                        attrs="{'invisible': [('state', 'in', ['completed', 'revoked'])]}"
+                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
+                    />
+                    <button
+                        name="action_onhold_request"
+                        type="object"
+                        string="Hold"
+                        icon="fa-hand-paper-o"
+                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
+                        groups="ni_medication.group_requester"
+                    />
+                    <button
+                        name="action_revoke_request"
+                        type="object"
+                        string="Revoke"
+                        icon="fa-ban"
+                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
+                        groups="ni_medication.group_dispenser"
                     />
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,completed" />
                 </header>
