@@ -38,6 +38,7 @@ class TimingMixin(models.AbstractModel):
     timing_when = fields.Many2many(related="timing_id.when")
     timing_dow = fields.Many2many(related="timing_id.day_of_week")
     timing_tod = fields.One2many(related="timing_id.time_of_day", readonly=False)
+    timing_offset = fields.Integer(related="timing_id.offset", readonly=False)
 
     # Fields for frequency
     timing_frequency = fields.Integer(related="timing_id.frequency", readonly=False)
@@ -61,7 +62,16 @@ class TimingMixin(models.AbstractModel):
         related="timing_id.period_unit", readonly=False
     )
 
-    timing_offset = fields.Integer(related="timing_id.offset", readonly=False)
+    # Fields for bound
+    timing_bound_start = fields.Datetime(
+        related="timing_id.bound_start", copy=False, readonly=False
+    )
+    timing_bound_end = fields.Datetime(
+        related="timing_id.bound_end", copy=False, readonly=False
+    )
+    timing_bound_duration_days = fields.Integer(
+        related="timing_id.bound_duration_days", copy=False, readonly=False
+    )
 
     @api.model_create_multi
     def create(self, vals_list):

@@ -47,17 +47,6 @@ class MedicationAbstract(models.AbstractModel):
         related="dosage_id.timing_when", help="Use for search filter with `When`"
     )
 
-    # Fields for bound
-    timing_bound_start = fields.Datetime(
-        related="dosage_id.timing_id.bound_start", readonly=False, copy=False
-    )
-    timing_bound_end = fields.Datetime(
-        related="dosage_id.timing_id.bound_end", readonly=False, copy=False
-    )
-    timing_bound_duration_days = fields.Integer(
-        related="dosage_id.timing_id.bound_duration_days", readonly=False, copy=False
-    )
-
     @api.onchange("medication_id")
     def _onchange_medication_id(self):
         for rec in self:
