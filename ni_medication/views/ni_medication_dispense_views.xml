@@ -69,7 +69,14 @@
         <field name="name">ni.medication.dispense.view.tree</field>
         <field name="model">ni.medication.dispense</field>
         <field name="arch" type="xml">
-            <tree decoration-info="state in ['preparation']" multi_edit="1">
+            <tree
+                multi_edit="1"
+                decoration-muted="state in ['preparation']"
+                decoration-success="state in ['completed']"
+                decoration-info="state in ['in-progress']"
+                decoration-warning="state in ['suspended']"
+                decoration-danger="state in ['abort','not-done']"
+            >
                 <field name="company_id" invisible="1" />
                 <field name="dosage_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
@@ -81,7 +88,15 @@
                 <field name="name" />
                 <field name="dosage_display" optional="show" />
                 <field name="quantity_display" optional="show" />
-                <field name="state" optional="hide" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-success="state in ['completed']"
+                    decoration-info="state in ['in-progress']"
+                    decoration-warning="state in ['suspended']"
+                    decoration-danger="state in ['abort','not-done']"
+                    decoration-muted="state in ['preparation']"
+                />
                 <button name="action_print_label" class="oe_stat_button" icon="fa-print" type="object" string="Print" />
                 <field name="active" invisible="1" />
                 <control>
@@ -98,6 +113,50 @@
                 <field name="id" invisible="True" />
                 <field name="active" invisible="True" />
                 <field name="state" invisible="1" />
+                <header>
+                    <button
+                        name="action_inprogress_request"
+                        type="object"
+                        string="In Progress"
+                        class="oe_highlight"
+                        icon="fa-check-circle"
+                        attrs="{'invisible': [('state', 'not in', ['preparation','suspended'])]}"
+                        groups="ni_medication.group_dispenser"
+                    />
+                    <button
+                        name="action_completed_request"
+                        type="object"
+                        string="Completed"
+                        class="btn-success"
+                        icon="fa-check-circle"
+                        attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
+                        groups="ni_medication.group_dispenser"
+                    />
+                    <button
+                        name="action_notdone_request"
+                        type="object"
+                        string="Not Done"
+                        icon="fa-times"
+                        attrs="{'invisible': [('state', 'not in', ['preparation'])]}"
+                        groups="ni_medication.group_dispenser"
+                    />
+                    <button
+                        name="action_suspended_request"
+                        type="object"
+                        string="Suspended"
+                        icon="fa-hand-paper-o"
+                        attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
+                        groups="ni_medication.group_requester"
+                    />
+                    <button
+                        name="action_abort_request"
+                        type="object"
+                        string="Aborted"
+                        icon="fa-ban"
+                        attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
+                        groups="ni_medication.group_requester"
+                    />
+                </header>
                 <sheet>
                     <field
                         name="medication_image_1920"
