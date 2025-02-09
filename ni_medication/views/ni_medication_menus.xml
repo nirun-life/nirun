@@ -9,19 +9,55 @@
         sequence="3"
         web_icon="ni_medication,static/description/medication.png"
     />
+    <menuitem id="medication_request_menu" name="Request" parent="medication_menu_root" sequence="1" />
     <menuitem
-        id="medication_request_menu"
-        name="Request"
+        id="medication_statement_menu_default"
+        name="Today"
         action="ni_medication_request_action"
-        parent="medication_menu_root"
+        parent="medication_request_menu"
+    />
+    <menuitem
+        id="medication_statement_menu_today"
+        name="Today"
+        action="ni_medication_request_action"
+        parent="medication_request_menu"
         sequence="1"
     />
     <menuitem
-        id="medication_dispense_menu"
-        name="Dispense"
-        action="ni_medication_dispense_action"
-        parent="medication_menu_root"
+        id="medication_statement_menu_active"
+        name="Active"
+        action="ni_medication_request_action_active"
+        parent="medication_request_menu"
         sequence="2"
+    />
+    <menuitem
+        id="medication_statement_menu_all"
+        name="All Requests"
+        action="ni_medication_request_action_all"
+        parent="medication_request_menu"
+        sequence="3"
+    />
+    <menuitem id="medication_dispense_menu" name="Dispense" parent="medication_menu_root" sequence="2" />
+    <menuitem
+        id="medication_dispense_menu_today"
+        name="Today"
+        action="ni_medication_dispense_action"
+        parent="medication_dispense_menu"
+        sequence="1"
+    />
+    <menuitem
+        id="medication_dispense_menu_completed"
+        name="Dispensed"
+        action="ni_medication_dispense_action_completed"
+        parent="medication_dispense_menu"
+        sequence="2"
+    />
+    <menuitem
+        id="medication_dispense_menu_all"
+        name="All Dispense"
+        action="ni_medication_dispense_action_all"
+        parent="medication_dispense_menu"
+        sequence="3"
     />
     <menuitem id="medication_statement_menu" name="Statement" parent="medication_menu_root" />
     <menuitem

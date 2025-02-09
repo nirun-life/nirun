@@ -16,6 +16,7 @@
                     help="Show only Active requests"
                 />
                 <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
+                <filter name="today" string="Today" domain="[('write_date', '>=', context_today())]" />
                 <searchpanel>
                     <field name="state" enable_counters="1" icon="fa-circle" />
                 </searchpanel>
@@ -25,9 +26,20 @@
     <record id="ni_medication_request_action" model="ir.actions.act_window">
         <field name="name">Medication Request</field>
         <field name="res_model">ni.medication.request</field>
-        <field name="view_mode">tree,form,pivot,graph</field>
-        <!--        <field name="context">{'search_default_period_today': True}</field>-->
-        <field name="context">{'search_default_active': 1}</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="context">{'search_default_today': 1,'show_detail': 1}</field>
+    </record>
+    <record id="ni_medication_request_action_active" model="ir.actions.act_window">
+        <field name="name">Medication Request</field>
+        <field name="res_model">ni.medication.request</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="context">{'search_default_active': 1,'show_detail': 1}</field>
+    </record>
+    <record id="ni_medication_request_action_all" model="ir.actions.act_window">
+        <field name="name">Medication Request</field>
+        <field name="res_model">ni.medication.request</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="context">{'show_detail': 1}</field>
     </record>
     <record id="ni_medication_request_view_tree" model="ir.ui.view">
         <field name="name">ni.medication.request.view.tree</field>
@@ -40,8 +52,8 @@
                 decoration-info="state in ['active']"
                 decoration-muted="state in ['draft']"
             >
-                <field name="patient_id" invisible="1" />
-                <field name="encounter_id" invisible="1" />
+                <field name="encounter_id" invisible="not context.get('show_detail')" />
+                <field name="patient_id" widget="many2one_avatar" invisible="not context.get('show_detail')" />
                 <field name="medication_dispense_count" invisible="1" />
                 <field name="identifier" optional="hide" />
                 <field name="name" />
@@ -50,6 +62,8 @@
                 <field name="quantity" invisible="1" />
                 <field name="medication_dose_unit_id" invisible="1" />
                 <field name="quantity_display" string="Quantity" optional="show" />
+                <field name="write_uid" string="Requester" invisible="not context.get('show_detail')" />
+                <field name="write_date" string="Request at" invisible="not context.get('show_detail')" />
                 <field
                     name="state"
                     widget="badge"
@@ -75,22 +89,6 @@
                     attrs="{'invisible': [('state', 'not in', ['active'])]}"
                     groups="ni_medication.group_dispenser"
                 />
-                <!--                <button-->
-                <!--                    name="action_onhold_request"-->
-                <!--                    type="object"-->
-                <!--                    string="Hold"-->
-                <!--                    icon="fa-hand-paper-o"-->
-                <!--                    attrs="{'invisible': [('state', 'not in', ['active'])]}"-->
-                <!--                    groups="ni_medication.group_requester"-->
-                <!--                />-->
-                <!--                <button-->
-                <!--                    name="action_revoke_request"-->
-                <!--                    type="object"-->
-                <!--                    string="Revoke"-->
-                <!--                    icon="fa-ban"-->
-                <!--                    attrs="{'invisible': [('state', 'not in', ['active'])]}"-->
-                <!--                    groups="ni_medication.group_dispenser"-->
-                <!--                />-->
                 <control>
                     <create string="Add Prescription" context="{}" />
                 </control>

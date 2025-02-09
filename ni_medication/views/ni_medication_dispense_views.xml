@@ -6,14 +6,20 @@
     <record id="ni_medication_dispense_action" model="ir.actions.act_window">
         <field name="name">Medications Dispense</field>
         <field name="res_model">ni.medication.dispense</field>
-        <field name="view_mode">tree,form,pivot,graph,activity</field>
-        <field name="context">{'search_default_period_today': True}</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <field name="context">{'search_default_today': True}</field>
     </record>
     <record id="ni_medication_dispense_action_completed" model="ir.actions.act_window">
         <field name="name">Medications dispense</field>
         <field name="res_model">ni.medication.dispense</field>
-        <field name="view_mode">tree,form,pivot,graph,activity</field>
-        <field name="context">{'search_default_state_completed': True}</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <field name="context">{'search_default_state_dispensed': True}</field>
+    </record>
+    <record id="ni_medication_dispense_action_all" model="ir.actions.act_window">
+        <field name="name">Medications dispense</field>
+        <field name="res_model">ni.medication.dispense</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <!--        <field name="context">{'search_default_state_completed': True}</field>-->
     </record>
     <record id="ni_medication_dispense_view_search" model="ir.ui.view">
         <field name="name">ni.medication.dispense.view.search</field>
@@ -57,6 +63,7 @@
                 <filter name="state_abort" string="Abort" domain="[('state', 'in', ['not-done', 'abort'])]" />
                 <separator />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <filter name="today" string="Today" domain="[('write_date', '>=', context_today())]" />
                 <group string="Group by">
                     <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
                     <filter name="group_by_medication" string="Medication" context="{'group_by': 'medication_id'}" />
