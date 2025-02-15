@@ -7,7 +7,7 @@ from odoo.exceptions import ValidationError
 class EncounterParticipant(models.Model):
     _name = "ni.encounter.participant"
     _description = "Encounter Participant"
-    _inherit = ["ni.period.mixin"]
+    _inherit = ["ni.period.mixin", "avatar.mixin"]
     _order = "period_start desc, period_end desc, type_id"
 
     def _get_default_type(self):
@@ -17,7 +17,12 @@ class EncounterParticipant(models.Model):
         else:
             return self.env["ni.participant.type"].search([], limit=1)
 
-    name = fields.Char(related="employee_id.name")
+    name = fields.Char(related="employee_id.name", store=True)
+    avatar_1920 = fields.Image(related="employee_id.avatar_1920")
+    avatar_1024 = fields.Image(related="employee_id.avatar_1024")
+    avatar_512 = fields.Image(related="employee_id.avatar_512")
+    avatar_256 = fields.Image(related="employee_id.avatar_256")
+    avatar_128 = fields.Image(related="employee_id.avatar_128")
     encounter_id = fields.Many2one("ni.encounter", required=True, ondelete="cascade")
     company_id = fields.Many2one(related="encounter_id.company_id")
     employee_id = fields.Many2one("hr.employee", required=True, ondelete="restrict")

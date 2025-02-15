@@ -356,6 +356,7 @@ class Encounter(models.Model):
     participant_id = fields.Many2one(
         "ni.encounter.participant", compute="_compute_participant_id"
     )
+    participant_permit_no = fields.Char("Permit No.", compute="_compute_participant_id")
     participant_title = fields.Char(compute="_compute_participant_id")
     participant_count = fields.Integer(compute="_compute_participant")
     participate = fields.Boolean(
@@ -378,17 +379,27 @@ class Encounter(models.Model):
     def _compute_participant_id(self):
         for rec in self:
             if not rec.participant_ids:
-                rec.participant_id = None
+                rec.update(
+                    {
+                        "participant_id": None,
+                        "participant_title": None,
+                        "participant_permit_no": None,
+                    }
+                )
                 continue
             active_participant = rec.participant_ids.filtered_domain(
                 [("period_end", "=", False)]
             )
-            if active_participant:
-                rec.participant_id = active_participant[0].id
-                rec.participant_title = active_participant[0].employee_id.job_title
-            else:
-                rec.participant_id = rec.participant_ids[0].id
-                rec.participant_title = rec.participant_ids[0].employee_id.job_title
+            participant = (
+                active_participant[0] if active_participant else rec.participant_ids[0]
+            )
+            rec.update(
+                {
+                    "participant_id": participant.id,
+                    "participant_title": participant.employee_id.job_title,
+                    "participant_permit_no": participant.employee_id.permit_no,
+                }
+            )
 
     @api.depends("identifier")
     def _compute_name(self):
