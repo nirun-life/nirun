@@ -331,14 +331,13 @@
                             <div>
                                 <field
                                     name="patient_id"
-                                    context="{'show_identifier': True, 'show_gender_age': True}"
+                                    context="{'show_identifier': True}"
                                     options="{'always_reload': True}"
                                     placeholder="Search for patient..."
                                 />
                             </div>
                             <field name="age" invisible="1" />
                             <field name="display_age" />
-                            <field name="participant_id" />
                             <field
                                 name="class_id"
                                 options="{'no_create': True, 'no_open':True, 'always_reload': True}"
@@ -350,9 +349,20 @@
                                 options="{'no_create': True, 'always_reload': True, 'no_open': True}"
                                 context="{'show_parent': True}"
                             />
-                            <field name="priority" />
                         </group>
                         <group>
+                            <label
+                                for="participant_id"
+                                attrs="{'invisible': ['|', ('participant_id', '=', False), ('show_participant', '=', False)]}"
+                            />
+                            <div
+                                class="o_row"
+                                attrs="{'invisible': ['|', ('participant_id', '=', False), ('show_participant', '=', False)]}"
+                            >
+                                <field name="participant_id" context="{'default_encounter_id': id}" />
+                                <label for="participant_permit_no" />
+                                <field name="participant_permit_no" />
+                            </div>
                             <field name="period_start" placeholder="Start" />
                             <field
                                 name="period_end"
@@ -360,6 +370,9 @@
                                 attrs="{'invisible': [('state', 'not in', ['cancelled','finished'])]}"
                             />
                             <field name="duration" />
+                        </group>
+                        <group>
+                            <field name="priority" widget="radio" options="{'horizontal': True}" />
                         </group>
                     </group>
                     <notebook attrs="{'invisible': [('id', '=', False)]}">
