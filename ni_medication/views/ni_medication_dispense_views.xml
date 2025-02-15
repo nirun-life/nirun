@@ -3,98 +3,120 @@
   ~ Copyright (c) 2021-2023 NSTDA
   -->
 <odoo>
+    <record id="ni_medication_dispense_view_search" model="ir.ui.view">
+        <field name="name">ni_medication.dispense.view.search</field>
+        <field name="model">ni.medication.dispense</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('patient_id', 'ilike', self)]" />
+                <filter
+                    name="in-progress"
+                    string="In Progress"
+                    domain="[('state', '=', 'in-progress')]"
+                    help="Show only In Progress dispense"
+                />
+                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
+                <filter name="today" string="Today" domain="[('write_date', '>=', context_today())]" />
+                <searchpanel>
+                    <field name="state" enable_counters="1" icon="fa-circle" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
     <record id="ni_medication_dispense_action" model="ir.actions.act_window">
         <field name="name">Medications Dispense</field>
         <field name="res_model">ni.medication.dispense</field>
         <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
         <field name="context">{'search_default_today': True}</field>
     </record>
-    <record id="ni_medication_dispense_action_completed" model="ir.actions.act_window">
-        <field name="name">Medications dispense</field>
+    <record id="ni_medication_dispense_action_in_progress" model="ir.actions.act_window">
+        <field name="name">Medications Dispense</field>
         <field name="res_model">ni.medication.dispense</field>
         <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
-        <field name="context">{'search_default_state_dispensed': True}</field>
+        <field name="context">{'search_default_in-progress': 1,'show_detail': 1}</field>
+    </record>
+    <record id="ni_medication_dispense_action_completed" model="ir.actions.act_window">
+        <field name="name">Medications Dispense</field>
+        <field name="res_model">ni.medication.dispense</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <field name="context">{'search_default_completed': 1,'show_detail': 1}</field>
+        <!--        <field name="context">{'search_default_state_dispensed': True}</field>-->
     </record>
     <record id="ni_medication_dispense_action_all" model="ir.actions.act_window">
-        <field name="name">Medications dispense</field>
+        <field name="name">Medications Dispense</field>
         <field name="res_model">ni.medication.dispense</field>
         <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+        <field name="context">{'show_detail': 1}</field>
         <!--        <field name="context">{'search_default_state_completed': True}</field>-->
     </record>
-    <record id="ni_medication_dispense_view_search" model="ir.ui.view">
-        <field name="name">ni.medication.dispense.view.search</field>
-        <field name="model">ni.medication.dispense</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="medication_id" />
-                <field name="patient_id" />
-                <field name="encounter_id" />
-                <separator />
-                <filter
-                    name="occurrence_today"
-                    string="Today"
-                    domain="[('occurrence', '=', context_today().strftime('%Y-%m-%d'))]"
-                />
-                <filter name="occurrence" string="Occurrence" date="occurrence" />
-                <separator />
-                <filter
-                    name="at_morning"
-                    string="At morning"
-                    domain="[('dosage_when.code', 'in', ['WAKE', 'CM', 'ACM', 'PCM', 'MORN'])]"
-                />
-                <filter
-                    name="at_noon"
-                    string="At noon"
-                    domain="[('dosage_when.code', 'in', ['CD', 'ACD', 'PCD', 'AFT'])]"
-                />
-                <filter
-                    name="at_evening"
-                    string="At evening"
-                    domain="[('dosage_when.code', 'in', ['CV', 'ACV', 'PCV', 'EVE'])]"
-                />
-                <filter name="at_night" string="At night" domain="[('dosage_when.code', 'in', ['HS'])]" />
-                <separator />
-                <filter
-                    name="state_to_dispense"
-                    string="To Dispense"
-                    domain="[('state', 'in', ['preparation', 'in-progress', 'suspended'])]"
-                />
-                <filter name="state_dispensed" string="Dispensed" domain="[('state', '=', 'completed')]" />
-                <filter name="state_abort" string="Abort" domain="[('state', 'in', ['not-done', 'abort'])]" />
-                <separator />
-                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
-                <filter name="today" string="Today" domain="[('write_date', '>=', context_today())]" />
-                <group string="Group by">
-                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
-                    <filter name="group_by_medication" string="Medication" context="{'group_by': 'medication_id'}" />
-                    <filter name="group_by_category" string="Category" context="{'group_by': 'category_id'}" />
-                </group>
-            </search>
-        </field>
-    </record>
+    <!--    <record id="ni_medication_dispense_view_search" model="ir.ui.view">
+            <field name="name">ni.medication.dispense.view.search</field>
+            <field name="model">ni.medication.dispense</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="medication_id" />
+                    <field name="patient_id" />
+                    <field name="encounter_id" />
+                    <separator />
+                    <filter
+                        name="occurrence_today"
+                        string="Today"
+                        domain="[('occurrence', '=', context_today().strftime('%Y-%m-%d'))]"
+                    />
+                    <filter name="occurrence" string="Occurrence" date="occurrence" />
+                    <separator />
+                    <filter
+                        name="at_morning"
+                        string="At morning"
+                        domain="[('dosage_when.code', 'in', ['WAKE', 'CM', 'ACM', 'PCM', 'MORN'])]"
+                    />
+                    <filter
+                        name="at_noon"
+                        string="At noon"
+                        domain="[('dosage_when.code', 'in', ['CD', 'ACD', 'PCD', 'AFT'])]"
+                    />
+                    <filter
+                        name="at_evening"
+                        string="At evening"
+                        domain="[('dosage_when.code', 'in', ['CV', 'ACV', 'PCV', 'EVE'])]"
+                    />
+                    <filter name="at_night" string="At night" domain="[('dosage_when.code', 'in', ['HS'])]" />
+                    <separator />
+                    <filter
+                        name="state_to_dispense"
+                        string="To Dispense"
+                        domain="[('state', 'in', ['preparation', 'in-progress', 'suspended'])]"
+                    />
+                    <filter name="state_dispensed" string="Dispensed" domain="[('state', '=', 'completed')]" />
+                    <filter name="state_abort" string="Abort" domain="[('state', 'in', ['not-done', 'abort'])]" />
+                    <separator />
+                    <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                    <filter name="today" string="Today" domain="[('write_date', '>=', context_today())]" />
+                    <group string="Group by">
+                        <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                        <filter name="group_by_medication" string="Medication" context="{'group_by': 'medication_id'}" />
+                        <filter name="group_by_category" string="Category" context="{'group_by': 'category_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>-->
     <record id="ni_medication_dispense_view_tree" model="ir.ui.view">
         <field name="name">ni.medication.dispense.view.tree</field>
         <field name="model">ni.medication.dispense</field>
         <field name="arch" type="xml">
-            <tree
-                multi_edit="1"
-                decoration-muted="state in ['preparation']"
-                decoration-success="state in ['completed']"
-                decoration-info="state in ['in-progress']"
-                decoration-warning="state in ['suspended']"
-                decoration-danger="state in ['abort','not-done']"
-            >
+            <tree multi_edit="1" decoration-bf="state in ['in-progress']" decoration-info="state in ['in-progress']">
+                <field name="identifier" optional="show" />
+                <field name="encounter_id" invisible="0" />
+                <field name="patient_id" widget="many2one_avatar" invisible="0" />
+                <field name="name" />
+                <field name="dosage_display" optional="hide" />
+                <field name="quantity_display" optional="show" />
                 <field name="company_id" invisible="1" />
                 <field name="dosage_id" invisible="1" />
-                <field name="patient_id" invisible="1" />
-                <field name="encounter_id" invisible="1" />
-                <field name="identifier" optional="hide" />
                 <field name="category_id" optional="hide" />
+                <field name="write_uid" string="Dispenser" invisible="0" />
                 <field name="occurrence" optional="show" />
                 <field name="medication_request_id" groups="base.group_no_one" optional="hide" />
-                <field name="name" />
-                <field name="dosage_display" optional="show" />
-                <field name="quantity_display" optional="show" />
                 <field
                     name="state"
                     widget="badge"
@@ -103,6 +125,22 @@
                     decoration-warning="state in ['suspended']"
                     decoration-danger="state in ['abort','not-done']"
                     decoration-muted="state in ['preparation']"
+                />
+                <button
+                    name="action_inprogress_dispense"
+                    type="object"
+                    string="In Progress"
+                    icon="fa-check-circle"
+                    attrs="{'invisible': [('state', 'not in', ['preparation'])]}"
+                    groups="ni_medication.group_dispenser"
+                />
+                <button
+                    name="action_completed_dispense"
+                    type="object"
+                    string="Complete"
+                    icon="fa-check-circle"
+                    attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
+                    groups="ni_medication.group_dispenser"
                 />
                 <button name="action_print_label" class="oe_stat_button" icon="fa-print" type="object" string="Print" />
                 <field name="active" invisible="1" />
@@ -122,7 +160,7 @@
                 <field name="state" invisible="1" />
                 <header>
                     <button
-                        name="action_inprogress_request"
+                        name="action_inprogress_dispense"
                         type="object"
                         string="In Progress"
                         class="oe_highlight"
@@ -131,16 +169,16 @@
                         groups="ni_medication.group_dispenser"
                     />
                     <button
-                        name="action_completed_request"
+                        name="action_completed_dispense"
                         type="object"
-                        string="Completed"
+                        string="Complete"
                         class="btn-success"
                         icon="fa-check-circle"
                         attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
                         groups="ni_medication.group_dispenser"
                     />
                     <button
-                        name="action_notdone_request"
+                        name="action_notdone_dispense"
                         type="object"
                         string="Not Done"
                         icon="fa-times"
@@ -148,20 +186,20 @@
                         groups="ni_medication.group_dispenser"
                     />
                     <button
-                        name="action_suspended_request"
+                        name="action_suspended_dispense"
                         type="object"
                         string="Suspended"
                         icon="fa-hand-paper-o"
                         attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
-                        groups="ni_medication.group_requester"
+                        groups="ni_medication.group_dispenser"
                     />
                     <button
-                        name="action_abort_request"
+                        name="action_abort_dispense"
                         type="object"
                         string="Aborted"
                         icon="fa-ban"
                         attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
-                        groups="ni_medication.group_requester"
+                        groups="ni_medication.group_dispenser"
                     />
                 </header>
                 <sheet>

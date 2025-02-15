@@ -89,26 +89,26 @@ class MedicationDispense(models.Model):
         return super().unlink()
 
     @api.onchange("quantity", "medication_dose_unit_id")
-    def action_preparation_request(self):
+    def action_preparation_dispense(self):
         for rec in self:
             rec.state = "preparation"
 
-    def action_inprogress_request(self):
+    def action_inprogress_dispense(self):
         for rec in self:
             rec.state = "in-progress"
 
-    def action_completed_request(self):
+    def action_completed_dispense(self):
         for rec in self:
             rec.state = "completed"
 
-    def action_notdone_request(self):
+    def action_notdone_dispense(self):
         for rec in self:
             rec.state = "not-done"
 
-    def action_abort_request(self):
+    def action_abort_dispense(self):
         for rec in self:
             rec.state = "abort"
 
-    def action_suspended_request(self):
+    def action_suspended_dispense(self):
         for rec in self:
             rec.state = "suspended"
