@@ -25,4 +25,7 @@ class Patient(models.Model):
                     ]
                 )
             )
-            rec.goal_ratio = rec.goal_achieved_count / rec.goal_count * 100
+            if rec.goal_count:
+                rec.goal_ratio = rec.goal_achieved_count / rec.goal_count * 100
+            else:
+                rec.goal_ratio = 0.0
