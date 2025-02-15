@@ -122,15 +122,15 @@ class Dosage(models.Model):
                 record.meal_timing = "C"
                 record.meal_period_ids = [(5, 0, 0)]
                 record.period_ids = [(5, 0, 0)]
-                record.timing_id.time_of_day = [(5, 0, 0)]
-                record.timing_id.frequency_max = 0
-                record.timing_id.frequency = 1
-                record.timing_id.duration_max = 0
-                record.timing_id.duration = 0
-                record.timing_id.duration_unit = "minute"
-                record.timing_id.period_unit = "day"
-                record.timing_id.period_max = 0
-                record.timing_id.period = 1
+                record.timing_tod = [(5, 0, 0)]
+                record.timing_frequency_max = 0
+                record.timing_frequency = 1
+                record.timing_duration_max = 0
+                record.timing_duration = 0
+                record.timing_duration_unit = False
+                record.timing_period_unit = "day"
+                record.timing_period_max = 0
+                record.timing_period = 1
                 record.timing_id.when = [(5, 0, 0)]
                 record._update_timing_when()
 
