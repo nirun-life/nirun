@@ -1,23 +1,26 @@
 #  Copyright (c) 2025 NSTDA
-
 from odoo import fields, models
 
 
-class Users(models.Model):
-    _inherit = "res.users"
+class EmployeeBase(models.AbstractModel):
+    _inherit = "hr.employee.base"
+
+    country_id = fields.Many2one(
+        "res.country", default=lambda self: self.env.ref("base.th")
+    )
 
     state_ids = fields.Many2many(
         "res.country.state",
-        "res_user_response_state",
-        "user_id",
+        "hr_employee_response_state",
+        "employee_id",
         "state_id",
         "จังหวัดที่รับผิดชอบ",
         domain="[('country_id', '=', country_id)]",
     )
     city_ids = fields.Many2many(
         "res.city",
-        "res_user_response_city",
-        "user_id",
+        "hr_employee_response_city",
+        "employee_id",
         "city_id",
         "พื้นที่รับผิดชอบ",
         domain="[('state_id', 'in', state_ids)]",
@@ -27,8 +30,3 @@ class Users(models.Model):
         city = self.env["res.city"].search([("state_id", "in", self.state_ids.ids)])
         if city:
             self.city_ids = [fields.Command.set(city.ids)]
-
-    def _get_employee_fields_to_sync(self):
-        fields = super()._get_employee_fields_to_sync()
-        fields += ["city_ids", "state_ids", "country_id"]
-        return fields

@@ -10,3 +10,5 @@ from . import ni_service
 from . import ni_service_event
 from . import ni_service_event_outcome
 from . import res_users
+from . import hr_employee_base
+from . import hr_employee

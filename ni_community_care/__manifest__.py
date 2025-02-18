@@ -41,6 +41,7 @@
         "views/ni_community_care_menu.xml",
         "views/ni_careplan_view.xml",
         "views/res_users_views.xml",
+        "views/hr_employee_view.xml",
         "report/report_paperformat.xml",
         "report/patient_list_report.xml",
         "report/patient_service_report.xml",
