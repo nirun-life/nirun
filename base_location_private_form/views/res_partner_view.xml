@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
+<odoo>
+    <record id="res_partner_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_view_form_private" />
+        <field name="arch" type="xml">
+            <field name="city" position="before">
+                <field
+                    name="zip_id"
+                    options="{'create_name_field': 'city', 'no_open': True, 'no_create': True}"
+                    placeholder="Location completion"
+                    attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
