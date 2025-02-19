@@ -22,13 +22,41 @@
         <xpath expr="//div/div[1]/div[2]/div[1]" position="inside">
             <t t-if="survey.subject_type != 'res.partner'">
                 <a
-                    href="/"
+                    href="#"
                     class="btn btn-primary btn-lg mt-2"
                     role="button"
-                    onclick="setTimeout(function(){var wd = window.open(window.location, '_self'); wd.close(); }, 600);"
+                    onclick="acknowledgeResults()"
+                    id="acknowledge-button"
                 >
                     Acknowledge Results
                 </a>
+                <div id="return-link" style="display: none;">
+                    <a href="#" onclick="returnToPreviousURL()">
+                        Click here to return to previous page, if this page not automatic close
+                    </a>
+                </div>
+                <script type="text/javascript">
+                    var previousURL = document.referrer;
+
+                    function acknowledgeResults() {
+                        document.getElementById("acknowledge-button").style.display =
+                        window.close();
+                        showReturnLink();
+                    }
+
+                    function showReturnLink() {
+                        if (previousURL) {
+                            document.getElementById("return-link").style.display = "block";
+                            document.getElementById("return-link").querySelector("a").href = previousURL;
+                        }
+                    }
+
+                    function returnToPreviousURL() {
+                        if (previousURL) {
+                            window.location.href = previousURL;
+                        }
+                    }
+                </script>
             </t>
         </xpath>
         <xpath expr="//div[contains(@class, 'o_survey_result')]" position="attributes">
