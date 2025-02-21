@@ -97,6 +97,9 @@ class Patient(models.Model):
     envi_progress = fields.Boolean(default=False, compute="_compute_category_progress")
     tech_progress = fields.Boolean(default=False, compute="_compute_category_progress")
 
+    country_code = fields.Char(related="country_id.code", store=True, index=True)
+    state_code = fields.Char(related="state_id.code", store=True, index=True)
+
     @api.depends("service_event_ids")
     def _compute_category_progress(self):
         for rec in self:
