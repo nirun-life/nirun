@@ -102,6 +102,7 @@ class MedicationAbstract(models.AbstractModel):
         for rec in self:
             if rec.dosage_id:
                 rec.timing_type = ""
+                rec.dosage_id.timing_type = ""
                 rec.dosage_id.dose = 0
                 rec.dosage_id.additional_ids = False
                 rec.dosage_id.as_need = False
@@ -109,33 +110,37 @@ class MedicationAbstract(models.AbstractModel):
 
     @api.onchange("timing_bound_start", "timing_bound_end")
     def _onchange_timing_bounds(self):
-        if self.dosage_id and self.dosage_id.timing_id:
-            self.dosage_id.timing_id.bound_start = self.timing_bound_start
-            self.dosage_id.timing_id.bound_end = self.timing_bound_end
-            self.dosage_id.timing_id._compute_bound_duration()
-            self.timing_bound_duration_days = (
-                self.dosage_id.timing_id.bound_duration_days
-            )
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id.timing_id.bound_start = self.timing_bound_start
+                rec.dosage_id.timing_id.bound_end = self.timing_bound_end
+                rec.dosage_id.timing_id._compute_bound_duration()
+                rec.timing_bound_duration_days = (
+                    rec.dosage_id.timing_id.bound_duration_days
+                )
 
     @api.onchange("timing_bound_duration_days")
     def _onchange_timing_bound_duration(self):
-        if self.dosage_id and self.dosage_id.timing_id:
-            self.dosage_id.timing_id.bound_duration_days = (
-                self.timing_bound_duration_days
-            )
-            self.dosage_id.timing_id._inverse_bound_duration()
-            self.timing_bound_start = self.dosage_id.timing_id.bound_start
-            self.timing_bound_end = self.dosage_id.timing_id.bound_end
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id.timing_id.bound_duration_days = (
+                    self.timing_bound_duration_days
+                )
+                rec.dosage_id.timing_id._inverse_bound_duration()
+                rec.timing_bound_start = self.dosage_id.timing_id.bound_start
+                rec.timing_bound_end = self.dosage_id.timing_id.bound_end
 
     @api.onchange("dose")
     def _onchange_dose(self):
-        if self.dosage_id and self.dosage_id.timing_id:
-            self.dosage_id._compute_display_name()
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id._compute_display_name()
 
     @api.onchange("meal_timing", "meal_period_ids", "period_ids", "meal_offset")
     def _onchange_timing_when(self):
-        if self.dosage_id and self.dosage_id.timing_id:
-            self.dosage_id._update_timing_when()
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id._update_timing_when()
 
     @api.onchange("timing_type")
     def _onchange_timing_type(self):
@@ -148,10 +153,11 @@ class MedicationAbstract(models.AbstractModel):
         "timing_frequency_max",
     )
     def _onchange_timing_frequency(self):
-        if self.dosage_id and self.dosage_id.timing_id:
-            self.dosage_id.timing_id.frequency = self.timing_frequency
-            self.dosage_id.timing_id.frequency_max = self.timing_frequency_max
-            self.dosage_id._compute_display_name()
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id.timing_id.frequency = self.timing_frequency
+                rec.dosage_id.timing_id.frequency_max = self.timing_frequency_max
+                rec.dosage_id._compute_display_name()
 
     @api.onchange(
         "timing_duration",
@@ -159,23 +165,24 @@ class MedicationAbstract(models.AbstractModel):
         "timing_duration_unit",
     )
     def _onchange_timing_duration(self):
-        if self.dosage_id and self.dosage_id.timing_id:
-            # ตรวจสอบว่ามีการเปลี่ยนแปลง timing_duration_max
-            if (
-                self._origin
-                and self.timing_duration_max != self._origin.timing_duration_max
-            ):
-                self.dosage_id.timing_id.duration_max = self.timing_duration_max
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                # ตรวจสอบว่ามีการเปลี่ยนแปลง timing_duration_max
+                if (
+                    self._origin
+                    and self.timing_duration_max != self._origin.timing_duration_max
+                ):
+                    rec.dosage_id.timing_id.duration_max = self.timing_duration_max
 
-            # ตรวจสอบและอัปเดต timing_duration
-            if self.timing_duration != self._origin.timing_duration:
-                self.dosage_id.timing_id.duration = self.timing_duration
+                # ตรวจสอบและอัปเดต timing_duration
+                if rec.timing_duration != self._origin.timing_duration:
+                    rec.dosage_id.timing_id.duration = self.timing_duration
 
-            # ตรวจสอบและอัปเดต timing_duration_unit
-            if self.timing_duration_unit != self._origin.timing_duration_unit:
-                self.dosage_id.timing_id.duration_unit = self.timing_duration_unit
+                # ตรวจสอบและอัปเดต timing_duration_unit
+                if rec.timing_duration_unit != self._origin.timing_duration_unit:
+                    rec.dosage_id.timing_id.duration_unit = self.timing_duration_unit
 
-            self.dosage_id._compute_display_name()
+                rec.dosage_id._compute_display_name()
 
     @api.onchange(
         "timing_period",
@@ -183,8 +190,9 @@ class MedicationAbstract(models.AbstractModel):
         "timing_period_unit",
     )
     def _onchange_timing_period(self):
-        if self.dosage_id and self.dosage_id.timing_id:
-            self.dosage_id.timing_id.period_unit = self.timing_period_unit
-            self.dosage_id.timing_id.period = self.timing_period
-            self.dosage_id.timing_id.period_max = self.timing_period_max
-            self.dosage_id._compute_display_name()
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id.timing_id.period_unit = self.timing_period_unit
+                rec.dosage_id.timing_id.period = self.timing_period
+                rec.dosage_id.timing_id.period_max = self.timing_period_max
+                rec.dosage_id._compute_display_name()

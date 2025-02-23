@@ -119,6 +119,7 @@ class Dosage(models.Model):
             return  # ถ้ามีการตั้งค่า isCopy ให้ข้ามการทำงานนี้
         else:
             for record in self:
+                record.dose = 0
                 record.meal_timing = "C"
                 record.meal_period_ids = [(5, 0, 0)]
                 record.period_ids = [(5, 0, 0)]
@@ -127,7 +128,7 @@ class Dosage(models.Model):
                 record.timing_frequency = 1
                 record.timing_duration_max = 0
                 record.timing_duration = 0
-                record.timing_duration_unit = False
+                record.timing_duration_unit = "minute"
                 record.timing_period_unit = "day"
                 record.timing_period_max = 0
                 record.timing_period = 1

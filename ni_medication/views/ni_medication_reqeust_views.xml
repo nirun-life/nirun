@@ -48,7 +48,6 @@
             <tree
                 duplicate="0"
                 decoration-bf="state in ['active']"
-                decoration-success="state in ['completed']"
                 decoration-info="state in ['active']"
                 decoration-muted="state in ['draft']"
             >
@@ -237,14 +236,14 @@
                                             placeholder="ex. tab, ml"
                                         />
                                     </div>
-                                    <!--                                    <field-->
-                                    <!--                                        name="timing_id"-->
-                                    <!--                                        domain="[('id', '=', False)]"-->
-                                    <!--                                        options="{'no_quick_create':True}"-->
-                                    <!--                                        placeholder="Summary of medication usage..."-->
-                                    <!--                                        groups="base.group_no_one"-->
-                                    <!--                                    />-->
-                                    <!--                                    <field name="dosage_when" groups="base.group_no_one" />-->
+                                    <!--                                    <field
+                                        name="timing_id"
+                                        domain="[('id', '=', False)]"
+                                        options="{'no_quick_create':True}"
+                                        placeholder="Summary of medication usage..."
+                                        groups="base.group_no_one"
+                                    />
+                                    <field name="dosage_when" groups="base.group_no_one" />-->
                                     <field name="timing_type" widget="radio" options="{'horizontal':True}" />
                                     <field
                                         name="meal_timing"
@@ -348,26 +347,6 @@
                         </page>
                     </notebook>
                 </sheet>
-                <!--                <footer>-->
-                <!--                    &lt;!&ndash; Default Buttons ของ Odoo &ndash;&gt;-->
-                <!--                    <button type="object"-->
-                <!--                            string="Save"-->
-                <!--                            class="btn-primary"-->
-                <!--                            special="save" />-->
-                <!--                    &lt;!&ndash;                <button type="action"&ndash;&gt;-->
-                <!--                    &lt;!&ndash;                        string="Save New"&ndash;&gt;-->
-                <!--                    &lt;!&ndash;                        class="btn-secondary"&ndash;&gt;-->
-                <!--                    &lt;!&ndash;                        special="save_and_new" />&ndash;&gt;-->
-                <!--                    &lt;!&ndash; ปุ่ม Save Draft &ndash;&gt;-->
-                <!--                    <button name="action_save_draft"-->
-                <!--                            string="Save Draft"-->
-                <!--                            class="btn-secondary"-->
-                <!--                            type="object" />-->
-                <!--                    <button type="button"-->
-                <!--                            string="Discard"-->
-                <!--                            class="btn-secondary"-->
-                <!--                            special="cancel" />-->
-                <!--                </footer>-->
             </form>
         </field>
     </record>
@@ -385,10 +364,22 @@
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_global_click">
+                            <t t-else="">
+                                <div
+                                    class="o_kanban_image_fill_left o_kanban_image_full"
+                                    t-attf-style="background-image: url(#{kanban_image('res.partner', 'avatar_128', record.id.raw_value)})"
+                                    role="img"
+                                />
+                            </t>
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
                                     <strong class="o_kanban_record_title d">
-                                        <field name="name" />
+                                        <field
+                                            name="name"
+                                            decoration-bf="state in ['active']"
+                                            decoration-info="state in ['active']"
+                                            decoration-muted="state in ['draft']"
+                                        />
                                     </strong>
                                 </div>
                             </div>
@@ -402,17 +393,34 @@
                                         <label for="quantity_display" class="small text-muted me-2">Disp :</label>
                                         <field name="quantity_display" />
                                     </li>
+                                    <field
+                                        name="state"
+                                        widget="badge"
+                                        decoration-success="state in ['completed']"
+                                        decoration-info="state in ['active']"
+                                        decoration-muted="state in ['draft']"
+                                        decoration-warning="state in ['on-hold']"
+                                        decoration-danger="state in ['revoked']"
+                                    />
                                 </ul>
                             </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
                                     <button
+                                        name="action_active_request"
+                                        type="object"
+                                        string="Activate"
+                                        icon="fa-check-circle"
+                                        attrs="{'invisible': [('state', 'not in', ['draft','on-hold'])]}"
+                                        groups="ni_medication.group_requester"
+                                    />
+                                    <button
                                         name="action_dispense"
                                         type="object"
                                         string="Dispense"
                                         icon="fa-paper-plane-o"
+                                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
                                         groups="ni_medication.group_dispenser"
-                                        attrs="{'invisible': [('state', 'in', ['completed', 'revoked'])]}"
                                     />
                                 </div>
                                 <div class="oe_kanban_bottom_right mr4">
