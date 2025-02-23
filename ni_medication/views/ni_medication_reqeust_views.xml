@@ -17,6 +17,15 @@
                 />
                 <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
                 <filter name="today" string="Today" domain="[('write_date', '>=', context_today())]" />
+                <field name="encounter_id" />
+                <group string="Group By">
+                    <filter
+                        name="group_encounter"
+                        string="Encounter No."
+                        domain="[]"
+                        context="{'group_by': 'encounter_id'}"
+                    />
+                </group>
                 <searchpanel>
                     <field name="state" enable_counters="1" icon="fa-circle" />
                 </searchpanel>
@@ -27,7 +36,7 @@
         <field name="name">Medication Request</field>
         <field name="res_model">ni.medication.request</field>
         <field name="view_mode">tree,kanban,form,pivot,graph</field>
-        <field name="context">{'search_default_today': 1,'show_detail': 1}</field>
+        <field name="context">{'search_default_today': 1,'show_detail': 1 }</field>
     </record>
     <record id="ni_medication_request_action_active" model="ir.actions.act_window">
         <field name="name">Medication Request</field>
@@ -375,24 +384,22 @@
                                     role="img"
                                 />
                             </t>
-                            <div class="oe_kanban_details">
-                                <!--                                <div class="o_kanban_record_headings">-->
-                                <!--                                    <strong class="o_kanban_record_title d">-->
-                                <!--                                        <field-->
-                                <!--                                            name="name"-->
-                                <!--                                            decoration-bf="state in ['active']"-->
-                                <!--                                            decoration-info="state in ['active']"-->
-                                <!--                                            decoration-muted="state in ['draft']"-->
-                                <!--                                        />-->
-                                <!--                                    </strong>-->
-                                <!--                                </div>-->
-                                <field
-                                    name="name"
-                                    decoration-bf="state in ['active']"
-                                    decoration-info="state in ['active']"
-                                    decoration-muted="state in ['draft']"
-                                />
+                            <div class="oe_kanban_details ">
+                                <strong class="o_kanban_record_title oe_partner_heading">
+                                    <field
+                                        name="name"
+                                        decoration-bf="state in ['active']"
+                                        decoration-info="state in ['active']"
+                                        decoration-muted="state in ['draft']"
+                                    />
+                                </strong>
                                 <ul>
+                                    <li>
+                                        <field name="encounter_id" class="small text-muted" />
+                                    </li>
+                                    <li>
+                                        <field name="patient_id" class="small text-muted" />
+                                    </li>
                                     <li>
                                         <label for="dosage_id" class="small text-muted me-2">Sig :</label>
                                         <field name="dosage_id" />
