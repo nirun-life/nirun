@@ -17,6 +17,15 @@
                 />
                 <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
                 <filter name="today" string="Today" domain="[('write_date', '>=', context_today())]" />
+                <field name="encounter_id" />
+                <group string="Group By">
+                    <filter
+                        name="group_encounter"
+                        string="Encounter No."
+                        domain="[]"
+                        context="{'group_by': 'encounter_id'}"
+                    />
+                </group>
                 <searchpanel>
                     <field name="state" enable_counters="1" icon="fa-circle" />
                 </searchpanel>
@@ -425,27 +434,82 @@
                 <field name="quantity_display" />
                 <field name="timing_id" invisible="1" />
                 <field name="dosage_display" string="Dosage" />
+                <field name="dosage_id" invisible="1" />
+                <field name="state" />
+                <field name="encounter_id" invisible="1" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_global_click">
-                            <div class="o_kanban_record_top">
+                        <div t-attf-class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <t t-if="record.medication_id.raw_value">
+                                <field name="medication_id" invisible="1" />
+                                <div
+                                    class="o_kanban_image_fill_left o_kanban_image_full"
+                                    t-attf-style="background-image: url(#{kanban_image('ni.medication', 'image_128', record.medication_id.raw_value)})"
+                                    role="img"
+                                />
+                            </t>
+                            <div class="oe_kanban_details">
                                 <div class="o_kanban_record_headings">
                                     <strong class="o_kanban_record_title d">
                                         <field name="name" />
                                     </strong>
                                 </div>
-                                <div class="me-1 text-body" t-if="record.quantity">
-                                    <field name="quantity_display" />
-                                </div>
-                            </div>
-                            <div class="o_kanban_record_bottom">
-                                <div class="oe_kanban_bottom_left">
-                                    <div class="small">
+                                <ul>
+                                    <!-- <li>
+                                        <field name="identifier" class="small text-muted/>
+                                    </li>-->
+                                    <li>
+                                        <field name="encounter_id" class="small text-muted" />
+                                    </li>
+                                    <li>
+                                        <field name="patient_id" class="small text-muted" />
+                                    </li>
+                                    <li>
+                                        <label for="dosage_id" class="small text-muted me-2">Sig :</label>
                                         <field name="dosage_id" />
+                                    </li>
+                                    <li t-if="record.quantity">
+                                        <label for="quantity_display" class="small text-muted me-2">Disp :</label>
+                                        <field name="quantity_display" />
+                                    </li>
+                                </ul>
+                                <div class="oe_module_action d-flex flex-wrap justify-content-between">
+                                    <field
+                                        name="state"
+                                        widget="badge"
+                                        decoration-success="state in ['completed']"
+                                        decoration-info="state in ['in-progress']"
+                                        decoration-warning="state in ['suspended']"
+                                        decoration-danger="state in ['abort','not-done']"
+                                        decoration-muted="state in ['preparation']"
+                                    />
+                                    <div>
+                                        <button
+                                            name="action_inprogress_dispense"
+                                            type="object"
+                                            string="In Progress"
+                                            icon="fa-check-circle"
+                                            attrs="{'invisible': [('state', 'not in', ['preparation'])]}"
+                                            groups="ni_medication.group_dispenser"
+                                            class="btn-secondary btn-sm"
+                                        />
+                                        <button
+                                            name="action_completed_dispense"
+                                            type="object"
+                                            string="Complete"
+                                            icon="fa-check-circle"
+                                            attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
+                                            groups="ni_medication.group_dispenser"
+                                            class="btn-secondary btn-sm"
+                                        />
+                                        <button
+                                            name="action_print_label"
+                                            class="oe_stat_button"
+                                            icon="fa-print"
+                                            type="object"
+                                            string="Print"
+                                        />
                                     </div>
-                                </div>
-                                <div class="oe_kanban_bottom_right mr4">
-
                                 </div>
                             </div>
                         </div>
