@@ -58,6 +58,7 @@
                 <field name="name" />
                 <field name="dosage_id" invisible="1" />
                 <field name="dosage_display" string="Dosage" />
+                <field name="timing_id" invisible="1" />
                 <field name="quantity" invisible="1" />
                 <field name="medication_dose_unit_id" invisible="1" />
                 <field name="quantity_display" string="Quantity" optional="show" />
@@ -104,6 +105,7 @@
                 <field name="medication_dose_unit_id" invisible="1" />
                 <field name="quantity_display" invisible="1" />
                 <field name="display_name" invisible="1" />
+                <field name="timing_id" invisible="1" />
                 <header>
                     <button
                         name="action_active_request"
@@ -236,14 +238,14 @@
                                             placeholder="ex. tab, ml"
                                         />
                                     </div>
-                                    <!--                                    <field
-                                        name="timing_id"
-                                        domain="[('id', '=', False)]"
-                                        options="{'no_quick_create':True}"
-                                        placeholder="Summary of medication usage..."
-                                        groups="base.group_no_one"
-                                    />
-                                    <field name="dosage_when" groups="base.group_no_one" />-->
+                                    <!--                                    <field-->
+                                    <!--                                        name="timing_id"-->
+                                    <!--                                        domain="[('id', '=', False)]"-->
+                                    <!--                                        options="{'no_quick_create':True}"-->
+                                    <!--                                        placeholder="Summary of medication usage..."-->
+                                    <!--                                        groups="base.group_no_one"-->
+                                    <!--                                    />-->
+                                    <!--                                    <field name="dosage_when" groups="base.group_no_one" />-->
                                     <field name="timing_type" widget="radio" options="{'horizontal':True}" />
                                     <field
                                         name="meal_timing"
@@ -360,6 +362,7 @@
                 <field name="quantity_display" />
                 <field name="dosage_id" invisible="1" />
                 <field name="dosage_display" string="Dosage" />
+                <field name="timing_id" invisible="1" />
                 <field name="state" />
                 <templates>
                     <t t-name="kanban-box">
