@@ -1,4 +1,5 @@
 #  Copyright (c) 2024 NSTDA
+
 from odoo import api, fields, models
 
 
@@ -21,6 +22,7 @@ class ServiceEvent(models.Model):
         return res
 
     attendance_id = fields.Many2one(required=False)
+    patient_type_id = fields.Many2one("ni.patient.type")
 
     outcome = fields.Html("ผลการให้ความช่วยเหลือ")
     outcome_id = fields.Many2one("ni.service.event.outcome", "ผลการให้ความช่วยเหลือ")
@@ -29,3 +31,16 @@ class ServiceEvent(models.Model):
 
     prediction_id = fields.Many2one("ni.risk.assessment.prediction")
     plan_patient_ids = fields.Many2many(string="ผู้สูงอายุ")
+
+    @api.onchange("patient_type_id", "service_category_id")
+    def _onchange_patient_type_id(self):
+        if self.patient_type_id:
+            domain = [
+                ("category_id", "=", self.service_category_id.id),
+                "|",
+                ("target_type_ids", "=", False),
+                ("target_type_ids", "=", self.patient_type_id.id),
+            ]
+        else:
+            domain = [("category_id", "=", self.service_category_id.id)]
+        return {"domain": {"service_ids": domain}}
