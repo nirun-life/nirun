@@ -1,5 +1,5 @@
 #  Copyright (c) 2025 NSTDA
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class Employee(models.Model):
@@ -14,3 +14,28 @@ class Employee(models.Model):
         if user.city_ids:
             vals["city_ids"] = [fields.Command.set(user.city_ids.ids)]
         return vals
+
+    def action_create_user(self):
+        vals = super().action_create_user()
+        context = vals.get("context", {})
+        context.update(
+            {
+                "default_country_id": self.country_id.id,
+                "default_state_ids": [fields.Command.set(self.state_ids.ids)],
+                "default_city_ids": [fields.Command.set(self.city_ids.ids)],
+            }
+        )
+        vals["context"] = context
+        return vals
+
+    @api.onchange("user_id")
+    def _onchange_user(self):
+        super()._onchange_user()
+        if self.user_id and self.city_ids and not self.user_id.city_ids:
+            self.user_id.update(
+                {
+                    "country_id": self.country_id.id,
+                    "state_ids": self.state_ids.ids,
+                    "city_ids": self.city_ids.ids,
+                }
+            )

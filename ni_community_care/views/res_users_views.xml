@@ -35,4 +35,16 @@
             </xpath>
         </field>
     </record>
+    <record id="res_users_view_form_inherit_simp" model="ir.ui.view">
+        <field name="name">res.users.view.form.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_simple_form" />
+        <field name="arch" type="xml">
+            <field name="id" position="after">
+                <field name="country_id" invisible="1" />
+                <field name="state_ids" invisible="1" />
+                <field name="city_ids" invisible="1" />
+            </field>
+        </field>
+    </record>
 </odoo>
