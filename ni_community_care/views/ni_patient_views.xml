@@ -263,6 +263,7 @@
                                     <div class="o_row">
                                         <field name="age" class="o_narrow_field" />
                                         <span class="mx-2">ปี</span>
+                                        <field name="age_range_id" groups="base.group_no_one" />
                                     </div>
                                     <field
                                         name="nationality_id"
@@ -366,6 +367,23 @@
                                     options="{'horizontal': True}"
                                     groups="base.group_no_one"
                                 />
+                                <label for="blood_abo" string="หมู่โลหิต" />
+                                <div class="o_row">
+                                    <field
+                                        name="blood_abo"
+                                        placeholder="ABO"
+                                        widget="radio"
+                                        options="{'horizontal': True}"
+                                    />
+                                    <label for="blood_rh" />
+                                    <field
+                                        name="blood_rh"
+                                        placeholder="RH"
+                                        widget="radio"
+                                        context="{'only_abbr': True}"
+                                        options="{'horizontal': True}"
+                                    />
+                                </div>
                                 <label for="allergy_code_ids" string="แพ้ยา/อาหาร" />
                                 <div>
                                     <field name="allergy_code_ids" widget="many2many_checkboxes" class="mt-3" />
