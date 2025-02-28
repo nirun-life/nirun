@@ -349,7 +349,12 @@
                         </page>
                         <page name="health" string="ข้อมูลสุขภาพ" icon="fa-thermometer-half">
                             <group>
-                                <field name="type_id" widget="radio" options="{'horizontal': True}" />
+                                <field
+                                    name="type_id"
+                                    widget="radio"
+                                    options="{'horizontal': True}"
+                                    groups="base.group_no_one"
+                                />
                                 <label for="allergy_code_ids" string="แพ้ยา/อาหาร" />
                                 <div>
                                     <field name="allergy_code_ids" widget="many2many_checkboxes" class="mt-3" />

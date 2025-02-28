@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
+<odoo>
+    <record id="survey_survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey_grading.survey_view_form_inherit" />
+        <field name="arch" type="xml">
+            <field name="color_class" position="after">
+                <field name="patient_type_id" />
+            </field>
+        </field>
+    </record>
+    <record id="survey_subject_wizard_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.subject.wizard.view.form.inherit</field>
+        <field name="model">survey.subject.wizard</field>
+        <field name="inherit_id" ref="ni_questionnaire.survey_subject_view_form_wizard_inherit" />
+        <field name="priority" eval="200" />
+        <field name="arch" type="xml">
+            <field name="subject_ni_encounter" position="replace">
+                <field name="subject_ni_encounter" invisible="1" />
+            </field>
+        </field>
+    </record>
+</odoo>

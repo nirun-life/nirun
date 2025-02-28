@@ -47,6 +47,7 @@
         "report/patient_service_report.xml",
         "report/patient_careplan_report.xml",
         "report/service_report.xml",
+        "views/survey_grade_views.xml",
     ],
     "assets": {"web.assets_backend": ["ni_community_care/static/src/scss/custom.css"]},
     "application": True,
