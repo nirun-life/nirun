@@ -211,11 +211,23 @@
                     <div class="oe_title">
                         <label for="identification_id" />
                         <h1>
-                            <field name="identification_id" placeholder="e.g. HN-001204" />
+                            <field name="identification_id" placeholder="X-XXXX-XXXX-XX-X" />
                         </h1>
                         <label for="name" string="ชื่อ-นามสกุล" />
                         <h2>
-                            <field name="name" placeholder="Patient's Name" readonly="False" required="True" />
+                            <div class="row">
+                                <div class="col-md-2 col-lg-1 col-11 pe-0">
+                                    <field
+                                        name="title"
+                                        class="w-100"
+                                        options="{'no_open': True}"
+                                        placeholder="คำนำหน้าชื่อ"
+                                    />
+                                </div>
+                                <div class="col-md-10 col-lg-11 col-12">
+                                    <field name="name" placeholder="Patient's Name" required="True" />
+                                </div>
+                            </div>
                         </h2>
                         <field
                             name="type_id"
@@ -234,6 +246,7 @@
                         <page name="personal" string="ข้อมูลส่วนบุคคล" icon="fa-address-book-o">
                             <group>
                                 <group name="personal" string="ข้อมูลส่วนบคคล">
+                                    <field name="gender" widget="radio" options="{'horizontal': True}" />
                                     <field name="birthdate" />
                                     <field name="deceased" invisible="1" />
                                     <field name="deceased_date" attrs="{'invisible': [('deceased', '=', False)]}" />
