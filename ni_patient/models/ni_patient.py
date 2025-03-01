@@ -195,6 +195,11 @@ class Patient(models.Model):
     past_medical_history_uid = fields.Many2one("res.users", readonly=True, copy=False)
     past_medical_history_date = fields.Datetime(readonly=True, copy=False)
 
+    @api.onchange("title")
+    def _onchange_title(self):
+        if self.title and self.title.gender:
+            self.gender = self.title.gender
+
     @api.model
     def _prepare_sign_field_vals(self, vals):
         value = {}
