@@ -211,7 +211,12 @@
                     <div class="oe_title">
                         <label for="identification_id" />
                         <h1>
-                            <field name="identification_id" placeholder="X-XXXX-XXXX-XX-X" />
+                            <field name="identification_id" placeholder="X-XXXX-XXXX-XX-X" class="oe_edit_only" />
+                            <field
+                                name="display_identification_id"
+                                class="oe_read_only"
+                                placeholder="ไม่ระบุเลขประจำตัวประชาชน"
+                            />
                         </h1>
                         <label for="name" string="ชื่อ-นามสกุล" />
                         <h2>
@@ -259,6 +264,11 @@
                                         name="nationality_id"
                                         options="{'no_create': True, 'no_open':True}"
                                         invisible="1"
+                                    />
+                                    <field
+                                        name="nationality_id"
+                                        options="{'no_create': True, 'no_open':True}"
+                                        groups="base.group_no_one"
                                     />
                                     <field name="religion_id" options="{'no_create': True, 'no_open':True}" />
                                     <field name="function" string="อาชีพ" />
