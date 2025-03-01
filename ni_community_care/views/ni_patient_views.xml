@@ -12,8 +12,12 @@
             <xpath expr="//search" position="replace">
                 <search>
                     <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('identifier', 'ilike', self)]" />
+                    <filter name="my_patient" string="ที่ฉันดูแล" domain="[('create_uid', '=', uid)]" />
+                    <filter name="group_zip_id" string="พื้นที่" context="{'group_by': 'zip_id'}" />
                     <searchpanel>
                         <field name="type_id" enable_counters="1" />
+                        <field name="age_range_id" enable_counters="1" icon="fa-birthday-cake" />
+                        <field name="family_relation" enable_counters="1" icon="fa-heart" />
                     </searchpanel>
                 </search>
             </xpath>

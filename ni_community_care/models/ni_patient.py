@@ -47,7 +47,7 @@ class Patient(models.Model):
         return view
 
     family_count = fields.Integer("จำนวนสมาชิกในครอบครัว")
-    family_relation = fields.Many2one("ni.family.relation", "ความสัมพันธ์ในครับครัว")
+    family_relation = fields.Many2one("ni.family.relation", "ความสัมพันธ์ในครอบครัว")
 
     type_id = fields.Many2one("ni.patient.type", "ประเภทผู้สูงอายุ")
     type_decoration = fields.Selection(related="type_id.decoration")
