@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <xpath expr="//sheet/div[2]/h1" position="after">
+                <field name="name" invisible="1" />
+                <group id="firstname">
+                    <field name="lastname" attrs="{'required': [('firstname', '=', False)]}" />
+                    <field name="firstname" attrs="{'required': [('lastname', '=', False)]}" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
