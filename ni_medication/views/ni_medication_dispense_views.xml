@@ -545,8 +545,8 @@
         <field name="model">ni.medication.dispense</field>
         <field name="arch" type="xml">
             <pivot>
-                <field name="medication_id" type="row" />
-                <field name="category_id" type="col" />
+                <field name="patient_id" type="row" />
+                <field name="state" type="col" />
             </pivot>
         </field>
     </record>
@@ -555,8 +555,9 @@
         <field name="model">ni.medication.dispense</field>
         <field name="arch" type="xml">
             <graph>
-                <field name="medication_id" type="col" />
-                <field name="category_id" type="col" />
+                <field name="write_uid" type="col" />
+                <!--                <field name="state" type="measure" aggregate="count"/>-->
+                <field name="state" type="col" />
             </graph>
         </field>
     </record>
