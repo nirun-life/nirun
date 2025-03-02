@@ -446,4 +446,25 @@
             </kanban>
         </field>
     </record>
+    <record id="ni_medication_request_view_pivot" model="ir.ui.view">
+        <field name="name">ni.medication.request.view.pivot</field>
+        <field name="model">ni.medication.request</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="medication_id" type="row" />
+                <field name="write_date" type="col" />
+                <field name="write_uid" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_medication_request_view_graph" model="ir.ui.view">
+        <field name="name">ni.medication.request.view.graph</field>
+        <field name="model">ni.medication.request</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="write_uid" type="col" />
+                <field name="medication_id" type="col" />
+            </graph>
+        </field>
+    </record>
 </odoo>
