@@ -21,6 +21,25 @@
                     />
                 </div>
             </field>
+            <xpath expr="//page[@name='history']" position="after">
+                <page name="observation" string="Observation" icon="fa-stethoscope">
+                    <div class="row">
+                        <div class="col-12 col-lg-9">
+                            <field
+                                name="observation_category_id"
+                                class="mt-2"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                            />
+                        </div>
+                        <div class="col-12 col-lg-3 text-end">
+                            <field name="observation_problem_only" />
+                            <label for="observation_problem_only" string="Problem only" />
+                        </div>
+                    </div>
+                    <field name="filtered_patient_observation_ids" />
+                </page>
+            </xpath>
         </field>
     </record>
 </odoo>
