@@ -13,3 +13,5 @@ from . import res_users
 from . import hr_employee_base
 from . import hr_employee
 from . import survey_user_input
+from . import survey_survey
+from . import survey_subject_wizard
