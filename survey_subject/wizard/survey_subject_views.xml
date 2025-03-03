@@ -15,17 +15,19 @@
         <field name="arch" type="xml">
             <form>
                 <field name="state" invisible="1" />
+                <group name="survey" states="choose">
+                    <label for="survey_id" />
+                    <div>
+                        <field
+                            name="survey_id"
+                            invisible="context.get('default_survey_id', False)"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                        />
+                        <field name="survey_name" invisible="not context.get('default_survey_id', False)" />
+                    </div>
+                </group>
                 <group name="main" states="choose">
                     <group>
-                        <label for="survey_id" />
-                        <div>
-                            <field
-                                name="survey_id"
-                                invisible="context.get('default_survey_id', False)"
-                                options="{'no_create': True, 'no_create_edit': True}"
-                            />
-                            <field name="survey_name" invisible="not context.get('default_survey_id', False)" />
-                        </div>
                         <field name="type" invisible="True" />
                         <field
                             name="subject_res_partner"
