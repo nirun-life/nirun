@@ -1,13 +1,24 @@
 #  Copyright (c) 2021 NSTDA
 import ast
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 
 
 class Patient(models.Model):
     _name = "ni.patient"
     _inherit = ["ni.patient", "ni.observation.bloodgroup.mixin"]
 
+    observation_problem_only = fields.Boolean(
+        default=False,
+        store=False,
+        help="Check here to display only the problem observations",
+    )
+    observation_category_id = fields.Many2one(
+        "ni.observation.category",
+        default=lambda self: self.env.ref("ni_observation.category_vital_signs").id,
+        domain=[("type_count", ">", 0)],
+        store=False,
+    )
     observation_sheet_ids = fields.One2many(
         "ni.observation.sheet",
         "patient_id",
@@ -15,7 +26,22 @@ class Patient(models.Model):
         groups="ni_observation.group_user",
     )
     observation_sheet_count = fields.Integer(compute="_compute_observation_sheet_count")
+
+    filtered_patient_observation_ids = fields.One2many(
+        "ni.patient.observation", compute="_compute_display_patient_observation"
+    )
     patient_observation_ids = fields.One2many("ni.patient.observation", "patient_id")
+
+    @api.depends("observation_category_id", "observation_problem_only")
+    def _compute_display_patient_observation(self):
+        for rec in self:
+            domain = [("category_id", "=", rec.observation_category_id.id)]
+            if rec.observation_problem_only:
+                domain += [("is_problem", "=", True)]
+
+            rec.filtered_patient_observation_ids = (
+                rec.patient_observation_ids.filtered_domain(domain)
+            )
 
     def _compute_observation_sheet_count(self):
         observations = self.env["ni.observation.sheet"].sudo()

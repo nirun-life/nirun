@@ -17,24 +17,11 @@ class Encounter(models.Model):
         groups="ni_observation.group_user",
     )
     observation_sheet_count = fields.Integer(compute="_compute_observation_sheet_count")
-    observation_category_id = fields.Many2one(
-        "ni.observation.category",
-        default=lambda self: self.env.ref("ni_observation.category_vital_signs").id,
-        domain=[("type_count", ">", 0)],
-    )
-    observation_problem_only = fields.Boolean(
-        default=False,
-        store=False,
-        help="Check here to display only the problem observations",
-    )
     encounter_observation_ids = fields.One2many(
         "ni.encounter.observation", "encounter_id"
     )
     filtered_encounter_observation_ids = fields.One2many(
         "ni.encounter.observation", compute="_compute_display_observation"
-    )
-    filtered_patient_observation_ids = fields.One2many(
-        "ni.patient.observation", compute="_compute_display_observation"
     )
 
     observation_filter = fields.Selection(
@@ -70,18 +57,14 @@ class Encounter(models.Model):
     )
     def _compute_display_observation(self):
         for rec in self:
-            domain = [("category_id", "=", rec.observation_category_id.id)]
-            if rec.observation_problem_only:
-                domain += [("is_problem", "=", True)]
             if rec.observation_filter == "encounter":
+                domain = [("category_id", "=", rec.observation_category_id.id)]
+                if rec.observation_problem_only:
+                    domain += [("is_problem", "=", True)]
                 rec.filtered_encounter_observation_ids = (
                     rec.encounter_observation_ids.filtered_domain(domain)
                 )
-                rec.filtered_patient_observation_ids = None
             else:
-                rec.filtered_patient_observation_ids = (
-                    rec.patient_observation_ids.filtered_domain(domain)
-                )
                 rec.filtered_encounter_observation_ids = None
 
     @api.model_create_multi
