@@ -21,6 +21,7 @@ class ObservationAbstract(models.AbstractModel):
     category_id = fields.Many2one(
         related="type_id.category_id", readonly=True, store=True, index=True
     )
+    color = fields.Integer(related="type_id.category_id.color")
     value_type = fields.Selection(
         [
             ("char", "Char"),

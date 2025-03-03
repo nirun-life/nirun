@@ -138,9 +138,12 @@
                 <field name="display_class" />
                 <field name="occurrence" />
                 <field name="compare_interpret" />
+                <field name="color" />
                 <template>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_global_click">
+                        <div
+                            t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click o_has_icon oe_kanban_content oe_kanban_card"
+                        >
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
                                     <div class="o_kanban_record_title">
