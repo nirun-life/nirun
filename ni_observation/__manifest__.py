@@ -2,7 +2,7 @@
 
 {
     "name": "Observation",
-    "version": "16.0.0.4.1",
+    "version": "16.0.0.5.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
