@@ -367,21 +367,20 @@
                                     options="{'horizontal': True}"
                                     groups="base.group_no_one"
                                 />
-                                <label for="blood_abo" string="หมู่โลหิต" />
+                                <label for="blood_abo" string="หมู่เลือด" />
                                 <div class="o_row">
                                     <field
                                         name="blood_abo"
+                                        class="abo_field"
                                         placeholder="ABO"
-                                        widget="radio"
-                                        options="{'horizontal': True}"
+                                        options="{'no_open': True}"
                                     />
-                                    <label for="blood_rh" />
                                     <field
                                         name="blood_rh"
+                                        class="abo_field"
                                         placeholder="RH"
-                                        widget="radio"
-                                        context="{'only_abbr': True}"
-                                        options="{'horizontal': True}"
+                                        context="{'only_abbr':True}"
+                                        options="{'no_open': True, 'always_reload':True}"
                                     />
                                 </div>
                                 <label for="allergy_code_ids" string="แพ้ยา/อาหาร" />
@@ -424,7 +423,21 @@
                             </div>
                         </page>
                         <page name="observation" string="ผลการประเมินผล" icon="fa-stethoscope">
-                            <field name="patient_observation_ids" mode="kanban" />
+                            <div class="row">
+                                <div class="col-12 col-lg-9">
+                                    <field
+                                        name="observation_category_id"
+                                        class="mt-2"
+                                        widget="radio"
+                                        options="{'horizontal': True}"
+                                    />
+                                </div>
+                                <!--                                <div class="col-12 col-lg-3 text-end">-->
+                                <!--                                    <field name="observation_problem_only" />-->
+                                <!--                                    <label for="observation_problem_only" string="Problem only" />-->
+                                <!--                                </div>-->
+                            </div>
+                            <field name="filtered_patient_observation_ids" />
                             <button
                                 name="action_survey_subject"
                                 type="object"
@@ -433,7 +446,13 @@
                                 context="{'default_patient_id': id}"
                             />
                         </page>
-                        <page name="plan" string="แผนการให้ความช่วยเหลือ" badge="careplan_count" icon="fa-tasks">
+                        <page
+                            name="plan"
+                            string="แผนการให้ความช่วยเหลือ"
+                            badge="careplan_count"
+                            icon="fa-tasks"
+                            invisible="1"
+                        >
                             <field name="careplan_count" invisible="1" />
                             <field name="careplan_ids" context="{'default_patient_id': id}" />
                         </page>
