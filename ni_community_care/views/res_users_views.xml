@@ -8,30 +8,27 @@
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_form" />
         <field name="arch" type="xml">
-            <xpath expr="//notebook" position="before">
-                <group>
-                    <group string="พื้นที่รับผิดชอบ">
+            <xpath expr="//notebook/page[1]" position="before">
+                <page name="area" string="พื้นที่รับผิดชอบ" icon="fa-map">
+                    <group>
                         <field name="country_id" options="{'no_open': True}" />
                         <field name="state_ids" widget="many2many_tags" />
-                        <label for="city_ids" />
-                        <div>
-                            <div class="o_row">
-                                <field name="city_ids" widget="many2many_tags" />
-                                <button
-                                    name="action_add_response_state_cities"
-                                    type="object"
-                                    string=" ทั้งจังหวัด"
-                                    attrs="{'invisible': [('state_ids', '=', False)]}"
-                                    confirm="พื้นที่รับผิดชอบที่คุณเลือกไว้จะเขียนทับ"
-                                    icon="fa-map"
-                                />
-                            </div>
-                            <div>
-                                <span class="text-muted">ระบบจำกัดการเข้าถึงข้อมูลของผู้บริบาลด้วยข้อมูลนี้</span>
-                            </div>
-                        </div>
                     </group>
-                </group>
+                    <div>
+                        <label for="city_ids" />
+                        <span class="text-muted">ระบบจำกัดการเข้าถึงข้อมูลของผู้บริบาลด้วยข้อมูลนี้</span>
+                        <button
+                            name="action_add_response_state_cities"
+                            type="object"
+                            class="float-end"
+                            string=" ทั้งจังหวัด"
+                            attrs="{'invisible': [('state_ids', '=', False)]}"
+                            confirm="พื้นที่รับผิดชอบที่คุณเลือกไว้จะเขียนทับ"
+                            icon="fa-map"
+                        />
+                    </div>
+                    <field name="city_ids" />
+                </page>
             </xpath>
         </field>
     </record>
