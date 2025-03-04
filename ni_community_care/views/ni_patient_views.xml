@@ -222,22 +222,10 @@
                                 placeholder="ไม่ระบุเลขประจำตัวประชาชน"
                             />
                         </h1>
-                        <label for="name" string="ชื่อ-นามสกุล" />
-                        <h2>
-                            <div class="row">
-                                <div class="col-md-2 col-lg-1 col-11 pe-0">
-                                    <field
-                                        name="title"
-                                        class="w-100"
-                                        options="{'no_open': True}"
-                                        placeholder="คำนำหน้าชื่อ"
-                                    />
-                                </div>
-                                <div class="col-md-10 col-lg-11 col-12">
-                                    <field name="name" placeholder="Patient's Name" required="True" />
-                                </div>
-                            </div>
-                        </h2>
+                        <group>
+                            <field name="title" options="{'no_open': True}" placeholder="นาย, นาง, น.ส." />
+                            <field name="name" placeholder="Patient's Name" required="True" string="ชื่อ-นามสกุล" />
+                        </group>
                         <field
                             name="type_id"
                             widget="badge"
@@ -312,6 +300,7 @@
                                         <field name="country_id" invisible="1" />
                                         <field name="user_city_ids" invisible="1" />
                                     </div>
+                                    <field name="sub_district_code" groups="base.group_no_one" />
                                     <!--                                    <field-->
                                     <!--                                        name="other_address_id"-->
                                     <!--                                        placeholder="เช่น ที่อยู่ปัจจุบัน, ที่อยู่บุตรหลาน"-->

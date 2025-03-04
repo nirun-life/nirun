@@ -98,6 +98,27 @@ class Patient(models.Model):
 
     country_code = fields.Char(related="country_id.code", store=True, index=True)
     state_code = fields.Char(related="state_id.code", store=True, index=True)
+    sub_district_code = fields.Char(
+        compute="_compute_sub_district_code",
+        inverse="_inverse_sub_district_code",
+        store=True,
+        index=True,
+    )
+
+    @api.depends("zip_id")
+    def _compute_sub_district_code(self):
+        for rec in self:
+            if not rec.zip_id:
+                rec.sub_district_code = None
+                continue
+            rec.sub_district_code = rec.zip_id.sub_district_code
+
+    def _inverse_sub_district_code(self):
+        for rec in self:
+            zip = self.env["res.city.zip"].search(
+                [("sub_district_code", "=", rec.sub_district_code)], limit=1
+            )
+            rec.zip_id = zip[0] if zip else None
 
     @api.depends("service_event_ids")
     def _compute_category_progress(self):
