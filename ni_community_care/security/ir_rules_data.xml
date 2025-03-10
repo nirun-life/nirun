@@ -21,6 +21,26 @@
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
     </record>
+    <record id="ni_service_event_user_rule" model="ir.rule">
+        <field name="name">Service Event: User can edit/delete only own</field>
+        <field ref="model_ni_service_event" name="model_id" />
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="perm_read">0</field>
+        <field name="perm_create">0</field>
+        <field name="perm_write">1</field>
+        <field name="perm_unlink">1</field>
+        <field name="groups" eval="[(4, ref('ni_patient.group_user'))]" />
+    </record>
+    <record id="ni_service_event_admin_rule" model="ir.rule">
+        <field name="name">Service Event: Admin edit all</field>
+        <field ref="model_ni_service_event" name="model_id" />
+        <field name="domain_force">[(1, '=',1)]</field>
+        <field name="perm_read">0</field>
+        <field name="perm_create">0</field>
+        <field name="perm_write">1</field>
+        <field name="perm_unlink">1</field>
+        <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
+    </record>
     <record id="patient_user_area_rule" model="ir.rule">
         <field name="name">Patient: user see only patient in area</field>
         <field ref="model_ni_patient" name="model_id" />
@@ -33,15 +53,11 @@
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
     </record>
-    <record model="res.groups" id="group_area_manager">
-        <field name="name">Area Manager</field>
-        <field name="implied_ids" eval="[(4, ref('ni_patient.group_user'))]" />
-    </record>
     <record id="patient_area_manager_rule" model="ir.rule">
         <field name="name">Patient: Area Manager can patient is their state</field>
         <field ref="model_ni_patient" name="model_id" />
         <field name="domain_force">[('state_id', 'in', state_ids)]</field>
-        <field name="groups" eval="[(4, ref('ni_patient.group_user'))]" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_manager'))]" />
     </record>
     <record model="res.groups" id="group_observer">
         <field name="name">Central Observer</field>

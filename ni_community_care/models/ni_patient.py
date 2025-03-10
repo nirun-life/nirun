@@ -1,5 +1,4 @@
 #  Copyright (c) 2024 NSTDA
-import ast
 
 from odoo import api, fields, models
 
@@ -148,17 +147,13 @@ class Patient(models.Model):
             .sudo()
             ._for_xml_id("ni_community_care.ni_service_event_action_from_patient")
         )
-        context = action["context"].replace("active_id", str(self.id))
-        context = ast.literal_eval(context)
-        context.update(
-            {
-                "create": self.active,
-                "active_test": self.active,
-                "default_plan_patient_ids": [fields.Command.set(self.ids)],
-                "default_patient_type_id": self.type_id.id,
-                "default_patient_id": self.patient_id.id,
-            }
-        )
+        context = {
+            "create": self.active,
+            "active_test": self.active,
+            "default_plan_patient_ids": [fields.Command.set(self.ids)],
+            "default_patient_type_id": self.type_id.id,
+            "default_patient_id": self.patient_id.id,
+        }
         action["view_mode"] = "kanban,calendar,tree,pivot,form"
         action["context"] = context
         return action
