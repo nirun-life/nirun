@@ -299,9 +299,15 @@
                     <field name="duration" widget="float_time" invisible="1" />
                     <label for="image_1" string="ภาพประกอบ" />
                     <field name="has_image" invisible="1" />
-                    <div>
-                        <field name="image_1" widget="image" />
-                        <field name="image_2" widget="image" attrs="{'invisible': [('image_1', '=', False)]}" />
+                    <div class="o_row">
+                        <field name="image_1" widget="image" class="oe_avatar" options="{'zoom': true}" />
+                        <field
+                            name="image_2"
+                            widget="image"
+                            class="oe_avatar"
+                            options="{'zoom': true}"
+                            attrs="{'invisible': [('image_1', '=', False)]}"
+                        />
                     </div>
                     <field name="color" invisible="1" />
                 </group>
