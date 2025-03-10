@@ -17,5 +17,6 @@ class IrRule(models.Model):
         # use an empty context for 'user' to make the domain evaluation
         # independent from the context
         vals = super(IrRule, self)._eval_context()
+        vals["state_ids"] = self.env.user.state_ids.ids
         vals["city_ids"] = self.env.user.city_ids.ids
         return vals

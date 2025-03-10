@@ -33,4 +33,28 @@
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
     </record>
+    <record model="res.groups" id="group_area_manager">
+        <field name="name">Area Manager</field>
+        <field name="implied_ids" eval="[(4, ref('ni_patient.group_user'))]" />
+    </record>
+    <record id="patient_area_manager_rule" model="ir.rule">
+        <field name="name">Patient: Area Manager can patient is their state</field>
+        <field ref="model_ni_patient" name="model_id" />
+        <field name="domain_force">[('state_id', 'in', state_ids)]</field>
+        <field name="groups" eval="[(4, ref('ni_patient.group_user'))]" />
+    </record>
+    <record model="res.groups" id="group_observer">
+        <field name="name">Central Observer</field>
+        <field name="implied_ids" eval="[(4, ref('ni_patient.group_viewer'))]" />
+    </record>
+    <record id="patient_observer_area_rule" model="ir.rule">
+        <field name="name">Patient: Observer can access all patient</field>
+        <field ref="model_ni_patient" name="model_id" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read">1</field>
+        <field name="perm_create">0</field>
+        <field name="perm_write">0</field>
+        <field name="perm_unlink">0</field>
+        <field name="groups" eval="[(4, ref('group_observer'))]" />
+    </record>
 </odoo>

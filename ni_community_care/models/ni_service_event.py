@@ -19,6 +19,9 @@ class ServiceEvent(models.Model):
             )
             if careplan.service_ids:
                 res["service_ids"] = [fields.Command.set(careplan.service_ids.ids)]
+        if "patient_type_id" not in res and "patient_id" in res:
+            pat = self.env["ni.patient"].browse(res["patient_id"])
+            res["patient_type_id"] = pat.type_id.id
         return res
 
     attendance_id = fields.Many2one(required=False)
@@ -31,9 +34,13 @@ class ServiceEvent(models.Model):
 
     prediction_id = fields.Many2one("ni.risk.assessment.prediction")
     plan_patient_ids = fields.Many2many(string="ผู้สูงอายุ")
+    user_name = fields.Char(related="user_id.display_name")
 
     @api.onchange("patient_type_id", "service_category_id")
     def _onchange_patient_type_id(self):
+        for rec in self:
+            rec.service_ids = None
+
         if self.patient_type_id:
             domain = [
                 ("category_id", "=", self.service_category_id.id),
