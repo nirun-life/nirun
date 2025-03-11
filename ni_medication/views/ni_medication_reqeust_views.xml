@@ -3,25 +3,99 @@
   ~ Copyright (c) 2021-2024 NSTDA
   -->
 <odoo>
+    <record id="ni_medication_request_view_search" model="ir.ui.view">
+        <field name="name">ni_medication_request.view.search</field>
+        <field name="model">ni.medication.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('patient_id', 'ilike', self)]" />
+                <filter
+                    name="active"
+                    string="Active"
+                    domain="[('state', '=', 'active')]"
+                    help="Show only Active requests"
+                />
+                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
+                <filter name="today" string="Today" domain="[('write_date', '>=', context_today())]" />
+                <field name="encounter_id" />
+                <group string="Group By">
+                    <filter
+                        name="group_encounter"
+                        string="Encounter No."
+                        domain="[]"
+                        context="{'group_by': 'encounter_id'}"
+                    />
+                </group>
+                <searchpanel>
+                    <field name="state" enable_counters="1" icon="fa-circle" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_medication_request_action" model="ir.actions.act_window">
+        <field name="name">Medication Request</field>
+        <field name="res_model">ni.medication.request</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="context">{'search_default_today': 1,'show_detail': 1 }</field>
+    </record>
+    <record id="ni_medication_request_action_active" model="ir.actions.act_window">
+        <field name="name">Medication Request</field>
+        <field name="res_model">ni.medication.request</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="context">{'search_default_active': 1,'show_detail': 1}</field>
+    </record>
+    <record id="ni_medication_request_action_all" model="ir.actions.act_window">
+        <field name="name">Medication Request</field>
+        <field name="res_model">ni.medication.request</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="context">{'show_detail': 1}</field>
+    </record>
     <record id="ni_medication_request_view_tree" model="ir.ui.view">
         <field name="name">ni.medication.request.view.tree</field>
         <field name="model">ni.medication.request</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="patient_id" invisible="1" />
-                <field name="encounter_id" invisible="1" />
+            <tree
+                duplicate="0"
+                decoration-bf="state in ['active']"
+                decoration-info="state in ['active']"
+                decoration-muted="state in ['draft']"
+            >
+                <field name="encounter_id" invisible="not context.get('show_detail')" />
+                <field name="patient_id" widget="many2one_avatar" invisible="not context.get('show_detail')" />
                 <field name="medication_dispense_count" invisible="1" />
                 <field name="identifier" optional="hide" />
                 <field name="name" />
-                <field name="dosage_id" />
+                <field name="dosage_id" invisible="1" />
+                <field name="dosage_display" string="Dosage" />
+                <field name="timing_id" invisible="1" />
+                <field name="quantity" invisible="1" />
+                <field name="medication_dose_unit_id" invisible="1" />
                 <field name="quantity_display" string="Quantity" optional="show" />
-                <field name="state" widget="badge" optional="hide" />
+                <field name="write_uid" string="Requester" invisible="not context.get('show_detail')" />
+                <field name="write_date" string="Request at" invisible="not context.get('show_detail')" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-success="state in ['completed']"
+                    decoration-info="state in ['active']"
+                    decoration-muted="state in ['draft']"
+                    decoration-warning="state in ['on-hold']"
+                    decoration-danger="state in ['revoked']"
+                />
+                <button
+                    name="action_active_request"
+                    type="object"
+                    string="Activate"
+                    icon="fa-check-circle"
+                    attrs="{'invisible': [('state', 'not in', ['draft','on-hold'])]}"
+                    groups="ni_medication.group_requester"
+                />
                 <button
                     name="action_dispense"
                     type="object"
                     string="Dispense"
                     icon="fa-paper-plane-o"
-                    attrs="{'invisible': [('state', 'in', ['completed', 'revoked'])]}"
+                    attrs="{'invisible': [('state', 'not in', ['active'])]}"
                     groups="ni_medication.group_dispenser"
                 />
                 <control>
@@ -37,7 +111,20 @@
             <form>
                 <field name="state" invisible="1" />
                 <field name="medication_dispense_count" invisible="1" />
+                <field name="medication_dose_unit_id" invisible="1" />
+                <field name="quantity_display" invisible="1" />
+                <field name="display_name" invisible="1" />
+                <field name="timing_id" invisible="1" />
                 <header>
+                    <button
+                        name="action_active_request"
+                        type="object"
+                        string="Activate"
+                        class="oe_highlight"
+                        icon="fa-check-circle"
+                        attrs="{'invisible': [('state', 'not in', ['draft','on-hold'])]}"
+                        groups="ni_medication.group_requester"
+                    />
                     <button
                         name="action_dispense"
                         icon="fa-paper-plane-o"
@@ -45,9 +132,25 @@
                         class="oe_highlight"
                         groups="ni_medication.group_dispenser"
                         type="object"
-                        attrs="{'invisible': [('state', 'in', ['completed', 'revoked'])]}"
+                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
                     />
-                    <field name="state" widget="statusbar" statusbar_visible="active,completed" />
+                    <button
+                        name="action_onhold_request"
+                        type="object"
+                        string="Hold"
+                        icon="fa-hand-paper-o"
+                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
+                        groups="ni_medication.group_requester"
+                    />
+                    <button
+                        name="action_revoke_request"
+                        type="object"
+                        string="Revoke"
+                        icon="fa-ban"
+                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
+                        groups="ni_medication.group_dispenser"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,completed" />
                 </header>
                 <sheet>
                     <field
@@ -58,7 +161,7 @@
                     />
                     <div class="oe_title">
                         <div class="d-flex">
-                            <label for="name" class="flex-fill" />
+                            <label for="medication_id" class="flex-fill" />
                             <field
                                 name="identifier"
                                 class="oe_inline text-muted"
@@ -67,14 +170,23 @@
                             />
                         </div>
                         <div>
-                            <field name="medication_id" class="w-100" nolabel="True" placeholder="ค้นหาด้วยชื่อยา..." />
-                        </div>
-                        <div>
-                            <field name="name" placeholder="ชื่อยา" />
+                            <field
+                                name="medication_id"
+                                class="w-100"
+                                placeholder="Search by medication name..."
+                                string="Medication Name"
+                            />
                         </div>
                     </div>
-                    <group>
+                    <group attrs="{'invisible': [('medication_id', '!=', False)]}">
+                        <field name="custom_checkbox_medication" string="Custom" />
+                        Custom
+                    </group>
+                    <group
+                        attrs="{'invisible': [('medication_id', '=', False), ('custom_checkbox_medication', '=', False)]}"
+                    >
                         <group>
+                            <field name="name" string="Display Name" placeholder="Medication name" />
                             <field name="company_id" invisible="1" options="{'no_open': True}" />
                             <field
                                 name="patient_id"
@@ -91,7 +203,7 @@
                                 options="{'no_open': True}"
                                 invisible="context.get('default_category_id')"
                             />
-                            <field name="reason_id" />
+                            <field name="reason_id" options="{'no_create': True}" />
                             <field name="reason_ids" invisible="1" />
                             <label for="quantity" />
                             <div>
@@ -100,81 +212,136 @@
                             </div>
                         </group>
                     </group>
-                    <notebook>
+                    <notebook
+                        attrs="{'invisible': [('medication_id', '=', False), ('custom_checkbox_medication', '=', False)]}"
+                    >
                         <page name="dosage" string="Dosage" icon="fa-indent">
-                            <div class="d-lg-flex">
-                                <!-- These two div are used to position org_chart -->
-                                <div class="flex-grow-1">
-                                    <group>
-                                        <label for="timing_id" />
-                                        <div class="o_row">
-                                            <field
-                                                name="timing_tmpl_id"
-                                                options="{'no_create':True, 'no_create_edit':True}"
-                                                attrs="{'invisible': [('timing_id', '!=', False)], 'required':[('timing_id', '=', False)]}"
-                                                placeholder="choose from..."
-                                            />
-                                            <span
-                                                class="oe_edit_only"
-                                                attrs="{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}"
-                                            >
-                                                or
-                                            </span>
-                                            <field
-                                                name="timing_id"
-                                                domain="[('id', '=', False)]"
-                                                options="{'no_quick_create':True}"
-                                                attrs="{'invisible': [('timing_tmpl_id', '!=', False)], 'required':[('timing_tmpl_id', '=', False)]}"
-                                                placeholder="create new..."
-                                            />
-                                        </div>
-                                        <label for="dose" />
-                                        <div class="o_row">
-                                            <field name="dose" />
-                                            <field
-                                                name="dose_unit_id"
-                                                attrs="{'required': [('dose', '!=', 0 )]}"
-                                                placeholder="ex. tab, ml"
-                                            />
-                                        </div>
-                                        <field name="as_need" />
-                                        <field name="route_id" placeholder="ex. IV, po" />
-                                        <field name="method_id" placeholder="ex. Inj" />
-                                        <field name="site_id" placeholder="ex. OD, OS" />
-                                        <field
-                                            name="additional_ids"
-                                            widget="many2many_tags"
-                                            options="{'color_field': 'color'}"
-                                        />
-                                    </group>
-                                    <field name="text" placeholder="Describe more additional dosage here..." />
-                                    <button
-                                        name="save_dosage_as_template"
-                                        type="object"
-                                        string="Save as templete"
-                                        attrs="{'invisible': ['|',('medication_id', '=', False),('dosage_tmpl_id', '!=', False)]}"
-                                    />
-                                </div>
-                                <div class="col-lg-4 px-0 ps-lg-5 pe-lg-0">
-                                    <separator string="Template" />
-                                    <field name="medication_dosage_ids" invisible="1" />
-                                    <field name="medication_dosage_count" invisible="1" />
-                                    <p
-                                        class="text-muted"
-                                        attrs="{'invisible': ['|',('medication_id', '=', False), ('medication_dosage_count', '>', 0)]}"
-                                    >
-                                        There is no template for this medication
-                                    </p>
+                            <div name="Dosage Template" attrs="{'invisible': [('medication_id', '=', False)]}">
+                                <separator string="Dosage Template" />
+                                <field name="medication_dosage_ids" invisible="1" />
+                                <field name="medication_dosage_count" invisible="1" />
+                                <field name="medication_dose_unit_id" invisible="1" />
+                                <p
+                                    class="text-muted"
+                                    attrs="{'invisible': ['|',('medication_id', '=', False), ('medication_dosage_count', '>', 0)]}"
+                                >
+                                    There is no template for this medication
+                                </p>
+                                <field
+                                    name="dosage_tmpl_id"
+                                    context="{'show_text': True, 'show_additional':True}"
+                                    options="{'no_create':True}"
+                                    widget="radio"
+                                />
+                            </div>
+                            <group name="Dosage">
+                                <group string="Dosage">
+                                    <field name="dosage_id" invisible="1" />
+                                    <field name="dosage_display" placeholder="Summary of medication usage..." />
+                                    <label for="dose" />
                                     <div class="o_row">
+                                        <field name="dose" />
                                         <field
-                                            name="dosage_tmpl_id"
-                                            context="{'show_text': True, 'show_additional':True}"
-                                            options="{'no_create':True}"
-                                            widget="radio"
+                                            name="dose_unit_id"
+                                            attrs="{'required': [('dose', '!=', 0 )]}"
+                                            placeholder="ex. tab, ml"
                                         />
                                     </div>
-                                </div>
-                            </div>
+                                    <!--                                    <field-->
+                                    <!--                                        name="timing_id"-->
+                                    <!--                                        domain="[('id', '=', False)]"-->
+                                    <!--                                        options="{'no_quick_create':True}"-->
+                                    <!--                                        placeholder="Summary of medication usage..."-->
+                                    <!--                                        groups="base.group_no_one"-->
+                                    <!--                                    />-->
+                                    <!--                                    <field name="dosage_when" groups="base.group_no_one" />-->
+                                    <field name="timing_type" widget="radio" options="{'horizontal':True}" />
+                                    <field
+                                        name="meal_timing"
+                                        widget="radio"
+                                        options="{'horizontal':True}"
+                                        attrs="{'invisible': [('timing_type', '!=', 'meal')]}"
+                                    />
+                                    <field
+                                        name="meal_period_ids"
+                                        widget="many2many_checkboxes"
+                                        attrs="{'invisible': [('timing_type', 'not in', ['meal'])]}"
+                                    />
+                                    <field
+                                        name="period_ids"
+                                        widget="many2many_checkboxes"
+                                        attrs="{'invisible': [('timing_type', 'not in', ['period'])]}"
+                                    />
+                                    <field
+                                        name="meal_offset"
+                                        attrs="{'invisible': ['|', ('timing_type', '!=', 'meal'), ('meal_timing', '=', 'C')]}"
+                                    />
+                                    <label
+                                        for="timing_frequency"
+                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
+                                    />
+                                    <div class="o_row" attrs="{'invisible': [('timing_type', '!=', 'custom')]}">
+                                        <field name="timing_frequency" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="timing_frequency_max" class="oe_inline" />
+                                        <span>Times</span>
+                                    </div>
+                                    <label
+                                        string="Duration"
+                                        for="timing_duration"
+                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
+                                    />
+                                    <div class="o_row" attrs="{'invisible': [('timing_type', '!=', 'custom')]}">
+                                        <field name="timing_duration" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="timing_duration_max" class="oe_inline" />
+                                        <field
+                                            name="timing_duration_unit"
+                                            nolabel="True"
+                                            placeholder="Select Duration Unit"
+                                            decoration-muted="timing_duration_unit == False"
+                                        />
+                                    </div>
+                                    <label
+                                        string="Repeat Every"
+                                        for="timing_period"
+                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
+                                    />
+                                    <div class="o_row" attrs="{'invisible': [('timing_type', '!=', 'custom')]}">
+                                        <field name="timing_period" class="oe_inline" />
+                                        <span>-</span>
+                                        <field name="timing_period_max" class="oe_inline" />
+                                        <field name="timing_period_unit" string="Unit" />
+                                    </div>
+                                    <field
+                                        name="timing_tod"
+                                        context="{'default_timing_id': id}"
+                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
+                                        mode="kanban"
+                                    />
+                                    />
+                                    <field name="as_need" />
+                                    <field
+                                        name="additional_ids"
+                                        widget="many2many_tags"
+                                        options="{'color_field': 'color'}"
+                                    />
+                                </group>
+                                <group string="Administration Method">
+                                    <!--                                       attrs="{'invisible': [('dosage_tmpl_id', '=', False), ('custom_checkbox_dosage', '=', False)]}">-->
+                                    <field name="route_id" placeholder="ex. IV, po" />
+                                    <field name="method_id" placeholder="ex. Inj" />
+                                    <field name="site_id" placeholder="ex. OD, OS" />
+                                </group>
+                            </group>
+                            <field name="text" placeholder="Describe more additional dosage here..." />
+                            <button
+                                name="save_dosage_as_template"
+                                type="object"
+                                string="Save as template"
+                                attrs="{'invisible': ['|',('medication_id', '=', False),('dosage_tmpl_id', '!=', False)]}"
+                            />
+                            <button name="reset_dosage_template" type="object" string="Reset" icon="fa-trash-o" />
                         </page>
                         <page
                             name="dispense"
@@ -184,10 +351,10 @@
                             groups="base.group_no_one"
                         >
                             <field name="medication_dispense_count" invisible="1" />
-                            <field name="medication_dispense_ids" />
+                            <field name="medication_dispense_ids" readonly="1" />
                         </page>
                         <page name="note" string="Note">
-                            <field name="note" placeholder="Further information about the dispense" />
+                            <field name="note" placeholder="Further information about the request" />
                         </page>
                     </notebook>
                 </sheet>
@@ -202,20 +369,37 @@
                 <field name="name" />
                 <field name="quantity" />
                 <field name="quantity_display" />
-                <field name="dosage_id" />
+                <field name="dosage_id" invisible="1" />
+                <field name="dosage_display" string="Dosage" />
+                <field name="timing_id" invisible="1" />
                 <field name="state" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_global_click">
-                            <div class="o_kanban_record_top">
-                                <div class="o_kanban_record_headings">
-                                    <strong class="o_kanban_record_title d">
-                                        <field name="name" />
-                                    </strong>
-                                </div>
-                            </div>
-                            <div class="oe_kanban_details">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <t t-if="record.medication_id.raw_value">
+                                <field name="medication_id" invisible="1" />
+                                <div
+                                    class="o_kanban_image_fill_left o_kanban_image_full"
+                                    t-attf-style="background-image: url(#{kanban_image('ni.medication', 'image_128', record.medication_id.raw_value)})"
+                                    role="img"
+                                />
+                            </t>
+                            <div class="oe_kanban_details ">
+                                <strong class="o_kanban_record_title oe_partner_heading">
+                                    <field
+                                        name="name"
+                                        decoration-bf="state in ['active']"
+                                        decoration-info="state in ['active']"
+                                        decoration-muted="state in ['draft']"
+                                    />
+                                </strong>
                                 <ul>
+                                    <li>
+                                        <field name="encounter_id" class="small text-muted" />
+                                    </li>
+                                    <li>
+                                        <field name="patient_id" class="small text-muted" />
+                                    </li>
                                     <li>
                                         <label for="dosage_id" class="small text-muted me-2">Sig :</label>
                                         <field name="dosage_id" />
@@ -225,26 +409,62 @@
                                         <field name="quantity_display" />
                                     </li>
                                 </ul>
-                            </div>
-                            <div class="o_kanban_record_bottom">
-                                <div class="oe_kanban_bottom_left">
+                                <div class="oe_module_action d-flex flex-wrap justify-content-between">
+                                    <!--                                    <li>-->
+                                    <field
+                                        name="state"
+                                        widget="badge"
+                                        decoration-success="state in ['completed']"
+                                        decoration-info="state in ['active']"
+                                        decoration-muted="state in ['draft']"
+                                        decoration-warning="state in ['on-hold']"
+                                        decoration-danger="state in ['revoked']"
+                                    />
+                                    <button
+                                        name="action_active_request"
+                                        type="object"
+                                        string="Activate"
+                                        icon="fa-check-circle"
+                                        attrs="{'invisible': [('state', 'not in', ['draft','on-hold'])]}"
+                                        groups="ni_medication.group_requester"
+                                        class="btn-secondary btn-sm"
+                                    />
                                     <button
                                         name="action_dispense"
                                         type="object"
                                         string="Dispense"
                                         icon="fa-paper-plane-o"
+                                        attrs="{'invisible': [('state', 'not in', ['active'])]}"
                                         groups="ni_medication.group_dispenser"
-                                        attrs="{'invisible': [('state', 'in', ['completed', 'revoked'])]}"
+                                        class="btn-secondary btn-sm"
                                     />
-                                </div>
-                                <div class="oe_kanban_bottom_right mr4">
-
                                 </div>
                             </div>
                         </div>
                     </t>
                 </templates>
             </kanban>
+        </field>
+    </record>
+    <record id="ni_medication_request_view_pivot" model="ir.ui.view">
+        <field name="name">ni.medication.request.view.pivot</field>
+        <field name="model">ni.medication.request</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="medication_id" type="row" />
+                <field name="write_date" type="col" />
+                <field name="write_uid" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_medication_request_view_graph" model="ir.ui.view">
+        <field name="name">ni.medication.request.view.graph</field>
+        <field name="model">ni.medication.request</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="write_uid" type="col" />
+                <field name="medication_id" type="col" />
+            </graph>
         </field>
     </record>
 </odoo>

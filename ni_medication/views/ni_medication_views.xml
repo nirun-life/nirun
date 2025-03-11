@@ -74,21 +74,26 @@
                         <group>
                             <field name="form_id" />
                             <label string="Amount" for="amount_numerator" />
-                            <div class="o_row">
-                                <field name="amount_numerator" class="oe_edit_only" />
-                                <field
-                                    name="amount_numerator_unit"
-                                    class="oe_edit_only"
-                                    options='{"create":False,"create_edit": False,"no_open": True}'
-                                />
-                                <span class="oe_edit_only">/</span>
-                                <field name="amount_denominator" class="oe_edit_only" />
-                                <field
-                                    name="amount_denominator_unit"
-                                    class="oe_edit_only"
-                                    options='{"create":False,"create_edit": False,"no_open": True}'
-                                />
-                                <field name="amount" class="oe_read_only" />
+                            <div>
+                                <div class="o_row">
+                                    <field name="amount_numerator" class="oe_edit_only" />
+                                    <field
+                                        name="amount_numerator_unit"
+                                        class="oe_edit_only"
+                                        options='{"create":False,"create_edit": False,"no_open": True}'
+                                    />
+                                    <span class="oe_edit_only">/</span>
+                                    <field name="amount_denominator" class="oe_edit_only" />
+                                    <field
+                                        name="amount_denominator_unit"
+                                        class="oe_edit_only"
+                                        options='{"create":False,"create_edit": False,"no_open": True}'
+                                    />
+                                    <field name="amount" class="oe_read_only" />
+                                </div>
+                                <div class="o_row">
+                                    <i class="text-muted oe_edit_only ">เช่น 10 เม็ด/ 1 แผง, 1000 ml / 1 ขวด</i>
+                                </div>
                             </div>
                             <field name="reason_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
                         </group>

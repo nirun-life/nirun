@@ -3,6 +3,8 @@ from . import ni_medication_dosage
 from . import ni_medication_dosage_additional
 from . import ni_medication_dosage_method
 from . import ni_medication_dosage_route
+from . import ni_medication_dosage_period
+from . import ni_medication_dosage_period_meal
 from . import ni_medication_abstract
 from . import ni_medication
 from . import ni_medication_admin_location

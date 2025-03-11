@@ -78,3 +78,37 @@ class MedicationDispense(models.Model):
             rx = rec.medication_request_id
             if rx.state in ["draft", "active"]:
                 rx.state = "completed"
+
+    def unlink(self):
+        for rec in self:
+            if (
+                rec.medication_request_id
+                and rec.medication_request_id.state == "completed"
+            ):
+                rec.medication_request_id.state = "active"
+        return super().unlink()
+
+    @api.onchange("quantity", "medication_dose_unit_id")
+    def action_preparation_dispense(self):
+        for rec in self:
+            rec.state = "preparation"
+
+    def action_inprogress_dispense(self):
+        for rec in self:
+            rec.state = "in-progress"
+
+    def action_completed_dispense(self):
+        for rec in self:
+            rec.state = "completed"
+
+    def action_notdone_dispense(self):
+        for rec in self:
+            rec.state = "not-done"
+
+    def action_abort_dispense(self):
+        for rec in self:
+            rec.state = "abort"
+
+    def action_suspended_dispense(self):
+        for rec in self:
+            rec.state = "suspended"

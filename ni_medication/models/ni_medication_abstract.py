@@ -21,11 +21,21 @@ class MedicationAbstract(models.AbstractModel):
     medication_image_1024 = fields.Image(related="medication_id.image_1024")
     medication_image_512 = fields.Image(related="medication_id.image_512")
     medication_image_256 = fields.Image(related="medication_id.image_256")
-    medication_image_128 = fields.Image(related="medication_id.image_128")
+    medication_image_128 = fields.Image(related="medication_id.image_128", store=True)
+
+    custom_checkbox_medication = fields.Boolean(
+        string="Custom Medication", default=False
+    )
+    # custom_checkbox_dosage = fields.Boolean(string="Custom Dosage", default=False)
+
     dosage_id = fields.Many2one(
         "ni.medication.dosage", required=True, ondelete="cascade"
     )
     dosage_name = fields.Char(related="dosage_id.name")
+    dosage_display = fields.Char(
+        string="Dosage Summary", related="dosage_id.display_name"
+    )
+
     dosage_tmpl_id = fields.Many2one(
         "ni.medication.dosage",
         "Dosage Template",
@@ -87,3 +97,102 @@ class MedicationAbstract(models.AbstractModel):
         }
         pprint.pprint(dosage_val)
         self.medication_id.write({"dosage_ids": [fields.Command.create(dosage_val)]})
+
+    def reset_dosage_template(self):
+        for rec in self:
+            if rec.dosage_id:
+                rec.timing_type = ""
+                rec.dosage_id.timing_type = ""
+                rec.dosage_id.dose = 0
+                rec.dosage_id.additional_ids = False
+                rec.dosage_id.as_need = False
+                rec.dosage_id._update_timing_type()
+
+    @api.onchange("timing_bound_start", "timing_bound_end")
+    def _onchange_timing_bounds(self):
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id.timing_id.bound_start = self.timing_bound_start
+                rec.dosage_id.timing_id.bound_end = self.timing_bound_end
+                rec.dosage_id.timing_id._compute_bound_duration()
+                rec.timing_bound_duration_days = (
+                    rec.dosage_id.timing_id.bound_duration_days
+                )
+
+    @api.onchange("timing_bound_duration_days")
+    def _onchange_timing_bound_duration(self):
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id.timing_id.bound_duration_days = (
+                    self.timing_bound_duration_days
+                )
+                rec.dosage_id.timing_id._inverse_bound_duration()
+                rec.timing_bound_start = self.dosage_id.timing_id.bound_start
+                rec.timing_bound_end = self.dosage_id.timing_id.bound_end
+
+    @api.onchange("dose")
+    def _onchange_dose(self):
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id._compute_display_name()
+
+    @api.onchange("meal_timing", "meal_period_ids", "period_ids", "meal_offset")
+    def _onchange_timing_when(self):
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id._update_timing_when()
+
+    @api.onchange("timing_type")
+    def _onchange_timing_type(self):
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id._update_timing_type()
+
+    @api.onchange(
+        "timing_frequency",
+        "timing_frequency_max",
+    )
+    def _onchange_timing_frequency(self):
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id.timing_id.frequency = self.timing_frequency
+                rec.dosage_id.timing_id.frequency_max = self.timing_frequency_max
+                rec.dosage_id._compute_display_name()
+
+    @api.onchange(
+        "timing_duration",
+        "timing_duration_max",
+        "timing_duration_unit",
+    )
+    def _onchange_timing_duration(self):
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                # ตรวจสอบว่ามีการเปลี่ยนแปลง timing_duration_max
+                if (
+                    self._origin
+                    and self.timing_duration_max != self._origin.timing_duration_max
+                ):
+                    rec.dosage_id.timing_id.duration_max = self.timing_duration_max
+
+                # ตรวจสอบและอัปเดต timing_duration
+                if rec.timing_duration != self._origin.timing_duration:
+                    rec.dosage_id.timing_id.duration = self.timing_duration
+
+                # ตรวจสอบและอัปเดต timing_duration_unit
+                if rec.timing_duration_unit != self._origin.timing_duration_unit:
+                    rec.dosage_id.timing_id.duration_unit = self.timing_duration_unit
+
+                rec.dosage_id._compute_display_name()
+
+    @api.onchange(
+        "timing_period",
+        "timing_period_max",
+        "timing_period_unit",
+    )
+    def _onchange_timing_period(self):
+        for rec in self:
+            if rec.dosage_id and rec.dosage_id.timing_id:
+                rec.dosage_id.timing_id.period_unit = self.timing_period_unit
+                rec.dosage_id.timing_id.period = self.timing_period
+                rec.dosage_id.timing_id.period_max = self.timing_period_max
+                rec.dosage_id._compute_display_name()
