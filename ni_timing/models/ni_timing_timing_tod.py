@@ -42,6 +42,7 @@ class TimingTimeOfDay(models.Model):
     )
     start = fields.Char(compute="_compute_start_end")
     end = fields.Char(compute="_compute_start_end")
+    color = fields.Integer()
 
     @api.depends("start_time", "end_time")
     def _compute_start_end(self):
