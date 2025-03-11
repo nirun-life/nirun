@@ -46,7 +46,14 @@ class ServiceEvent(models.Model):
 
     prediction_id = fields.Many2one("ni.risk.assessment.prediction")
     plan_patient_ids = fields.Many2many(string="ผู้สูงอายุ")
-    user_name = fields.Char(related="user_id.display_name")
+    user_name = fields.Char(
+        related="event_id.user_id.display_name",
+        string="ชื่อ-นามสกุลผู้บริบาล",
+        store=True,
+    )
+    user_id = fields.Many2one(
+        string="ผู้บริบาล", related="event_id.user_id", store=True
+    )
 
     @api.model
     def _get_default_trim_start(self):
