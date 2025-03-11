@@ -114,10 +114,10 @@ class Patient(models.Model):
 
     def _inverse_sub_district_code(self):
         for rec in self:
-            zip = self.env["res.city.zip"].search(
+            city_zip = self.env["res.city.zip"].search(
                 [("sub_district_code", "=", rec.sub_district_code)], limit=1
             )
-            rec.zip_id = zip[0] if zip else None
+            rec.zip_id = city_zip[0] if city_zip else None
 
     @api.depends("service_event_ids")
     def _compute_category_progress(self):
