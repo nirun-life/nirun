@@ -12,3 +12,4 @@ class Survey(models.Model):
         "type_id",
         "กลุ่มเป้าหมาย",
     )
+    category_id = fields.Many2one("ni.observation.category")

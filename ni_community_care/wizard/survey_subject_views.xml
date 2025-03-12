@@ -6,12 +6,19 @@
     <record id="survey_subject_wizard_view_form_inherit" model="ir.ui.view">
         <field name="name">survey.subject.wizard.view.form.inherit</field>
         <field name="model">survey.subject.wizard</field>
-        <field name="inherit_id" ref="ni_questionnaire.survey_subject_view_form_wizard_inherit" />
-        <field name="priority" eval="200" />
+        <field name="inherit_id" ref="survey_subject.survey_subject_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//group[@name='survey']/label[1]" position="before">
                 <field name="category_id" widget="radio" options="{'horizontal': True}" />
             </xpath>
+        </field>
+    </record>
+    <record id="questionnaire_survey_subject_wizard_view_form_inherit" model="ir.ui.view">
+        <field name="name">questionnaire.survey.subject.wizard.view.form.inherit</field>
+        <field name="model">survey.subject.wizard</field>
+        <field name="inherit_id" ref="ni_questionnaire.survey_subject_view_form_wizard_inherit" />
+        <field name="priority" eval="200" />
+        <field name="arch" type="xml">
             <field name="subject_ni_encounter" position="replace">
                 <field name="subject_ni_encounter" invisible="1" />
                 <field name="patient_type_id" invisible="1" />

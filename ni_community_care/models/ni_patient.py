@@ -15,6 +15,8 @@ class Patient(models.Model):
                 res["condition_categ_id"] = categ.id
         return res
 
+    observation_category_id = fields.Many2one(store=True)
+
     need_ids = fields.Many2many("ni.need", "ni_patient_need", "patient_id", "need_id")
     need_count = fields.Integer(compute="_compute_need_count")
 
