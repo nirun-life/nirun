@@ -17,7 +17,7 @@ class Patient(models.Model):
         "ni.observation.category",
         default=lambda self: self.env.ref("ni_observation.category_vital_signs").id,
         domain=[("type_count", ">", 0)],
-        store=False,
+        store=True,
     )
     observation_sheet_ids = fields.One2many(
         "ni.observation.sheet",
