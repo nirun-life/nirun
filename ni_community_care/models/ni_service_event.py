@@ -4,7 +4,7 @@ from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class ServiceEvent(models.Model):
@@ -52,8 +52,21 @@ class ServiceEvent(models.Model):
         store=True,
     )
     user_id = fields.Many2one(
-        string="ผู้บริบาล", related="event_id.user_id", store=True
+        string="ผู้บริบาล", related="event_id.user_id", group_operator="count_distinct"
     )
+    my_service_event = fields.Boolean(
+        compute="_compute_my_service_event", search="_search_my_service_event"
+    )
+
+    @api.depends("user_id")
+    def _compute_my_service_event(self):
+        for rec in self:
+            rec.my_service_event = rec.user_id == self.env.user.id
+
+    def _search_my_service_event(self, operator, operand):
+        if operator == "=" and bool(operand):
+            return [("user_id", "=" if bool(operand) else "!=", self.env.user.id)]
+        raise ValidationError(_("my_service support only '=', 'True' or 'False'"))
 
     @api.model
     def _get_default_trim_start(self):
