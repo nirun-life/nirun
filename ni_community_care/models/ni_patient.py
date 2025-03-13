@@ -100,6 +100,9 @@ class Patient(models.Model):
     gender = fields.Selection(
         related="partner_id.gender", store=True, index=True, readonly=False
     )
+    age_range_id = fields.Many2one(
+        related="partner_id.age_range_id", store=True, index=True
+    )
     country_code = fields.Char(related="country_id.code", store=True, index=True)
     state_id = fields.Many2one(
         related="partner_id.state_id", store=True, index=True, readonly=False
