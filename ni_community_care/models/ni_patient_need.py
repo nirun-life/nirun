@@ -14,6 +14,4 @@ class PatientNeed(models.Model):
     _inherit = ["ni.patient.res"]
     _rec_name = "need_id"
 
-    state_id = fields.Many2one(related="patient_id.state_id")
-    city_id = fields.Many2one(related="patient_id.city_id")
     need_id = fields.Many2one("ni.need", required=True)

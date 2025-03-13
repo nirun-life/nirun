@@ -19,7 +19,4 @@ class ConditionCode(models.Model):
 class Condition(models.Model):
     _inherit = "ni.condition"
 
-    state_id = fields.Many2one(related="patient_id.state_id")
-    city_id = fields.Many2one(related="patient_id.city_id")
-
     color = fields.Integer(related="code_id.color")
