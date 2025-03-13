@@ -8,6 +8,13 @@ class Patient(models.Model):
     _name = "ni.patient"
     _inherit = ["ni.patient", "ni.observation.bloodgroup.mixin"]
 
+    @api.model
+    def _get_default_observation_category(self):
+        categ = self.env["ni.observation.category"].search(
+            [("type_count", ">", 0)], limit=1
+        )
+        return categ.id
+
     observation_problem_only = fields.Boolean(
         default=False,
         store=False,
@@ -15,7 +22,7 @@ class Patient(models.Model):
     )
     observation_category_id = fields.Many2one(
         "ni.observation.category",
-        default=lambda self: self.env.ref("ni_observation.category_vital_signs").id,
+        default=_get_default_observation_category,
         domain=[("type_count", ">", 0)],
         store=True,
     )
