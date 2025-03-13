@@ -97,8 +97,17 @@ class Patient(models.Model):
     envi_progress = fields.Boolean(default=False, compute="_compute_category_progress")
     tech_progress = fields.Boolean(default=False, compute="_compute_category_progress")
 
+    gender = fields.Selection(
+        related="partner_id.gender", store=True, index=True, readonly=False
+    )
     country_code = fields.Char(related="country_id.code", store=True, index=True)
-    state_code = fields.Char(related="state_id.code", store=True, index=True)
+    state_id = fields.Many2one(
+        related="partner_id.state_id", store=True, index=True, readonly=False
+    )
+    state_code = fields.Char(related="partner_id.state_id.code", store=True, index=True)
+    city_id = fields.Many2one(
+        related="partner_id.city_id", store=True, index=True, readonly=True
+    )
     sub_district_code = fields.Char(
         compute="_compute_sub_district_code",
         inverse="_inverse_sub_district_code",
