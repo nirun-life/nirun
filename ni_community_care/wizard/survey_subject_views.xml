@@ -9,6 +9,24 @@
         <field name="inherit_id" ref="survey_subject.survey_subject_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//group[@name='survey']/label[1]" position="before">
+                <label for="patient_type_id" />
+                <div class="o_row">
+                    <field name="patient_type_decoration" invisible="1" />
+                    <field
+                        name="patient_type_id"
+                        widget="badge"
+                        decoration-primary="patient_type_decoration == 'primary'"
+                        decoration-success="patient_type_decoration == 'success'"
+                        decoration-info="patient_type_decoration == 'info'"
+                        decoration-warning="patient_type_decoration == 'warning'"
+                        decoration-danger="patient_type_decoration == 'danger'"
+                        decoration-muted="patient_type_decoration == 'muted'"
+                        attrs="{'invisible': [('patient_type_id', '=', False)]}"
+                    />
+                    <span class="text-muted" attrs="{'invisible': [('patient_type_id', '!=', False)]}">
+                        กรุณาทำการประเมินเพื่อระบุกลุ่มผู้สูงอายุ
+                    </span>
+                </div>
                 <field name="category_id" widget="radio" options="{'horizontal': True}" />
             </xpath>
         </field>

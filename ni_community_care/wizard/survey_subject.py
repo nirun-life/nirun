@@ -7,13 +7,21 @@ from odoo import api, fields, models
 class SurveySubjectWizard(models.TransientModel):
     _inherit = "survey.subject.wizard"
 
+    patient_type_id = fields.Many2one(
+        "ni.patient.type", related="subject_ni_patient.type_id"
+    )
+    patient_type_decoration = fields.Selection(
+        related="subject_ni_patient.type_id.decoration"
+    )
     category_id = fields.Many2one(
         "ni.observation.category",
         "มิติ",
         domain="[('type_count', '>', 0)]",
     )
     survey_id = fields.Many2one(
-        domain="['|', ('category_id', '=', category_id), ('category_id', '=', False)]"
+        domain="['&',"
+        " '|', ('target_type_ids', '=', patient_type_id), ('target_type_ids', '=', False),"
+        " '|', ('category_id', '=', category_id), ('category_id', '=', False)]"
     )
 
     @api.onchange("category_id")

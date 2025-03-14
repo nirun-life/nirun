@@ -13,6 +13,5 @@ from . import ni_service
 from . import ni_service_event
 from . import ni_service_event_outcome
 from . import res_users
-from . import survey_subject_wizard
 from . import survey_survey
 from . import survey_user_input
