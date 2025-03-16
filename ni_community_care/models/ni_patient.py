@@ -1,5 +1,7 @@
 #  Copyright (c) 2024 NSTDA
 
+from dateutil.relativedelta import relativedelta
+
 from odoo import api, fields, models
 
 
@@ -97,9 +99,6 @@ class Patient(models.Model):
     envi_progress = fields.Boolean(default=False, compute="_compute_category_progress")
     tech_progress = fields.Boolean(default=False, compute="_compute_category_progress")
 
-    gender = fields.Selection(
-        related="partner_id.gender", store=True, index=True, readonly=False
-    )
     age_range_id = fields.Many2one(
         related="partner_id.age_range_id", store=True, index=True
     )
@@ -135,24 +134,46 @@ class Patient(models.Model):
 
     @api.depends("service_event_ids")
     def _compute_category_progress(self):
+        today = fields.Date.today()
+        this_month = (today + relativedelta(months=0)).strftime("%Y-%m-01")
+        next_month = (today + relativedelta(months=1)).strftime("%Y-%m-01")
+
+        # Fetch all relevant data in one query
+        grp = self.env["ni.service.event"].read_group(
+            [
+                ("plan_patient_ids", "in", self.ids),
+                ("start", ">=", this_month),
+                ("start", "<", next_month),
+            ],
+            ["plan_patient_ids", "service_category_id", "count"],
+            ["plan_patient_ids", "service_category_id"],
+            lazy=False,
+        )
+
+        # Map results for quick access
+        progress_map = {}
+        for g in grp:
+            plan_id = g.get("plan_patient_ids")[0]  # Extract record ID
+            cat_id = g.get("service_category_id")[0]
+            count = g.get("__count", 0)
+            progress_map.setdefault(plan_id, {})[cat_id] = bool(count)
+
+        # Process records using cached results
+        category_fields = {
+            "heal_progress": False,
+            "soci_progress": False,
+            "econ_progress": False,
+            "envi_progress": False,
+            "tech_progress": False,
+        }
         for rec in self:
-            val = {
-                "heal_progress": False,
-                "soci_progress": False,
-                "econ_progress": False,
-                "envi_progress": False,
-                "tech_progress": False,
-            }
-            grp = self.env["ni.service.event"].read_group(
-                [("plan_patient_ids", "=", rec.id)], ["count"], "service_category_id"
-            )
-            for g in grp:
-                cat_id = self.env["ni.service.category"].browse(
-                    g.get("service_category_id")[0]
-                )
-                f = "{}_progress".format(cat_id.code)
-                if f in self._fields:
-                    val[f] = bool(g.get("service_category_id_count"))
+            val = category_fields.copy()  # Start with all fields set to False
+            if rec.id in progress_map:
+                for cat_id, has_count in progress_map[rec.id].items():
+                    cat = self.env["ni.service.category"].browse(cat_id)
+                    field = f"{cat.code}_progress"
+                    if field in category_fields:
+                        val[field] = has_count
             rec.update(val)
 
     def action_view_service_event(self):
