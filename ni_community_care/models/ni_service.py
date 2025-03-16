@@ -6,6 +6,8 @@ from odoo.exceptions import ValidationError
 class Service(models.Model):
     _inherit = "ni.service"
 
+    timing_id = fields.Many2one("ni.timing.template", "ความถี่")
+
     user_id = fields.Many2one("res.users")
     objective = fields.Html("วัตถุประสงค์")
     procedure = fields.Html("ขั้นตอนการดำเนินงาน")

@@ -19,6 +19,9 @@
         <field name="model">ni.service</field>
         <field name="inherit_id" ref="ni_service.ni_service_view_form" />
         <field name="arch" type="xml">
+            <field position="after" name="type_id">
+                <field name="timing_id" />
+            </field>
             <xpath position="inside" expr="//sheet/group/group[2]">
                 <field name="user_id" widget="many2one_avatar_user" />
                 <field name="target_type_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
@@ -55,6 +58,9 @@
         <field name="model">ni.service</field>
         <field name="inherit_id" ref="ni_service.ni_service_view_tree" />
         <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="timing_id" />
+            </field>
             <field name="type_id" position="after">
                 <field name="target_type_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
                 <field name="target" />
