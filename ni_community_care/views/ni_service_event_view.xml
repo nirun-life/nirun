@@ -3,8 +3,25 @@
   ~ Copyright (c) 2024 NSTDA
   -->
 <odoo>
+    <record id="ni_service_event_action_my_tree" model="ir.actions.act_window">
+        <field name="name">ผลกาารปฎิบัติงาน (ศผ.02)</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service.event</field>
+        <field name="view_mode">tree,calendar,kanban,form</field>
+        <field name="context">
+            {
+            'search_default_start': 1,
+            'search_default_group_start_day': 1,
+            'create': 0,
+        }
+        </field>
+        <field name="domain">[('create_uid', '=', uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ไม่พบกิจกรรมการดูแลผู้สูงอายุ</p>
+        </field>
+    </record>
     <record id="ni_service_event_action_my_pivot" model="ir.actions.act_window">
-        <field name="name">รายงานกิจกรรมการดูแลผู้สูงอายุ</field>
+        <field name="name">ผลกาารปฎิบัติงาน</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service.event</field>
         <field name="view_mode">pivot,graph</field>
@@ -20,7 +37,8 @@
         <field name="inherit_id" ref="ni_service.ni_service_event_view_search" />
         <field name="arch" type="xml">
             <field position="after" name="partner_ids">
-                <filter string="กิจกรรมของฉัน" name="my_service" domain="[('create_uid', '=', uid)]" />
+                <filter string="กิจกรรมของฉัน" name="my_service" domain="[('user_id', '=', uid)]" />
+                <filter name="group_start_day" context="{'group_by': 'start:day'}" invisible="1" />
             </field>
         </field>
     </record>
@@ -148,8 +166,22 @@
         <field name="model">ni.service.event</field>
         <field name="inherit_id" ref="ni_service.ni_service_event_view_tree" />
         <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="default_order">start desc</attribute>
+            </xpath>
+            <field name="name" position="before">
+                <field name="plan_patient_ids" widget="many2many_tags_avatar" />
+            </field>
+            <field name="name" position="attributes">
+                <attribute name="string">กิจกรรม</attribute>
+            </field>
             <field name="user_id" position="before">
-                <field name="user_name" string="ชื่อ-นามสกุลผู้บริบาล" optional="show" />
+                <field
+                    name="user_name"
+                    string="ชื่อ-นามสกุลผู้บริบาล"
+                    optional="show"
+                    invisible="context.get('search_default_my_service')"
+                />
             </field>
             <field name="user_id" position="attributes">
                 <attribute name="optional">hide</attribute>

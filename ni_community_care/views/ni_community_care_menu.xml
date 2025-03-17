@@ -55,6 +55,7 @@
         id="assessment_menu_root"
         name="ผลการประเมิน"
         sequence="2"
+        active="0"
         web_icon="ni_community_care,static/description/icon.png"
     />
     <menuitem
@@ -63,13 +64,15 @@
         parent="assessment_menu_root"
         action="ni_community_care.ni_risk_assessment_action"
         sequence="0"
+        active="0"
     />
-    <menuitem id="assessment_report_menu" name="รายงาน" parent="assessment_menu_root" />
+    <menuitem id="assessment_report_menu" active="0" name="รายงาน" parent="assessment_menu_root" />
     <menuitem
         id="report_by_performer_menu"
         name="รายผู้บริบาล"
         parent="assessment_report_menu"
         action="ni_risk_assessment_action_pivot_performer"
+        active="0"
     />
     <menuitem
         id="report_by_service_menu"
@@ -86,9 +89,26 @@
     />
     <menuitem
         id="my_service_event_report_menu"
-        name="รายการกิจกรรมของฉัน"
-        action="ni_service_event_action_my_pivot"
-        sequence="3"
+        name="ผลการปฎิบัติงาน"
+        sequence="2"
+        action="ni_service_event_action_my_tree"
         web_icon="ni_community_care,static/description/pivot-table.png"
     />
+    <menuitem
+        id="my_service_event_tree_menu"
+        name="รายกิจกรรม"
+        action="ni_service_event_action_my_tree"
+        parent="ni_community_care.my_service_event_report_menu"
+        sequence="0"
+    />
+    <menuitem
+        id="my_service_event_pivot_menu"
+        name="รายมิติ"
+        action="ni_service_event_action_my_pivot"
+        parent="ni_community_care.my_service_event_report_menu"
+        sequence="1"
+    />
+    <record model="ir.ui.menu" id="ni_service.event_menu_categ">
+        <field name="active">0</field>
+    </record>
 </odoo>
