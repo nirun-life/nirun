@@ -66,19 +66,51 @@
             </t>
             <t t-if="encounters" t-call="portal.portal_table">
                 <thead>
-                    <td>#</td>
-                    <td>Name</td>
+                    <!--                    <td>#</td>-->
+                    <td>Encounter No.</td>
+                    <td>Chief Complaint</td>
+                    <td>Performer</td>
+                    <td>Classification</td>
+                    <td>Location</td>
+                    <td>Since</td>
+                    <td>Until</td>
+                    <td class="text-end">Status</td>
                 </thead>
                 <tbody>
                     <tr t-foreach="encounters" t-as="encounter">
+                        <!-- <td>
+                                <t t-esc="encounter.id" />
+                        </td>-->
                         <td>
                             <a t-attf-href="/my/patients/#{patient.id}/#{encounter.id}?{{ keep_query() }}">
-                                <t t-esc="encounter.id" />
+                                <t t-esc="encounter.name" />
                             </a>
+                            <!-- ใช้ t-esc -->
                         </td>
                         <td>
-                            <t t-esc="encounter.name" />
-                            <!-- ใช้ t-esc -->
+                            <t t-esc="encounter.reason_ids.name" />
+                        </td>
+                        <td>
+                            <t t-esc="encounter.performer_id.name" />
+                        </td>
+                        <td>
+                            <t t-esc="encounter.class_id.name" />
+                        </td>
+                        <td>
+                            <t t-esc="encounter.location_id.name" />
+                        </td>
+                        <td>
+                            <t t-esc="encounter.period_start" />
+                        </td>
+                        <td>
+                            <t t-esc="encounter.period_end" />
+                        </td>
+                        <td class="text-end">
+                            <span
+                                t-field="encounter.state"
+                                class=" badge rounded-pill text-bg-info"
+                                title="Current stage of this task"
+                            />
                         </td>
                     </tr>
                 </tbody>
