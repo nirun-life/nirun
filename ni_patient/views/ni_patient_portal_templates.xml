@@ -42,24 +42,92 @@
             <t t-if="not patients">
                 <div class="alert alert-warning mt8" role="alert">There are no patients.</div>
             </t>
-            <t t-if="patients" t-call="portal.portal_table">
-                <thead>
-                    <td>#</td>
-                    <td>Name</td>
-                </thead>
-                <tbody>
-                    <tr t-foreach="patients" t-as="patient">
-                        <td>
-                            <a t-attf-href="/my/patients/#{patient.id}?{{ keep_query() }}">
-                                <t t-esc="patient.id" />
-                            </a>
-                        </td>
-                        <td>
-                            <t t-esc="patient.name" />
-                            <!-- ใช้ t-esc -->
-                        </td>
-                    </tr>
-                </tbody>
+            <t t-if="patients">
+                <div class="container">
+                    <div class="row">
+                        <t t-foreach="patients" t-as="patient">
+                            <div class="col-12 mb-3">
+                                <div class="card p-3 shadow-sm">
+                                    <div class="d-flex align-items-center">
+                                        <!-- รูปผู้ป่วย -->
+                                        <img
+                                            class="img-thumbnail float-start me-3"
+                                            t-att-src="image_data_uri(patient.avatar_1024)"
+                                            alt="Contact"
+                                            style="width: 100px; height: 100px; object-fit: cover;"
+                                        />
+                                        <div class="flex-grow-1">
+                                            <!-- ชื่อผู้ป่วย -->
+                                            <h6 class="mb-1">
+                                                <t t-esc="patient.name" />
+                                            </h6>
+                                            <!-- Patient identifier -->
+                                            <t t-if="patient.identifier">
+                                                <p class="text-muted small mb-0">
+                                                    <t t-esc="patient.identifier" />
+                                                </p>
+                                            </t>
+                                            <!-- Encounter ID -->
+                                            <t t-if="patient.encounter_id">
+                                                <p class="text-muted small mb-0">
+                                                    <t t-esc="patient.encounter_id.name" />
+                                                </p>
+                                            </t>
+                                            <!-- เพศและอายุ -->
+                                            <t t-if="patient.gender or patient.age &gt; 0">
+                                                <p class="text-muted small mb-0 d-flex align-items-center">
+                                                    <!-- ไอคอนเพศ -->
+                                                    <t t-if="patient.gender == 'male'">
+                                                        <i
+                                                            class="fa fa-mars me-2 text-info"
+                                                            aria-hidden="true"
+                                                            title="Male"
+                                                        />
+                                                    </t>
+                                                    <t t-elif="patient.gender == 'female'">
+                                                        <i
+                                                            class="fa fa-venus me-2 text-danger"
+                                                            aria-hidden="true"
+                                                            title="Female"
+                                                        />
+                                                    </t>
+                                                    <t t-else="">
+                                                        <i
+                                                            class="fa fa-genderless me-2 text-secondary"
+                                                            aria-hidden="true"
+                                                            title="Undefined"
+                                                        />
+                                                    </t>
+                                                    <!-- แสดงเพศและอายุ -->
+                                                    <span>
+                                                        <t t-if="patient.gender">
+                                                            <t t-esc="patient.gender.capitalize()" />
+                                                        </t>
+                                                        <t t-if="patient.age &gt; 0">
+                                                            <t t-if="patient.gender">,</t>
+                                                            <t t-esc="patient.age" />
+                                                            years old
+                                                        </t>
+                                                    </span>
+                                                </p>
+                                            </t>
+                                        </div>
+                                        <!-- ปุ่ม View -->
+                                        <div class="mt-2">
+                                            <a
+                                                t-attf-href="/my/patients/#{patient.id}?{{ keep_query() }}"
+                                                class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                                            >
+                                                <i class="fa fa-search me-2" />
+                                                View History
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
             </t>
         </t>
     </template>
@@ -145,23 +213,6 @@
                     <t t-set="classes" t-value="'col-lg-3 d-print-none'" />
                     <t t-set="entries">
                         <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
-                            <!--                                        <li-->
-                            <!--                                            id="task-nav"-->
-                            <!--                                            class="list-group-item ps-0 flex-grow-1 d-flex align-items-center"-->
-                            <!--                                            t-ignore="true"-->
-                            <!--                                            role="complementary"-->
-                            <!--                                        >-->
-                            <!--                                            <ul class="nav flex-column">-->
-                            <!--                                                <li class="nav-item" id="nav-header">-->
-                            <!--                                                    <a class="nav-link ps-3" href="#card_header" style="max-width: 200px;">-->
-                            <!--                                                        Encounter-->
-                            <!--                                                    </a>-->
-                            <!--                                                </li>-->
-                            <!--                                                &lt;!&ndash;                                    <li class="nav-item" id="nav-chat">&ndash;&gt;-->
-                            <!--                                                &lt;!&ndash;                                        <a class="nav-link ps-3" href="#task_chat">History</a>&ndash;&gt;-->
-                            <!--                                                &lt;!&ndash;                                    </li>&ndash;&gt;-->
-                            <!--                                            </ul>-->
-                            <!--                                        </li>-->
                             <li
                                 id="task-links"
                                 t-if="task_link_section"
