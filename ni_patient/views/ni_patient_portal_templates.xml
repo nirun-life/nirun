@@ -164,7 +164,7 @@
                             <!-- ใช้ t-esc -->
                         </td>
                         <td>
-                            <t t-esc="encounter.reason_ids.name" />
+                            <t t-esc="encounter.chief_complaint" />
                         </td>
                         <td>
                             <t t-esc="encounter.performer_id.name" />
@@ -181,10 +181,22 @@
                         <td>
                             <t t-esc="encounter.period_end" />
                         </td>
+                        <!--                        <td class="text-end">-->
+                        <!--                            <span-->
+                        <!--                                t-field="encounter.state"-->
+                        <!--                                class=" badge rounded-pill text-bg-info"-->
+                        <!--                                title="Current stage of this task"-->
+                        <!--                            />-->
+                        <!--                        </td>-->
                         <td class="text-end">
                             <span
+                                t-att-class="'badge rounded-pill ' + (
+                                     'text-bg-info' if encounter.state == 'finished' else
+                                     'text-bg-warning' if encounter.state == 'in-progress' else
+                                     'text-bg-secondary' if encounter.state == 'cancelled' else
+                                     'text-bg-primary'
+                                 )"
                                 t-field="encounter.state"
-                                class=" badge rounded-pill text-bg-info"
                                 title="Current stage of this task"
                             />
                         </td>
@@ -320,33 +332,199 @@
                                             </small>
                                         </div>
                                         <div class="col-3 text-end">
-                                            <small class="text-end">Stage:</small>
-                                            <span
-                                                t-field="encounter.state"
-                                                class=" badge rounded-pill text-bg-info"
-                                                title="Current stage of this task"
-                                            />
+                                            <small class="text-end">Status:</small>
+                                            <td class="text-end">
+                                                <span
+                                                    t-att-class="'badge rounded-pill ' + (
+                                                        'text-bg-info' if encounter.state == 'finished' else
+                                                        'text-bg-warning' if encounter.state == 'in-progress' else
+                                                        'text-bg-secondary' if encounter.state == 'cancelled' else
+                                                        'text-bg-primary'
+                                                    )"
+                                                    t-field="encounter.state"
+                                                    title="Current stage of this task"
+                                                />
+                                            </td>
                                         </div>
                                     </h5>
                                 </div>
                             </div>
                         </div>
                         <div id="card_body" class="card-body">
-                            <span t-field="encounter.name" />
-                        </div>
-                        <br />
-                        <div>
-                            <div class="row">
-                                <div class="col-6 text-end">
-                                    <!--                                    <a class="btn btn-primary"-->
-                                    <!--                                        t-attf-href="/report/pdf/ni_encounter.report_encounter/{{encounter.id}}"-->
-                                    <!--                                        target="_blank"-->
-                                    <!--                                        role="button"-->
-                                    <!--                                    >-->
-                                    <!--                                        <i class="fa fa-print" aria-hidden="true" />-->
-                                    <!--                                        Print-->
-                                    <!--                                    </a>-->
+                            <div name="hosp">
+                                <strong>Provider:</strong>
+                                <span class="me-3 " t-field="encounter.company_id.name" />
+                                <strong>Code:</strong>
+                                <span class="me-3" t-field="encounter.company_id.identifier" />
+                            </div>
+                            <div class="mt-2" name="period">
+                                <strong>Class:</strong>
+                                <span class="me-3 " t-field="encounter.class_id.name" />
+                                <strong>Date:</strong>
+                                <span t-field="encounter.period_start" />
+                                <t t-if="encounter.duration_days > 0">
+                                    <span class="mx-1">-</span>
+                                    <span t-field="encounter.period_end" />
+                                </t>
+                            </div>
+                            <div class="mt-2" id="person">
+                                <strong>Patient:</strong>
+                                <span class="me-3 " t-field="encounter.patient_id.display_name" />
+                                <strong>Gender:</strong>
+                                <span class="me-3" t-field="encounter.gender" />
+                                <strong>Birthdate:</strong>
+                                <span class="me-3" t-field="encounter.patient_id.birthdate" />
+                                <strong>Age:</strong>
+                                <span class="me-3" t-field="encounter.display_age" />
+                            </div>
+                            <p class="pt-2" />
+                            <div class="row mt-2" id="cc" t-if="encounter.show_chief_complaint">
+                                <strong>Chief Complaint:</strong>
+                                <span t-field="encounter.chief_complaint" />
+                                <t t-if="not encounter.physical_exam">
+                                    <span>-</span>
+                                </t>
+                            </div>
+                            <div class="row mt-2" id="hpi" t-if="encounter.show_history_of_present_illness">
+                                <div class="col-auto col-12 mw-100">
+                                    <strong>History of Present Illness:</strong>
+                                    <p class="m-0" t-field="encounter.history_of_present_illness" />
+                                    <t t-if="not encounter.history_of_present_illness">
+                                        <span>-</span>
+                                    </t>
                                 </div>
+                            </div>
+                            <div class="row mt-2" id="pme" t-if="encounter.show_history">
+                                <div class="col-auto col-12 mw-100">
+                                    <strong>Past Medical History:</strong>
+                                    <p class="m-0" t-field="encounter.past_medical_history" />
+                                    <t t-if="not encounter.past_medical_history">
+                                        <span>-</span>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="row mt-2" id="ros" t-if="encounter.show_review_of_systems">
+                                <div class="col-auto col-12 mw-100">
+                                    <strong>Review of Systems:</strong>
+                                    <p class="m-0" t-field="encounter.review_of_systems" />
+                                    <t t-if="not encounter.review_of_systems">
+                                        <span>-</span>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="row mt-2" id="pe" t-if="encounter.show_physical_exam">
+                                <div class="col-auto col-12 mw-100">
+                                    <strong>Physical Examination:</strong>
+                                </div>
+                            </div>
+                            <div id="vital-sign">
+                                <strong>BT:</strong>
+                                <t t-if="encounter.body_temp">
+                                    <span t-field="encounter.body_temp" />
+                                </t>
+                                <t t-else="">
+                                    <span class="text-muted mx-1">-</span>
+                                </t>
+                                <span class="me-3">°C</span>
+                                <strong>PR:</strong>
+                                <t t-if="encounter.heart_rate">
+                                    <span t-field="encounter.heart_rate" />
+                                </t>
+                                <t t-else="">
+                                    <span class="text-muted mx-1">-</span>
+                                </t>
+                                <span class="me-3">/min</span>
+                                <strong>RR:</strong>
+                                <t t-if="encounter.respiratory_rate">
+                                    <span t-field="encounter.respiratory_rate" />
+                                </t>
+                                <t t-else="">
+                                    <span class="text-muted mx-1">-</span>
+                                </t>
+                                <span class="me-3">/min</span>
+                                <strong>
+                                    <span>O</span>
+                                    <sub style="margin-left: -0.25rem">2</sub>
+                                    <span>sat:</span>
+                                </strong>
+                                <t t-if="encounter.oxygen_sat">
+                                    <span t-field="encounter.oxygen_sat" />
+                                </t>
+                                <t t-else="">
+                                    <span class="text-muted mx-1">-</span>
+                                </t>
+                                <span class="me-3">%</span>
+                                <strong>BT:</strong>
+                                <t t-if="encounter.bp">
+                                    <span t-field="encounter.bp" />
+                                </t>
+                                <t t-else="">
+                                    <span class="text-muted mx-1">-</span>
+                                </t>
+                                <span class="me-3">mmHg</span>
+                                <strong>
+                                    <span t-field="encounter.glucose_type" />
+                                    :
+                                </strong>
+                                <t t-if="encounter.glucose_type == 'fbs'">
+                                    <t t-if="encounter.fbs">
+                                        <span t-field="encounter.fbs" />
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-muted mx-1">-</span>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <t t-if="encounter.dtx">
+                                        <span t-field="encounter.dtx" />
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-muted mx-1">-</span>
+                                    </t>
+                                </t>
+                                <span class="me-3">mg/dl</span>
+                                <strong>BMI:</strong>
+                                <t t-if="encounter.bmi">
+                                    <span t-field="encounter.bmi" />
+                                </t>
+                                <t t-else="">
+                                    <span class="text-muted mx-1">-</span>
+                                </t>
+                                <span class="me-3">
+                                    kg/m
+                                    <sup style="margin-left: -0.25rem">2</sup>
+                                </span>
+                            </div>
+                            <div id="pain" t-if="encounter.pain_score">
+                                <strong>Pain Score:</strong>
+                                <span class="me-2" t-field="encounter.pain_score" />
+                                <strong>Area:</strong>
+                                <t t-if="encounter.pain_area">
+                                    <span t-field="encounter.pain_area" />
+                                </t>
+                                <t t-else="">
+                                    <span class="text-muted mx-1">-</span>
+                                </t>
+                            </div>
+                            <p class="m-0" t-field="encounter.physical_exam" />
+                            <t t-if="not encounter.physical_exam">
+                                <span>-</span>
+                            </t>
+                        </div>
+                    </div>
+                    <br />
+                    <div>
+                        <div class="row">
+                            <div class="text-end">
+                                <a
+                                    class="btn btn-primary"
+                                    t-attf-href="/report/pdf/ni_patient.encounter_summary_report/{{encounter.id}}"
+                                    target="_blank"
+                                    role="button"
+                                >
+                                    <i class="fa fa-print" aria-hidden="true" />
+                                    Print
+                                </a>
                             </div>
                         </div>
                         <!--                        <div class="mt32" id="task_chat" data-anchor="true">-->
