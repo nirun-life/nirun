@@ -15,7 +15,15 @@
                 <t t-else="">Patients</t>
             </li>
             <li t-if="patient" class="breadcrumb-item active text-truncate">
-                <span t-field="patient.name" />
+                <a t-if="encounter" t-attf-href="/my/patients/{{patient.id}}?{{ keep_query() }}">
+                    <t t-esc="patient.name" />
+                </a>
+                <t t-else="">
+                    <span t-field="patient.name" />
+                </t>
+            </li>
+            <li t-if="encounter" class="breadcrumb-item active text-truncate">
+                <span t-field="encounter.name" />
             </li>
         </xpath>
     </template>

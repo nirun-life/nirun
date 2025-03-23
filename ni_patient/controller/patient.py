@@ -80,6 +80,7 @@ class PatientPortal(CustomerPortal):
         values.update(
             {
                 "encounter": encounters[0],
+                "patient": encounters[0].patient_id,
                 "page_name": "encounter",
                 "default_url": "/my/patients",
                 "user": request.env.user,
