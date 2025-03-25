@@ -56,12 +56,12 @@ class Patient(models.Model):
         help="Partner-related data of patient",
     )
     user_ids = fields.Many2many(
-        "res.users",  # ✅ ต้องเป็น "res.users"
+        "res.users",
         string="Related Users",
         ondelete="restrict",
-        domain="[('partner_id.is_company', '=', False)]",  # ✅ อ้างอิงจาก partner_id
+        domain="[('partner_id.is_company', '=', False)]",
         auto_join=True,
-        help="Users ที่สามารถเข้าถึงข้อมูลของ Patient",
+        help="Users allows to access patient information on portal",
     )
 
     image_1920 = fields.Image(

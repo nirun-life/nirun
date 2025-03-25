@@ -351,7 +351,11 @@
                             </div>
                         </div>
                         <div id="card_body" class="card-body">
-                            <div name="hosp">
+                            <h2 name="title mb-4">
+                                <span t-out="encounter.class_id.report_title" />
+                                <small class="text-muted mx-2" t-field="encounter.identifier" />
+                            </h2>
+                            <div name="hosp" class="mt-3">
                                 <strong>Provider:</strong>
                                 <span class="me-3 " t-field="encounter.company_id.name" />
                                 <strong>Code:</strong>
@@ -372,11 +376,10 @@
                                 <span class="me-3 " t-field="encounter.patient_id.display_name" />
                                 <strong>Gender:</strong>
                                 <span class="me-3" t-field="encounter.gender" />
-                                <strong>Birthdate:</strong>
-                                <span class="me-3" t-field="encounter.patient_id.birthdate" />
                                 <strong>Age:</strong>
                                 <span class="me-3" t-field="encounter.display_age" />
                             </div>
+                            <hr class="mb-1" />
                             <p class="pt-2" />
                             <div class="row mt-2" id="cc" t-if="encounter.show_chief_complaint">
                                 <strong>Chief Complaint:</strong>
@@ -418,82 +421,86 @@
                                 </div>
                             </div>
                             <div id="vital-sign">
-                                <strong>BT:</strong>
-                                <t t-if="encounter.body_temp">
-                                    <span t-field="encounter.body_temp" />
-                                </t>
-                                <t t-else="">
-                                    <span class="text-muted mx-1">-</span>
-                                </t>
-                                <span class="me-3">°C</span>
-                                <strong>PR:</strong>
-                                <t t-if="encounter.heart_rate">
-                                    <span t-field="encounter.heart_rate" />
-                                </t>
-                                <t t-else="">
-                                    <span class="text-muted mx-1">-</span>
-                                </t>
-                                <span class="me-3">/min</span>
-                                <strong>RR:</strong>
-                                <t t-if="encounter.respiratory_rate">
-                                    <span t-field="encounter.respiratory_rate" />
-                                </t>
-                                <t t-else="">
-                                    <span class="text-muted mx-1">-</span>
-                                </t>
-                                <span class="me-3">/min</span>
-                                <strong>
-                                    <span>O</span>
-                                    <sub style="margin-left: -0.25rem">2</sub>
-                                    <span>sat:</span>
-                                </strong>
-                                <t t-if="encounter.oxygen_sat">
-                                    <span t-field="encounter.oxygen_sat" />
-                                </t>
-                                <t t-else="">
-                                    <span class="text-muted mx-1">-</span>
-                                </t>
-                                <span class="me-3">%</span>
-                                <strong>BT:</strong>
-                                <t t-if="encounter.bp">
-                                    <span t-field="encounter.bp" />
-                                </t>
-                                <t t-else="">
-                                    <span class="text-muted mx-1">-</span>
-                                </t>
-                                <span class="me-3">mmHg</span>
-                                <strong>
-                                    <span t-field="encounter.glucose_type" />
-                                    :
-                                </strong>
-                                <t t-if="encounter.glucose_type == 'fbs'">
-                                    <t t-if="encounter.fbs">
-                                        <span t-field="encounter.fbs" />
+                                <div>
+                                    <strong>BT:</strong>
+                                    <t t-if="encounter.body_temp">
+                                        <span t-field="encounter.body_temp" />
                                     </t>
                                     <t t-else="">
                                         <span class="text-muted mx-1">-</span>
                                     </t>
-                                </t>
-                                <t t-else="">
-                                    <t t-if="encounter.dtx">
-                                        <span t-field="encounter.dtx" />
+                                    <span class="me-3">°C</span>
+                                    <strong>PR:</strong>
+                                    <t t-if="encounter.heart_rate">
+                                        <span t-field="encounter.heart_rate" />
                                     </t>
                                     <t t-else="">
                                         <span class="text-muted mx-1">-</span>
                                     </t>
-                                </t>
-                                <span class="me-3">mg/dl</span>
-                                <strong>BMI:</strong>
-                                <t t-if="encounter.bmi">
-                                    <span t-field="encounter.bmi" />
-                                </t>
-                                <t t-else="">
-                                    <span class="text-muted mx-1">-</span>
-                                </t>
-                                <span class="me-3">
-                                    kg/m
-                                    <sup style="margin-left: -0.25rem">2</sup>
-                                </span>
+                                    <span class="me-3">/min</span>
+                                    <strong>RR:</strong>
+                                    <t t-if="encounter.respiratory_rate">
+                                        <span t-field="encounter.respiratory_rate" />
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-muted mx-1">-</span>
+                                    </t>
+                                    <span class="me-3">/min</span>
+                                    <strong>
+                                        <span>O</span>
+                                        <sub style="margin-left: -0.25rem">2</sub>
+                                        <span>sat:</span>
+                                    </strong>
+                                    <t t-if="encounter.oxygen_sat">
+                                        <span t-field="encounter.oxygen_sat" />
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-muted mx-1">-</span>
+                                    </t>
+                                    <span class="me-3">%</span>
+                                </div>
+                                <div>
+                                    <strong>BP:</strong>
+                                    <t t-if="encounter.bp">
+                                        <span t-field="encounter.bp" />
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-muted mx-1">-</span>
+                                    </t>
+                                    <span class="me-3">mmHg</span>
+                                    <strong>
+                                        <span t-field="encounter.glucose_type" />
+                                        :
+                                    </strong>
+                                    <t t-if="encounter.glucose_type == 'fbs'">
+                                        <t t-if="encounter.fbs">
+                                            <span t-field="encounter.fbs" />
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted mx-1">-</span>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-if="encounter.dtx">
+                                            <span t-field="encounter.dtx" />
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted mx-1">-</span>
+                                        </t>
+                                    </t>
+                                    <span class="me-3">mg/dl</span>
+                                    <strong>BMI:</strong>
+                                    <t t-if="encounter.bmi">
+                                        <span t-field="encounter.bmi" />
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-muted mx-1">-</span>
+                                    </t>
+                                    <span class="me-3">
+                                        kg/m
+                                        <sup style="margin-left: -0.25rem">2</sup>
+                                    </span>
+                                </div>
                             </div>
                             <div id="pain" t-if="encounter.pain_score">
                                 <strong>Pain Score:</strong>

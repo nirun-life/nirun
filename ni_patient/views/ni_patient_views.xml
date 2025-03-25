@@ -263,7 +263,6 @@
                                     <field name="sibling_count" />
                                     <field name="birth_order" attrs="{'invisible': [('sibling_count', '=', 0)]}" />
                                     <field name="children_count" />
-                                    <field name="user_ids" widget="many2many_tags" />
                                 </group>
                                 <group string="Education">
                                     <field name="education_level" />
@@ -291,6 +290,11 @@
                                 />
                                 <field name="past_medical_history_date" class="text-muted mx-2" />
                             </div>
+                        </page>
+                        <page name="setting" string="Settings" icon="fa-cog" groups="ni_patient.group_manager">
+                            <group>
+                                <field name="user_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
