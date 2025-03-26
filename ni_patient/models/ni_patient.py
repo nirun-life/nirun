@@ -55,6 +55,15 @@ class Patient(models.Model):
         auto_join=True,
         help="Partner-related data of patient",
     )
+    user_ids = fields.Many2many(
+        "res.users",
+        string="Related Users",
+        ondelete="restrict",
+        domain="[('partner_id.is_company', '=', False)]",
+        auto_join=True,
+        help="Users allows to access patient information on portal",
+    )
+
     image_1920 = fields.Image(
         related="partner_id.image_1920", readonly=False, default=_default_image
     )
