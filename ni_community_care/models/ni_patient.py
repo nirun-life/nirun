@@ -2,7 +2,7 @@
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
 
 
 class Patient(models.Model):
@@ -20,11 +20,74 @@ class Patient(models.Model):
     observation_category_id = fields.Many2one(store=True)
 
     need_ids = fields.Many2many("ni.need", "ni_patient_need", "patient_id", "need_id")
+    need_line_ids = fields.One2many("ni.patient.need.line", "patient_id")
     need_count = fields.Integer(compute="_compute_need_count")
 
     user_city_ids = fields.Many2many(
         "res.city", store=False, default=lambda self: self.env.user.city_ids
     )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        vals_list = [
+            dict(vals, need_line_ids=self._need_line_values(vals.get("need_ids")))
+            if not vals.get("need_line_ids")
+            else vals
+            for vals in vals_list
+        ]
+        return super(Patient, self).create(vals_list)
+
+    def write(self, vals):
+        if "need_ids" in vals:
+            vals["need_line_ids"] = self._need_line_values(vals["need_ids"])
+        return super(Patient, self).write(vals)
+
+    def _need_line_values(self, need_commands):
+        """
+        :param need_commands: ORM commands for partner_id field (0 and 1 commands not supported)
+        :return: associated attendee_ids ORM commands
+        """
+        need_line_commands = []
+
+        removed_need_ids = []
+        added_need_ids = []
+
+        # if commands are just integers, assume they are ids with the intent to `Command.set`
+        if need_commands and isinstance(need_commands[0], int):
+            need_commands = [Command.set(need_commands)]
+
+        for command in need_commands:
+            op = command[0]
+            if op in (2, 3, Command.delete, Command.unlink):  # Remove partner
+                removed_need_ids += [command[1]]
+            elif op in (6, Command.set):  # Replace all
+                removed_need_ids += set(self.need_ids.ids) - set(
+                    command[2]
+                )  # Don't recreate attendee if partner already attend the event
+                added_need_ids += set(command[2]) - set(self.need_ids.ids)
+            elif op in (4, Command.link):
+                added_need_ids += (
+                    [command[1]] if command[1] not in self.need_ids.ids else []
+                )
+            # commands 0 and 1 not supported
+
+        if not self:
+            attendees_to_unlink = self.env["ni.patient.need.line"]
+        else:
+            attendees_to_unlink = self.env["ni.patient.need.line"].search(
+                [
+                    ("patient_id", "in", self.ids),
+                    ("need_id", "in", removed_need_ids),
+                ]
+            )
+        need_line_commands += [
+            [2, attendee.id] for attendee in attendees_to_unlink
+        ]  # Removes and delete
+
+        need_line_commands += [
+            [0, 0, dict(need_id=need_id)] for need_id in added_need_ids
+        ]
+        return need_line_commands
 
     @api.depends("need_ids")
     def _compute_need_count(self):
@@ -41,11 +104,12 @@ class Patient(models.Model):
         )
         view = {
             "name": "Need",
-            "res_model": "ni.patient.need",
+            "res_model": "ni.patient.need.line",
             "type": "ir.actions.act_window",
             "target": self.env.context.get("target", "current"),
             "view_mode": "list,form",
             "context": ctx,
+            "domain": [("patient_id", "=", self.id)],
         }
         return view
 

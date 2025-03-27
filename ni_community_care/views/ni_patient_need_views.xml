@@ -5,25 +5,32 @@
 <odoo>
     <record id="ni_patient_need_view_tree" model="ir.ui.view">
         <field name="name">ni.patient.need.view.tree</field>
-        <field name="model">ni.patient.need</field>
+        <field name="model">ni.patient.need.line</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="patient_id" invisible="context.get('default_patient_id')" />
                 <field name="need_id" />
-                <field name="write_date" />
-                <field name="write_uid" widget="many2one_avatar_user" />
+                <field name="start" />
+                <field name="stop" />
+                <field name="state" widget="badge" />
             </tree>
         </field>
     </record>
     <record id="ni_patient_need_view_form" model="ir.ui.view">
         <field name="name">ni.patient.need.view.form</field>
-        <field name="model">ni.patient.need</field>
+        <field name="model">ni.patient.need.line</field>
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
                     <group>
                         <field name="patient_id" invisible="context.get('default_patient_id')" />
-                        <field name="need_id" />
+                        <field name="need_id" options="{'no_open': True}" />
+                        <label for="start" />
+                        <div class="o_row">
+                            <field name="start" />
+                            <field name="stop" />
+                        </div>
+                        <field name="state" widget="badge" />
                     </group>
                     <notebook>
                         <page name="extra" string="Extra Info" groups="base.group_no_one">
