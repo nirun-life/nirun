@@ -28,7 +28,7 @@
                     <div class="row" id="caregiver">
                         <div class="col-auto col-5 mw-100">
                             <strong>ชื่อ-สกุลผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ:</strong>
-                            <p class="m-0" t-field="user.name" />
+                            <p class="m-0" t-field="user.employee_id.name or user.name" />
                         </div>
                         <div class="col-auto col-4 mw-100">
                             <strong>พื้นที่:</strong>
@@ -91,7 +91,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-foreach="d.event_ids" t-as="e">
+                                <t t-foreach="d.event_ids" t-as="e" t-if="e.user_id.id == user.id">
                                     <t t-set="i" t-value="1" />
                                     <tr t-foreach="e.plan_patient_ids" t-as="p">
                                         <td t-att-rowspan="len(e.plan_patient_ids)" t-if="p_first">

@@ -30,7 +30,7 @@
                         <div class="row" id="caregiver">
                             <div class="col-auto col-5 mw-100">
                                 <strong>ชื่อ-สกุลผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ:</strong>
-                                <p class="m-0" t-field="user.name" />
+                                <p class="m-0" t-esc="user.employee_id.name or user.name" />
                             </div>
                             <div class="col-auto col-4 mw-100">
                                 <strong>พื้นที่:</strong>
@@ -98,7 +98,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.service_event_ids" t-as="d">
+                                <tr t-foreach="o.service_event_ids" t-as="d" t-if="d.user_id.id == user.id">
                                     <td>
                                         <span t-esc="context_timestamp(d.start).strftime(lang_id.date_format)" />
                                     </td>
