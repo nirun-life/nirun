@@ -2,7 +2,7 @@
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import Command, api, fields, models
+from odoo import Command, _, api, fields, models
 
 
 class Patient(models.Model):
@@ -304,6 +304,39 @@ class Patient(models.Model):
         action["context"] = ctx
         return action
 
+    @api.model
+    def get_patient_type_dashboard(self):
+        patient_type_status = {
+            "adl-no": {
+                "description": _("รอการประเมิน"),
+                "amount": 0,
+                "class": "text-info",
+            },
+            "adl-high": {
+                "description": _("ติดสังคม"),
+                "amount": 0,
+                "class": "text-success",
+            },
+            "adl-mid": {"description": _("ติดบ้าน"), "amount": 0, "class": "text-odoo"},
+            "adl-low": {
+                "description": _("ติดเตียง"),
+                "amount": 0,
+                "class": "text-danger",
+            },
+        }
+        patient_type = self.read_group(
+            [("deceased", "=", False)], ["type_id"], ["type_id"], lazy=False
+        )
+        pt = self.env["ni.patient.type"]
+        for t in patient_type:
+            if not t["type_id"]:
+                patient_type_status["adl-no"]["amount"] += t["__count"]
+                continue
+            patient_type_status[pt.browse(t["type_id"][0]).code]["amount"] += t[
+                "__count"
+            ]
+        return patient_type_status
+
 
 class PatientType(models.Model):
     _name = "ni.patient.type"
@@ -321,6 +354,7 @@ class PatientType(models.Model):
         default="muted",
         required=True,
     )
+    target = fields.Integer("จำนวนเป้าหมาย")
 
 
 class FamilyRelation(models.Model):

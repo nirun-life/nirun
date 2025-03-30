@@ -51,7 +51,15 @@
         "views/survey_survey_views.xml",
         "wizard/survey_subject_views.xml",
     ],
-    "assets": {"web.assets_backend": ["ni_community_care/static/src/scss/custom.css"]},
+    "assets": {
+        "web.assets_backend": [
+            "ni_community_care/static/src/scss/custom.css",
+            "ni_community_care/static/src/components/*.js",
+            "ni_community_care/static/src/components/*.xml",
+            "ni_community_care/static/src/views/*.js",
+            "ni_community_care/static/src/views/*.xml",
+        ]
+    },
     "application": True,
     "auto_install": False,
     "installable": True,
