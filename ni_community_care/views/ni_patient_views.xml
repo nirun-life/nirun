@@ -451,7 +451,8 @@
                             string="แผนการให้ความช่วยเหลือ"
                             badge="careplan_count"
                             icon="fa-tasks"
-                            invisible="1"
+                            groups="base.group_no_one"
+                            invisible="0"
                         >
                             <field name="careplan_count" invisible="1" />
                             <field name="careplan_ids" context="{'default_patient_id': id}" />
@@ -469,8 +470,11 @@
                                     class="btn-primary my-2"
                                     string=" กิจกรรมการดูแลผู้สูงอายุ +"
                                     icon="fa-tasks"
-                                    attrs="{'invisible': [('deceased', '=', True)]}"
+                                    attrs="{'invisible': ['|', ('deceased', '=', True), ('type_id', '=', False)]}"
                                 />
+                                <p class="text-muted" attrs="{'invisible': [('type_id', '!=', False)]}">
+                                    กรุณาทำการประเมิน ADL ก่อนทำการบันทึกกิจกรรมการดูแลผู้สูงอายุ
+                                </p>
                             </div>
                             <label
                                 for="service_event_ids"
