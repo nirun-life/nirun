@@ -17,7 +17,7 @@
             "/l10n_th_web_font_noto/static/src/scss/common.scss",
         ],
         "web.report_assets_common": [
-            "/l10n_th_web_font_noto/static/src/scss/fonts.scss",
+            "/l10n_th_web_font_noto/static/src/scss/report.scss",
         ],
     },
     "application": False,
