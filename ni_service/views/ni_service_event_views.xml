@@ -294,9 +294,22 @@
                         widget="many2many_checkboxes"
                         domain="[('category_id', '=', service_category_id)]"
                     />
-                    <field name="start" force_save="1" />
-                    <field name="stop" invisible="1" />
-                    <field name="duration" widget="float_time" invisible="0" />
+                    <label for="start" string="เวลาที่ปฎิบัติงาน" />
+                    <div>
+                        <div class="o_row">
+                            <label for="start" string="เริ่ม" />
+                            <field name="start" force_save="1" />
+                        </div>
+                        <div class="o_row">
+                            <label for="stop" string="หยุด" />
+                            <field name="stop" force_save="1" />
+                        </div>
+                    </div>
+                    <label for="duration" />
+                    <div class="o_row">
+                        <field name="duration" widget="float_time" force_save="1" class="o_narrow_field" />
+                        <span class="mx-1">ชั่วโมง</span>
+                    </div>
                     <label for="image_1" string="ภาพประกอบ" />
                     <field name="has_image" invisible="1" />
                     <div class="o_row">
