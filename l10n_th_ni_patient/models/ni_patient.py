@@ -24,6 +24,42 @@ class Patient(models.Model):
         compute="_compute_display_identification_id"
     )
 
+    @api.onchange("identification_id")
+    def _onchange_identification_id_check(self):
+        if self.identification_id:
+            try:
+                self._check_identification_id()
+            except ValidationError:
+                return {
+                    "warning": {
+                        "title": _("Warning!"),
+                        "message": _(
+                            "Invalid identification number for Thailand nationality person"
+                        ),
+                    }
+                }
+            if not self._is_unique():
+                return {
+                    "warning": {
+                        "title": _("Warning!"),
+                        "message": _("Patient's identification ID must be unique!"),
+                    }
+                }
+
+    def _is_unique(self):
+        self.ensure_one()
+        identification = self.identification_id
+        if self.nationality_id.code == "TH":
+            identification = pin.compact(self.identification_id)
+        domain = [
+            ("company_id", "=", self.company_id.id),
+            ("nationality_id", "=", self.nationality_id.id),
+            ("identification_id", "=", identification),
+        ]
+        if self.id:
+            domain += ("id", "!=", self.id)
+        return not bool(self.search(domain, limit=1))
+
     @api.depends("identification_id")
     def _compute_display_identification_id(self):
         for rec in self:
