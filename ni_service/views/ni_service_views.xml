@@ -81,12 +81,16 @@
                             <field name="name" placeholder="Service Name..." />
                         </h1>
                         <div class="small text-muted">
-                            <field name="category_id" placeholder="Category..." options="{'no_open': True}" />
+                            <field
+                                name="category_id"
+                                placeholder="Category..."
+                                options="{'no_open': True, 'no_create':True}"
+                            />
                         </div>
                     </div>
                     <group>
                         <group>
-                            <field name="type_id" options="{ 'no_open': True}" />
+                            <field name="type_id" options="{'no_open': True}" />
                             <field name="specialty_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
                             <field name="employee_id" widget="many2one_avatar_employee" options="{'no_open': True}" />
                         </group>

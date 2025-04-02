@@ -233,7 +233,11 @@
                             />
                         </h1>
                         <group>
-                            <field name="title" options="{'no_open': True}" placeholder="นาย, นาง, น.ส." />
+                            <field
+                                name="title"
+                                options="{'no_open': True, 'no_create': True}"
+                                placeholder="นาย, นาง, น.ส."
+                            />
                             <field name="name" placeholder="Patient's Name" required="True" string="ชื่อ-นามสกุล" />
                         </group>
                         <field
@@ -372,14 +376,14 @@
                                         name="blood_abo"
                                         class="abo_field"
                                         placeholder="ABO"
-                                        options="{'no_open': True}"
+                                        options="{'no_open': True, 'no_create': True, }"
                                     />
                                     <field
                                         name="blood_rh"
                                         class="abo_field"
                                         placeholder="RH"
                                         context="{'only_abbr':True}"
-                                        options="{'no_open': True, 'always_reload':True}"
+                                        options="{'no_open': True,  'no_create': True, 'always_reload':True}"
                                     />
                                 </div>
                                 <label for="allergy_code_ids" string="แพ้ยา/อาหาร" />
@@ -431,10 +435,6 @@
                                         options="{'horizontal': True}"
                                     />
                                 </div>
-                                <!--                                <div class="col-12 col-lg-3 text-end">-->
-                                <!--                                    <field name="observation_problem_only" />-->
-                                <!--                                    <label for="observation_problem_only" string="Problem only" />-->
-                                <!--                                </div>-->
                             </div>
                             <field name="filtered_patient_observation_ids" />
                             <button

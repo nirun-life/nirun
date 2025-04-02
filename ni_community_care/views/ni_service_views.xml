@@ -24,7 +24,11 @@
             </field>
             <xpath position="inside" expr="//sheet/group/group[2]">
                 <field name="user_id" widget="many2one_avatar_user" />
-                <field name="target_type_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                <field
+                    name="target_type_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color', 'no_create': True, }"
+                />
                 <label for="target" />
                 <div class="o_row">
                     <field name="target" />
