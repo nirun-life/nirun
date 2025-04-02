@@ -5,7 +5,7 @@ from odoo import fields, models
 class Survey(models.Model):
     _inherit = "survey.survey"
 
-    target_type_ids = target_type_ids = fields.Many2many(
+    target_type_ids = fields.Many2many(
         "ni.patient.type",
         "survey_survey_target_type",
         "survey_id",

@@ -48,6 +48,7 @@
         "report/patient_service_report.xml",
         "report/patient_careplan_report.xml",
         "report/service_report.xml",
+        "views/ni_service_event_report_views.xml",
         "views/survey_survey_views.xml",
         "wizard/survey_subject_views.xml",
     ],

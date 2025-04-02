@@ -15,6 +15,12 @@ class Employee(models.Model):
             vals["city_ids"] = [fields.Command.set(user.city_ids.ids)]
         return vals
 
+    @api.model
+    def rewrite_user_name(self):
+        employees = self.search([("user_id", "!=", False)])
+        for rec in employees:
+            rec.user_id.name = rec.name
+
     def action_create_user(self):
         vals = super().action_create_user()
         context = vals.get("context", {})

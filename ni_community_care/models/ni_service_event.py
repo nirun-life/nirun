@@ -11,6 +11,18 @@ class ServiceEvent(models.Model):
     _inherit = "ni.service.event"
 
     @api.model
+    def _get_default_trim_start(self):
+        now = fields.Datetime.now()
+        if now.minute > 30:
+            return now.replace(minute=30, second=0)
+        else:
+            return now.replace(minute=0, second=0)
+
+    @api.model
+    def _get_default_trim_stop(self):
+        return self._get_default_trim_start() + timedelta(hours=1)
+
+    @api.model
     def default_get(self, _fields):
         res = super(ServiceEvent, self).default_get(_fields)
         if "plan_patient_ids" in res:
@@ -32,8 +44,26 @@ class ServiceEvent(models.Model):
                     res["service_ids"] = [fields.Command.set(careplan.service_ids.ids)]
             if "patient_type_id" not in res:
                 res["patient_type_id"] = pat.type_id.id
+            if "state_id" not in res and pat.state_id:
+                res["state_id"] = pat.state_id.id
+            if "city_id" not in res and pat.city_id:
+                res["city_id"] = pat.city_id.id
         return res
 
+    state_id = fields.Many2one(
+        "res.country.state",
+        compute="_compute_state_city",
+        store=True,
+        index=True,
+        ondelete="restrict",
+    )
+    city_id = fields.Many2one(
+        "res.city",
+        compute="_compute_state_city",
+        store=True,
+        index=True,
+        ondelete="restrict",
+    )
     attendance_id = fields.Many2one(required=False)
 
     patient_id = fields.Many2one("ni.patient", store=False)
@@ -52,11 +82,27 @@ class ServiceEvent(models.Model):
         store=True,
     )
     user_id = fields.Many2one(
-        string="ผู้บริบาล", related="event_id.user_id", group_operator="count_distinct"
+        string="ผู้บริบาล",
+        related="event_id.user_id",
+        group_operator="count_distinct",
+        store=True,
     )
     my_service_event = fields.Boolean(
         compute="_compute_my_service_event", search="_search_my_service_event"
     )
+    start = fields.Datetime(default=_get_default_trim_start)
+    stop = fields.Datetime(default=_get_default_trim_stop)
+
+    @api.depends("state_id", "city_id")
+    def _compute_state_city(self):
+        for rec in self:
+            if rec.plan_patient_ids:
+                patient = rec.plan_patient_ids[0]
+                rec.update(
+                    {"state_id": patient.state_id.id, "city_id": patient.city_id.id}
+                )
+            else:
+                rec.update({"state_id": None, "city_id": None})
 
     @api.depends("user_id")
     def _compute_my_service_event(self):
@@ -67,21 +113,6 @@ class ServiceEvent(models.Model):
         if operator == "=" and bool(operand):
             return [("user_id", "=" if bool(operand) else "!=", self.env.user.id)]
         raise ValidationError(_("my_service support only '=', 'True' or 'False'"))
-
-    @api.model
-    def _get_default_trim_start(self):
-        now = fields.Datetime.now()
-        if now.minute > 30:
-            return now.replace(minute=30, second=0)
-        else:
-            return now.replace(minute=0, second=0)
-
-    @api.model
-    def _get_default_trim_stop(self):
-        return self._get_default_trim_start() + timedelta(hours=1)
-
-    start = fields.Datetime(default=_get_default_trim_start)
-    stop = fields.Datetime(default=_get_default_trim_stop)
 
     @api.onchange("patient_type_id", "service_category_id")
     def _onchange_patient_type_id(self):

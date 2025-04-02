@@ -3,25 +3,66 @@
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models, tools
+from odoo.exceptions import ValidationError
 
 
 class ServiceEventReport(models.Model):
     _name = "ni.service.event.report"
     _description = "Service Event Report"
+    _order = "start desc"
     _auto = False
+    _rec_name = "event_id"
 
-    name = fields.Char("ชื่อกิจกรรม")
-    event_id = fields.Many2one("calendar.event")
-    start = fields.Datetime()
-    stop = fields.Datetime()
+    event_id = fields.Many2one("ni.service.event")
+    start = fields.Datetime("เริ่ม")
+    stop = fields.Datetime("หยุด")
     duration = fields.Float("ระยะเวลา")
     service_id = fields.Many2one("ni.service", "กิจกรรม")
     service_ids = fields.Many2many(
         "ni.service", "ni_service_event_rel", "event_id", "service_id", "กิจกรรม"
     )
+    service_category_id = fields.Many2one("ni.service.category", "มิติ")
+    outcome = fields.Html(related="event_id.outcome")
+    location = fields.Char(related="event_id.location", string="สถานที่")
     patient_id = fields.Many2one("ni.patient", "ผู้สูงอายุ")
     patient_type_id = fields.Many2one("ni.patient.type", "ประเภทผู้สูงอายุ")
-    user_id = fields.Many2one("res.users", "บัญชีผู้บริบาล")
+    user_id = fields.Many2one("res.users", "ผู้บริบาล")
+    city_id = fields.Many2one("res.city", "พื้นที่")
+    state_id = fields.Many2one("res.country.state", "จังหวัด")
+    image_1 = fields.Image(related="event_id.image_1")
+    image_2 = fields.Image(related="event_id.image_2")
+
+    my_service = fields.Boolean(
+        compute="_compute_my_service", search="_search_my_service"
+    )
+    my_area = fields.Boolean(compute="_compute_my_area", search="_search_my_area")
+
+    @api.depends("user_id")
+    def _compute_my_service(self):
+        for rec in self:
+            rec.my_service = rec.user_id == self.env.user.id
+
+    def _search_my_service(self, operator, operand):
+        if operator == "=" and bool(operand):
+            return [("user_id", "=" if bool(operand) else "!=", self.env.user.id)]
+        raise ValidationError(_("my_service support only '=', 'True' or 'False'"))
+
+    @api.depends("city_id")
+    def _compute_my_area(self):
+        for rec in self:
+            rec.my_area = rec.city_id.id in self.env.user.city_ids.ids
+
+    def _search_my_area(self, operator, operand):
+        if operator == "=" and bool(operand):
+
+            return [
+                (
+                    "city_id",
+                    "in" if bool(operand) else "not in",
+                    self.env.user.city_ids.ids,
+                )
+            ]
+        raise ValidationError(_("my_area support only '=', 'True' or 'False'"))
 
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)
@@ -30,18 +71,19 @@ class ServiceEventReport(models.Model):
             SELECT
                 pe.ni_service_event_id as id,
                 se.id as event_id,
-                c.name,
                 se.service_id,
+                se.service_category_id,
                 se.start,
                 se.stop,
                 se.duration,
                 pat.type_id as patient_type_id,
                 pe.ni_patient_id as patient_id,
-                c.user_id
+                se.user_id,
+                se.state_id,
+                se.city_id
             FROM ni_patient_ni_service_event_rel pe
-            LEFT JOIN ni_service_event se ON pe.ni_service_event_id = se.id
-            LEFT JOIN calendar_event c ON se.event_id = c.id
-            LEFT JOIN ni_patient pat ON pe.ni_patient_id = pat.id
+                LEFT JOIN ni_service_event se ON pe.ni_service_event_id = se.id
+                LEFT JOIN ni_patient pat ON pe.ni_patient_id = pat.id
             WHERE se.patient_type_id IS NOT NULL
         )
         """
