@@ -8,20 +8,35 @@
         <field name="model">ni.service.event.report</field>
         <field name="arch" type="xml">
             <search>
-                <field name="user_id" />
+                <field name="employee_id" />
                 <field name="patient_id" />
-                <filter name="start" date="start" />
+                <filter name="start" date="start" default_period="this_month" />
                 <separator />
                 <filter name="my_service" string="กิจกรรมของฉัน" domain="[('my_service', '=', True)]" />
-                <filter name="my_area" string="ในพื้นที่ของฉัน" domain="[('my_area', '=', True)]" />
+                <filter
+                    name="my_area"
+                    string="ในพื้นที่ของฉัน"
+                    domain="[('my_area', '=', True)]"
+                    groups="ni_patient.group_manager"
+                />
                 <separator />
-                <filter name="group_state_id" context="{'group_by': 'state_id'}" />
+                <filter name="group_start" context="{'group_by': 'start'}" />
+                <filter
+                    name="group_state_id"
+                    context="{'group_by': 'state_id'}"
+                    groups="ni_community_care.group_observer"
+                />
                 <filter name="group_city_id" context="{'group_by': 'city_id'}" />
                 <separator />
                 <filter name="group_service_category_id" context="{'group_by': 'service_category_id'}" />
+                <separator />
+                <filter name="group_employee_id" context="{'group_by': 'employee_id'}" />
+                <filter name="group_patient_id" context="{'group_by': 'patient_id'}" />
+                <filter name="group_patient_type_id" context="{'group_by': 'patient_type_id'}" />
                 <searchpanel>
                     <field name="service_category_id" enable_counters="1" />
-                    <field name="state_id" groups="ni_community_care.group_observer" />
+                    <field name="state_id" groups="ni_community_care.group_observer" enable_counters="1" />
+                    <field name="patient_type_id" enable_counters="1" />
                 </searchpanel>
             </search>
         </field>
@@ -37,7 +52,7 @@
                 <field name="start" />
                 <field name="stop" />
                 <field name="duration" widget="float_time" />
-                <field name="user_id" widget="many2one_avatar_user" />
+                <field name="employee_id" widget="many2one_avatar_employee" />
                 <field name="state_id" optional="hide" />
                 <field name="city_id" optional="hide" />
             </tree>
@@ -50,17 +65,15 @@
             <form edit="0">
                 <sheet>
                     <group>
-                        <group>
-                            <field name="state_id" />
-                        </group>
-                        <group>
-                            <field name="city_id" />
-                        </group>
-                    </group>
-                    <group>
-                        <field name="user_id" widget="many2one_avatar_user" />
-                        <field name="service_category_id" />
+                        <label for="city_id" string="พื้นที่" />
+                        <div class="o_row">
+                            <field name="city_id" class="oe_inline" options="{'no_open': True}" />
+                            <field name="state_id" options="{'no_open': True}" />
+                        </div>
+                        <field name="employee_id" widget="many2one_avatar_employee" />
+                        <field name="service_category_id" options="{'no_open': True}" />
                         <field name="service_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                        <field name="patient_id" widget="many2one_avatar" />
                     </group>
                     <group>
                         <group string="เวลาที่ปฎิบัติงาน">
@@ -85,5 +98,51 @@
                 </sheet>
             </form>
         </field>
+    </record>
+    <record id="ni_service_event_report_view_pivot" model="ir.ui.view">
+        <field name="name">ni.service.event.report.view.pivot</field>
+        <field name="model">ni.service.event.report</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="start" type="row" interval="day" />
+                <field name="employee_id" type="row" />
+                <field name="patient_type_id" type="col" />
+                <field name="patient_id" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_service_event_report_view_graph" model="ir.ui.view">
+        <field name="name">ni.service.event.report.view.graph</field>
+        <field name="model">ni.service.event.report</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="1">
+                <field name="start" type="row" interval="day" />
+                <field name="patient_type_id" type="col" />
+                <field name="patient_id" type="measure" />
+            </graph>
+        </field>
+    </record>
+    <record id="ni_service_event_report_action_my" model="ir.actions.act_window">
+        <field name="name">ผลปฎิบัติงานของฉัน</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service.event.report</field>
+        <field name="view_mode">pivot,graph,tree,form</field>
+        <field name="context">{'group_by': 'start:day','search_default_start': 1}</field>
+        <field name="domain">[('my_service', '=', True)]</field>
+    </record>
+    <record id="ni_service_event_report_action_manager" model="ir.actions.act_window">
+        <field name="name">ผลปฎิบัติงานผู้บริบาลในพื้นที่</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service.event.report</field>
+        <field name="view_mode">pivot,graph,tree,form</field>
+        <field name="context">{'search_default_start': 1}</field>
+        <field name="domain">[('my_area', '=', True)]</field>
+    </record>
+    <record id="ni_service_event_report_action_observer" model="ir.actions.act_window">
+        <field name="name">ผลปฎิบัติงานผู้บริบาลทั้งประเทศ</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service.event.report</field>
+        <field name="view_mode">pivot,graph,tree,form</field>
+        <field name="context">{'group_by': ['start:day', 'state_id'], 'search_default_start': 1}</field>
     </record>
 </odoo>

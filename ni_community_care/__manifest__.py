@@ -39,7 +39,6 @@
         "views/ni_patient_need_views.xml",
         "views/ni_risk_assessment_prediction_views.xml",
         "views/ni_risk_assessment_views.xml",
-        "views/ni_community_care_menu.xml",
         "views/ni_careplan_view.xml",
         "views/res_users_views.xml",
         "views/hr_employee_view.xml",
@@ -51,6 +50,7 @@
         "views/ni_service_event_report_views.xml",
         "views/survey_survey_views.xml",
         "wizard/survey_subject_views.xml",
+        "views/ni_community_care_menu.xml",
     ],
     "assets": {
         "web.assets_backend": [

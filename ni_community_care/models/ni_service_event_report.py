@@ -26,8 +26,9 @@ class ServiceEventReport(models.Model):
     location = fields.Char(related="event_id.location", string="สถานที่")
     patient_id = fields.Many2one("ni.patient", "ผู้สูงอายุ")
     patient_type_id = fields.Many2one("ni.patient.type", "ประเภทผู้สูงอายุ")
-    user_id = fields.Many2one("res.users", "ผู้บริบาล")
-    city_id = fields.Many2one("res.city", "พื้นที่")
+    employee_id = fields.Many2one("hr.employee", "ผู้บริบาล")
+    user_id = fields.Many2one("res.users", "บัญชีผู้ใช้")
+    city_id = fields.Many2one("res.city", "ตำบล")
     state_id = fields.Many2one("res.country.state", "จังหวัด")
     image_1 = fields.Image(related="event_id.image_1")
     image_2 = fields.Image(related="event_id.image_2")
@@ -54,7 +55,14 @@ class ServiceEventReport(models.Model):
 
     def _search_my_area(self, operator, operand):
         if operator == "=" and bool(operand):
-
+            if self.user_has_groups("ni_patient.group_manager"):
+                return [
+                    (
+                        "state_id",
+                        "in" if bool(operand) else "not in",
+                        self.env.user.state_ids.ids,
+                    )
+                ]
             return [
                 (
                     "city_id",
@@ -79,6 +87,7 @@ class ServiceEventReport(models.Model):
                 pat.type_id as patient_type_id,
                 pe.ni_patient_id as patient_id,
                 se.user_id,
+                se.employee_id,
                 se.state_id,
                 se.city_id
             FROM ni_patient_ni_service_event_rel pe
@@ -124,13 +133,17 @@ class ServiceEventReport(models.Model):
         for rec in patient_type_map.values():
             if rec.code in res:
                 res[rec.code]["target"] = rec.target
-
+        domain = [
+            ("start", ">=", this_month),
+            ("start", "<", next_month),
+        ]
+        if self.user_has_groups("ni_patient.group_manager"):
+            domain += [("my_area", "=", True)]
+        elif self.user_has_groups("ni_patient.group_user"):
+            domain += [("user_id", "=", self.env.user.id)]
+        # observer will see all
         datas = self.read_group(
-            [
-                ("start", ">=", this_month),
-                ("start", "<", next_month),
-                ("user_id", "=", self.env.user.id),
-            ],
+            domain,
             ["patient_type_id", "patient_id:count_distinct"],
             ["patient_type_id"],
         )
