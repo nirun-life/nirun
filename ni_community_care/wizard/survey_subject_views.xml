@@ -29,6 +29,11 @@
                 </div>
                 <field name="category_id" widget="radio" options="{'horizontal': True}" />
             </xpath>
+            <xpath expr="//field[@name='survey_id']" position="attributes">
+                <attribute name="domain">['&amp;', '|', ('target_type_ids', '=', patient_type_id),
+                                          ('target_type_ids', '=', False), '|', ('category_id', '=', category_id),
+                                          ('category_id', '=', False)]</attribute>
+            </xpath>
         </field>
     </record>
     <record id="questionnaire_survey_subject_wizard_view_form_inherit" model="ir.ui.view">
