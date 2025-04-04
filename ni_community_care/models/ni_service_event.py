@@ -87,7 +87,9 @@ class ServiceEvent(models.Model):
         group_operator="count_distinct",
         store=True,
     )
-    employee_id = fields.Many2one(related="user_id.employee_id", store=True)
+    employee_id = fields.Many2one(
+        related="user_id.employee_id", store=True, group_operator="count_distinct"
+    )
     my_service_event = fields.Boolean(
         compute="_compute_my_service_event", search="_search_my_service_event"
     )
@@ -147,3 +149,20 @@ class ServiceEvent(models.Model):
                 )
             if rec.start.date() > now.date():
                 raise UserError(_("ไม่สามารถบันทึกกิจกรรมล่วงหน้าได้"))
+
+    @api.constrains("user_id", "employee_id")
+    def _check_employee_id(self):
+        for rec in self.filtered(lambda s: not s.employee_id):
+            if rec.user_id.employee_id:
+                rec.employee_id = rec.user_id.employee_id
+                continue
+            hr = self.env["hr.employee"].search(
+                [
+                    ("company_id", "=", rec.company_id.id),
+                    ("user_id", "=", rec.user_id.id),
+                ],
+                limit=1,
+            )
+            if hr:
+                rec.employee_id = hr
+                continue

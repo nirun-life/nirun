@@ -65,6 +65,8 @@
             <field name="service_ids" position="after">
                 <field name="patient_type_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
+                <field name="user_id" invisible="1" />
+                <field name="employee_id" invisible="1" />
             </field>
             <xpath expr="//group/div[2]" position="after">
                 <field name="outcome" />
@@ -119,6 +121,7 @@
                             domain="[('category_id', '=', service_category_id)]"
                         />
                         <field name="user_id" invisible="1" />
+                        <field name="employee_id" invisible="1" />
                         <field name="partner_id" invisible="1" />
                     </group>
                     <group>
@@ -186,7 +189,7 @@
             </field>
             <field name="user_id" position="before">
                 <field
-                    name="user_name"
+                    name="employee_id"
                     string="ชื่อ-นามสกุลผู้บริบาล"
                     optional="show"
                     invisible="context.get('search_default_my_service')"
