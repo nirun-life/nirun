@@ -12,11 +12,17 @@
                 <field name="patient_id" />
                 <filter name="start" date="start" default_period="this_month" />
                 <separator />
-                <filter name="my_service" string="กิจกรรมของฉัน" domain="[('my_service', '=', True)]" />
+                <filter name="my_service" string="กิจกรรมของฉัน" domain="[('my_service', '=', 1)]" />
+                <filter
+                    name="other_service"
+                    string="กิจกรรมผู้บริบาล"
+                    domain="[('my_service', '=', 0)]"
+                    groups="ni_patient.group_manager"
+                />
                 <filter
                     name="my_area"
                     string="ในพื้นที่ของฉัน"
-                    domain="[('my_area', '=', True)]"
+                    domain="[('my_area', '=', 1)]"
                     groups="ni_patient.group_manager"
                 />
                 <separator />

@@ -6,6 +6,7 @@ from odoo.exceptions import ValidationError
 class Service(models.Model):
     _inherit = "ni.service"
 
+    category_id = fields.Many2one(required=True)
     timing_id = fields.Many2one("ni.timing.template", "ความถี่")
 
     user_id = fields.Many2one("res.users")
@@ -33,7 +34,7 @@ class Service(models.Model):
             rec.my_service = rec.user_id == self.env.user.id
 
     def _search_my_service(self, operator, operand):
-        if operator == "=" and bool(operand):
+        if operator == "=":
             return [("user_id", "=" if bool(operand) else "!=", self.env.user.id)]
         raise ValidationError(_("my_service support only '=', 'True' or 'False'"))
 

@@ -72,7 +72,7 @@ class ServiceEvent(models.Model):
     outcome = fields.Html("ผลการให้ความช่วยเหลือ")
     outcome_id = fields.Many2one("ni.service.event.outcome", "ผลการให้ความช่วยเหลือ")
 
-    service_category_id = fields.Many2one(store=True)
+    service_category_id = fields.Many2one(store=True, required=True)
 
     prediction_id = fields.Many2one("ni.risk.assessment.prediction")
     plan_patient_ids = fields.Many2many(string="ผู้สูงอายุ")
@@ -111,7 +111,7 @@ class ServiceEvent(models.Model):
             rec.my_service_event = rec.user_id == self.env.user.id
 
     def _search_my_service_event(self, operator, operand):
-        if operator == "=" and bool(operand):
+        if operator == "=":
             return [("user_id", "=" if bool(operand) else "!=", self.env.user.id)]
         raise ValidationError(_("my_service support only '=', 'True' or 'False'"))
 

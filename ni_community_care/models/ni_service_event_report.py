@@ -44,7 +44,7 @@ class ServiceEventReport(models.Model):
             rec.my_service = rec.user_id == self.env.user.id
 
     def _search_my_service(self, operator, operand):
-        if operator == "=" and bool(operand):
+        if operator == "=":
             return [("user_id", "=" if bool(operand) else "!=", self.env.user.id)]
         raise ValidationError(_("my_service support only '=', 'True' or 'False'"))
 
@@ -54,7 +54,7 @@ class ServiceEventReport(models.Model):
             rec.my_area = rec.city_id.id in self.env.user.city_ids.ids
 
     def _search_my_area(self, operator, operand):
-        if operator == "=" and bool(operand):
+        if operator == "=":
             if self.user_has_groups("ni_patient.group_manager"):
                 return [
                     (
