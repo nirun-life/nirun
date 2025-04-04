@@ -136,6 +136,7 @@ class ServiceEventReport(models.Model):
         domain = [
             ("start", ">=", this_month),
             ("start", "<", next_month),
+            ("patient_type_id", "!=", False),
         ]
         if self.user_has_groups("ni_patient.group_manager"):
             domain += [("my_area", "=", True)]

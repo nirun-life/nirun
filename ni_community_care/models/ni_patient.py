@@ -208,6 +208,7 @@ class Patient(models.Model):
                 ("plan_patient_ids", "in", self.ids),
                 ("start", ">=", this_month),
                 ("start", "<", next_month),
+                ("service_category_id", "!=", False),
             ],
             ["plan_patient_ids", "service_category_id", "count"],
             ["plan_patient_ids", "service_category_id"],

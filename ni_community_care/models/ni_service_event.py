@@ -67,7 +67,7 @@ class ServiceEvent(models.Model):
     attendance_id = fields.Many2one(required=False)
 
     patient_id = fields.Many2one("ni.patient", store=False)
-    patient_type_id = fields.Many2one("ni.patient.type")
+    patient_type_id = fields.Many2one("ni.patient.type", required=True, index=True)
 
     outcome = fields.Html("ผลการให้ความช่วยเหลือ")
     outcome_id = fields.Many2one("ni.service.event.outcome", "ผลการให้ความช่วยเหลือ")
