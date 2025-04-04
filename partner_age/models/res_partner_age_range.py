@@ -7,6 +7,7 @@ from odoo.exceptions import ValidationError
 class ResPartnerDateRange(models.Model):
     _name = "res.partner.age.range"
     _description = "Partner Age Range"
+    _order = "age_from"
 
     def _default_age_from(self):
         age_from = 0
