@@ -26,10 +26,10 @@ class Service(models.Model):
     )
     name = fields.Char("Service", required=True)
     description = fields.Html()
-    category_id = fields.Many2one("ni.service.category")
+    category_id = fields.Many2one("ni.service.category", index=True)
     category = fields.Char(related="category_id.name", store=True)
     category_decoration = fields.Selection(related="category_id.decoration")
-    type_id = fields.Many2one("ni.service.type")
+    type_id = fields.Many2one("ni.service.type", index=True)
     type_decoration = fields.Selection(related="type_id.decoration")
     calendar_id = fields.Many2one(
         "resource.calendar", required=False, domain="[('company_id', '=', company_id)]"
