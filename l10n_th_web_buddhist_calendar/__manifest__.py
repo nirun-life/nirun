@@ -3,7 +3,7 @@
 {
     "name": "Buddhist Calendar",
     "summary": "Change display years to B.E.",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.2.0",
     "development_status": "Alpha",
     "category": "Website",
     "author": "NSTDA, Piruin P.",
@@ -17,6 +17,11 @@
                 "replace",
                 "web/static/lib/jquery.ui/jquery-ui.js",
                 "l10n_th_web_buddhist_calendar/static/lib/jquery-ui/jquery-ui.js",
+            ),
+            (
+                "replace",
+                "web/static/lib/tempusdominus/tempusdominus.js",
+                "l10n_th_web_buddhist_calendar/static/lib/tempusdominus/tempusdominus.js",
             ),
         ],
         "web.assets_backend": [

@@ -20,8 +20,10 @@ patch(CalendarDatePicker.prototype, "l10n_th_web_buddhist_calendar.calendar_date
             onSelect: this.onDateSelected.bind(this),
             showOtherMonths: true,
             dateFormat: "yy-mm-dd",
-            locale: session.user_context.lang.replace("_", "-"),
+            // L10n_th_web_buddhist_calendar FIX START !!
             // Send user locale to jquery ui datepicker
+            locale: session.user_context.lang.replace("_", "-"),
+            // L10n_th_web_buddhist_calendar FIX END !!
         };
     },
 });

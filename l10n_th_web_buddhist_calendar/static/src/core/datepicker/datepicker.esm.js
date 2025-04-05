@@ -9,6 +9,18 @@ import {session} from "@web/session";
 const {DateTime} = luxon;
 /* eslint-enable */
 
+/**
+ * @param {unknown} value1
+ * @param {unknown} value2
+ */
+function areEqual(value1, value2) {
+    if (value1 && value2) {
+        // Only compare date values
+        return Number(value1) === Number(value2);
+    }
+    return value1 === value2;
+}
+
 patch(DatePicker.prototype, "l10n_th_web_buddhist_calendar.datepicker", {
     updateInput({useStatic} = {}) {
         /*
@@ -24,28 +36,46 @@ patch(DatePicker.prototype, "l10n_th_web_buddhist_calendar.datepicker", {
         const [formattedDate] = this.formatValue(date, this.getOptions(useStatic));
 
         if (formattedDate !== null) {
-            this.inputRef.el.value = formattedDate; // Update display format of DatePicker's input (Not on calendar picker)
-            this.props.onUpdateInput(commonDate); // Update at Widget level with CE date
+            // Update display format of DatePicker's input (Not on calendar picker)
+            this.inputRef.el.value = formattedDate;
+            // Update at Widget level with CE date
+            this.props.onUpdateInput(commonDate);
         }
     },
+    onDateChange() {
+        const [value, error] = this.isPickerChanged
+            ? [this.pickerDate, null]
+            : this.parseValue(this.inputRef.el.value, this.getOptions());
+        // L10n_th_web_buddhist_calendar FIX START !!
+        // we minus value on input field user's lang is thai
+        let _value = value;
+        if (value && !this.isPickerChanged && session.user_context.lang === "th_TH") {
+            _value = value.minus({year: 543});
+        }
+        this.state.warning = _value && _value > DateTime.local();
 
-    bootstrapDateTimePicker(commandOrParams) {
-        /*
-            Before open BS-DatetimePicker we plus date with 543 years
-            and also call getDefaultDate() when field have no default value
-        */
+        if (error || areEqual(this.date, _value)) {
+            // Force current value
+            this.updateInput(this.date);
+        } else {
+            this.props.onDateTimeChanged(_value);
+        }
+        // L10n_th_web_buddhist_calendar FIX END !!
+
+        if (this.pickerDate) {
+            this.inputRef.el.select();
+        }
+    },
+    bootstrapDateTimePicker(commandOrParams, ...commandArgs) {
         if (typeof commandOrParams === "object") {
-            var locale = commandOrParams.locale || session.user_context.lang.replace("_", "-");
-            var date = this.date;
-            if (date && locale === "th-TH") {
-                console.log(date);
-                date = date.plus({year: 543});
-            }
             const params = {
                 ...commandOrParams,
-                date: date || this.getDefaultDate(commandOrParams),
+                date: this.date || null,
                 format: luxonToMomentFormat(this.staticFormat),
-                locale: commandOrParams.locale || (this.date && this.date.locale),
+                // L10n_th_web_buddhist_calendar FIX START !!
+                // set user's lang as default locale for DateTimePicker
+                locale: commandOrParams.locale || session.user_context.lang.replace("_", "-"),
+                // L10n_th_web_buddhist_calendar FIX END !!
             };
             for (const prop in params) {
                 if (params[prop] instanceof DateTime) {
@@ -53,19 +83,8 @@ patch(DatePicker.prototype, "l10n_th_web_buddhist_calendar.datepicker", {
                 }
             }
             commandOrParams = params;
+            console.log(commandOrParams);
         }
-
-        window.$(this.rootRef.el).datetimepicker(commandOrParams);
-    },
-    getDefaultDate(commandOrParams) {
-        /**
-            We need to return default value as BE to BS DateTimePicker. Otherwise, user will start with CE input then
-            all process will be ruin
-        **/
-        var locale = commandOrParams.locale || session.user_context.lang.replace("_", "-");
-        if (this.date === false && locale === "th-TH") {
-            return DateTime.now().plus({year: 543});
-        }
-        return null;
+        window.$(this.rootRef.el).datetimepicker(commandOrParams, ...commandArgs);
     },
 });
