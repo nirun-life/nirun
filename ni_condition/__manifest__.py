@@ -26,6 +26,7 @@
         "views/ni_encounter_diagnosis_role_views.xml",
         "views/ni_condition_menu.xml",
         "views/res_company_views.xml",
+        "views/ni_patient_portal_templates.xml",
         "report/summary_report.xml",
     ],
     "application": False,
