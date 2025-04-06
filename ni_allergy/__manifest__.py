@@ -18,6 +18,7 @@
         "views/ni_allergy_views.xml",
         "views/ni_allergy_code_views.xml",
         "views/ni_allergy_menu.xml",
+        "views/ni_patient_portal_templates.xml",
         "report/summary_report.xml",
     ],
     "demo": [],
