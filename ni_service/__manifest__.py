@@ -30,6 +30,7 @@
         "views/ni_service_menu.xml",
         "views/ni_service_request_views.xml",
         "views/res_company_views.xml",
+        "views/ni_patient_portal_templates.xml",
         "report/summary_report.xml",
         "views/resource_calendar_attendance_views.xml",
     ],
