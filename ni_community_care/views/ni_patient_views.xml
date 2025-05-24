@@ -14,6 +14,7 @@
                     <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('identifier', 'ilike', self)]" />
                     <filter name="my_patient" string="ที่ฉันดูแล" domain="[('create_uid', '=', uid)]" />
                     <filter name="group_zip_id" string="พื้นที่" context="{'group_by': 'zip_id'}" />
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]" />
                     <searchpanel>
                         <field name="type_id" enable_counters="1" />
                         <field name="age_range_id" enable_counters="1" icon="fa-birthday-cake" />
@@ -200,8 +201,10 @@
         <field name="model">ni.patient</field>
         <field name="priority" eval="30" />
         <field name="arch" type="xml">
-            <form duplicate="0" create="0">
+            <form duplicate="0" create="0" js_class="ni_patient_form">
                 <field name="id" invisible="1" />
+                <field name="deceased" invisible="1" />
+                <field name="deceased_date" invisible="1" />
                 <field name="is_encountering" invisible="1" />
                 <field name="active" invisible="1" />
                 <field name="presence_state" invisible="1" />
@@ -212,13 +215,13 @@
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': ['|',('deceased', '=', False), ('active', '=', False)]}"
+                        attrs="{'invisible': [('deceased', '=', False)]}"
                         bg_color="bg-dark"
                         title="เสียชีวิต"
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
+                        attrs="{'invisible': ['|', ('active', '=', True), ('deceased', '=', True)]}"
                         bg_color="bg-danger"
                         title="ลบชั่วคราว"
                     />
@@ -359,6 +362,18 @@
                                         context="{'show_state': True, 'show_location': True}"
                                         options='{"always_reload": True}'
                                     />
+                                </group>
+                                <group
+                                    name="archive_state"
+                                    string="สถานะเมื่อสิ้นสุดการดูแล"
+                                    attrs="{'invisible': [('active', '=', True)]}"
+                                >
+                                    <field
+                                        name="state_reason_id"
+                                        options="{'no_edit': True, 'no_create': True, 'no_open': True}"
+                                    />
+                                    <field name="state_note" />
+                                    <field name="state_date" />
                                 </group>
                             </group>
                         </page>

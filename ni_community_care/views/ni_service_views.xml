@@ -71,4 +71,32 @@
             </field>
         </field>
     </record>
+    <record id="ni_service_view_tree_inherit_approval" model="ir.ui.view">
+        <field name="name">ni.service.view.tree.inherit.approval</field>
+        <field name="model">ni.service</field>
+        <field name="inherit_id" ref="ni_service.ni_service_view_tree" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='timing_id']" position="replace" />
+            <xpath expr="//tree/field[@name='duration']" position="replace" />
+            <xpath expr="//tree/field[@name='attendance_ids']" position="replace" />
+            <xpath expr="//tree/field[@name='employee_id']" position="replace" />
+            <xpath expr="//tree/field[@name='next_date']" position="replace" />
+            <xpath expr="//tree/field[@name='type_id']" position="replace" />
+            <xpath expr="//field[@name='category_id']" position="replace" />
+            <xpath expr="//tree/field[@name='name']" position="after">
+                <field name="category_id" widget="badge" readonly="1" />
+            </xpath>
+            <xpath expr="//tree/field[@name='category_id']" position="attributes">
+                <attribute name="string">มิติ</attribute>
+            </xpath>
+            <xpath expr="//tree/field[@name='category_id']" position="after">
+                <field name="objective" />
+                <field name="procedure" />
+            </xpath>
+            <xpath expr="//tree/field[@name='target']" position="after">
+                <field name="benefit" />
+            </xpath>
+        </field>
+    </record>
 </odoo>

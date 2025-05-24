@@ -13,7 +13,9 @@ from . import ni_service
 from . import ni_service_event
 from . import ni_service_event_outcome
 from . import ni_service_event_report
+from . import ni_service_event_approval
 from . import res_users
 from . import survey_survey
 from . import survey_user_input
 from . import ni_patient_smartcard
+from . import ni_service_category

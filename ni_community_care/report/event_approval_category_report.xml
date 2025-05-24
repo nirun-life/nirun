@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023-2025 NSTDA
+  -->
+<odoo>
+    <record id="service_event_approval_02_category_action_report" model="ir.actions.report">
+        <field name="name">ผลการปฏิบัติงานดูแลผู้สูงอายุ ศผ.02</field>
+        <field name="model">ni.service.event.approval</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ni_community_care.service_event_approval_category_report_template</field>
+        <field name="report_file">ni_community_care.service_event_approval_category_report_template</field>
+        <!-- ชื่อไฟล์ PDF เมื่อดาวน์โหลด -->
+        <field name="print_report_name">("%s_report_ผลการปฏิบัติงานดูแลผู้สูงอายุ ศผ.02" % (object.name))</field>
+        <field name="binding_model_id" ref="ni_community_care.model_ni_service_event_approval" />
+        <field name="binding_type">report</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="paperformat_id" ref="report_paperformat_a4_landscape" />
+    </record>
+    <template id="service_event_approval_category_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-foreach="o.get_sorted_events()" t-as="patient_events">
+                    <t t-call="web.external_layout">
+                        <t t-set="p" t-value="patient_events[0]" />
+                        <div class="page">
+                            <t
+                                t-set="lang_id"
+                                t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1)"
+                            />
+                            <t t-set="dt_format" t-value="'{} {}'.format(lang_id.date_format, lang_id.time_format)" />
+                            <div class="oe_structure" />
+                            <h2 name="title">
+                                <span>
+                                    รายงานผลการปฏิบัติงานการดูแลผู้สูงอายุ (รายบุคคล) -
+                                    <t t-esc="docs.start_month_name" />
+                                    <t t-esc="docs.start_year_thai" />
+                                </span>
+                                <small class="text-muted mx-2 border p-1 float-end">แบบ ศผ.02</small>
+                            </h2>
+                            <div class="row" id="caregiver_3">
+                                <div class="col-auto col-5 mw-100">
+                                    <strong>ชื่อ-สกุลผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ:</strong>
+                                    <p class="m-0" t-esc="docs.user_id.name" />
+                                </div>
+                                <div class="col-auto col-4 mw-100">
+                                    <strong>พื้นที่:</strong>
+                                    <p class="m-0" t-esc="docs.user_id.partner_id._display_address(True)" />
+                                </div>
+                            </div>
+                            <div class="row" id="caregiver_4">
+                                <div class="col-auto col-5 mw-100">
+                                    <strong>ระยะเวลา:</strong>
+                                    <p class="m-0">
+                                        <t t-esc="docs.start.day" />
+                                        <t t-esc="docs.start_month_name" />
+                                        <t t-esc="docs.start_year_thai" />
+                                        -
+                                        <t t-esc="docs.stop.day" />
+                                        <t t-esc="docs.stop_month_name" />
+                                        <t t-esc="docs.stop_year_thai" />
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row mt-3 border border-dark border-1 py-2" id="patient">
+                                <div class="col-auto col-3 mw-100">
+                                    <strong>ชื่อ-สกุลผู้สูงอายุ:</strong>
+                                    <p class="m-0" t-field="p.display_name" />
+                                </div>
+                                <div class="col-auto col-2 mw-100">
+                                    <strong>อายุ:</strong>
+                                    <p class="m-0">
+                                        <span t-field="p.age" />
+                                        <span class="mx-1">ปี</span>
+                                        <t t-if="p.gender">
+                                            <strong>เพศ</strong>
+                                            <span t-field="p.gender" />
+                                        </t>
+                                    </p>
+                                </div>
+                                <div class="col-auto col-4 mw-100">
+                                    <strong>ที่อยู่:</strong>
+                                    <p class="m-0">
+                                        <span t-esc="p.partner_id._display_address(True)" />
+                                    </p>
+                                </div>
+                                <div class="col-auto col-2 mw-100">
+                                    <strong>เบอร์โทรศัพท์:</strong>
+                                    <p class="m-0">
+                                        <span t-field="p.mobile" t-if="p.mobile" />
+                                        <span t-field="p.phone" t-else="" />
+                                    </p>
+                                </div>
+                                <div class="col-auto col-1 mw-100">
+                                    <strong>สถานะสุขภาพ:</strong>
+                                    <p class="m-0">
+                                        <span t-field="p.type_id" />
+                                    </p>
+                                </div>
+                            </div>
+                            <table class="table table-condensed mt-4">
+                                <thead>
+                                    <tr>
+                                        <th class="text-start">วันที่</th>
+                                        <th class="text-start">มิติ</th>
+                                        <th class="text-start">วิธีการหรือบริการให้ความช่วยเหลือดูแล</th>
+                                        <th class="text-start">
+                                            เวลา
+                                            <br />
+                                            เริ่ม
+                                        </th>
+                                        <th class="text-start">
+                                            เวลา
+                                            <br />
+                                            เลิก
+                                        </th>
+                                        <th class="text-start">
+                                            รวม
+                                            <br />
+                                            (ชั่วโมง)
+                                        </th>
+                                        <th class="text-start">ผลการให้ความช่วยเหลือ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="patient_events[1]" t-as="d">
+                                        <tr>
+                                            <td>
+                                                <span
+                                                    t-esc="context_timestamp(d.start).strftime(lang_id.date_format)"
+                                                />
+                                            </td>
+                                            <td>
+                                                <span t-esc="d.service_category_id.name" />
+                                            </td>
+                                            <td>
+                                                <span t-esc="d.name" />
+                                            </td>
+                                            <td>
+                                                <span
+                                                    t-esc="context_timestamp(d.start).strftime(lang_id.time_format)"
+                                                />
+                                            </td>
+                                            <td>
+                                                <span t-esc="context_timestamp(d.stop).strftime(lang_id.time_format)" />
+                                            </td>
+                                            <td>
+                                                <span t-esc="d.duration" />
+                                            </td>
+                                            <td>
+                                                <span t-esc="d.outcome" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                            <p style="page-break-after: always;" />
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

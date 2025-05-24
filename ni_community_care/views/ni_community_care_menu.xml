@@ -95,6 +95,13 @@
         parent="ni_community_care.service_event_report_my_menu_root"
     />
     <menuitem
+        id="service_event_approval_menu"
+        name="บันทึกงานของฉัน"
+        sequence="20"
+        action="ni_service_event_approval_action_self"
+        parent="ni_community_care.service_event_report_my_menu_root"
+    />
+    <menuitem
         id="my_service_event_tree_menu"
         name="รายกิจกรรม"
         action="ni_service_event_action_my_tree"
@@ -107,6 +114,41 @@
         action="ni_service_event_action_my_pivot"
         parent="ni_community_care.service_event_report_my_menu_root"
         sequence="21"
+    />
+    <menuitem
+        id="approval_menu_root"
+        name="การอนุมัติบันทึกงาน"
+        sequence="2"
+        web_icon="ni_community_care,static/description/approval.png"
+        groups="ni_patient.group_manager"
+    />
+    <menuitem
+        id="approval_menu_all"
+        name="บันทึกงานทั้งหมด"
+        action="ni_service_event_approval_action"
+        parent="ni_community_care.approval_menu_root"
+        sequence="0"
+    />
+    <menuitem
+        id="approval_menu_pending"
+        name="บันทึกงานที่รออนุมัติ"
+        action="ni_service_event_approval_action_pending"
+        parent="ni_community_care.approval_menu_root"
+        sequence="1"
+    />
+    <menuitem
+        id="approval_menu_approved"
+        name="บันทึกงานที่อนุมัติแล้ว"
+        action="ni_service_event_approval_action_approved"
+        parent="ni_community_care.approval_menu_root"
+        sequence="2"
+    />
+    <menuitem
+        id="approval_menu_rejected"
+        name="บันทึกงานที่ไม่ผ่านการอนุมัติ"
+        action="ni_service_event_approval_action_rejected"
+        parent="ni_community_care.approval_menu_root"
+        sequence="3"
     />
     <record model="ir.ui.menu" id="ni_service.event_menu_categ">
         <field name="active">0</field>

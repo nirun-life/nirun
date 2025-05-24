@@ -35,7 +35,9 @@
         "data/ni_participant_type_data.xml",
         "data/ni_encounter_discharge_disposition_data.xml",
         "data/ni_encounter_discharge_status_data.xml",
+        "data/ni_patient_state_reason_data.xml",
         "wizard/ni_encounter_discharge_wizard_views.xml",
+        "wizard/ni_patient_archive_wizard_views.xml",
         "views/ni_location_views.xml",
         "views/ni_location_type_views.xml",
         "views/ni_encounter_location_views.xml",
@@ -60,6 +62,12 @@
         "report/summary_report_templates.xml",
         "report/summary_report.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "ni_patient/static/src/views/*.js",
+            "ni_patient/static/src/views/*.xml",
+        ]
+    },
     "demo": ["demo/ni_patient_demo.xml", "demo/ni_location_demo.xml"],
     "application": True,
     "auto_install": False,
