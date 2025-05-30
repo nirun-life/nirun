@@ -1,5 +1,4 @@
 #  Copyright (c) 2024 NSTDA
-import pprint
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -59,7 +58,6 @@ class ServiceRequest(models.Model):
             ]
         else:
             domain = self._default_service_domain()
-        pprint.pprint(domain)
         return {"domain": {"service_ids": domain}}
 
     @api.onchange("service_ids")
@@ -82,6 +80,7 @@ class ServiceRequest(models.Model):
     def _check_name_service(self):
         for rec in self:
             if rec.service_ids and not rec.name:
-                rec.name = ", ".join(rec.service_ids.mapped("name"))
+                name = ", ".join(rec.service_ids.mapped("name"))
+                rec.name = name if len(name) <= 128 else name[:128]
             if not rec.service_ids and not rec.name:
                 raise UserError(_("Must specify at least one service"))
