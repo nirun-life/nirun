@@ -93,3 +93,10 @@ class ObservationType(models.Model):
             return "ni_observation.ni_observation_view_graph_line"
         else:
             return "ni_observation.ni_observation_view_graph_bar"
+
+    def get_display_type(self):
+        if self.parent_id:
+            return self.parent_id.child_ids
+        if self.child_ids:
+            return self.child_ids
+        return self
