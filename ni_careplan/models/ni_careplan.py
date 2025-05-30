@@ -1,7 +1,10 @@
 #  Copyright (c) 2024 NSTDA
+
 from odoo import api, fields, models
 from odoo.fields import Command
 from odoo.tools.date_utils import relativedelta
+
+from odoo.addons.ni_goal.models.ni_goal_code import GoalCodeableConcept
 
 LOCK_STATE_DICT = {
     "revoked": [("readonly", True)],
@@ -104,8 +107,7 @@ class Careplan(models.Model):
     )
     achievement_uid = fields.Many2one("res.users", readonly=1)
 
-    @api.onchange("category_id")
-    def _onchange_category_id(self):
+    def action_category_id(self):
         for rec in self:
             if rec.category_id and rec.category_id.condition_code_ids:
                 condition = self.env["ni.condition"].search(
@@ -115,9 +117,56 @@ class Careplan(models.Model):
                         ("clinical_state", "=", "active"),
                     ]
                 )
-                rec.condition_ids = condition
+                if condition:
+                    val = {"condition_ids": [fields.Command.set(condition.ids)]}
+                    goal = rec.category_id.goal_code_ids.filtered_domain(
+                        [
+                            "|",
+                            ("condition_code_ids", "=", False),
+                            (
+                                "condition_code_ids",
+                                "child_of",
+                                condition.mapped("code_id").ids,
+                            ),
+                        ]
+                    )
+                    if goal:
+                        val.update(
+                            {
+                                "goal_ids": [(fields.Command.clear())]
+                                + [
+                                    fields.Command.create(
+                                        rec._prepare_goal_value(g, condition)
+                                    )
+                                    for g in goal
+                                ]
+                            }
+                        )
+                    rec.write(val)
             else:
                 rec.condition_ids = None
+                rec.goal_ids = None
+
+    def _prepare_goal_value(self, g: GoalCodeableConcept, condition_ids):
+        self.ensure_one()
+        condition = None
+        if condition_ids:
+            condition = condition_ids.filtered_domain(
+                [("code_id", "child_of", g.condition_code_ids.ids)]
+            )
+        val = {
+            "code_id": g.id,
+            "name": g.name,
+            "category_id": g.category_id.id,
+            "patient_id": self.patient_id.id,
+            "encounter_id": self.encounter_id.id,
+            "careplan_id": self.id,
+            "state_id": self.env.ref("ni_goal.goal_state_active").id,
+            "condition_ids": [fields.Command.set(condition.ids)]
+            if condition_ids
+            else [],
+        }
+        return val
 
     @api.depends("condition_ids")
     def _compute_condition_count(self):
