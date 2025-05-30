@@ -9,6 +9,22 @@ class Observation(models.Model):
     _inherit = ["ni.workflow.event.mixin", "ni.observation.abstract"]
     _order = "occurrence DESC,patient_id,sequence"
 
+    history_ids = fields.One2many(
+        "ni.observation", string="ประวัติ", compute="_compute_history"
+    )
+    history_count = fields.Integer(compute="_compute_history")
+
+    def _compute_history(self):
+        for rec in self:
+            rec.history_ids = self.env["ni.observation"].search(
+                [
+                    ("patient_id", "=", self.patient_id.id),
+                    ("type_id", "=", self.type_id.get_display_type().ids),
+                ],
+                order="occurrence desc",
+            )
+            rec.history_count = len(rec.history_ids)
+
     @api.model
     def default_get(self, fields):
         res = super(Observation, self).default_get(fields)
@@ -121,17 +137,9 @@ class Observation(models.Model):
         action_rec = self.env.ref("ni_observation.ni_observation_action_graph").sudo()
         action = action_rec.read()[0]
         ctx = dict(self.env.context)
-        group_type = (
-            self.type_id.parent_id.child_ids
-            if self.patient_id
-            else self.type_id.child_ids
-            if self.type_id.child_ids
-            else None
-        )
         ctx.update(
             {
                 "search_default_patient_id": self.patient_id.id,
-                "search_default_type_id": self.type_id.id if not group_type else None,
                 "default_patient_id": self.patient_id.id,
                 "search_default_occurrence_hour": True,
                 "value_type": self.type_id.value_type,
@@ -141,9 +149,11 @@ class Observation(models.Model):
                 "graph_view_ref": self.type_id.get_graph_view_ref(),
             }
         )
-        if group_type:
-            action["domain"] = [("type_id", "in", group_type.ids)]
         action["context"] = ctx
+        action["domain"] = [
+            ("patient_id", "=", self.patient_id.id),
+            ("type_id", "in", self.type_id.get_display_type().ids),
+        ]
         return action
 
     @property
