@@ -117,6 +117,7 @@
                 <field name="company_id" invisible="0" />
                 <field name="user_specialty" invisible="1" />
                 <field name="name" />
+                <field name="condition_ids" widget="many2many_tags" />
                 <field
                     name="state_id"
                     widget="badge"
@@ -179,6 +180,8 @@
                 <field name="observation_type_id" />
                 <field name="observation_id" />
                 <field name="category_id" />
+                <field name="patient_id" />
+                <field name="condition_ids" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
@@ -189,6 +192,9 @@
                                     </li>
                                     <li class="mb-2">
                                         <field class="h5" name="name" />
+                                    </li>
+                                    <li>
+                                        <field name="condition_ids" widget="many2many_tags" />
                                     </li>
                                     <li t-if="record.observation_type_id.raw_value">
                                         <label for="observation_id" class="small text-muted me-2">
