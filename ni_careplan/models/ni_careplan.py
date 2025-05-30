@@ -4,8 +4,6 @@ from odoo import api, fields, models
 from odoo.fields import Command
 from odoo.tools.date_utils import relativedelta
 
-from odoo.addons.ni_goal.models.ni_goal_code import GoalCodeableConcept
-
 LOCK_STATE_DICT = {
     "revoked": [("readonly", True)],
     "completed": [("readonly", True)],
@@ -142,12 +140,34 @@ class Careplan(models.Model):
                                 ]
                             }
                         )
+
+                    if rec.category_id.service_request_ids:
+                        val.update(
+                            {
+                                "service_request_ids": [(fields.Command.clear())]
+                                + [
+                                    fields.Command.create(rec._prepare_service_value(s))
+                                    for s in rec.category_id.service_request_ids
+                                ]
+                            }
+                        )
                     rec.write(val)
             else:
                 rec.condition_ids = None
                 rec.goal_ids = None
 
-    def _prepare_goal_value(self, g: GoalCodeableConcept, condition_ids):
+    def _prepare_service_value(self, s):
+        return s.copy_data(
+            {
+                "encounter_id": self.encounter_id.id,
+                "patient_id": self.patient_id.id,
+                "careplan_id": self.id,
+                "period_start": self.period_start,
+                "period_end": self.period_end,
+            }
+        )[0]
+
+    def _prepare_goal_value(self, g, condition_ids):
         self.ensure_one()
         condition = None
         if condition_ids:
