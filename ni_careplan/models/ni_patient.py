@@ -14,3 +14,19 @@ class Patient(models.Model):
     def _compute_careplan_count(self):
         for rec in self:
             rec.careplan_count = len(rec.careplan_ids)
+
+    def action_new_careplan(self):
+        self.ensure_one()
+        context = dict(self.env.context)
+        context.update({"default_patient_id": self.id})
+        view = {
+            "name": self.env["ni.careplan"]._description,
+            "res_model": "ni.careplan",
+            "type": "ir.actions.act_window",
+            "target": self.env.context.get("target", "current"),
+            "res_id": self.env.context.get("careplan_id", 0),
+            "view_type": "form",
+            "views": [[False, "form"]],
+            "context": self.env.context,
+        }
+        return view

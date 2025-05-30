@@ -3,6 +3,7 @@
 from . import ni_careplan
 from . import ni_careplan_category
 from . import ni_patient
+from . import ni_encounter
 from . import ni_service_request
 from . import ni_goal_achievement
 from . import ni_goal
