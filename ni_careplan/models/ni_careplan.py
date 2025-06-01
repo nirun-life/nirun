@@ -1,6 +1,7 @@
 #  Copyright (c) 2024 NSTDA
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.tools.date_utils import relativedelta
 
@@ -25,13 +26,11 @@ class Careplan(models.Model):
     period_start = fields.Datetime(
         readonly=True,
         states={"draft": [("readonly", False)]},
-        default=lambda _: fields.Datetime.now().replace(day=1),
     )
     period_end = fields.Datetime(
         readonly=True,
         states={"draft": [("readonly", False)]},
-        default=lambda _: fields.Datetime.now()
-        + relativedelta(day=1, months=3, days=-1),
+        default=lambda _: fields.Datetime.now() + relativedelta(months=3),
     )
     category_id = fields.Many2one(
         "ni.careplan.category",
@@ -104,57 +103,6 @@ class Careplan(models.Model):
         help="When achievement status took effect", readonly=1
     )
     achievement_uid = fields.Many2one("res.users", readonly=1)
-
-    def action_category_id(self):
-        for rec in self:
-            if rec.category_id and rec.category_id.condition_code_ids:
-                condition = self.env["ni.condition"].search(
-                    [
-                        ("partner_id", "=", self.partner_id.ids[0]),
-                        ("code_id", "in", rec.category_id.condition_code_ids.ids),
-                        ("clinical_state", "=", "active"),
-                    ]
-                )
-                if condition:
-                    val = {"condition_ids": [fields.Command.set(condition.ids)]}
-                    goal = rec.category_id.goal_code_ids.filtered_domain(
-                        [
-                            "|",
-                            ("condition_code_ids", "=", False),
-                            (
-                                "condition_code_ids",
-                                "child_of",
-                                condition.mapped("code_id").ids,
-                            ),
-                        ]
-                    )
-                    if goal:
-                        val.update(
-                            {
-                                "goal_ids": [(fields.Command.clear())]
-                                + [
-                                    fields.Command.create(
-                                        rec._prepare_goal_value(g, condition)
-                                    )
-                                    for g in goal
-                                ]
-                            }
-                        )
-
-                    if rec.category_id.service_request_ids:
-                        val.update(
-                            {
-                                "service_request_ids": [(fields.Command.clear())]
-                                + [
-                                    fields.Command.create(rec._prepare_service_value(s))
-                                    for s in rec.category_id.service_request_ids
-                                ]
-                            }
-                        )
-                    rec.write(val)
-            else:
-                rec.condition_ids = None
-                rec.goal_ids = None
 
     def _prepare_service_value(self, s):
         return s.copy_data(
@@ -271,3 +219,83 @@ class Careplan(models.Model):
                 ):
                     cmd.append(Command.unlink(g.id))
                 rec.goal_ids = cmd
+
+    template_id = fields.Many2one(
+        "ni.careplan.template",
+        index=True,
+        ondelete="set null",
+        domain="[('category_id', '=?', category_id)]",
+    )
+
+    @api.onchange("template_id")
+    def _onchange_template_id(self):
+        if self.template_id and self.category_id != self.template_id.category_id:
+            self.category_id = self.template_id.category_id
+
+    def apply_template(self):
+        self.ensure_one()
+        if not self.template_id:
+            raise UserError(_("Please select template"))
+
+        if self.template_id.condition_code_ids:
+            condition = self.env["ni.condition"].search(
+                [
+                    ("partner_id", "=", self.partner_id.ids[0]),
+                    ("code_id", "in", self.template_id.condition_code_ids.ids),
+                    ("clinical_state", "=", "active"),
+                ]
+            )
+            if not condition:
+                condition = "\n\t".join(
+                    "[{}] {}".format(c.code, c.name) if c.code else c.name
+                    for c in self.template_id.mapped("condition_code_ids")
+                )
+                raise UserError(
+                    _(
+                        "Not finding patient's conditions related to selected template, "
+                        "Patient should have a least one of following conditions\n\n\t{}"
+                    ).format(condition)
+                )
+
+            val = {"condition_ids": [fields.Command.set(condition.ids)]}
+            goal = self.template_id.goal_code_ids.filtered_domain(
+                [
+                    "|",
+                    ("condition_code_ids", "=", False),
+                    (
+                        "condition_code_ids",
+                        "child_of",
+                        condition.mapped("code_id").ids,
+                    ),
+                ]
+            )
+            if goal:
+                val.update(
+                    {
+                        "goal_ids": [(fields.Command.clear())]
+                        + [
+                            fields.Command.create(
+                                self._prepare_goal_value(g, condition)
+                            )
+                            for g in goal
+                        ]
+                    }
+                )
+
+            if self.template_id.service_request_ids:
+                val.update(
+                    {
+                        "service_request_ids": [(fields.Command.clear())]
+                        + [
+                            fields.Command.create(self._prepare_service_value(s))
+                            for s in self.template_id.service_request_ids
+                        ]
+                    }
+                )
+            self.write(val)
+        else:
+            raise UserError(
+                _(
+                    "the Selected template not properly setting the patient's conditions."
+                )
+            )

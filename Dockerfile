@@ -1,4 +1,4 @@
-FROM nirun/odoo:16.0
+FROM nirun/odoo:latest
 
 USER root
 
