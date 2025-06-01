@@ -3,6 +3,7 @@
 from . import ni_careplan
 from . import ni_careplan_category
 from . import ni_careplan_template
+from . import ni_condition
 from . import ni_document_ref
 from . import ni_encounter
 from . import ni_goal
