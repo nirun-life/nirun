@@ -64,7 +64,21 @@
                 </header>
                 <sheet>
                     <group>
-                        <field name="category_id" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+                        <field
+                            name="category_id"
+                            attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            options="{'no_create': True, 'no_open':True}"
+                        />
+                        <label for="template_id" />
+                        <div class="o_row">
+                            <field name="template_id" />
+                            <button
+                                name="apply_template"
+                                type="object"
+                                string="apply"
+                                attrs="{'readonly': [('template_id', '=', False)]}"
+                            />
+                        </div>
                         <label for="period_start" string="Period" />
                         <div class="o_row">
                             <field name="period_start" placeholder="Since" />
@@ -73,7 +87,6 @@
                         <field name="user_specialty" invisible="1" />
                         <field name="user_specialty" groups="base.group_no_one" />
                     </group>
-                    <button name="action_category_id" type="object" string="สร้างแผนการดูแล" states="draft" />
                     <notebook>
                         <page name="dx" string="Diagnosis" icon="fa-list-ul" badge="condition_count">
                             <field

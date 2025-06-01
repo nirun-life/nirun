@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="ni_careplan_template_action" model="ir.actions.act_window">
+        <field name="name">Careplan Template</field>
+        <field name="res_model">ni.careplan.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="ni_careplan_template_view_search" model="ir.ui.view">
+        <field name="name">ni.careplan.template.view.search</field>
+        <field name="model">ni.careplan.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="name"
+                    filter_domain="['|', '|',('name', 'ilike', self), ('code', 'ilike', self), ('abbr', 'ilike', self)]"
+                />
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <group name="group_by" string="Group By">
+                    <filter name="system" string="System" context="{'group_by': 'system_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_careplan_template_view_tree" model="ir.ui.view">
+        <field name="name">ni.careplan.template.view.tree</field>
+        <field name="model">ni.careplan.template</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" optional="show" />
+                <field
+                    name="condition_code_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    optional="show"
+                />
+                <field
+                    name="goal_code_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    optional="show"
+                />
+                <field name="service_request_ids" widget="many2many_tags" optional="show" />
+                <field name="system_id" optional="hide" />
+                <field name="color" optional="hide" widget="color_picker" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_careplan_template_view_form" model="ir.ui.view">
+        <field name="name">ni.careplan.template.view.form</field>
+        <field name="model">ni.careplan.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
+                    <group>
+                        <field name="name" />
+                    </group>
+                    <group>
+                        <group>
+                            <field name="abbr" string="abbr." />
+                        </group>
+                        <group>
+                            <field name="code" />
+                        </group>
+                    </group>
+                    <field name="definition" placeholder="Definition..." />
+                    <separator name="condition" string="Condition" />
+                    <field name="condition_code_ids" />
+                    <separator name="goal" string="Goal" />
+                    <field name="goal_code_ids" />
+                    <separator name="service" string="Service" />
+                    <field name="service_request_ids" />
+                    <notebook groups="base.group_no_one">
+                        <page string="Extra Info" groups="base.group_no_one">
+                            <group name="configuration" string="Configuration">
+                                <group>
+                                    <field name="system_id" />
+                                </group>
+                            </group>
+                            <group>
+                                <group name="display" string="Display">
+                                    <field name="color" widget="color_picker" />
+                                    <field name="sequence" />
+                                </group>
+                                <group name="metadata" string="Metadata">
+                                    <field name="create_date" />
+                                    <field name="create_uid" widget="many2one_avatar_user" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" widget="many2one_avatar_user" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_careplan_template_service_request_view_form" model="ir.ui.view">
+        <field name="name">ni.careplan.template.service.request.view.form</field>
+        <field name="model">ni.careplan.template.service.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="name" invisible="1" />
+                <sheet>
+                    <div class="oe_title">
+                        <div class="d-flex">
+                            <label for="name" class="flex-fill" />
+                        </div>
+                        <div class="d-flex">
+                            <field name="template_id" options="{'no_open': True}" placeholder="Category" />
+                            <field
+                                name="service_ids"
+                                class="ms-1 flex-fill"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color'}"
+                                placeholder="Services..."
+                                attrs="{'required': [('name', '=', False)]}"
+                            />
+                        </div>
+                        <div>
+                            <field name="name" placeholder="Specify service name" />
+                        </div>
+                    </div>
+                    <group class="mt-3">
+                        <label for="timing_id" />
+                        <div class="o_row">
+                            <field
+                                name="timing_tmpl_id"
+                                options="{'no_create':True, 'no_create_edit':True}"
+                                attrs="{'invisible': [('timing_id', '!=', False)], 'required':[('timing_id', '=', False)]}"
+                                placeholder="choose from..."
+                            />
+                            <span
+                                class="oe_edit_only"
+                                attrs="{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}"
+                            >
+                                or
+                            </span>
+                            <field
+                                name="timing_id"
+                                domain="[('id', '=', False)]"
+                                options="{'no_quick_create':True}"
+                                attrs="{'invisible': [('timing_tmpl_id', '!=', False)], 'required':[('timing_tmpl_id', '=', False)]}"
+                                placeholder="create new..."
+                            />
+                        </div>
+                        <field name="company_id" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

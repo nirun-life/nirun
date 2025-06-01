@@ -19,6 +19,7 @@
     ],
     "data": [
         "security/ir.model.access.csv",
+        "security/ir_rule_data.xml",
         "data/ir_sequence_data.xml",
         "views/ni_careplan_views.xml",
         "views/ni_careplan_category_views.xml",
@@ -26,6 +27,7 @@
         "views/ni_patient_views.xml",
         "views/ni_goal_achievement_views.xml",
         "views/ni_careplan_menu.xml",
+        "views/ni_careplan_template_views.xml",
     ],
     "application": False,
     "auto_install": False,
