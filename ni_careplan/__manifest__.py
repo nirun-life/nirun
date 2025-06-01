@@ -28,6 +28,7 @@
         "views/ni_goal_achievement_views.xml",
         "views/ni_careplan_menu.xml",
         "views/ni_careplan_template_views.xml",
+        "views/ni_condition_views.xml",
     ],
     "application": False,
     "auto_install": False,

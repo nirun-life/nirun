@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ni_condition_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.condition.view.form.inherit</field>
+        <field name="model">ni.condition</field>
+        <field name="inherit_id" ref="ni_condition.ni_condition_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="careplan" string="Careplan" badge="careplan_count" icon="fa-bullseye">
+                    <field name="careplan_ids" mode="kanban" />
+                    <field name="careplan_count" invisible="1" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_encounter_diagnosis_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.diagnosis.view.form.inherit</field>
+        <field name="model">ni.encounter.diagnosis</field>
+        <field name="inherit_id" ref="ni_condition.ni_encounter_diagnosis_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="careplan" string="Careplan" badge="careplan_count" icon="fa-bullseye">
+                    <field name="careplan_ids" mode="kanban" readonly="1" />
+                    <button
+                        name="action_view_careplan"
+                        type="object"
+                        string="See More"
+                        attrs="{'invisible': [('careplan_count', '=', 0)]}"
+                    />
+                    <field name="careplan_count" invisible="1" />
+                    <group string="New Careplan" class="oe_edit_only">
+                        <label for="template_id" />
+                        <div class="o_row">
+                            <field name="template_id" />
+                            <button name="action_new_careplan" type="object" string="Create" />
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
