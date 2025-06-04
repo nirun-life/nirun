@@ -13,7 +13,6 @@ class CareplanTemplate(models.Model):
         required=False,
         index=True,
         readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     condition_code_ids = fields.Many2many(
         "ni.condition.code",

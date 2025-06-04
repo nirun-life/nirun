@@ -34,7 +34,7 @@ class Careplan(models.Model):
     )
     category_id = fields.Many2one(
         "ni.careplan.category",
-        required=True,
+        required=False,
         index=True,
         readonly=True,
         states={"draft": [("readonly", False)]},
@@ -225,6 +225,8 @@ class Careplan(models.Model):
         index=True,
         ondelete="set null",
         domain="[('category_id', '=?', category_id)]",
+        readonly=True,
+        states={"draft": [("readonly", False)]},
     )
 
     @api.onchange("template_id")

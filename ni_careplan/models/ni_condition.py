@@ -104,9 +104,21 @@ class Diagnosis(models.Model):
                 "default_condition_ids": [fields.Command.link(self.condition_id.id)],
             }
         )
+        plan = self.env["ni.careplan"].create(
+            {
+                "encounter_id": self.encounter_id.id,
+                "patient_id": self.patient_id.id,
+                "template_id": self.template_id.id,
+                "category_id": self.template_id.category_id.id or None,
+                "condition_ids": [fields.Command.link(self.condition_id.id)],
+            }
+        )
+        plan.apply_template()
+
         view = {
             "name": self.env["ni.careplan"]._description,
             "res_model": "ni.careplan",
+            "res_id": plan.id,
             "type": "ir.actions.act_window",
             "target": self.env.context.get("target", "current"),
             "view_type": "form",
@@ -115,3 +127,23 @@ class Diagnosis(models.Model):
         }
         self.template_id = None
         return view
+
+    @api.onchange("template_id")
+    def _onchange_template_id(self):
+        for rec in self.filtered_domain([("template_id", "!=", False)]):
+            plan = rec.careplan_ids.filtered_domain(
+                [
+                    ("template_id", "=", rec.template_id.id),
+                    ("state", "in", ["draft", "active"]),
+                ]
+            )
+            if plan:
+                return {
+                    "warning": {
+                        "title": _("Warning!"),
+                        "message": _(
+                            "Careplan '%s' was already drafted or currently active for this patient"
+                        )
+                        % (self.template_id.name),
+                    }
+                }

@@ -39,4 +39,21 @@
             </xpath>
         </field>
     </record>
+    <record id="ni_encounter_diagnosis_view_tree_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.diagnosis.view.tree.inherit</field>
+        <field name="model">ni.encounter.diagnosis</field>
+        <field name="inherit_id" ref="ni_condition.ni_encounter_diagnosis_view_tree" />
+        <field name="arch" type="xml">
+            <field name="create_date" position="after">
+                <field name="careplan_count" invisible="1" />
+                <button
+                    name="action_view_careplan"
+                    type="object"
+                    title="Careplan"
+                    icon="fa-bullseye"
+                    attrs="{'invisible': [('careplan_count', '=', 0)]}"
+                />
+            </field>
+        </field>
+    </record>
 </odoo>
