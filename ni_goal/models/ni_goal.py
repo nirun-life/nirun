@@ -118,9 +118,20 @@ class Goal(models.Model):
     @api.onchange("code_id")
     def _onchange_code_id(self):
         for rec in self.filtered(lambda c: c.code_id):
-            rec.name = rec.code_id.name
-            rec.category_id = rec.code_id.category_id
-            rec.observation_type_id = rec.code_id.observation_type_id
+            code_id = rec.code_id
+            rec.name = code_id.name
+            rec.category_id = code_id.category_id
+            rec.observation_type_id = code_id.observation_type_id
+            if rec.observation_type_id:
+                if code_id.target_type == "fix":
+                    _logger.debug("Apply Fixed value min-max target ")
+                    rec.target_min = code_id.target_fix_min
+                    rec.target_max = code_id.target_fix_max
+                elif code_id.target_type == "ratio":
+                    _logger.debug("Apply Ratio value min-max target ")
+                    last_value = float(rec.observation_id.value)
+                    rec.target_min = last_value * code_id.target_ratio_min
+                    rec.target_max = last_value * code_id.target_ratio_max
             rec._mapping_condition()
 
     def _mapping_condition(self):
