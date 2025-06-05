@@ -12,7 +12,6 @@ class CareplanTemplate(models.Model):
         "ni.careplan.category",
         required=False,
         index=True,
-        readonly=True,
     )
     condition_code_ids = fields.Many2many(
         "ni.condition.code",
@@ -33,10 +32,9 @@ class CareplanTemplate(models.Model):
 
 class ServiceRequestTemplate(models.Model):
     _name = "ni.careplan.template.service.request"
-    _inherit = "ni.timing.mixin"
 
-    company_id = fields.Many2one("res.company", copy=False)
-    template_id = fields.Many2one("ni.careplan.category", copy=False)
+    company_id = fields.Many2one(related="template_id.company_id", copy=False)
+    template_id = fields.Many2one("ni.careplan.template", copy=False)
     name = fields.Char("Service Name", required=True)
     category_id = fields.Many2one(
         "ni.service.category",
@@ -44,6 +42,7 @@ class ServiceRequestTemplate(models.Model):
             ("id", "!=", self.env.ref("ni_service.categ_routine").id),
         ],
     )
+    timing_tmpl_id = fields.Many2one("ni.timing.template")
     service_ids = fields.Many2many(
         "ni.service",
         "ni_careplan_template_service_request_code",
@@ -69,3 +68,8 @@ class ServiceRequestTemplate(models.Model):
             if rec.service_ids:
                 name = ", ".join(rec.service_ids.mapped("name"))
                 rec.name = name[:128] if len(name) > 128 else name
+
+    def copy_data(self, default=None):
+        # if not "timing_id" in default and not self.timing_id:
+        # default["timing_id"] = self.timing_tmpl_id.id
+        return super().copy_data(default)

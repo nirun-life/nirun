@@ -19,6 +19,7 @@
                 />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
                 <group name="group_by" string="Group By">
+                    <filter name="group_category_id" context="{'group_by': 'category_id'}" />
                     <filter name="system" string="System" context="{'group_by': 'system_id'}" />
                 </group>
             </search>
@@ -67,6 +68,7 @@
                     />
                     <group>
                         <field name="name" />
+                        <field name="category_id" />
                     </group>
                     <group>
                         <group>
@@ -114,13 +116,14 @@
         <field name="arch" type="xml">
             <form>
                 <field name="name" invisible="1" />
+                <field name="template_id" invisible="1" />
                 <sheet>
                     <div class="oe_title">
                         <div class="d-flex">
                             <label for="name" class="flex-fill" />
                         </div>
                         <div class="d-flex">
-                            <field name="template_id" options="{'no_open': True}" placeholder="Category" />
+                            <field name="category_id" options="{'no_open': True}" placeholder="Category" />
                             <field
                                 name="service_ids"
                                 class="ms-1 flex-fill"
@@ -135,26 +138,12 @@
                         </div>
                     </div>
                     <group class="mt-3">
-                        <label for="timing_id" />
+                        <label for="timing_tmpl_id" />
                         <div class="o_row">
                             <field
                                 name="timing_tmpl_id"
                                 options="{'no_create':True, 'no_create_edit':True}"
-                                attrs="{'invisible': [('timing_id', '!=', False)], 'required':[('timing_id', '=', False)]}"
                                 placeholder="choose from..."
-                            />
-                            <span
-                                class="oe_edit_only"
-                                attrs="{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}"
-                            >
-                                or
-                            </span>
-                            <field
-                                name="timing_id"
-                                domain="[('id', '=', False)]"
-                                options="{'no_quick_create':True}"
-                                attrs="{'invisible': [('timing_tmpl_id', '!=', False)], 'required':[('timing_tmpl_id', '=', False)]}"
-                                placeholder="create new..."
                             />
                         </div>
                         <field name="company_id" />
