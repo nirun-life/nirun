@@ -8,7 +8,7 @@ class Patient(models.Model):
     goal_ids = fields.One2many("ni.goal", "patient_id")
     goal_count = fields.Integer(compute="_compute_goal_ratio")
     goal_achieved_count = fields.Integer(compute="_compute_goal_ratio")
-    goal_ratio = fields.Float(compute="_compute_goal_ratio")
+    goal_ratio = fields.Float("Goal Achieve Ratio", compute="_compute_goal_ratio")
 
     @api.depends("goal_ids")
     def _compute_goal_ratio(self):
