@@ -15,7 +15,13 @@ class GoalCodeableConcept(models.Model):
         "job_id",
         help="Specialty who can assign this goal",
     )
-    observation_type_id = fields.Many2one("ni.observation.type")
+    observation_type_id = fields.Many2one("ni.observation.type", "Measure")
+    target_type = fields.Selection([("fix", "Fix Value"), ("ratio", "Ratio")])
+    target_fix_min = fields.Float("Min")
+    target_fix_max = fields.Float("Max")
+    target_ratio_min = fields.Float("Ratio Min", default=1.0)
+    target_ratio_max = fields.Float("Ratio Max", default=1.0)
+
     condition_code_ids = fields.Many2many(
         "ni.condition.code",
         "ni_condition_code_goal_code_rel",
