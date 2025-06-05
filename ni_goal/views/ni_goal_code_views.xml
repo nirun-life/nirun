@@ -50,19 +50,37 @@
                         bg_color="bg-danger"
                         title="Archived"
                     />
+                    <label for="name" />
+                    <field name="name" />
                     <group>
                         <group>
-                            <field name="name" />
                             <field name="category_id" />
                             <field name="specialty_ids" widget="many2many_tags" />
                         </group>
                         <group>
                             <field name="code" />
                             <field name="system_id" />
-                            <field name="observation_type_id" />
                         </group>
                     </group>
                     <notebook>
+                        <page name="measure" string="Measure">
+                            <group>
+                                <field name="observation_type_id" />
+                            </group>
+                            <group attrs="{'invisible': [('observation_type_id', '=', False)]}">
+                                <group string="Type">
+                                    <field name="target_type" widget="radio" />
+                                </group>
+                                <group string="Fix Value" attrs="{'invisible': [('target_type', '!=', 'fix')]}">
+                                    <field name="target_fix_min" />
+                                    <field name="target_fix_max" />
+                                </group>
+                                <group string="Ratio" attrs="{'invisible': [('target_type', '!=', 'ratio')]}">
+                                    <field name="target_ratio_min" />
+                                    <field name="target_ratio_max" />
+                                </group>
+                            </group>
+                        </page>
                         <page name="Condition" string="Condition" icon="fa-list-ul">
                             <field name="condition_code_ids" />
                         </page>
