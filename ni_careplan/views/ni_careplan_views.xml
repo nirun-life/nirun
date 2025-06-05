@@ -69,13 +69,21 @@
                             attrs="{'readonly': [('state', '!=', 'draft')]}"
                             options="{'no_create': True, 'no_open':True}"
                         />
-                        <label for="template_id" />
-                        <div class="o_row">
+                        <label
+                            for="template_id"
+                            attrs="{'invisible': [('state', '!=', 'draft'), ('template_id', '=', False)]}"
+                        />
+                        <div
+                            class="o_row"
+                            attrs="{'invisible': [('state', '!=', 'draft'), ('template_id', '=', False)]}"
+                        >
                             <field name="template_id" />
                             <button
                                 name="apply_template"
                                 type="object"
                                 string="apply"
+                                class="oe_edit_only"
+                                states="draft"
                                 attrs="{'readonly': [('template_id', '=', False)]}"
                             />
                         </div>

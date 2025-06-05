@@ -1,9 +1,13 @@
 #  Copyright (c) 2024 NSTDA
 
+import logging
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.tools.date_utils import relativedelta
+
+_logger = logging.getLogger(__name__)
 
 LOCK_STATE_DICT = {
     "revoked": [("readonly", True)],
@@ -237,7 +241,30 @@ class Careplan(models.Model):
     def apply_template(self):
         self.ensure_one()
         if not self.template_id:
-            raise UserError(_("Please select template"))
+            if self.category_id and self.category_id.template_ids:
+                first = True
+                for template in self.category_id.template_ids.filtered_domain(
+                    [
+                        (
+                            "condition_code_ids",
+                            "parent_of",
+                            self.patient_id.condition_code_ids.ids,
+                        )
+                    ]
+                ):
+                    self.template_id = template
+                    self.with_context({"keep_careplan": not first}).apply_template()
+                    first = False
+                if not first:
+                    self.template_id = False
+                    return
+            else:
+                raise UserError(_("Please select template"))
+
+        keep = self.env.context.get("keep_careplan", 0)
+        logging.debug(
+            f"Apply careplan template(id={self.template_id.id}) with context ('keep_careplan'={keep}) "
+        )
 
         if self.template_id.condition_code_ids:
             condition = self.env["ni.condition"].search(
@@ -258,8 +285,10 @@ class Careplan(models.Model):
                         "Patient should have a least one of following conditions\n\n\t{}"
                     ).format(condition)
                 )
-
-            val = {"condition_ids": [fields.Command.set(condition.ids)]}
+            if not keep:
+                val = {"condition_ids": [fields.Command.set(condition.ids)]}
+            else:
+                val = {"condition_ids": [fields.Command.link(c.id) for c in condition]}
             goal = self.template_id.goal_code_ids.filtered_domain(
                 [
                     "|",
@@ -272,26 +301,28 @@ class Careplan(models.Model):
                 ]
             )
             if goal:
+                goal_vals = [
+                    fields.Command.create(self._prepare_goal_value(g, condition))
+                    for g in goal
+                ]
                 val.update(
                     {
-                        "goal_ids": [(fields.Command.clear())]
-                        + [
-                            fields.Command.create(
-                                self._prepare_goal_value(g, condition)
-                            )
-                            for g in goal
-                        ]
+                        "goal_ids": [(fields.Command.clear())] + goal_vals
+                        if not keep
+                        else goal_vals
                     }
                 )
 
             if self.template_id.service_request_ids:
+                sr_vals = [
+                    fields.Command.create(self._prepare_service_value(s))
+                    for s in self.template_id.service_request_ids
+                ]
                 val.update(
                     {
-                        "service_request_ids": [(fields.Command.clear())]
-                        + [
-                            fields.Command.create(self._prepare_service_value(s))
-                            for s in self.template_id.service_request_ids
-                        ]
+                        "service_request_ids": [(fields.Command.clear())] + sr_vals
+                        if not keep
+                        else sr_vals
                     }
                 )
             self.write(val)

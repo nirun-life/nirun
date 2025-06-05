@@ -16,6 +16,7 @@ class CareplanCategory(models.Model):
     service_category_id = fields.Many2one(
         "ni.service.category", help="Default service category"
     )
+    template_ids = fields.One2many("ni.careplan.template", "category_id")
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
