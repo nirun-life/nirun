@@ -326,6 +326,8 @@ class Careplan(models.Model):
                     }
                 )
             self.write(val)
+            if self.goal_ids:
+                self.goal_ids._onchange_code_id()
         else:
             raise UserError(
                 _(
