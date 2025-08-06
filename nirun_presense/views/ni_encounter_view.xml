@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="nirun_patient.encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                 <button
+                        name="action_presense_link"
+                        string="Presense"
+                        icon="fa-link"
+                        type="object"
+                        groups="nirun_patient.group_user"
+                    />
+            </xpath>
+        </field>
+    </record>
+</odoo>
