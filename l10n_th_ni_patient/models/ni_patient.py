@@ -13,6 +13,10 @@ _logger = logging.getLogger(__name__)
 class Patient(models.Model):
     _inherit = "ni.patient"
 
+    smartcard_ids = fields.One2many(
+        "ni.patient.smartcard", "patient_id", "Smart Card Reading Logs"
+    )
+
     @api.model
     def default_get(self, fields):
         res = super(Patient, self).default_get(fields)

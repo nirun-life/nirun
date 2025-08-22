@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024. NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="ni_patient_smartcard_hosp_rule" model="ir.rule">
+        <field name="name">Smart Card Log: Multi-Company Rule</field>
+        <field name="model_id" ref="model_ni_patient_smartcard" />
+        <field name="domain_force">["|", ('company_id', '=', False), ('company_id', '=', company_id)]</field>
+    </record>
+</odoo>

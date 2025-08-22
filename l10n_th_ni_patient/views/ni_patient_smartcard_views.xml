@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024. NSTDA
+  -->
+<odoo>
+    <record id="ni_person_smartcard_action" model="ir.actions.act_window">
+        <field name="name">Smart Card Logs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.patient.smartcard</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="ni_person_smartcard_view_tree" model="ir.ui.view">
+        <field name="name">ni.patient.smartcard.view.tree</field>
+        <field name="model">ni.patient.smartcard</field>
+        <field name="arch" type="xml">
+            <tree create="0" duplicate="0">
+                <field name="create_date" string="อ่านบัตรเมื่อ" />
+                <field name="company_id" groups="base.group_multi_company" optional="hide" />
+                <field name="identifier" />
+                <field name="display_name" />
+                <field name="device" optional="hide" />
+                <field name="reader" optional="hide" />
+                <field name="card_data" groups="base.group_no_one" optional="hide" />
+                <field name="user_id" widget="many2one_avatar" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_person_smartcard_view_form" model="ir.ui.view">
+        <field name="name">ni.patient.smartcard.view.form</field>
+        <field name="model">ni.patient.smartcard</field>
+        <field name="arch" type="xml">
+            <form duplicate="0" create="0" edit="0">
+                <header>
+                    <button
+                        name="update_to"
+                        string="Write to Patient"
+                        class="oe_highlight"
+                        states=""
+                        type="object"
+                        groups="base.group_no_one"
+                    />
+                </header>
+                <field name="company_id" invisible="1" />
+                <sheet>
+                    <field
+                        name="image_1920"
+                        class="oe_avatar mt-4"
+                        options='{"preview_image":"image_128"}'
+                        widget='image'
+                    />
+                    <div class="oe_title mb24">
+                        <h1>
+                            <span>Smart Card Reading Logs</span>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="user_id" widget="many2one_avatar" readonly="1" />
+                            <field name="create_date" />
+                            <field name="patient_id" readonly="1" />
+                            <field name="device" readonly="1" />
+                            <field name="reader" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="ข้อมูลหน้าบัตร" icon="fa-id-card-o">
+                            <group>
+                                <field name="identifier" readonly="1" />
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="title_id" readonly="1" />
+                                    <field name="firstname" readonly="1" />
+                                    <field name="lastname" readonly="1" />
+                                </group>
+                                <group>
+                                    <field name="firstname_en" readonly="1" />
+                                    <field name="lastname_en" readonly="1" />
+                                </group>
+                            </group>
+                            <group>
+                                <field name="birthdate" readonly="1" />
+                                <field name="address" readonly="1" />
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="card_issue" readonly="1" />
+                                    <field name="card_ref" readonly="1" />
+                                </group>
+                                <group>
+                                    <field name="card_issue_date" readonly="1" />
+                                    <field name="card_expire_date" readonly="1" />
+                                </group>
+                            </group>
+                        </page>
+                        <page name="raw_data" string="Raw Data" groups="base.group_no_one">
+                            <field name="card_data" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
