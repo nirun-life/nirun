@@ -51,6 +51,7 @@
         "views/survey_survey_views.xml",
         "wizard/survey_subject_views.xml",
         "views/ni_community_care_menu.xml",
+        "views/ni_patient_smartcard_views.xml",
     ],
     "assets": {
         "web.assets_backend": [

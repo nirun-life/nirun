@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
+<odoo>
+    <record id="ni_patient_smartcard_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.smartcard.view.form.inherit</field>
+        <field name="model">ni.patient.smartcard</field>
+        <field name="inherit_id" ref="l10n_th_ni_patient.ni_person_smartcard_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="service" string="Service">
+                    <field name="service_ids">
+                        <tree>
+                            <field name="color" invisible="1" />
+                            <field name="service_category_id" widget="badge" options="{'color_field': 'color'}" />
+                            <field name="service_id" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
