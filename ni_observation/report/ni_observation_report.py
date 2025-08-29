@@ -43,12 +43,26 @@ class ObservationReport(models.AbstractModel):
         "ni.observation", compute="_compute_observation", compute_sudo=True
     )
 
-    history_ids = fields.One2many(related="observation_id.history_ids")
-    history_count = fields.Integer(related="observation_id.history_count")
+    history_ids = fields.One2many(
+        "ni.observation", compute="_compute_observation", compute_sudo=True
+    )
+    history_count = fields.Integer(compute="_compute_observation", compute_sudo=True)
 
     def _compute_observation(self):
         for rec in self:
-            rec.observation_id = self.env["ni.observation"].browse(self.id)
+            obs = self.env["ni.observation"].browse(self.id)
+            if obs:
+                rec.update(
+                    {
+                        "observation_id": obs.id,
+                        "history_ids": obs.history_ids,
+                        "history_count": len(obs.history_ids),
+                    }
+                )
+            else:
+                rec.update(
+                    {"observation_id": None, "history_ids": None, "history_count": 0}
+                )
 
     def action_graph_view(self):
         self.ensure_one()
