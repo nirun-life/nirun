@@ -38,13 +38,13 @@ class EmployeeBase(models.AbstractModel):
             if not rec.city_ids:
                 rec.sub_district_code = None
                 continue
-            zip = self.env["res.city.zip"].search(
+            city_zip = self.env["res.city.zip"].search(
                 [
                     ("city_id", "in", rec.city_ids[0].ids),
                 ],
                 limit=1,
             )
-            rec.sub_district_code = zip.sub_district_code
+            rec.sub_district_code = city_zip.sub_district_code
 
     def _inverse_sub_district_code(self):
         for rec in self:
