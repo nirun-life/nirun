@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hr_employee_view_search_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.view.search.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter" />
+        <field name="arch" type="xml">
+            <search>
+                <filter
+                    string="พนักงานในพื้นที่รับผิดชอบ"
+                    name="my_area_employees"
+                    domain="[('my_user_city_match','=',True)]"
+                    groups="ni_patient.group_manager"
+                />
+            </search>
+        </field>
+    </record>
+    <record id="hr_employee_view_kanban_dashboard" model="ir.ui.view">
+        <field name="name">hr.employee.view.kanban.dashboard</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.hr_kanban_view_employees" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="js_class">employee_dashboard_kanban</attribute>
+            </xpath>
+            <field name="work_phone" position="after">
+                <!-- preload fields -->
+                <field name="attended_today" invisible="1" />
+                <field name="days_attended_this_month" invisible="1" />
+                <field name="care_days_this_month" invisible="1" />
+                <div class="o_kanban_info">
+                    <t t-if="record.attended_today.raw_value">
+                        <i class="fa fa-check-circle me-1 text-success" />
+                        เข้างานวันนี้
+                    </t>
+                    <t t-if="!record.attended_today.raw_value">
+                        <i class="fa fa-times-circle me-1" />
+                        ยังไม่เข้างานวันนี้
+                    </t>
+                </div>
+                <div class="o_kanban_info text-muted">
+                    <i class="fa fa-calendar me-1" />
+                    เข้างานเดือนนี้:
+                    <t t-esc="record.days_attended_this_month.value" />
+                    วัน
+                </div>
+                <div class="o_kanban_info text-muted">
+                    <i class="fa fa-user me-1" />
+                    ดูแลผู้สูงอายุเดือนนี้:
+                    <t t-esc="record.care_days_this_month.value" />
+                    คน
+                </div>
+            </field>
+        </field>
+    </record>
+    <record id="action_hr_employee_responsible_area" model="ir.actions.act_window">
+        <field name="name">พนักงานในพื้นที่รับผิดชอบ</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="hr_employee_view_kanban_dashboard" />
+        <field name="context">{'search_default_my_area_employees': 1}</field>
+    </record>
+    <record id="action_hr_employee_departed" model="ir.actions.act_window">
+        <field name="name">พนักงานที่ออกจากงาน</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="context">{'search_default_my_area_employees': 1, 'search_default_inactive': 1}</field>
+    </record>
+</odoo>

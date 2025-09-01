@@ -10,9 +10,9 @@
         <field name="view_mode">tree,calendar,kanban,form</field>
         <field name="context">
             {
-                'search_default_start': 1,
-                'search_default_group_start_day': 1,
-                'create': 0,
+            'search_default_start': 1,
+            'search_default_group_start_day': 1,
+            'create': 0,
             }
         </field>
         <field name="domain">[('create_uid', '=', uid)]</field>
@@ -49,7 +49,7 @@
         <field name="view_mode">kanban,calendar,tree,pivot,form</field>
         <field name="context">
             {'default_plan_patient_ids': [(6, 0, [active_id])],
-             'default_patient_id': active_id}
+            'default_patient_id': active_id}
         </field>
         <field name="domain">[('plan_patient_ids', '=', active_id)]</field>
         <field name="help" type="html">
@@ -201,6 +201,111 @@
             <field name="partner_ids" position="attributes">
                 <attribute name="optional">hide</attribute>
             </field>
+        </field>
+    </record>
+    <record id="ni_service_event_view_tree_inherit_approval" model="ir.ui.view">
+        <field name="name">ni_service_event_view_tree_inherit_approval</field>
+        <field name="model">ni.service.event</field>
+        <field name="inherit_id" ref="ni_service.ni_service_event_view_tree" />
+        <field name="priority" eval="100" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="default_order">start desc</attribute>
+            </xpath>
+            <!-- แทรก field start ก่อน field แรกเดิม -->
+            <xpath expr="//tree/field[1]" position="before">
+                <field name="start" string="วันที่" widget="date" />
+            </xpath>
+            <!-- ลบ field start เดิมออก (ถ้าเคยอยู่ในตำแหน่งอื่น) -->
+            <xpath expr="//field[@name='start'][2]" position="replace" />
+            <xpath expr="//field[@name='start']" position="after">
+                <field name="time_range" string="เวลา" readonly="1" />
+            </xpath>
+            <field name="name" position="attributes">
+                <attribute name="string">แผนการให้ความช่วยเหลือดูแล</attribute>
+            </field>
+            <field name="name" position="before">
+                <field
+                    name="service_category_ids"
+                    string="มิติ"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                />
+            </field>
+            <field name="name" position="after">
+                <field name="outcome" />
+            </field>
+            <field name="employee_id" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="ni_service_event_view_kanban_inherit_approval" model="ir.ui.view">
+        <field name="name">ni_service_event_view_kanban_inherit_approval</field>
+        <field name="model">ni.service.event</field>
+        <field name="arch" type="xml">
+            <kanban default_order="start desc">
+                <field name="start" />
+                <field name="time_range" />
+                <field name="name" />
+                <field name="outcome" />
+                <field name="service_category_ids" />
+                <field name="color" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) : ''}} oe_kanban_card oe_kanban_global_click"
+                        >
+                            <div class="oe_kanban_card">
+                                <!-- วันที่ และ เวลา -->
+                                <div class="oe_kanban_details">
+                                    <div class="o_kanban_tags">
+                                        <field
+                                            name="service_category_ids"
+                                            widget="many2many_tags"
+                                            options="{'color_field': 'color'}"
+                                        />
+                                    </div>
+                                    <br />
+                                    <strong>
+                                        <i class="fa fa-clock-o" style="color:#f39c12; margin-right:4px;" />
+                                        วันที่ :
+                                    </strong>
+                                    <t
+                                        t-esc="(record.start.value and record.start.value.split(' ')[0]) + ' ' + (record.time_range.value or '-')"
+                                    />
+                                    <br />
+                                    <strong>
+                                        <i class="fa fa-user" style="color:orange; margin-right:4px;" />
+                                        ผู้สูงอายุ :
+                                    </strong>
+                                    <field name="plan_patient_ids" />
+                                    <div>
+                                        <strong>
+                                            <i class="fa fa-calendar" style="color:red; margin-right:4px;" />
+                                            แผนการให้ความช่วยเหลือดูแล :
+                                        </strong>
+                                        <br />
+                                        <field name="name" />
+                                    </div>
+                                    <!--                                    <t t-esc="record.name.value" />-->
+                                    <div>
+                                        <strong>
+                                            <i class="fa fa-file-text-o" style="color:blue; margin-right:4px;" />
+                                            ผลการให้ความช่วยเหลือดูแล :
+                                        </strong>
+                                        <field name="outcome" />
+                                    </div>
+                                    <!--<div>
+                                        <t t-esc="record.outcome.value or ''" />
+                                    </div>-->
+                                    <!-- มิติ -->
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
     <record model="ir.actions.act_window" id="ni_service.ni_service_event_action">

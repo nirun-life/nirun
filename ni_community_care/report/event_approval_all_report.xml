@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023-2025 NSTDA
+  -->
+<odoo>
+    <record id="service_event_approval_05_all_action_report" model="ir.actions.report">
+        <field name="name">บันทึกงานผู้บริบาล (ศผ.01 - ศผ.04)</field>
+        <field name="model">ni.service.event.approval</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ni_community_care.service_event_approval_all_report_template</field>
+        <field name="report_file">ni_community_care.service_event_approval_all_report_template</field>
+        <!-- ชื่อไฟล์ PDF เมื่อดาวน์โหลด -->
+        <field name="print_report_name">("%s_report_บันทึกงานผู้บริบาล (ศผ.01 - ศผ.04)" % (object.name))</field>
+        <field name="binding_model_id" ref="ni_community_care.model_ni_service_event_approval" />
+        <field name="binding_type">report</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="paperformat_id" ref="report_paperformat_a4_landscape" />
+    </record>
+    <template id="service_event_approval_all_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <!-- Encounter -->
+                <div style="page-break-before: always;" />
+                <t t-call="ni_community_care.service_event_approval_encounter_report_template" />
+                <!-- Category -->
+                <div style="page-break-before: always;" />
+                <t t-call="ni_community_care.service_event_approval_category_report_template" />
+                <!-- Service -->
+                <div style="page-break-before: always;" />
+                <t t-call="ni_community_care.service_event_approval_service_report_template" />
+                <!-- Careplan -->
+                <div style="page-break-before: always;" />
+                <t t-call="ni_community_care.service_event_approval_careplan_report_template" />
+            </t>
+        </t>
+    </template>
+</odoo>

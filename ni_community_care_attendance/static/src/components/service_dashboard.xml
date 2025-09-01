@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
+<templates xml:space="preserve">
+    <t t-name="ni_community_care_attendance.ServiceEventDashboard" owl="1">
+        <div class="ms-4">
+            <b>การเข้างานของผู้บริบาลในพื้นที่รับผิดชอบ</b>
+            <div
+                class="fa fa-question-circle-o text-center ms-2"
+                data-tooltip="ภาพรวมการเข้างานของผู้บริบาลในพื้นที่รับผิดชอบของคุณวันนี้: แสดงจำนวนผู้บริบาลที่เข้างานแล้ว ลางาน และยังไม่เข้างาน"
+            />
+        </div>
+        <div class="o_patient_container position-sticky start-0 d-flex o_form_statusbar">
+            <t t-foreach="Object.entries(state.types)" t-as="types" t-key="types[0]">
+                <t t-set="name" t-value="types[0]" />
+                <t t-set="data" t-value="types[1]" />
+                <div
+                    t-attf-class="dashboard_card o_arrow_button flex-grow-1 d-flex flex-column p-3 border-bottom text-center"
+                >
+                    <i t-attf-class="fa {{data['icon']}} mx-2 {{data['class']}}" aria-hidden="true" />
+                    <div>
+                        <span t-esc="data['amount']" t-attf-class="h2 m-0 " />
+                        <t t-if="data['target']">
+                            <span class="mx-1 text-muted">/</span>
+                            <span t-esc="data['target']" class="text-muted small" />
+                        </t>
+                    </div>
+                    <b class="mx-2" t-esc="data['description']" />
+                </div>
+                <div
+                    t-if="!types_last"
+                    t-attf-class="dashboard_card o_arrow_button flex-grow-1 d-flex flex-column p-3 border-bottom text-center text-muted"
+                >
+                    <span class="display-5">|</span>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

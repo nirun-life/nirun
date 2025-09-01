@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+    <record id="ni_service_event_approval_view_search" model="ir.ui.view">
+        <field name="name">ni.service.event.approval.view.search</field>
+        <field name="model">ni.service.event.approval</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="identifier"
+                    filter_domain="['|', ('identifier', 'ilike', self), ('user_id', 'ilike', self)]"
+                />
+                <filter
+                    string="พนักงานในพื้นที่รับผิดชอบ"
+                    name="my_area_employees"
+                    domain="[('user_id.employee_id.my_user_city_match','=',True)]"
+                    groups="ni_patient.group_manager"
+                />
+                <separator />
+                <filter
+                    name="pending"
+                    string="รอการอนุมัติ"
+                    domain="[('state', '=', 'pending')]"
+                    help="Show only Pending event"
+                />
+                <filter
+                    name="self"
+                    string="เฉพาะฉัน"
+                    domain="[('user_id', '=', uid)]"
+                    help="Show only events assigned to me"
+                />
+                <filter name="approved" string="อนุมัติแล้ว" domain="[('state', '=', 'approved')]" />
+                <filter name="rejected" string="ไม่ผ่านการอนุมัติ" domain="[('state', '=', 'rejected')]" />
+                <filter name="group_employee" string="ผู้บริบาล" context="{'group_by':'user_id'}" />
+                <filter name="group_month" string="ช่วง" context="{'group_by':'start', 'order': 'start desc'}" />
+                <searchpanel>
+                    <field name="state" string="สถานะ" enable_counters="1" icon="fa-circle" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_service_event_approval_action" model="ir.actions.act_window">
+        <field name="name">การอนุมัติบันทึกงานผู้บริบาล</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service.event.approval</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="context">
+            {
+            'search_default_my_area_employees': 1,
+            'search_default_group_month': 1,
+        }
+        </field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+
+            </p>
+            <p>
+
+            </p>
+        </field>
+    </record>
+    <record id="ni_service_event_approval_action_self" model="ir.actions.act_window">
+        <field name="name">การอนุมัติบันทึกงานของฉัน</field>
+        <field name="res_model">ni.service.event.approval</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="context">{'search_default_self': 1, 'orderby': 'start desc'}</field>
+    </record>
+    <record id="ni_service_event_approval_action_pending" model="ir.actions.act_window">
+        <field name="name">การอนุมัติบันทึกงานผู้บริบาล</field>
+        <field name="res_model">ni.service.event.approval</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="context">
+            {'search_default_my_area_employees': 1, 'search_default_group_month': 1,
+                               'search_default_pending': 2, 'orderby': 'start desc'}
+        </field>
+    </record>
+    <record id="ni_service_event_approval_action_approved" model="ir.actions.act_window">
+        <field name="name">การอนุมัติบันทึกงานผู้บริบาล</field>
+        <field name="res_model">ni.service.event.approval</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="context">
+            {'search_default_my_area_employees': 1, 'search_default_group_month': 1,
+                               'search_default_approved': 2}
+        </field>
+    </record>
+    <record id="ni_service_event_approval_action_rejected" model="ir.actions.act_window">
+        <field name="name">การอนุมัติบันทึกงานผู้บริบาล</field>
+        <field name="res_model">ni.service.event.approval</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="context">
+            {'search_default_my_area_employees': 1, 'search_default_group_month': 1,
+                               'search_default_rejected': 2}
+        </field>
+    </record>
+    <record id="ni_service_event_approval_view_tree" model="ir.ui.view">
+        <field name="name">ni.service.event.approval.view.tree</field>
+        <field name="model">ni.service.event.approval</field>
+        <field name="arch" type="xml">
+            <tree default_order="start desc">
+                <field name="identifier" string="หมายเลขอ้างอิง" />
+                <field name="user_id" />
+                <field name="start" string="ตั้งแต่" />
+                <field name="stop" string="จนถึง" />
+                <field name="event_count" string="จำนวนกิจกรรม" width="20%" />
+                <field
+                    name="state"
+                    string="สถานะ"
+                    widget="badge"
+                    decoration-warning="state == 'pending'"
+                    decoration-success="state == 'approved'"
+                    decoration-danger="state == 'rejected'"
+                />
+                <button
+                    name="action_approved_event"
+                    type="object"
+                    string="อนุมัติ"
+                    icon="fa-check-circle"
+                    attrs="{'invisible': [('state', 'in', ['approved'])]}"
+                    class="btn-info"
+                    groups="ni_patient.group_manager"
+                />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_service_event_approval_view_kanban" model="ir.ui.view">
+        <field name="name">ni.service.event.approval.view.kanban</field>
+        <field name="model">ni.service.event.approval</field>
+        <field name="arch" type="xml">
+            <kanban default_order="start desc">
+                <field name="identifier" />
+                <field name="user_id" />
+                <field name="start" />
+                <field name="stop" />
+                <field name="event_count" />
+                <field name="state" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click o_kanban_card">
+                            <div class="oe_kanban_details">
+                                <div name="kanban_top" class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <span class="o_kanban_record_title fs-2">
+                                            <field name="identifier" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <ul>
+                                    <li>
+                                        <label for="user_id" class="small text-muted me-2">ผู้บริบาล:</label>
+                                        <field name="user_id" />
+                                    </li>
+                                    <li>
+                                        <label for="start" class="small text-muted me-2">ตั้งแต่:</label>
+                                        <field name="start" />
+                                    </li>
+                                    <li>
+                                        <label for="stop" class="small text-muted me-2">จนถึง:</label>
+                                        <field name="stop" />
+                                    </li>
+                                    <li>
+                                        <label for="event_count" class="small text-muted me-2">จำนวนกิจกรรม:</label>
+                                        <field name="event_count" />
+                                    </li>
+                                </ul>
+                                <div class="oe_module_action d-flex flex-wrap justify-content-between">
+                                    <field
+                                        name="state"
+                                        widget="badge"
+                                        decoration-warning="state == 'pending'"
+                                        decoration-success="state == 'approved'"
+                                        decoration-danger="state == 'rejected'"
+                                    />
+                                    <button
+                                        name="action_approved_event"
+                                        type="object"
+                                        string="อนุมัติ"
+                                        icon="fa-check-circle"
+                                        class="btn-info btn-sm"
+                                        attrs="{'invisible': [('state', 'in', ['approved'])]}"
+                                        groups="ni_patient.group_manager"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="ni_service_event_approval_view_form" model="ir.ui.view">
+        <field name="name">ni.service.event.approval.view.form</field>
+        <field name="model">ni.service.event.approval</field>
+        <field name="arch" type="xml">
+            <form string="Event Approval" readonly="1">
+                <field name="patient_count" invisible="1" />
+                <field name="event_count" invisible="1" />
+                <sheet>
+                    <div class="oe_title">
+                        <label for="identifier" string="หมายเลขอ้างอิง" />
+                        <h1>
+                            <field name="identifier" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <!-- ด้านซ้าย -->
+                            <field name="user_id" widget="many2one_avatar_user" readonly="1" />
+                            <field name="start" string="ตั้งแต่" readonly="1" />
+                            <field name="stop" string="จนถึง" readonly="1" />
+                        </group>
+                        <group>
+                            <!-- ด้านขวา -->
+                            <field
+                                name="state"
+                                string="สถานะ"
+                                readonly="1"
+                                decoration-warning="state == 'pending'"
+                                decoration-success="state == 'approved'"
+                                decoration-danger="state == 'rejected'"
+                            />
+                            <field name="city_ids" string="พื้นที่รับผิดชอบ" widget="many2many_tags" readonly="1" />
+                            <field name="state_id" string="จังหวัด" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page
+                            name="patient_ids"
+                            string="ผู้สูงอายุ (ศผ.01)"
+                            icon="fa-address-book"
+                            badge="patient_count"
+                        >
+                            <field
+                                name="dashboard_data"
+                                widget="service_event_approval_dashboard"
+                                nolabel="1"
+                                style="height: 100%; width: 100%;"
+                                record-id="id"
+                                groups="ni_patient.group_manager"
+                            />
+                            <field
+                                name="patient_ids"
+                                mode="kanban"
+                                readonly="1"
+                                context="{'kanban_view_ref': 'ni_community_care.ni_patient_view_kanban_simp'}"
+                                options="{'no_create': True, 'no_edit': True, 'no_open': True}"
+                            >
+
+                            </field>
+                        </page>
+                        <page
+                            name="event_ids"
+                            string="กิจกรรมการดูแลผู้สูงอายุ (ศผ.02)"
+                            icon="fa-life-ring"
+                            badge="event_count"
+                        >
+                            <div>
+                                <strong>สรุปผลกิจกรรมการดูแลผู้สูงอายุ</strong>
+                            </div>
+                            <field
+                                name="category_ids"
+                                mode="kanban"
+                                context="{'approval_id': active_id, 'kanban_view_ref': 'ni_community_care.ni_service_category_view_kanban_inherit_service_category'
+                                }"
+                            />
+                            <div attrs="{'invisible': [('category_ids', '!=', [])]}" class="text-center mt-3">
+                                <span class="text-muted" style="font-style: italic;">ไม่มีข้อมูล</span>
+                            </div>
+                            <br />
+                            <br />
+                            <br />
+                            <div>
+                                <strong>ประวัติกิจกรรมการดูแลผู้สูงอายุ</strong>
+                            </div>
+                            <field
+                                name="event_ids"
+                                mode="tree,kanban"
+                                readonly="1"
+                                context="{'tree_view_ref': 'ni_community_care.ni_service_event_view_tree_inherit_approval',
+                                'kanban_view_ref': 'ni_community_care.ni_service_event_view_kanban_inherit_approval'
+                                }"
+                            />
+                        </page>
+                        <page
+                            name="service_ids"
+                            string="กิจกรรมพัฒนาคุณภาพชีวิตผู้สูงอายุ (ศผ.03)"
+                            icon="fa-heart"
+                            badge="service_count"
+                        >
+                            <field
+                                name="service_ids"
+                                mode="tree"
+                                readonly="1"
+                                context="{'tree_view_ref': 'ni_community_care.ni_service_view_tree_inherit_approval'}"
+                            />
+                            <field name="service_count" invisible="1" />
+                        </page>
+                        <page
+                            name="careplan"
+                            string="แผนการให้ความช่วยเหลือดูแลผู้สูงอายุ (ศผ.04)"
+                            icon="fa-tasks"
+                            badge="careplan_count"
+                        >
+                            <field name="careplan_count" invisible="1" />
+                            <field name="careplan_ids">
+
+                            </field>
+                        </page>
+                    </notebook>
+                    <group string="ข้อมูลที่แก้ไขได้" groups="base.group_no_one">
+                        <field name="user_id" widget="many2one_avatar_user" readonly="0" />
+                        <field name="start" string="ตั้งแต่" readonly="0" />
+                        <field name="stop" string="จนถึง" readonly="0" />
+                        <field
+                            name="state"
+                            string="สถานะ"
+                            decoration-warning="state == 'pending'"
+                            decoration-success="state == 'approved'"
+                            decoration-danger="state == 'rejected'"
+                        />
+                        <!--                        <field name="event_patient_ids"></field>-->
+                    </group>
+                    <div class="d-grid gap-2 d-md-block">
+                        <button
+                            name="action_approved_event"
+                            type="object"
+                            string="อนุมัติ"
+                            icon="fa-check-circle"
+                            attrs="{'invisible': [('state', 'in', ['approved'])]}"
+                            class="btn-info me-4"
+                            groups="ni_patient.group_manager"
+                        />
+                        <button
+                            name="action_rejected_event"
+                            type="object"
+                            string="ไม่อนุมัติ"
+                            icon="fa-times-circle"
+                            attrs="{'invisible': [('state', 'not in', ['pending'])]}"
+                            class="btn-warning me-4"
+                            groups="ni_patient.group_manager"
+                        />
+                    </div>
+                </sheet>
+                <div name="chatter" class="oe_chatter">
+                    <field
+                        name="message_follower_ids"
+                        groups="base.group_user"
+                        options="{'post_refresh': 'recipients'}"
+                    />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

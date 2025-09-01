@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ni_service_category_view_kanban_inherit_service_category" model="ir.ui.view">
+        <field name="name">ni_service_category_view_kanban_inherit_service_category</field>
+        <field name="model">ni.service.category</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name" />
+                <field name="color" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) : ''}} oe_kanban_card oe_kanban_global_click"
+                        >
+                            <div class="oe_kanban_card">
+                                <div class="oe_kanban_details">
+                                    <strong>
+                                        <field name="name" />
+                                    </strong>
+                                    <br />
+                                    <i class="fa fa-calendar" style="color:red; margin-right:4px;" />
+                                    กิจกรรม :
+                                    <field name="category_count_in_approval" />
+                                    <br />
+                                    <i class="fa fa-user" style="color:orange; margin-right:4px;" />
+                                    ผู้เข้าร่วม :
+                                    <field name="plan_patient_in_approval" />
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

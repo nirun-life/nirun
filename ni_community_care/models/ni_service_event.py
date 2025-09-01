@@ -9,6 +9,7 @@ from odoo.exceptions import UserError, ValidationError
 
 class ServiceEvent(models.Model):
     _inherit = "ni.service.event"
+    approval_id = fields.Many2one("ni.service.event.approval")  # inverse field
 
     @api.model
     def _get_default_trim_start(self):
@@ -95,6 +96,21 @@ class ServiceEvent(models.Model):
     )
     start = fields.Datetime(default=_get_default_trim_start)
     stop = fields.Datetime(default=_get_default_trim_stop)
+    time_range = fields.Char(string="เวลา", compute="_compute_time_range", store=False)
+
+    @api.depends("start", "stop")
+    def _compute_time_range(self):
+        for rec in self:
+            if rec.start and rec.stop:
+                # แปลงจาก UTC → local time ของ user
+                start_local = fields.Datetime.context_timestamp(rec, rec.start)
+                stop_local = fields.Datetime.context_timestamp(rec, rec.stop)
+
+                start_str = start_local.strftime("%H:%M")
+                stop_str = stop_local.strftime("%H:%M")
+                rec.time_range = f"{start_str} - {stop_str}"
+            else:
+                rec.time_range = ""
 
     @api.depends("state_id", "city_id")
     def _compute_state_city(self):

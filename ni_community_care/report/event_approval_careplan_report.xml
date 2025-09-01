@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023-2025 NSTDA
+  -->
+<odoo>
+    <record id="service_event_approval_04_careplan_action_report" model="ir.actions.report">
+        <field name="name">แผนการให้ความช่วยเหลือดูแลผู้สูงอายุ ศผ.04</field>
+        <field name="model">ni.service.event.approval</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ni_community_care.service_event_approval_careplan_report_template</field>
+        <field name="report_file">ni_community_care.service_event_approval_careplan_report_template</field>
+        <!-- ชื่อไฟล์ PDF เมื่อดาวน์โหลด -->
+        <field name="print_report_name">("%s_report_แผนการให้ความช่วยเหลือดูแลผู้สูงอายุ ศผ.04" % (object.name))</field>
+        <field name="binding_model_id" ref="ni_community_care.model_ni_service_event_approval" />
+        <field name="binding_type">report</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="paperformat_id" ref="report_paperformat_a4_landscape" />
+    </record>
+    <template id="service_event_approval_careplan_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-foreach="o.get_sorted_careplans()" t-as="patient_careplans">
+                    <t t-call="web.external_layout">
+                        <div class="oe_structure" />
+                        <h2 name="title">
+                            <span>
+                                แผนการให้ความช่วยเหลือดูแลผู้สูงอายุ -
+                                <t t-esc="docs.start_month_name" />
+                                <t t-esc="docs.start_year_thai" />
+                            </span>
+                            <small class="text-muted mx-2 border p-1 float-end">แบบ ศผ.04</small>
+                        </h2>
+                        <div class="row" id="caregiver_3">
+                            <div class="col-auto col-5 mw-100">
+                                <strong>ชื่อ-สกุลผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ:</strong>
+                                <p class="m-0" t-esc="docs.user_id.name" />
+                            </div>
+                            <div class="col-auto col-4 mw-100">
+                                <strong>พื้นที่:</strong>
+                                <p class="m-0" t-esc="docs.user_id.partner_id._display_address(True)" />
+                            </div>
+                        </div>
+                        <div class="row" id="caregiver_4">
+                            <div class="col-auto col-5 mw-100">
+                                <strong>ระยะเวลา:</strong>
+                                <p class="m-0">
+                                    <t t-esc="docs.start.day" />
+                                    <t t-esc="docs.start_month_name" />
+                                    <t t-esc="docs.start_year_thai" />
+                                    -
+                                    <t t-esc="docs.stop.day" />
+                                    <t t-esc="docs.stop_month_name" />
+                                    <t t-esc="docs.stop_year_thai" />
+                                </p>
+                            </div>
+                        </div>
+                        <t t-set="p" t-value="patient_careplans[0]" />
+                        <!-- ข้อมูลผู้สูงอายุ -->
+                        <div class="row mt-3 border border-dark border-1 py-2" id="patient">
+                            <div class="col-auto col-3 mw-100">
+                                <strong>ชื่อ-สกุลผู้สูงอายุ:</strong>
+                                <p class="m-0" t-field="p.display_name" />
+                            </div>
+                            <div class="col-auto col-2 mw-100">
+                                <strong>อายุ:</strong>
+                                <p class="m-0">
+                                    <span t-field="p.age" />
+                                    ปี
+                                    <t t-if="p.gender">
+                                        <strong>เพศ:</strong>
+                                        <span t-field="p.gender" />
+                                    </t>
+                                </p>
+                            </div>
+                            <div class="col-auto col-4 mw-100">
+                                <strong>ที่อยู่:</strong>
+                                <p class="m-0">
+                                    <span t-esc="p.partner_id._display_address(True)" />
+                                </p>
+                            </div>
+                            <div class="col-auto col-2 mw-100">
+                                <strong>เบอร์โทรศัพท์:</strong>
+                                <p class="m-0">
+                                    <span t-field="p.mobile" t-if="p.mobile" />
+                                    <span t-field="p.phone" t-else="" />
+                                </p>
+                            </div>
+                            <div class="col-auto col-2 mw-100">
+                                <strong>สถานะสุขภาพ:</strong>
+                                <p class="m-0">
+                                    <span t-field="p.type_id" />
+                                </p>
+                            </div>
+                        </div>
+                        <!-- ตาราง careplan -->
+                        <table class="table table-condensed mt-3">
+                            <thead>
+                                <tr>
+                                    <th class="text-start">มิติ</th>
+                                    <th class="text-start">ประเด็นปัญหา/ความต้องการ</th>
+                                    <th class="text-start">เป้าหมาย</th>
+                                    <th class="text-start">แผนการให้ความช่วยเหลือ</th>
+                                    <th class="text-start">ผลการให้ความช่วยเหลือ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="patient_careplans[1]" t-as="cp">
+                                    <tr>
+                                        <td t-esc="cp.condition_category_id.name" />
+                                        <td>
+                                            <span t-esc="cp.problem_text" />
+                                        </td>
+                                        <td>
+                                            <span t-esc="cp.goal_text" />
+                                        </td>
+                                        <td>
+                                            <span t-esc="cp.action_text" />
+                                        </td>
+                                        <td>
+                                            <span t-esc="cp.outcome" />
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <p style="page-break-after: always;" />
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
+<!--<t t-foreach="o.service_ids" t-as="s">-->
+<!--<t t-foreach="s.event_ids" t-as="e">-->
+<!--    <t t-foreach="e.plan_patient_ids" t-as="p">-->
+<!--        &lt;!&ndash; เริ่มหน้าผู้สูงอายุคนใหม่ &ndash;&gt;-->
+<!--        <div class="page" style="page-break-after: always;">-->
+<!--            <div class="oe_structure" />-->
+<!--            <h2 name="title">-->
+<!--                <span>แผนการให้ความช่วยเหลือดูแลผู้สูงอายุ</span>-->
+<!--                <small class="text-muted mx-2 border p-1 float-end">แบบ ศผ.04</small>-->
+<!--            </h2>-->
+<!--            &lt;!&ndash; ข้อมูลผู้สูงอายุ &ndash;&gt;-->
+<!--            <div class="row mt-3 border border-dark border-1 py-2" id="patient">-->
+<!--                <div class="col-auto col-3 mw-100">-->
+<!--                    <strong>ชื่อ-สกุลผู้สูงอายุ:</strong>-->
+<!--                    <p class="m-0" t-field="p.display_name" />-->
+<!--                </div>-->
+<!--                <div class="col-auto col-2 mw-100">-->
+<!--                    <strong>อายุ:</strong>-->
+<!--                    <p class="m-0">-->
+<!--                        <span t-field="p.age" />-->
+<!--                        ปี-->
+<!--                        <t t-if="p.gender">-->
+<!--                            <strong>เพศ:</strong>-->
+<!--                            <span t-field="p.gender" />-->
+<!--                        </t>-->
+<!--                    </p>-->
+<!--                </div>-->
+<!--                <div class="col-auto col-4 mw-100">-->
+<!--                    <strong>ที่อยู่:</strong>-->
+<!--                    <p class="m-0">-->
+<!--                        <span t-esc="p.partner_id._display_address(True)" />-->
+<!--                    </p>-->
+<!--                </div>-->
+<!--                <div class="col-auto col-2 mw-100">-->
+<!--                    <strong>เบอร์โทรศัพท์:</strong>-->
+<!--                    <p class="m-0">-->
+<!--                        <span t-field="p.mobile" t-if="p.mobile" />-->
+<!--                        <span t-field="p.phone" t-else="" />-->
+<!--                    </p>-->
+<!--                </div>-->
+<!--                <div class="col-auto col-2 mw-100">-->
+<!--                    <strong>สถานะสุขภาพ:</strong>-->
+<!--                    <p class="m-0">-->
+<!--                        <span t-field="p.type_id" />-->
+<!--                    </p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            &lt;!&ndash; ตารางแผนการช่วยเหลือเฉพาะผู้สูงอายุนั้น &ndash;&gt;-->
+<!--            <t t-if="p.careplan_ids">-->
+<!--                <table class="table table-condensed mt-2">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th class="text-start">มิติ</th>-->
+<!--                            <th class="text-start">ประเด็นปัญหา/ความต้องการ</th>-->
+<!--                            <th class="text-start">เป้าหมาย</th>-->
+<!--                            <th class="text-start">แผนการให้ความช่วยเหลือ</th>-->
+<!--                            <th class="text-start">ผลการให้ความช่วยเหลือ</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        <tr t-foreach="p.careplan_ids" t-as="cp">-->
+<!--                            <td>-->
+<!--                                <span t-esc="cp.condition_category_id.name" />-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <span t-esc="cp.problem_text" />-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <span t-esc="cp.goal_text" />-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <span t-esc="cp.action_text" />-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <span t-esc="cp.outcome" />-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </t>-->
+<!--        </div>-->
+<!--    </t>-->
+<!--</t>-->
+<!--</t>-->
