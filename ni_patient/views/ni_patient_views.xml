@@ -51,6 +51,7 @@
                     string='Discharged'
                     domain="[('presence_state', 'in', ['finished', 'deceased'])]"
                 />
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]" />
                 <separator />
                 <filter name="alive" string='Alive' domain="[('deceased_date', '=', False)]" />
                 <filter
@@ -138,13 +139,13 @@
                     <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': ['|',('deceased', '=', False), ('active', '=', False)]}"
+                        attrs="{'invisible': [('deceased', '=', False)]}"
                         bg_color="bg-dark"
                         title="Deceased"
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
+                        attrs="{'invisible': ['|', ('active', '=', True), ('deceased', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
                     />
@@ -275,6 +276,18 @@
                                 <group string="Decease">
                                     <field name="deceased" invisible="1" />
                                     <field name="deceased_date" />
+                                </group>
+                                <group
+                                    name="archive_state"
+                                    string="Patient State"
+                                    attrs="{'invisible': [('active', '=', True)]}"
+                                >
+                                    <field
+                                        name="state_reason_id"
+                                        options="{'no_edit': True, 'no_create': True, 'no_open': True}"
+                                    />
+                                    <field name="state_note" />
+                                    <field name="state_date" />
                                 </group>
                             </group>
                         </page>
