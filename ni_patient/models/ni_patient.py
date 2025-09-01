@@ -120,6 +120,17 @@ class Patient(models.Model):
         tracking=True,
     )
 
+    state_reason_id = fields.Many2one(
+        "ni.patient.state.reason",
+        string="State Reason",
+    )
+    state_date = fields.Date(
+        string="State Date",
+    )
+    state_note = fields.Text(
+        string="Additional Details",
+    )
+
     marital_status = fields.Selection(
         [
             ("single", "Single"),
