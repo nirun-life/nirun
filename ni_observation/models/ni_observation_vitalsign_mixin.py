@@ -168,5 +168,5 @@ class ObservationVitalsignMixin(models.AbstractModel):
     @api.constrains("pain_score", "pain_area")
     def _check_pain_score(self):
         for rec in self:
-            if rec.pain_area and not any([rec.pain_score, rec.pain_score_enum != "0"]):
+            if rec.pain_area and all([not rec.pain_score, rec.pain_score_enum == "0"]):
                 raise UserError(_("กรุณาระบุระดับความเจ็บปวด"))
