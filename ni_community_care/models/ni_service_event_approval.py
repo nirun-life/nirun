@@ -46,7 +46,16 @@ class ServiceEventApproval(models.Model):
 
     user_id = fields.Many2one(
         "res.users",
+        string="ผู้บริบาล (User)",
+    )
+
+    employee_id = fields.Many2one(
+        "hr.employee",
         string="ผู้บริบาล",
+        related="user_id.employee_id",
+        store=True,
+        index=True,
+        readonly=True,
     )
 
     patient_ids = fields.One2many("ni.patient", compute="_compute_patient_ids")

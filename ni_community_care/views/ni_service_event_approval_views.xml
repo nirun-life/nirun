@@ -12,7 +12,7 @@
                 <filter
                     string="พนักงานในพื้นที่รับผิดชอบ"
                     name="my_area_employees"
-                    domain="[('user_id.employee_id.my_user_city_match','=',True)]"
+                    domain="[('employee_id.my_user_city_match','=',True)]"
                     groups="ni_patient.group_manager"
                 />
                 <separator />
@@ -30,7 +30,7 @@
                 />
                 <filter name="approved" string="อนุมัติแล้ว" domain="[('state', '=', 'approved')]" />
                 <filter name="rejected" string="ไม่ผ่านการอนุมัติ" domain="[('state', '=', 'rejected')]" />
-                <filter name="group_employee" string="ผู้บริบาล" context="{'group_by':'user_id'}" />
+                <filter name="group_employee" string="ผู้บริบาล" context="{'group_by':'employee_id'}" />
                 <filter name="group_month" string="ช่วง" context="{'group_by':'start', 'order': 'start desc'}" />
                 <searchpanel>
                     <field name="state" string="สถานะ" enable_counters="1" icon="fa-circle" />
@@ -97,7 +97,7 @@
         <field name="arch" type="xml">
             <tree default_order="start desc">
                 <field name="identifier" string="หมายเลขอ้างอิง" />
-                <field name="user_id" />
+                <field name="employee_id" />
                 <field name="start" string="ตั้งแต่" />
                 <field name="stop" string="จนถึง" />
                 <field name="event_count" string="จำนวนกิจกรรม" width="20%" />
@@ -127,7 +127,7 @@
         <field name="arch" type="xml">
             <kanban default_order="start desc">
                 <field name="identifier" />
-                <field name="user_id" />
+                <field name="employee_id" />
                 <field name="start" />
                 <field name="stop" />
                 <field name="event_count" />
@@ -145,8 +145,8 @@
                                 </div>
                                 <ul>
                                     <li>
-                                        <label for="user_id" class="small text-muted me-2">ผู้บริบาล:</label>
-                                        <field name="user_id" />
+                                        <label for="employee_id" class="small text-muted me-2">ผู้บริบาล:</label>
+                                        <field name="employee_id" />
                                     </li>
                                     <li>
                                         <label for="start" class="small text-muted me-2">ตั้งแต่:</label>
@@ -203,7 +203,7 @@
                     <group>
                         <group>
                             <!-- ด้านซ้าย -->
-                            <field name="user_id" widget="many2one_avatar_user" readonly="1" />
+                            <field name="employee_id" widget="many2one_avatar_user" readonly="1" />
                             <field name="start" string="ตั้งแต่" readonly="1" />
                             <field name="stop" string="จนถึง" readonly="1" />
                         </group>
@@ -307,6 +307,7 @@
                     </notebook>
                     <group string="ข้อมูลที่แก้ไขได้" groups="base.group_no_one">
                         <field name="user_id" widget="many2one_avatar_user" readonly="0" />
+                        <field name="employee_id" widget="many2one_avatar_user" readonly="1" />
                         <field name="start" string="ตั้งแต่" readonly="0" />
                         <field name="stop" string="จนถึง" readonly="0" />
                         <field
