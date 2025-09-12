@@ -152,9 +152,9 @@ class Condition(models.Model):
     @api.depends("period_start", "period_end")
     def _compute_age(self):
         for rec in self:
-            dt = relativedelta(self.period_start, self.patient_id.birthdate)
+            dt = relativedelta(rec.period_start, rec.patient_id.birthdate)
             rec.age_start = dt.years
-            dt = relativedelta(self.period_end, self.patient_id.birthdate)
+            dt = relativedelta(rec.period_end, rec.patient_id.birthdate)
             rec.age_end = dt.years
 
     def _inverse_age_start(self):
