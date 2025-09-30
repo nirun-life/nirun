@@ -357,17 +357,20 @@ class ServiceEventApproval(models.Model):
             for patient in ev.plan_patient_ids:  # loop patient ที่อยู่ใน event
                 patient_event_map[patient].append(ev)
 
-        # ล็อกดู dict
-        _logger.info("=== Patient Event Map ===")
-        for patient, events in patient_event_map.items():
-            _logger.info("Patient: %s (id=%s)", patient.name, patient.id)
-            for ev in events:
-                _logger.info("  Event: %s (id=%s)", ev.name, ev.id)
-
-        # คืนค่า list ของ tuple (patient_record, list_of_events) สำหรับ QWeb
+        # อ่านค่าจำกัดจาก ir.config_parameter
+        limit_str = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("ni_community_care.report_event_limit", "100")
+        )
+        try:
+            limit = int(limit_str)
+        except ValueError:
+            limit = 100  # fallback ถ้าค่าที่เก็บไว้ไม่ใช่ตัวเลข
+            # คืนค่า list จำกัดตาม limit
         result = [
             (patient, patient_event_map[patient]) for patient in patient_event_map
-        ]
+        ][:limit]
         return result
 
     def get_sorted_careplans(self):
