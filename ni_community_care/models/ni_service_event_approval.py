@@ -375,6 +375,37 @@ class ServiceEventApproval(models.Model):
         ][:limit]
         return result
 
+    # def get_sorted_events(self):
+    #     self.ensure_one()
+    #     patient_event_map = defaultdict(list)
+    #
+    #     # loop event
+    #     for ev in sorted(self.event_ids, key=lambda e: e.id):
+    #         for patient in ev.plan_patient_ids:
+    #             patient_event_map[patient].append(ev)
+    #
+    #     # อ่านค่าจำกัดจาก ir.config_parameter
+    #     limit_str = (
+    #         self.env["ir.config_parameter"]
+    #         .sudo()
+    #         .get_param("ni_community_care.report_event_limit", "100")
+    #     )
+    #     try:
+    #         limit = int(limit_str)
+    #     except ValueError:
+    #         limit = 100
+    #
+    #     result = [
+    #                  (patient, patient_event_map[patient]) for patient in patient_event_map
+    #              ][:limit]
+    #
+    #     # 🔹 ดัมมี่ข้อมูลซ้ำเข้าไปเพื่อเทสต์จำนวนหน้า
+    #     dummy_multiplier = 200  # ปรับได้ เช่น 5, 10, 20
+    #     result = result * dummy_multiplier
+    #     _logger.info(f"Dummy data multiplied {dummy_multiplier}x, total {len(result)} patients in report.")
+    #
+    #     return result
+
     def get_sorted_careplans(self):
         self.ensure_one()
         patient_careplan_map = defaultdict(list)
@@ -425,3 +456,35 @@ class ServiceEventApproval(models.Model):
 
         for user in users:
             self.create({"start": start_date, "stop": last_day, "user_id": user.id})
+
+    @api.model
+    def _cron_generate_reports(self):
+        report = self.env.ref(
+            "ni_community_care.service_event_approval_02_category_action_report"
+        )
+        if not report:
+            _logger.error("Report action not found")
+            return
+
+        records = self.search([])
+        for rec in records:
+            existing_attachment = self.env["ir.attachment"].search(
+                [
+                    ("res_model", "=", rec._name),
+                    ("res_id", "=", rec.id),
+                    ("name", "ilike", ".pdf"),
+                ],
+                limit=1,
+            )
+
+            if existing_attachment:
+                continue
+
+            try:
+                # เรียกให้ Odoo สร้าง attachment ให้เอง
+                self.env["ir.actions.report"]._render_qweb_pdf(
+                    report_ref=report.id, res_ids=[rec.id], data=None
+                )
+                _logger.info(f"Generated PDF for {rec.name}")
+            except Exception as e:
+                _logger.warning(f"Failed to generate PDF for {rec.name}: {e}")

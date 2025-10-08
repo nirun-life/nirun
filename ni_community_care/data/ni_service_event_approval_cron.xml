@@ -14,13 +14,13 @@
             eval="(DateTime.now().replace(day=1, hour=2, minute=0, second=0) + relativedelta(months=1)).strftime('%Y-%m-%d %H:%M:%S')"
         />
     </record>
-    <!--     <record id="ir_cron_generate_approval_reports" model="ir.cron">-->
-    <!--        <field name="name">Generate Event Approval Reports</field>-->
-    <!--        <field name="model_id" ref="ni_community_care.model_ni_service_event_approval"/>-->
-    <!--        <field name="state">code</field>-->
-    <!--        <field name="code">model._cron_generate_reports()</field>-->
-    <!--        <field name="interval_number">1</field>-->
-    <!--        <field name="interval_type">months</field>-->
-    <!--        <field name="active">True</field>-->
-    <!--    </record>-->
+    <record id="ir_cron_generate_approval_reports" model="ir.cron">
+        <field name="name">Generate Event Approval Reports</field>
+        <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
+        <field name="state">code</field>
+        <field name="code">model._cron_generate_reports()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">True</field>
+    </record>
 </odoo>
