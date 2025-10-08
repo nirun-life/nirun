@@ -15,6 +15,8 @@
         <field name="binding_type">report</field>
         <field name="binding_view_types">list,form</field>
         <field name="paperformat_id" ref="report_paperformat_a4_landscape" />
+        <field name="attachment">(object.name or 'report') + '.pdf'</field>
+        <field name="attachment_use">True</field>
     </record>
     <template id="service_event_approval_category_report_template">
         <t t-call="web.html_container">

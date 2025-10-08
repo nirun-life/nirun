@@ -26,6 +26,7 @@
         "data/ni_condition_code_data.xml",
         "data/ni_family_relation_data.xml",
         "data/ni_need_data.xml",
+        "data/ni_service_event_approval_cron.xml",
         # "datas/ni_service_categ_data.xml",
         "security/ir.model.access.csv",
         "security/ir_rules_data.xml",

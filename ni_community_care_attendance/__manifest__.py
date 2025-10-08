@@ -15,7 +15,6 @@
     ],
     "data": [
         "security/ir_rules_data.xml",
-        "data/ni_service_event_approval_cron.xml",
         "views/hr_employee_views.xml",
         "views/ni_service_event_approval_views.xml",
         "views/ni_community_care_attendance_menu.xml",
