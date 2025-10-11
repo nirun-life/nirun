@@ -23,4 +23,22 @@
         <field name="interval_type">months</field>
         <field name="active">True</field>
     </record>
+    <record id="ir_cron_generate_approval_reports_single" model="ir.cron">
+        <field name="name">Generate Event Approval Reports Single</field>
+        <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
+        <field name="state">code</field>
+        <field name="code">model._cron_generate_reports_single()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">True</field>
+    </record>
+    <record id="ir_cron_generate_approval_reports_split" model="ir.cron">
+        <field name="name">Generate Event Approval Reports Split</field>
+        <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
+        <field name="state">code</field>
+        <field name="code">model._cron_generate_reports_split()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active">True</field>
+    </record>
 </odoo>

@@ -1,8 +1,14 @@
+import io
 import json
 import logging
+import os
+import tempfile
+import time
 from collections import defaultdict
 
+import psutil
 from dateutil.relativedelta import relativedelta
+from PyPDF2 import PdfReader, PdfWriter
 
 from odoo import _, api, fields, models
 
@@ -350,38 +356,13 @@ class ServiceEventApproval(models.Model):
                 rec.stop_month_name = False
                 rec.stop_year_thai = False
 
-    def get_sorted_events(self):
-        self.ensure_one()
-        patient_event_map = defaultdict(list)
-
-        # loop event
-        for ev in sorted(self.event_ids, key=lambda e: e.id):  # เรียง event ตาม id
-            for patient in ev.plan_patient_ids:  # loop patient ที่อยู่ใน event
-                patient_event_map[patient].append(ev)
-
-        # อ่านค่าจำกัดจาก ir.config_parameter
-        limit_str = (
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("ni_community_care.report_event_limit", "100")
-        )
-        try:
-            limit = int(limit_str)
-        except ValueError:
-            limit = 100  # fallback ถ้าค่าที่เก็บไว้ไม่ใช่ตัวเลข
-            # คืนค่า list จำกัดตาม limit
-        result = [
-            (patient, patient_event_map[patient]) for patient in patient_event_map
-        ][:limit]
-        return result
-
     # def get_sorted_events(self):
     #     self.ensure_one()
     #     patient_event_map = defaultdict(list)
     #
     #     # loop event
-    #     for ev in sorted(self.event_ids, key=lambda e: e.id):
-    #         for patient in ev.plan_patient_ids:
+    #     for ev in sorted(self.event_ids, key=lambda e: e.id):  # เรียง event ตาม id
+    #         for patient in ev.plan_patient_ids:  # loop patient ที่อยู่ใน event
     #             patient_event_map[patient].append(ev)
     #
     #     # อ่านค่าจำกัดจาก ir.config_parameter
@@ -393,18 +374,45 @@ class ServiceEventApproval(models.Model):
     #     try:
     #         limit = int(limit_str)
     #     except ValueError:
-    #         limit = 100
-    #
+    #         limit = 100  # fallback ถ้าค่าที่เก็บไว้ไม่ใช่ตัวเลข
+    #         # คืนค่า list จำกัดตาม limit
     #     result = [
-    #                  (patient, patient_event_map[patient]) for patient in patient_event_map
-    #              ][:limit]
-    #
-    #     # 🔹 ดัมมี่ข้อมูลซ้ำเข้าไปเพื่อเทสต์จำนวนหน้า
-    #     dummy_multiplier = 200  # ปรับได้ เช่น 5, 10, 20
-    #     result = result * dummy_multiplier
-    #     _logger.info(f"Dummy data multiplied {dummy_multiplier}x, total {len(result)} patients in report.")
-    #
+    #         (patient, patient_event_map[patient]) for patient in patient_event_map
+    #     ][:limit]
     #     return result
+
+    def get_sorted_events(self):
+        self.ensure_one()
+        patient_event_map = defaultdict(list)
+
+        # loop event
+        for ev in sorted(self.event_ids, key=lambda e: e.id):
+            for patient in ev.plan_patient_ids:
+                patient_event_map[patient].append(ev)
+
+        # อ่านค่าจำกัดจาก ir.config_parameter
+        limit_str = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("ni_community_care.report_event_limit", "100")
+        )
+        try:
+            limit = int(limit_str)
+        except ValueError:
+            limit = 100
+
+        result = [
+            (patient, patient_event_map[patient]) for patient in patient_event_map
+        ][:limit]
+
+        # 🔹 ดัมมี่ข้อมูลซ้ำเข้าไปเพื่อเทสต์จำนวนหน้า
+        dummy_multiplier = 150  # ปรับได้ เช่น 5, 10, 20
+        result = result * dummy_multiplier
+        _logger.info(
+            f"Dummy data multiplied {dummy_multiplier}x, total {len(result)} patients in report."
+        )
+
+        return result
 
     def get_sorted_careplans(self):
         self.ensure_one()
@@ -458,7 +466,56 @@ class ServiceEventApproval(models.Model):
             self.create({"start": start_date, "stop": last_day, "user_id": user.id})
 
     @api.model
-    def _cron_generate_reports(self):
+    def _cron_generate_reports_single(self):
+        report = self.env.ref(
+            "ni_community_care.service_event_approval_02_category_action_report"
+        )
+        if not report:
+            _logger.error("Report action not found")
+            return
+
+        all_records = self.search([])
+        batch_size = 10
+
+        def log_memory(label):
+            try:
+                process = psutil.Process(os.getpid())
+                mem = process.memory_info().rss / (1024 * 1024)
+                _logger.info(f"[MEMORY] {label}: {mem:.2f} MB")
+            except Exception:
+                pass
+
+        log_memory("Before batch processing")
+
+        for batch_idx in range(0, len(all_records), batch_size):
+            batch = all_records[batch_idx : batch_idx + batch_size]
+            _logger.info(
+                f"[BATCH {batch_idx // batch_size + 1}] Start processing {len(batch)} records"
+            )
+
+            for rec in batch:
+                start_time = time.time()
+                try:
+                    pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
+                        report_ref=report.id, res_ids=[rec.id]
+                    )
+                    time.time() - start_time
+                    len(pdf_bytes) / (1024 * 1024)
+                    # _logger.info(
+
+                    # )
+                except Exception as e:
+                    _logger.warning(
+                        f"[BATCH {batch_idx // batch_size + 1}] ❌ Failed for {rec.display_name}: {e}"
+                    )
+
+            log_memory(f"After batch {batch_idx // batch_size + 1}")
+
+        log_memory("After all batches")
+        _logger.info("=== PDF generation cron finished ===")
+
+    @api.model
+    def _cron_generate_reports_split(self):
         report = self.env.ref(
             "ni_community_care.service_event_approval_02_category_action_report"
         )
@@ -467,24 +524,73 @@ class ServiceEventApproval(models.Model):
             return
 
         records = self.search([])
-        for rec in records:
-            existing_attachment = self.env["ir.attachment"].search(
-                [
-                    ("res_model", "=", rec._name),
-                    ("res_id", "=", rec.id),
-                    ("name", "ilike", ".pdf"),
-                ],
-                limit=1,
-            )
+        _logger.info(f"=== Start PDF generation for {len(records)} records ===")
+        total_start = time.time()
 
-            if existing_attachment:
-                continue
+        for rec_idx, rec in enumerate(records, start=1):
+            record_start = time.time()
+            _logger.info(f"[RECORD {rec_idx}] Start generating PDF for {rec.name}")
 
             try:
-                # เรียกให้ Odoo สร้าง attachment ให้เอง
-                self.env["ir.actions.report"]._render_qweb_pdf(
-                    report_ref=report.id, res_ids=[rec.id], data=None
+                writer = PdfWriter()
+                total_input_size = 0
+
+                # Render หน้าแรกเพื่อดูจำนวนหน้าจริง
+                preview_pdf, _ = self.env["ir.actions.report"]._render_qweb_pdf(
+                    report_ref=report.id,
+                    res_ids=[rec.id],
+                    data={"page_from": 1, "page_to": 1},
                 )
-                _logger.info(f"Generated PDF for {rec.name}")
+                preview_reader = PdfReader(io.BytesIO(preview_pdf))
+                total_pages = len(preview_reader.pages)
+                _logger.info(f"[RECORD {rec_idx}] Total pages detected: {total_pages}")
+
+                pages_per_batch = 20
+                batches = (total_pages + pages_per_batch - 1) // pages_per_batch
+
+                for batch_idx in range(batches):
+                    batch_start = time.time()
+
+                    start_page = batch_idx * pages_per_batch + 1
+                    end_page = min((batch_idx + 1) * pages_per_batch, total_pages)
+
+                    _logger.info(
+                        f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] Rendering pages {start_page}-{end_page}"
+                    )
+
+                    pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
+                        report_ref=report.id,
+                        res_ids=[rec.id],
+                        data={"page_from": start_page, "page_to": end_page},
+                    )
+
+                    total_input_size += len(pdf_bytes)
+                    reader = PdfReader(io.BytesIO(pdf_bytes))
+                    for page in reader.pages:
+                        writer.add_page(page)
+
+                    batch_elapsed = time.time() - batch_start
+                    _logger.info(
+                        f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] Done in {batch_elapsed:.2f}s"
+                    )
+
+                merge_start = time.time()
+                with tempfile.NamedTemporaryFile(
+                    delete=False, suffix=".pdf"
+                ) as tmp_file:
+                    writer.write(tmp_file)
+                    tmp_path = tmp_file.name
+                    os.path.getsize(tmp_path) / (1024 * 1024)
+
+                time.time() - merge_start
+                time.time() - record_start
+
+                # _logger.info(
+
+                # )
+
             except Exception as e:
-                _logger.warning(f"Failed to generate PDF for {rec.name}: {e}")
+                _logger.warning(f"[RECORD {rec_idx}] ❌ Failed: {e}")
+
+        total_elapsed = time.time() - total_start
+        _logger.info(f"=== PDF generation cron finished in {total_elapsed:.2f}s ===")
