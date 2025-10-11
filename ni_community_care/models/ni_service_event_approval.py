@@ -406,7 +406,7 @@ class ServiceEventApproval(models.Model):
         ][:limit]
 
         # 🔹 ดัมมี่ข้อมูลซ้ำเข้าไปเพื่อเทสต์จำนวนหน้า
-        dummy_multiplier = 150  # ปรับได้ เช่น 5, 10, 20
+        dummy_multiplier = 200  # ปรับได้ เช่น 5, 10, 20
         result = result * dummy_multiplier
         _logger.info(
             f"Dummy data multiplied {dummy_multiplier}x, total {len(result)} patients in report."
@@ -467,6 +467,7 @@ class ServiceEventApproval(models.Model):
 
     @api.model
     def _cron_generate_reports_single(self):
+
         report = self.env.ref(
             "ni_community_care.service_event_approval_02_category_action_report"
         )
@@ -499,11 +500,16 @@ class ServiceEventApproval(models.Model):
                     pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
                         report_ref=report.id, res_ids=[rec.id]
                     )
-                    time.time() - start_time
-                    len(pdf_bytes) / (1024 * 1024)
-                    # _logger.info(
+                    elapsed = time.time() - start_time
+                    size_mb = len(pdf_bytes) / (1024 * 1024)
+                    _logger.info(
+                        "[BATCH %s] ✅ Generated PDF for %s in %.2fs (%.2fMB)",
+                        batch_idx // batch_size + 1,
+                        rec.display_name,
+                        elapsed,
+                        size_mb,
+                    )
 
-                    # )
                 except Exception as e:
                     _logger.warning(
                         f"[BATCH {batch_idx // batch_size + 1}] ❌ Failed for {rec.display_name}: {e}"
@@ -580,14 +586,20 @@ class ServiceEventApproval(models.Model):
                 ) as tmp_file:
                     writer.write(tmp_file)
                     tmp_path = tmp_file.name
-                    os.path.getsize(tmp_path) / (1024 * 1024)
+                    merged_size = os.path.getsize(tmp_path) / (1024 * 1024)
 
-                time.time() - merge_start
-                time.time() - record_start
+                merge_elapsed = time.time() - merge_start
+                record_elapsed = time.time() - record_start
 
-                # _logger.info(
-
-                # )
+                _logger.info(
+                    "[RECORD %s] ✅ PDF generation done | total input=%.2fMB | merged=%.2fMB | "
+                    "merge time=%.2fs | record time=%.2fs",
+                    rec_idx,
+                    total_input_size / 1024 / 1024,
+                    merged_size,
+                    merge_elapsed,
+                    record_elapsed,
+                )
 
             except Exception as e:
                 _logger.warning(f"[RECORD {rec_idx}] ❌ Failed: {e}")
