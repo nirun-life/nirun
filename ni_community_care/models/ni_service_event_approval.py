@@ -1,14 +1,13 @@
-import io
+import base64
 import json
 import logging
+import math
 import os
-import tempfile
 import time
 from collections import defaultdict
 
 import psutil
 from dateutil.relativedelta import relativedelta
-from PyPDF2 import PdfReader, PdfWriter
 
 from odoo import _, api, fields, models
 
@@ -530,79 +529,76 @@ class ServiceEventApproval(models.Model):
             return
 
         records = self.search([])
-        _logger.info(f"=== Start PDF generation for {len(records)} records ===")
+        _logger.info(
+            f"=== Start split-by-data PDF generation for {len(records)} records ==="
+        )
         total_start = time.time()
 
         for rec_idx, rec in enumerate(records, start=1):
             record_start = time.time()
-            _logger.info(f"[RECORD {rec_idx}] Start generating PDF for {rec.name}")
+            _logger.info(f"[RECORD {rec_idx}] Generating PDF for {rec.name}")
 
             try:
-                writer = PdfWriter()
-                total_input_size = 0
-
-                # Render หน้าแรกเพื่อดูจำนวนหน้าจริง
-                preview_pdf, _ = self.env["ir.actions.report"]._render_qweb_pdf(
-                    report_ref=report.id,
-                    res_ids=[rec.id],
-                    data={"page_from": 1, "page_to": 1},
+                # ✅ ดึงข้อมูลที่ต้องใช้ใน report (แต่ยังไม่ render)
+                patient_data = rec.get_sorted_events()
+                total_patients = len(patient_data)
+                _logger.info(
+                    f"[RECORD {rec_idx}] Total patient groups: {total_patients}"
                 )
-                preview_reader = PdfReader(io.BytesIO(preview_pdf))
-                total_pages = len(preview_reader.pages)
-                _logger.info(f"[RECORD {rec_idx}] Total pages detected: {total_pages}")
 
-                pages_per_batch = 20
-                batches = (total_pages + pages_per_batch - 1) // pages_per_batch
+                batch_size = 50  # จำกัดชุดละ 50 คน
+                total_batches = math.ceil(total_patients / batch_size)
 
-                for batch_idx in range(batches):
+                for batch_idx in range(total_batches):
                     batch_start = time.time()
-
-                    start_page = batch_idx * pages_per_batch + 1
-                    end_page = min((batch_idx + 1) * pages_per_batch, total_pages)
+                    start = batch_idx * batch_size
+                    stop = min((batch_idx + 1) * batch_size, total_patients)
+                    sub_data = patient_data[start:stop]
 
                     _logger.info(
-                        f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] Rendering pages {start_page}-{end_page}"
+                        f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] Rendering patients {start + 1}-{stop}"
                     )
 
-                    pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
-                        report_ref=report.id,
-                        res_ids=[rec.id],
-                        data={"page_from": start_page, "page_to": end_page},
+                    # # ✅ render QWeb ทีละชุดย่อย โดยส่ง data ผ่าน context
+                    # pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
+                    #     report_ref=report.id,
+                    #     res_ids=[rec.id],
+                    #     data={"custom_patient_data": sub_data},
+                    # )
+
+                    pdf_bytes, _ = (
+                        self.env["ir.actions.report"]
+                        .with_context(custom_patient_data=sub_data)
+                        ._render_qweb_pdf(report.id, [rec.id])
                     )
 
-                    total_input_size += len(pdf_bytes)
-                    reader = PdfReader(io.BytesIO(pdf_bytes))
-                    for page in reader.pages:
-                        writer.add_page(page)
+                    # ✅ บันทึก PDF แยกไฟล์
+                    file_name = f"{rec.name}_part{batch_idx + 1}.pdf"
+                    self.env["ir.attachment"].create(
+                        {
+                            "name": file_name,
+                            "datas": base64.b64encode(pdf_bytes),
+                            "res_model": rec._name,
+                            "res_id": rec.id,
+                            "mimetype": "application/pdf",
+                        }
+                    )
 
+                    file_size = len(pdf_bytes) / (1024 * 1024)
                     batch_elapsed = time.time() - batch_start
                     _logger.info(
-                        f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] Done in {batch_elapsed:.2f}s"
+                        f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] ✅ Saved {file_size:.2f} MB | time={batch_elapsed:.2f}s"
                     )
 
-                merge_start = time.time()
-                with tempfile.NamedTemporaryFile(
-                    delete=False, suffix=".pdf"
-                ) as tmp_file:
-                    writer.write(tmp_file)
-                    tmp_path = tmp_file.name
-                    merged_size = os.path.getsize(tmp_path) / (1024 * 1024)
-
-                merge_elapsed = time.time() - merge_start
                 record_elapsed = time.time() - record_start
-
                 _logger.info(
-                    "[RECORD %s] ✅ PDF generation done | total input=%.2fMB | merged=%.2fMB | "
-                    "merge time=%.2fs | record time=%.2fs",
-                    rec_idx,
-                    total_input_size / 1024 / 1024,
-                    merged_size,
-                    merge_elapsed,
-                    record_elapsed,
+                    f"[RECORD {rec_idx}] ✅ Done all {total_batches} batches in {record_elapsed:.2f}s"
                 )
 
             except Exception as e:
                 _logger.warning(f"[RECORD {rec_idx}] ❌ Failed: {e}")
 
         total_elapsed = time.time() - total_start
-        _logger.info(f"=== PDF generation cron finished in {total_elapsed:.2f}s ===")
+        _logger.info(
+            f"=== Split-by-data PDF generation finished in {total_elapsed:.2f}s ==="
+        )
