@@ -1,13 +1,13 @@
 import base64
+import io
 import json
 import logging
-import math
 import os
 import time
 from collections import defaultdict
 
 import psutil
-from dateutil.relativedelta import relativedelta
+from PyPDF2 import PdfMerger
 
 from odoo import _, api, fields, models
 
@@ -355,38 +355,13 @@ class ServiceEventApproval(models.Model):
                 rec.stop_month_name = False
                 rec.stop_year_thai = False
 
-    # def get_sorted_events(self):
-    #     self.ensure_one()
-    #     patient_event_map = defaultdict(list)
-    #
-    #     # loop event
-    #     for ev in sorted(self.event_ids, key=lambda e: e.id):  # เรียง event ตาม id
-    #         for patient in ev.plan_patient_ids:  # loop patient ที่อยู่ใน event
-    #             patient_event_map[patient].append(ev)
-    #
-    #     # อ่านค่าจำกัดจาก ir.config_parameter
-    #     limit_str = (
-    #         self.env["ir.config_parameter"]
-    #         .sudo()
-    #         .get_param("ni_community_care.report_event_limit", "100")
-    #     )
-    #     try:
-    #         limit = int(limit_str)
-    #     except ValueError:
-    #         limit = 100  # fallback ถ้าค่าที่เก็บไว้ไม่ใช่ตัวเลข
-    #         # คืนค่า list จำกัดตาม limit
-    #     result = [
-    #         (patient, patient_event_map[patient]) for patient in patient_event_map
-    #     ][:limit]
-    #     return result
-
     def get_sorted_events(self):
         self.ensure_one()
         patient_event_map = defaultdict(list)
 
         # loop event
-        for ev in sorted(self.event_ids, key=lambda e: e.id):
-            for patient in ev.plan_patient_ids:
+        for ev in sorted(self.event_ids, key=lambda e: e.id):  # เรียง event ตาม id
+            for patient in ev.plan_patient_ids:  # loop patient ที่อยู่ใน event
                 patient_event_map[patient].append(ev)
 
         # อ่านค่าจำกัดจาก ir.config_parameter
@@ -398,20 +373,46 @@ class ServiceEventApproval(models.Model):
         try:
             limit = int(limit_str)
         except ValueError:
-            limit = 100
-
+            limit = 100  # fallback ถ้าค่าที่เก็บไว้ไม่ใช่ตัวเลข
+            # คืนค่า list จำกัดตาม limit
         result = [
             (patient, patient_event_map[patient]) for patient in patient_event_map
         ][:limit]
-
-        # 🔹 ดัมมี่ข้อมูลซ้ำเข้าไปเพื่อเทสต์จำนวนหน้า
-        dummy_multiplier = 200  # ปรับได้ เช่น 5, 10, 20
-        result = result * dummy_multiplier
-        _logger.info(
-            f"Dummy data multiplied {dummy_multiplier}x, total {len(result)} patients in report."
-        )
-
         return result
+
+    # 🔹 ดัมมี่ข้อมูลซ้ำเข้าไปเพื่อเทสต์จำนวนหน้า
+    # def get_sorted_events(self):
+    #     self.ensure_one()
+    #     patient_event_map = defaultdict(list)
+    #
+    #     # loop event
+    #     for ev in sorted(self.event_ids, key=lambda e: e.id):
+    #         for patient in ev.plan_patient_ids:
+    #             patient_event_map[patient].append(ev)
+    #
+    #     # อ่านค่าจำกัดจาก ir.config_parameter
+    #     limit_str = (
+    #         self.env["ir.config_parameter"]
+    #         .sudo()
+    #         .get_param("ni_community_care.report_event_limit", "100")
+    #     )
+    #     try:
+    #         limit = int(limit_str)
+    #     except ValueError:
+    #         limit = 100
+    #
+    #     result = [
+    #                  (patient, patient_event_map[patient]) for patient in patient_event_map
+    #              ][:limit]
+    #
+    #     # 🔹 ดัมมี่ข้อมูลซ้ำเข้าไปเพื่อเทสต์จำนวนหน้า
+    #     dummy_multiplier = 200  # ปรับได้ เช่น 5, 10, 20
+    #     result = result * dummy_multiplier
+    #     _logger.info(
+    #         f"Dummy data multiplied {dummy_multiplier}x, total {len(result)} patients in report."
+    #     )
+    #
+    #     return result
 
     def get_sorted_careplans(self):
         self.ensure_one()
@@ -434,35 +435,6 @@ class ServiceEventApproval(models.Model):
             (patient, patient_careplan_map[patient]) for patient in patient_careplan_map
         ]
         return result
-
-    @api.model
-    def create_record_from_cron(self):
-        """สร้าง record สำหรับผู้ใช้ทุกคน"""
-        # เลื่อนเวลาไปเดือนก่อนหน้า
-        today = fields.Date.today()
-        prev_month = today - relativedelta(months=1)
-
-        # วันแรกของเดือนก่อนหน้า
-        start_date = prev_month.replace(day=1)
-
-        # วันสุดท้ายของเดือนก่อนหน้า
-        last_day = start_date + relativedelta(months=1, days=-1)
-
-        # ดึง user ทั้งหมด (กรองได้ถ้าต้องการเฉพาะ group)
-        group_user = self.env.ref("ni_patient.group_user")
-        group_manager = self.env.ref("ni_patient.group_manager")
-        group_admin = self.env.ref("ni_patient.group_admin")
-
-        users = self.env["res.users"].search(
-            [
-                ("groups_id", "in", [group_user.id]),
-                ("groups_id", "not in", [group_manager.id]),
-                ("groups_id", "not in", [group_admin.id]),
-            ]
-        )
-
-        for user in users:
-            self.create({"start": start_date, "stop": last_day, "user_id": user.id})
 
     @api.model
     def _cron_generate_reports_single(self):
@@ -520,85 +492,71 @@ class ServiceEventApproval(models.Model):
         _logger.info("=== PDF generation cron finished ===")
 
     @api.model
-    def _cron_generate_reports_split(self):
+    def _cron_generate_reports_batch(self):
         report = self.env.ref(
-            "ni_community_care.service_event_approval_02_category_action_report"
+            "ni_community_care.service_event_approval_02_category_action_report_batch"
         )
         if not report:
             _logger.error("Report action not found")
             return
 
+        # อ่านค่าจำกัดจาก ir.config_parameter
+        batch_size_str = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("ni_community_care.report_batch_size", "50")
+        )
+
+        try:
+            batch_size = int(batch_size_str)
+        except ValueError:
+            batch_size = 50  # fallback ถ้าค่าที่เก็บไว้ไม่ใช่ตัวเลข
+
         records = self.search([])
-        _logger.info(
-            f"=== Start split-by-data PDF generation for {len(records)} records ==="
-        )
-        total_start = time.time()
-
         for rec_idx, rec in enumerate(records, start=1):
-            record_start = time.time()
-            _logger.info(f"[RECORD {rec_idx}] Generating PDF for {rec.name}")
+            _logger.info(f"[RECORD {rec_idx}] Generating merged PDF for {rec.name}")
+            patient_data = rec.get_sorted_events()
+            total_patients = len(patient_data)
+            total_batches = (total_patients + batch_size - 1) // batch_size
 
-            try:
-                # ✅ ดึงข้อมูลที่ต้องใช้ใน report (แต่ยังไม่ render)
-                patient_data = rec.get_sorted_events()
-                total_patients = len(patient_data)
+            pdf_bytes_list = []
+
+            # render batch
+            for batch_idx in range(total_batches):
+                start = batch_idx * batch_size
+                stop = min((batch_idx + 1) * batch_size, total_patients)
+                sub_data = patient_data[start:stop]
                 _logger.info(
-                    f"[RECORD {rec_idx}] Total patient groups: {total_patients}"
+                    f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] patients {start + 1}-{stop}"
                 )
 
-                batch_size = 50  # จำกัดชุดละ 50 คน
-                total_batches = math.ceil(total_patients / batch_size)
-
-                for batch_idx in range(total_batches):
-                    batch_start = time.time()
-                    start = batch_idx * batch_size
-                    stop = min((batch_idx + 1) * batch_size, total_patients)
-                    sub_data = patient_data[start:stop]
-
-                    _logger.info(
-                        f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] Rendering patients {start + 1}-{stop}"
-                    )
-
-                    # # ✅ render QWeb ทีละชุดย่อย โดยส่ง data ผ่าน context
-                    # pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
-                    #     report_ref=report.id,
-                    #     res_ids=[rec.id],
-                    #     data={"custom_patient_data": sub_data},
-                    # )
-
-                    pdf_bytes, _ = (
-                        self.env["ir.actions.report"]
-                        .with_context(custom_patient_data=sub_data)
-                        ._render_qweb_pdf(report.id, [rec.id])
-                    )
-
-                    # ✅ บันทึก PDF แยกไฟล์
-                    file_name = f"{rec.name}_part{batch_idx + 1}.pdf"
-                    self.env["ir.attachment"].create(
-                        {
-                            "name": file_name,
-                            "datas": base64.b64encode(pdf_bytes),
-                            "res_model": rec._name,
-                            "res_id": rec.id,
-                            "mimetype": "application/pdf",
-                        }
-                    )
-
-                    file_size = len(pdf_bytes) / (1024 * 1024)
-                    batch_elapsed = time.time() - batch_start
-                    _logger.info(
-                        f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] ✅ Saved {file_size:.2f} MB | time={batch_elapsed:.2f}s"
-                    )
-
-                record_elapsed = time.time() - record_start
-                _logger.info(
-                    f"[RECORD {rec_idx}] ✅ Done all {total_batches} batches in {record_elapsed:.2f}s"
+                pdf_bytes, _ = (
+                    self.env["ir.actions.report"]
+                    .with_context(custom_patient_data=sub_data)
+                    ._render_qweb_pdf(report.id, [rec.id])
                 )
+                pdf_bytes_list.append(pdf_bytes)
 
-            except Exception as e:
-                _logger.warning(f"[RECORD {rec_idx}] ❌ Failed: {e}")
+            # merge PDF
+            merger = PdfMerger()
+            for pdf in pdf_bytes_list:
+                merger.append(io.BytesIO(pdf))
+            merged_pdf = io.BytesIO()
+            merger.write(merged_pdf)
+            merger.close()
 
-        total_elapsed = time.time() - total_start
-        _logger.info(
-            f"=== Split-by-data PDF generation finished in {total_elapsed:.2f}s ==="
-        )
+            # save attachment
+            file_name = f"{rec.name}.pdf"
+            self.env["ir.attachment"].create(
+                {
+                    "name": file_name,
+                    "datas": base64.b64encode(merged_pdf.getvalue()),
+                    "res_model": rec._name,
+                    "res_id": rec.id,
+                    "mimetype": "application/pdf",
+                }
+            )
+
+            _logger.info(
+                f"[RECORD {rec_idx}] ✅ Merged PDF saved ({total_patients} patients)"
+            )
