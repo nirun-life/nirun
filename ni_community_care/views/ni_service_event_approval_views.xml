@@ -45,9 +45,9 @@
         <field name="view_mode">tree,form,kanban</field>
         <field name="context">
             {
-            'search_default_my_area_employees': 1,
-            'search_default_group_month': 1,
-        }
+                'search_default_my_area_employees': 1,
+                'search_default_group_month': 1,
+            }
         </field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
@@ -70,7 +70,7 @@
         <field name="view_mode">tree,form,kanban</field>
         <field name="context">
             {'search_default_my_area_employees': 1, 'search_default_group_month': 1,
-                               'search_default_pending': 2, 'orderby': 'start desc'}
+             'search_default_pending': 2, 'orderby': 'start desc'}
         </field>
     </record>
     <record id="ni_service_event_approval_action_approved" model="ir.actions.act_window">
@@ -79,7 +79,7 @@
         <field name="view_mode">tree,form,kanban</field>
         <field name="context">
             {'search_default_my_area_employees': 1, 'search_default_group_month': 1,
-                               'search_default_approved': 2}
+             'search_default_approved': 2}
         </field>
     </record>
     <record id="ni_service_event_approval_action_rejected" model="ir.actions.act_window">
@@ -88,7 +88,7 @@
         <field name="view_mode">tree,form,kanban</field>
         <field name="context">
             {'search_default_my_area_employees': 1, 'search_default_group_month': 1,
-                               'search_default_rejected': 2}
+             'search_default_rejected': 2}
         </field>
     </record>
     <record id="ni_service_event_approval_view_tree" model="ir.ui.view">
@@ -193,6 +193,9 @@
             <form string="Event Approval" readonly="1">
                 <field name="patient_count" invisible="1" />
                 <field name="event_count" invisible="1" />
+                <header>
+                    <button name="action_regenerate_report" string="อัปเดตรายงาน PDF" type="object" class="btn" />
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <label for="identifier" string="หมายเลขอ้างอิง" />

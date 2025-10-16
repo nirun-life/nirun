@@ -7,19 +7,33 @@
         <field name="name">ผลการปฏิบัติงานดูแลผู้สูงอายุ ศผ.02</field>
         <field name="model">ni.service.event.approval</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">ni_community_care.service_event_approval_category_report_template</field>
-        <field name="report_file">ni_community_care.service_event_approval_category_report_template</field>
+        <field name="report_name">ni_community_care.approval_category_report_template_ui</field>
+        <field name="report_file">ni_community_care.approval_category_report_template</field>
         <!-- ชื่อไฟล์ PDF เมื่อดาวน์โหลด -->
-        <field name="print_report_name">("%s_report_ผลการปฏิบัติงานดูแลผู้สูงอายุ ศผ.02" % (object.name))</field>
+        <field name="print_report_name">("%s_ผลการปฏิบัติงานดูแลผู้สูงอายุ ศผ.02" % (object.name))</field>
         <field name="binding_model_id" ref="ni_community_care.model_ni_service_event_approval" />
         <field name="binding_type">report</field>
         <field name="binding_view_types">list,form</field>
         <field name="paperformat_id" ref="report_paperformat_a4_landscape" />
+        <field name="attachment">(object.name or 'report') + '.pdf'</field>
+        <field name="attachment_use">true</field>
     </record>
-    <template id="service_event_approval_category_report_template">
+    <record id="service_event_approval_02_category_action_report_batch" model="ir.actions.report">
+        <field name="name">ผลการปฏิบัติงาน ศผ.02 (Batch)</field>
+        <field name="model">ni.service.event.approval</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ni_community_care.approval_category_report_template</field>
+        <field name="report_file">ni_community_care.approval_category_report_template</field>
+        <field name="attachment_use">False</field>
+    </record>
+    <template id="approval_category_report_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-foreach="o.get_sorted_events()" t-as="patient_events">
+                <t
+                    t-set="patient_list"
+                    t-value="(data or {}).get('custom_patient_data', []) or o.get_sorted_events()"
+                />
+                <t t-foreach="patient_list" t-as="patient_events">
                     <t t-call="web.external_layout">
                         <t t-set="p" t-value="patient_events[0]" />
                         <div class="page">
@@ -157,7 +171,9 @@
                         </div>
                     </t>
                 </t>
+                <!--                </div>-->
             </t>
         </t>
     </template>
+    <template id="approval_category_report_template_ui" inherit_id="approval_category_report_template" />
 </odoo>

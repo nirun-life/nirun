@@ -1,6 +1,13 @@
+import base64
+import io
 import json
 import logging
+import os
+import time
 from collections import defaultdict
+
+import psutil
+from PyPDF2 import PdfMerger
 
 from odoo import _, api, fields, models
 
@@ -353,8 +360,8 @@ class ServiceEventApproval(models.Model):
         patient_event_map = defaultdict(list)
 
         # loop event
-        for ev in sorted(self.event_ids, key=lambda e: e.id):  # เรียง event ตาม id
-            for patient in ev.plan_patient_ids:  # loop patient ที่อยู่ใน event
+        for ev in sorted(self.event_ids, key=lambda e: e.id):
+            for patient in ev.plan_patient_ids:
                 patient_event_map[patient].append(ev)
 
         # อ่านค่าจำกัดจาก ir.config_parameter
@@ -366,11 +373,19 @@ class ServiceEventApproval(models.Model):
         try:
             limit = int(limit_str)
         except ValueError:
-            limit = 100  # fallback ถ้าค่าที่เก็บไว้ไม่ใช่ตัวเลข
-            # คืนค่า list จำกัดตาม limit
+            limit = 100
+
         result = [
             (patient, patient_event_map[patient]) for patient in patient_event_map
         ][:limit]
+
+        # # 🔴 ดัมมี่ข้อมูลซ้ำเข้าไปเพื่อเทสต์จำนวนหน้า
+        # dummy_multiplier = 200  # ปรับได้ เช่น 5, 10, 20
+        # result = result * dummy_multiplier
+        # _logger.info(
+        #     f"Dummy data multiplied {dummy_multiplier}x, total {len(result)} patients in report."
+        # )
+        # # 🔴เทสต์เสร็จแล้วเอาออกด้วย !!!!!!!!!!
         return result
 
     def get_sorted_careplans(self):
@@ -394,3 +409,150 @@ class ServiceEventApproval(models.Model):
             (patient, patient_careplan_map[patient]) for patient in patient_careplan_map
         ]
         return result
+
+    @api.model
+    def _cron_generate_reports_single(self):
+
+        report = self.env.ref(
+            "ni_community_care.service_event_approval_02_category_action_report"
+        )
+        if not report:
+            _logger.error("Report action not found")
+            return
+
+        all_records = self.search([])
+        batch_size = 10
+
+        def log_memory(label):
+            try:
+                process = psutil.Process(os.getpid())
+                mem = process.memory_info().rss / (1024 * 1024)
+                _logger.info(f"[MEMORY] {label}: {mem:.2f} MB")
+            except Exception:
+                pass
+
+        log_memory("Before batch processing")
+
+        for batch_idx in range(0, len(all_records), batch_size):
+            batch = all_records[batch_idx : batch_idx + batch_size]
+            _logger.info(
+                f"[BATCH {batch_idx // batch_size + 1}] Start processing {len(batch)} records"
+            )
+
+            for rec in batch:
+                start_time = time.time()
+                try:
+                    pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
+                        report_ref=report.id, res_ids=[rec.id]
+                    )
+                    elapsed = time.time() - start_time
+                    size_mb = len(pdf_bytes) / (1024 * 1024)
+                    _logger.info(
+                        "[BATCH %s] ✅ Generated PDF for %s in %.2fs (%.2fMB)",
+                        batch_idx // batch_size + 1,
+                        rec.display_name,
+                        elapsed,
+                        size_mb,
+                    )
+
+                except Exception as e:
+                    _logger.warning(
+                        f"[BATCH {batch_idx // batch_size + 1}] ❌ Failed for {rec.display_name}: {e}"
+                    )
+
+            log_memory(f"After batch {batch_idx // batch_size + 1}")
+
+        log_memory("After all batches")
+        _logger.info("=== PDF generation cron finished ===")
+
+    @api.model
+    def _cron_generate_reports_batch(self):
+        records = self.search([])
+        self._generate_pdf_for_records(records)
+
+    def action_regenerate_report(self):
+        self._generate_pdf_for_records(self, force_regenerate=True)
+
+    def _generate_pdf_for_records(self, records, force_regenerate=False):
+        """
+        Helper function สำหรับสร้าง PDF ของ record(s)
+        :param records: recordset
+        :param force_regenerate: ถ้า True จะลบ attachment เดิมแล้วสร้างใหม่
+        """
+        report = self.env.ref(
+            "ni_community_care.service_event_approval_02_category_action_report_batch"
+        )
+        if not report:
+            _logger.error("Report action not found")
+            return
+
+        batch_size_str = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("ni_community_care.report_batch_size", "50")
+        )
+        try:
+            batch_size = int(batch_size_str)
+        except ValueError:
+            batch_size = 50
+
+        for rec_idx, rec in enumerate(records, start=1):
+            # เช็คว่า attachment PDF มีอยู่แล้ว
+            existing_pdf = self.env["ir.attachment"].search(
+                [
+                    ("res_model", "=", rec._name),
+                    ("res_id", "=", rec.id),
+                    ("mimetype", "=", "application/pdf"),
+                ],
+                limit=1,
+            )
+
+            if existing_pdf and not force_regenerate:
+                _logger.info(f"[RECORD {rec_idx}] PDF already exists, skip generation")
+                continue  # มีไฟล์แล้วไม่ต้องสร้างใหม่
+
+            if existing_pdf and force_regenerate:
+                existing_pdf.unlink()
+                _logger.info(f"[RECORD {rec_idx}] Old PDF deleted before regeneration")
+
+            # --- ส่วนสร้าง PDF เหมือนเดิม ---
+            patient_data = rec.get_sorted_events()
+            total_patients = len(patient_data)
+            total_batches = (total_patients + batch_size - 1) // batch_size
+
+            pdf_bytes_list = []
+            for batch_idx in range(total_batches):
+                start = batch_idx * batch_size
+                stop = min((batch_idx + 1) * batch_size, total_patients)
+                sub_data = patient_data[start:stop]
+                _logger.info(
+                    f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] patients {start + 1}-{stop}"
+                )
+
+                pdf_bytes, _ = (
+                    self.env["ir.actions.report"]
+                    .with_context(custom_patient_data=sub_data)
+                    ._render_qweb_pdf(report.id, [rec.id])
+                )
+                pdf_bytes_list.append(pdf_bytes)
+
+            merger = PdfMerger()
+            for pdf in pdf_bytes_list:
+                merger.append(io.BytesIO(pdf))
+            merged_pdf = io.BytesIO()
+            merger.write(merged_pdf)
+            merger.close()
+
+            file_name = f"{rec.name}.pdf"
+            self.env["ir.attachment"].create(
+                {
+                    "name": file_name,
+                    "datas": base64.b64encode(merged_pdf.getvalue()),
+                    "res_model": rec._name,
+                    "res_id": rec.id,
+                    "mimetype": "application/pdf",
+                }
+            )
+            _logger.info(
+                f"[RECORD {rec_idx}] ✅ Merged PDF saved ({total_patients} patients)"
+            )
