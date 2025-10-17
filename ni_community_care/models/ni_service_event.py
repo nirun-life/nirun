@@ -9,7 +9,6 @@ from odoo.exceptions import UserError, ValidationError
 
 class ServiceEvent(models.Model):
     _inherit = "ni.service.event"
-    approval_id = fields.Many2one("ni.service.event.approval")  # inverse field
 
     @api.model
     def _get_default_trim_start(self):

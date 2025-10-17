@@ -5,7 +5,6 @@ from odoo.exceptions import ValidationError
 
 class Service(models.Model):
     _inherit = "ni.service"
-
     category_id = fields.Many2one(required=True)
     timing_id = fields.Many2one("ni.timing.template", "ความถี่")
 

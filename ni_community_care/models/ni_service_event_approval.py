@@ -32,7 +32,7 @@ class ServiceEventApproval(models.Model):
     )
 
     state_id = fields.Many2one(
-        comodel_name="res.country.state", compute="_compute_state_id"
+        comodel_name="res.country.state", compute="_compute_state_id", store=True
     )
 
     identifier = fields.Char(
@@ -51,11 +51,7 @@ class ServiceEventApproval(models.Model):
     start = fields.Date(default=fields.Date.context_today)
     stop = fields.Date(default=fields.Date.context_today)
 
-    user_id = fields.Many2one(
-        "res.users",
-        string="ผู้บริบาล (User)",
-    )
-
+    user_id = fields.Many2one("res.users", string="ผู้บริบาล (User)")
     employee_id = fields.Many2one(
         "hr.employee",
         string="ผู้บริบาล",
@@ -65,20 +61,61 @@ class ServiceEventApproval(models.Model):
         readonly=True,
     )
 
-    patient_ids = fields.One2many("ni.patient", compute="_compute_patient_ids")
-    patient_count = fields.Integer(compute="_compute_patient_ids")
-    event_ids = fields.One2many("ni.service.event", compute="_compute_service_event")
-    event_count = fields.Integer(compute="_compute_service_event")
-
-    event_patient_ids = fields.One2many(
+    patient_ids = fields.Many2many(
         "ni.patient",
-        compute="_compute_event_patient_ids",
-        string="All Patients (from Events)",
+        "ni_service_event_approval_patient",
+        "approval_id",
+        "patient_id",
+        string="Patients",
+        compute="_compute_patient_ids",
+        store=True,
     )
+    patient_count = fields.Integer(compute="_compute_patient_ids", store=True)
+
+    event_ids = fields.Many2many(
+        "ni.service.event",
+        "ni_service_event_approval_event",
+        "approval_id",
+        "event_id",
+        string="Service Events",
+        compute="_compute_service_event",
+        store=True,
+    )
+    event_count = fields.Integer(compute="_compute_service_event", store=True)
+
     category_ids = fields.Many2many(
-        "ni.service.category", compute="_compute_category_ids"
+        "ni.service.category",
+        "ni_service_event_approval_category",
+        "approval_id",
+        "category_id",
+        string="Categories",
+        compute="_compute_category_ids",
+        store=True,
     )
-    category_count = fields.Integer(compute="_compute_category_ids")
+
+    category_count = fields.Integer(compute="_compute_category_ids", store=True)
+
+    careplan_ids = fields.Many2many(
+        "ni.careplan",
+        "ni_service_event_approval_careplan",
+        "approval_id",
+        "careplan_id",
+        string="Care Plans",
+        compute="_compute_careplan_ids",
+        store=True,
+    )
+    careplan_count = fields.Integer(compute="_compute_careplan_ids", store=True)
+
+    service_ids = fields.Many2many(
+        "ni.service",
+        "ni_service_event_approval_service",
+        "approval_id",
+        "service_id",
+        string="Services",
+        compute="_compute_service_ids",
+        store=True,
+    )
+    service_count = fields.Integer(compute="_compute_service_ids", store=True)
 
     start_month_name = fields.Char(
         string="Start Month (TH)", compute="_compute_month_year_thai", store=False
@@ -92,6 +129,8 @@ class ServiceEventApproval(models.Model):
     stop_year_thai = fields.Integer(
         string="Stop Year (TH)", compute="_compute_month_year_thai", store=False
     )
+
+    dashboard_data = fields.Text()
 
     @api.depends("event_ids.service_category_id")
     def _compute_category_ids(self):
@@ -108,6 +147,7 @@ class ServiceEventApproval(models.Model):
                 )
             record.category_count = count_map
 
+    @api.depends("user_id", "start", "stop")
     def _compute_service_event(self):
         for rec in self:
             # ค้นหา event ที่ user_id ตรงกับ record นี้
@@ -173,33 +213,6 @@ class ServiceEventApproval(models.Model):
             if current_partner.id not in rec.message_partner_ids.ids:
                 rec.message_subscribe(partner_ids=[current_partner.id])
 
-    # @api.model
-    # def create(self, vals):
-    #     record = super(ServiceEventApproval, self).create(vals)
-    #
-    #     # กำหนดเลข id ในรูปแบบ 5 หลัก
-    #     id_padded = str(record.id).zfill(5)
-    #
-    #     # ใช้ start ที่ระบุใน record แทน
-    #     if record.start:
-    #         date_start = record.start  # ดึงเฉพาะวันที่จาก datetime
-    #     else:
-    #         # fallback ถ้า start ไม่มีค่า
-    #         date_start = fields.Date.context_today(record)
-    #
-    #     year = date_start.strftime("%Y")
-    #     month = date_start.strftime("%m")
-    #
-    #     # สร้าง identifier
-    #     record.identifier = f"AP-{year}{month}{id_padded}"
-    #
-    #     if vals.get("user_id"):
-    #         partner = record.user_id.partner_id
-    #         if partner.id not in record.message_partner_ids.ids:
-    #             record.message_subscribe(partner_ids=[partner.id])
-    #
-    #     return record
-
     def write(self, vals):
         res = super(ServiceEventApproval, self).write(vals)
         for rec in self:
@@ -208,8 +221,6 @@ class ServiceEventApproval(models.Model):
                 if partner.id not in rec.message_partner_ids.ids:
                     rec.message_subscribe(partner_ids=[partner.id])
         return res
-
-    dashboard_data = fields.Text()
 
     @api.model
     def get_patient_type_dashboard(self, record_id):
@@ -256,15 +267,6 @@ class ServiceEventApproval(models.Model):
             else:
                 rec.state_id = False
 
-    careplan_ids = fields.One2many(
-        comodel_name="ni.careplan",
-        inverse_name="id",  # dummy inverse
-        string="แผนการดูแล",
-        compute="_compute_careplan_ids",
-        store=False,
-    )
-    careplan_count = fields.Integer(compute="_compute_careplan_ids", store=False)
-
     @api.depends("user_id", "start", "stop")
     def _compute_careplan_ids(self):
         CarePlan = self.env["ni.careplan"]
@@ -276,20 +278,6 @@ class ServiceEventApproval(models.Model):
             ]
             rec.careplan_ids = CarePlan.search(domain)
             rec.careplan_count = len(rec.careplan_ids)
-
-    service_ids = fields.One2many(
-        comodel_name="ni.service",
-        inverse_name="id",  # dummy, ต้องใส่อะไรก็ได้
-        string="Services",
-        compute="_compute_service_ids",
-        store=False,
-    )
-
-    service_count = fields.Integer(
-        string="จำนวน Services",
-        compute="_compute_service_ids",
-        store=False,
-    )
 
     @api.depends("user_id", "start", "stop")
     def _compute_service_ids(self):
@@ -410,66 +398,6 @@ class ServiceEventApproval(models.Model):
         ]
         return result
 
-    @api.model
-    def _cron_generate_reports_single(self):
-
-        report = self.env.ref(
-            "ni_community_care.service_event_approval_02_category_action_report"
-        )
-        if not report:
-            _logger.error("Report action not found")
-            return
-
-        all_records = self.search([])
-        batch_size = 10
-
-        def log_memory(label):
-            try:
-                process = psutil.Process(os.getpid())
-                mem = process.memory_info().rss / (1024 * 1024)
-                _logger.info(f"[MEMORY] {label}: {mem:.2f} MB")
-            except Exception:
-                pass
-
-        log_memory("Before batch processing")
-
-        for batch_idx in range(0, len(all_records), batch_size):
-            batch = all_records[batch_idx : batch_idx + batch_size]
-            _logger.info(
-                f"[BATCH {batch_idx // batch_size + 1}] Start processing {len(batch)} records"
-            )
-
-            for rec in batch:
-                start_time = time.time()
-                try:
-                    pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
-                        report_ref=report.id, res_ids=[rec.id]
-                    )
-                    elapsed = time.time() - start_time
-                    size_mb = len(pdf_bytes) / (1024 * 1024)
-                    _logger.info(
-                        "[BATCH %s] ✅ Generated PDF for %s in %.2fs (%.2fMB)",
-                        batch_idx // batch_size + 1,
-                        rec.display_name,
-                        elapsed,
-                        size_mb,
-                    )
-
-                except Exception as e:
-                    _logger.warning(
-                        f"[BATCH {batch_idx // batch_size + 1}] ❌ Failed for {rec.display_name}: {e}"
-                    )
-
-            log_memory(f"After batch {batch_idx // batch_size + 1}")
-
-        log_memory("After all batches")
-        _logger.info("=== PDF generation cron finished ===")
-
-    @api.model
-    def _cron_generate_reports_batch(self):
-        records = self.search([])
-        self._generate_pdf_for_records(records)
-
     def action_regenerate_report(self):
         self._generate_pdf_for_records(self, force_regenerate=True)
 
@@ -556,3 +484,77 @@ class ServiceEventApproval(models.Model):
             _logger.info(
                 f"[RECORD {rec_idx}] ✅ Merged PDF saved ({total_patients} patients)"
             )
+
+    def action_refresh_computed_fields(self):
+        for rec in self:
+            rec._compute_patient_ids()
+            rec._compute_service_event()
+            rec._compute_category_ids()
+            rec._compute_careplan_ids()
+            rec._compute_service_ids()
+        _logger.info("✅ Recomputed stored fields for %d record(s)", len(self))
+
+    @api.model
+    def _cron_generate_reports_single(self):
+
+        report = self.env.ref(
+            "ni_community_care.service_event_approval_02_category_action_report"
+        )
+        if not report:
+            _logger.error("Report action not found")
+            return
+
+        all_records = self.search([])
+        batch_size = 10
+
+        def log_memory(label):
+            try:
+                process = psutil.Process(os.getpid())
+                mem = process.memory_info().rss / (1024 * 1024)
+                _logger.info(f"[MEMORY] {label}: {mem:.2f} MB")
+            except Exception:
+                pass
+
+        log_memory("Before batch processing")
+
+        for batch_idx in range(0, len(all_records), batch_size):
+            batch = all_records[batch_idx : batch_idx + batch_size]
+            _logger.info(
+                f"[BATCH {batch_idx // batch_size + 1}] Start processing {len(batch)} records"
+            )
+
+            for rec in batch:
+                start_time = time.time()
+                try:
+                    pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
+                        report_ref=report.id, res_ids=[rec.id]
+                    )
+                    elapsed = time.time() - start_time
+                    size_mb = len(pdf_bytes) / (1024 * 1024)
+                    _logger.info(
+                        "[BATCH %s] ✅ Generated PDF for %s in %.2fs (%.2fMB)",
+                        batch_idx // batch_size + 1,
+                        rec.display_name,
+                        elapsed,
+                        size_mb,
+                    )
+
+                except Exception as e:
+                    _logger.warning(
+                        f"[BATCH {batch_idx // batch_size + 1}] ❌ Failed for {rec.display_name}: {e}"
+                    )
+
+            log_memory(f"After batch {batch_idx // batch_size + 1}")
+
+        log_memory("After all batches")
+        _logger.info("=== PDF generation cron finished ===")
+
+    @api.model
+    def _cron_generate_reports_batch(self):
+        records = self.search([])
+        self._generate_pdf_for_records(records)
+
+    @api.model
+    def _cron_refresh_all_approvals(self):
+        approvals = self.search([])  # ดึงทุก record
+        approvals.action_refresh_computed_fields()
