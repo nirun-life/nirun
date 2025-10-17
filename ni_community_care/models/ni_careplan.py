@@ -6,7 +6,6 @@ class Careplan(models.Model):
     _name = "ni.careplan"
     _description = "แผนการให้ความช่วยเหลือ"
     _inherit = ["ni.workflow.request.mixin"]
-    approval_id = fields.Many2one("ni.service.event.approval")  # inverse field
 
     @api.model
     def default_get(self, fields):

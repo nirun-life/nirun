@@ -61,32 +61,57 @@ class ServiceEventApproval(models.Model):
         readonly=True,
     )
 
-    patient_ids = fields.One2many(
-        "ni.patient", "approval_id", compute="_compute_patient_ids", store=True
+    patient_ids = fields.Many2many(
+        "ni.patient",
+        "ni_service_event_approval_patient",
+        "approval_id",
+        "patient_id",
+        string="Patients",
+        compute="_compute_patient_ids",
+        store=True,
     )
     patient_count = fields.Integer(compute="_compute_patient_ids", store=True)
 
-    event_ids = fields.One2many(
-        "ni.service.event", "approval_id", compute="_compute_service_event", store=True
+    event_ids = fields.Many2many(
+        "ni.service.event",
+        "ni_service_event_approval_event",
+        "approval_id",
+        "event_id",
+        string="Service Events",
+        compute="_compute_service_event",
+        store=True,
     )
     event_count = fields.Integer(compute="_compute_service_event", store=True)
 
     category_ids = fields.Many2many(
-        "ni.service.category", compute="_compute_category_ids", store=True
+        "ni.service.category",
+        "ni_service_event_approval_category",
+        "approval_id",
+        "category_id",
+        string="Categories",
+        compute="_compute_category_ids",
+        store=True,
     )
+
     category_count = fields.Integer(compute="_compute_category_ids", store=True)
 
-    careplan_ids = fields.One2many(
+    careplan_ids = fields.Many2many(
         "ni.careplan",
+        "ni_service_event_approval_careplan",
         "approval_id",
+        "careplan_id",
+        string="Care Plans",
         compute="_compute_careplan_ids",
         store=True,
     )
-    careplan_count = fields.Integer(compute="_compute_careplan_ids", store=False)
+    careplan_count = fields.Integer(compute="_compute_careplan_ids", store=True)
 
-    service_ids = fields.One2many(
+    service_ids = fields.Many2many(
         "ni.service",
+        "ni_service_event_approval_service",
         "approval_id",
+        "service_id",
+        string="Services",
         compute="_compute_service_ids",
         store=True,
     )
