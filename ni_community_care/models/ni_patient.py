@@ -27,6 +27,8 @@ class Patient(models.Model):
         "res.city", store=False, default=lambda self: self.env.user.city_ids
     )
 
+    approval_id = fields.Many2one("ni.service.event.approval")
+
     @api.model_create_multi
     def create(self, vals_list):
         vals_list = [
