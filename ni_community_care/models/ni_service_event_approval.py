@@ -342,13 +342,13 @@ class ServiceEventApproval(models.Model):
             (patient, patient_event_map[patient]) for patient in patient_event_map
         ][:limit]
 
-        # 🔴 ดัมมี่ข้อมูลซ้ำเข้าไปเพื่อเทสต์จำนวนหน้า
-        dummy_multiplier = 200  # ปรับได้ เช่น 5, 10, 20
-        result = result * dummy_multiplier
-        _logger.info(
-            f"Dummy data multiplied {dummy_multiplier}x, total {len(result)} patients in report."
-        )
-        # 🔴เทสต์เสร็จแล้วเอาออกด้วย !!!!!!!!!!
+        # # 🔴 ดัมมี่ข้อมูลซ้ำเข้าไปเพื่อเทสต์จำนวนหน้า
+        # dummy_multiplier = 200  # ปรับได้ เช่น 5, 10, 20
+        # result = result * dummy_multiplier
+        # _logger.info(
+        #     f"Dummy data multiplied {dummy_multiplier}x, total {len(result)} patients in report."
+        # )
+        # # 🔴เทสต์เสร็จแล้วเอาออกด้วย !!!!!!!!!!
         return result
 
     def get_sorted_careplans(self):
@@ -467,12 +467,7 @@ class ServiceEventApproval(models.Model):
             rec._compute_category_ids()
             rec._compute_careplan_ids()
             rec._compute_service_ids()
-            rec.get_patient_type_dashboard(rec.id)
         _logger.info("✅ Recomputed stored fields for %d record(s)", len(self))
-        return {
-            "type": "ir.actions.client",
-            "tag": "reload",
-        }
 
     @api.model
     def _cron_generate_reports_single(self):
@@ -536,4 +531,5 @@ class ServiceEventApproval(models.Model):
 
     @api.model
     def _cron_refresh_all_approvals(self):
-        self.action_refresh_computed_fields()
+        approvals = self.search([])  # ดึงทุก record
+        approvals.action_refresh_computed_fields()
