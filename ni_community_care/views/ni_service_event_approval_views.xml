@@ -100,7 +100,7 @@
                 <field name="employee_id" />
                 <field name="start" string="ตั้งแต่" />
                 <field name="stop" string="จนถึง" />
-                <field name="event_count" string="จำนวนกิจกรรม" width="20%" />
+                <!--                <field name="event_count" string="จำนวนกิจกรรม" width="20%" />-->
                 <field
                     name="state"
                     string="สถานะ"
@@ -118,6 +118,10 @@
                     class="btn-info"
                     groups="ni_patient.group_manager"
                 />
+                <!-- ให้เห็นเฉพาะกลุ่ม developer -->
+                <field name="has_pdf" groups="base.group_no_one" widget="boolean_toggle" />
+                <field name="last_pdf_date" groups="base.group_no_one" />
+                <field name="last_pdf_error" groups="base.group_no_one" invisible="1" />
             </tree>
         </field>
     </record>

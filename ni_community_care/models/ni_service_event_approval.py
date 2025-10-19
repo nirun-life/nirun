@@ -22,6 +22,10 @@ class ServiceEventApproval(models.Model):
 
     _order = "start desc"
 
+    has_pdf = fields.Boolean(string="Has PDF", default=False, readonly=True)
+    last_pdf_date = fields.Datetime(string="Last PDF Generated", readonly=True)
+    last_pdf_error = fields.Text(string="Last PDF Error", readonly=True)
+
     city_ids = fields.Many2many(
         comodel_name="res.city",  # เปลี่ยนเป็นโมเดลจริงของคุณ ถ้าไม่ใช่ res.city
         related="user_id.employee_id.city_ids",
@@ -427,6 +431,18 @@ class ServiceEventApproval(models.Model):
         ]
         return result
 
+    def copy(self, default=None):
+        default = dict(default or {})
+        # reset ฟิลด์ที่ไม่ควร duplicate
+        default.update(
+            {
+                "has_pdf": False,
+                "last_pdf_date": False,
+                "last_pdf_error": False,
+            }
+        )
+        return super().copy(default)
+
     def action_regenerate_report(self):
         self._generate_pdf_for_records(self, force_regenerate=True)
 
@@ -510,6 +526,13 @@ class ServiceEventApproval(models.Model):
                     "mimetype": "application/pdf",
                 }
             )
+            rec.sudo().write(
+                {
+                    "has_pdf": True,
+                    "last_pdf_date": fields.Datetime.now(),
+                    "last_pdf_error": False,
+                }
+            )
             _logger.info(
                 f"[RECORD {rec_idx}] ✅ Merged PDF saved ({total_patients} patients)"
             )
@@ -554,8 +577,53 @@ class ServiceEventApproval(models.Model):
 
     @api.model
     def _cron_generate_reports_batch(self):
-        records = self.search([])
-        self._generate_pdf_for_records(records)
+        """
+        Cron job: generate PDFs for records that do not yet have attachments.
+        Runs in configurable batch sizes (default 50 records per run).
+        """
+        # จำนวน record ต่อรอบ (ตั้งค่าได้ผ่าน ir.config_parameter)
+        batch_limit_str = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("ni_community_care.report_record_batch_limit", "50")
+        )
+        try:
+            batch_limit = int(batch_limit_str)
+        except ValueError:
+            batch_limit = 50
+
+        pending_records = self.search([("has_pdf", "=", False)], limit=batch_limit)
+
+        if not pending_records:
+            _logger.info("[CRON] ✅ No pending records to generate PDF.")
+            return
+
+        _logger.info(f"[CRON] Generating PDFs for {len(pending_records)} record(s).")
+
+        # ทำทีละ record (เพื่อไม่ให้ memory พัง)
+        for rec_idx, rec in enumerate(pending_records, start=1):
+            try:
+                _logger.info(
+                    f"[CRON][{rec_idx}/{len(pending_records)}] Start {rec.display_name}"
+                )
+                self._generate_pdf_for_records(rec)
+                _logger.info(
+                    f"[CRON][{rec_idx}/{len(pending_records)}] ✅ Done {rec.display_name}"
+                )
+            except Exception as e:
+                rec.sudo().write(
+                    {
+                        "has_pdf": False,
+                        "last_pdf_error": str(e)[:500],
+                    }
+                )
+                _logger.exception(
+                    f"[CRON][{rec_idx}] ❌ Error for {rec.display_name}: {e}"
+                )
+
+        _logger.info(f"[CRON] ✅ Finished {len(pending_records)} records this round.")
+
+    # -----------------------------------------------------------------------
 
     @api.model
     def _cron_refresh_all_approvals(self):
