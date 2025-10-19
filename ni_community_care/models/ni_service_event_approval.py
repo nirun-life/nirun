@@ -4,6 +4,7 @@ import json
 import logging
 from collections import defaultdict
 
+from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfMerger
 
 from odoo import _, api, fields, models
@@ -521,6 +522,35 @@ class ServiceEventApproval(models.Model):
             rec._compute_careplan_ids()
             rec._compute_service_ids()
         _logger.info("✅ Recomputed stored fields for %d record(s)", len(self))
+
+    @api.model
+    def _cron_create_approvals(self):
+        """สร้าง record สำหรับผู้ใช้ทุกคน"""
+        # เลื่อนเวลาไปเดือนก่อนหน้า
+        today = fields.Date.today()
+        prev_month = today - relativedelta(months=1)
+
+        # วันแรกของเดือนก่อนหน้า
+        start_date = prev_month.replace(day=1)
+
+        # วันสุดท้ายของเดือนก่อนหน้า
+        last_day = start_date + relativedelta(months=1, days=-1)
+
+        # ดึง user ทั้งหมด (กรองได้ถ้าต้องการเฉพาะ group)
+        group_user = self.env.ref("ni_patient.group_user")
+        group_manager = self.env.ref("ni_patient.group_manager")
+        group_admin = self.env.ref("ni_patient.group_admin")
+
+        users = self.env["res.users"].search(
+            [
+                ("groups_id", "in", [group_user.id]),
+                ("groups_id", "not in", [group_manager.id]),
+                ("groups_id", "not in", [group_admin.id]),
+            ]
+        )
+
+        for user in users:
+            self.create({"start": start_date, "stop": last_day, "user_id": user.id})
 
     @api.model
     def _cron_generate_reports_batch(self):
