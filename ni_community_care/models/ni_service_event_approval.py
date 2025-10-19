@@ -3,6 +3,7 @@ import io
 import json
 import logging
 from collections import defaultdict
+from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfMerger
@@ -576,54 +577,37 @@ class ServiceEventApproval(models.Model):
             self.create({"start": start_date, "stop": last_day, "user_id": user.id})
 
     @api.model
-    def _cron_generate_reports_batch(self):
+    def _cron_generate_reports_batch(self, **kwargs):
         """
-        Cron job: generate PDFs for records that do not yet have attachments.
-        Runs in configurable batch sizes (default 50 records per run).
+        Generate PDFs for records that do not yet have attachments,
+        optionally filtering by months_ago and batch_limit.
+        :param months_ago: int, default=0 (0 = all records)
+        :param batch_limit: int, default=50
         """
-        # จำนวน record ต่อรอบ (ตั้งค่าได้ผ่าน ir.config_parameter)
-        batch_limit_str = (
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("ni_community_care.report_record_batch_limit", "50")
+        months_ago = int(kwargs.get("months_ago", 0))
+        batch_limit = int(kwargs.get("batch_limit", 50))
+
+        domain = [("has_pdf", "=", False)]
+
+        if months_ago > 0:
+            today = datetime.today()
+            start_month = today.replace(day=1) - relativedelta(months=months_ago)
+            domain.append(("start", ">=", start_month))
+            domain.append(("start", "<=", today))
+            _logger.info(
+                f"[CRON] Filtering records from {start_month.date()} to {today.date()}"
+            )
+        else:
+            _logger.info(
+                "[CRON] months_ago=0, processing all records with has_pdf=False"
+            )
+
+        records = self.search(domain, limit=batch_limit)
+        _logger.info(
+            f"[CRON] Found {len(records)} record(s) to generate PDF (batch_limit={batch_limit})."
         )
-        try:
-            batch_limit = int(batch_limit_str)
-        except ValueError:
-            batch_limit = 50
 
-        pending_records = self.search([("has_pdf", "=", False)], limit=batch_limit)
-
-        if not pending_records:
-            _logger.info("[CRON] ✅ No pending records to generate PDF.")
-            return
-
-        _logger.info(f"[CRON] Generating PDFs for {len(pending_records)} record(s).")
-
-        # ทำทีละ record (เพื่อไม่ให้ memory พัง)
-        for rec_idx, rec in enumerate(pending_records, start=1):
-            try:
-                _logger.info(
-                    f"[CRON][{rec_idx}/{len(pending_records)}] Start {rec.display_name}"
-                )
-                self._generate_pdf_for_records(rec)
-                _logger.info(
-                    f"[CRON][{rec_idx}/{len(pending_records)}] ✅ Done {rec.display_name}"
-                )
-            except Exception as e:
-                rec.sudo().write(
-                    {
-                        "has_pdf": False,
-                        "last_pdf_error": str(e)[:500],
-                    }
-                )
-                _logger.exception(
-                    f"[CRON][{rec_idx}] ❌ Error for {rec.display_name}: {e}"
-                )
-
-        _logger.info(f"[CRON] ✅ Finished {len(pending_records)} records this round.")
-
-    # -----------------------------------------------------------------------
+        self._generate_pdf_for_records(records)
 
     @api.model
     def _cron_refresh_all_approvals(self):
