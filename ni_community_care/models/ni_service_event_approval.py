@@ -2,11 +2,8 @@ import base64
 import io
 import json
 import logging
-import os
-import time
 from collections import defaultdict
 
-import psutil
 from PyPDF2 import PdfMerger
 
 from odoo import _, api, fields, models
@@ -131,6 +128,73 @@ class ServiceEventApproval(models.Model):
     )
 
     dashboard_data = fields.Text()
+    adl_high_count = fields.Integer(
+        string="ติดสังคม",
+        compute="_compute_adl_counts",
+        store=True,
+    )
+    adl_mid_count = fields.Integer(
+        string="ติดบ้าน",
+        compute="_compute_adl_counts",
+        store=True,
+    )
+    adl_low_count = fields.Integer(
+        string="ติดเตียง",
+        compute="_compute_adl_counts",
+        store=True,
+    )
+
+    @api.depends("patient_ids.type_id.code")
+    def _compute_adl_counts(self):
+        """นับจำนวนผู้ป่วยแต่ละประเภท"""
+        for rec in self:
+            high = mid = low = 0
+            for p in rec.patient_ids:
+                code = p.type_id.code if p.type_id else None
+                if code == "adl-high":
+                    high += 1
+                elif code == "adl-mid":
+                    mid += 1
+                elif code == "adl-low":
+                    low += 1
+            rec.adl_high_count = high
+            rec.adl_mid_count = mid
+            rec.adl_low_count = low
+
+    @api.model
+    def get_patient_type_dashboard(self, record_id):
+        """อ่านค่าจาก computed fields แทนที่จะคำนวณใหม่"""
+        record = self.browse(record_id)
+        if not record.exists():
+            return {}
+
+        patient_type_status = {
+            "adl-high": {
+                "description": _("ติดสังคม"),
+                "amount": record.adl_high_count,
+                "target": 0,
+                "class": "text-success",
+                "icon": "fa-comments",
+            },
+            "adl-mid": {
+                "description": _("ติดบ้าน"),
+                "amount": record.adl_mid_count,
+                "target": 0,
+                "class": "text-odoo",
+                "icon": "fa-home",
+            },
+            "adl-low": {
+                "description": _("ติดเตียง"),
+                "amount": record.adl_low_count,
+                "target": 0,
+                "class": "text-danger",
+                "icon": "fa-bed",
+            },
+        }
+
+        # sync กลับไปยัง dashboard_data ด้วย (เพื่อให้ UI อื่นๆ ใช้ได้)
+        record.dashboard_data = json.dumps(patient_type_status, ensure_ascii=False)
+        return patient_type_status
 
     @api.depends("event_ids.service_category_id")
     def _compute_category_ids(self):
@@ -221,42 +285,6 @@ class ServiceEventApproval(models.Model):
                 if partner.id not in rec.message_partner_ids.ids:
                     rec.message_subscribe(partner_ids=[partner.id])
         return res
-
-    @api.model
-    def get_patient_type_dashboard(self, record_id):
-        record = self.browse(record_id)
-        all_patients = record.patient_ids
-        patient_type_status = {
-            "adl-high": {
-                "description": _("ติดสังคม"),
-                "amount": 0,
-                "target": 0,
-                "class": "text-success",
-                "icon": "fa-comments",
-            },
-            "adl-mid": {
-                "description": _("ติดบ้าน"),
-                "amount": 0,
-                "target": 0,
-                "class": "text-odoo",
-                "icon": "fa-home",
-            },
-            "adl-low": {
-                "description": _("ติดเตียง"),
-                "amount": 0,
-                "target": 0,
-                "class": "text-danger",
-                "icon": "fa-bed",
-            },
-        }
-
-        for p in all_patients:
-            code = p.type_id.code if p.type_id else None
-            if code and code in patient_type_status:
-                patient_type_status[code]["amount"] += 1
-
-        record.dashboard_data = json.dumps(patient_type_status, ensure_ascii=False)
-        return patient_type_status
 
     @api.depends("city_ids")
     def _compute_state_id(self):
@@ -493,61 +521,6 @@ class ServiceEventApproval(models.Model):
             rec._compute_careplan_ids()
             rec._compute_service_ids()
         _logger.info("✅ Recomputed stored fields for %d record(s)", len(self))
-
-    @api.model
-    def _cron_generate_reports_single(self):
-
-        report = self.env.ref(
-            "ni_community_care.service_event_approval_02_category_action_report"
-        )
-        if not report:
-            _logger.error("Report action not found")
-            return
-
-        all_records = self.search([])
-        batch_size = 10
-
-        def log_memory(label):
-            try:
-                process = psutil.Process(os.getpid())
-                mem = process.memory_info().rss / (1024 * 1024)
-                _logger.info(f"[MEMORY] {label}: {mem:.2f} MB")
-            except Exception:
-                pass
-
-        log_memory("Before batch processing")
-
-        for batch_idx in range(0, len(all_records), batch_size):
-            batch = all_records[batch_idx : batch_idx + batch_size]
-            _logger.info(
-                f"[BATCH {batch_idx // batch_size + 1}] Start processing {len(batch)} records"
-            )
-
-            for rec in batch:
-                start_time = time.time()
-                try:
-                    pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
-                        report_ref=report.id, res_ids=[rec.id]
-                    )
-                    elapsed = time.time() - start_time
-                    size_mb = len(pdf_bytes) / (1024 * 1024)
-                    _logger.info(
-                        "[BATCH %s] ✅ Generated PDF for %s in %.2fs (%.2fMB)",
-                        batch_idx // batch_size + 1,
-                        rec.display_name,
-                        elapsed,
-                        size_mb,
-                    )
-
-                except Exception as e:
-                    _logger.warning(
-                        f"[BATCH {batch_idx // batch_size + 1}] ❌ Failed for {rec.display_name}: {e}"
-                    )
-
-            log_memory(f"After batch {batch_idx // batch_size + 1}")
-
-        log_memory("After all batches")
-        _logger.info("=== PDF generation cron finished ===")
 
     @api.model
     def _cron_generate_reports_batch(self):

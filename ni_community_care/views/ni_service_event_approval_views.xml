@@ -237,14 +237,42 @@
                             icon="fa-address-book"
                             badge="patient_count"
                         >
-                            <field
-                                name="dashboard_data"
-                                widget="service_event_approval_dashboard"
-                                nolabel="1"
-                                style="height: 100%; width: 100%;"
-                                record-id="id"
-                                groups="ni_patient.group_manager"
-                            />
+                            <!--                            <field-->
+                            <!--                                name="dashboard_data"-->
+                            <!--                                widget="service_event_approval_dashboard"-->
+                            <!--                                nolabel="1"-->
+                            <!--                                style="height: 100%; width: 100%;"-->
+                            <!--                                record-id="id"-->
+                            <!--                                groups="ni_patient.group_manager"-->
+                            <!--                            />-->
+                            <div class="mt-2 py-3">
+                                <div
+                                    class="d-flex align-items-center justify-content-start mt-2 py-3 px-4 bg-white border rounded shadow-sm"
+                                >
+                                    <!-- ติดสังคม -->
+                                    <div class="d-flex align-items-center me-5">
+                                        <span class="fa fa-comments text-success me-3 fs-3" />
+                                        <field name="adl_high_count" readonly="1" class="fw-bold me-2 fs-3 text-dark" />
+                                        <span class="fs-5 text-muted">ติดสังคม</span>
+                                    </div>
+                                    <!-- เส้นคั่น -->
+                                    <span class="mx-4 fw-light fs-3 text-dark">|</span>
+                                    <!-- ติดบ้าน -->
+                                    <div class="d-flex align-items-center me-5">
+                                        <span class="fa fa-home text-odoo me-3 fs-3" />
+                                        <field name="adl_mid_count" readonly="1" class="fw-bold me-2 fs-3 text-dark" />
+                                        <span class="fs-5 text-muted">ติดบ้าน</span>
+                                    </div>
+                                    <!-- เส้นคั่น -->
+                                    <span class="mx-4 fw-light fs-3 text-dark">|</span>
+                                    <!-- ติดเตียง -->
+                                    <div class="d-flex align-items-center">
+                                        <span class="fa fa-bed text-danger me-3 fs-3" />
+                                        <field name="adl_low_count" readonly="1" class="fw-bold me-2 fs-3 text-dark" />
+                                        <span class="fs-5 text-muted">ติดเตียง</span>
+                                    </div>
+                                </div>
+                            </div>
                             <field
                                 name="patient_ids"
                                 mode="kanban"
