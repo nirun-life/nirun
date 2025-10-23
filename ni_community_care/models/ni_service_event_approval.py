@@ -482,12 +482,16 @@ class ServiceEventApproval(models.Model):
             )
 
             if existing_pdf and not force_regenerate:
-                _logger.info(f"[RECORD {rec_idx}] PDF already exists, skip generation")
+                _logger.info(
+                    f"[RECORD {rec_idx}] (id {rec.id}) PDF already exists, skip generation"
+                )
                 continue  # มีไฟล์แล้วไม่ต้องสร้างใหม่
 
             if existing_pdf and force_regenerate:
                 existing_pdf.unlink()
-                _logger.info(f"[RECORD {rec_idx}] Old PDF deleted before regeneration")
+                _logger.info(
+                    f"[RECORD {rec_idx}] (id {rec.id}) Old PDF deleted before regeneration"
+                )
 
             # --- ส่วนสร้าง PDF เหมือนเดิม ---
             patient_data = rec.get_sorted_events()
@@ -500,7 +504,7 @@ class ServiceEventApproval(models.Model):
                 stop = min((batch_idx + 1) * batch_size, total_patients)
                 sub_data = patient_data[start:stop]
                 _logger.info(
-                    f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] patients {start + 1}-{stop}"
+                    f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] (id {rec.id}) patients {start + 1}-{stop}"
                 )
 
                 pdf_bytes, _ = (
@@ -577,26 +581,28 @@ class ServiceEventApproval(models.Model):
             self.create({"start": start_date, "stop": last_day, "user_id": user.id})
 
     @api.model
+    def _cron_refresh_all_approvals(self):
+        approvals = self.search([])  # ดึงทุก record
+        approvals.action_refresh_computed_fields()
+
+    @api.model
     def _cron_generate_reports_batch(self, **kwargs):
         """
         Generate PDFs for records that do not yet have attachments,
-        optionally filtering by months_ago and batch_limit.
-        :param months_ago: int, default=0 (0 = all records)
+        optionally filtering by retention_months and batch_limit.
+        :param retention_months: int, default=0 (0 = all records)
         :param batch_limit: int, default=50
         """
-        months_ago = int(kwargs.get("months_ago", 0))
+        retention_months = int(kwargs.get("retention_months", 0))
         batch_limit = int(kwargs.get("batch_limit", 50))
 
         domain = [("has_pdf", "=", False)]
 
-        if months_ago > 0:
+        if retention_months > 0:
             today = datetime.today()
-            start_month = today.replace(day=1) - relativedelta(months=months_ago)
+            start_month = today.replace(day=1) - relativedelta(months=retention_months)
             domain.append(("start", ">=", start_month))
-            domain.append(("start", "<=", today))
-            _logger.info(
-                f"[CRON] Filtering records from {start_month.date()} to {today.date()}"
-            )
+            _logger.info(f"[CRON] Filtering records from {start_month.date()}")
         else:
             _logger.info(
                 "[CRON] months_ago=0, processing all records with has_pdf=False"
@@ -610,6 +616,46 @@ class ServiceEventApproval(models.Model):
         self._generate_pdf_for_records(records)
 
     @api.model
-    def _cron_refresh_all_approvals(self):
-        approvals = self.search([])  # ดึงทุก record
-        approvals.action_refresh_computed_fields()
+    def _cron_cleanup_old_reports(self, **kwargs):
+        """
+        Cleanup old PDF attachments that exceed the retention period.
+
+        :param retention_months: int, number of months to keep reports (default=3)
+        :param batch_limit: int, number of records to process per cron run (default=50)
+        """
+        retention_months = int(kwargs.get("retention_months", 3))
+        batch_limit = int(kwargs.get("batch_limit", 50))
+
+        today = fields.Datetime.now()
+        cutoff_date = today.replace(day=1) - relativedelta(months=retention_months)
+
+        _logger.info(
+            f"[CRON] Cleaning up reports older than {cutoff_date.date()} "
+            f"(retention_months={retention_months}, batch_limit={batch_limit})"
+        )
+
+        # หา record ที่มีไฟล์และเก่ากว่าระยะเวลาที่กำหนด
+        old_records = self.search(
+            [("has_pdf", "=", True), ("start", "<", cutoff_date)],
+            limit=batch_limit,
+        )
+
+        _logger.info(f"[CRON] Found {len(old_records)} old record(s) to clean up.")
+
+        for rec in old_records:
+            attachments = self.env["ir.attachment"].search(
+                [
+                    ("res_model", "=", rec._name),
+                    ("res_id", "=", rec.id),
+                    ("mimetype", "=", "application/pdf"),
+                ]
+            )
+            if attachments:
+                _logger.info(
+                    f"[CRON] Removing {len(attachments)} PDF(s) for record ID {rec.id}"
+                )
+                attachments.unlink()
+                rec.has_pdf = False
+                rec.last_pdf_date = False
+
+        _logger.info("[CRON] Cleanup complete.")
