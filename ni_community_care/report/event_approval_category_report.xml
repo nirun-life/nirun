@@ -39,9 +39,13 @@
                         <div class="page">
                             <t
                                 t-set="lang_id"
-                                t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1)"
+                                t-value="env['res.lang'].search([('code', '=', env.user.lang)], limit=1)"
                             />
-                            <t t-set="dt_format" t-value="'{} {}'.format(lang_id.date_format, lang_id.time_format)" />
+                            <t
+                                t-set="dt_format"
+                                t-value="'{} {}'.format(lang_id.date_format if lang_id else '%d/%m/%Y',
+                           lang_id.time_format if lang_id else '%H:%M')"
+                            />
                             <div class="oe_structure" />
                             <h2 name="title">
                                 <span>
