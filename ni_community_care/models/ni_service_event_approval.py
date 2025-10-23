@@ -493,7 +493,10 @@ class ServiceEventApproval(models.Model):
                     f"[RECORD {rec_idx}] (id {rec.id}) Old PDF deleted before regeneration"
                 )
 
-            # --- ส่วนสร้าง PDF เหมือนเดิม ---
+            # --- ส่วนสร้าง Refresh
+            rec.action_refresh_computed_fields()
+
+            # --- ส่วนสร้าง PDF
             patient_data = rec.get_sorted_events()
             total_patients = len(patient_data)
             total_batches = (total_patients + batch_size - 1) // batch_size
@@ -581,9 +584,35 @@ class ServiceEventApproval(models.Model):
             self.create({"start": start_date, "stop": last_day, "user_id": user.id})
 
     @api.model
-    def _cron_refresh_all_approvals(self):
-        approvals = self.search([])  # ดึงทุก record
-        approvals.action_refresh_computed_fields()
+    def _cron_refresh_all_approvals(self, **kwargs):
+        """
+        Refresh computed fields for approvals in batches
+        :param batch_limit: จำนวน record ต่อรอบ (default = 100)
+        """
+        batch_limit = int(kwargs.get("batch_limit", 100))
+        offset = 0
+
+        total_records = self.search_count([])
+        _logger.info(
+            f"[CRON] Refresh approvals in batches (total={total_records}, batch_limit={batch_limit})"
+        )
+
+        while True:
+            batch = self.search([], offset=offset, limit=batch_limit)
+            if not batch:
+                break
+
+            _logger.info(
+                f"[CRON] Refreshing records {offset + 1} - {offset + len(batch)}"
+            )
+            batch.action_refresh_computed_fields()
+
+            # commit หลังจบแต่ละ batch (กัน memory leak / timeout)
+            self.env.cr.commit()
+
+            offset += batch_limit
+
+        _logger.info("[CRON] ✅ Finished refreshing all approvals.")
 
     @api.model
     def _cron_generate_reports_batch(self, **kwargs):
