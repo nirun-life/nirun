@@ -27,6 +27,11 @@ class Patient(models.Model):
         "res.city", store=False, default=lambda self: self.env.user.city_ids
     )
 
+    is_accept_service = fields.Boolean(
+        string="ยินยอมรับบริการจากผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ"
+    )
+    is_allow_photo = fields.Boolean(string="ยินยอมให้ถ่ายภาพระหว่างให้บริการ")
+
     @api.model_create_multi
     def create(self, vals_list):
         vals_list = [
