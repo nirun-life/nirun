@@ -255,8 +255,21 @@
                         />
                         <field name="type_decoration" invisible="1" />
                         <!--                         <field name="type_id" widget="radio" options="{'horizontal': True}" groups="base.group_no_one"/>-->
+                        <div class="col-12 col-xl-6">
+                            <separator string="การยินยอมรับบริการ" colspan="2" />
+                            <div class="o_row">
+                                <field name="is_accept_service" />
+                                <p>ยินยอมรับบริการจากผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ</p>
+                            </div>
+                            <div class="o_row">
+                                <field name="is_allow_photo" />
+                                <p>ยินยอมให้ถ่ายภาพระหว่างให้บริการ</p>
+                            </div>
+                        </div>
                     </div>
-                    <notebook>
+                    <notebook
+                        attrs="{'invisible': ['|', ('is_accept_service','=',False), ('is_allow_photo','=',False)]}"
+                    >
                         <page name="personal" string="ข้อมูลส่วนบุคคล" icon="fa-address-book-o">
                             <group>
                                 <group name="personal" string="ข้อมูลส่วนบคคล">
@@ -289,8 +302,8 @@
                                     <field name="email" widget="email" />
                                     <field name="line" />
                                 </group>
-                                <group string="ที่อยู่">
-                                    <label name="address_name" for="street" string="ที่อยู่" />
+                                <group string="ที่อยู่ปัจจุบัน">
+                                    <label name="address_name" for="street" string="ที่อยู่ปัจจุบัน" />
                                     <div class="o_address_format">
                                         <field
                                             name="street"
