@@ -3,6 +3,7 @@
 from dateutil.relativedelta import relativedelta
 
 from odoo import Command, _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class Patient(models.Model):
@@ -31,6 +32,44 @@ class Patient(models.Model):
         string="ยินยอมรับบริการจากผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ"
     )
     is_allow_photo = fields.Boolean(string="ยินยอมให้ถ่ายภาพระหว่างให้บริการ")
+
+    # ---------------------------------------------------
+    #  Onchange birthdate
+    # ---------------------------------------------------
+    @api.onchange("birthdate")
+    def _onchange_birthdate_warn(self):
+        for rec in self:
+            if rec.birthdate:
+                rec.partner_id.birthdate = rec.birthdate
+                rec.age = rec.partner_id.age  # trigger -> 2️⃣ _onchange_age_warn
+
+    # ---------------------------------------------------
+    #  Onchange age (ถ้าแก้ไขอายุโดยตรง)
+    # ---------------------------------------------------
+    @api.onchange("age")
+    def _onchange_age_warn(self):
+        for rec in self:
+            if rec.age >= 0 and rec.age < 60:
+                return {
+                    "warning": {
+                        "title": _("อายุน้อยกว่า 60 ปี"),
+                        "message": _(
+                            "ไม่สามารถบันทึกข้อมูลได้ เนื่องจากอายุน้อยกว่า 60 ปี"
+                        ),
+                    }
+                }
+
+    # ---------------------------------------------------
+    # 3️⃣ Constrains ก่อน save
+    # ---------------------------------------------------
+    @api.constrains("birthdate", "age")
+    def _check_age_limit(self):
+        for rec in self:
+            age = rec.age or 0
+            if age < 60:
+                raise ValidationError(
+                    _("ไม่สามารถบันทึกข้อมูลได้ เนื่องจากอายุน้อยกว่า 60 ปี")
+                )
 
     @api.model_create_multi
     def create(self, vals_list):
