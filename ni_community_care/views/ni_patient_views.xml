@@ -347,6 +347,11 @@
                                     <field name="family_count" />
                                     <field name="family_relation" widget="radio" />
                                 </group>
+                                <separator string="ปัจจุบันผู้สูงอายุอาศัยอยู่กับ" />
+                                <div>
+                                    <field name="living_with_ids" widget="many2many_checkboxes" class="mt-3" />
+                                    <field name="living_with_other" placeholder="อื่นๆ..." />
+                                </div>
                                 <group name="encounter" invisible="1">
                                     <field
                                         name="partner_id"
@@ -444,6 +449,8 @@
                                     <separator string="ความต้องการของผู้สูงอายุ" />
                                     <field name="need_ids" widget="many2many_checkboxes" />
                                     <field name="need_count" invisible="1" />
+                                    <field name="need_other" placeholder="ความต้องการอื่นๆ..." />
+                                    <br />
                                     <button
                                         name="action_patient_need"
                                         type="object"

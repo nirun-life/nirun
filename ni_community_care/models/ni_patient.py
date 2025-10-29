@@ -23,6 +23,12 @@ class Patient(models.Model):
     need_ids = fields.Many2many("ni.need", "ni_patient_need", "patient_id", "need_id")
     need_line_ids = fields.One2many("ni.patient.need.line", "patient_id")
     need_count = fields.Integer(compute="_compute_need_count")
+    need_other = fields.Char("ความต้องการอื่นๆ")
+
+    living_with_ids = fields.Many2many(
+        "ni.living.with", "ni_patient_living_with", "patient_id", "living_with_id"
+    )
+    living_with_other = fields.Char("อื่นๆ ระบุ")
 
     user_city_ids = fields.Many2many(
         "res.city", store=False, default=lambda self: self.env.user.city_ids
