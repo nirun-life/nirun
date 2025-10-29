@@ -27,6 +27,7 @@
         "data/ni_family_relation_data.xml",
         "data/ni_need_data.xml",
         "data/ni_service_event_approval_cron.xml",
+        "data/ni_living_with_data.xml",
         # "datas/ni_service_categ_data.xml",
         "security/ir.model.access.csv",
         "security/ir_rules_data.xml",
@@ -60,6 +61,7 @@
         "wizard/survey_subject_views.xml",
         "views/ni_community_care_menu.xml",
         "views/ni_patient_smartcard_views.xml",
+        "views/ni_living_with_views.xml",
     ],
     "assets": {
         "web.assets_backend": [
