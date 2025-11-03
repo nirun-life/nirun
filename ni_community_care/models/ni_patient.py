@@ -25,6 +25,13 @@ class Patient(models.Model):
     need_count = fields.Integer(compute="_compute_need_count")
     need_other = fields.Char("ความต้องการอื่นๆ")
 
+    relative_benefit_ids = fields.Many2many(
+        "ni.relative.benefit",
+        "ni_paitient_relative_benefit",
+        "patient_id",
+        "relative_benefit_id",
+    )
+
     living_with_ids = fields.Many2many(
         "ni.living.with", "ni_patient_living_with", "patient_id", "living_with_id"
     )
@@ -38,6 +45,13 @@ class Patient(models.Model):
         string="ยินยอมรับบริการจากผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ"
     )
     is_allow_photo = fields.Boolean(string="ยินยอมให้ถ่ายภาพระหว่างให้บริการ")
+
+    relative_benefit_count = fields.Integer(compute="_compute_relative_benefit_count")
+
+    @api.depends("relative_benefit_ids")
+    def _compute_relative_benefit_count(self):
+        for rec in self:
+            rec.relative_benefit_count = len(rec.relative_benefit_ids)
 
     # ---------------------------------------------------
     #  Onchange birthdate
@@ -167,7 +181,10 @@ class Patient(models.Model):
     family_relation = fields.Many2one("ni.family.relation", "ความสัมพันธ์ในครอบครัว")
 
     type_id = fields.Many2one("ni.patient.type", "ประเภทผู้สูงอายุ")
-    type_decoration = fields.Selection(related="type_id.decoration")
+    type_decoration = fields.Selection(
+        related="type_id.decoration",
+        string="Type Decoration",
+    )
     line = fields.Char("LINE ID")
 
     service_event_ids = fields.One2many(

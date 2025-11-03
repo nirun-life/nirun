@@ -1,0 +1,41 @@
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
+<odoo>
+    <record id="ni_relative_benefit_action" model="ir.actions.act_window">
+        <field name="name">สิทธิของบุคคลในครอบครัว</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.relative.benefit</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+
+            </p>
+            <p>
+
+            </p>
+        </field>
+    </record>
+    <record id="ni_relative_benefit_view_tree" model="ir.ui.view">
+        <field name="name">ni.relative.benefit.view.tree</field>
+        <field name="model">ni.relative.benefit</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_relative_benefit_view_form" model="ir.ui.view">
+        <field name="name">ni.relative.benefit.view.form</field>
+        <field name="model">ni.relative.benefit</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
