@@ -43,6 +43,12 @@
         action="ni_community_care.ni_family_relation_action"
     />
     <menuitem
+        id="patient_type_menu"
+        name="ประเภทผู้สูงอายุ"
+        parent="ni_patient.configuration_menu"
+        action="ni_patient_type_action"
+    />
+    <menuitem
         id="living_with_menu"
         name="ผู้สูงอายุอาศัยอยู่กับ"
         parent="ni_patient.configuration_menu"
@@ -55,10 +61,10 @@
         action="ni_community_care.ni_relative_benefit_action"
     />
     <menuitem
-        id="patient_type_menu"
-        name="ประเภทผู้สูงอายุ"
+        id="coverage_type_menu"
+        name="สิทธิการรักษาพยาบาล"
         parent="ni_patient.configuration_menu"
-        action="ni_patient_type_action"
+        action="ni_coverage.ni_coverage_type_action"
     />
     <record id="ni_service.root_menu" model="ir.ui.menu">
         <field name="web_icon">ni_community_care,static/description/service.png</field>
@@ -164,5 +170,9 @@
     />
     <record model="ir.ui.menu" id="ni_service.event_menu_categ">
         <field name="active">0</field>
+    </record>
+    <!-- Hide Coverage menu section -->
+    <record id="ni_coverage.coverage_menu_section" model="ir.ui.menu">
+        <field name="active" eval="0" />
     </record>
 </odoo>

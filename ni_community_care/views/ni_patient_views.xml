@@ -397,45 +397,53 @@
                         </page>
                         <page name="health" string="ข้อมูลสุขภาพ" icon="fa-thermometer-half">
                             <group>
-                                <field
-                                    name="type_id"
-                                    widget="radio"
-                                    options="{'horizontal': True}"
-                                    groups="base.group_no_one"
-                                />
-                                <label for="blood_abo" string="หมู่เลือด" />
-                                <div class="o_row">
+                                <group string="ข้อมูลสุขภาพ">
                                     <field
-                                        name="blood_abo"
-                                        class="abo_field"
-                                        placeholder="ABO"
-                                        options="{'no_open': True, 'no_create': True, }"
+                                        name="type_id"
+                                        widget="radio"
+                                        options="{'horizontal': True}"
+                                        groups="base.group_no_one"
                                     />
-                                    <field
-                                        name="blood_rh"
-                                        class="abo_field"
-                                        placeholder="RH"
-                                        context="{'only_abbr':True}"
-                                        options="{'no_open': True,  'no_create': True, 'always_reload':True}"
-                                    />
-                                </div>
-                                <label for="allergy_code_ids" string="แพ้ยา/อาหาร" />
-                                <div>
-                                    <field name="allergy_code_ids" widget="many2many_checkboxes" class="mt-3" />
-                                    <field name="allergy_other" placeholder="แพ้ยาอาหารอื่นๆ..." />
-                                </div>
-                                <label for="condition_code_ids" string="ปัญหา" />
-                                <div>
-                                    <field name="condition_categ_id" widget="radio" options="{'horizontal': True}" />
-                                    <field
-                                        name="condition_code_ids"
-                                        widget="many2many_checkboxes"
-                                        class="mt-3"
-                                        domain="[('category_id', '=', condition_categ_id)]"
-                                    />
-                                </div>
-                                <field name="condition_other" placeholder="ปัญหาอื่นๆ..." />
-                                <field name="plan" />
+                                    <label for="blood_abo" string="หมู่เลือด" />
+                                    <div class="o_row">
+                                        <field
+                                            name="blood_abo"
+                                            class="abo_field"
+                                            placeholder="ABO"
+                                            options="{'no_open': True, 'no_create': True, }"
+                                        />
+                                        <field
+                                            name="blood_rh"
+                                            class="abo_field"
+                                            placeholder="RH"
+                                            context="{'only_abbr':True}"
+                                            options="{'no_open': True,  'no_create': True, 'always_reload':True}"
+                                        />
+                                    </div>
+                                    <label for="allergy_code_ids" string="แพ้ยา/อาหาร" />
+                                    <div>
+                                        <field name="allergy_code_ids" widget="many2many_checkboxes" class="mt-3" />
+                                        <field name="allergy_other" placeholder="แพ้ยาอาหารอื่นๆ..." />
+                                    </div>
+                                </group>
+                                <group string="ปัญหา">
+                                    <label for="condition_code_ids" string="ปัญหา" />
+                                    <div>
+                                        <field
+                                            name="condition_categ_id"
+                                            widget="radio"
+                                            options="{'horizontal': True}"
+                                        />
+                                        <field
+                                            name="condition_code_ids"
+                                            widget="many2many_checkboxes"
+                                            class="mt-3"
+                                            domain="[('category_id', '=', condition_categ_id)]"
+                                        />
+                                    </div>
+                                    <field name="condition_other" placeholder="ปัญหาอื่นๆ..." />
+                                    <field name="plan" />
+                                </group>
                             </group>
                         </page>
                         <page name="benefit" string="สิทธิผู้สูงอายุ &amp; ความต้องการผู้สูงอายุ" icon="fa-shield">
@@ -452,6 +460,10 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-12 col-xl-6">
+                                    <separator string="สิทธิการรักษาพยาบาล" />
+                                    <field name="coverage_type_ids" widget="many2many_checkboxes" />
+                                </div>
                                 <div class="col-12 col-xl-6">
                                     <separator string="ความต้องการของผู้สูงอายุ" />
                                     <field name="need_ids" widget="many2many_checkboxes" />

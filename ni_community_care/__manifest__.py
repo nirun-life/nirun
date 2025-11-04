@@ -18,6 +18,7 @@
         "ni_benefit",
         "l10n_th_ni_patient_address",
         "l10n_th_ni_patient",
+        "l10n_th_ni_coverage",
     ],
     "data": [
         "data/ir_sequence_data.xml",
