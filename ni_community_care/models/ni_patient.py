@@ -48,6 +48,24 @@ class Patient(models.Model):
 
     relative_benefit_count = fields.Integer(compute="_compute_relative_benefit_count")
 
+    chronic_disease = fields.Selection(
+        [
+            ("none", "ไม่มีโรคประจำตัว"),
+            ("has", "มีโรคประจำตัว"),
+        ],
+        string="โรคประจำตัว",
+        required=True,
+        default="none",
+    )
+    chronic_disease_detail = fields.Char(
+        string="ระบุโรค", help="เช่น เบาหวาน, ความดันโลหิตสูง"
+    )
+
+    @api.onchange("chronic_disease")
+    def _onchange_chronic_disease(self):
+        if self.chronic_disease != "has":
+            self.chronic_disease_detail = False
+
     @api.depends("relative_benefit_ids")
     def _compute_relative_benefit_count(self):
         for rec in self:
