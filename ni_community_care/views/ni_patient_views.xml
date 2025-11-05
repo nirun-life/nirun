@@ -425,6 +425,11 @@
                                         <field name="allergy_code_ids" widget="many2many_checkboxes" class="mt-3" />
                                         <field name="allergy_other" placeholder="แพ้ยาอาหารอื่นๆ..." />
                                     </div>
+                                    <field name="chronic_disease" widget="radio" options="{'horizontal': True}" />
+                                    <field
+                                        name="chronic_disease_detail"
+                                        attrs="{'invisible':[('chronic_disease','!=','has')]}"
+                                    />
                                 </group>
                                 <group string="ปัญหา">
                                     <label for="condition_code_ids" string="ปัญหา" />
