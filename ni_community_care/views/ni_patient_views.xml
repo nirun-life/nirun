@@ -347,11 +347,18 @@
                                     <field name="family_count" />
                                     <field name="family_relation" widget="radio" />
                                 </group>
-                                <separator string="ปัจจุบันผู้สูงอายุอาศัยอยู่กับ" />
-                                <div>
-                                    <field name="living_with_ids" widget="many2many_checkboxes" class="mt-3" />
-                                    <field name="living_with_other" placeholder="อื่นๆ..." />
-                                </div>
+                                <group string="ปัจจุบันผู้สูงอายุอาศัยอยู่กับ">
+                                    <field
+                                        name="living_with_ids"
+                                        widget="many2many_checkboxes"
+                                        nolabel="1"
+                                        colspan="2"
+                                    />
+                                    <field name="living_with_other" placeholder="อื่นๆ..." nolabel="1" colspan="2" />
+                                </group>
+                                <group name="related_person" string="ผู้ดูแลหลัก">
+                                    <field name="related_person_ids" mode="kanban" />
+                                </group>
                                 <group name="encounter" invisible="1">
                                     <field
                                         name="partner_id"
