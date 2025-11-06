@@ -2,11 +2,10 @@ import base64
 import io
 import json
 import logging
-import os
-import time
 from collections import defaultdict
+from datetime import datetime
 
-import psutil
+from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfMerger
 
 from odoo import _, api, fields, models
@@ -23,6 +22,10 @@ class ServiceEventApproval(models.Model):
     name = fields.Char(related="identifier", string="ชื่อกิจกรรม")
 
     _order = "start desc"
+
+    has_pdf = fields.Boolean(string="Has PDF", default=False, readonly=True)
+    last_pdf_date = fields.Datetime(string="Last PDF Generated", readonly=True)
+    last_pdf_error = fields.Text(string="Last PDF Error", readonly=True)
 
     city_ids = fields.Many2many(
         comodel_name="res.city",  # เปลี่ยนเป็นโมเดลจริงของคุณ ถ้าไม่ใช่ res.city
@@ -131,6 +134,73 @@ class ServiceEventApproval(models.Model):
     )
 
     dashboard_data = fields.Text()
+    adl_high_count = fields.Integer(
+        string="ติดสังคม",
+        compute="_compute_adl_counts",
+        store=True,
+    )
+    adl_mid_count = fields.Integer(
+        string="ติดบ้าน",
+        compute="_compute_adl_counts",
+        store=True,
+    )
+    adl_low_count = fields.Integer(
+        string="ติดเตียง",
+        compute="_compute_adl_counts",
+        store=True,
+    )
+
+    @api.depends("patient_ids.type_id.code")
+    def _compute_adl_counts(self):
+        """นับจำนวนผู้ป่วยแต่ละประเภท"""
+        for rec in self:
+            high = mid = low = 0
+            for p in rec.patient_ids:
+                code = p.type_id.code if p.type_id else None
+                if code == "adl-high":
+                    high += 1
+                elif code == "adl-mid":
+                    mid += 1
+                elif code == "adl-low":
+                    low += 1
+            rec.adl_high_count = high
+            rec.adl_mid_count = mid
+            rec.adl_low_count = low
+
+    @api.model
+    def get_patient_type_dashboard(self, record_id):
+        """อ่านค่าจาก computed fields แทนที่จะคำนวณใหม่"""
+        record = self.browse(record_id)
+        if not record.exists():
+            return {}
+
+        patient_type_status = {
+            "adl-high": {
+                "description": _("ติดสังคม"),
+                "amount": record.adl_high_count,
+                "target": 0,
+                "class": "text-success",
+                "icon": "fa-comments",
+            },
+            "adl-mid": {
+                "description": _("ติดบ้าน"),
+                "amount": record.adl_mid_count,
+                "target": 0,
+                "class": "text-odoo",
+                "icon": "fa-home",
+            },
+            "adl-low": {
+                "description": _("ติดเตียง"),
+                "amount": record.adl_low_count,
+                "target": 0,
+                "class": "text-danger",
+                "icon": "fa-bed",
+            },
+        }
+
+        # sync กลับไปยัง dashboard_data ด้วย (เพื่อให้ UI อื่นๆ ใช้ได้)
+        record.dashboard_data = json.dumps(patient_type_status, ensure_ascii=False)
+        return patient_type_status
 
     @api.depends("event_ids.service_category_id")
     def _compute_category_ids(self):
@@ -221,42 +291,6 @@ class ServiceEventApproval(models.Model):
                 if partner.id not in rec.message_partner_ids.ids:
                     rec.message_subscribe(partner_ids=[partner.id])
         return res
-
-    @api.model
-    def get_patient_type_dashboard(self, record_id):
-        record = self.browse(record_id)
-        all_patients = record.patient_ids
-        patient_type_status = {
-            "adl-high": {
-                "description": _("ติดสังคม"),
-                "amount": 0,
-                "target": 0,
-                "class": "text-success",
-                "icon": "fa-comments",
-            },
-            "adl-mid": {
-                "description": _("ติดบ้าน"),
-                "amount": 0,
-                "target": 0,
-                "class": "text-odoo",
-                "icon": "fa-home",
-            },
-            "adl-low": {
-                "description": _("ติดเตียง"),
-                "amount": 0,
-                "target": 0,
-                "class": "text-danger",
-                "icon": "fa-bed",
-            },
-        }
-
-        for p in all_patients:
-            code = p.type_id.code if p.type_id else None
-            if code and code in patient_type_status:
-                patient_type_status[code]["amount"] += 1
-
-        record.dashboard_data = json.dumps(patient_type_status, ensure_ascii=False)
-        return patient_type_status
 
     @api.depends("city_ids")
     def _compute_state_id(self):
@@ -398,6 +432,18 @@ class ServiceEventApproval(models.Model):
         ]
         return result
 
+    def copy(self, default=None):
+        default = dict(default or {})
+        # reset ฟิลด์ที่ไม่ควร duplicate
+        default.update(
+            {
+                "has_pdf": False,
+                "last_pdf_date": False,
+                "last_pdf_error": False,
+            }
+        )
+        return super().copy(default)
+
     def action_regenerate_report(self):
         self._generate_pdf_for_records(self, force_regenerate=True)
 
@@ -436,14 +482,21 @@ class ServiceEventApproval(models.Model):
             )
 
             if existing_pdf and not force_regenerate:
-                _logger.info(f"[RECORD {rec_idx}] PDF already exists, skip generation")
+                _logger.info(
+                    f"[RECORD {rec_idx}] (id {rec.id}) PDF already exists, skip generation"
+                )
                 continue  # มีไฟล์แล้วไม่ต้องสร้างใหม่
 
             if existing_pdf and force_regenerate:
                 existing_pdf.unlink()
-                _logger.info(f"[RECORD {rec_idx}] Old PDF deleted before regeneration")
+                _logger.info(
+                    f"[RECORD {rec_idx}] (id {rec.id}) Old PDF deleted before regeneration"
+                )
 
-            # --- ส่วนสร้าง PDF เหมือนเดิม ---
+            # --- ส่วนสร้าง Refresh
+            rec.action_refresh_computed_fields()
+
+            # --- ส่วนสร้าง PDF
             patient_data = rec.get_sorted_events()
             total_patients = len(patient_data)
             total_batches = (total_patients + batch_size - 1) // batch_size
@@ -454,7 +507,7 @@ class ServiceEventApproval(models.Model):
                 stop = min((batch_idx + 1) * batch_size, total_patients)
                 sub_data = patient_data[start:stop]
                 _logger.info(
-                    f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] patients {start + 1}-{stop}"
+                    f"[RECORD {rec_idx}][BATCH {batch_idx + 1}] (id {rec.id}) patients {start + 1}-{stop}"
                 )
 
                 pdf_bytes, _ = (
@@ -481,6 +534,13 @@ class ServiceEventApproval(models.Model):
                     "mimetype": "application/pdf",
                 }
             )
+            rec.sudo().write(
+                {
+                    "has_pdf": True,
+                    "last_pdf_date": fields.Datetime.now(),
+                    "last_pdf_error": False,
+                }
+            )
             _logger.info(
                 f"[RECORD {rec_idx}] ✅ Merged PDF saved ({total_patients} patients)"
             )
@@ -495,66 +555,136 @@ class ServiceEventApproval(models.Model):
         _logger.info("✅ Recomputed stored fields for %d record(s)", len(self))
 
     @api.model
-    def _cron_generate_reports_single(self):
+    def _cron_create_approvals(self):
+        """สร้าง record สำหรับผู้ใช้ทุกคน"""
+        # เลื่อนเวลาไปเดือนก่อนหน้า
+        today = fields.Date.today()
+        prev_month = today - relativedelta(months=1)
 
-        report = self.env.ref(
-            "ni_community_care.service_event_approval_02_category_action_report"
+        # วันแรกของเดือนก่อนหน้า
+        start_date = prev_month.replace(day=1)
+
+        # วันสุดท้ายของเดือนก่อนหน้า
+        last_day = start_date + relativedelta(months=1, days=-1)
+
+        # ดึง user ทั้งหมด (กรองได้ถ้าต้องการเฉพาะ group)
+        group_user = self.env.ref("ni_patient.group_user")
+        group_manager = self.env.ref("ni_patient.group_manager")
+        group_admin = self.env.ref("ni_patient.group_admin")
+
+        users = self.env["res.users"].search(
+            [
+                ("groups_id", "in", [group_user.id]),
+                ("groups_id", "not in", [group_manager.id]),
+                ("groups_id", "not in", [group_admin.id]),
+            ]
         )
-        if not report:
-            _logger.error("Report action not found")
-            return
 
-        all_records = self.search([])
-        batch_size = 10
-
-        def log_memory(label):
-            try:
-                process = psutil.Process(os.getpid())
-                mem = process.memory_info().rss / (1024 * 1024)
-                _logger.info(f"[MEMORY] {label}: {mem:.2f} MB")
-            except Exception:
-                pass
-
-        log_memory("Before batch processing")
-
-        for batch_idx in range(0, len(all_records), batch_size):
-            batch = all_records[batch_idx : batch_idx + batch_size]
-            _logger.info(
-                f"[BATCH {batch_idx // batch_size + 1}] Start processing {len(batch)} records"
-            )
-
-            for rec in batch:
-                start_time = time.time()
-                try:
-                    pdf_bytes, _ = self.env["ir.actions.report"]._render_qweb_pdf(
-                        report_ref=report.id, res_ids=[rec.id]
-                    )
-                    elapsed = time.time() - start_time
-                    size_mb = len(pdf_bytes) / (1024 * 1024)
-                    _logger.info(
-                        "[BATCH %s] ✅ Generated PDF for %s in %.2fs (%.2fMB)",
-                        batch_idx // batch_size + 1,
-                        rec.display_name,
-                        elapsed,
-                        size_mb,
-                    )
-
-                except Exception as e:
-                    _logger.warning(
-                        f"[BATCH {batch_idx // batch_size + 1}] ❌ Failed for {rec.display_name}: {e}"
-                    )
-
-            log_memory(f"After batch {batch_idx // batch_size + 1}")
-
-        log_memory("After all batches")
-        _logger.info("=== PDF generation cron finished ===")
+        for user in users:
+            self.create({"start": start_date, "stop": last_day, "user_id": user.id})
 
     @api.model
-    def _cron_generate_reports_batch(self):
-        records = self.search([])
+    def _cron_refresh_all_approvals(self, **kwargs):
+        """
+        Refresh computed fields for approvals in batches
+        :param batch_limit: จำนวน record ต่อรอบ (default = 100)
+        """
+        batch_limit = int(kwargs.get("batch_limit", 100))
+        offset = 0
+
+        total_records = self.search_count([])
+        _logger.info(
+            f"[CRON] Refresh approvals in batches (total={total_records}, batch_limit={batch_limit})"
+        )
+
+        while True:
+            batch = self.search([], offset=offset, limit=batch_limit)
+            if not batch:
+                break
+
+            _logger.info(
+                f"[CRON] Refreshing records {offset + 1} - {offset + len(batch)}"
+            )
+            batch.action_refresh_computed_fields()
+
+            # commit หลังจบแต่ละ batch (กัน memory leak / timeout)
+            self.env.cr.commit()
+
+            offset += batch_limit
+
+        _logger.info("[CRON] ✅ Finished refreshing all approvals.")
+
+    @api.model
+    def _cron_generate_reports_batch(self, **kwargs):
+        """
+        Generate PDFs for records that do not yet have attachments,
+        optionally filtering by retention_months and batch_limit.
+        :param retention_months: int, default=0 (0 = all records)
+        :param batch_limit: int, default=50
+        """
+        retention_months = int(kwargs.get("retention_months", 0))
+        batch_limit = int(kwargs.get("batch_limit", 50))
+
+        domain = [("has_pdf", "=", False)]
+
+        if retention_months > 0:
+            today = datetime.today()
+            start_month = today.replace(day=1) - relativedelta(months=retention_months)
+            domain.append(("start", ">=", start_month))
+            _logger.info(f"[CRON] Filtering records from {start_month.date()}")
+        else:
+            _logger.info(
+                "[CRON] months_ago=0, processing all records with has_pdf=False"
+            )
+
+        records = self.search(domain, limit=batch_limit)
+        _logger.info(
+            f"[CRON] Found {len(records)} record(s) to generate PDF (batch_limit={batch_limit})."
+        )
+
         self._generate_pdf_for_records(records)
 
     @api.model
-    def _cron_refresh_all_approvals(self):
-        approvals = self.search([])  # ดึงทุก record
-        approvals.action_refresh_computed_fields()
+    def _cron_cleanup_old_reports(self, **kwargs):
+        """
+        Cleanup old PDF attachments that exceed the retention period.
+
+        :param retention_months: int, number of months to keep reports (default=3)
+        :param batch_limit: int, number of records to process per cron run (default=50)
+        """
+        retention_months = int(kwargs.get("retention_months", 3))
+        batch_limit = int(kwargs.get("batch_limit", 50))
+
+        today = fields.Datetime.now()
+        cutoff_date = today.replace(day=1) - relativedelta(months=retention_months)
+
+        _logger.info(
+            f"[CRON] Cleaning up reports older than {cutoff_date.date()} "
+            f"(retention_months={retention_months}, batch_limit={batch_limit})"
+        )
+
+        # หา record ที่มีไฟล์และเก่ากว่าระยะเวลาที่กำหนด
+        old_records = self.search(
+            [("has_pdf", "=", True), ("start", "<", cutoff_date)],
+            limit=batch_limit,
+        )
+
+        _logger.info(f"[CRON] Found {len(old_records)} old record(s) to clean up.")
+
+        for rec in old_records:
+            attachments = self.env["ir.attachment"].search(
+                [
+                    ("res_model", "=", rec._name),
+                    ("res_id", "=", rec.id),
+                    ("mimetype", "=", "application/pdf"),
+                ]
+            )
+            if attachments:
+                _logger.info(
+                    f"[CRON] Removing {len(attachments)} PDF(s) for record ID {rec.id}"
+                )
+                attachments.unlink()
+                rec.has_pdf = False
+                rec.last_pdf_date = False
+
+        _logger.info("[CRON] Cleanup complete.")
