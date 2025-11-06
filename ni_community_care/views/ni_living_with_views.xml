@@ -12,7 +12,10 @@
         <field name="model">ni.living.with</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="sequence" widget="handle" />
                 <field name="name" />
+                <field name="code" optional="show" />
+                <field name="active" optional="hide" />
             </tree>
         </field>
     </record>
@@ -20,10 +23,20 @@
         <field name="name">ni.living.with.view.form</field>
         <field name="model">ni.living.with</field>
         <field name="arch" type="xml">
-            <form string="">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
                 <sheet>
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                        bg_color="bg-danger"
+                        title="Archived"
+                    />
                     <group>
                         <field name="name" />
+                        <field name="code" />
+                        <field name="sequence" />
                     </group>
                 </sheet>
             </form>
