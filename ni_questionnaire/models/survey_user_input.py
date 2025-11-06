@@ -166,7 +166,7 @@ class SurveyUserInput(models.Model):
 
     def action_graph_view(self):
         self.ensure_one()
-        domain = [("test_entry", "=", False)]
+        domain = [("survey_id", "=", self.survey_id.id), ("test_entry", "=", False)]
         if self.survey_id.subject_type in ["ni.patient", "ni.encounter"]:
             domain.append(("patient_id", "=", self.patient_id.id))
         return {
@@ -177,11 +177,28 @@ class SurveyUserInput(models.Model):
             "target": "current",
             "domain": domain,
             "context": {
-                "search_default_survey_id": self.survey_id.id,
                 "search_default_completed": 1,
                 "graph_view_ref": "ni_questionnaire.survey_user_input_view_graph",
             },
             "views": [[False, "graph"]],
+        }
+
+    def action_monthly_pivot_view(self):
+        self.ensure_one()
+        domain = [("survey_id", "=", self.survey_id.id)]
+        if self.survey_id.subject_type in ["ni.patient", "ni.encounter"]:
+            domain.append(("patient_id", "=", self.patient_id.id))
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.survey_id.title,
+            "res_model": "survey.user_input.line.monthly.report",
+            "view_mode": "pivot",
+            "target": "current",
+            "domain": domain,
+            "context": {
+                "pivot_view_ref": "ni_questionnaire.survey_user_input_line_monthly_report_view_pivot",
+            },
+            "views": [[False, "pivot"]],
         }
 
     def _quizz_grade(self):

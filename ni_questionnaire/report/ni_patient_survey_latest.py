@@ -53,6 +53,10 @@ class PatientSurveyLatest(models.Model):
         self.ensure_one()
         return self._get_survey_user_input().action_graph_view()
 
+    def action_monthly_pivot_view(self):
+        self.ensure_one()
+        return self._get_survey_user_input().action_monthly_pivot_view()
+
     def action_print_answers(self):
         self.ensure_one()
         return self._get_survey_user_input().action_print_answers()
