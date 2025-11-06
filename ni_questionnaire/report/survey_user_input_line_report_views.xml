@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2022-2023. NSTDA
+  -->
+<odoo>
+    <record id="survey_user_input_line_monthly_report_view_pivot" model="ir.ui.view">
+        <field name="name">survey.user_input.line.monthly.report.view.pivot</field>
+        <field name="model">survey.user_input.line.monthly.report</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="create_date" type="col" interval="month" />
+                <field name="question_id" type="row" />
+                <field name="answer_score" type="measure" />
+            </pivot>
+        </field>
+    </record>
+</odoo>
