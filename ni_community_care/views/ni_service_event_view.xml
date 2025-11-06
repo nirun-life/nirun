@@ -10,9 +10,9 @@
         <field name="view_mode">tree,calendar,kanban,form</field>
         <field name="context">
             {
-            'search_default_start': 1,
-            'search_default_group_start_day': 1,
-            'create': 0,
+                'search_default_start': 1,
+                'search_default_group_start_day': 1,
+                'create': 0,
             }
         </field>
         <field name="domain">[('create_uid', '=', uid)]</field>
@@ -49,7 +49,7 @@
         <field name="view_mode">kanban,calendar,tree,pivot,form</field>
         <field name="context">
             {'default_plan_patient_ids': [(6, 0, [active_id])],
-            'default_patient_id': active_id}
+             'default_patient_id': active_id}
         </field>
         <field name="domain">[('plan_patient_ids', '=', active_id)]</field>
         <field name="help" type="html">
@@ -137,6 +137,14 @@
                         <group string="รายละเอียด">
                             <field name="location" string="สถานที่" />
                             <field name="outcome" placeholder="ผลการให้ความช่วยเหลือ..." />
+                        </group>
+                        <group string="ประเมินความพึงพอใจ">
+                            <field
+                                name="satisfaction_level"
+                                widget="radio"
+                                class="satisfaction-radio"
+                                options="{'horizontal': True}"
+                            />
                         </group>
                     </group>
                     <separator string="ภาพประกอบ" class="mt-2" />

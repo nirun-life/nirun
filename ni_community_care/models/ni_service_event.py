@@ -97,6 +97,18 @@ class ServiceEvent(models.Model):
     stop = fields.Datetime(default=_get_default_trim_stop)
     time_range = fields.Char(string="เวลา", compute="_compute_time_range", store=False)
 
+    satisfaction_level = fields.Selection(
+        [
+            ("1", "น้อยที่สุด"),
+            ("2", "น้อย"),
+            ("3", "ปานกลาง"),
+            ("4", "มาก"),
+            ("5", "มากที่สุด"),
+        ],
+        string="ความพึงพอใจ",
+        help="ระดับความพึงพอใจของผู้สูงอายุหลังจากที่ได้รับบริการ",
+    )
+
     @api.depends("start", "stop")
     def _compute_time_range(self):
         for rec in self:

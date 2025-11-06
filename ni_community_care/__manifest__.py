@@ -70,6 +70,7 @@
     "assets": {
         "web.assets_backend": [
             "ni_community_care/static/src/scss/custom.css",
+            "ni_community_care/static/src/scss/feedback_icons.css",
             "ni_community_care/static/src/components/*.js",
             "ni_community_care/static/src/components/*.xml",
             "ni_community_care/static/src/views/*.js",
