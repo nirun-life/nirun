@@ -1,0 +1,79 @@
+.satisfaction-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.satisfaction-radio {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 650px;
+}
+
+.satisfaction-radio .o_radio_item {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    flex: 1;
+    margin: 0 6px;
+    position: relative;
+}
+
+/* ซ่อน margin เดิมของ input */
+.satisfaction-radio .o_radio_item input {
+    margin: 6px 0 4px 0;
+}
+
+/* ไอคอน (FontAwesome) */
+.satisfaction-radio .o_radio_item::before {
+    font-family: FontAwesome;
+    font-size: 48px;
+    margin-bottom: 6px;
+    display: block;
+    line-height: 1;
+}
+
+/* 5 ระดับสีและไอคอน */
+.satisfaction-radio .o_radio_item:nth-child(1)::before {
+    content: "\f119";
+    color: #e74c3c;
+} /* frown-o */
+.satisfaction-radio .o_radio_item:nth-child(2)::before {
+    content: "\f119";
+    color: #e67e22;
+} /* frown-o */
+.satisfaction-radio .o_radio_item:nth-child(3)::before {
+    content: "\f11a";
+    color: #f1c40f;
+} /* meh-o */
+.satisfaction-radio .o_radio_item:nth-child(4)::before {
+    content: "\f118";
+    color: #2ecc71;
+} /* smile-o */
+.satisfaction-radio .o_radio_item:nth-child(5)::before {
+    content: "\f118";
+    color: #27ae60;
+} /* smile-o */
+
+/* ---------------- LABEL แถวกลาง ---------------- */
+.satisfaction-radio .o_radio_item label {
+    font-weight: 600;
+    font-size: 14px;
+    margin: 6px 0 6px 0;
+    text-align: center;
+    line-height: 1.2;
+    order: 2; /* label อยู่ตรงกลาง */
+    display: block;
+}
+
+/* ---------------- RADIO แถวล่าง ---------------- */
+.satisfaction-radio .o_radio_item input[type="radio"] {
+    order: 3;
+    margin-top: 6px;
+    transform: scale(1.3);
+    position: relative;
+}
