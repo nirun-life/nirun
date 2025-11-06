@@ -2,7 +2,7 @@
 
 {
     "name": "Questionnaire",
-    "version": "16.0.0.3.0",
+    "version": "16.0.0.4.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -31,6 +31,7 @@
         "report/ni_encounter_survey_latest_views.xml",
         "report/ni_patient_observation_views.xml",
         "report/ni_encounter_observation_views.xml",
+        "report/survey_user_input_line_report_views.xml",
     ],
     "application": True,
     "auto_install": False,
