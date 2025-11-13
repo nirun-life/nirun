@@ -11,7 +11,10 @@
     "maintainers": ["piruin"],
     "depends": ["hr_attendance"],
     "data": [
+        "security/ir.model.access.csv",
+        "security/ir_rules_data.xml",
         "views/hr_attendance_report_views.xml",
+        "views/hr_attendance_missing_report_views.xml",
     ],
     "application": False,
     "auto_install": False,

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_attendance_missing_report_rule" model="ir.rule">
+        <field name="name">Attendance Missing Report: Multi Company Rule</field>
+        <field ref="model_hr_attendance_missing_report" name="model_id" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
+<odoo>
+    <record id="hr_attendance_missing_report_view_search" model="ir.ui.view">
+        <field name="name">hr.attendance.missing.report.view.search</field>
+        <field name="model">hr.attendance.missing.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id" />
+                <field name="department_id" operator="child_of" />
+                <filter string="My Attendances" name="myattendances" domain="[('employee_id.user_id', '=', uid)]" />
+                <filter string="Date" name="date_filter" date="date" default_period="last_month" />
+                <group expand="0" string="Group By">
+                    <filter
+                        name="group_company_id"
+                        context="{'group_by': 'company_id'}"
+                        groups="base.group_multi_company"
+                    />
+                    <separator />
+                    <filter name="group_date" context="{'group_by': 'date'}" default_period="days" />
+                    <filter name="group_department_id" context="{'group_by': 'department_id'}" />
+                    <filter name="group_job_id" context="{'group_by': 'job_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="hr_attendance_missing_report_view_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.missing.report.view.tree</field>
+        <field name="model">hr.attendance.missing.report</field>
+        <field name="arch" type="xml">
+            <tree default_order="date desc">
+                <field name="date" optional="show" />
+                <field name="employee_id" widget="many2one_avatar_employee" />
+                <field name="department_id" optional="hide" />
+                <field name="job_id" optional="hide" />
+                <field name="company_id" optional="show" groups="base.group_multi_company" />
+            </tree>
+        </field>
+    </record>
+</odoo>
