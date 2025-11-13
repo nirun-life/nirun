@@ -16,6 +16,15 @@ class EmployeeBase(models.AbstractModel):
         "จังหวัดที่รับผิดชอบ",
         domain="[('country_id', '=', country_id)]",
     )
+    state_id = fields.Many2one(
+        "res.country.state", compute="_compute_state_id", store=True, index=True
+    )
+
+    @api.depends("state_ids")
+    def _compute_state_id(self):
+        for rec in self:
+            rec.state_id = rec.state_ids[0] if rec.state_ids else None
+
     city_ids = fields.Many2many(
         "res.city",
         "hr_employee_response_city",

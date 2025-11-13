@@ -5,12 +5,29 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form" />
         <field name="arch" type="xml">
-            <field name="department_id" position="before">
-                <field name="country_id" invisible="1" />
-                <field name="state_ids" widget="many2many_tags" />
-                <field name="city_ids" widget="many2many_tags" />
-                <field name="sub_district_code" groups="base.group_no_one" />
-            </field>
+            <xpath expr="//notebook/page[@name='public']/div" position="after">
+                <group string="พื้นที่รับผิดชอบ" class="mt-4">
+                    <field name="state_id" invisible="1" />
+                    <field name="country_id" invisible="1" />
+                    <field name="state_ids" widget="many2many_tags" />
+                    <field name="state_id" groups="base.group_no_one" />
+                    <field name="sub_district_code" groups="base.group_no_one" />
+                </group>
+                <div>
+                    <label for="city_ids" />
+                    <span class="text-muted">ระบบจำกัดการเข้าถึงข้อมูลของผู้บริบาลด้วยข้อมูลนี้</span>
+                    <button
+                        name="action_add_response_state_cities"
+                        type="object"
+                        class="float-end"
+                        string=" ทั้งจังหวัด"
+                        attrs="{'invisible': [('state_ids', '=', False)]}"
+                        confirm="พื้นที่รับผิดชอบที่คุณเลือกไว้จะเขียนทับ"
+                        icon="fa-map"
+                    />
+                </div>
+                <field name="city_ids" />
+            </xpath>
             <field name="department_id" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
@@ -23,9 +40,9 @@
             >
                 <attribute name="context">
                     {
-                    'form_view_ref': 'base.view_users_form',
-                    'allow_create_employee': False,
-                    'default_create_employee': False,
+                        'form_view_ref': 'base.view_users_form',
+                        'allow_create_employee': False,
+                        'default_create_employee': False,
                     }
                 </attribute>
             </xpath>
