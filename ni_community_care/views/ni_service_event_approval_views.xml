@@ -121,7 +121,9 @@
                 <!-- ให้เห็นเฉพาะกลุ่ม developer -->
                 <field name="has_pdf" groups="base.group_no_one" widget="boolean_toggle" />
                 <field name="last_pdf_date" groups="base.group_no_one" />
-                <field name="last_pdf_error" groups="base.group_no_one" invisible="1" />
+                <field name="last_pdf_error" groups="base.group_no_one" invisible="True" />
+                <field name="write_date" groups="base.group_no_one" />
+                <field name="write_uid" groups="base.group_no_one" />
             </tree>
         </field>
     </record>
@@ -358,7 +360,10 @@
                             decoration-success="state == 'approved'"
                             decoration-danger="state == 'rejected'"
                         />
-                        <!--                        <field name="event_patient_ids"></field>-->
+                    </group>
+                    <group string="Last Update" groups="base.group_no_one">
+                        <field name="write_date" />
+                        <field name="write_uid" />
                     </group>
                     <div class="d-grid gap-2 d-md-block">
                         <button
