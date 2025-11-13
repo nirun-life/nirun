@@ -10,10 +10,10 @@
         <field name="numbercall">-1</field>
     </record>
     <record id="ir_cron_refresh_all_approvals" model="ir.cron">
-        <field name="name">Refresh All Approvals</field>
+        <field name="name">Re-Compute Approvals</field>
         <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
         <field name="state">code</field>
-        <field name="code">model._cron_refresh_all_approvals(batch_limit=100)</field>
+        <field name="code">model._cron_refresh_approvals(batch_limit=100, days_threshold=7)</field>
         <field name="interval_number">1</field>
         <field name="interval_type">weeks</field>
         <field name="active">True</field>

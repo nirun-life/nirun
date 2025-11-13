@@ -584,35 +584,25 @@ class ServiceEventApproval(models.Model):
             self.create({"start": start_date, "stop": last_day, "user_id": user.id})
 
     @api.model
-    def _cron_refresh_all_approvals(self, **kwargs):
+    def _cron_refresh_approvals(self, **kwargs):
         """
-        Refresh computed fields for approvals in batches
-        :param batch_limit: จำนวน record ต่อรอบ (default = 100)
+        Refresh approvals ตาม limit ที่กำหนด
         """
         batch_limit = int(kwargs.get("batch_limit", 100))
-        offset = 0
+        days_threshold = int(kwargs.get("days_threshold", 7))
 
-        total_records = self.search_count([])
+        cutoff_date = fields.Datetime.now() - relativedelta(days=days_threshold)
+
         _logger.info(
-            f"[CRON] Refresh approvals in batches (total={total_records}, batch_limit={batch_limit})"
+            f"[CRON] Refreshing up to {batch_limit} approvals older than {cutoff_date}"
         )
 
-        while True:
-            batch = self.search([], offset=offset, limit=batch_limit)
-            if not batch:
-                break
+        # search record ตาม limit
+        records = self.search([("write_date", "<", cutoff_date)], limit=batch_limit)
 
-            _logger.info(
-                f"[CRON] Refreshing records {offset + 1} - {offset + len(batch)}"
-            )
-            batch.action_refresh_computed_fields()
-
-            # commit หลังจบแต่ละ batch (กัน memory leak / timeout)
-            self.env.cr.commit()
-
-            offset += batch_limit
-
-        _logger.info("[CRON] ✅ Finished refreshing all approvals.")
+        _logger.info(f"[CRON] Found {len(records)} record(s) to refresh.")
+        records.action_refresh_computed_fields()
+        _logger.info("[CRON] Refresh complete.")
 
     @api.model
     def _cron_generate_reports_batch(self, **kwargs):
