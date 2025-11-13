@@ -50,12 +50,7 @@
             }
         </field>
         <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-
-            </p>
-            <p>
-
-            </p>
+            <p class="oe_view_nocontent_create">ไม่พบการรายการอนุมัติบันทึกงาน</p>
         </field>
     </record>
     <record id="ni_service_event_approval_action_self" model="ir.actions.act_window">
@@ -98,8 +93,8 @@
             <tree default_order="start desc">
                 <field name="identifier" string="หมายเลขอ้างอิง" />
                 <field name="employee_id" />
-                <field name="start" string="ตั้งแต่" />
-                <field name="stop" string="จนถึง" />
+                <field name="start" string="ตั้งแต่" optional="show" />
+                <field name="stop" string="จนถึง" optional="hide" />
                 <!--                <field name="event_count" string="จำนวนกิจกรรม" width="20%" />-->
                 <field
                     name="state"
@@ -210,15 +205,14 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="identifier" string="หมายเลขอ้างอิง" />
+                        <field name="identifier" string="หมายเลขอ้างอิง" />
                         <h1>
-                            <field name="identifier" />
+                            <field name="employee_id" widget="many2one_avatar_user" readonly="1" />
                         </h1>
                     </div>
                     <group>
                         <group>
                             <!-- ด้านซ้าย -->
-                            <field name="employee_id" widget="many2one_avatar_user" readonly="1" />
                             <field name="start" string="ตั้งแต่" readonly="1" />
                             <field name="stop" string="จนถึง" readonly="1" />
                         </group>

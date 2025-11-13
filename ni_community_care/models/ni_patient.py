@@ -20,6 +20,8 @@ class Patient(models.Model):
 
     observation_category_id = fields.Many2one(store=True)
 
+    coverage_type_id = fields.Many2one("ni.coverage.type")
+
     need_ids = fields.Many2many("ni.need", "ni_patient_need", "patient_id", "need_id")
     need_line_ids = fields.One2many("ni.patient.need.line", "patient_id")
     need_count = fields.Integer(compute="_compute_need_count")
