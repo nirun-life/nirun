@@ -9,7 +9,7 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["hr_attendance"],
+    "depends": ["hr_attendance", "ni_community_care"],
     "data": [
         "security/ir.model.access.csv",
         "security/ir_rules_data.xml",
