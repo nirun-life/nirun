@@ -13,25 +13,40 @@ class ServiceEventReport(models.Model):
     _auto = False
     _rec_name = "event_id"
 
-    event_id = fields.Many2one("ni.service.event")
-    start = fields.Datetime("เริ่ม")
-    stop = fields.Datetime("หยุด")
-    duration = fields.Float("ระยะเวลา")
-    service_id = fields.Many2one("ni.service", "กิจกรรม")
+    event_id = fields.Many2one("ni.service.event", readonly=True)
+    start = fields.Datetime("เริ่ม", readonly=True)
+    stop = fields.Datetime("หยุด", readonly=True)
+    duration = fields.Float("ระยะเวลา", readonly=True)
+    service_id = fields.Many2one("ni.service", "กิจกรรม", readonly=True)
     service_ids = fields.Many2many(
         "ni.service", "ni_service_event_rel", "event_id", "service_id", "กิจกรรม"
     )
-    service_category_id = fields.Many2one("ni.service.category", "มิติ")
-    outcome = fields.Html(related="event_id.outcome")
-    location = fields.Char(related="event_id.location", string="สถานที่")
-    patient_id = fields.Many2one("ni.patient", "ผู้สูงอายุ")
-    patient_type_id = fields.Many2one("ni.patient.type", "ประเภทผู้สูงอายุ")
-    employee_id = fields.Many2one("hr.employee", "ผู้บริบาล")
-    user_id = fields.Many2one("res.users", "บัญชีผู้ใช้")
-    city_id = fields.Many2one("res.city", "ตำบล")
-    state_id = fields.Many2one("res.country.state", "จังหวัด")
+    service_category_id = fields.Many2one("ni.service.category", "มิติ", readonly=True)
+    outcome = fields.Html(related="event_id.outcome", readonly=True)
+    location = fields.Char(related="event_id.location", string="สถานที่", readonly=True)
+    patient_id = fields.Many2one("ni.patient", "ผู้สูงอายุ", readonly=True)
+    patient_type_id = fields.Many2one(
+        "ni.patient.type", "ประเภทผู้สูงอายุ", readonly=True
+    )
+    employee_id = fields.Many2one("hr.employee", "ผู้บริบาล", readonly=True)
+    user_id = fields.Many2one("res.users", "บัญชีผู้ใช้", readonly=True)
+    city_id = fields.Many2one("res.city", "ตำบล", readonly=True)
+    state_id = fields.Many2one("res.country.state", "จังหวัด", readonly=True)
     image_1 = fields.Image(related="event_id.image_1")
     image_2 = fields.Image(related="event_id.image_2")
+    satisfaction_level = fields.Selection(
+        [
+            ("1", "น้อยที่สุด"),
+            ("2", "น้อย"),
+            ("3", "ปานกลาง"),
+            ("4", "มาก"),
+            ("5", "มากที่สุด"),
+        ],
+        string="ความพึงพอใจ",
+        help="ระดับความพึงพอใจของผู้สูงอายุหลังจากที่ได้รับบริการ",
+        readonly=True,
+        group_operator="avg",
+    )
 
     my_service = fields.Boolean(
         compute="_compute_my_service", search="_search_my_service"
@@ -41,7 +56,7 @@ class ServiceEventReport(models.Model):
     @api.depends("user_id")
     def _compute_my_service(self):
         for rec in self:
-            rec.my_service = rec.user_id == self.env.user.id
+            rec.my_service = rec.user_id.id == self.env.user.id
 
     def _search_my_service(self, operator, operand):
         if operator == "=":
@@ -51,7 +66,10 @@ class ServiceEventReport(models.Model):
     @api.depends("city_id")
     def _compute_my_area(self):
         for rec in self:
-            rec.my_area = rec.city_id.id in self.env.user.city_ids.ids
+            if self.user_has_groups("ni_patient.group_manager"):
+                rec.my_area = rec.state_id.id in self.env.user.state_ids.ids
+            else:
+                rec.my_area = rec.city_id.id in self.env.user.city_ids.ids
 
     def _search_my_area(self, operator, operand):
         if operator == "=":
@@ -88,6 +106,7 @@ class ServiceEventReport(models.Model):
                 pe.ni_patient_id as patient_id,
                 se.user_id,
                 se.employee_id,
+                se.satisfaction_level,
                 se.state_id,
                 se.city_id
             FROM ni_patient_ni_service_event_rel pe
