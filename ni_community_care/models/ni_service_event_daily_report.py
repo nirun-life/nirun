@@ -106,8 +106,8 @@ class ServiceEventDailyReport(models.Model):
             aggregated_totals AS (
                 SELECT
                     service_date,
-                    SUM(total_events) AS total_events_all,
-                    SUM(total_patients) AS total_patients_all
+                    AVG(total_events) AS total_events_all,
+                    AVG(total_patients) AS total_patients_all
                 FROM daily_stats
                 GROUP BY service_date
             ),
