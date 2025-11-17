@@ -13,6 +13,7 @@ from . import ni_service
 from . import ni_service_event
 from . import ni_service_event_outcome
 from . import ni_service_event_report
+from . import ni_service_event_daily_report
 from . import ni_service_event_approval
 from . import ni_service_event_approval_report
 from . import res_users
