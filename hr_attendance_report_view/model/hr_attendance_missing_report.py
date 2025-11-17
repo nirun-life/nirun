@@ -14,6 +14,7 @@ class HrAttendanceMissingReport(models.Model):
     country_id = fields.Many2one("res.country", string="Country", readonly=True)
     state_id = fields.Many2one("res.country.state", string="State", readonly=True)
     date = fields.Date(string="Date", readonly=True)
+    active = fields.Boolean("Employee Active?", readonly=True)
 
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)
@@ -29,7 +30,7 @@ class HrAttendanceMissingReport(models.Model):
                 )::date AS day
             ),
             employee_days AS (
-                SELECT e.id AS employee_id, e.department_id, e.company_id, e.country_id, e.state_id, e.job_id, d.day
+                SELECT e.id AS employee_id, e.department_id, e.company_id, e.country_id, e.state_id, e.job_id, d.day, e.active
                 FROM hr_employee e
                 CROSS JOIN date_series d
             ),
@@ -52,7 +53,8 @@ class HrAttendanceMissingReport(models.Model):
                 ed.country_id,
                 ed.state_id,
                 ed.job_id,
-                ed.day AS date
+                ed.day AS date,
+                ed.active
             FROM employee_days ed
             LEFT JOIN attendance_check ac
               ON ed.employee_id = ac.employee_id AND ed.day = ac.check_in_date
