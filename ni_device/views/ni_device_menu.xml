@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="device_menu_root" name="อุปกรณ์ตรวจสุขภาพ" web_icon="ni_device,static/description/icon.png" />
+    <menuitem
+        id="menu_registered_device"
+        name="ทะเบียนอุปกรณ์ทั้งหมด"
+        parent="device_menu_root"
+        sequence="0"
+        action="ni_device_action"
+    />
+    <menuitem
+        id="configuration_menu"
+        name="Configuration"
+        groups="ni_patient.group_admin"
+        parent="device_menu_root"
+        sequence="100"
+    />
+    <menuitem id="device_type_menu" name="ประเภทอุปกรณ์" parent="configuration_menu" action="ni_device_type_action" />
+    <menuitem
+        id="device_metric_menu"
+        name="ประเภทข้อมูลตรวจวัด"
+        parent="configuration_menu"
+        action="ni_device_metric_action"
+    />
+</odoo>
