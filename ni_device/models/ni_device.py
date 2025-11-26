@@ -54,13 +54,6 @@ class Device(models.Model):
         default="available",
     )
 
-    # ผู้ถือครองอุปกรณ์ (FHIR R5 ใช้ DeviceAssociation)
-    holder_id = fields.Many2one(
-        "res.partner",
-        string="ผู้ถือครองอุปกรณ์ปัจจุบัน",
-        help="ชื่อผู้บริบาลหรือหน่วยงานที่ถือครองอุปกรณ์",
-    )
-
     # รูปภาพประกอบอุปกรณ์ (FHIR ไม่มี → ใช้ image field ของ Odoo)
     image_1920 = fields.Image("รูปภาพประกอบอุปกรณ์", max_width=1920, max_height=1920)
 
@@ -68,4 +61,24 @@ class Device(models.Model):
         "ni.device.metric",
         string="ประเภทข้อมูลตรวจวัดสุขภาพที่รองรับ",
         help="จาก FHIR DeviceMetric เช่น Blood Pressure, Temperature, Weight",
+    )
+
+    status = fields.Selection(
+        [
+            ("available", "ว่าง"),
+            ("in_use", "ถูกถือครอง"),
+            ("disposed", "จำหน่ายแล้ว"),
+        ],
+        string="สถานะอุปกรณ์",
+        store=True,
+    )
+
+    holder_ids = fields.One2many(
+        "ni.device.holder",
+        "device_id",
+        string="ประวัติผู้ถือครอง",
+    )
+
+    holder_id = fields.Many2one(
+        "res.partner", string="ผู้ถือครองอุปกรณ์ปัจจุบัน", store=True, readonly=True
     )

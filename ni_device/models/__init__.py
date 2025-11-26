@@ -2,3 +2,4 @@
 from . import ni_device
 from . import ni_device_type
 from . import ni_device_metric
+from . import ni_device_holder

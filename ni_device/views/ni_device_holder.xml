@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ni_device_holder_action" model="ir.actions.act_window">
+        <field name="name">การถือครองอุปกรณ์</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.device.holder</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+
+            </p>
+            <p>
+
+            </p>
+        </field>
+    </record>
+    <record id="ni_device_holder_view_tree" model="ir.ui.view">
+        <field name="name">ni.device.holder.view.tree</field>
+        <field name="model">ni.device.holder</field>
+        <field name="arch" type="xml">
+            <tree string="ประวัติผู้ถือครองอุปกรณ์">
+                <field name="device_id" />
+                <field name="holder_id" />
+                <field name="request_type" />
+                <field name="state" />
+                <field name="write_date" />
+                <button
+                    name="action_approve"
+                    type="object"
+                    string="Approve"
+                    attrs="{'invisible': [('state', '=', 'approved' )]}"
+                />
+            </tree>
+        </field>
+    </record>
+</odoo>
