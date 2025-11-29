@@ -1,4 +1,8 @@
+import logging
+
 from odoo import fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class Device(models.Model):
@@ -82,3 +86,29 @@ class Device(models.Model):
     holder_id = fields.Many2one(
         "res.partner", string="ผู้ถือครองอุปกรณ์ปัจจุบัน", store=True, readonly=True
     )
+
+    def action_request_use(self):
+        for rec in self:
+            _logger.info(
+                "action_request_use called for device ID %s (%s)", rec.id, rec.name
+            )
+        return True
+
+    def action_change_holder(self):
+        for rec in self:
+            _logger.info(
+                "action_change_holder called for device ID %s (%s)", rec.id, rec.name
+            )
+        return True
+
+    def action_repair(self):
+        for rec in self:
+            _logger.info("action_repair called for device ID %s (%s)", rec.id, rec.name)
+        return True
+
+    def action_dispose(self):
+        for rec in self:
+            _logger.info(
+                "action_dispose called for device ID %s (%s)", rec.id, rec.name
+            )
+        return True

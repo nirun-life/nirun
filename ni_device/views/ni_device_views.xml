@@ -14,4 +14,47 @@
             </p>
         </field>
     </record>
+    <record id="ni_device_view_form" model="ir.ui.view">
+        <field name="name">ni.device.view.form</field>
+        <field name="model">ni.device</field>
+        <field name="arch" type="xml">
+            <form string="อุปกรณ์ตรวจสุขภาพ">
+                <!-- ====== HEADER BUTTONS ====== -->
+                <header>
+                    <button name="action_request_use" type="object" string="ขอคืนอุปกรณ์" class="oe_highlight" />
+                    <button name="action_change_holder" type="object" string="เปลี่ยนผู้ถือครอง" />
+                    <button name="action_repair" type="object" string="แจ้งซ่อม" />
+                    <button name="action_dispose" type="object" string="แจ้งจำหน่าย" />
+                </header>
+                <sheet>
+                    <!-- ========== TITLE (ชื่ออุปกรณ์) ========== -->
+                    <h1>
+                        <field name="name" />
+                    </h1>
+                    <group>
+                        <group string="">
+                            <group>
+                                <field name="type_id" string="ประเภทอุปกรณ์" />
+                                <field name="metric_ids" widget="many2many_tags" string="ประเภทข้อมูลตรวจวัด" />
+                                <field name="manufacturer" />
+                                <field name="serial_number" />
+                                <field name="model_number" />
+                                <field name="manufacture_date" />
+                                <field name="price" />
+                            </group>
+                            <group>
+                                <field name="status" widget="badge" string="สถานะการถือครอง" />
+                                <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" readonly="1" />
+                                <field name="availability_status" widget="radio" string="สถานะความพร้อมใช้งาน" />
+                            </group>
+                        </group>
+                        <!-- ========== IMAGE (ด้านขวา) ========== -->
+                        <group>
+                            <field name="image_1920" widget="image" class="oe_avatar" string="รูปภาพอุปกรณ์" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 </odoo>
