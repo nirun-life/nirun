@@ -101,15 +101,15 @@ class DeviceHolder(models.Model):
 
             if rec.request_type == "request_hold":
                 device.holder_id = rec.holder_id
-                device.status = "in_use"
+                device.holding_status = "in_use"
 
             elif rec.request_type == "request_return":
                 device.holder_id = False
-                device.status = "available"
+                device.holding_status = "available"
 
             elif rec.request_type == "request_transfer":
                 device.holder_id = rec.new_holder_id
 
             elif rec.request_type == "request_dispose":
                 device.holder_id = False
-                device.status = "disposed"
+                device.holding_status = "disposed"

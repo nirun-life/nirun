@@ -1,6 +1,6 @@
 import logging
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -12,9 +12,6 @@ class Device(models.Model):
     _description = "ทะเบียนอุปกรณ์ตรวจสุขภาพ"
 
     name = fields.Char(string="ชื่ออุปกรณ์")
-
-    # # FHIR: Device.displayName / Device.name.value
-    # display_name = fields.Char("ชื่ออุปกรณ์")
 
     _order = "name"
 
@@ -52,6 +49,7 @@ class Device(models.Model):
         [
             ("available", "พร้อมใช้งาน"),
             ("damaged", "ชำรุด"),
+            ("destroyed", "ทำลายแล้ว"),
             ("lost", "สูญหาย"),
         ],
         string="สถานะความพร้อมใช้งาน",
@@ -67,13 +65,14 @@ class Device(models.Model):
         help="จาก FHIR DeviceMetric เช่น Blood Pressure, Temperature, Weight",
     )
 
-    status = fields.Selection(
+    holding_status = fields.Selection(
         [
             ("available", "ว่าง"),
+            ("pending", "รอการอนุมัติ"),
             ("in_use", "ถูกถือครอง"),
             ("disposed", "จำหน่ายแล้ว"),
         ],
-        string="สถานะอุปกรณ์",
+        string="สถานะการถือครอง",
         store=True,
     )
 
@@ -87,28 +86,43 @@ class Device(models.Model):
         "res.partner", string="ผู้ถือครองอุปกรณ์ปัจจุบัน", store=True, readonly=True
     )
 
-    def action_request_use(self):
+    is_holder = fields.Boolean(compute="_compute_is_holder", store=False)
+
+    @api.depends("holder_id")
+    def _compute_is_holder(self):
+        current_user = self.env.user
+        for rec in self:
+            rec.is_holder = rec.holder_id.user_id == current_user
+
+    def action_request_hold(self):
         for rec in self:
             _logger.info(
-                "action_request_use called for device ID %s (%s)", rec.id, rec.name
+                "action_request_hold called for device ID %s (%s)", rec.id, rec.name
             )
         return True
 
-    def action_change_holder(self):
+    def action_request_return(self):
         for rec in self:
             _logger.info(
-                "action_change_holder called for device ID %s (%s)", rec.id, rec.name
+                "action_request_return called for device ID %s (%s)", rec.id, rec.name
+            )
+        return True
+
+    def action_request_transfer(self):
+        for rec in self:
+            _logger.info(
+                "action_request_transfer called for device ID %s (%s)", rec.id, rec.name
+            )
+        return True
+
+    def action_request_dispose(self):
+        for rec in self:
+            _logger.info(
+                "action_request_dispose called for device ID %s (%s)", rec.id, rec.name
             )
         return True
 
     def action_repair(self):
         for rec in self:
             _logger.info("action_repair called for device ID %s (%s)", rec.id, rec.name)
-        return True
-
-    def action_dispose(self):
-        for rec in self:
-            _logger.info(
-                "action_dispose called for device ID %s (%s)", rec.id, rec.name
-            )
         return True

@@ -18,40 +18,96 @@
         <field name="name">ni.device.view.form</field>
         <field name="model">ni.device</field>
         <field name="arch" type="xml">
+            <field name="is_holder" invisible="1" />
             <form string="อุปกรณ์ตรวจสุขภาพ">
-                <!-- ====== HEADER BUTTONS ====== -->
                 <header>
-                    <button name="action_request_use" type="object" string="ขอคืนอุปกรณ์" class="oe_highlight" />
-                    <button name="action_change_holder" type="object" string="เปลี่ยนผู้ถือครอง" />
-                    <button name="action_repair" type="object" string="แจ้งซ่อม" />
-                    <button name="action_dispose" type="object" string="แจ้งจำหน่าย" />
+                    <!-- ปุ่มขอถือครอง -->
+                    <button
+                        name="action_request_hold"
+                        type="object"
+                        string="ขอถือครอง"
+                        class="btn-primary oe_highlight"
+                        attrs="{'invisible': [('holding_status', '!=', 'available')]}"
+                    />
+                    <!-- ========== กรณีอุปกรณ์กำลังใช้งาน และผู้ใช้ = holder ========== -->
+                    <button
+                        name="action_request_return"
+                        type="object"
+                        string="ขอคืนอุปกรณ์"
+                        class="oe_highlight"
+                        attrs="{'invisible': [('is_holder', '=', 'false')]}"
+                    />
+                    <button
+                        name="action_request_transfer"
+                        type="object"
+                        string="ขอเปลี่ยนผู้ถือครอง"
+                        attrs="{'invisible': [('is_holder', '=', 'false')]}"
+                    />
+                    <button
+                        name="action_request_dispose"
+                        type="object"
+                        string="ขอจำหน่ายอุปกรณ์"
+                        attrs="{'invisible': [('is_holder', '=', 'false')]}"
+                    />
+                    <!-- ปุ่มแจ้งซ่อม -->
+                    <button
+                        name="action_repair"
+                        type="object"
+                        string="แจ้งซ่อม"
+                        attrs="{'invisible': [('holding_status', '=', 'disposed')]}"
+                    />
                 </header>
                 <sheet>
+                    <field
+                        name="image_1920"
+                        class="oe_avatar"
+                        options="{&quot;preview_image&quot;:&quot;image_128&quot;}"
+                        widget="image"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('availability_status', '!=', 'damaged' )]}"
+                        bg_color="bg-danger"
+                        title="ชำรุด"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('availability_status', '!=', 'lost' )]}"
+                        bg_color="bg-dark"
+                        title="สูญหาย"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('holding_status', '!=', 'disposed' )]}"
+                        bg_color="bg-dark"
+                        title="จำหน่ายแล้ว"
+                    />
                     <!-- ========== TITLE (ชื่ออุปกรณ์) ========== -->
+                    <field name="identifier" />
                     <h1>
                         <field name="name" />
                     </h1>
                     <group>
-                        <group string="">
-                            <group>
-                                <field name="type_id" string="ประเภทอุปกรณ์" />
-                                <field name="metric_ids" widget="many2many_tags" string="ประเภทข้อมูลตรวจวัด" />
-                                <field name="manufacturer" />
-                                <field name="serial_number" />
-                                <field name="model_number" />
-                                <field name="manufacture_date" />
-                                <field name="price" />
-                            </group>
-                            <group>
-                                <field name="status" widget="badge" string="สถานะการถือครอง" />
-                                <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" readonly="1" />
-                                <field name="availability_status" widget="radio" string="สถานะความพร้อมใช้งาน" />
-                            </group>
-                        </group>
-                        <!-- ========== IMAGE (ด้านขวา) ========== -->
                         <group>
-                            <field name="image_1920" widget="image" class="oe_avatar" string="รูปภาพอุปกรณ์" />
+                            <field name="type_id" string="ประเภทอุปกรณ์" />
+                            <field name="metric_ids" widget="many2many_tags" string="ประเภทข้อมูลตรวจวัด" />
+                            <field name="manufacturer" />
+                            <field name="serial_number" />
+                            <field name="model_number" />
+                            <field name="manufacture_date" />
+                            <field name="price" />
                         </group>
+                        <group>
+                            <field name="availability_status" widget="badge" string="สถานะความพร้อมใช้งาน" />
+                            <field name="holding_status" widget="badge" string="สถานะการถือครอง" />
+                            <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" readonly="1" />
+                        </group>
+                    </group>
+                    <group string="ข้อมูลที่แก้ไขได้" groups="base.group_no_one">
+                        <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" />
+                        <field name="holder_ids" />
+                        <field name="holding_status" />
+                        <field name="availability_status" />
                     </group>
                 </sheet>
             </form>
