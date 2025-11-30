@@ -1,8 +1,8 @@
 from odoo import fields, models
 
 
-class DeviceHolder(models.Model):
-    _name = "ni.device.holder"
+class DeviceHoldingRequest(models.Model):
+    _name = "ni.device.holding.request"
     _description = "ประวัติผู้ถือครองอุปกรณ์และคำขอเปลี่ยนผู้ถือครอง"
     _order = "write_date"
 

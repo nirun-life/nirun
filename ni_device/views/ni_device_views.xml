@@ -22,12 +22,14 @@
             <form string="อุปกรณ์ตรวจสุขภาพ">
                 <header>
                     <!-- ปุ่มขอถือครอง -->
+                    <field name="is_holder" invisible="1" />
+                    <field name="is_manager" invisible="1" />
                     <button
                         name="action_request_hold"
                         type="object"
                         string="ขอถือครอง"
                         class="btn-primary oe_highlight"
-                        attrs="{'invisible': [('holding_status', '!=', 'available')]}"
+                        attrs="{'invisible': ['|', ('availability_status', '!=', 'available'), ('holding_status', '!=', 'available')]}"
                     />
                     <!-- ========== กรณีอุปกรณ์กำลังใช้งาน และผู้ใช้ = holder ========== -->
                     <button
@@ -35,7 +37,7 @@
                         type="object"
                         string="ขอคืนอุปกรณ์"
                         class="oe_highlight"
-                        attrs="{'invisible': [('is_holder', '=', 'false')]}"
+                        attrs="{'invisible': [('is_holder','=',False)]}"
                     />
                     <button
                         name="action_request_transfer"
@@ -89,7 +91,7 @@
                     </h1>
                     <group>
                         <group>
-                            <field name="type_id" string="ประเภทอุปกรณ์" />
+                            <field name="type_ids" widget="many2many_tags" string="ประเภทอุปกรณ์" />
                             <field name="metric_ids" widget="many2many_tags" string="ประเภทข้อมูลตรวจวัด" />
                             <field name="manufacturer" />
                             <field name="serial_number" />
@@ -105,7 +107,8 @@
                     </group>
                     <group string="ข้อมูลที่แก้ไขได้" groups="base.group_no_one">
                         <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" />
-                        <field name="holder_ids" />
+                        <!--                        <field name="holder_ids" />-->
+                        <field name="holding_request_ids" />
                         <field name="holding_status" />
                         <field name="availability_status" />
                     </group>

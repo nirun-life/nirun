@@ -37,8 +37,8 @@ class Device(models.Model):
     # ราคา (ไม่มีใน FHIR → ใช้ extension)
     price = fields.Float("ราคา")
 
-    # Device.type (CodeableConcept)
-    type_id = fields.Many2one(
+    # Device.types (CodeableConcept)
+    type_ids = fields.Many2many(
         "ni.device.type",
         string="ประเภทของอุปกรณ์",
         help="เช่น เครื่องวัดความดัน, เครื่องชั่งน้ำหนัก, เครื่องวัดอุณหภูมิ",
@@ -49,7 +49,7 @@ class Device(models.Model):
         [
             ("available", "พร้อมใช้งาน"),
             ("damaged", "ชำรุด"),
-            ("destroyed", "ทำลายแล้ว"),
+            ("disposed", "จำหน่ายแล้ว"),
             ("lost", "สูญหาย"),
         ],
         string="สถานะความพร้อมใช้งาน",
@@ -76,10 +76,16 @@ class Device(models.Model):
         store=True,
     )
 
-    holder_ids = fields.One2many(
-        "ni.device.holder",
+    # holder_ids = fields.One2many(
+    #     "ni.device.holder",
+    #     "device_id",
+    #     string="ประวัติผู้ถือครอง",
+    # )
+
+    holding_request_ids = fields.One2many(
+        "ni.device.holding.request",
         "device_id",
-        string="ประวัติผู้ถือครอง",
+        string="รายการคำขอการถือครอง",
     )
 
     holder_id = fields.Many2one(
@@ -87,12 +93,19 @@ class Device(models.Model):
     )
 
     is_holder = fields.Boolean(compute="_compute_is_holder", store=False)
+    is_manager = fields.Boolean(compute="_compute_is_manager", store=False)
 
     @api.depends("holder_id")
     def _compute_is_holder(self):
         current_user = self.env.user
         for rec in self:
             rec.is_holder = rec.holder_id.user_id == current_user
+
+    @api.depends()
+    def _compute_is_manager(self):
+        user = self.env.user
+        for rec in self:
+            rec.is_manager = user.has_group("ni_patient.group_manager")
 
     def action_request_hold(self):
         for rec in self:
