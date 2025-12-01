@@ -21,7 +21,7 @@
             <field name="is_holder" invisible="1" />
             <form string="อุปกรณ์ตรวจสุขภาพ">
                 <header>
-                    <!-- ปุ่มขอถือครอง -->
+                    <!-- ไม่มีผู้ถือครอง: ต้องอยู่ในสถานะว่าง  -->
                     <field name="is_holder" invisible="1" />
                     <field name="is_manager" invisible="1" />
                     <button
@@ -29,34 +29,34 @@
                         type="object"
                         string="ขอถือครอง"
                         class="btn-primary oe_highlight"
-                        attrs="{'invisible': ['|', ('availability_status', '!=', 'available'), ('holding_status', '!=', 'available')]}"
+                        attrs="{'invisible': ['|', ('availability_status', '!=', 'available'), ('state', '!=', 'available')]}"
                     />
-                    <!-- ========== กรณีอุปกรณ์กำลังใช้งาน และผู้ใช้ = holder ========== -->
+                    <!-- ========== มีผู้ถือครอง: ผู้ถือครอง และ manager เท่านั้นที่กดได้ ========== -->
                     <button
                         name="action_request_return"
                         type="object"
                         string="ขอคืนอุปกรณ์"
                         class="oe_highlight"
-                        attrs="{'invisible': [('is_holder','=',False)]}"
+                        attrs="{ 'invisible': [('|'),('state','!=','in_use'),('is_holder','=',False),('is_manager','=',False)]}"
                     />
                     <button
                         name="action_request_transfer"
                         type="object"
                         string="ขอเปลี่ยนผู้ถือครอง"
-                        attrs="{'invisible': [('is_holder', '=', 'false')]}"
+                        attrs="{ 'invisible': [('|'),('state','!=','in_use'),('is_holder','=',False),('is_manager','=',False)]}"
                     />
                     <button
                         name="action_request_dispose"
                         type="object"
                         string="ขอจำหน่ายอุปกรณ์"
-                        attrs="{'invisible': [('is_holder', '=', 'false')]}"
+                        attrs="{ 'invisible': [('|'),('state','!=','in_use'),('is_holder','=',False),('is_manager','=',False)]}"
                     />
                     <!-- ปุ่มแจ้งซ่อม -->
                     <button
                         name="action_repair"
                         type="object"
                         string="แจ้งซ่อม"
-                        attrs="{'invisible': [('holding_status', '=', 'disposed')]}"
+                        attrs="{ 'invisible': [('|'),('state','!=','in_use'),('is_holder','=',False),('is_manager','=',False)]}"
                     />
                 </header>
                 <sheet>
@@ -80,7 +80,7 @@
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('holding_status', '!=', 'disposed' )]}"
+                        attrs="{'invisible': [('state', '!=', 'disposed' )]}"
                         bg_color="bg-dark"
                         title="จำหน่ายแล้ว"
                     />
@@ -101,7 +101,7 @@
                         </group>
                         <group>
                             <field name="availability_status" widget="badge" string="สถานะความพร้อมใช้งาน" />
-                            <field name="holding_status" widget="badge" string="สถานะการถือครอง" />
+                            <field name="state" widget="badge" string="สถานะการถือครอง" />
                             <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" readonly="1" />
                         </group>
                     </group>
@@ -109,8 +109,10 @@
                         <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" />
                         <!--                        <field name="holder_ids" />-->
                         <field name="holding_request_ids" />
-                        <field name="holding_status" />
+                        <field name="state" />
                         <field name="availability_status" />
+                        <field name="is_holder" />
+                        <field name="is_manager" />
                     </group>
                 </sheet>
             </form>

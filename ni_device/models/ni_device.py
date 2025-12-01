@@ -65,7 +65,7 @@ class Device(models.Model):
         help="จาก FHIR DeviceMetric เช่น Blood Pressure, Temperature, Weight",
     )
 
-    holding_status = fields.Selection(
+    state = fields.Selection(
         [
             ("available", "ว่าง"),
             ("pending", "รอการอนุมัติ"),
@@ -89,17 +89,27 @@ class Device(models.Model):
     )
 
     holder_id = fields.Many2one(
-        "res.partner", string="ผู้ถือครองอุปกรณ์ปัจจุบัน", store=True, readonly=True
+        "res.partner", string="ผู้ถือครองอุปกรณ์ปัจจุบัน", store=True
     )
 
     is_holder = fields.Boolean(compute="_compute_is_holder", store=False)
     is_manager = fields.Boolean(compute="_compute_is_manager", store=False)
 
-    @api.depends("holder_id")
+    @api.depends("holder_id", "holder_id.user_id")
     def _compute_is_holder(self):
         current_user = self.env.user
+        current_partner = current_user.partner_id
         for rec in self:
-            rec.is_holder = rec.holder_id.user_id == current_user
+            rec.is_holder = False
+            if not rec.holder_id:
+                continue
+            # ครอบคลุมทั้งกรณี partner ถูกผูกกับ user และกรณี partner ตรงกับ user's partner
+            if rec.holder_id.user_id and rec.holder_id.user_id == current_user:
+                rec.is_holder = True
+            elif rec.holder_id == current_partner:
+                rec.is_holder = True
+            else:
+                rec.is_holder = False
 
     @api.depends()
     def _compute_is_manager(self):
