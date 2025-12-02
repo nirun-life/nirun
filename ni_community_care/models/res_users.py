@@ -1,6 +1,6 @@
 #  Copyright (c) 2025 NSTDA
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class Users(models.Model):
@@ -22,6 +22,22 @@ class Users(models.Model):
         "พื้นที่รับผิดชอบ",
         domain="[('state_id', 'in', state_ids)]",
     )
+
+    my_user_city_match = fields.Boolean(
+        compute="_compute_my_user_city_match", search="_search_my_user_city_match"
+    )
+
+    @api.depends("city_ids")
+    def _compute_my_user_city_match(self):
+        my_cities = self.env.user.city_ids.ids
+        for rec in self:
+            rec.my_user_city_match = bool(set(rec.city_ids.ids) & set(my_cities))
+
+    def _search_my_user_city_match(self, operator, value):
+        my_city_ids = self.env.user.city_ids.ids
+        if not my_city_ids:
+            return [("id", "=", 0)]
+        return [("city_ids", "in", my_city_ids)]
 
     def action_add_response_state_cities(self):
         city = self.env["res.city"].search([("state_id", "in", self.state_ids.ids)])
