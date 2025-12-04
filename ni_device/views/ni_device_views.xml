@@ -37,26 +37,29 @@
                         type="object"
                         string="ขอคืนอุปกรณ์"
                         class="oe_highlight"
-                        attrs="{ 'invisible': [('|'),('state','!=','in_use'),('is_holder','=',False),('is_manager','=',False)]}"
+                        attrs="{'invisible': ['|',('state','!=','in_use'),'&amp;',('is_holder','=',False),('is_manager','=',False)]}"
                     />
                     <button
                         name="action_request_transfer"
                         type="object"
                         string="ขอเปลี่ยนผู้ถือครอง"
-                        attrs="{ 'invisible': [('|'),('state','!=','in_use'),('is_holder','=',False),('is_manager','=',False)]}"
+                        attrs="{'invisible': ['|',('state','!=','in_use'),'&amp;',('is_holder','=',False),('is_manager','=',False)]}"
+                    />
                     />
                     <button
                         name="action_request_dispose"
                         type="object"
                         string="ขอจำหน่ายอุปกรณ์"
-                        attrs="{ 'invisible': [('|'),('state','!=','in_use'),('is_holder','=',False),('is_manager','=',False)]}"
+                        attrs="{'invisible': ['|',('state','!=','in_use'),'&amp;',('is_holder','=',False),('is_manager','=',False)]}"
+                    />
                     />
                     <!-- ปุ่มแจ้งซ่อม -->
                     <button
                         name="action_repair"
                         type="object"
                         string="แจ้งซ่อม"
-                        attrs="{ 'invisible': [('|'),('state','!=','in_use'),('is_holder','=',False),('is_manager','=',False)]}"
+                        attrs="{'invisible': ['|',('state','!=','in_use'),'&amp;',('is_holder','=',False),('is_manager','=',False)]}"
+                    />
                     />
                 </header>
                 <sheet>

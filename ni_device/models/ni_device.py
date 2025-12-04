@@ -22,8 +22,12 @@ class Device(models.Model):
     # FHIR–Mapped Fields
     # ---------------------------
 
-    # manufacturer → Device.manufacturer
-    manufacturer = fields.Char("ชื่อผู้ผลิตอุปกรณ์")
+    manufacturer_id = fields.Many2one(
+        "res.partner",
+        string="ผู้ผลิต",
+        domain="[('is_company', '=', True)]",
+        store=True,
+    )
 
     # manufactureDate → Device.manufactureDate
     manufacture_date = fields.Date("วันที่ผลิต")
@@ -118,32 +122,72 @@ class Device(models.Model):
             rec.is_manager = user.has_group("ni_patient.group_manager")
 
     def action_request_hold(self):
-        for rec in self:
-            _logger.info(
-                "action_request_hold called for device ID %s (%s)", rec.id, rec.name
-            )
-        return True
+        """เปิด wizard ni.device.holding.request แบบ form view"""
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "ขอถือครองอุปกรณ์",
+            "res_model": "ni.device.holding.request",
+            "view_mode": "form",
+            "target": "new",  # เปิดเป็น popup modal
+            "context": {
+                "default_device_id": self.id,
+                "default_request_type": "request_hold",
+                "default_holder_id": self.env.user.partner_id.id,
+            },
+        }
 
     def action_request_return(self):
-        for rec in self:
-            _logger.info(
-                "action_request_return called for device ID %s (%s)", rec.id, rec.name
-            )
-        return True
+        """เปิด wizard ni.device.holding.request แบบ form view"""
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "ขอคืนอุปกรณ์",
+            "res_model": "ni.device.holding.request",
+            "view_mode": "form",
+            "target": "new",  # เปิดเป็น popup modal
+            "context": {
+                "default_device_id": self.id,
+                "default_request_type": "request_return",
+                "default_holder_id": self.holder_id.id if self.holder_id else False,
+            },
+        }
 
     def action_request_transfer(self):
-        for rec in self:
-            _logger.info(
-                "action_request_transfer called for device ID %s (%s)", rec.id, rec.name
-            )
-        return True
+        """เปิด wizard ni.device.holding.request แบบ form view"""
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "ขอเปลี่ยนผู้ถือครอง",
+            "res_model": "ni.device.holding.request",
+            "view_mode": "form",
+            "target": "new",  # เปิดเป็น popup modal
+            "context": {
+                "default_device_id": self.id,
+                "default_request_type": "request_transfer",
+                "default_holder_id": self.holder_id.id if self.holder_id else False,
+                "show_new_holder": True,
+            },
+        }
 
     def action_request_dispose(self):
-        for rec in self:
-            _logger.info(
-                "action_request_dispose called for device ID %s (%s)", rec.id, rec.name
-            )
-        return True
+        """เปิด wizard ni.device.holding.request แบบ form view"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "ขอจำหน่ายอุปกรณ์",
+            "res_model": "ni.device.holding.request",
+            "view_mode": "form",
+            "target": "new",  # เปิดเป็น popup modal
+            "context": {
+                "default_device_id": self.id,
+                "default_request_type": "request_dispose",
+                "default_holder_id": self.holder_id.id if self.holder_id else False,
+            },
+        }
 
     def action_repair(self):
         for rec in self:

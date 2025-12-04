@@ -28,11 +28,6 @@ class DeviceHoldingRequest(models.Model):
         help="ชื่อผู้บริบาลหรือหน่วยงานที่ถือครองอุปกรณ์ในช่วงเวลานี้",
     )
 
-    department_id = fields.Many2one(
-        "hr.department",
-        string="หน่วยงาน (ถ้ามี)",
-    )
-
     # -------------------------
     # ประเภทคำขอ (Workflow)
     # -------------------------
@@ -91,6 +86,17 @@ class DeviceHoldingRequest(models.Model):
     approval_note = fields.Text(
         string="หมายเหตุการอนุมัติ",
     )
+
+    def action_submit(self):
+        for rec in self:
+            rec.state = "waiting"
+            if rec.device_id.state == "available":
+                rec.device_id.state = "pending"
+
+                # ขอถือครอง : ถ้าอุปกรณ์ว่าง → เปลี่ยนเป็น pending
+                if rec.request_type == "request_hold":
+                    if rec.device_id.state == "available":
+                        rec.device_id.state = "pending"
 
     def action_approve(self):
         for rec in self:
