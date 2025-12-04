@@ -96,7 +96,11 @@
                         <group>
                             <field name="type_ids" widget="many2many_tags" string="ประเภทอุปกรณ์" />
                             <field name="metric_ids" widget="many2many_tags" string="ประเภทข้อมูลตรวจวัด" />
-                            <field name="manufacturer" />
+                            <field
+                                name="manufacturer_id"
+                                domain="[('is_company', '=', True)]"
+                                context="{'default_is_company': True}"
+                            />
                             <field name="serial_number" />
                             <field name="model_number" />
                             <field name="manufacture_date" />
