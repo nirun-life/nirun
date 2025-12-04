@@ -262,14 +262,12 @@
                                 <p>ยินยอมรับบริการจากผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ</p>
                             </div>
                             <div class="o_row">
-                                <field name="is_allow_photo" />
+                                <field name="is_allow_photo" attrs="{'readonly': [('is_accept_service','=',False)]}" />
                                 <p>ยินยอมให้ถ่ายภาพระหว่างให้บริการ</p>
                             </div>
                         </div>
                     </div>
-                    <notebook
-                        attrs="{'invisible': ['|', ('is_accept_service','=',False), ('is_allow_photo','=',False)]}"
-                    >
+                    <notebook attrs="{'invisible': [('is_accept_service','=',False)]}">
                         <page name="personal" string="ข้อมูลส่วนบุคคล" icon="fa-address-book-o">
                             <group>
                                 <group name="personal" string="ข้อมูลส่วนบคคล">

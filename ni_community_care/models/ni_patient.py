@@ -89,6 +89,10 @@ class Patient(models.Model):
     @api.onchange("age")
     def _onchange_age_warn(self):
         for rec in self:
+            # ถ้ายังไม่บันทึก (create mode) -> rec.id ไม่มี
+            if not rec.id:
+                return
+
             if rec.age >= 0 and rec.age < 60:
                 return {
                     "warning": {
