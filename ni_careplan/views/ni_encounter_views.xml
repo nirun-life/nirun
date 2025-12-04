@@ -16,7 +16,6 @@
                     name="careplan_ids"
                     context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
                     mode="kanban"
-                    readonly="1"
                 />
                 <field name="careplan_count" invisible="1" />
                 <button
@@ -25,6 +24,7 @@
                     class="btn-primary"
                     string="เพิ่ม Careplan"
                     states="draft,in-progress"
+                    context="{'target': 'new'}"
                 />
             </xpath>
         </field>

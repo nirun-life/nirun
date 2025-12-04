@@ -23,10 +23,10 @@ class Patient(models.Model):
             "name": self.env["ni.careplan"]._description,
             "res_model": "ni.careplan",
             "type": "ir.actions.act_window",
-            "target": self.env.context.get("target", "current"),
-            "res_id": self.env.context.get("careplan_id", 0),
+            "target": context.pop("target", "current"),
+            "res_id": context.get("careplan_id", 0),
             "view_type": "form",
             "views": [[False, "form"]],
-            "context": self.env.context,
+            "context": context,
         }
         return view
