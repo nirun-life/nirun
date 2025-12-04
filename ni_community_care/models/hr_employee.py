@@ -5,18 +5,16 @@ from odoo import api, fields, models
 class Employee(models.Model):
     _inherit = "hr.employee"
 
-    my_user_city_match = fields.Boolean(
-        compute="_compute_my_user_city_match", search="_search_my_user_city_match"
-    )
+    my_area = fields.Boolean(compute="_compute_my_area", search="_search_my_area")
 
     @api.depends("city_ids")
-    def _compute_my_user_city_match(self):
-        my_cities = self.env.user.employee_id.city_ids.ids
+    def _compute_my_area(self):
+        my_cities = self.env.user.city_ids.ids
         for rec in self:
-            rec.my_user_city_match = bool(set(rec.city_ids.ids) & set(my_cities))
+            rec.my_area = bool(set(rec.city_ids.ids) & set(my_cities))
 
-    def _search_my_user_city_match(self, operator, value):
-        my_city_ids = self.env.user.employee_id.city_ids.ids
+    def _search_my_area(self, operator, value):
+        my_city_ids = self.env.user.city_ids.ids
         if not my_city_ids:
             return [("id", "=", 0)]
         return [("city_ids", "in", my_city_ids)]
@@ -54,6 +52,17 @@ class Employee(models.Model):
     def _onchange_user(self):
         super()._onchange_user()
         if self.user_id and self.city_ids and not self.user_id.city_ids:
+            self.user_id.update(
+                {
+                    "country_id": self.country_id.id,
+                    "state_ids": self.state_ids.ids,
+                    "city_ids": self.city_ids.ids,
+                }
+            )
+
+    @api.onchange("country_id", "state_ids", "city_ids")
+    def _onchange_city(self):
+        if self.user_id and self.city_ids:
             self.user_id.update(
                 {
                     "country_id": self.country_id.id,

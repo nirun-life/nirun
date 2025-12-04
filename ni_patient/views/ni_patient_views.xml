@@ -42,7 +42,10 @@
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('identifier', 'ilike', self)]" />
+                <field
+                    name="name"
+                    filter_domain="['|','|' ,('name', 'ilike', self), ('identifier', 'ilike', self),('identification_id', 'ilike', self)]"
+                />
                 <field name="phone" filter_domain="['|' ,('phone', 'ilike', self), ('mobile', 'ilike', self)]" />
                 <filter name="in_progress" string='In-Progress' domain="[('presence_state', '=', 'in-progress')]" />
                 <filter name="planned" string='Planned' domain="[('presence_state', '=', 'planned')]" />

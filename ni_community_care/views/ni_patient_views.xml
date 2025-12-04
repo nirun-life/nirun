@@ -11,7 +11,10 @@
         <field name="arch" type="xml">
             <xpath expr="//search" position="replace">
                 <search>
-                    <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('identifier', 'ilike', self)]" />
+                    <field
+                        name="name"
+                        filter_domain="['|','|' ,('name', 'ilike', self), ('identifier', 'ilike', self),('identification_id', 'ilike', self)]"
+                    />
                     <filter name="my_patient" string="ที่ฉันดูแล" domain="[('create_uid', '=', uid)]" />
                     <filter name="group_zip_id" string="พื้นที่" context="{'group_by': 'zip_id'}" />
                     <filter string="Archived" name="inactive" domain="[('active', '=', False)]" />
