@@ -51,7 +51,7 @@ class ServiceRequest(models.Model):
     def _onchange_category_id(self):
         if self.category_id:
             domain = [
-                ("category_id", "=", self.category_id.id),
+                ("category_id", "child_of", self.category_id.id),
                 "|",
                 ("specialty_ids", "=", False),
                 ("specialty_ids", "=", self.user_specialty.id),
@@ -64,7 +64,8 @@ class ServiceRequest(models.Model):
     def _onchange_service_ids(self):
         for rec in self:
             if rec.service_ids:
-                rec.name = ", ".join(rec.service_ids.mapped("name"))
+                name = ", ".join(rec.service_ids.mapped("name"))
+                rec.name = name if len(name) <= 128 else name[:125] + "..."
 
     @api.depends("service_ids")
     def _compute_service_count(self):
@@ -81,6 +82,6 @@ class ServiceRequest(models.Model):
         for rec in self:
             if rec.service_ids and not rec.name:
                 name = ", ".join(rec.service_ids.mapped("name"))
-                rec.name = name if len(name) <= 128 else name[:128]
+                rec.name = name if len(name) <= 128 else name[:125] + "..."
             if not rec.service_ids and not rec.name:
                 raise UserError(_("Must specify at least one service"))
