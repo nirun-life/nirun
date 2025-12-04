@@ -80,11 +80,11 @@ class Device(models.Model):
         store=True,
     )
 
-    # holder_ids = fields.One2many(
-    #     "ni.device.holder",
-    #     "device_id",
-    #     string="ประวัติผู้ถือครอง",
-    # )
+    holder_history_ids = fields.One2many(
+        "ni.device.holder.history",
+        "device_id",
+        string="ประวัติผู้ถือครอง",
+    )
 
     holding_request_ids = fields.One2many(
         "ni.device.holding.request",
@@ -98,6 +98,12 @@ class Device(models.Model):
 
     is_holder = fields.Boolean(compute="_compute_is_holder", store=False)
     is_manager = fields.Boolean(compute="_compute_is_manager", store=False)
+
+    repair_history_ids = fields.One2many(
+        "ni.device.repair.history",
+        "device_id",
+        string="ประวัติการซ่อมแซม",
+    )
 
     @api.depends("holder_id", "holder_id.user_id")
     def _compute_is_holder(self):
@@ -190,6 +196,19 @@ class Device(models.Model):
         }
 
     def action_repair(self):
-        for rec in self:
-            _logger.info("action_repair called for device ID %s (%s)", rec.id, rec.name)
-        return True
+        self.ensure_one()
+
+        # เซ็ตสถานะอุปกรณ์ให้เป็น damaged
+        self.availability_status = "damaged"
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "แจ้งซ่อมอุปกรณ์",
+            "res_model": "ni.device.repair.history",
+            "view_mode": "form",
+            "target": "new",  # เปิด popup
+            "context": {
+                "default_device_id": self.id,
+                "default_damage_date": fields.Datetime.now(),
+            },
+        }

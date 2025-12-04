@@ -3,7 +3,7 @@ from odoo import fields, models
 
 class DeviceHoldingRequest(models.Model):
     _name = "ni.device.holding.request"
-    _description = "ประวัติผู้ถือครองอุปกรณ์และคำขอเปลี่ยนผู้ถือครอง"
+    _description = "คำขออนุมัติการถือครองอุปกรณ์"
     _order = "write_date"
 
     # -------------------------
@@ -98,24 +98,97 @@ class DeviceHoldingRequest(models.Model):
                     if rec.device_id.state == "available":
                         rec.device_id.state = "pending"
 
+    # def action_approve(self):
+    #     for rec in self:
+    #         rec.state = "approved"
+    #         rec.approve_date = fields.Datetime.now()
+    #
+    #         device = rec.device_id
+    #
+    #         if rec.request_type == "request_hold":
+    #             device.holder_id = rec.holder_id
+    #             device.state = "in_use"
+    #
+    #         elif rec.request_type == "request_return":
+    #             device.holder_id = False
+    #             device.state = "available"
+    #
+    #         elif rec.request_type == "request_transfer":
+    #             device.holder_id = rec.new_holder_id
+    #
+    #         elif rec.request_type == "request_dispose":
+    #             device.holder_id = False
+    #             device.state = "disposed"
+
     def action_approve(self):
         for rec in self:
             rec.state = "approved"
             rec.approve_date = fields.Datetime.now()
 
             device = rec.device_id
+            approve_date = rec.approve_date
 
+            # หา holder ปัจจุบันในประวัติ (ที่ยังไม่ถูกปิด)
+            last_history = self.env["ni.device.holder.history"].search(
+                [("device_id", "=", device.id), ("end_date", "=", False)],
+                limit=1,
+                order="start_date desc",
+            )
+
+            # =============================================
+            # 1) HOLD → สร้างประวัติใหม่ (start_date)
+            # =============================================
             if rec.request_type == "request_hold":
+                # ปิดประวัติเก่า (ถ้ามี)
+                if last_history:
+                    last_history.end_date = approve_date
+
+                # สร้างประวัติใหม่
+                self.env["ni.device.holder.history"].create(
+                    {
+                        "device_id": device.id,
+                        "holder_id": rec.holder_id.id,
+                        "start_date": approve_date,
+                        "request_id": rec.id,
+                    }
+                )
+
+                # อัปเดต device
                 device.holder_id = rec.holder_id
                 device.state = "in_use"
 
-            elif rec.request_type == "request_return":
-                device.holder_id = False
-                device.state = "available"
+            # ==================================================
+            # 2) RETURN หรือ DISPOSE → ปิดประวัติเดิม (end_date)
+            # ==================================================
+            elif rec.request_type in ["request_return", "request_dispose"]:
+                if last_history:
+                    last_history.end_date = approve_date
 
+                # อัปเดต device
+                device.holder_id = False
+                device.state = (
+                    "available" if rec.request_type == "request_return" else "disposed"
+                )
+
+            # ==================================================
+            # 3) TRANSFER → ปิดเดิม + สร้างใหม่
+            # ==================================================
             elif rec.request_type == "request_transfer":
-                device.holder_id = rec.new_holder_id
 
-            elif rec.request_type == "request_dispose":
-                device.holder_id = False
-                device.state = "disposed"
+                # ปิดประวัติเก่าของ holder เดิม
+                if last_history:
+                    last_history.end_date = approve_date
+
+                # สร้างประวัติใหม่ของ holder ใหม่
+                self.env["ni.device.holder.history"].create(
+                    {
+                        "device_id": device.id,
+                        "holder_id": rec.new_holder_id.id,
+                        "start_date": approve_date,
+                        "request_id": rec.id,
+                    }
+                )
+
+                # อัปเดต device
+                device.holder_id = rec.new_holder_id
+                device.state = "in_use"
