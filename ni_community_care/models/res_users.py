@@ -23,17 +23,15 @@ class Users(models.Model):
         domain="[('state_id', 'in', state_ids)]",
     )
 
-    my_user_city_match = fields.Boolean(
-        compute="_compute_my_user_city_match", search="_search_my_user_city_match"
-    )
+    my_area = fields.Boolean(compute="_compute_my_area", search="_search_my_area")
 
     @api.depends("city_ids")
-    def _compute_my_user_city_match(self):
+    def _compute_my_area(self):
         my_cities = self.env.user.city_ids.ids
         for rec in self:
-            rec.my_user_city_match = bool(set(rec.city_ids.ids) & set(my_cities))
+            rec.my_area = bool(set(rec.city_ids.ids) & set(my_cities))
 
-    def _search_my_user_city_match(self, operator, value):
+    def _search_my_area(self, operator, value):
         my_city_ids = self.env.user.city_ids.ids
         if not my_city_ids:
             return [("id", "=", 0)]
