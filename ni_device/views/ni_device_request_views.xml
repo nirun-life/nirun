@@ -65,11 +65,13 @@
         <field name="model">ni.device.request</field>
         <field name="arch" type="xml">
             <form string="ขออนุมัติการถือครองอุปกรณ์" create="false" edit="true">
-                <group>
+                <h1>
                     <field name="device_id" readonly="1" />
-                    <field name="request_type" readonly="1" />
-                    <field name="holder_id" />
-                    <field name="to_holder_id" invisible="not context.get('show_new_holder')" />
+                </h1>
+                <group>
+                    <field name="request_type" string="คำขอ" readonly="1" />
+                    <field name="holder_id" string="ผู้ส่งคำขอ" />
+                    <field name="new_holder_id" invisible="not context.get('show_new_holder')" />
                     <field name="request_reason" />
                 </group>
                 <footer>

@@ -60,7 +60,7 @@ class DeviceRequest(models.Model):
     )
 
     # เฉพาะตอน transfer — เลือกผู้ถือใหม่
-    to_holder_id = fields.Many2one("res.partner", string="ผู้ถือใหม่")
+    new_holder_id = fields.Many2one("res.partner", string="ผู้ถือใหม่")
     # กรณี transfer → ให้ new holder รับทราบ (ไม่บังคับ)
     acknowledged = fields.Boolean(string="ผู้ถือใหม่รับทราบ")
 
@@ -90,18 +90,18 @@ class DeviceRequest(models.Model):
         string="หมายเหตุการอนุมัติ",
     )
 
-    @api.depends("to_holder_id", "to_holder_id.user_id")
+    @api.depends("new_holder_id", "new_holder_id.user_id")
     def _compute_is_transfer_holder(self):
         current_user = self.env.user
         current_partner = current_user.partner_id
         for rec in self:
             rec.is_transfer_holder = False
-            if not rec.to_holder_id:
+            if not rec.new_holder_id:
                 continue
             # ครอบคลุมทั้งกรณี partner ถูกผูกกับ user และกรณี partner ตรงกับ user's partner
-            if rec.to_holder_id.user_id and rec.to_holder_id.user_id == current_user:
+            if rec.new_holder_id.user_id and rec.new_holder_id.user_id == current_user:
                 rec.is_transfer_holder = True
-            elif rec.to_holder_id == current_partner:
+            elif rec.new_holder_id == current_partner:
                 rec.is_transfer_holder = True
             else:
                 rec.is_transfer_holder = False
@@ -180,12 +180,12 @@ class DeviceRequest(models.Model):
                 self.env["ni.device.holder"].create(
                     {
                         "device_id": device.id,
-                        "holder_id": rec.to_holder_id.id,
+                        "holder_id": rec.new_holder_id.id,
                         "start_date": approve_date,
                         "request_id": rec.id,
                     }
                 )
 
                 # อัปเดต device
-                device.holder_id = rec.to_holder_id
+                device.holder_id = rec.new_holder_id
                 device.state = "in_use"
