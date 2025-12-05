@@ -3,6 +3,9 @@ from odoo import api, fields, models
 
 class DeviceRequest(models.Model):
     _name = "ni.device.request"
+    _inherit = ["ni.identifier.mixin", "image.mixin"]
+    _rec_name = "identifier"
+
     _description = "คำขออนุมัติการถือครองอุปกรณ์"
     _order = "write_date"
 

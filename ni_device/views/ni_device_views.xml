@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
+    <record id="ni_device_view_search" model="ir.ui.view">
+        <field name="name">ni.device.view.search</field>
+        <field name="model">ni.device</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="name"
+                    string="ชื่อ"
+                    filter_domain="['|','|',('name', 'ilike', self), ('identifier', 'ilike', self),('holder_id', 'ilike', self)]"
+                />
+                <filter string="อุปกรณ์ของฉัน" name="my_device" domain="[('is_holder','=',True)]" />
+            </search>
+        </field>
+    </record>
     <record id="ni_device_action" model="ir.actions.act_window">
         <field name="name">ทะเบียนอุปกรณ์ทั้งหมด</field>
         <field name="type">ir.actions.act_window</field>
@@ -13,12 +27,35 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="domain">[('state', '=', 'available')]</field>
     </record>
-    <record id="ni_device_my_action" model="ir.actions.act_window">
+    <record id="ni_device_action_my_device" model="ir.actions.act_window">
         <field name="name">อุปกรณ์ของฉัน</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device</field>
         <field name="view_mode">tree,kanban,form</field>
-        <field name="domain">[('is_holder', '=', True)]</field>
+        <field name="search_view_id" ref="ni_device_view_search" />
+        <field name="context">
+            {
+                'search_default_my_device': 1
+            }
+        </field>
+    </record>
+    <record id="ni_device_repair_action_this" model="ir.actions.act_window">
+        <field name="name">ประวัติการซ่อมอุปกรณ์</field>
+        <field name="res_model">ni.device.repair</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('device_id', '=', active_id)]</field>
+    </record>
+    <record id="ni_device_holder_action_this" model="ir.actions.act_window">
+        <field name="name">ประวัติการถือครองอุปกรณ์</field>
+        <field name="res_model">ni.device.holder</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('device_id', '=', active_id)]</field>
+    </record>
+    <record id="ni_device_request_action_this" model="ir.actions.act_window">
+        <field name="name">คำขอถือครองอุปกรณ์</field>
+        <field name="res_model">ni.device.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('device_id', '=', active_id)]</field>
     </record>
     <record id="ni_device_view_search" model="ir.ui.view">
         <field name="name">ni.device.view.search</field>
@@ -66,6 +103,7 @@
         <field name="arch" type="xml">
             <form string="อุปกรณ์ตรวจสุขภาพ">
                 <field name="is_holder" invisible="1" />
+                <field name="repair_count" invisible="1" />
                 <header>
                     <!-- ไม่มีผู้ถือครอง: ต้องอยู่ในสถานะว่าง  -->
                     <field name="is_holder" invisible="1" />
@@ -106,13 +144,41 @@
                     />
                 </header>
                 <sheet>
-                    <!--                    <div name="button_box_holder" attrs="{'invisible': [('id', '=', False)]}" class="oe_button_box"-->
-                    <!--                         groups="ni_patient.group_user">-->
-                    <!--                        <button name="action" attrs="{'invisible': [('encounter_count', '=', 0)]}"-->
-                    <!--                                class="oe_stat_button" icon="fa-hospital-o" type="object">-->
-                    <!--                            <field name="encounter_count" string="Encounter(s)" widget="statinfo" />-->
-                    <!--                        </button>-->
-                    <!--                    </div>-->
+                    <div
+                        name="button_box"
+                        attrs="{'invisible': [('id', '=', False)]}"
+                        class="oe_button_box"
+                        groups="ni_patient.group_user"
+                    >
+                        <button
+                            name="ni_device.ni_device_repair_action_this"
+                            attrs="{'invisible': [('repair_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-wrench"
+                            type="action"
+                        >
+                            <field name="repair_count" string="การซ่อมแซม" widget="statinfo" />
+                        </button>
+                        <button
+                            name="ni_device.ni_device_holder_action_this"
+                            attrs="{'invisible': [('holder_history_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-address-card"
+                            type="action"
+                        >
+                            <field name="holder_history_count" string="การถือครอง" widget="statinfo" />
+                        </button>
+                        <button
+                            name="ni_device.ni_device_request_action_this"
+                            attrs="{'invisible': [('repair_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-check-square-o"
+                            type="action"
+                            groups="ni_patient.group_manager"
+                        >
+                            <field name="request_count" string="คำขออนุมัติ" widget="statinfo" />
+                        </button>
+                    </div>
                     <field
                         name="image_1920"
                         class="oe_avatar"

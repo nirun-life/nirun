@@ -5,12 +5,25 @@
 <odoo noupdate="1">
     <data>
         <record id="seq_ni_device" model="ir.sequence">
-            <field name="name">Caregiver Monthly Report</field>
+            <field name="name">Device</field>
             <field name="code">ni.device</field>
             <field name="prefix">DV-%(year)s%(month)s</field>
             <field name="padding">4</field>
             <field name="company_id" eval="False" />
-            <field name="use_date_range" eval="True" />
+        </record>
+        <record id="seq_ni_device_request" model="ir.sequence">
+            <field name="name">Device Request</field>
+            <field name="code">ni.device.request</field>
+            <field name="prefix">DRX-%(year)s%(month)s</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False" />
+        </record>
+        <record id="seq_ni_device_repair" model="ir.sequence">
+            <field name="name">Device Repair History</field>
+            <field name="code">ni.device.repair</field>
+            <field name="prefix">DRP-%(year)s%(month)s</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False" />
         </record>
     </data>
 </odoo>

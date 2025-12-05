@@ -99,12 +99,29 @@ class Device(models.Model):
         string="ประวัติการซ่อมแซม",
     )
 
-    is_holder = fields.Boolean(compute="_compute_is_holder", store=False)
+    is_holder = fields.Boolean(
+        compute="_compute_is_holder", store=False, search="_search_is_holder"
+    )
     is_manager = fields.Boolean(compute="_compute_is_manager", store=False)
 
-    # holder_history_count = fields.Integer(compute="_compute_holder_history_ids")
-    # request_count = fields.Integer(compute="_compute_request_ids")
-    # repair_count = fields.Integer(compute="_compute_repair_ids")
+    holder_history_count = fields.Integer(compute="_compute_holder_history_count")
+    request_count = fields.Integer(compute="_compute_request_count")
+    repair_count = fields.Integer(compute="_compute_repair_count")
+
+    @api.depends("holder_history_ids")
+    def _compute_holder_history_count(self):
+        for rec in self:
+            rec.holder_history_count = len(rec.holder_history_ids)
+
+    @api.depends("request_ids")
+    def _compute_request_count(self):
+        for rec in self:
+            rec.request_count = len(rec.request_ids)
+
+    @api.depends("repair_ids")
+    def _compute_repair_count(self):
+        for rec in self:
+            rec.repair_count = len(rec.repair_ids)
 
     @api.depends("holder_id", "holder_id.user_id")
     def _compute_is_holder(self):
@@ -121,6 +138,21 @@ class Device(models.Model):
                 rec.is_holder = True
             else:
                 rec.is_holder = False
+
+    def _search_is_holder(self, operator, value):
+        user = self.env.user
+        partner_ids = [user.partner_id.id] + self.env["res.partner"].search(
+            [("user_id", "=", user.id)]
+        ).ids
+
+        if value:  # is_holder = True
+            return [("holder_id", "in", partner_ids)]
+        else:  # is_holder = False
+            return [
+                "|",
+                ("holder_id", "not in", partner_ids),
+                ("holder_id", "=", False),
+            ]
 
     @api.depends()
     def _compute_is_manager(self):

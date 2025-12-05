@@ -4,6 +4,8 @@ from odoo import fields, models
 class DeviceRepairHistory(models.Model):
     _name = "ni.device.repair"
     _description = "ประวัติการซ่อมแซมอุปกรณ์"
+    _rec_name = "identifier"
+    _inherit = ["ni.identifier.mixin", "image.mixin"]
 
     device_id = fields.Many2one(
         "ni.device",
