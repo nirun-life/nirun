@@ -26,7 +26,7 @@
         "demo/ni_device_metric_demo.xml",
     ],
     "assets": {"web.assets_backend": []},
-    "application": True,
+    "application": False,
     "auto_install": False,
     "installable": True,
 }

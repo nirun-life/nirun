@@ -18,8 +18,8 @@
         <field name="name">ni.device.view.form</field>
         <field name="model">ni.device</field>
         <field name="arch" type="xml">
-            <field name="is_holder" invisible="1" />
             <form string="อุปกรณ์ตรวจสุขภาพ">
+                <field name="is_holder" invisible="1" />
                 <header>
                     <!-- ไม่มีผู้ถือครอง: ต้องอยู่ในสถานะว่าง  -->
                     <field name="is_holder" invisible="1" />
@@ -45,13 +45,11 @@
                         string="ขอเปลี่ยนผู้ถือครอง"
                         attrs="{'invisible': ['|',('state','!=','in_use'),'&amp;',('is_holder','=',False),('is_manager','=',False)]}"
                     />
-                    />
                     <button
                         name="action_request_dispose"
                         type="object"
                         string="ขอจำหน่ายอุปกรณ์"
                         attrs="{'invisible': ['|',('state','!=','in_use'),'&amp;',('is_holder','=',False),('is_manager','=',False)]}"
-                    />
                     />
                     <!-- ปุ่มแจ้งซ่อม -->
                     <button
@@ -59,7 +57,6 @@
                         type="object"
                         string="แจ้งซ่อม"
                         attrs="{'invisible': ['|',('state','!=','in_use'),'&amp;',('is_holder','=',False),('is_manager','=',False)]}"
-                    />
                     />
                 </header>
                 <sheet>
