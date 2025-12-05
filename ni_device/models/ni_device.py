@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class Device(models.Model):
     _name = "ni.device"
-    _inherit = ["ni.identifier.mixin"]
+    _inherit = ["ni.identifier.mixin", "image.mixin"]
     _rec_name = "name"
     _description = "ทะเบียนอุปกรณ์ตรวจสุขภาพ"
 
@@ -56,12 +56,9 @@ class Device(models.Model):
             ("disposed", "จำหน่ายแล้ว"),
             ("lost", "สูญหาย"),
         ],
-        string="สถานะความพร้อมใช้งาน",
         default="available",
+        string="สถานะความพร้อมใช้งาน",
     )
-
-    # รูปภาพประกอบอุปกรณ์ (FHIR ไม่มี → ใช้ image field ของ Odoo)
-    image_1920 = fields.Image("รูปภาพประกอบอุปกรณ์", max_width=1920, max_height=1920)
 
     metric_ids = fields.Many2many(
         "ni.device.metric",
@@ -76,34 +73,38 @@ class Device(models.Model):
             ("in_use", "ถูกถือครอง"),
             ("disposed", "จำหน่ายแล้ว"),
         ],
+        default="available",
         string="สถานะการถือครอง",
         store=True,
-    )
-
-    holder_history_ids = fields.One2many(
-        "ni.device.holder.history",
-        "device_id",
-        string="ประวัติผู้ถือครอง",
-    )
-
-    holding_request_ids = fields.One2many(
-        "ni.device.holding.request",
-        "device_id",
-        string="รายการคำขอการถือครอง",
     )
 
     holder_id = fields.Many2one(
         "res.partner", string="ผู้ถือครองอุปกรณ์ปัจจุบัน", store=True
     )
 
-    is_holder = fields.Boolean(compute="_compute_is_holder", store=False)
-    is_manager = fields.Boolean(compute="_compute_is_manager", store=False)
+    holder_history_ids = fields.One2many(
+        "ni.device.holder",
+        "device_id",
+        string="ประวัติผู้ถือครอง",
+    )
 
-    repair_history_ids = fields.One2many(
-        "ni.device.repair.history",
+    request_ids = fields.One2many(
+        "ni.device.request",
+        "device_id",
+        string="รายการคำขอการถือครอง",
+    )
+    repair_ids = fields.One2many(
+        "ni.device.repair",
         "device_id",
         string="ประวัติการซ่อมแซม",
     )
+
+    is_holder = fields.Boolean(compute="_compute_is_holder", store=False)
+    is_manager = fields.Boolean(compute="_compute_is_manager", store=False)
+
+    # holder_history_count = fields.Integer(compute="_compute_holder_history_ids")
+    # request_count = fields.Integer(compute="_compute_request_ids")
+    # repair_count = fields.Integer(compute="_compute_repair_ids")
 
     @api.depends("holder_id", "holder_id.user_id")
     def _compute_is_holder(self):
@@ -128,13 +129,13 @@ class Device(models.Model):
             rec.is_manager = user.has_group("ni_patient.group_manager")
 
     def action_request_hold(self):
-        """เปิด wizard ni.device.holding.request แบบ form view"""
+        """เปิด wizard ni.device.request แบบ form view"""
         self.ensure_one()
 
         return {
             "type": "ir.actions.act_window",
             "name": "ขอถือครองอุปกรณ์",
-            "res_model": "ni.device.holding.request",
+            "res_model": "ni.device.request",
             "view_mode": "form",
             "target": "new",  # เปิดเป็น popup modal
             "context": {
@@ -145,13 +146,13 @@ class Device(models.Model):
         }
 
     def action_request_return(self):
-        """เปิด wizard ni.device.holding.request แบบ form view"""
+        """เปิด wizard ni.device.request แบบ form view"""
         self.ensure_one()
 
         return {
             "type": "ir.actions.act_window",
             "name": "ขอคืนอุปกรณ์",
-            "res_model": "ni.device.holding.request",
+            "res_model": "ni.device.request",
             "view_mode": "form",
             "target": "new",  # เปิดเป็น popup modal
             "context": {
@@ -162,13 +163,13 @@ class Device(models.Model):
         }
 
     def action_request_transfer(self):
-        """เปิด wizard ni.device.holding.request แบบ form view"""
+        """เปิด wizard ni.device.request แบบ form view"""
         self.ensure_one()
 
         return {
             "type": "ir.actions.act_window",
             "name": "ขอเปลี่ยนผู้ถือครอง",
-            "res_model": "ni.device.holding.request",
+            "res_model": "ni.device.request",
             "view_mode": "form",
             "target": "new",  # เปิดเป็น popup modal
             "context": {
@@ -180,12 +181,12 @@ class Device(models.Model):
         }
 
     def action_request_dispose(self):
-        """เปิด wizard ni.device.holding.request แบบ form view"""
+        """เปิด wizard ni.device.request แบบ form view"""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
             "name": "ขอจำหน่ายอุปกรณ์",
-            "res_model": "ni.device.holding.request",
+            "res_model": "ni.device.request",
             "view_mode": "form",
             "target": "new",  # เปิดเป็น popup modal
             "context": {
@@ -204,7 +205,7 @@ class Device(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "แจ้งซ่อมอุปกรณ์",
-            "res_model": "ni.device.repair.history",
+            "res_model": "ni.device.repair",
             "view_mode": "form",
             "target": "new",  # เปิด popup
             "context": {

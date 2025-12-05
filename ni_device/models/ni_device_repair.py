@@ -2,7 +2,7 @@ from odoo import fields, models
 
 
 class DeviceRepairHistory(models.Model):
-    _name = "ni.device.repair.history"
+    _name = "ni.device.repair"
     _description = "ประวัติการซ่อมแซมอุปกรณ์"
 
     device_id = fields.Many2one(

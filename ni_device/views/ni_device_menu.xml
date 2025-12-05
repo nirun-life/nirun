@@ -3,18 +3,98 @@
     <menuitem id="device_menu_root" name="อุปกรณ์ตรวจสุขภาพ" web_icon="ni_device,static/description/icon.png" />
     <menuitem
         id="menu_device_all"
-        name="ทะเบียนอุปกรณ์ทั้งหมด"
+        name="อุปกรณ์ทั้งหมด"
         parent="device_menu_root"
         sequence="0"
         action="ni_device_action"
     />
     <menuitem
-        id="menu_device_holder"
-        name="การถือครองอุปกรณ์"
+        id="menu_device_state_available"
+        name="อุปกรณ์ที่ว่างอยู่"
         parent="device_menu_root"
-        sequence="0"
-        action="ni_device_holding_request_action"
+        sequence="1"
+        action="ni_device_available_action"
     />
+    <!--====== MANAGER ====== -->
+    <menuitem
+        id="menu_device_holder_history"
+        name="ประวัติการถือครองอุปกรณ์"
+        groups="ni_patient.group_manager"
+        parent="device_menu_root"
+        sequence="2"
+        action="ni_device_holder_action"
+    />
+    <menuitem
+        id="menu_device_repair_history"
+        name="ประวัติการแจ้งซ่อม"
+        groups="ni_patient.group_manager"
+        parent="device_menu_root"
+        sequence="3"
+        action="ni_device_repair_action"
+    />
+    <menuitem
+        id="menu_device_approval_root"
+        name="การอนุมัติ"
+        groups="ni_patient.group_manager"
+        parent="device_menu_root"
+        sequence="4"
+    />
+    <!--    <menuitem id="menu_device_approval_request_all"-->
+    <!--            name="คำขอทั้งหมด"-->
+    <!--            groups="ni_patient.group_manager"-->
+    <!--            parent="menu_device_approval_root"-->
+    <!--            sequence="0"-->
+    <!--            action="ni_device_holding_request_action"-->
+    <!--    />-->
+    <menuitem
+        id="menu_device_approval_request_hold"
+        name="คำขอถือครองอุปกรณ์"
+        groups="ni_patient.group_manager"
+        parent="menu_device_approval_root"
+        sequence="0"
+        action="ni_device_request_hold_action"
+    />
+    <menuitem
+        id="menu_device_approval_request_return"
+        name="คำขอคืนอุปกรณ์"
+        groups="ni_patient.group_manager"
+        parent="menu_device_approval_root"
+        sequence="1"
+        action="ni_device_request_return_action"
+    />
+    <menuitem
+        id="menu_device_approval_request_transfer"
+        name="คำขอเปลี่ยนผู้ถือครอง"
+        groups="ni_patient.group_manager"
+        parent="menu_device_approval_root"
+        sequence="2"
+        action="ni_device_request_transfer_action"
+    />
+    <menuitem
+        id="menu_device_approval_request_dispose"
+        name="คำขอจำหน่ายอุปกรณ์"
+        groups="ni_patient.group_manager"
+        parent="menu_device_approval_root"
+        sequence="3"
+        action="ni_device_request_dispose_action"
+    />
+    <!--====== USER ====== -->
+    <menuitem id="menu_device_my_root" name="สำหรับผู้บริบาล" parent="device_menu_root" sequence="5" />
+    <menuitem
+        id="menu_device_my"
+        name="อุปกรณ์ของฉัน"
+        parent="menu_device_my_root"
+        sequence="0"
+        action="ni_device_my_action"
+    />
+    <menuitem
+        id="menu_device_my_request"
+        name="รายการคำขออนุมัติ"
+        parent="menu_device_my_root"
+        sequence="1"
+        action="ni_device_request_my_action"
+    />
+    <!--====== ADMIN ====== -->
     <menuitem
         id="configuration_menu"
         name="Configuration"

@@ -18,7 +18,9 @@
         "views/ni_device_views.xml",
         "views/ni_device_type_views.xml",
         "views/ni_device_metric_views.xml",
-        "views/ni_device_holding_request.xml",
+        "views/ni_device_request_views.xml",
+        "views/ni_device_holder_views.xml",
+        "views/ni_device_repair_views.xml",
         "views/ni_device_menu.xml",
     ],
     "demo": [

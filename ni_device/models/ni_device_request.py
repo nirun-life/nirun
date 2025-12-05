@@ -1,8 +1,8 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 
-class DeviceHoldingRequest(models.Model):
-    _name = "ni.device.holding.request"
+class DeviceRequest(models.Model):
+    _name = "ni.device.request"
     _description = "คำขออนุมัติการถือครองอุปกรณ์"
     _order = "write_date"
 
@@ -27,6 +27,9 @@ class DeviceHoldingRequest(models.Model):
         domain=[("is_company", "=", False)],
         help="ชื่อผู้บริบาลหรือหน่วยงานที่ถือครองอุปกรณ์ในช่วงเวลานี้",
     )
+
+    is_holder = fields.Boolean(related="device_id.is_holder")
+    is_transfer_holder = fields.Boolean(compute="_compute_is_transfer_holder")
 
     # -------------------------
     # ประเภทคำขอ (Workflow)
@@ -57,7 +60,7 @@ class DeviceHoldingRequest(models.Model):
     )
 
     # เฉพาะตอน transfer — เลือกผู้ถือใหม่
-    new_holder_id = fields.Many2one("res.partner", string="ผู้ถือใหม่")
+    to_holder_id = fields.Many2one("res.partner", string="ผู้ถือใหม่")
     # กรณี transfer → ให้ new holder รับทราบ (ไม่บังคับ)
     acknowledged = fields.Boolean(string="ผู้ถือใหม่รับทราบ")
 
@@ -87,6 +90,22 @@ class DeviceHoldingRequest(models.Model):
         string="หมายเหตุการอนุมัติ",
     )
 
+    @api.depends("to_holder_id", "to_holder_id.user_id")
+    def _compute_is_transfer_holder(self):
+        current_user = self.env.user
+        current_partner = current_user.partner_id
+        for rec in self:
+            rec.is_transfer_holder = False
+            if not rec.to_holder_id:
+                continue
+            # ครอบคลุมทั้งกรณี partner ถูกผูกกับ user และกรณี partner ตรงกับ user's partner
+            if rec.to_holder_id.user_id and rec.to_holder_id.user_id == current_user:
+                rec.is_transfer_holder = True
+            elif rec.to_holder_id == current_partner:
+                rec.is_transfer_holder = True
+            else:
+                rec.is_transfer_holder = False
+
     def action_submit(self):
         for rec in self:
             rec.state = "waiting"
@@ -98,28 +117,6 @@ class DeviceHoldingRequest(models.Model):
                     if rec.device_id.state == "available":
                         rec.device_id.state = "pending"
 
-    # def action_approve(self):
-    #     for rec in self:
-    #         rec.state = "approved"
-    #         rec.approve_date = fields.Datetime.now()
-    #
-    #         device = rec.device_id
-    #
-    #         if rec.request_type == "request_hold":
-    #             device.holder_id = rec.holder_id
-    #             device.state = "in_use"
-    #
-    #         elif rec.request_type == "request_return":
-    #             device.holder_id = False
-    #             device.state = "available"
-    #
-    #         elif rec.request_type == "request_transfer":
-    #             device.holder_id = rec.new_holder_id
-    #
-    #         elif rec.request_type == "request_dispose":
-    #             device.holder_id = False
-    #             device.state = "disposed"
-
     def action_approve(self):
         for rec in self:
             rec.state = "approved"
@@ -129,7 +126,7 @@ class DeviceHoldingRequest(models.Model):
             approve_date = rec.approve_date
 
             # หา holder ปัจจุบันในประวัติ (ที่ยังไม่ถูกปิด)
-            last_history = self.env["ni.device.holder.history"].search(
+            last_history = self.env["ni.device.holder"].search(
                 [("device_id", "=", device.id), ("end_date", "=", False)],
                 limit=1,
                 order="start_date desc",
@@ -144,7 +141,7 @@ class DeviceHoldingRequest(models.Model):
                     last_history.end_date = approve_date
 
                 # สร้างประวัติใหม่
-                self.env["ni.device.holder.history"].create(
+                self.env["ni.device.holder"].create(
                     {
                         "device_id": device.id,
                         "holder_id": rec.holder_id.id,
@@ -180,15 +177,15 @@ class DeviceHoldingRequest(models.Model):
                     last_history.end_date = approve_date
 
                 # สร้างประวัติใหม่ของ holder ใหม่
-                self.env["ni.device.holder.history"].create(
+                self.env["ni.device.holder"].create(
                     {
                         "device_id": device.id,
-                        "holder_id": rec.new_holder_id.id,
+                        "holder_id": rec.to_holder_id.id,
                         "start_date": approve_date,
                         "request_id": rec.id,
                     }
                 )
 
                 # อัปเดต device
-                device.holder_id = rec.new_holder_id
+                device.holder_id = rec.to_holder_id
                 device.state = "in_use"
