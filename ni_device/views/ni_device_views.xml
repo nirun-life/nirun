@@ -20,6 +20,46 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="domain">[('is_holder', '=', True)]</field>
     </record>
+    <record id="ni_device_view_search" model="ir.ui.view">
+        <field name="name">ni.device.view.search</field>
+        <field name="model">ni.device</field>
+        <field name="arch" type="xml">
+            <search>
+                <searchpanel>
+                    <field name="state" string="สถานะ" enable_counters="1" icon="fa-circle" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_device_view_tree" model="ir.ui.view">
+        <field name="name">ni.device.view.tree</field>
+        <field name="model">ni.device</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="identifier" />
+                <field name="name" />
+                <field name="type_ids" widget="many2many_tags" string="ประเภทอุปกรณ์" />
+                <field
+                    name="availability_status"
+                    widget="badge"
+                    string="สถานะความพร้อมใช้งาน"
+                    decoration-success="availability_status == 'available'"
+                    decoration-danger="availability_status == 'damaged'"
+                    optional="hide"
+                />
+                <field
+                    name="state"
+                    widget="badge"
+                    string="สถานะการถือครอง"
+                    decoration-success="state == 'available'"
+                    decoration-warning="state == 'pending'"
+                    decoration-info="state == 'in_use'"
+                />
+                <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" />
+                <field name="create_date" optional="hide" />
+            </tree>
+        </field>
+    </record>
     <record id="ni_device_view_form" model="ir.ui.view">
         <field name="name">ni.device.view.form</field>
         <field name="model">ni.device</field>
@@ -97,31 +137,47 @@
                         bg_color="bg-dark"
                         title="จำหน่ายแล้ว"
                     />
-                    <!-- ========== TITLE (ชื่ออุปกรณ์) ========== -->
-                    <field name="identifier" />
-                    <h1>
-                        <field name="name" />
-                    </h1>
-                    <group>
+                    <div class="oe_title">
+                        <!-- ========== TITLE (ชื่ออุปกรณ์) ========== -->
+                        <field name="identifier" />
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                        <br />
                         <group>
-                            <field name="type_ids" widget="many2many_tags" string="ประเภทอุปกรณ์" />
-                            <field name="metric_ids" widget="many2many_tags" string="ประเภทข้อมูลตรวจวัด" />
-                            <field
-                                name="manufacturer_id"
-                                domain="[('is_company', '=', True)]"
-                                context="{'default_is_company': True}"
-                            />
-                            <field name="serial_number" />
-                            <field name="model_number" />
-                            <field name="manufacture_date" />
-                            <field name="price" />
+                            <group>
+                                <field name="type_ids" widget="many2many_tags" string="ประเภทอุปกรณ์" />
+                                <field name="metric_ids" widget="many2many_tags" string="ประเภทข้อมูลตรวจวัด" />
+                                <field
+                                    name="manufacturer_id"
+                                    domain="[('is_company', '=', True)]"
+                                    context="{'default_is_company': True}"
+                                />
+                                <field name="serial_number" />
+                                <field name="model_number" />
+                                <field name="manufacture_date" />
+                                <field name="price" />
+                            </group>
+                            <group>
+                                <field
+                                    name="availability_status"
+                                    widget="badge"
+                                    string="สถานะความพร้อมใช้งาน"
+                                    decoration-success="availability_status == 'available'"
+                                    decoration-danger="availability_status == 'damaged'"
+                                />
+                                <field
+                                    name="state"
+                                    widget="badge"
+                                    string="สถานะการถือครอง"
+                                    decoration-success="state == 'available'"
+                                    decoration-warning="state == 'pending'"
+                                    decoration-info="state == 'in_use'"
+                                />
+                                <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" readonly="1" />
+                            </group>
                         </group>
-                        <group>
-                            <field name="availability_status" widget="badge" string="สถานะความพร้อมใช้งาน" />
-                            <field name="state" widget="badge" string="สถานะการถือครอง" />
-                            <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" readonly="1" />
-                        </group>
-                    </group>
+                    </div>
                     <group string="ข้อมูลที่แก้ไขได้" groups="base.group_no_one">
                         <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" />
                         <field name="holder_history_ids" readonly="1" />
@@ -134,6 +190,59 @@
                     </group>
                 </sheet>
             </form>
+        </field>
+    </record>
+    <record id="ni_device_view_kanban" model="ir.ui.view">
+        <field name="name">ni.device.view.kanban</field>
+        <field name="model">ni.device</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card">
+                            <div class="oe_kanban_details">
+                                <strong>
+                                    <field name="name" />
+                                </strong>
+                            </div>
+                            <div>
+                                <field name="identifier" />
+                            </div>
+                            <!-- ประเภทอุปกรณ์ -->
+                            <div class="mt8">
+                                <span class="text-muted">ประเภท:</span>
+                                <field name="type_ids" widget="many2many_tags" />
+                            </div>
+                            <!-- สถานะความพร้อมใช้งาน -->
+                            <div class="mt8">
+                                <span class="text-muted">ความพร้อมใช้งาน:</span>
+                                <field
+                                    name="availability_status"
+                                    widget="badge"
+                                    decoration-success="availability_status == 'available'"
+                                    decoration-danger="availability_status == 'damaged'"
+                                />
+                            </div>
+                            <!-- สถานะการถือครอง -->
+                            <div class="mt8">
+                                <span class="text-muted">ถือครอง:</span>
+                                <field
+                                    name="state"
+                                    widget="badge"
+                                    decoration-success="state == 'available'"
+                                    decoration-warning="state == 'pending'"
+                                    decoration-info="state == 'in_use'"
+                                />
+                            </div>
+                            <!-- ผู้ถือครองปัจจุบัน -->
+                            <div class="mt8">
+                                <span class="text-muted">ผู้ถือครอง:</span>
+                                <field name="holder_id" />
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
 </odoo>
