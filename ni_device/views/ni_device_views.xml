@@ -10,7 +10,15 @@
                     string="ชื่อ"
                     filter_domain="['|','|',('name', 'ilike', self), ('identifier', 'ilike', self),('holder_id', 'ilike', self)]"
                 />
-                <filter string="อุปกรณ์ของฉัน" name="my_device" domain="[('is_holder','=',True)]" />
+                <filter
+                    name="available_device"
+                    string="อุปกรณ์ที่ว่างอยู่"
+                    domain="[('state','=','available'),('availability_status','=','available')]"
+                />
+                <filter name="my_device" string="อุปกรณ์ของฉัน" domain="[('is_holder','=',True)]" />
+                <searchpanel>
+                    <field name="state" string="สถานะ" enable_counters="1" icon="fa-circle" />
+                </searchpanel>
             </search>
         </field>
     </record>
@@ -25,14 +33,17 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device</field>
         <field name="view_mode">tree,kanban,form</field>
-        <field name="domain">[('state', '=', 'available')]</field>
+        <field name="context">
+            {
+                'search_default_available_device': 1
+            }
+        </field>
     </record>
     <record id="ni_device_action_my_device" model="ir.actions.act_window">
         <field name="name">อุปกรณ์ของฉัน</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device</field>
         <field name="view_mode">tree,kanban,form</field>
-        <field name="search_view_id" ref="ni_device_view_search" />
         <field name="context">
             {
                 'search_default_my_device': 1
@@ -56,17 +67,6 @@
         <field name="res_model">ni.device.request</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('device_id', '=', active_id)]</field>
-    </record>
-    <record id="ni_device_view_search" model="ir.ui.view">
-        <field name="name">ni.device.view.search</field>
-        <field name="model">ni.device</field>
-        <field name="arch" type="xml">
-            <search>
-                <searchpanel>
-                    <field name="state" string="สถานะ" enable_counters="1" icon="fa-circle" />
-                </searchpanel>
-            </search>
-        </field>
     </record>
     <record id="ni_device_view_tree" model="ir.ui.view">
         <field name="name">ni.device.view.tree</field>
