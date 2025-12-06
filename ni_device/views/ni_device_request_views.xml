@@ -79,12 +79,18 @@
                 <field name="identifier" string="รหัสคำขอ" />
                 <field name="device_id" string="ชื่ออุปกรณ์" />
                 <field name="holder_id" string="ผู้ส่งคำขอ" />
-                <field name="write_date" string="วันที่ส่งคำขอ" widget="date" />
+                <field name="create_date" string="วันที่ส่งคำขอ" widget="date" />
                 <field name="request_type" string="ประเภทคำขอ" optional="hide" />
                 <field name="new_holder_id" invisible="not context.get('show_new_holder')" />
                 <field name="request_reason" string="เหตุผล" optional="show" />
-                <field name="state" />
-                <field name="write_date" string="วันที่ส่งคำขอ" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-success="state == 'approved'"
+                    decoration-warning="state == 'pending'"
+                    decoration-danger="state == 'rejected'"
+                />
+                <field name="write_date" string="วันที่แก้ไข" widget="date" optional="hide" />
                 <button
                     name="action_approve"
                     type="object"
@@ -174,19 +180,33 @@
                                 />
                             </group>
                             <group>
-                                <field name="state" string="สถานะ" readonly="1" />
+                                <field
+                                    name="state"
+                                    string="สถานะ"
+                                    readonly="1"
+                                    widget="badge"
+                                    decoration-success="state == 'approved'"
+                                    decoration-warning="state == 'pending'"
+                                    decoration-danger="state == 'rejected'"
+                                />
                                 <field name="write_date" string="วันที่ส่งคำขอ" readonly="1" widget="date" />
+                                <field
+                                    name="acknowledged"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')],
+                                               'readonly': [('request_type', '=', 'request_transfer')]
+                                               }"
+                                />
                                 <field
                                     name="approved_by"
                                     string="ผู้อนุมัติ"
                                     readonly="1"
-                                    attrs="{'invisible': [('state','!=','approved')]}"
+                                    attrs="{'invisible': [('state','=','pending')]}"
                                 />
                                 <field
                                     name="approve_date"
                                     string="วันที่"
                                     readonly="1"
-                                    attrs="{'invisible': [('state','!=','approved')]}"
+                                    attrs="{'invisible': [('state', 'not in', ['approved', 'rejected'])]}"
                                     widget="date"
                                 />
                             </group>
