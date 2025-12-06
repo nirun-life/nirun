@@ -20,6 +20,9 @@ class DeviceRequest(models.Model):
         index=True,
     )
 
+    device_image = fields.Image(related="device_id.image_1920")
+    device_identifier = fields.Char(related="device_id.identifier")
+
     # -------------------------
     # ผู้ถือครอง (ผู้ดูแล / หน่วยงาน / caregiver)
     # -------------------------
@@ -53,9 +56,9 @@ class DeviceRequest(models.Model):
     state = fields.Selection(
         [
             ("draft", "ร่าง"),
-            ("waiting", "รออนุมัติ"),
+            ("pending", "รออนุมัติ"),
             ("approved", "อนุมัติแล้ว"),
-            ("rejected", "ถูกปฏิเสธ"),
+            ("rejected", "ไม่อนุมัติ"),
         ],
         string="สถานะ",
         default="draft",
@@ -109,9 +112,14 @@ class DeviceRequest(models.Model):
             else:
                 rec.is_transfer_holder = False
 
+    @api.depends("device_id", "device_id.image_1920")
+    def _compute_device_image(self):
+        for rec in self.with_context(bin_size=False):
+            rec.device_image_1920 = rec.device_id.image_1920
+
     def action_submit(self):
         for rec in self:
-            rec.state = "waiting"
+            rec.state = "pending"
             if rec.device_id.state == "available":
                 rec.device_id.state = "pending"
 
@@ -192,3 +200,17 @@ class DeviceRequest(models.Model):
                 # อัปเดต device
                 device.holder_id = rec.new_holder_id
                 device.state = "in_use"
+
+    def action_reject(self):
+        for rec in self:
+            rec.state = "rejected"
+            device = rec.device_id
+
+            if rec.request_type == "request_hold":
+                device.state = "available"
+
+    def action_acknowledged(self):
+        for rec in self:
+            if rec.request_type == "request_transfer":
+                if rec.is_transfer_holder:
+                    rec.acknowledged = True

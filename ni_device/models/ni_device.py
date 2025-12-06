@@ -169,6 +169,12 @@ class Device(models.Model):
             "name": "ขอถือครองอุปกรณ์",
             "res_model": "ni.device.request",
             "view_mode": "form",
+            "views": [
+                (
+                    self.env.ref("ni_device.ni_device_request_view_form_wizard").id,
+                    "form",
+                ),
+            ],
             "target": "new",  # เปิดเป็น popup modal
             "context": {
                 "default_device_id": self.id,
@@ -186,6 +192,12 @@ class Device(models.Model):
             "name": "ขอคืนอุปกรณ์",
             "res_model": "ni.device.request",
             "view_mode": "form",
+            "views": [
+                (
+                    self.env.ref("ni_device.ni_device_request_view_form_wizard").id,
+                    "form",
+                ),
+            ],
             "target": "new",  # เปิดเป็น popup modal
             "context": {
                 "default_device_id": self.id,
@@ -203,6 +215,12 @@ class Device(models.Model):
             "name": "ขอเปลี่ยนผู้ถือครอง",
             "res_model": "ni.device.request",
             "view_mode": "form",
+            "views": [
+                (
+                    self.env.ref("ni_device.ni_device_request_view_form_wizard").id,
+                    "form",
+                ),
+            ],
             "target": "new",  # เปิดเป็น popup modal
             "context": {
                 "default_device_id": self.id,
@@ -220,6 +238,12 @@ class Device(models.Model):
             "name": "ขอจำหน่ายอุปกรณ์",
             "res_model": "ni.device.request",
             "view_mode": "form",
+            "views": [
+                (
+                    self.env.ref("ni_device.ni_device_request_view_form_wizard").id,
+                    "form",
+                ),
+            ],
             "target": "new",  # เปิดเป็น popup modal
             "context": {
                 "default_device_id": self.id,
