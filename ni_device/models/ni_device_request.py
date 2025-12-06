@@ -7,7 +7,7 @@ class DeviceRequest(models.Model):
     _rec_name = "identifier"
 
     _description = "คำขออนุมัติการถือครองอุปกรณ์"
-    _order = "write_date"
+    _order = "write_date DESC"
 
     # -------------------------
     # อ้างอิงอุปกรณ์
@@ -209,6 +209,8 @@ class DeviceRequest(models.Model):
     def action_reject(self):
         for rec in self:
             rec.state = "rejected"
+            rec.approve_date = fields.Datetime.now()
+            rec.approved_by = self.env.user.id
             device = rec.device_id
 
             if rec.request_type == "request_hold":

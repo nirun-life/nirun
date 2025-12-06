@@ -35,7 +35,7 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="context">
             {
-            'search_default_available_device': 1
+                'search_default_available_device': 1
             }
         </field>
     </record>
@@ -46,7 +46,7 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="context">
             {
-            'search_default_my_device': 1
+                'search_default_my_device': 1
             }
         </field>
     </record>
@@ -104,10 +104,10 @@
             <form string="อุปกรณ์ตรวจสุขภาพ">
                 <field name="is_holder" invisible="1" />
                 <field name="repair_count" invisible="1" />
-                <header>
+                <field name="is_holder" invisible="1" />
+                <field name="is_manager" invisible="1" />
+                <header attrs="{'invisible':[('id','=',False)]}">
                     <!-- ไม่มีผู้ถือครอง: ต้องอยู่ในสถานะว่าง  -->
-                    <field name="is_holder" invisible="1" />
-                    <field name="is_manager" invisible="1" />
                     <button
                         name="action_request_hold"
                         type="object"
@@ -170,7 +170,7 @@
                         </button>
                         <button
                             name="ni_device.ni_device_request_action_this"
-                            attrs="{'invisible': [('repair_count', '=', 0)]}"
+                            attrs="{'invisible': [('request_count', '=', 0)]}"
                             class="oe_stat_button"
                             icon="fa-check-square-o"
                             type="action"
@@ -200,7 +200,7 @@
                     />
                     <div class="oe_title">
                         <!-- ========== TITLE (ชื่ออุปกรณ์) ========== -->
-                        <field name="identifier" />
+                        <field name="identifier" attrs="{'invisible':[('id','=',False)]}" />
                         <h1>
                             <field name="name" />
                         </h1>
@@ -239,15 +239,15 @@
                             </group>
                         </group>
                     </div>
-                    <group string="ข้อมูลที่แก้ไขได้" groups="base.group_no_one">
+                    <group string="Debug" groups="base.group_no_one">
                         <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" />
-                        <field name="holder_history_ids" readonly="1" />
-                        <field name="request_ids" />
-                        <field name="repair_ids" readonly="1" />
                         <field name="state" />
                         <field name="availability_status" />
-                        <field name="is_holder" />
-                        <field name="is_manager" />
+                        <field name="holder_history_ids" readonly="1" invisible="True" />
+                        <field name="request_ids" readonly="1" invisible="True" />
+                        <field name="repair_ids" readonly="1" invisible="True" />
+                        <field name="is_holder" invisible="True" />
+                        <field name="is_manager" invisible="True" />
                     </group>
                 </sheet>
             </form>

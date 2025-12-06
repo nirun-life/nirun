@@ -1,19 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
+    <record id="ni_device_holder_view_search" model="ir.ui.view">
+        <field name="name">ni.device.holder.view.search</field>
+        <field name="model">ni.device.holder</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="device_id"
+                    string="ชื่อ"
+                    filter_domain="['|','|',('device_id', 'ilike', self), ('device_identifier', 'ilike', self),('holder_id', 'ilike', self)]"
+                />
+            </search>
+        </field>
+    </record>
     <record id="ni_device_holder_action" model="ir.actions.act_window">
         <field name="name">ประวัติการถือครองอุปกรณ์ทั้งหมด</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device.holder</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">tree,kanban</field>
     </record>
     <record id="ni_device_holder_view_tree" model="ir.ui.view">
         <field name="name">ni.device.holder.view.tree</field>
         <field name="model">ni.device.holder</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="request_id" string="รหัสคำขอ" />
+            <tree create="0" edit="0">
+                <field name="request_id" string="รหัสคำขอ" invisible="1" />
+                <field name="device_identifier" string="รหัสอ้างอิงอุปกรณ์" />
                 <field name="device_id" string="ชื่ออุปกรณ์" />
-                <field name="holder_id" string="ผู้ถือครอง" />
+                <field name="holder_id" string="ผู้ถือครอง" widget="many2one_avatar" />
                 <field name="start_date" string="วันที่เริ่มถือครอง" widget="date" />
                 <field name="end_date" string="สิ้นสุดวันถือครอง" widget="date" />
             </tree>
