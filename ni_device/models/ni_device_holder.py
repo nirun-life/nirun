@@ -4,7 +4,7 @@ from odoo import fields, models
 class DeviceHolder(models.Model):
     _name = "ni.device.holder"
     _description = "ประวัติผู้ถือครองอุปกรณ์"
-    _order = "create_date desc"
+    _order = "create_date DESC"
 
     device_id = fields.Many2one("ni.device", string="อุปกรณ์", required=True)
     device_identifier = fields.Char(

@@ -7,7 +7,7 @@ class DeviceRequest(models.Model):
     _rec_name = "identifier"
 
     _description = "คำขออนุมัติการถือครองอุปกรณ์"
-    _order = "write_date DESC"
+    _order = "create_date DESC"
 
     # -------------------------
     # อ้างอิงอุปกรณ์
