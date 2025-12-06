@@ -59,7 +59,7 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
         </field>
-        <field name="context">{ 'show_new_holder': 1 }</field>
+        <field name="context">{'show_new_holder': 1}</field>
     </record>
     <!-- คำขอจำหน่ายอุปกรณ์ -->
     <record id="ni_device_request_dispose_action" model="ir.actions.act_window">
@@ -152,6 +152,11 @@
                                     attrs="{'invisible':['|','|',('state','=','draft'),('request_type','!=','request_transfer'),('is_transfer_holder','=',False)]}"
                                     readonly="1"
                                 />
+                                <field
+                                    name="dispose_type_id"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_dispose')]}"
+                                    readonly="1"
+                                />
                                 <field name="request_reason" readonly="1" />
                                 <field
                                     name="image_1920"
@@ -225,10 +230,12 @@
                         <field name="request_reason" />
                         <field
                             name="image_1920"
+                            string="ภาพประกอบ"
                             style="float: left; margin-right: 10px;"
                             class="oe_avatar"
                             options="{'zoom': true}"
                             widget="image"
+                            attrs="{'invisible': [('request_type', '=', 'request_hold')]}"
                         />
                     </group>
                 </sheet>

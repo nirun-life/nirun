@@ -88,6 +88,11 @@ class DeviceRequest(models.Model):
         string="เหตุผลที่ขออนุมัติ",
     )
 
+    dispose_type_id = fields.Many2one(
+        "ni.device.dispose.type",
+        string="วิธีการจำหน่าย",
+    )
+
     # -------------------------
     # หมายเหตุ
     # -------------------------
@@ -132,7 +137,7 @@ class DeviceRequest(models.Model):
         for rec in self:
             rec.state = "approved"
             rec.approve_date = fields.Datetime.now()
-
+            rec.approved_by = self.env.user.id
             device = rec.device_id
             approve_date = rec.approve_date
 
