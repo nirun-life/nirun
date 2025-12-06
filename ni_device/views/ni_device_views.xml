@@ -35,7 +35,7 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="context">
             {
-                'search_default_available_device': 1
+            'search_default_available_device': 1
             }
         </field>
     </record>
@@ -46,7 +46,7 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="context">
             {
-                'search_default_my_device': 1
+            'search_default_my_device': 1
             }
         </field>
     </record>
@@ -260,33 +260,41 @@
             <kanban>
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_card">
+                        <div t-attf-class="oe_kanban_global_click o_kanban_card">
                             <div class="oe_kanban_details">
+                                <div name="kanban_top" class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <span class="o_kanban_record_title fs-2">
+                                            <field name="identifier" />
+                                        </span>
+                                    </div>
+                                </div>
                                 <strong>
                                     <field name="name" />
                                 </strong>
                             </div>
-                            <div>
-                                <field name="identifier" />
+                            <!-- ผู้ถือครองปัจจุบัน -->
+                            <div class="mt8">
+                                <span class="text-muted">ผู้ถือครอง:</span>
+                                <field name="holder_id" />
                             </div>
                             <!-- ประเภทอุปกรณ์ -->
                             <div class="mt8">
-                                <span class="text-muted">ประเภท:</span>
+                                <span class="text-muted">ประเภทอุปกรณ์:</span>
                                 <field name="type_ids" widget="many2many_tags" />
                             </div>
-                            <!-- สถานะความพร้อมใช้งาน -->
-                            <div class="mt8">
-                                <span class="text-muted">ความพร้อมใช้งาน:</span>
-                                <field
-                                    name="availability_status"
-                                    widget="badge"
-                                    decoration-success="availability_status == 'available'"
-                                    decoration-danger="availability_status == 'damaged'"
-                                />
-                            </div>
+                            <!--                            &lt;!&ndash; สถานะความพร้อมใช้งาน &ndash;&gt;-->
+                            <!--                            <div class="mt8">-->
+                            <!--                                <span class="text-muted">ความพร้อมใช้งาน:</span>-->
+                            <!--                                <field-->
+                            <!--                                    name="availability_status"-->
+                            <!--                                    widget="badge"-->
+                            <!--                                    decoration-success="availability_status == 'available'"-->
+                            <!--                                    decoration-danger="availability_status == 'damaged'"-->
+                            <!--                                />-->
+                            <!--                            </div>-->
                             <!-- สถานะการถือครอง -->
-                            <div class="mt8">
-                                <span class="text-muted">ถือครอง:</span>
+                            <div class="oe_module_action d-flex flex-wrap justify-content-between">
                                 <field
                                     name="state"
                                     widget="badge"
@@ -294,11 +302,6 @@
                                     decoration-warning="state == 'pending'"
                                     decoration-info="state == 'in_use'"
                                 />
-                            </div>
-                            <!-- ผู้ถือครองปัจจุบัน -->
-                            <div class="mt8">
-                                <span class="text-muted">ผู้ถือครอง:</span>
-                                <field name="holder_id" />
                             </div>
                         </div>
                     </t>

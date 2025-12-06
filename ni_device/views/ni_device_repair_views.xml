@@ -6,4 +6,16 @@
         <field name="res_model">ni.device.repair</field>
         <field name="view_mode">tree,kanban,form</field>
     </record>
+    <record id="ni_device_repair_view_tree" model="ir.ui.view">
+        <field name="name">ni.device.repair.view.tree</field>
+        <field name="model">ni.device.repair</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="device_id" string="ชื่ออุปกรณ์" />
+                <field name="damage_date" string="วันที่เกิดการชำรุด" />
+                <field name="repair_duration" string="ระยะเวลาซ่อมแซม" />
+                <field name="repair_cost" string="ค่าใช้จ่าย(บาท)" />
+            </tree>
+        </field>
+    </record>
 </odoo>

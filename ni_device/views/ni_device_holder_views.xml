@@ -6,4 +6,17 @@
         <field name="res_model">ni.device.holder</field>
         <field name="view_mode">tree,kanban,form</field>
     </record>
+    <record id="ni_device_holder_view_tree" model="ir.ui.view">
+        <field name="name">ni.device.holder.view.tree</field>
+        <field name="model">ni.device.holder</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="request_id" string="รหัสคำขอ" />
+                <field name="device_id" string="ชื่ออุปกรณ์" />
+                <field name="holder_id" string="ผู้ถือครอง" />
+                <field name="start_date" string="วันที่เริ่มถือครอง" widget="date" />
+                <field name="end_date" string="สิ้นสุดวันถือครอง" widget="date" />
+            </tree>
+        </field>
+    </record>
 </odoo>
