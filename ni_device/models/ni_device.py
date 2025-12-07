@@ -93,6 +93,10 @@ class Device(models.Model):
         "device_id",
         string="รายการคำขอการถือครอง",
     )
+    pending_request_id = fields.Many2one(
+        "ni.device.request", string="คำขอที่รออนุมัติ", store=True
+    )
+
     repair_ids = fields.One2many(
         "ni.device.repair",
         "device_id",
