@@ -3,7 +3,7 @@ from odoo import fields, models
 
 class DeviceMetric(models.Model):
     _name = "ni.device.metric"
-    _description = "ประเภทข้อมูลตรวจวัดสุขภาพ (Device Metric)"
+    _description = "Device Metric"
     _inherit = ["ni.coding"]
 
     # เพิ่มฟิลด์เฉพาะของ DeviceMetric (ไม่ซ้ำกับ ni.coding)

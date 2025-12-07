@@ -3,10 +3,10 @@ from odoo import api, fields, models
 
 class DeviceRequest(models.Model):
     _name = "ni.device.request"
+    _description = "Device Holding Change Request"
     _inherit = ["ni.identifier.mixin", "image.mixin"]
     _rec_name = "identifier"
 
-    _description = "คำขออนุมัติการถือครองอุปกรณ์"
     _order = "create_date DESC"
 
     # -------------------------
@@ -14,91 +14,90 @@ class DeviceRequest(models.Model):
     # -------------------------
     device_id = fields.Many2one(
         "ni.device",
-        string="อุปกรณ์",
+        string="Device",
         required=True,
         ondelete="cascade",
         index=True,
     )
 
-    device_image = fields.Image(related="device_id.image_1920")
-    device_identifier = fields.Char(related="device_id.identifier")
-
-    # -------------------------
-    # ผู้ถือครอง (ผู้ดูแล / หน่วยงาน / caregiver)
-    # -------------------------
-    holder_id = fields.Many2one(
-        "res.partner",
-        string="ผู้ถือครอง",
-        required=False,
-        domain=[("is_company", "=", False)],
-        help="ชื่อผู้บริบาลหรือหน่วยงานที่ถือครองอุปกรณ์ในช่วงเวลานี้",
+    device_image = fields.Image(related="device_id.image_1920", string="Device Image")
+    device_identifier = fields.Char(
+        related="device_id.identifier", string="Device Identifier"
     )
 
-    is_holder = fields.Boolean(related="device_id.is_holder")
-    is_transfer_holder = fields.Boolean(compute="_compute_is_transfer_holder")
-
     # -------------------------
-    # ประเภทคำขอ (Workflow)
+    # Request Type (Workflow)
     # -------------------------
     request_type = fields.Selection(
         [
-            ("request_hold", "ขอถือครอง"),
-            ("request_return", "ขอคืนอุปกรณ์"),
-            ("request_transfer", "ขอเปลี่ยนผู้ถือครอง"),
-            ("request_dispose", "ขอจำหน่าย"),
+            ("request_hold", "Request Holding"),
+            ("request_return", "Return Device"),
+            ("request_transfer", "Transfer Holder"),
+            ("request_dispose", "Dispose Device"),
         ],
         required=True,
+        string="Request Type",
     )
 
-    # -------------------------
-    # Workflow State
-    # -------------------------
-    state = fields.Selection(
-        [
-            ("draft", "ร่าง"),
-            ("pending", "รออนุมัติ"),
-            ("approved", "อนุมัติแล้ว"),
-            ("rejected", "ไม่อนุมัติ"),
-        ],
-        string="สถานะ",
-        default="draft",
-        index=True,
-    )
-
-    # เฉพาะตอน transfer — เลือกผู้ถือใหม่
-    new_holder_id = fields.Many2one("res.partner", string="ผู้ถือใหม่")
-    # กรณี transfer → ให้ new holder รับทราบ (ไม่บังคับ)
-    acknowledged = fields.Boolean(string="ผู้ถือใหม่รับทราบ")
-
-    # -------------------------
-    # ระบบอนุมัติ
-    # -------------------------
-    approved_by = fields.Many2one(
-        "res.users",
-        string="ผู้อนุมัติ",
-        readonly=True,
-    )
-
-    approve_date = fields.Datetime(
-        string="วันที่อนุมัติ",
-        readonly=True,
-    )
-
-    request_reason = fields.Text(
-        string="เหตุผลที่ขออนุมัติ",
+    request_reason = fields.Html(
+        string="Request Reason",
     )
 
     dispose_type_id = fields.Many2one(
         "ni.device.dispose.type",
-        string="วิธีการจำหน่าย",
+        string="Disposal Method",
+    )
+
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("pending", "Pending"),
+            ("approved", "Approved"),
+            ("rejected", "Rejected"),
+        ],
+        string="Status",
+        default="draft",
+        index=True,
     )
 
     # -------------------------
-    # หมายเหตุ
+    # Holder (Caregiver / Department / Responsible Person)
     # -------------------------
+    holder_id = fields.Many2one(
+        "res.partner",
+        string="Holder",
+        required=False,
+        domain=[("is_company", "=", False)],
+    )
+    is_holder = fields.Boolean(related="device_id.is_holder")
 
-    approval_note = fields.Text(
-        string="หมายเหตุการอนุมัติ",
+    # -------------------------
+    # Transfer-specific fields
+    # -------------------------
+    new_holder_id = fields.Many2one(
+        "res.partner",
+        string="New Holder",
+    )
+    acknowledged = fields.Boolean(string="New Holder Acknowledged")
+
+    is_transfer_holder = fields.Boolean(compute="_compute_is_transfer_holder")
+
+    # -------------------------
+    # Approval System
+    # -------------------------
+    approved_by = fields.Many2one(
+        "res.users",
+        string="Approved By",
+        readonly=True,
+    )
+
+    approve_date = fields.Datetime(
+        string="Approval Date",
+        readonly=True,
+    )
+
+    approval_note = fields.Html(
+        string="Approval Note",
     )
 
     @api.depends("new_holder_id", "new_holder_id.user_id")

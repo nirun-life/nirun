@@ -7,100 +7,86 @@ _logger = logging.getLogger(__name__)
 
 class Device(models.Model):
     _name = "ni.device"
-    _inherit = ["ni.identifier.mixin", "image.mixin"]
+    _description = "Device Registry"
+    _inherit = ["ni.identifier.mixin", "image.mixin", "mail.thread"]
     _rec_name = "name"
-    _description = "ทะเบียนอุปกรณ์ตรวจสุขภาพ"
-
-    name = fields.Char(string="ชื่ออุปกรณ์")
-
     _order = "name"
 
-    # FHIR: Device.identifier
-    identifier = fields.Char("รหัสอ้างอิง", readonly=True)
-
-    # ---------------------------
-    # FHIR–Mapped Fields
-    # ---------------------------
+    name = fields.Char(string="Device Name")
+    identifier = fields.Char("Identifier", readonly=True)
 
     manufacturer_id = fields.Many2one(
         "res.partner",
-        string="ผู้ผลิต",
+        string="Manufacturer",
         domain="[('is_company', '=', True)]",
         store=True,
     )
-
-    # manufactureDate → Device.manufactureDate
-    manufacture_date = fields.Date("วันที่ผลิต")
-
-    # serialNumber → Device.serialNumber
+    manufacture_date = fields.Date("Manufacturer Date")
     serial_number = fields.Char("Serial Number")
-
-    # modelNumber → Device.modelNumber
-    model_number = fields.Char("ชื่อรุ่น (Model)")
-
-    # ราคา (ไม่มีใน FHIR → ใช้ extension)
-    price = fields.Float("ราคา")
-
-    # Device.types (CodeableConcept)
+    model_number = fields.Char("Model")
+    price = fields.Float("Price")
     type_ids = fields.Many2many(
         "ni.device.type",
-        string="ประเภทของอุปกรณ์",
-        help="เช่น เครื่องวัดความดัน, เครื่องชั่งน้ำหนัก, เครื่องวัดอุณหภูมิ",
+        string="Device Types",
+        help="Examples: Blood Pressure Monitor, Weighing Scale, Thermometer",
     )
-
-    # Device.availabilityStatus
     availability_status = fields.Selection(
         [
-            ("available", "พร้อมใช้งาน"),
-            ("damaged", "ชำรุด"),
-            ("disposed", "จำหน่ายแล้ว"),
-            ("lost", "สูญหาย"),
+            ("available", "Available"),
+            ("damaged", "Damaged"),
+            ("disposed", "Disposed"),
+            ("lost", "Lost"),
         ],
         default="available",
-        string="สถานะความพร้อมใช้งาน",
+        string="Availability Status",
     )
-
     metric_ids = fields.Many2many(
         "ni.device.metric",
-        string="ประเภทข้อมูลตรวจวัดสุขภาพที่รองรับ",
-        help="จาก FHIR DeviceMetric เช่น Blood Pressure, Temperature, Weight",
+        string="Supported Health Metrics",
+        help="e.g., Blood Pressure, Temperature, Weight",
     )
-
     state = fields.Selection(
         [
-            ("available", "ว่าง"),
-            ("pending", "รอการอนุมัติ"),
-            ("in_use", "ถูกถือครอง"),
-            ("disposed", "จำหน่ายแล้ว"),
+            ("available", "Available"),
+            ("pending", "Pending"),
+            ("in_use", "In Use"),
+            ("disposed", "Disposed"),
         ],
         default="available",
-        string="สถานะการถือครอง",
+        string="Holding Status",
         store=True,
     )
+    company_id = fields.Many2one("res.company", string="Company", store=True)
 
     holder_id = fields.Many2one(
-        "res.partner", string="ผู้ถือครองอุปกรณ์ปัจจุบัน", store=True
+        "res.partner",
+        string="Current Holder",
+        store=True,
+        help="The caregiver or department that holds the device during this period.",
     )
 
     holder_history_ids = fields.One2many(
         "ni.device.holder",
         "device_id",
-        string="ประวัติผู้ถือครอง",
+        string="Holder History",
     )
 
     request_ids = fields.One2many(
         "ni.device.request",
         "device_id",
-        string="รายการคำขอการถือครอง",
+        string="Holding Change Request",
     )
+
     pending_request_id = fields.Many2one(
-        "ni.device.request", string="คำขอที่รออนุมัติ", store=True
+        "ni.device.request",
+        string="Pending Request",
+        store=True,
     )
 
     repair_ids = fields.One2many(
         "ni.device.repair",
         "device_id",
-        string="ประวัติการซ่อมแซม",
+        string="Repair History",
     )
 
     is_holder = fields.Boolean(
@@ -170,7 +156,7 @@ class Device(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": "ขอถือครองอุปกรณ์",
+            "name": "Request Device Holding",
             "res_model": "ni.device.request",
             "view_mode": "form",
             "views": [
@@ -193,7 +179,7 @@ class Device(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": "ขอคืนอุปกรณ์",
+            "name": "Return Device",
             "res_model": "ni.device.request",
             "view_mode": "form",
             "views": [
@@ -216,7 +202,7 @@ class Device(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": "ขอเปลี่ยนผู้ถือครอง",
+            "name": "Transfer Holder",
             "res_model": "ni.device.request",
             "view_mode": "form",
             "views": [
@@ -239,7 +225,7 @@ class Device(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "ขอจำหน่ายอุปกรณ์",
+            "name": "Device Disposal",
             "res_model": "ni.device.request",
             "view_mode": "form",
             "views": [
@@ -264,7 +250,7 @@ class Device(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": "แจ้งซ่อมอุปกรณ์",
+            "name": "Report Device Repair",
             "res_model": "ni.device.repair",
             "view_mode": "form",
             "target": "new",  # เปิด popup

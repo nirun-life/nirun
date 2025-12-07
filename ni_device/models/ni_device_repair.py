@@ -3,65 +3,72 @@ from odoo import fields, models
 
 class DeviceRepairHistory(models.Model):
     _name = "ni.device.repair"
-    _description = "ประวัติการซ่อมแซมอุปกรณ์"
+    _description = "Device Repair History"
     _rec_name = "identifier"
     _inherit = ["ni.identifier.mixin", "image.mixin"]
 
     device_id = fields.Many2one(
         "ni.device",
-        string="อุปกรณ์",
+        string="Device",
         required=True,
         ondelete="cascade",
     )
 
-    # วันที่อุปกรณ์เกิดการชำรุดเสียหาย (Requirement)
+    # Date the device was damaged (Requirement)
     damage_date = fields.Datetime(
-        string="วันที่ชำรุด", required=True, default=fields.Datetime.now
+        string="Damage Date",
+        required=True,
+        default=fields.Datetime.now,
     )
 
-    # # วันที่นำอุปกรณ์ไปซ่อม (optional แต่ควรมี)
-    # repair_start_date = fields.Datetime(
-    #     string="วันที่เริ่มซ่อม"
-    # )
-    #
-    # # วันที่ซ่อมเสร็จ (ใช้คำนวณระยะเวลา)
-    # repair_end_date = fields.Datetime(
-    #     string="วันที่ซ่อมเสร็จ"
-    # )
-
-    # ระยะเวลาซ่อม (Requirement)
-    repair_duration = fields.Float(string="ระยะเวลาซ่อม (วัน)")
-
-    # ค่าใช้จ่ายในการซ่อมแซม (Requirement)
-    repair_cost = fields.Float(string="ค่าใช้จ่ายในการซ่อม", digits=(12, 2))
-
-    # ใครเป็นผู้ซ่อม (optional)
-    technician_id = fields.Many2one(
-        "res.partner", string="ช่างผู้ซ่อม", domain=[("is_company", "=", False)]
+    # Currency (Required for Monetary Fields)
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id.id,
     )
 
-    # รายละเอียดเพิ่มเติม
-    note = fields.Text(string="รายละเอียดเพิ่มเติม")
+    # Repair Cost
+    repair_cost = fields.Monetary(
+        string="Repair Cost",
+        currency_field="currency_id",
+    )
 
-    # สถานะกระบวนการซ่อม (optional แต่สำคัญ)
+    # Repair Duration (Requirement)
+    repair_duration = fields.Integer(
+        string="Repair Duration (days)",
+    )
+
+    # Additional Details
+    note = fields.Html(
+        string="Additional Details",
+    )
+
+    # Repair Process Status
     state = fields.Selection(
         [
-            ("damaged", "ชำรุด"),
-            ("repairing", "กำลังซ่อม"),
-            ("completed", "ซ่อมเสร็จ"),
+            ("damaged", "Damaged"),
+            ("repairing", "Repairing"),
+            ("completed", "Completed"),
         ],
         default="damaged",
-        string="สถานะ",
+        string="Status",
     )
 
-    # ==============================
-    # Compute fields
-    # ==============================
-    # @api.depends("repair_start_date", "repair_end_date")
-    # def _compute_repair_duration(self):
-    #     for rec in self:
-    #         if rec.repair_start_date and rec.repair_end_date:
-    #             delta = rec.repair_end_date - rec.repair_start_date
-    #             rec.repair_duration = delta.total_seconds() / 86400  # วัน
-    #         else:
-    #             rec.repair_duration = 0
+    # Optional: Technician in charge
+    technician_id = fields.Many2one(
+        "res.partner",
+        string="Technician",
+        domain=[("is_company", "=", False)],
+    )
+
+    # Estimated Repair Duration (optional)
+    estimated_duration = fields.Float(
+        string="Estimated Duration",
+    )
+
+    # Estimated Repair Cost (optional)
+    estimated_cost = fields.Monetary(
+        string="Estimated Repair Cost",
+        currency_field="currency_id",
+    )

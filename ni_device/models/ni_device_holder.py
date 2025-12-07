@@ -3,17 +3,17 @@ from odoo import fields, models
 
 class DeviceHolder(models.Model):
     _name = "ni.device.holder"
-    _description = "ประวัติผู้ถือครองอุปกรณ์"
+    _description = "Device Holder History"
     _order = "create_date DESC"
 
-    device_id = fields.Many2one("ni.device", string="อุปกรณ์", required=True)
+    device_id = fields.Many2one("ni.device", string="Device", required=True)
     device_identifier = fields.Char(
-        related="device_id.identifier", string="รหัสอ้างอิงอุปกรณ์"
+        related="device_id.identifier", string="Device Identifier"
     )
 
-    holder_id = fields.Many2one("res.partner", string="ผู้ถือครอง", required=True)
+    holder_id = fields.Many2one("res.partner", string="Holder", required=True)
 
-    start_date = fields.Datetime(string="วันที่เริ่มถือครอง", required=True)
-    end_date = fields.Datetime(string="วันที่สิ้นสุดถือครอง")
+    start_date = fields.Datetime(string="Start Date", required=True)
+    end_date = fields.Datetime(string="End Date")
 
-    request_id = fields.Many2one("ni.device.request", string="คำขอที่เกี่ยวข้อง")
+    request_id = fields.Many2one("ni.device.request", string="Related Request")

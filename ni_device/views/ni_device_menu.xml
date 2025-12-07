@@ -19,7 +19,7 @@
     <menuitem
         id="menu_device_holder_history"
         name="ประวัติการถือครองอุปกรณ์"
-        groups="ni_patient.group_manager"
+        groups="ni_patient.group_admin"
         parent="device_menu_root"
         sequence="2"
         action="ni_device_holder_action"
@@ -42,7 +42,7 @@
     <menuitem
         id="menu_device_approval_request_all"
         name="คำขอทั้งหมด"
-        groups="base.group_no_one"
+        groups="ni_patient.group_admin"
         parent="menu_device_approval_root"
         sequence="-1"
         action="ni_device.ni_device_request_action"
@@ -53,7 +53,7 @@
         groups="ni_patient.group_manager"
         parent="menu_device_approval_root"
         sequence="0"
-        action="ni_device_request_hold_action"
+        action="ni_device_request_action_hold"
     />
     <menuitem
         id="menu_device_approval_request_return"
@@ -61,7 +61,7 @@
         groups="ni_patient.group_manager"
         parent="menu_device_approval_root"
         sequence="1"
-        action="ni_device_request_return_action"
+        action="ni_device_request_action_return"
     />
     <menuitem
         id="menu_device_approval_request_transfer"
@@ -69,7 +69,7 @@
         groups="ni_patient.group_manager"
         parent="menu_device_approval_root"
         sequence="2"
-        action="ni_device_request_transfer_action"
+        action="ni_device_request_action_transfer"
     />
     <menuitem
         id="menu_device_approval_request_dispose"
@@ -77,7 +77,7 @@
         groups="ni_patient.group_manager"
         parent="menu_device_approval_root"
         sequence="3"
-        action="ni_device_request_dispose_action"
+        action="ni_device_request_action_dispose"
     />
     <!--====== USER ====== -->
     <menuitem id="menu_device_my_root" name="สำหรับผู้บริบาล" parent="device_menu_root" sequence="5" />
