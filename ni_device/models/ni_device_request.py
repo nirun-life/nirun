@@ -78,7 +78,11 @@ class DeviceRequest(models.Model):
         "res.partner",
         string="New Holder",
     )
-    acknowledged = fields.Boolean(string="New Holder Acknowledged")
+    acknowledged = fields.Boolean(string="Acknowledged")
+    acknowledged_date = fields.Datetime(
+        string="Acknowledged Date",
+        readonly=True,
+    )
 
     is_transfer_holder = fields.Boolean(compute="_compute_is_transfer_holder")
 
@@ -220,3 +224,4 @@ class DeviceRequest(models.Model):
             if rec.request_type == "request_transfer":
                 if rec.is_transfer_holder:
                     rec.acknowledged = True
+                    rec.acknowledged_date = fields.Datetime.now()
