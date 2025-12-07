@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <search>
                 <searchpanel>
-                    <field name="state" string="สถานะ" enable_counters="1" icon="fa-circle" />
+                    <field name="state" enable_counters="1" icon="fa-circle" />
                 </searchpanel>
             </search>
         </field>
@@ -76,13 +76,13 @@
         <field name="model">ni.device.request</field>
         <field name="arch" type="xml">
             <tree string="ประวัติผู้ถือครองอุปกรณ์" create="0">
-                <field name="identifier" string="รหัสคำขอ" />
-                <field name="device_id" string="ชื่ออุปกรณ์" />
-                <field name="holder_id" string="ผู้ส่งคำขอ" />
-                <field name="create_date" string="วันที่ส่งคำขอ" widget="date" />
-                <field name="request_type" string="ประเภทคำขอ" optional="hide" />
+                <field name="identifier" />
+                <field name="device_id" />
+                <field name="holder_id" />
+                <field name="create_date" widget="date" />
+                <field name="request_type" optional="hide" />
                 <field name="new_holder_id" invisible="not context.get('show_new_holder')" />
-                <field name="request_reason" string="เหตุผล" optional="show" />
+                <field name="request_reason" optional="show" />
                 <field
                     name="state"
                     widget="badge"
@@ -96,7 +96,7 @@
                     type="object"
                     string="อนุมัติ"
                     icon="fa-check-circle"
-                    attrs="{'invisible': [('state', '=', 'approved' )]}"
+                    attrs="{'invisible': [('state', '!=', 'pending' )]}"
                     class="btn-info"
                 />
             </tree>
@@ -145,19 +145,10 @@
                         </h1>
                         <group>
                             <group>
-                                <field name="device_identifier" string="รหัสอ้างอิงอุปกรณ์" readonly="1" />
-                                <field name="request_type" string="คำขอ" readonly="1" />
-                                <field name="holder_id" string="ผู้ส่งคำขอ" readonly="1" />
-                                <field
-                                    name="new_holder_id"
-                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
-                                    readonly="1"
-                                />
-                                <field
-                                    name="acknowledged"
-                                    attrs="{'invisible':['|','|',('state','=','draft'),('request_type','!=','request_transfer'),('is_transfer_holder','=',False)]}"
-                                    readonly="1"
-                                />
+                                <field name="device_identifier" readonly="1" />
+                                <field name="holder_id" readonly="1" widget="many2one_avatar" />
+                                <field name="request_type" readonly="1" />
+                                <field name="write_date" string="Request Date" readonly="1" />
                                 <field
                                     name="dispose_type_id"
                                     attrs="{'invisible': [('request_type', '!=', 'request_dispose')]}"
@@ -166,48 +157,52 @@
                                 <field name="request_reason" readonly="1" />
                                 <field
                                     name="image_1920"
-                                    string="ภาพประกอบ"
                                     style="float: left; margin-right: 10px;"
                                     class="oe_avatar"
                                     options="{'zoom': true}"
                                     widget="image"
                                     readonly="1"
                                 />
-                                <field
-                                    name="approval_note"
-                                    string="หมายเหตุ"
-                                    attrs="{'readonly': [('state','!=','pending')]}"
-                                />
                             </group>
                             <group>
                                 <field
                                     name="state"
-                                    string="สถานะ"
                                     readonly="1"
                                     widget="badge"
                                     decoration-success="state == 'approved'"
                                     decoration-warning="state == 'pending'"
                                     decoration-danger="state == 'rejected'"
                                 />
-                                <field name="write_date" string="วันที่ส่งคำขอ" readonly="1" widget="date" />
-                                <field
-                                    name="acknowledged"
-                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')],
-                                               'readonly': [('request_type', '=', 'request_transfer')]
-                                               }"
-                                />
                                 <field
                                     name="approved_by"
-                                    string="ผู้อนุมัติ"
+                                    string="By"
                                     readonly="1"
                                     attrs="{'invisible': [('state','=','pending')]}"
+                                    widget="many2one_avatar"
                                 />
                                 <field
                                     name="approve_date"
-                                    string="วันที่"
+                                    string="At"
                                     readonly="1"
                                     attrs="{'invisible': [('state', 'not in', ['approved', 'rejected'])]}"
-                                    widget="date"
+                                />
+                                <field
+                                    name="approval_note"
+                                    attrs="{'readonly': [('state','!=','pending')]}"
+                                    readonly="1"
+                                />
+                            </group>
+                            <group string="New Holder">
+                                <field
+                                    name="new_holder_id"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                                    readonly="1"
+                                    widget="many2one_avatar"
+                                />
+                                <field
+                                    name="acknowledged"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                                    readonly="1"
                                 />
                             </group>
                         </group>
@@ -220,7 +215,6 @@
                         <field name="state" />
                         <field name="is_holder" />
                         <field name="is_transfer_holder" />
-                        <field name="acknowledged" />
                     </group>
                 </sheet>
                 <footer>
@@ -237,20 +231,21 @@
             <form string="คำขอถือครองอุปกรณ์">
                 <field name="state" invisible="1" />
                 <sheet>
-                    <h1>
-                        <field name="device_id" readonly="1" />
-                    </h1>
                     <group>
-                        <field name="request_type" string="คำขอ" readonly="1" />
-                        <field name="holder_id" string="ผู้ส่งคำขอ" />
+                        <field name="request_type" readonly="1" />
+                        <field name="device_id" readonly="1" />
+                        <field name="holder_id" />
                         <field
                             name="new_holder_id"
                             attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
                         />
+                        <field
+                            name="dispose_type_id"
+                            attrs="{'invisible': [('request_type', '!=', 'request_dispose')]}"
+                        />
                         <field name="request_reason" />
                         <field
                             name="image_1920"
-                            string="ภาพประกอบ"
                             style="float: left; margin-right: 10px;"
                             class="oe_avatar"
                             options="{'zoom': true}"
