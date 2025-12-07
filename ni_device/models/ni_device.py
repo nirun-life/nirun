@@ -56,13 +56,32 @@ class Device(models.Model):
         string="Holding Status",
         store=True,
     )
-    company_id = fields.Many2one("res.company", string="Company", store=True)
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        required=True,
+        default=lambda self: self.env.company.id,
+    )
+
+    holder_type = fields.Selection(
+        [
+            ("employee", "Employee"),
+            ("partner", "Contact"),
+        ]
+    )
+
+    # Primary holder (employee)
+    holder_employee_id = fields.Many2one(
+        "hr.employee",
+        string="Holder (Employee)",
+        check_company=True,
+        help="If an employee is selected, the employee becomes the primary holder.",
+    )
 
     holder_id = fields.Many2one(
         "res.partner",
-        string="Current Holder",
-        store=True,
-        help="The caregiver or department that holds the device during this period.",
+        string="Holder",
+        help="Used only when no employee is selected.",
     )
 
     holder_history_ids = fields.One2many(
@@ -97,6 +116,17 @@ class Device(models.Model):
     holder_history_count = fields.Integer(compute="_compute_holder_history_count")
     request_count = fields.Integer(compute="_compute_request_count")
     repair_count = fields.Integer(compute="_compute_repair_count")
+
+    @api.onchange("holder_employee_id")
+    def _onchange_holder_employee(self):
+        for rec in self:
+            if rec.holder_employee_id:
+                # autofill partner
+                partner = (
+                    rec.holder_employee_id.user_id.partner_id
+                    or rec.holder_employee_id.address_home_id
+                )
+                rec.holder_id = partner
 
     @api.depends("holder_history_ids")
     def _compute_holder_history_count(self):

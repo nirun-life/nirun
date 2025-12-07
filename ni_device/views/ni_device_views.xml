@@ -106,6 +106,7 @@
                 <field name="repair_count" invisible="1" />
                 <field name="is_holder" invisible="1" />
                 <field name="is_manager" invisible="1" />
+                <field name="holder_employee_id" invisible="1" />
                 <header attrs="{'invisible':[('id','=',False)]}">
                     <!-- ไม่มีผู้ถือครอง: ต้องอยู่ในสถานะว่าง  -->
                     <button
@@ -240,12 +241,27 @@
                                     string="คำขอที่รออนุมัติ"
                                     attrs="{'invisible':[('pending_request_id','=',False)]}"
                                 />
-                                <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" readonly="1" />
+                                <field
+                                    name="holder_employee_id"
+                                    string="ผู้ถือครองอุปกรณ์ปัจจุบัน"
+                                    readonly="1"
+                                    widget="many2one_avatar"
+                                    attrs="{'invisible':[('holder_employee_id','=',False)]}"
+                                />
+                                <field
+                                    name="holder_id"
+                                    string="ผู้ถือครองอุปกรณ์ปัจจุบัน"
+                                    readonly="1"
+                                    widget="many2one_avatar"
+                                    attrs="{'invisible':[('holder_employee_id','!=',False)]}"
+                                />
+                                <field name="company_id" string="หน่วยงาน" />
                             </group>
                         </group>
                     </div>
                     <group string="Debug" groups="base.group_no_one">
-                        <field name="holder_id" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" />
+                        <field name="holder_employee_id" />
+                        <field name="holder_id" />
                         <field name="state" />
                         <field name="availability_status" />
                         <field name="holder_history_ids" readonly="1" invisible="True" />
