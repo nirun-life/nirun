@@ -16,7 +16,40 @@ class ObservationAbstract(models.AbstractModel):
     title = fields.Char()
 
     occurrence = fields.Datetime(default=lambda _: fields.datetime.now(), index=True)
+    effective_date = fields.Datetime(
+        related="occurrence", readonly=False, help="Alias for occurrence"
+    )
     type_id = fields.Many2one("ni.observation.type", required=False, index=True)
+    code_id = fields.Many2one(
+        related="type_id", store=True, readonly=False, help="Alias for type_id"
+    )
+    code = fields.Char(compute="_compute_code", inverse="_inverse_code")
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        ob_types = self.env["ni.observation.type"].sudo()
+        for vals in vals_list:
+            if "type_id" not in vals and "code" in vals and vals["code"]:
+                ob_type = ob_types.search([("code", "=", vals["code"])])
+                if ob_type:
+                    vals["type_id"] = ob_type.id
+                    vals["value_type"] = ob_type.value_type
+
+        return super().create(vals_list)
+
+    @api.depends("type_id")
+    def _compute_code(self):
+        for rec in self:
+            rec.code = rec.type_id.code if rec.type_id else None
+
+    def _inverse_code(self):
+        ob_types = self.env["ni.observation.type"].sudo()
+        for rec in self.filtered("code"):
+            ob_type = ob_types.search([("code", "=", rec.code)])
+            if ob_type:
+                rec.type_id = ob_type
+                rec.value_type = ob_type.value_type
+
     sequence = fields.Integer(default=0)
     category_id = fields.Many2one(
         related="type_id.category_id", readonly=True, store=True, index=True
@@ -127,6 +160,7 @@ class ObservationAbstract(models.AbstractModel):
             return self.env.ref("ni_observation.interpretation_EX")
 
     @api.depends(
+        "type_id",
         "value_type",
         "value_char",
         "value_int",
@@ -136,9 +170,12 @@ class ObservationAbstract(models.AbstractModel):
     )
     def _compute_value(self):
         for rec in self:
-            if not rec["value_%s" % rec.value_type] and not rec.type_id.keep_falsy:
+            if (
+                not rec["value_%s" % rec.type_id.value_type]
+                and not rec.type_id.keep_falsy
+            ):
                 continue
-            match rec.value_type:
+            match rec.type_id.value_type:
                 case "char":
                     rec.value = rec.value_char
                 case "int":
@@ -154,7 +191,7 @@ class ObservationAbstract(models.AbstractModel):
         for rec in self:
             if not rec.value:
                 continue
-            match rec.value_type:
+            match rec.type_id.value_type:
                 case "char":
                     rec.value_char = rec.value
                 case "int":
@@ -165,18 +202,7 @@ class ObservationAbstract(models.AbstractModel):
                 case "float":
                     rec.value_float = float(rec.value)
                 case "code_id":
-                    if rec.value.isnumeric():
-                        code = self.env["ni.observation.value.code"].browse(
-                            int(rec.value)
-                        )
-                    else:
-                        code = self.env["ni.observation.value.code"].search(
-                            [
-                                ("type_ids", "=", rec.type_id.id),
-                                ("name", "ilike", rec.value),
-                            ],
-                            limit=1,
-                        )
+                    code = self._value_code_mapping(rec.type_id, rec.value.strip())
                     if code:
                         rec.update(
                             {
@@ -188,6 +214,34 @@ class ObservationAbstract(models.AbstractModel):
                         raise ValidationError(
                             _('Not found match value for "%s"!' % rec.value)
                         )
+                case "code_ids":
+                    values = rec.value.split(",")
+                    codes = []
+                    for val in values:
+                        _code = self._value_code_mapping(rec.type_id, val.strip())
+                        if _code:
+                            codes.append(_code)
+                    if codes:
+                        rec.value = ", ".join([code.name for code in codes])
+                        rec.value_code_ids = [
+                            fields.Command.link(code.id) for code in codes
+                        ]
+
+    @api.model
+    def _value_code_mapping(self, type, value):
+        if value.isnumeric():
+            code = self.env["ni.observation.value.code"].browse(int(value))
+        else:
+            code = self.env["ni.observation.value.code"].search(
+                [
+                    ("type_ids", "=", type.id),
+                    "|",
+                    ("name", "ilike", value),
+                    ("code", "=", value),
+                ],
+                limit=1,
+            )
+        return code
 
     @api.constrains("value_float")
     def check_input_range(self):
@@ -202,9 +256,7 @@ class ObservationAbstract(models.AbstractModel):
     def _check_value_type(self):
         for rec in self:
             if rec.type_id and rec.type_id.value_type != rec.value_type:
-                raise ValidationError(
-                    _("Value type is mismatch! please contact your administrator")
-                )
+                rec.value_type = rec.type_id.value_type
 
     @api.constrains("display_type", "title", "type_id")
     def _check_name_type(self):
