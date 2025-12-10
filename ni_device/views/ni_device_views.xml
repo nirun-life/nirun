@@ -35,7 +35,7 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="context">
             {
-                'search_default_available_device': 1
+            'search_default_available_device': 1
             }
         </field>
     </record>
@@ -46,7 +46,7 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="context">
             {
-                'search_default_my_device': 1
+            'search_default_my_device': 1
             }
         </field>
     </record>
@@ -278,43 +278,38 @@
         <field name="model">ni.device</field>
         <field name="arch" type="xml">
             <kanban>
+                <field name="image_128" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_global_click o_kanban_card">
+                        <div t-attf-class="oe_kanban_global_click o_kanban_card ">
+                            <div class="o_kanban_image me-1 ">
+                                <field
+                                    name="image_128"
+                                    class="oe_avatar o_image_64_contain"
+                                    options="{'zoom': true}"
+                                    widget="image"
+                                    style="width: 100%; height: 100%; object-fit: cover;"
+                                />
+                            </div>
                             <div class="oe_kanban_details">
-                                <div name="kanban_top" class="o_kanban_record_top">
+                                <div name="kanban_top" class="o_kanban_record_top mb-1">
                                     <div class="o_kanban_record_headings">
-                                        <span class="o_kanban_record_title fs-2">
-                                            <field name="identifier" />
-                                        </span>
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name" />
+                                        </strong>
                                     </div>
                                 </div>
-                                <strong>
-                                    <field name="name" />
-                                </strong>
+                                <field name="identifier" />
+                                <div class="o_kanban_record_top mb-1 d-flex">
+                                    <span class="text-muted" style="white-space: nowrap;">
+
+                                    </span>
+                                    <span class="ms-1">
+                                        <field name="holder_id" widget="many2one_avatar" />
+                                    </span>
+                                </div>
                             </div>
-                            <!-- ผู้ถือครองปัจจุบัน -->
-                            <div class="mt8">
-                                <span class="text-muted">ผู้ถือครอง:</span>
-                                <field name="holder_id" />
-                            </div>
-                            <!-- ประเภทอุปกรณ์ -->
-                            <div class="mt8">
-                                <span class="text-muted">ประเภทอุปกรณ์:</span>
-                                <field name="type_ids" widget="many2many_tags" />
-                            </div>
-                            <!--                            &lt;!&ndash; สถานะความพร้อมใช้งาน &ndash;&gt;-->
-                            <!--                            <div class="mt8">-->
-                            <!--                                <span class="text-muted">ความพร้อมใช้งาน:</span>-->
-                            <!--                                <field-->
-                            <!--                                    name="availability_status"-->
-                            <!--                                    widget="badge"-->
-                            <!--                                    decoration-success="availability_status == 'available'"-->
-                            <!--                                    decoration-danger="availability_status == 'damaged'"-->
-                            <!--                                />-->
-                            <!--                            </div>-->
-                            <!-- สถานะการถือครอง -->
-                            <div class="oe_module_action d-flex flex-wrap justify-content-between">
+                            <div class="d-flex justify-content-end mt-auto">
                                 <field
                                     name="state"
                                     widget="badge"
