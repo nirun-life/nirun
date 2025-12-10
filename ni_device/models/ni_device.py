@@ -8,7 +8,7 @@ _logger = logging.getLogger(__name__)
 class Device(models.Model):
     _name = "ni.device"
     _description = "Device Registry"
-    _inherit = ["ni.identifier.mixin", "image.mixin", "mail.thread"]
+    _inherit = ["ni.identifier.mixin", "image.mixin", "mail.thread", "ni.holder.mixin"]
     _rec_name = "name"
     _order = "name"
 
@@ -63,19 +63,21 @@ class Device(models.Model):
         default=lambda self: self.env.company.id,
     )
 
-    # Primary holder (employee)
-    holder_employee_id = fields.Many2one(
-        "hr.employee",
-        string="Holder (Employee)",
-        check_company=True,
-        help="If an employee is selected, the employee becomes the primary holder.",
-    )
-
-    holder_id = fields.Many2one(
-        "res.partner",
-        string="Holder",
-        help="Used only when no employee is selected.",
-    )
+    # # Primary holder (employee)
+    # holder_employee_id = fields.Many2one(
+    #     "hr.employee",
+    #     string="Holder (Employee)",
+    #     check_company=True,
+    #     help="If an employee is selected, the employee becomes the primary holder.",
+    # )
+    #
+    # holder_id = fields.Many2one(
+    #     "res.partner",
+    #     string="Holder",
+    #     help="Used only when no employee is selected.",
+    # )
+    #
+    # holder_name = fields.Char("Holder Name", compute="_compute_holder_name")
 
     holder_history_ids = fields.One2many(
         "ni.device.holder",
@@ -110,16 +112,21 @@ class Device(models.Model):
     request_count = fields.Integer(compute="_compute_request_count")
     repair_count = fields.Integer(compute="_compute_repair_count")
 
-    @api.onchange("holder_employee_id")
-    def _onchange_holder_employee(self):
-        for rec in self:
-            if rec.holder_employee_id:
-                # autofill partner
-                partner = (
-                    rec.holder_employee_id.user_id.partner_id
-                    or rec.holder_employee_id.address_home_id
-                )
-                rec.holder_id = partner
+    # @api.onchange("holder_employee_id")
+    # def _onchange_holder_employee(self):
+    #     for rec in self:
+    #         if rec.holder_employee_id:
+    #             # autofill partner
+    #             partner = (
+    #                 rec.holder_employee_id.user_id.partner_id
+    #                 or rec.holder_employee_id.address_home_id
+    #             )
+    #             rec.holder_id = partner
+
+    # @api.depends("holder_employee_id", "holder_id")
+    # def _compute_holder_name(self):
+    #     for rec in self:
+    #         rec.holder_name = rec.holder_employee_id.name or rec.holder_id.name or ""
 
     @api.depends("holder_history_ids")
     def _compute_holder_history_count(self):

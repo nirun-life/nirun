@@ -4,7 +4,7 @@ from odoo import api, fields, models
 class DeviceRequest(models.Model):
     _name = "ni.device.request"
     _description = "Device Holding Change Request"
-    _inherit = ["ni.identifier.mixin", "image.mixin"]
+    _inherit = ["ni.identifier.mixin", "image.mixin", "ni.holder.mixin"]
     _rec_name = "identifier"
 
     _order = "create_date DESC"
@@ -64,11 +64,11 @@ class DeviceRequest(models.Model):
         index=True,
     )
 
-    # -------------------------
-    # Display Primary Holder:
-    # default: device_holder_id, device_holder_emp_id
-    # request_hold: new_holder_id, new_holder_employee_id
-    # -------------------------
+    # # -------------------------
+    # # Display Primary Holder:
+    # # default: device_holder_id, device_holder_emp_id
+    # # request_hold: new_holder_id, new_holder_employee_id
+    # # -------------------------
     holder_employee_id = fields.Many2one(
         "hr.employee",
         string="Holder (Employee)",
@@ -90,6 +90,9 @@ class DeviceRequest(models.Model):
         default="employee",
         string="Holder Type",
     )
+
+    new_holder_name = fields.Char("New Holder Name", compute="_compute_new_holder_name")
+
     new_holder_id = fields.Many2one(
         "res.partner",
         string="New Holder",
@@ -144,9 +147,16 @@ class DeviceRequest(models.Model):
                 )
                 rec.new_holder_id = partner  # สำหรับ field new_holder_id
 
-        # ---------------------------------------------------
-        # Compute Fields
-        # ---------------------------------------------------
+    # ---------------------------------------------------
+    # Compute Fields
+    # ---------------------------------------------------
+
+    @api.depends("new_holder_employee_id", "new_holder_id")
+    def _compute_new_holder_name(self):
+        for rec in self:
+            rec.new_holder_name = (
+                rec.new_holder_employee_id.name or rec.new_holder_id.name or ""
+            )
 
     @api.depends(
         "request_type",
@@ -233,13 +243,17 @@ class DeviceRequest(models.Model):
                 self.env["ni.device.holder"].create(
                     {
                         "device_id": device.id,
-                        "holder_id": rec.holder_id.id,
+                        "holder_employee_id": rec.holder_employee_id.id
+                        if rec.holder_employee_id
+                        else False,
+                        "holder_id": rec.holder_id.id if rec.holder_id else False,
                         "start_date": approve_date,
                         "request_id": rec.id,
                     }
                 )
 
                 # อัปเดต device
+                device.holder_employee_id = rec.holder_employee_id
                 device.holder_id = rec.holder_id
                 device.state = "in_use"
 
@@ -251,6 +265,7 @@ class DeviceRequest(models.Model):
                     last_history.end_date = approve_date
 
                 # อัปเดต device
+                device.holder_employee_id = False
                 device.holder_id = False
                 device.state = (
                     "available" if rec.request_type == "request_return" else "disposed"
@@ -269,13 +284,19 @@ class DeviceRequest(models.Model):
                 self.env["ni.device.holder"].create(
                     {
                         "device_id": device.id,
-                        "holder_id": rec.new_holder_id.id,
+                        "holder_employee_id": rec.new_holder_employee_id.id
+                        if rec.new_holder_employee_id
+                        else False,
+                        "holder_id": rec.new_holder_id.id
+                        if rec.new_holder_id
+                        else False,
                         "start_date": approve_date,
                         "request_id": rec.id,
                     }
                 )
 
                 # อัปเดต device
+                device.holder_employee_id = rec.new_holder_employee_id
                 device.holder_id = rec.new_holder_id
                 device.state = "in_use"
 

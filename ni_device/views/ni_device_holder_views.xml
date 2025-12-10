@@ -27,9 +27,11 @@
                 <field name="request_id" string="รหัสคำขอ" invisible="1" />
                 <field name="device_identifier" string="รหัสอ้างอิงอุปกรณ์" />
                 <field name="device_id" string="ชื่ออุปกรณ์" />
-                <field name="holder_id" string="ผู้ถือครอง" widget="many2one_avatar" />
+                <field name="holder_name" />
                 <field name="start_date" string="วันที่เริ่มถือครอง" widget="date" />
                 <field name="end_date" string="สิ้นสุดวันถือครอง" widget="date" />
+                <field name="holder_id" widget="many2one_avatar" groups="base.group_no_one" optional="hide" />
+                <field name="holder_employee_id" widget="many2one_avatar" groups="base.group_no_one" optional="hide" />
             </tree>
         </field>
     </record>
