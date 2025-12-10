@@ -19,11 +19,15 @@ class DeviceRequest(models.Model):
         ondelete="cascade",
         index=True,
     )
+    device_holder_emp_id = fields.Many2one(related="device_id.holder_employee_id")
+    device_holder_id = fields.Many2one(related="device_id.holder_id")
 
     device_image = fields.Image(related="device_id.image_1920", string="Device Image")
     device_identifier = fields.Char(
         related="device_id.identifier", string="Device Identifier"
     )
+    company_id = fields.Many2one(related="device_id.company_id")
+    is_holder = fields.Boolean(related="device_id.is_holder")
 
     # -------------------------
     # Request Type (Workflow)
@@ -61,23 +65,41 @@ class DeviceRequest(models.Model):
     )
 
     # -------------------------
-    # Holder (Caregiver / Department / Responsible Person)
+    # Display Primary Holder:
+    # default: device_holder_id, device_holder_emp_id
+    # request_hold: new_holder_id, new_holder_employee_id
     # -------------------------
-    holder_id = fields.Many2one(
-        "res.partner",
-        string="Holder",
-        required=False,
-        domain=[("is_company", "=", False)],
+    holder_employee_id = fields.Many2one(
+        "hr.employee",
+        string="Holder (Employee)",
+        check_company=True,
+        compute="_compute_holder_employee_id",
     )
-    is_holder = fields.Boolean(related="device_id.is_holder")
+    holder_id = fields.Many2one(
+        "res.partner", string="Holder", compute="_compute_holder_id"
+    )
 
     # -------------------------
-    # Transfer-specific fields
+    # New Holder: for request_type = request_hold || request_transfer
     # -------------------------
+    new_holder_type = fields.Selection(
+        [
+            ("employee", "Employee"),
+            ("partner", "Contact"),
+        ],
+        default="employee",
+        string="Holder Type",
+    )
     new_holder_id = fields.Many2one(
         "res.partner",
         string="New Holder",
     )
+    new_holder_employee_id = fields.Many2one(
+        "hr.employee",
+        string="New Holder (Employee)",
+        check_company=True,
+    )
+
     acknowledged = fields.Boolean(string="Acknowledged")
     acknowledged_date = fields.Datetime(
         string="Acknowledged Date",
@@ -103,6 +125,54 @@ class DeviceRequest(models.Model):
     approval_note = fields.Html(
         string="Approval Note",
     )
+
+    @api.onchange("new_holder_type")
+    def _onchange_holder_type(self):
+        for rec in self:
+            if rec.new_holder_type == "partner":
+                rec.new_holder_employee_id = False
+                rec.new_holder_id = False
+
+    @api.onchange("new_holder_employee_id")
+    def _onchange_new_holder_employee(self):
+        for rec in self:
+            if rec.new_holder_employee_id:
+                # autofill partner จาก employee
+                partner = (
+                    rec.new_holder_employee_id.user_id.partner_id
+                    or rec.new_holder_employee_id.address_home_id
+                )
+                rec.new_holder_id = partner  # สำหรับ field new_holder_id
+
+        # ---------------------------------------------------
+        # Compute Fields
+        # ---------------------------------------------------
+
+    @api.depends(
+        "request_type",
+        "new_holder_employee_id",
+        "device_holder_emp_id",
+    )
+    def _compute_holder_employee_id(self):
+        """Determine which employee to show as holder."""
+        for rec in self:
+            if rec.request_type == "request_hold":
+                rec.holder_employee_id = rec.new_holder_employee_id
+            else:
+                rec.holder_employee_id = rec.device_holder_emp_id
+
+    @api.depends(
+        "request_type",
+        "new_holder_id",
+        "device_holder_id",
+    )
+    def _compute_holder_id(self):
+        """Determine which partner to show as holder."""
+        for rec in self:
+            if rec.request_type == "request_hold":
+                rec.holder_id = rec.new_holder_id
+            else:
+                rec.holder_id = rec.device_holder_id
 
     @api.depends("new_holder_id", "new_holder_id.user_id")
     def _compute_is_transfer_holder(self):

@@ -111,6 +111,7 @@
                 <field name="is_holder" invisible="1" />
                 <field name="is_transfer_holder" invisible="1" />
                 <field name="acknowledged" invisible="1" />
+                <field name="company_id" invisible="1" />
                 <header>
                     <button
                         name="action_acknowledged"
@@ -144,11 +145,22 @@
                             <field name="device_id" readonly="1" />
                         </h1>
                         <group>
-                            <group>
+                            <group string="Detail">
                                 <field name="device_identifier" readonly="1" />
-                                <field name="holder_id" readonly="1" widget="many2one_avatar" />
+                                <field
+                                    name="holder_employee_id"
+                                    readonly="1"
+                                    widget="many2one_avatar"
+                                    attrs="{'invisible': [('holder_employee_id','=',False)]}"
+                                />
+                                <field
+                                    name="holder_id"
+                                    readonly="1"
+                                    widget="many2one_avatar"
+                                    attrs="{'invisible':[('holder_employee_id','!=',False)]}"
+                                />
                                 <field name="request_type" readonly="1" />
-                                <field name="write_date" string="Request Date" readonly="1" />
+                                <field name="create_date" string="Request Date" readonly="1" />
                                 <field
                                     name="dispose_type_id"
                                     attrs="{'invisible': [('request_type', '!=', 'request_dispose')]}"
@@ -163,8 +175,37 @@
                                     widget="image"
                                     readonly="1"
                                 />
+                                <!--                            <group string="New Holder"-->
+                                <!--                                 attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}">-->
+                                <separator
+                                    string="New Holder"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                                />
+                                <field
+                                    name="company_id"
+                                    groups="ni_patient.group_manager"
+                                    readonly="True"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                                />
+                                <field
+                                    name="new_holder_employee_id"
+                                    widget="many2one_avatar"
+                                    readonly="1"
+                                    attrs="{'invisible': ['|',('request_type', '!=', 'request_transfer'),('new_holder_employee_id','=',False)]}"
+                                />
+                                <field
+                                    name="new_holder_id"
+                                    widget="many2one_avatar"
+                                    readonly="1"
+                                    attrs="{'invisible':['|',('request_type', '!=', 'request_transfer'),('new_holder_employee_id','!=',False)]}"
+                                />
+                                <field
+                                    name="acknowledged"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                                    readonly="1"
+                                />
                             </group>
-                            <group>
+                            <group string="Approval">
                                 <field
                                     name="state"
                                     readonly="1"
@@ -192,35 +233,24 @@
                                     readonly="1"
                                 />
                             </group>
-                            <group string="New Holder">
-                                <field
-                                    name="new_holder_id"
-                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
-                                    readonly="1"
-                                    widget="many2one_avatar"
-                                />
-                                <field
-                                    name="acknowledged"
-                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
-                                    readonly="1"
-                                />
-                            </group>
                         </group>
                     </div>
-                    <group
-                        string="ข้อมูลที่แก้ไขได้"
-                        groups="base.group_no_one"
-                        attrs="{'invisible':[('state','=','draft')]}"
-                    >
-                        <field name="state" />
-                        <field name="is_holder" />
-                        <field name="is_transfer_holder" />
+                    <group string="Debug" groups="base.group_no_one" attrs="{'invisible':[('state','=','draft')]}">
+                        <group>
+                            <field name="holder_employee_id" />
+                            <field name="holder_id" />
+                        </group>
+                        <group>
+                            <field name="new_holder_employee_id" />
+                            <field name="new_holder_id" />
+                        </group>
+                        <group>
+                            <field name="state" />
+                            <field name="is_holder" />
+                            <field name="is_transfer_holder" />
+                        </group>
                     </group>
                 </sheet>
-                <footer>
-                    <button name="action_submit" type="object" string="ส่งคำขอ" class="btn-primary" />
-                    <button string="ยกเลิก" class="btn-secondary" special="cancel" />
-                </footer>
             </form>
         </field>
     </record>
@@ -230,15 +260,38 @@
         <field name="arch" type="xml">
             <form string="คำขอถือครองอุปกรณ์">
                 <field name="state" invisible="1" />
+                <field name="company_id" invisible="1" />
                 <sheet>
                     <group>
                         <field name="request_type" readonly="1" />
                         <field name="device_id" readonly="1" />
-                        <field name="holder_id" />
                         <field
-                            name="new_holder_id"
-                            attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                            name="holder_employee_id"
+                            readonly="1"
+                            widget="many2one_avatar"
+                            attrs="{'invisible': ['|',('holder_employee_id','=',False),('request_type','=','request_hold')]}"
                         />
+                        <field
+                            name="holder_id"
+                            readonly="1"
+                            widget="many2one_avatar"
+                            attrs="{'invisible':['|','|',('holder_employee_id','!=',False),('holder_id','=',False),('request_type','=','request_hold')]}"
+                        />
+                    </group>
+                    <group
+                        string="New Holder"
+                        attrs="{'invisible':[('request_type','!=','request_hold'),('request_type','!=','request_transfer')]}"
+                    >
+                        <field name="company_id" groups="ni_patient.group_manager" readonly="True" />
+                        <field name="new_holder_type" widget="radio" options="{'horizontal': True}" />
+                        <field
+                            name="new_holder_employee_id"
+                            widget="many2one_avatar"
+                            attrs="{'invisible': [('new_holder_type','!=','employee')]}"
+                        />
+                        <field name="new_holder_id" attrs="{'invisible': [('new_holder_type','!=','partner')]}" />
+                    </group>
+                    <group string="Detail">
                         <field
                             name="dispose_type_id"
                             attrs="{'invisible': [('request_type', '!=', 'request_dispose')]}"
@@ -255,8 +308,8 @@
                     </group>
                 </sheet>
                 <footer>
-                    <button name="action_submit" type="object" string="ส่งคำขอ" class="btn-primary" />
-                    <button string="ยกเลิก" class="btn-secondary" special="cancel" />
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
                 </footer>
             </form>
         </field>

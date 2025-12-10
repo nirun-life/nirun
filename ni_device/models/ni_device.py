@@ -63,13 +63,6 @@ class Device(models.Model):
         default=lambda self: self.env.company.id,
     )
 
-    holder_type = fields.Selection(
-        [
-            ("employee", "Employee"),
-            ("partner", "Contact"),
-        ]
-    )
-
     # Primary holder (employee)
     holder_employee_id = fields.Many2one(
         "hr.employee",
@@ -183,7 +176,6 @@ class Device(models.Model):
     def action_request_hold(self):
         """เปิด wizard ni.device.request แบบ form view"""
         self.ensure_one()
-
         return {
             "type": "ir.actions.act_window",
             "name": "Request Device Holding",
@@ -199,14 +191,18 @@ class Device(models.Model):
             "context": {
                 "default_device_id": self.id,
                 "default_request_type": "request_hold",
-                "default_holder_id": self.env.user.partner_id.id,
+                "default_company_id": self.env.user.company_id.id
+                if self.env.user.company_id
+                else False,
+                "default_new_holder_employee_id": self.env.user.employee_id.id
+                if self.env.user.employee_id
+                else False,
             },
         }
 
     def action_request_return(self):
         """เปิด wizard ni.device.request แบบ form view"""
         self.ensure_one()
-
         return {
             "type": "ir.actions.act_window",
             "name": "Return Device",
@@ -222,14 +218,12 @@ class Device(models.Model):
             "context": {
                 "default_device_id": self.id,
                 "default_request_type": "request_return",
-                "default_holder_id": self.holder_id.id if self.holder_id else False,
             },
         }
 
     def action_request_transfer(self):
         """เปิด wizard ni.device.request แบบ form view"""
         self.ensure_one()
-
         return {
             "type": "ir.actions.act_window",
             "name": "Transfer Holder",
@@ -245,14 +239,16 @@ class Device(models.Model):
             "context": {
                 "default_device_id": self.id,
                 "default_request_type": "request_transfer",
-                "default_holder_id": self.holder_id.id if self.holder_id else False,
-                "show_new_holder": True,
+                "default_company_id": self.env.user.company_id.id
+                if self.env.user.company_id
+                else False,
             },
         }
 
     def action_request_dispose(self):
         """เปิด wizard ni.device.request แบบ form view"""
         self.ensure_one()
+
         return {
             "type": "ir.actions.act_window",
             "name": "Device Disposal",
@@ -268,13 +264,11 @@ class Device(models.Model):
             "context": {
                 "default_device_id": self.id,
                 "default_request_type": "request_dispose",
-                "default_holder_id": self.holder_id.id if self.holder_id else False,
             },
         }
 
     def action_repair(self):
         self.ensure_one()
-
         # เซ็ตสถานะอุปกรณ์ให้เป็น damaged
         self.availability_status = "damaged"
 
