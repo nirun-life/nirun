@@ -63,22 +63,6 @@ class Device(models.Model):
         default=lambda self: self.env.company.id,
     )
 
-    # # Primary holder (employee)
-    # holder_employee_id = fields.Many2one(
-    #     "hr.employee",
-    #     string="Holder (Employee)",
-    #     check_company=True,
-    #     help="If an employee is selected, the employee becomes the primary holder.",
-    # )
-    #
-    # holder_id = fields.Many2one(
-    #     "res.partner",
-    #     string="Holder",
-    #     help="Used only when no employee is selected.",
-    # )
-    #
-    # holder_name = fields.Char("Holder Name", compute="_compute_holder_name")
-
     holder_history_ids = fields.One2many(
         "ni.device.holder",
         "device_id",
@@ -94,6 +78,7 @@ class Device(models.Model):
     pending_request_id = fields.Many2one(
         "ni.device.request",
         string="Pending Request",
+        compute="_compute_pending_request",
         store=True,
     )
 
@@ -112,21 +97,10 @@ class Device(models.Model):
     request_count = fields.Integer(compute="_compute_request_count")
     repair_count = fields.Integer(compute="_compute_repair_count")
 
-    # @api.onchange("holder_employee_id")
-    # def _onchange_holder_employee(self):
-    #     for rec in self:
-    #         if rec.holder_employee_id:
-    #             # autofill partner
-    #             partner = (
-    #                 rec.holder_employee_id.user_id.partner_id
-    #                 or rec.holder_employee_id.address_home_id
-    #             )
-    #             rec.holder_id = partner
-
-    # @api.depends("holder_employee_id", "holder_id")
-    # def _compute_holder_name(self):
-    #     for rec in self:
-    #         rec.holder_name = rec.holder_employee_id.name or rec.holder_id.name or ""
+    can_request_as_holder = fields.Boolean(
+        compute="_compute_can_request_as_holder",
+        store=False,
+    )
 
     @api.depends("holder_history_ids")
     def _compute_holder_history_count(self):
@@ -159,6 +133,18 @@ class Device(models.Model):
             else:
                 rec.is_holder = False
 
+    @api.depends("request_ids", "request_ids.state")
+    def _compute_pending_request(self):
+        for rec in self:
+            # หา request ที่ยัง pending
+            pending = rec.request_ids.filtered(lambda r: r.state in ("pending"))
+
+            # ถ้ามีหลายตัว → เอาตัวล่าสุดจาก create_date
+            if pending:
+                rec.pending_request_id = pending.sorted("create_date")[-1]
+            else:
+                rec.pending_request_id = False
+
     def _search_is_holder(self, operator, value):
         user = self.env.user
         partner_ids = [user.partner_id.id] + self.env["res.partner"].search(
@@ -180,6 +166,15 @@ class Device(models.Model):
         for rec in self:
             rec.is_manager = user.has_group("ni_patient.group_manager")
 
+    @api.depends("state", "is_holder", "is_manager", "pending_request_id")
+    def _compute_can_request_as_holder(self):
+        for rec in self:
+            rec.can_request_as_holder = (
+                rec.state == "in_use"
+                and (rec.is_holder or rec.is_manager)
+                and not rec.pending_request_id
+            )
+
     def action_request_hold(self):
         """เปิด wizard ni.device.request แบบ form view"""
         self.ensure_one()
@@ -198,8 +193,9 @@ class Device(models.Model):
             "context": {
                 "default_device_id": self.id,
                 "default_request_type": "request_hold",
-                "default_company_id": self.env.user.company_id.id
-                if self.env.user.company_id
+                "default_company_id": self.company_id.id,
+                "default_holder_employee_id": self.env.user.employee_id.id
+                if self.env.user.employee_id
                 else False,
                 "default_new_holder_employee_id": self.env.user.employee_id.id
                 if self.env.user.employee_id
@@ -225,6 +221,10 @@ class Device(models.Model):
             "context": {
                 "default_device_id": self.id,
                 "default_request_type": "request_return",
+                "default_company_id": self.company_id.id,
+                "default_holder_employee_id": self.env.user.employee_id.id
+                if self.env.user.employee_id
+                else False,
             },
         }
 
@@ -246,8 +246,9 @@ class Device(models.Model):
             "context": {
                 "default_device_id": self.id,
                 "default_request_type": "request_transfer",
-                "default_company_id": self.env.user.company_id.id
-                if self.env.user.company_id
+                "default_company_id": self.company_id.id,
+                "default_holder_employee_id": self.env.user.employee_id.id
+                if self.env.user.employee_id
                 else False,
             },
         }
@@ -271,6 +272,10 @@ class Device(models.Model):
             "context": {
                 "default_device_id": self.id,
                 "default_request_type": "request_dispose",
+                "default_company_id": self.company_id.id,
+                "default_holder_employee_id": self.env.user.employee_id.id
+                if self.env.user.employee_id
+                else False,
             },
         }
 

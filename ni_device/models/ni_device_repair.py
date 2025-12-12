@@ -13,6 +13,11 @@ class DeviceRepairHistory(models.Model):
         required=True,
         ondelete="cascade",
     )
+    device_holder_emp_id = fields.Many2one(related="device_id.holder_employee_id")
+    device_holder_id = fields.Many2one(related="device_id.holder_id")
+    device_holder_name = fields.Char(related="device_id.holder_name")
+    is_holder = fields.Boolean(related="device_id.is_holder")
+    is_manager = fields.Boolean(related="device_id.is_manager")
 
     # Date the device was damaged (Requirement)
     damage_date = fields.Datetime(
@@ -72,3 +77,16 @@ class DeviceRepairHistory(models.Model):
         string="Estimated Repair Cost",
         currency_field="currency_id",
     )
+
+    def action_confirm_repair(self):
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "ยืนยันผลการซ่อม",
+            "res_model": "ni.device.repair",
+            "view_mode": "form",
+            "view_id": self.env.ref("ni_device.ni_device_repair_view_form").id,
+            "res_id": self.id,  # <<< สำคัญ: เปิด record ปัจจุบัน
+            "target": "new",  # <<< เปิดใน wizard popup
+        }

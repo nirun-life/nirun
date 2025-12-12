@@ -23,10 +23,32 @@
         <field name="model">ni.device.repair</field>
         <field name="arch" type="xml">
             <form string="">
+                <field name="is_holder" invisible="1" />
+                <field name="is_manager" invisible="1" />
+                <header>
+                    <button
+                        name="action_confirm_repair"
+                        type="object"
+                        string="ยืนยันผลการซ่อม"
+                        attrs="{'invisible': [('|'),('&amp;'),('state', '!=','repairing'),('is_holder', '=',False),('is_manager', '=',False)]}"
+                    />
+                </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="device_id" readonly="1" />
+                            <field
+                                name="device_holder_emp_id"
+                                readonly="1"
+                                widget="many2one_avatar"
+                                attrs="{'invisible': [('device_holder_emp_id','=',False)]}"
+                            />
+                            <field
+                                name="device_holder_id"
+                                readonly="1"
+                                widget="many2one_avatar"
+                                attrs="{'invisible':[('device_holder_emp_id','!=',False)]}"
+                            />
                             <field name="damage_date" string="วันที่เกิดการชำรุด" widget="date" />
                             <field name="repair_duration" string="ระยะเวลาที่ใช้ซ่อม (วัน)" />
                             <field name="note" string="หมายเหตุ" />
@@ -40,9 +62,15 @@
                             />
                         </group>
                         <group>
+                            <field name="state" readonly="1" />
                             <field name="create_uid" string="ผู้แจ้งซ่อม" />
                             <field name="repair_cost" string="ค่าใช้จ่าย (บาท)" />
                         </group>
+                    </group>
+                    <group string="Debug" groups="base.group_no_one">
+                        <field name="is_holder" readonly="1" />
+                        <field name="is_manager" readonly="1" />
+                        <field name="state" />
                     </group>
                 </sheet>
             </form>

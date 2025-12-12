@@ -19,9 +19,6 @@ class DeviceRequest(models.Model):
         ondelete="cascade",
         index=True,
     )
-    device_holder_emp_id = fields.Many2one(related="device_id.holder_employee_id")
-    device_holder_id = fields.Many2one(related="device_id.holder_id")
-
     device_image = fields.Image(related="device_id.image_1920", string="Device Image")
     device_identifier = fields.Char(
         related="device_id.identifier", string="Device Identifier"
@@ -62,21 +59,6 @@ class DeviceRequest(models.Model):
         string="Status",
         default="draft",
         index=True,
-    )
-
-    # # -------------------------
-    # # Display Primary Holder:
-    # # default: device_holder_id, device_holder_emp_id
-    # # request_hold: new_holder_id, new_holder_employee_id
-    # # -------------------------
-    holder_employee_id = fields.Many2one(
-        "hr.employee",
-        string="Holder (Employee)",
-        check_company=True,
-        compute="_compute_holder_employee_id",
-    )
-    holder_id = fields.Many2one(
-        "res.partner", string="Holder", compute="_compute_holder_id"
     )
 
     # -------------------------
@@ -147,6 +129,10 @@ class DeviceRequest(models.Model):
                 )
                 rec.new_holder_id = partner  # สำหรับ field new_holder_id
 
+                if rec.request_type == "request_hold":
+                    rec.holder_employee_id = rec.new_holder_employee_id.id
+                    rec.holder_id = partner
+
     # ---------------------------------------------------
     # Compute Fields
     # ---------------------------------------------------
@@ -158,47 +144,27 @@ class DeviceRequest(models.Model):
                 rec.new_holder_employee_id.name or rec.new_holder_id.name or ""
             )
 
-    @api.depends(
-        "request_type",
-        "new_holder_employee_id",
-        "device_holder_emp_id",
-    )
-    def _compute_holder_employee_id(self):
-        """Determine which employee to show as holder."""
-        for rec in self:
-            if rec.request_type == "request_hold":
-                rec.holder_employee_id = rec.new_holder_employee_id
-            else:
-                rec.holder_employee_id = rec.device_holder_emp_id
-
-    @api.depends(
-        "request_type",
-        "new_holder_id",
-        "device_holder_id",
-    )
-    def _compute_holder_id(self):
-        """Determine which partner to show as holder."""
-        for rec in self:
-            if rec.request_type == "request_hold":
-                rec.holder_id = rec.new_holder_id
-            else:
-                rec.holder_id = rec.device_holder_id
-
     @api.depends("new_holder_id", "new_holder_id.user_id")
     def _compute_is_transfer_holder(self):
+
         current_user = self.env.user
         current_partner = current_user.partner_id
         for rec in self:
             rec.is_transfer_holder = False
-            if not rec.new_holder_id:
-                continue
-            # ครอบคลุมทั้งกรณี partner ถูกผูกกับ user และกรณี partner ตรงกับ user's partner
-            if rec.new_holder_id.user_id and rec.new_holder_id.user_id == current_user:
-                rec.is_transfer_holder = True
-            elif rec.new_holder_id == current_partner:
-                rec.is_transfer_holder = True
-            else:
-                rec.is_transfer_holder = False
+
+            if rec.request_type == "request_transfer":
+                if not rec.new_holder_id:
+                    continue
+                # ครอบคลุมทั้งกรณี partner ถูกผูกกับ user และกรณี partner ตรงกับ user's partner
+                if (
+                    rec.new_holder_id.user_id
+                    and rec.new_holder_id.user_id == current_user
+                ):
+                    rec.is_transfer_holder = True
+                elif rec.new_holder_id == current_partner:
+                    rec.is_transfer_holder = True
+                else:
+                    rec.is_transfer_holder = False
 
     @api.depends("device_id", "device_id.image_1920")
     def _compute_device_image(self):
@@ -206,7 +172,7 @@ class DeviceRequest(models.Model):
             rec.device_image_1920 = rec.device_id.image_1920
 
     def action_submit(self):
-        for rec in self:
+        for rec in self.sudo():  # ← สำคัญ!
             rec.state = "pending"
             if rec.device_id.state == "available":
                 rec.device_id.state = "pending"
@@ -311,8 +277,12 @@ class DeviceRequest(models.Model):
                 device.state = "available"
 
     def action_acknowledged(self):
-        for rec in self:
+        for rec in self.sudo():
             if rec.request_type == "request_transfer":
                 if rec.is_transfer_holder:
                     rec.acknowledged = True
                     rec.acknowledged_date = fields.Datetime.now()
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        return super(DeviceRequest, self.sudo()).create(vals_list)
