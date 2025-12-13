@@ -45,8 +45,8 @@ class DeviceRepairHistory(models.Model):
     )
 
     # Estimated Repair Duration (optional)
-    estimated_duration = fields.Float(
-        string="Estimated Duration",
+    estimated_duration = fields.Integer(
+        string="Estimated Duration (days)",
     )
 
     # Estimated Repair Cost (optional)
@@ -117,7 +117,7 @@ class DeviceRepairHistory(models.Model):
             },
         }
 
-    def action_repairing(self):
+    def action_begin_repair(self):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -150,6 +150,7 @@ class DeviceRepairHistory(models.Model):
             elif state_action == "repair_result":
                 if rec.repair_result == "not_repairable":
                     rec.state = "unrepairable"
+                    rec.device_id.availability_status = "damaged"
                 else:
                     rec.state = "completed"
                     rec.device_id.availability_status = "available"

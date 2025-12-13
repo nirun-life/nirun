@@ -109,6 +109,11 @@ class Device(models.Model):
         store=False,
     )
 
+    is_unrepairable = fields.Boolean(
+        compute="_compute_is_unrepairable",
+        store=False,
+    )
+
     @api.depends("holder_history_ids")
     def _compute_holder_history_count(self):
         for rec in self:
@@ -157,7 +162,7 @@ class Device(models.Model):
         for rec in self:
             # หา repair ที่ยัง
             current = rec.repair_ids.filtered(
-                lambda r: r.state in ("damaged", "repairing")
+                lambda r: r.state in ("damaged", "repairing", "unrepairable")
             )
 
             # ถ้ามีหลายตัว → เอาตัวล่าสุดจาก create_date
@@ -187,7 +192,9 @@ class Device(models.Model):
         for rec in self:
             rec.is_manager = user.has_group("ni_patient.group_manager")
 
-    @api.depends("state", "is_holder", "is_manager", "pending_request_id")
+    @api.depends(
+        "state", "is_holder", "is_manager", "pending_request_id", "active_repair_id"
+    )
     def _compute_can_request_as_holder(self):
         for rec in self:
             rec.can_request_as_holder = (
@@ -195,6 +202,15 @@ class Device(models.Model):
                 and (rec.is_holder or rec.is_manager)
                 and not rec.pending_request_id
                 and not rec.active_repair_id
+            )
+
+    @api.depends("state", "active_repair_id", "active_repair_id.repair_result")
+    def _compute_is_unrepairable(self):
+        for rec in self:
+            rec.is_unrepairable = (
+                rec.state != "disposed"
+                and rec.active_repair_id
+                and rec.active_repair_id.repair_result == "not_repairable"
             )
 
     def action_request_hold(self):

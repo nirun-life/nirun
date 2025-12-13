@@ -107,6 +107,7 @@
                 <field name="is_manager" invisible="1" />
                 <field name="holder_employee_id" invisible="1" />
                 <field name="can_request_as_holder" invisible="1" />
+                <field name="is_unrepairable" invisible="1" />
                 <header attrs="{'invisible':[('id','=',False)]}">
                     <!-- ไม่มีผู้ถือครอง: ต้องอยู่ในสถานะว่าง  -->
                     <button
@@ -134,7 +135,7 @@
                         name="action_request_dispose"
                         type="object"
                         string="ขอจำหน่ายอุปกรณ์"
-                        attrs="{'invisible': [('can_request_as_holder','=',False)]}"
+                        attrs="{'invisible': [('can_request_as_holder','=',False),('is_unrepairable','=',False)]}"
                     />
                     <!-- ปุ่มแจ้งซ่อม -->
                     <button
@@ -243,7 +244,7 @@
                                 />
                                 <field
                                     name="active_repair_id"
-                                    string="งานซ่อมอยู่ระหว่างดำเนินการ"
+                                    string="ติดตามการแจ้งซ่อม"
                                     attrs="{'invisible':[('active_repair_id','=',False)]}"
                                 />
                                 <field
