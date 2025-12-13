@@ -166,7 +166,7 @@
                                     attrs="{'invisible': [('request_type', '!=', 'request_dispose')]}"
                                     readonly="1"
                                 />
-                                <field name="request_reason" readonly="1" />
+                                <field name="request_reason" readonly="1" widget="html" />
                                 <field
                                     name="image_1920"
                                     style="float: left; margin-right: 10px;"
@@ -204,6 +204,12 @@
                                     attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
                                     readonly="1"
                                 />
+                                <field
+                                    name="acknowledged_date"
+                                    string="At"
+                                    readonly="1"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                                />
                             </group>
                             <group string="Approval">
                                 <field
@@ -229,7 +235,10 @@
                                 />
                                 <field
                                     name="approval_note"
-                                    attrs="{'readonly': [('state','!=','pending')]}"
+                                    type="html"
+                                    options="{'collaborative': true, 'resizable': false}"
+                                    placeholder="Task description..."
+                                    attrs="{'invisible': [('state', 'not in', ['approved', 'rejected'])]}"
                                     readonly="1"
                                 />
                             </group>
