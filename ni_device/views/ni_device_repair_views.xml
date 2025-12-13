@@ -20,7 +20,7 @@
                     decoration-success="state == 'completed'"
                     decoration-danger="state == 'damaged'"
                     decoration-warning="state == 'repairing'"
-                    decoration-muted="state == 'Unrepairable'"
+                    decoration-muted="state == 'unrepairable'"
                 />
                 <field name="repair_duration" />
                 <field name="repair_cost" />
@@ -72,29 +72,29 @@
                                 decoration-success="state == 'completed'"
                                 decoration-danger="state == 'damaged'"
                                 decoration-warning="state == 'repairing'"
-                                decoration-muted="state == 'Unrepairable'"
+                                decoration-muted="state == 'unrepairable'"
                                 readonly="1"
                             />
                             <field name="create_uid" string="ผู้แจ้งซ่อม" />
                         </group>
                     </group>
-                    <notebook attrs="{'invisible': [('state', 'not in', ['completed', 'repairing','Unrepairable'])]}">
+                    <notebook attrs="{'invisible': [('state', 'not in', ['completed', 'repairing','unrepairable'])]}">
                         <page string="ระยะเวลาและค่าใช้จ่าย" icon="fa-clock-o">
                             <group>
-                                <group string="Repair Estimated">
+                                <group string="Repair Estimation">
                                     <field name="estimated_duration" />
                                     <field name="estimated_cost" />
                                 </group>
                                 <group
                                     string="Repair Confirmation"
-                                    attrs="{'invisible': [('state', 'not in', ['completed','Unrepairable'])]}"
+                                    attrs="{'invisible': [('state', 'not in', ['completed','unrepairable'])]}"
                                 >
                                     <field name="repair_duration" />
                                     <field name="repair_cost" />
                                 </group>
                             </group>
                             <br />
-                            <group attrs="{'invisible': [('state', 'not in', ['completed','Unrepairable'])]}">
+                            <group attrs="{'invisible': [('state', 'not in', ['completed','unrepairable'])]}">
                                 <field name="repairing_note" />
                             </group>
                         </page>
@@ -152,16 +152,15 @@
         <field name="arch" type="xml">
             <form string="ยืนยันผลการซ่อม" edit="1" create="0" delete="0">
                 <sheet>
-                    <group>
+                    <group string="Repair Estimation">
                         <field name="estimated_cost" />
                         <field name="estimated_duration" />
                     </group>
-                    <group invisible="context.get('state_action') != 'repair_result'">
+                    <group invisible="context.get('state_action') != 'repair_result'" string="Repair Confirmation
+">
                         <field name="repair_result" widget="radio" />
                         <field name="repair_cost" />
                         <field name="repair_duration" />
-                    </group>
-                    <group>
                         <field name="repairing_note" />
                     </group>
                 </sheet>
