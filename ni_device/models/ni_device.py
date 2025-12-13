@@ -310,6 +310,9 @@ class Device(models.Model):
             "name": "Report Device Repair",
             "res_model": "ni.device.repair",
             "view_mode": "form",
+            "view_id": self.env.ref(
+                "ni_device.ni_device_repair_view_form_wizard_create"
+            ).id,
             "target": "new",  # เปิด popup
             "context": {
                 "default_device_id": self.id,

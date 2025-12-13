@@ -34,18 +34,8 @@
                 <field name="is_holder" invisible="1" />
                 <field name="is_manager" invisible="1" />
                 <header>
-                    <button
-                        name="action_repairing"
-                        type="object"
-                        string="ดำเนินการซ่อม"
-                        attrs="{'invisible': [('|'),('&amp;'),('state', '!=','repairing'),('is_holder', '=',False),('is_manager', '=',False)]}"
-                    />
-                    <button
-                        name="action_repair_result"
-                        type="object"
-                        string="ยืนยันผลการซ่อม"
-                        attrs="{'invisible': [('|'),('&amp;'),('state', '!=','repairing'),('is_holder', '=',False),('is_manager', '=',False)]}"
-                    />
+                    <button name="action_repairing" type="object" string="ดำเนินการซ่อม" />
+                    <button name="action_repair_result" type="object" string="ยืนยันผลการซ่อม" />
                 </header>
                 <sheet>
                     <group>
@@ -94,6 +84,44 @@
             </form>
         </field>
     </record>
+    <record id="ni_device_repair_view_form_wizard_create" model="ir.ui.view">
+        <field name="name">ni.device.repair.view.form.wizard.create</field>
+        <field name="model">ni.device.repair</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="device_id" readonly="1" />
+                        <field
+                            name="device_holder_emp_id"
+                            readonly="1"
+                            widget="many2one_avatar"
+                            attrs="{'invisible': [('device_holder_emp_id','=',False)]}"
+                        />
+                        <field
+                            name="device_holder_id"
+                            readonly="1"
+                            widget="many2one_avatar"
+                            attrs="{'invisible':[('device_holder_emp_id','!=',False)]}"
+                        />
+                        <field name="damage_date" widget="date" />
+                        <field name="note" />
+                        <field
+                            name="image_1920"
+                            style="float: left; margin-right: 10px;"
+                            class="oe_avatar"
+                            options="{'zoom': true}"
+                            widget="image"
+                        />
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_submit" string="Submit" type="object" class="btn-primary" />
+                    <button string="Cancel" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
     <record id="ni_device_repair_view_form_wizard_confirm" model="ir.ui.view">
         <field name="name">ni.device.repair.view.form.wizard.confirm</field>
         <field name="model">ni.device.repair</field>
@@ -110,7 +138,7 @@
                         <field name="repair_duration" />
                     </group>
                     <group>
-                        <field name="note" />
+                        <field name="repairing_note" />
                     </group>
                 </sheet>
                 <footer>

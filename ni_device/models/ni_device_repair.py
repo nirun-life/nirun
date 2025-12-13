@@ -57,7 +57,12 @@ class DeviceRepairHistory(models.Model):
 
     # Additional Details
     note = fields.Html(
-        string="Additional Details",
+        string="Note",
+    )
+
+    # Additional Details
+    repairing_note = fields.Html(
+        string="Repairing Note",
     )
 
     # Repair Process Status
@@ -131,4 +136,20 @@ class DeviceRepairHistory(models.Model):
 
     def action_confirm(self):
         for rec in self.sudo():
-            rec.state = "completed"
+            state_action = rec.env.context.get("state_action")
+
+            # -----------------------
+            # 1) ดำเนินการซ่อม
+            # -----------------------
+            if state_action == "repairing":
+                rec.state = "repairing"
+
+            # -----------------------
+            # 2) ยืนยันผลการซ่อม
+            # -----------------------
+            elif state_action == "repair_result":
+                if rec.repair_result == "not_repairable":
+                    rec.state = "unrepairable"
+                else:
+                    rec.state = "completed"
+                    rec.device_id.availability_status = "available"
