@@ -98,7 +98,7 @@ class DeviceRequest(models.Model):
     # -------------------------
     approved_by = fields.Many2one(
         "res.users",
-        string="Approved By",
+        string="By",
         readonly=True,
     )
 
@@ -183,6 +183,61 @@ class DeviceRequest(models.Model):
                         rec.device_id.state = "pending"
 
     def action_approve(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Approve Request",
+            "res_model": "ni.device.request",
+            "res_id": self.id,  # <<< record เดิม
+            "view_mode": "form",
+            "views": [
+                (
+                    self.env.ref(
+                        "ni_device.ni_device_request_view_form_wizard_approval"
+                    ).id,
+                    "form",
+                )
+            ],
+            "target": "new",
+            "context": {
+                "approval_action": "approve",
+                "default_approved_by": self.env.user.user_id.id,
+            },
+        }
+
+    def action_reject(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Reject Request",
+            "res_model": "ni.device.request",
+            "res_id": self.id,  # <<< record เดิม
+            "view_mode": "form",
+            "views": [
+                (
+                    self.env.ref(
+                        "ni_device.ni_device_request_view_form_wizard_approval"
+                    ).id,
+                    "form",
+                )
+            ],
+            "target": "new",
+            "context": {
+                "approval_action": "reject",
+                "default_approved_by": self.env.user.user_id.id,
+            },
+        }
+
+    def action_confirm_approval(self):
+        for rec in self:
+            action = rec.env.context.get("approval_action")
+
+            if action == "approve":
+                rec._action_approve_confirm()
+            elif action == "reject":
+                rec._action_reject_confirm()
+
+    def _action_approve_confirm(self):
         for rec in self:
             rec.state = "approved"
             rec.approve_date = fields.Datetime.now()
@@ -266,7 +321,7 @@ class DeviceRequest(models.Model):
                 device.holder_id = rec.new_holder_id
                 device.state = "in_use"
 
-    def action_reject(self):
+    def _action_reject_confirm(self):
         for rec in self:
             rec.state = "rejected"
             rec.approve_date = fields.Datetime.now()

@@ -314,4 +314,21 @@
             </form>
         </field>
     </record>
+    <record id="ni_device_request_view_form_wizard_approval" model="ir.ui.view">
+        <field name="name">ni.device.request.view.form.wizard.approval</field>
+        <field name="model">ni.device.request</field>
+        <field name="arch" type="xml">
+            <form string="ยืนยันการอนุมัติ" edit="1" create="0" delete="0">
+                <sheet>
+                    <group>
+                        <field name="approval_note" widget="html" />
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="action_confirm_approval" class="btn-primary" />
+                    <button string="Cancel" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
 </odoo>
