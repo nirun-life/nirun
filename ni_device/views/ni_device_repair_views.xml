@@ -11,10 +11,18 @@
         <field name="model">ni.device.repair</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="device_id" string="ชื่ออุปกรณ์" />
-                <field name="damage_date" string="วันที่เกิดการชำรุด" widget="date" />
-                <field name="repair_duration" string="ระยะเวลาซ่อมแซม" />
-                <field name="repair_cost" string="ค่าใช้จ่าย(บาท)" />
+                <field name="device_id" string="Device Name" />
+                <field name="create_uid" widget="many2one_avatar" />
+                <field name="damage_date" widget="date" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-success="state == 'completed'"
+                    decoration-danger="state == 'damaged'"
+                    decoration-warning="state == 'repairing'"
+                />
+                <field name="repair_duration" />
+                <field name="repair_cost" />
             </tree>
         </field>
     </record>
@@ -125,6 +133,10 @@
                                     <field name="device_id" />
                                 </strong>
                             </div>
+                            <div>
+                                <field name="create_uid" widget="many2one_avatar" />
+                                "
+                            </div>
                             <div class="o_kanban_record_subtitle">
                                 <i class="fa fa-calendar" aria-label="Period" role="img" title="Period" />
                                 <field name="damage_date" widget="date" />
@@ -136,6 +148,15 @@
                             <div>
                                 <label for="repair_cost" class="text-muted me-2">ค่าใช้จ่าย:</label>
                                 <field name="repair_cost" />
+                            </div>
+                            <div class="d-flex justify-content-end mt-auto">
+                                <field
+                                    name="state"
+                                    widget="badge"
+                                    decoration-success="state == 'completed'"
+                                    decoration-danger="state == 'damaged'"
+                                    decoration-warning="state == 'repairing'"
+                                />
                             </div>
                         </div>
                     </t>

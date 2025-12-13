@@ -80,7 +80,7 @@
                 <field name="device_id" />
                 <field name="holder_name" />
                 <field name="create_date" widget="date" />
-                <field name="request_type" optional="hide" />
+                <field name="request_type" optional="show" />
                 <field name="new_holder_name" invisible="not context.get('show_new_holder')" />
                 <field name="request_reason" optional="show" />
                 <field
@@ -96,6 +96,7 @@
                     type="object"
                     string="อนุมัติ"
                     icon="fa-check-circle"
+                    groups="ni_patient.group_manager"
                     attrs="{'invisible': [('state', '!=', 'pending' )]}"
                     class="btn-info"
                 />
