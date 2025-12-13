@@ -44,29 +44,6 @@ class DeviceRepairHistory(models.Model):
         string="Repair Duration (days)",
     )
 
-    # Additional Details
-    note = fields.Html(
-        string="Additional Details",
-    )
-
-    # Repair Process Status
-    state = fields.Selection(
-        [
-            ("damaged", "Damaged"),
-            ("repairing", "Repairing"),
-            ("completed", "Completed"),
-        ],
-        default="damaged",
-        string="Status",
-    )
-
-    # Optional: Technician in charge
-    technician_id = fields.Many2one(
-        "res.partner",
-        string="Technician",
-        domain=[("is_company", "=", False)],
-    )
-
     # Estimated Repair Duration (optional)
     estimated_duration = fields.Float(
         string="Estimated Duration",
@@ -78,15 +55,80 @@ class DeviceRepairHistory(models.Model):
         currency_field="currency_id",
     )
 
-    def action_confirm_repair(self):
-        self.ensure_one()
+    # Additional Details
+    note = fields.Html(
+        string="Additional Details",
+    )
 
+    # Repair Process Status
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("damaged", "Damaged"),
+            ("repairing", "Repairing"),
+            ("completed", "Completed"),
+            ("unrepairable", "Unrepairable"),
+        ],
+        default="draft",
+        string="Status",
+    )
+
+    repair_result = fields.Selection(
+        [
+            ("repaired", "Ready for Use"),
+            ("repaired_limited", "Repaired with Limitations"),
+            ("not_repairable", "Not Repairable"),
+        ],
+        default="repaired",
+        string="Repair Result",
+    )
+
+    # Optional: Technician in charge
+    technician_id = fields.Many2one(
+        "res.partner",
+        string="Technician",
+        domain=[("is_company", "=", False)],
+    )
+
+    def action_submit(self):
+        for rec in self.sudo():  # ← สำคัญ!
+            rec.state = "damaged"
+            rec.device_id.availability_status = "damaged"
+
+    def action_repair_result(self):
+        self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "ยืนยันผลการซ่อม",
+            "name": "Repair Result",  # <<< ยืนยันผลการซ่อม
             "res_model": "ni.device.repair",
+            "res_id": self.id,  # <<< record เดิม
             "view_mode": "form",
-            "view_id": self.env.ref("ni_device.ni_device_repair_view_form").id,
-            "res_id": self.id,  # <<< สำคัญ: เปิด record ปัจจุบัน
-            "target": "new",  # <<< เปิดใน wizard popup
+            "view_id": self.env.ref(
+                "ni_device.ni_device_repair_view_form_wizard_confirm"
+            ).id,
+            "target": "new",
+            "context": {
+                "state_action": "repair_result",
+            },
         }
+
+    def action_repairing(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Begin Repair",  # <<< ดำเนินการซ่อม
+            "res_model": "ni.device.repair",
+            "res_id": self.id,  # <<< record เดิม
+            "view_mode": "form",
+            "view_id": self.env.ref(
+                "ni_device.ni_device_repair_view_form_wizard_confirm"
+            ).id,
+            "target": "new",
+            "context": {
+                "state_action": "repairing",
+            },
+        }
+
+    def action_confirm(self):
+        for rec in self.sudo():
+            rec.state = "completed"

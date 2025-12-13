@@ -82,6 +82,13 @@ class Device(models.Model):
         store=True,
     )
 
+    active_repair_id = fields.Many2one(
+        "ni.device.repair",
+        string="Active Repair",
+        compute="_compute_active_repair",
+        store=True,
+    )
+
     repair_ids = fields.One2many(
         "ni.device.repair",
         "device_id",
@@ -145,6 +152,20 @@ class Device(models.Model):
             else:
                 rec.pending_request_id = False
 
+    @api.depends("repair_ids", "repair_ids.state")
+    def _compute_active_repair(self):
+        for rec in self:
+            # หา repair ที่ยัง
+            current = rec.repair_ids.filtered(
+                lambda r: r.state in ("damaged", "repairing")
+            )
+
+            # ถ้ามีหลายตัว → เอาตัวล่าสุดจาก create_date
+            if current:
+                rec.active_repair_id = current.sorted("create_date")[-1]
+            else:
+                rec.active_repair_id = False
+
     def _search_is_holder(self, operator, value):
         user = self.env.user
         partner_ids = [user.partner_id.id] + self.env["res.partner"].search(
@@ -173,6 +194,7 @@ class Device(models.Model):
                 rec.state == "in_use"
                 and (rec.is_holder or rec.is_manager)
                 and not rec.pending_request_id
+                and not rec.active_repair_id
             )
 
     def action_request_hold(self):
@@ -282,7 +304,6 @@ class Device(models.Model):
     def action_repair(self):
         self.ensure_one()
         # เซ็ตสถานะอุปกรณ์ให้เป็น damaged
-        self.availability_status = "damaged"
 
         return {
             "type": "ir.actions.act_window",

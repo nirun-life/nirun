@@ -201,7 +201,6 @@ class DeviceRequest(models.Model):
             "target": "new",
             "context": {
                 "approval_action": "approve",
-                "default_approved_by": self.env.user.user_id.id,
             },
         }
 
@@ -224,7 +223,6 @@ class DeviceRequest(models.Model):
             "target": "new",
             "context": {
                 "approval_action": "reject",
-                "default_approved_by": self.env.user.user_id.id,
             },
         }
 
