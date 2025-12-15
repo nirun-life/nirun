@@ -8,7 +8,7 @@
                 <field
                     name="name"
                     string="ชื่อ"
-                    filter_domain="['|','|',('name', 'ilike', self), ('identifier', 'ilike', self),('holder_id', 'ilike', self)]"
+                    filter_domain="['|','|',('name', 'ilike', self), ('identifier', 'ilike', self),('holder_partner_id', 'ilike', self)]"
                 />
                 <filter
                     name="available_device"
@@ -107,7 +107,7 @@
                 <field name="is_manager" invisible="1" />
                 <field name="holder_employee_id" invisible="1" />
                 <field name="can_request_as_holder" invisible="1" />
-                <field name="is_unrepairable" invisible="1" />
+                <field name="not_repairable" invisible="1" />
                 <header attrs="{'invisible':[('id','=',False)]}">
                     <!-- ไม่มีผู้ถือครอง: ต้องอยู่ในสถานะว่าง  -->
                     <button
@@ -135,7 +135,7 @@
                         name="action_request_dispose"
                         type="object"
                         string="ขอจำหน่ายอุปกรณ์"
-                        attrs="{'invisible': [('can_request_as_holder','=',False),('is_unrepairable','=',False)]}"
+                        attrs="{'invisible': [('can_request_as_holder','=',False),('not_repairable','=',False)]}"
                     />
                     <!-- ปุ่มแจ้งซ่อม -->
                     <button
@@ -255,11 +255,11 @@
                                     attrs="{'invisible':[('holder_employee_id','=',False)]}"
                                 />
                                 <field
-                                    name="holder_id"
+                                    name="holder_partner_id"
                                     string="ผู้ถือครองอุปกรณ์ปัจจุบัน"
                                     readonly="1"
                                     widget="many2one_avatar"
-                                    attrs="{'invisible':['|',('holder_employee_id','!=',False),('holder_id','=',False)]}"
+                                    attrs="{'invisible':['|',('holder_employee_id','!=',False),('holder_partner_id','=',False)]}"
                                 />
                                 <field name="company_id" string="หน่วยงาน" groups="ni_patient.group_manager" />
                             </group>
@@ -267,7 +267,7 @@
                     </div>
                     <group string="Debug" groups="base.group_no_one">
                         <field name="holder_employee_id" />
-                        <field name="holder_id" />
+                        <field name="holder_partner_id" />
                         <field name="state" />
                         <field name="availability_status" />
                         <field name="holder_history_ids" readonly="1" invisible="True" />
@@ -312,7 +312,7 @@
 
                                     </span>
                                     <span class="ms-1">
-                                        <field name="holder_id" widget="many2one_avatar" />
+                                        <field name="holder_partner_id" widget="many2one_avatar" />
                                     </span>
                                 </div>
                             </div>

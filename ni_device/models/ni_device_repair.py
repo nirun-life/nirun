@@ -14,7 +14,7 @@ class DeviceRepairHistory(models.Model):
         ondelete="cascade",
     )
     device_holder_emp_id = fields.Many2one(related="device_id.holder_employee_id")
-    device_holder_id = fields.Many2one(related="device_id.holder_id")
+    device_holder_partner_id = fields.Many2one(related="device_id.holder_partner_id")
     device_holder_name = fields.Char(related="device_id.holder_name")
     is_holder = fields.Boolean(related="device_id.is_holder")
     is_manager = fields.Boolean(related="device_id.is_manager")
@@ -72,7 +72,7 @@ class DeviceRepairHistory(models.Model):
             ("damaged", "Damaged"),
             ("repairing", "Repairing"),
             ("completed", "Completed"),
-            ("unrepairable", "Unrepairable"),
+            ("not_repairable", "Not Repairable"),
         ],
         default="draft",
         string="Status",
@@ -149,7 +149,7 @@ class DeviceRepairHistory(models.Model):
             # -----------------------
             elif state_action == "repair_result":
                 if rec.repair_result == "not_repairable":
-                    rec.state = "unrepairable"
+                    rec.state = "not_repairable"
                     rec.device_id.availability_status = "damaged"
                 else:
                     rec.state = "completed"

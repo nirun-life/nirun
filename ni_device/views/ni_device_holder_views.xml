@@ -8,7 +8,7 @@
                 <field
                     name="device_id"
                     string="ชื่อ"
-                    filter_domain="['|','|',('device_id', 'ilike', self), ('device_identifier', 'ilike', self),('holder_id', 'ilike', self)]"
+                    filter_domain="['|','|',('device_id', 'ilike', self), ('device_identifier', 'ilike', self),('holder_partner_id', 'ilike', self)]"
                 />
             </search>
         </field>
@@ -30,7 +30,7 @@
                 <field name="holder_name" string="Holder" />
                 <field name="start_date" string="Start Date" widget="date" />
                 <field name="end_date" string="End Date" widget="date" />
-                <field name="holder_id" widget="many2one_avatar" groups="base.group_no_one" optional="hide" />
+                <field name="holder_partner_id" widget="many2one_avatar" groups="base.group_no_one" optional="hide" />
                 <field name="holder_employee_id" widget="many2one_avatar" groups="base.group_no_one" optional="hide" />
             </tree>
         </field>
@@ -52,7 +52,7 @@
                                 <field name="device_identifier" />
                             </div>
                             <div>
-                                <field name="holder_id" widget="many2one_avatar" />
+                                <field name="holder_partner_id" widget="many2one_avatar" />
                             </div>
                             <div class="o_kanban_record_subtitle">
                                 <i class="fa fa-calendar" aria-label="Period" role="img" title="Period" />

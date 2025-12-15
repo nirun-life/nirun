@@ -20,7 +20,7 @@
                     decoration-success="state == 'completed'"
                     decoration-danger="state == 'damaged'"
                     decoration-warning="state == 'repairing'"
-                    decoration-muted="state == 'unrepairable'"
+                    decoration-muted="state == 'not_repairable'"
                 />
                 <field name="repair_duration" />
                 <field name="repair_cost" />
@@ -49,7 +49,7 @@
                                 attrs="{'invisible': [('device_holder_emp_id','=',False)]}"
                             />
                             <field
-                                name="device_holder_id"
+                                name="device_holder_partner_id"
                                 readonly="1"
                                 widget="many2one_avatar"
                                 attrs="{'invisible':[('device_holder_emp_id','!=',False)]}"
@@ -72,13 +72,13 @@
                                 decoration-success="state == 'completed'"
                                 decoration-danger="state == 'damaged'"
                                 decoration-warning="state == 'repairing'"
-                                decoration-muted="state == 'unrepairable'"
+                                decoration-muted="state == 'not_repairable'"
                                 readonly="1"
                             />
                             <field name="create_uid" string="ผู้แจ้งซ่อม" />
                         </group>
                     </group>
-                    <notebook attrs="{'invisible': [('state', 'not in', ['completed', 'repairing','unrepairable'])]}">
+                    <notebook attrs="{'invisible': [('state', 'not in', ['completed', 'repairing','not_repairable'])]}">
                         <page string="ระยะเวลาและค่าใช้จ่าย" icon="fa-clock-o">
                             <group>
                                 <group string="Repair Estimation">
@@ -87,14 +87,14 @@
                                 </group>
                                 <group
                                     string="Repair Confirmation"
-                                    attrs="{'invisible': [('state', 'not in', ['completed','unrepairable'])]}"
+                                    attrs="{'invisible': [('state', 'not in', ['completed','not_repairable'])]}"
                                 >
                                     <field name="repair_duration" />
                                     <field name="repair_cost" />
                                 </group>
                             </group>
                             <br />
-                            <group attrs="{'invisible': [('state', 'not in', ['completed','unrepairable'])]}">
+                            <group attrs="{'invisible': [('state', 'not in', ['completed','not_repairable'])]}">
                                 <field name="repairing_note" />
                             </group>
                         </page>
@@ -123,7 +123,7 @@
                             attrs="{'invisible': [('device_holder_emp_id','=',False)]}"
                         />
                         <field
-                            name="device_holder_id"
+                            name="device_holder_partner_id"
                             readonly="1"
                             widget="many2one_avatar"
                             attrs="{'invisible':[('device_holder_emp_id','!=',False)]}"

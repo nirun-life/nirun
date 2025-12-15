@@ -109,8 +109,8 @@ class Device(models.Model):
         store=False,
     )
 
-    is_unrepairable = fields.Boolean(
-        compute="_compute_is_unrepairable",
+    not_repairable = fields.Boolean(
+        compute="_compute_is_not_repairable",
         store=False,
     )
 
@@ -129,18 +129,21 @@ class Device(models.Model):
         for rec in self:
             rec.repair_count = len(rec.repair_ids)
 
-    @api.depends("holder_id", "holder_id.user_id")
+    @api.depends("holder_partner_id", "holder_partner_id.user_id")
     def _compute_is_holder(self):
         current_user = self.env.user
         current_partner = current_user.partner_id
         for rec in self:
             rec.is_holder = False
-            if not rec.holder_id:
+            if not rec.holder_partner_id:
                 continue
             # ครอบคลุมทั้งกรณี partner ถูกผูกกับ user และกรณี partner ตรงกับ user's partner
-            if rec.holder_id.user_id and rec.holder_id.user_id == current_user:
+            if (
+                rec.holder_partner_id.user_id
+                and rec.holder_partner_id.user_id == current_user
+            ):
                 rec.is_holder = True
-            elif rec.holder_id == current_partner:
+            elif rec.holder_partner_id == current_partner:
                 rec.is_holder = True
             else:
                 rec.is_holder = False
@@ -162,7 +165,7 @@ class Device(models.Model):
         for rec in self:
             # หา repair ที่ยัง
             current = rec.repair_ids.filtered(
-                lambda r: r.state in ("damaged", "repairing", "unrepairable")
+                lambda r: r.state in ("damaged", "repairing", "not_repairable")
             )
 
             # ถ้ามีหลายตัว → เอาตัวล่าสุดจาก create_date
@@ -178,12 +181,12 @@ class Device(models.Model):
         ).ids
 
         if value:  # is_holder = True
-            return [("holder_id", "in", partner_ids)]
+            return [("holder_partner_id", "in", partner_ids)]
         else:  # is_holder = False
             return [
                 "|",
-                ("holder_id", "not in", partner_ids),
-                ("holder_id", "=", False),
+                ("holder_partner_id", "not in", partner_ids),
+                ("holder_partner_id", "=", False),
             ]
 
     @api.depends()
@@ -205,9 +208,9 @@ class Device(models.Model):
             )
 
     @api.depends("state", "active_repair_id", "active_repair_id.repair_result")
-    def _compute_is_unrepairable(self):
+    def _compute_is_not_repairable(self):
         for rec in self:
-            rec.is_unrepairable = (
+            rec.not_repairable = (
                 rec.state != "disposed"
                 and rec.active_repair_id
                 and rec.active_repair_id.repair_result == "not_repairable"

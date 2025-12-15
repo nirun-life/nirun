@@ -155,7 +155,7 @@
                                     attrs="{'invisible': [('holder_employee_id','=',False)]}"
                                 />
                                 <field
-                                    name="holder_id"
+                                    name="holder_partner_id"
                                     readonly="1"
                                     widget="many2one_avatar"
                                     attrs="{'invisible':[('holder_employee_id','!=',False)]}"
@@ -195,7 +195,7 @@
                                     attrs="{'invisible': ['|',('request_type', '!=', 'request_transfer'),('new_holder_employee_id','=',False)]}"
                                 />
                                 <field
-                                    name="new_holder_id"
+                                    name="new_holder_partner_id"
                                     widget="many2one_avatar"
                                     readonly="1"
                                     attrs="{'invisible':['|',('request_type', '!=', 'request_transfer'),('new_holder_employee_id','!=',False)]}"
@@ -248,11 +248,11 @@
                     <group string="Debug" groups="base.group_no_one" attrs="{'invisible':[('state','=','draft')]}">
                         <group>
                             <field name="holder_employee_id" />
-                            <field name="holder_id" />
+                            <field name="holder_partner_id" />
                         </group>
                         <group>
                             <field name="new_holder_employee_id" />
-                            <field name="new_holder_id" />
+                            <field name="new_holder_partner_id" />
                         </group>
                         <group>
                             <field name="state" />
@@ -282,10 +282,10 @@
                             attrs="{'invisible': ['|',('holder_employee_id','=',False),('request_type','=','request_hold')]}"
                         />
                         <field
-                            name="holder_id"
+                            name="holder_partner_id"
                             readonly="1"
                             widget="many2one_avatar"
-                            attrs="{'invisible':['|','|',('holder_employee_id','!=',False),('holder_id','=',False),('request_type','=','request_hold')]}"
+                            attrs="{'invisible':['|','|',('holder_employee_id','!=',False),('holder_partner_id','=',False),('request_type','=','request_hold')]}"
                         />
                     </group>
                     <group
@@ -299,7 +299,10 @@
                             widget="many2one_avatar"
                             attrs="{'invisible': [('new_holder_type','!=','employee')]}"
                         />
-                        <field name="new_holder_id" attrs="{'invisible': [('new_holder_type','!=','partner')]}" />
+                        <field
+                            name="new_holder_partner_id"
+                            attrs="{'invisible': [('new_holder_type','!=','partner')]}"
+                        />
                     </group>
                     <group string="Detail">
                         <field

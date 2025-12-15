@@ -75,7 +75,7 @@ class DeviceRequest(models.Model):
 
     new_holder_name = fields.Char("New Holder Name", compute="_compute_new_holder_name")
 
-    new_holder_id = fields.Many2one(
+    new_holder_partner_id = fields.Many2one(
         "res.partner",
         string="New Holder",
     )
@@ -116,7 +116,7 @@ class DeviceRequest(models.Model):
         for rec in self:
             if rec.new_holder_type == "partner":
                 rec.new_holder_employee_id = False
-                rec.new_holder_id = False
+                rec.new_holder_partner_id = False
 
     @api.onchange("new_holder_employee_id")
     def _onchange_new_holder_employee(self):
@@ -127,24 +127,24 @@ class DeviceRequest(models.Model):
                     rec.new_holder_employee_id.user_id.partner_id
                     or rec.new_holder_employee_id.address_home_id
                 )
-                rec.new_holder_id = partner  # สำหรับ field new_holder_id
+                rec.new_holder_partner_id = partner  # สำหรับ field new_holder_id
 
                 if rec.request_type == "request_hold":
                     rec.holder_employee_id = rec.new_holder_employee_id.id
-                    rec.holder_id = partner
+                    rec.holder_partner_id = partner
 
     # ---------------------------------------------------
     # Compute Fields
     # ---------------------------------------------------
 
-    @api.depends("new_holder_employee_id", "new_holder_id")
+    @api.depends("new_holder_employee_id", "new_holder_partner_id")
     def _compute_new_holder_name(self):
         for rec in self:
             rec.new_holder_name = (
-                rec.new_holder_employee_id.name or rec.new_holder_id.name or ""
+                rec.new_holder_employee_id.name or rec.new_holder_partner_id.name or ""
             )
 
-    @api.depends("new_holder_id", "new_holder_id.user_id")
+    @api.depends("new_holder_partner_id", "new_holder_partner_id.user_id")
     def _compute_is_transfer_holder(self):
 
         current_user = self.env.user
@@ -153,15 +153,15 @@ class DeviceRequest(models.Model):
             rec.is_transfer_holder = False
 
             if rec.request_type == "request_transfer":
-                if not rec.new_holder_id:
+                if not rec.new_holder_partner_id:
                     continue
                 # ครอบคลุมทั้งกรณี partner ถูกผูกกับ user และกรณี partner ตรงกับ user's partner
                 if (
-                    rec.new_holder_id.user_id
-                    and rec.new_holder_id.user_id == current_user
+                    rec.new_holder_partner_id.user_id
+                    and rec.new_holder_partner_id.user_id == current_user
                 ):
                     rec.is_transfer_holder = True
-                elif rec.new_holder_id == current_partner:
+                elif rec.new_holder_partner_id == current_partner:
                     rec.is_transfer_holder = True
                 else:
                     rec.is_transfer_holder = False
@@ -265,7 +265,9 @@ class DeviceRequest(models.Model):
                         "holder_employee_id": rec.holder_employee_id.id
                         if rec.holder_employee_id
                         else False,
-                        "holder_id": rec.holder_id.id if rec.holder_id else False,
+                        "holder_partner_id": rec.holder_partner_id.id
+                        if rec.holder_partner_id
+                        else False,
                         "start_date": approve_date,
                         "request_id": rec.id,
                     }
@@ -273,7 +275,7 @@ class DeviceRequest(models.Model):
 
                 # อัปเดต device
                 device.holder_employee_id = rec.holder_employee_id
-                device.holder_id = rec.holder_id
+                device.holder_partner_id = rec.holder_partner_id
                 device.state = "in_use"
 
             # ==================================================
@@ -285,7 +287,7 @@ class DeviceRequest(models.Model):
 
                 # อัปเดต device
                 device.holder_employee_id = False
-                device.holder_id = False
+                device.holder_partner_id = False
                 device.state = (
                     "available" if rec.request_type == "request_return" else "disposed"
                 )
@@ -306,8 +308,8 @@ class DeviceRequest(models.Model):
                         "holder_employee_id": rec.new_holder_employee_id.id
                         if rec.new_holder_employee_id
                         else False,
-                        "holder_id": rec.new_holder_id.id
-                        if rec.new_holder_id
+                        "holder_partner_id": rec.new_holder_partner_id.id
+                        if rec.new_holder_partner_id
                         else False,
                         "start_date": approve_date,
                         "request_id": rec.id,
@@ -316,7 +318,7 @@ class DeviceRequest(models.Model):
 
                 # อัปเดต device
                 device.holder_employee_id = rec.new_holder_employee_id
-                device.holder_id = rec.new_holder_id
+                device.holder_partner_id = rec.new_holder_partner_id
                 device.state = "in_use"
 
     def _action_reject_confirm(self):
