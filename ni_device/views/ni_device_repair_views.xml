@@ -4,7 +4,7 @@
         <field name="name">ประวัติการซ่อมแซมอุปกรณ์</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device.repair</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">kanban,tree,form</field>
     </record>
     <record id="ni_device_repair_view_tree" model="ir.ui.view">
         <field name="name">ni.device.repair.view.tree</field>
@@ -155,6 +155,7 @@
                     <group string="Repair Estimation">
                         <field name="estimated_cost" />
                         <field name="estimated_duration" />
+                        <field name="technician_id" />
                     </group>
                     <group invisible="context.get('state_action') != 'repair_result'" string="Repair Confirmation
 ">
@@ -175,10 +176,34 @@
         <field name="name">ni.device.repair.view.kanban</field>
         <field name="model">ni.device.repair</field>
         <field name="arch" type="xml">
-            <kanban>
+            <kanban default_group_by="state">
+                <field name="state" />
                 <templates>
+                    <!-- 🔹 HEADER ของแต่ละ column -->
+                    <!--                    <t t-name="kanban-group">-->
+                    <!--                        <div class="o_kanban_group">-->
+                    <!--                            <div class="o_kanban_group_header o_kanban_group_title"-->
+                    <!--                                 t-attf-class="-->
+                    <!--                #{'bg-success text-white' if group.value == 'completed' else ''}-->
+                    <!--                #{'bg-warning text-dark' if group.value == 'repairing' else ''}-->
+                    <!--                #{'bg-danger text-white' if group.value == 'damaged' else ''}-->
+                    <!--                #{'bg-secondary text-white' if group.value == 'not_repairable' else ''}-->
+                    <!--             ">-->
+                    <!--                                <strong>-->
+                    <!--                                    <t t-esc="group.display_name" />-->
+                    <!--                                    (<t t-esc="len(group.records)" />)-->
+                    <!--                                </strong>-->
+                    <!--                            </div>-->
+                    <!--                            <div class="o_kanban_group_content">-->
+                    <!--                                <t t-foreach="group.records" t-as="record">-->
+                    <!--                                    <t t-call="kanban-box" />-->
+                    <!--                                </t>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                    </t>-->
+                    <!-- 🔹 CARD -->
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_details">
+                        <div class="oe_kanban_details d-flex flex-column" style="height:100%;">
                             <div class="o_kanban_record_headings">
                                 <strong class="o_kanban_record_title">
                                     <field name="device_id" />
@@ -189,7 +214,12 @@
                                 "
                             </div>
                             <div class="o_kanban_record_subtitle">
-                                <i class="fa fa-calendar" aria-label="Period" role="img" title="Period" />
+                                <i
+                                    class="fa fa-exclamation-triangle text-primary"
+                                    aria-label="Period"
+                                    role="img"
+                                    title="Period"
+                                />
                                 <field name="damage_date" widget="date" />
                             </div>
                             <div>
@@ -200,15 +230,17 @@
                                 <label for="repair_cost" class="text-muted me-2">ค่าใช้จ่าย:</label>
                                 <field name="repair_cost" />
                             </div>
-                            <div class="d-flex justify-content-end mt-auto">
-                                <field
-                                    name="state"
-                                    widget="badge"
-                                    decoration-success="state == 'completed'"
-                                    decoration-danger="state == 'damaged'"
-                                    decoration-warning="state == 'repairing'"
-                                />
-                            </div>
+                            <!-- มุมล่างขวา -->
+                            <!--                            <div class="d-flex justify-content-end mt-auto">-->
+                            <!--                                <field-->
+                            <!--                                    name="state"-->
+                            <!--                                    widget="badge"-->
+                            <!--                                    decoration-success="state == 'completed'"-->
+                            <!--                                    decoration-danger="state == 'damaged'"-->
+                            <!--                                    decoration-warning="state == 'repairing'"-->
+                            <!--                                    decoration-muted="state == 'not_repairable'"-->
+                            <!--                                />-->
+                            <!--                            </div>-->
                         </div>
                     </t>
                 </templates>
