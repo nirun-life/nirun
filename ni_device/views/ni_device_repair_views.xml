@@ -84,6 +84,7 @@
                                 <group string="Repair Estimation">
                                     <field name="estimated_duration" />
                                     <field name="estimated_cost" />
+                                    <field name="technician_id" />
                                 </group>
                                 <group
                                     string="Repair Confirmation"
@@ -179,31 +180,8 @@
             <kanban default_group_by="state">
                 <field name="state" />
                 <templates>
-                    <!-- 🔹 HEADER ของแต่ละ column -->
-                    <!--                    <t t-name="kanban-group">-->
-                    <!--                        <div class="o_kanban_group">-->
-                    <!--                            <div class="o_kanban_group_header o_kanban_group_title"-->
-                    <!--                                 t-attf-class="-->
-                    <!--                #{'bg-success text-white' if group.value == 'completed' else ''}-->
-                    <!--                #{'bg-warning text-dark' if group.value == 'repairing' else ''}-->
-                    <!--                #{'bg-danger text-white' if group.value == 'damaged' else ''}-->
-                    <!--                #{'bg-secondary text-white' if group.value == 'not_repairable' else ''}-->
-                    <!--             ">-->
-                    <!--                                <strong>-->
-                    <!--                                    <t t-esc="group.display_name" />-->
-                    <!--                                    (<t t-esc="len(group.records)" />)-->
-                    <!--                                </strong>-->
-                    <!--                            </div>-->
-                    <!--                            <div class="o_kanban_group_content">-->
-                    <!--                                <t t-foreach="group.records" t-as="record">-->
-                    <!--                                    <t t-call="kanban-box" />-->
-                    <!--                                </t>-->
-                    <!--                            </div>-->
-                    <!--                        </div>-->
-                    <!--                    </t>-->
-                    <!-- 🔹 CARD -->
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_details d-flex flex-column" style="height:100%;">
+                        <div class="oe_kanban_global_click d-flex flex-column" style="height:100%;">
                             <div class="o_kanban_record_headings">
                                 <strong class="o_kanban_record_title">
                                     <field name="device_id" />
@@ -211,7 +189,6 @@
                             </div>
                             <div>
                                 <field name="create_uid" widget="many2one_avatar" />
-                                "
                             </div>
                             <div class="o_kanban_record_subtitle">
                                 <i
@@ -230,17 +207,6 @@
                                 <label for="repair_cost" class="text-muted me-2">ค่าใช้จ่าย:</label>
                                 <field name="repair_cost" />
                             </div>
-                            <!-- มุมล่างขวา -->
-                            <!--                            <div class="d-flex justify-content-end mt-auto">-->
-                            <!--                                <field-->
-                            <!--                                    name="state"-->
-                            <!--                                    widget="badge"-->
-                            <!--                                    decoration-success="state == 'completed'"-->
-                            <!--                                    decoration-danger="state == 'damaged'"-->
-                            <!--                                    decoration-warning="state == 'repairing'"-->
-                            <!--                                    decoration-muted="state == 'not_repairable'"-->
-                            <!--                                />-->
-                            <!--                            </div>-->
                         </div>
                     </t>
                 </templates>
