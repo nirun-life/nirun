@@ -172,14 +172,14 @@
             <form string="ยืนยันผลการซ่อม" edit="1" create="0" delete="0">
                 <sheet>
                     <group string="Repair Estimation">
+                        <field name="technician_id" />
                         <field name="estimated_cost" />
                         <field name="estimated_duration" />
-                        <field name="technician_id" />
                     </group>
                     <group invisible="context.get('state_action') != 'repair_result'" string="Repair Confirmation">
-                        <field name="repair_result" widget="radio" />
                         <field name="repair_cost" />
                         <field name="repair_duration" />
+                        <field name="repair_result" widget="radio" />
                         <field
                             name="repairing_note"
                             attrs="{'required': [('repair_result', 'not in', ['repaired'])]}"
