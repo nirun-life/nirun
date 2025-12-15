@@ -219,6 +219,7 @@
                                 <field name="serial_number" />
                                 <field name="model_number" />
                                 <field name="manufacture_date" />
+                                <field name="received_date" />
                                 <field name="price" />
                             </group>
                             <group>
@@ -236,6 +237,11 @@
                                     decoration-success="state == 'available'"
                                     decoration-warning="state == 'pending'"
                                     decoration-info="state == 'in_use'"
+                                />
+                                <field
+                                    name="disposed_date"
+                                    string="วันที่จำหน่าย"
+                                    attrs="{'invisible':[('state','!=','disposed')]}"
                                 />
                                 <field
                                     name="pending_request_id"
@@ -261,7 +267,7 @@
                                     widget="many2one_avatar"
                                     attrs="{'invisible':['|',('holder_employee_id','!=',False),('holder_partner_id','=',False)]}"
                                 />
-                                <field name="company_id" string="หน่วยงาน" groups="ni_patient.group_manager" />
+                                <field name="company_id" string="หน่วยงาน" groups="base.group_multi_company" />
                             </group>
                         </group>
                     </div>

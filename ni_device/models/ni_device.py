@@ -30,6 +30,7 @@ class Device(models.Model):
         string="Device Types",
         help="Examples: Blood Pressure Monitor, Weighing Scale, Thermometer",
     )
+
     availability_status = fields.Selection(
         [
             ("available", "Available"),
@@ -94,10 +95,15 @@ class Device(models.Model):
         string="Repair History",
     )
 
-    is_holder = fields.Boolean(
-        compute="_compute_is_holder", store=False, search="_search_is_holder"
+    received_date = fields.Date(
+        string="Received Date",
+        help="The date the device was received and registered in the system.",
     )
-    is_manager = fields.Boolean(compute="_compute_is_manager", store=False)
+    disposed_date = fields.Datetime(
+        string="Disposed Date",
+        store=True,
+        readonly=True,
+    )
 
     holder_history_count = fields.Integer(compute="_compute_holder_history_count")
     request_count = fields.Integer(compute="_compute_request_count")
@@ -128,25 +134,6 @@ class Device(models.Model):
         for rec in self:
             rec.repair_count = len(rec.repair_ids)
 
-    @api.depends("holder_partner_id", "holder_partner_id.user_id")
-    def _compute_is_holder(self):
-        current_user = self.env.user
-        current_partner = current_user.partner_id
-        for rec in self:
-            rec.is_holder = False
-            if not rec.holder_partner_id:
-                continue
-            # ครอบคลุมทั้งกรณี partner ถูกผูกกับ user และกรณี partner ตรงกับ user's partner
-            if (
-                rec.holder_partner_id.user_id
-                and rec.holder_partner_id.user_id == current_user
-            ):
-                rec.is_holder = True
-            elif rec.holder_partner_id == current_partner:
-                rec.is_holder = True
-            else:
-                rec.is_holder = False
-
     @api.depends("request_ids", "request_ids.state")
     def _compute_pending_request(self):
         for rec in self:
@@ -173,27 +160,6 @@ class Device(models.Model):
             else:
                 rec.active_repair_id = False
 
-    def _search_is_holder(self, operator, value):
-        user = self.env.user
-        partner_ids = [user.partner_id.id] + self.env["res.partner"].search(
-            [("user_id", "=", user.id)]
-        ).ids
-
-        if value:  # is_holder = True
-            return [("holder_partner_id", "in", partner_ids)]
-        else:  # is_holder = False
-            return [
-                "|",
-                ("holder_partner_id", "not in", partner_ids),
-                ("holder_partner_id", "=", False),
-            ]
-
-    @api.depends()
-    def _compute_is_manager(self):
-        user = self.env.user
-        for rec in self:
-            rec.is_manager = user.has_group("ni_patient.group_manager")
-
     @api.depends(
         "state", "is_holder", "is_manager", "pending_request_id", "active_repair_id"
     )
@@ -215,110 +181,6 @@ class Device(models.Model):
                 and rec.active_repair_id.repair_result == "not_repairable"
             )
 
-    def action_request_hold(self):
-        """เปิด wizard ni.device.request แบบ form view"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Request Device Holding",
-            "res_model": "ni.device.request",
-            "view_mode": "form",
-            "views": [
-                (
-                    self.env.ref("ni_device.ni_device_request_view_form_wizard").id,
-                    "form",
-                ),
-            ],
-            "target": "new",  # เปิดเป็น popup modal
-            "context": {
-                "default_device_id": self.id,
-                "default_request_type": "request_hold",
-                "default_company_id": self.company_id.id,
-                "default_holder_employee_id": self.env.user.employee_id.id
-                if self.env.user.employee_id
-                else False,
-                "default_new_holder_employee_id": self.env.user.employee_id.id
-                if self.env.user.employee_id
-                else False,
-            },
-        }
-
-    def action_request_return(self):
-        """เปิด wizard ni.device.request แบบ form view"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Return Device",
-            "res_model": "ni.device.request",
-            "view_mode": "form",
-            "views": [
-                (
-                    self.env.ref("ni_device.ni_device_request_view_form_wizard").id,
-                    "form",
-                ),
-            ],
-            "target": "new",  # เปิดเป็น popup modal
-            "context": {
-                "default_device_id": self.id,
-                "default_request_type": "request_return",
-                "default_company_id": self.company_id.id,
-                "default_holder_employee_id": self.env.user.employee_id.id
-                if self.env.user.employee_id
-                else False,
-            },
-        }
-
-    def action_request_transfer(self):
-        """เปิด wizard ni.device.request แบบ form view"""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Transfer Holder",
-            "res_model": "ni.device.request",
-            "view_mode": "form",
-            "views": [
-                (
-                    self.env.ref("ni_device.ni_device_request_view_form_wizard").id,
-                    "form",
-                ),
-            ],
-            "target": "new",  # เปิดเป็น popup modal
-            "context": {
-                "default_device_id": self.id,
-                "default_request_type": "request_transfer",
-                "default_company_id": self.company_id.id,
-                "default_holder_employee_id": self.env.user.employee_id.id
-                if self.env.user.employee_id
-                else False,
-            },
-        }
-
-    def action_request_dispose(self):
-        """เปิด wizard ni.device.request แบบ form view"""
-        self.ensure_one()
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Device Disposal",
-            "res_model": "ni.device.request",
-            "view_mode": "form",
-            "views": [
-                (
-                    self.env.ref("ni_device.ni_device_request_view_form_wizard").id,
-                    "form",
-                ),
-            ],
-            "target": "new",  # เปิดเป็น popup modal
-            "context": {
-                "default_device_id": self.id,
-                "default_request_type": "request_dispose",
-                "default_company_id": self.company_id.id,
-                "default_holder_employee_id": self.env.user.employee_id.id
-                if self.env.user.employee_id
-                else False,
-            },
-        }
-
     def action_repair(self):
         self.ensure_one()
         # เซ็ตสถานะอุปกรณ์ให้เป็น damaged
@@ -336,4 +198,87 @@ class Device(models.Model):
                 "default_device_id": self.id,
                 "default_damage_date": fields.Datetime.now(),
             },
+        }
+
+    def action_request_hold(self):
+        return self._action_open_request_wizard(
+            request_type="request_hold",
+            action_name="Request Device Holding",
+            employee_source="current_user",
+            include_new_holder=True,
+        )
+
+    def action_request_return(self):
+        return self._action_open_request_wizard(
+            request_type="request_return",
+            action_name="Return Device",
+            employee_source="device_holder",
+        )
+
+    def action_request_transfer(self):
+        return self._action_open_request_wizard(
+            request_type="request_transfer",
+            action_name="Transfer Holder",
+            employee_source="device_holder",
+        )
+
+    def action_request_dispose(self):
+        return self._action_open_request_wizard(
+            request_type="request_dispose",
+            action_name="Device Disposal",
+            employee_source="device_holder",
+        )
+
+    def _action_open_request_wizard(
+        self,
+        *,
+        request_type,
+        action_name,
+        employee_source="current_user",  # current_user | device_holder
+        include_new_holder=False,
+    ):
+        self.ensure_one()
+
+        if employee_source == "device_holder":
+            employee = self.holder_employee_id
+        else:
+            employee = self.env.user.employee_id
+
+        partner = (
+            (employee.user_id.partner_id or employee.address_home_id)
+            if employee
+            else False
+        )
+
+        context = {
+            "default_device_id": self.id,
+            "default_request_type": request_type,
+            "default_company_id": self.company_id.id,
+            "default_holder_employee_id": employee.id if employee else False,
+            "default_holder_partner_id": partner.id if partner else False,
+        }
+
+        if include_new_holder:
+            context.update(
+                {
+                    "default_new_holder_employee_id": employee.id
+                    if employee
+                    else False,
+                    "default_new_holder_partner_id": partner.id if partner else False,
+                }
+            )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": action_name,
+            "res_model": "ni.device.request",
+            "view_mode": "form",
+            "views": [
+                (
+                    self.env.ref("ni_device.ni_device_request_view_form_wizard").id,
+                    "form",
+                ),
+            ],
+            "target": "new",
+            "context": context,
         }

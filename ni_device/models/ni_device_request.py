@@ -24,7 +24,6 @@ class DeviceRequest(models.Model):
         related="device_id.identifier", string="Device Identifier"
     )
     company_id = fields.Many2one(related="device_id.company_id")
-    is_holder = fields.Boolean(related="device_id.is_holder")
 
     # -------------------------
     # Request Type (Workflow)
@@ -91,7 +90,10 @@ class DeviceRequest(models.Model):
         readonly=True,
     )
 
-    is_transfer_holder = fields.Boolean(compute="_compute_is_transfer_holder")
+    is_transfer_to_me = fields.Boolean(
+        compute="_compute_is_transfer_to_me",
+        search="_search_is_transfer_to_me",
+    )
 
     # -------------------------
     # Approval System
@@ -145,26 +147,39 @@ class DeviceRequest(models.Model):
             )
 
     @api.depends("new_holder_partner_id", "new_holder_partner_id.user_id")
-    def _compute_is_transfer_holder(self):
+    def _compute_is_transfer_to_me(self):
+        user = self.env.user
+        partner = user.partner_id
 
-        current_user = self.env.user
-        current_partner = current_user.partner_id
         for rec in self:
-            rec.is_transfer_holder = False
+            rec.is_transfer_to_me = (
+                rec.request_type == "request_transfer"
+                and rec.new_holder_partner_id
+                and (
+                    rec.new_holder_partner_id.user_id == user
+                    or rec.new_holder_partner_id == partner
+                )
+            )
 
-            if rec.request_type == "request_transfer":
-                if not rec.new_holder_partner_id:
-                    continue
-                # ครอบคลุมทั้งกรณี partner ถูกผูกกับ user และกรณี partner ตรงกับ user's partner
-                if (
-                    rec.new_holder_partner_id.user_id
-                    and rec.new_holder_partner_id.user_id == current_user
-                ):
-                    rec.is_transfer_holder = True
-                elif rec.new_holder_partner_id == current_partner:
-                    rec.is_transfer_holder = True
-                else:
-                    rec.is_transfer_holder = False
+    def _search_is_transfer_to_me(self, operator, value):
+        if operator not in ("=", "!="):
+            raise NotImplementedError()
+
+        user = self.env.user
+        partner = user.partner_id
+
+        domain = [
+            ("request_type", "=", "request_transfer"),
+            ("new_holder_partner_id", "!=", False),
+            "|",
+            ("new_holder_partner_id.user_id", "=", user.id),
+            ("new_holder_partner_id", "=", partner.id),
+        ]
+
+        if (operator == "=" and not value) or (operator == "!=" and value):
+            return ["!"] + domain
+
+        return domain
 
     @api.depends("device_id", "device_id.image_1920")
     def _compute_device_image(self):
@@ -285,6 +300,9 @@ class DeviceRequest(models.Model):
                 if last_history:
                     last_history.end_date = approve_date
 
+                if rec.request_type in ["request_dispose"]:
+                    device.disposed_date = approve_date
+
                 # อัปเดต device
                 device.holder_employee_id = False
                 device.holder_partner_id = False
@@ -334,7 +352,7 @@ class DeviceRequest(models.Model):
     def action_acknowledged(self):
         for rec in self.sudo():
             if rec.request_type == "request_transfer":
-                if rec.is_transfer_holder:
+                if rec.is_transfer_to_me:
                     rec.acknowledged = True
                     rec.acknowledged_date = fields.Datetime.now()
 

@@ -25,7 +25,7 @@
         <field name="name">คำขอถือครองอุปกรณ์ของฉัน</field>
         <field name="res_model">ni.device.request</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('|'), ('is_holder', '=', True), ('is_transfer_holder', '=', True)]</field>
+        <field name="domain">[('|'), ('is_holder', '=', True), ('is_transfer_to_me', '=', True)]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
         </field>
@@ -110,9 +110,9 @@
             <form string="ขออนุมัติการถือครองอุปกรณ์" create="0">
                 <field name="state" invisible="1" />
                 <field name="is_holder" invisible="1" />
-                <field name="is_transfer_holder" invisible="1" />
                 <field name="acknowledged" invisible="1" />
                 <field name="company_id" invisible="1" />
+                <field name="is_transfer_to_me" invisible="1" />
                 <header>
                     <button
                         name="action_acknowledged"
@@ -120,7 +120,7 @@
                         string="รับทราบ"
                         class="btn-primary oe_highlight"
                         groups="ni_patient.group_user"
-                        attrs="{'invisible': ['|','|',('state','=','draft'),('acknowledged', '=', True),('is_transfer_holder', '=', False)]}"
+                        attrs="{'invisible': ['|','|',('state','=','draft'),('acknowledged', '=', True),('is_transfer_to_me', '=', False)]}"
                     />
                     <button
                         name="action_approve"
@@ -184,7 +184,7 @@
                                 />
                                 <field
                                     name="company_id"
-                                    groups="ni_patient.group_manager"
+                                    groups="base.group_multi_company"
                                     readonly="True"
                                     attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
                                 />
@@ -257,7 +257,7 @@
                         <group>
                             <field name="state" />
                             <field name="is_holder" />
-                            <field name="is_transfer_holder" />
+                            <field name="is_transfer_to_me" />
                         </group>
                     </group>
                 </sheet>
@@ -292,7 +292,7 @@
                         string="New Holder"
                         attrs="{'invisible':[('request_type','!=','request_hold'),('request_type','!=','request_transfer')]}"
                     >
-                        <field name="company_id" groups="ni_patient.group_manager" readonly="True" />
+                        <field name="company_id" groups="base.group_multi_company" readonly="True" />
                         <field name="new_holder_type" widget="radio" options="{'horizontal': True}" />
                         <field
                             name="new_holder_employee_id"
