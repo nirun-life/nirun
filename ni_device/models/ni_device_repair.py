@@ -95,6 +95,15 @@ class DeviceRepairHistory(models.Model):
         domain=[("is_company", "=", False)],
     )
 
+    can_action_as_holder = fields.Boolean(
+        compute="_compute_can_action_as_holder",
+        store=False,
+    )
+
+    def _compute_can_action_as_holder(self):
+        for rec in self:
+            rec.can_action_as_holder = rec.is_holder or rec.is_manager
+
     def action_submit(self):
         for rec in self.sudo():  # ← สำคัญ!
             rec.state = "damaged"

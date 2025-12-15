@@ -9,7 +9,7 @@
         <field name="name">ni.device.repair.view.tree</field>
         <field name="model">ni.device.repair</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree create="0">
                 <field name="device_id" string="Device Name" />
                 <field name="create_uid" widget="many2one_avatar" />
                 <field name="damage_date" widget="date" />
@@ -33,9 +33,28 @@
             <form create="0" edit="0">
                 <field name="is_holder" invisible="1" />
                 <field name="is_manager" invisible="1" />
+                <field name="can_action_as_holder" invisible="1" />
                 <header>
-                    <button name="action_begin_repair" type="object" string="ดำเนินการซ่อม" />
-                    <button name="action_repair_result" type="object" string="ยืนยันผลการซ่อม" />
+                    <button
+                        name="action_begin_repair"
+                        string="ดำเนินการซ่อม"
+                        type="object"
+                        class="btn-primary"
+                        attrs="{'invisible':['|',('state','!=','damaged'),('can_action_as_holder','=',False)]}"
+                    />
+                    <button
+                        name="action_repair_result"
+                        string="ยืนยันผลการซ่อม"
+                        type="object"
+                        attrs="{'invisible':['|',('state','!=','damaged'),('can_action_as_holder','=',False)]}"
+                    />
+                    <button
+                        name="action_repair_result"
+                        string="ยืนยันผลการซ่อม"
+                        type="object"
+                        class="btn-primary"
+                        attrs="{'invisible':['|',('state','!=','repairing'),('can_action_as_holder','=',False)]}"
+                    />
                 </header>
                 <sheet>
                     <group>
