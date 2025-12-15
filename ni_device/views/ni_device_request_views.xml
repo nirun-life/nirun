@@ -335,7 +335,11 @@
             <form string="ยืนยันการอนุมัติ" edit="1" create="0" delete="0">
                 <sheet>
                     <group>
-                        <field name="approval_note" widget="html" />
+                        <field
+                            name="approval_note"
+                            widget="html"
+                            required="context.get('approval_action') == 'reject'"
+                        />
                     </group>
                 </sheet>
                 <footer>

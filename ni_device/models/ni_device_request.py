@@ -205,14 +205,9 @@ class DeviceRequest(models.Model):
             "res_model": "ni.device.request",
             "res_id": self.id,  # <<< record เดิม
             "view_mode": "form",
-            "views": [
-                (
-                    self.env.ref(
-                        "ni_device.ni_device_request_view_form_wizard_approval"
-                    ).id,
-                    "form",
-                )
-            ],
+            "view_id": self.env.ref(
+                "ni_device.ni_device_request_view_form_wizard_approval"
+            ).id,
             "target": "new",
             "context": {
                 "approval_action": "approve",
@@ -227,14 +222,9 @@ class DeviceRequest(models.Model):
             "res_model": "ni.device.request",
             "res_id": self.id,  # <<< record เดิม
             "view_mode": "form",
-            "views": [
-                (
-                    self.env.ref(
-                        "ni_device.ni_device_request_view_form_wizard_approval"
-                    ).id,
-                    "form",
-                )
-            ],
+            "view_id": self.env.ref(
+                "ni_device.ni_device_request_view_form_wizard_approval"
+            ).id,
             "target": "new",
             "context": {
                 "approval_action": "reject",
