@@ -40,10 +40,9 @@ class Device(models.Model):
         default="available",
         string="Availability Status",
     )
-    metric_ids = fields.Many2many(
-        "ni.device.metric",
-        string="Supported Health Metrics",
-        help="e.g., Blood Pressure, Temperature, Weight",
+
+    observation_ids = fields.Many2many(
+        "ni.observation.type", string="Supported Observation Type"
     )
     state = fields.Selection(
         [
