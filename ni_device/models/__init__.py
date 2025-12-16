@@ -6,3 +6,4 @@ from . import ni_device_request
 from . import ni_device_holder
 from . import ni_device_repair
 from . import ni_device_dispose_type
+from . import ni_device_label_layout

@@ -108,6 +108,7 @@
                 <field name="holder_employee_id" invisible="1" />
                 <field name="can_request_as_holder" invisible="1" />
                 <field name="not_repairable" invisible="1" />
+                <field name="barcode" invisible="1" />
                 <header attrs="{'invisible':[('id','=',False)]}">
                     <!-- ไม่มีผู้ถือครอง: ต้องอยู่ในสถานะว่าง  -->
                     <button
@@ -143,6 +144,12 @@
                         type="object"
                         string="แจ้งซ่อม"
                         attrs="{'invisible': [('can_request_as_holder','=',False)]}"
+                    />
+                    <button
+                        name="action_print_device_label"
+                        type="object"
+                        string="พิมพ์ฉลาก"
+                        attrs="{'invisible': [('barcode', '=',False )]}"
                     />
                 </header>
                 <sheet>
@@ -272,6 +279,7 @@
                         </group>
                     </div>
                     <group string="Debug" groups="base.group_no_one">
+                        <field name="barcode" />
                         <field name="holder_employee_id" />
                         <field name="holder_partner_id" />
                         <field name="state" />

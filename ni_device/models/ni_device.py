@@ -25,6 +25,8 @@ class Device(models.Model):
     serial_number = fields.Char("Serial Number")
     model_number = fields.Char("Model")
     price = fields.Float("Price")
+    barcode = fields.Char(string="Barcode", related="identifier")
+
     type_ids = fields.Many2many(
         "ni.device.type",
         string="Device Types",
@@ -282,3 +284,21 @@ class Device(models.Model):
             "target": "new",
             "context": context,
         }
+
+    def action_open_label_layout(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Print Device Labels",
+            "res_model": "ni.device.label.layout",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_device_id": self.id,
+                "default_quantity": 1,
+            },
+        }
+
+    def action_print_device_label(self):
+        self.ensure_one()
+        return self.env.ref("ni_device.action_report_device_label").report_action(self)
