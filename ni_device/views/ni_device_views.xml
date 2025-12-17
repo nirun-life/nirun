@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ni_device_view_search" model="ir.ui.view">
+        <field name="name">ni.device.view.search</field>
+        <field name="model">ni.device</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="name"
+                    string="ชื่อ"
+                    filter_domain="['|','|',('name', 'ilike', self), ('identifier', 'ilike', self),('holder_partner_id', 'ilike', self)]"
+                />
+                <filter
+                    name="available_device"
+                    string="อุปกรณ์ที่ว่างอยู่"
+                    domain="[('state','=','available'),('availability_status','=','available')]"
+                />
+                <filter name="my_device" string="อุปกรณ์ของฉัน" domain="[('is_holder','=',True)]" />
+                <searchpanel>
+                    <field name="state" string="สถานะ" enable_counters="1" icon="fa-circle" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_device_action" model="ir.actions.act_window">
+        <field name="name">ทะเบียนอุปกรณ์ทั้งหมด</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.device</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+    <record id="ni_device_available_action" model="ir.actions.act_window">
+        <field name="name">ทะเบียนอุปกรณ์ที่ว่างอยู่</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.device</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">
+            {
+                'search_default_available_device': 1
+            }
+        </field>
+    </record>
+    <record id="ni_device_action_my_device" model="ir.actions.act_window">
+        <field name="name">อุปกรณ์ของฉัน</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.device</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">
+            {
+                'search_default_my_device': 1
+            }
+        </field>
+    </record>
+    <record id="ni_device_repair_action_this" model="ir.actions.act_window">
+        <field name="name">ประวัติการซ่อมอุปกรณ์</field>
+        <field name="res_model">ni.device.repair</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('device_id', '=', active_id)]</field>
+    </record>
+    <record id="ni_device_holder_action_this" model="ir.actions.act_window">
+        <field name="name">ประวัติการถือครองอุปกรณ์</field>
+        <field name="res_model">ni.device.holder</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('device_id', '=', active_id)]</field>
+    </record>
+    <record id="ni_device_request_action_this" model="ir.actions.act_window">
+        <field name="name">คำขอถือครองอุปกรณ์</field>
+        <field name="res_model">ni.device.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('device_id', '=', active_id)]</field>
+    </record>
+    <record id="ni_device_view_tree" model="ir.ui.view">
+        <field name="name">ni.device.view.tree</field>
+        <field name="model">ni.device</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="identifier" />
+                <field name="name" />
+                <field name="type_ids" widget="many2many_tags" string="ประเภทอุปกรณ์" />
+                <field
+                    name="availability_status"
+                    widget="badge"
+                    string="สถานะความพร้อมใช้งาน"
+                    decoration-success="availability_status == 'available'"
+                    decoration-danger="availability_status == 'damaged'"
+                    optional="hide"
+                />
+                <field
+                    name="state"
+                    widget="badge"
+                    string="สถานะการถือครอง"
+                    decoration-success="state == 'available'"
+                    decoration-warning="state == 'pending'"
+                    decoration-info="state == 'in_use'"
+                />
+                <field name="holder_name" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" />
+                <field name="create_date" optional="hide" widget="date" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_device_view_form" model="ir.ui.view">
+        <field name="name">ni.device.view.form</field>
+        <field name="model">ni.device</field>
+        <field name="arch" type="xml">
+            <form string="อุปกรณ์ตรวจสุขภาพ">
+                <field name="repair_count" invisible="1" />
+                <field name="is_holder" invisible="1" />
+                <field name="is_manager" invisible="1" />
+                <field name="holder_employee_id" invisible="1" />
+                <field name="can_request_as_holder" invisible="1" />
+                <field name="not_repairable" invisible="1" />
+                <field name="barcode" invisible="1" />
+                <header attrs="{'invisible':[('id','=',False)]}">
+                    <!-- ไม่มีผู้ถือครอง: ต้องอยู่ในสถานะว่าง  -->
+                    <button
+                        name="action_request_hold"
+                        type="object"
+                        string="ขอถือครอง"
+                        class="btn-primary oe_highlight"
+                        attrs="{'invisible': ['|', ('availability_status', '!=', 'available'), ('state', '!=', 'available')]}"
+                    />
+                    <!-- ========== มีผู้ถือครอง: ผู้ถือครอง และ manager เท่านั้นที่กดได้ ========== -->
+                    <button
+                        name="action_request_return"
+                        type="object"
+                        string="ขอคืนอุปกรณ์"
+                        class="oe_highlight"
+                        attrs="{'invisible': [('can_request_as_holder','=',False)]}"
+                    />
+                    <button
+                        name="action_request_transfer"
+                        type="object"
+                        string="ขอเปลี่ยนผู้ถือครอง"
+                        attrs="{'invisible': [('can_request_as_holder','=',False)]}"
+                    />
+                    <button
+                        name="action_request_dispose"
+                        type="object"
+                        string="ขอจำหน่ายอุปกรณ์"
+                        attrs="{'invisible': [('can_request_as_holder','=',False),('not_repairable','=',False)]}"
+                    />
+                    <!-- ปุ่มแจ้งซ่อม -->
+                    <button
+                        name="action_repair"
+                        type="object"
+                        string="แจ้งซ่อม"
+                        attrs="{'invisible': [('can_request_as_holder','=',False)]}"
+                    />
+                    <button
+                        name="action_print_device_label"
+                        type="object"
+                        string="พิมพ์ฉลาก"
+                        attrs="{'invisible': [('barcode', '=',False )]}"
+                    />
+                </header>
+                <sheet>
+                    <div
+                        name="button_box"
+                        attrs="{'invisible': [('id', '=', False)]}"
+                        class="oe_button_box"
+                        groups="ni_patient.group_user"
+                    >
+                        <button
+                            name="ni_device.ni_device_repair_action_this"
+                            attrs="{'invisible': [('repair_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-wrench"
+                            type="action"
+                        >
+                            <field name="repair_count" string="การซ่อมแซม" widget="statinfo" />
+                        </button>
+                        <button
+                            name="ni_device.ni_device_holder_action_this"
+                            attrs="{'invisible': [('holder_history_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-address-card"
+                            type="action"
+                        >
+                            <field name="holder_history_count" string="การถือครอง" widget="statinfo" />
+                        </button>
+                        <button
+                            name="ni_device.ni_device_request_action_this"
+                            attrs="{'invisible': [('request_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-check-square-o"
+                            type="action"
+                            groups="ni_patient.group_manager"
+                        >
+                            <field name="request_count" string="คำขออนุมัติ" widget="statinfo" />
+                        </button>
+                    </div>
+                    <field name="image_1920" class="oe_avatar" options="{'zoom': true}" widget="image" />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('availability_status', '!=', 'damaged' )]}"
+                        bg_color="bg-danger"
+                        title="ชำรุด"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('availability_status', '!=', 'lost' )]}"
+                        bg_color="bg-dark"
+                        title="สูญหาย"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        attrs="{'invisible': [('state', '!=', 'disposed' )]}"
+                        bg_color="bg-dark"
+                        title="จำหน่ายแล้ว"
+                    />
+                    <div class="oe_title">
+                        <!-- ========== TITLE (ชื่ออุปกรณ์) ========== -->
+                        <field name="identifier" attrs="{'invisible':[('id','=',False)]}" />
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                        <br />
+                        <group>
+                            <group>
+                                <field name="type_ids" widget="many2many_tags" string="ประเภทอุปกรณ์" />
+                                <field name="observation_ids" widget="many2many_tags" string="ประเภทข้อมูลตรวจวัด" />
+                                <field
+                                    name="manufacturer_id"
+                                    domain="[('is_company', '=', True)]"
+                                    context="{'default_is_company': True}"
+                                />
+                                <field name="serial_number" />
+                                <field name="model_number" />
+                                <field name="manufacture_date" />
+                                <field name="received_date" />
+                                <field name="price" />
+                            </group>
+                            <group>
+                                <field
+                                    name="availability_status"
+                                    widget="badge"
+                                    string="สถานะความพร้อมใช้งาน"
+                                    decoration-success="availability_status == 'available'"
+                                    decoration-danger="availability_status == 'damaged'"
+                                />
+                                <field
+                                    name="state"
+                                    widget="badge"
+                                    string="สถานะการถือครอง"
+                                    decoration-success="state == 'available'"
+                                    decoration-warning="state == 'pending'"
+                                    decoration-info="state == 'in_use'"
+                                />
+                                <field
+                                    name="disposed_date"
+                                    string="วันที่จำหน่าย"
+                                    attrs="{'invisible':[('state','!=','disposed')]}"
+                                />
+                                <field
+                                    name="pending_request_id"
+                                    string="คำขอที่รออนุมัติ"
+                                    attrs="{'invisible':[('pending_request_id','=',False)]}"
+                                />
+                                <field
+                                    name="active_repair_id"
+                                    string="ติดตามการแจ้งซ่อม"
+                                    attrs="{'invisible':[('active_repair_id','=',False)]}"
+                                />
+                                <field
+                                    name="holder_employee_id"
+                                    string="ผู้ถือครองอุปกรณ์ปัจจุบัน"
+                                    readonly="1"
+                                    widget="many2one_avatar"
+                                    attrs="{'invisible':[('holder_employee_id','=',False)]}"
+                                />
+                                <field
+                                    name="holder_partner_id"
+                                    string="ผู้ถือครองอุปกรณ์ปัจจุบัน"
+                                    readonly="1"
+                                    widget="many2one_avatar"
+                                    attrs="{'invisible':['|',('holder_employee_id','!=',False),('holder_partner_id','=',False)]}"
+                                />
+                                <field name="company_id" string="หน่วยงาน" groups="base.group_multi_company" />
+                            </group>
+                        </group>
+                    </div>
+                    <group string="Debug" groups="base.group_no_one">
+                        <field name="barcode" />
+                        <field name="holder_employee_id" />
+                        <field name="holder_partner_id" />
+                        <field name="state" />
+                        <field name="availability_status" />
+                        <field name="holder_history_ids" readonly="1" invisible="True" />
+                        <field name="request_ids" readonly="1" invisible="True" />
+                        <field name="repair_ids" readonly="1" invisible="True" />
+                        <field name="is_holder" invisible="True" />
+                        <field name="is_manager" invisible="True" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_device_view_kanban" model="ir.ui.view">
+        <field name="name">ni.device.view.kanban</field>
+        <field name="model">ni.device</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="image_128" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click o_kanban_card ">
+                            <div class="o_kanban_image me-1 ">
+                                <field
+                                    name="image_128"
+                                    class="oe_avatar o_image_64_contain"
+                                    options="{'zoom': true}"
+                                    widget="image"
+                                    style="width: 100%; height: 100%; object-fit: cover;"
+                                />
+                            </div>
+                            <div class="oe_kanban_details">
+                                <div name="kanban_top" class="o_kanban_record_top mb-1">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name" />
+                                        </strong>
+                                    </div>
+                                </div>
+                                <field name="identifier" />
+                                <div class="o_kanban_record_top mb-1 d-flex">
+                                    <span class="text-muted" style="white-space: nowrap;">
+
+                                    </span>
+                                    <span class="ms-1">
+                                        <field name="holder_partner_id" widget="many2one_avatar" />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end mt-auto">
+                                <field
+                                    name="state"
+                                    widget="badge"
+                                    decoration-success="state == 'available'"
+                                    decoration-warning="state == 'pending'"
+                                    decoration-info="state == 'in_use'"
+                                />
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

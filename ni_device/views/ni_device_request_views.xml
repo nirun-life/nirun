@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ni_device_request_view_search" model="ir.ui.view">
+        <field name="name">ni.device.request.view.search</field>
+        <field name="model">ni.device.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <searchpanel>
+                    <field name="state" enable_counters="1" icon="fa-circle" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_device_request_action" model="ir.actions.act_window">
+        <field name="name">คำขอถือครองอุปกรณ์ทั้งหมด</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.device.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+        </field>
+    </record>
+    <!-- คำขอถือครองอุปกรณ์ของฉัน -->
+    <record id="ni_device_request_my_action" model="ir.actions.act_window">
+        <field name="name">คำขอถือครองอุปกรณ์ของฉัน</field>
+        <field name="res_model">ni.device.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('|'), ('is_holder', '=', True), ('is_transfer_to_me', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+        </field>
+    </record>
+    <!-- คำขอถือครองอุปกรณ์ -->
+    <record id="ni_device_request_action_hold" model="ir.actions.act_window">
+        <field name="name">คำขอถือครองอุปกรณ์</field>
+        <field name="res_model">ni.device.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_type', '=', 'request_hold')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+        </field>
+    </record>
+    <!-- คำขอคืนอุปกรณ์ -->
+    <record id="ni_device_request_action_return" model="ir.actions.act_window">
+        <field name="name">คำขอคืนอุปกรณ์</field>
+        <field name="res_model">ni.device.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_type', '=', 'request_return')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+        </field>
+    </record>
+    <!-- คำขอเปลี่ยนผู้ถือครอง -->
+    <record id="ni_device_request_action_transfer" model="ir.actions.act_window">
+        <field name="name">คำขอเปลี่ยนผู้ถือครอง</field>
+        <field name="res_model">ni.device.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_type', '=', 'request_transfer')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+        </field>
+        <field name="context">{'show_new_holder': 1}</field>
+    </record>
+    <!-- คำขอจำหน่ายอุปกรณ์ -->
+    <record id="ni_device_request_action_dispose" model="ir.actions.act_window">
+        <field name="name">คำขอจำหน่ายอุปกรณ์</field>
+        <field name="res_model">ni.device.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_type', '=', 'request_dispose')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+        </field>
+    </record>
+    <record id="ni_device_request_view_tree" model="ir.ui.view">
+        <field name="name">ni.device.request.view.tree</field>
+        <field name="model">ni.device.request</field>
+        <field name="arch" type="xml">
+            <tree string="ประวัติผู้ถือครองอุปกรณ์" create="0">
+                <field name="identifier" />
+                <field name="device_id" />
+                <field name="holder_name" />
+                <field name="create_date" widget="date" />
+                <field name="request_type" optional="show" />
+                <field name="new_holder_name" invisible="not context.get('show_new_holder')" />
+                <field name="request_reason" optional="show" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-success="state == 'approved'"
+                    decoration-warning="state == 'pending'"
+                    decoration-danger="state == 'rejected'"
+                />
+                <field name="write_date" string="วันที่แก้ไข" widget="date" optional="hide" />
+                <button
+                    name="action_approve"
+                    type="object"
+                    string="อนุมัติ"
+                    icon="fa-check-circle"
+                    groups="ni_patient.group_manager"
+                    attrs="{'invisible': [('state', '!=', 'pending' )]}"
+                    class="btn-info"
+                />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_device_request_view_form" model="ir.ui.view">
+        <field name="name">ni.device.request.view.form</field>
+        <field name="model">ni.device.request</field>
+        <field name="arch" type="xml">
+            <form string="ขออนุมัติการถือครองอุปกรณ์" create="0">
+                <field name="state" invisible="1" />
+                <field name="is_holder" invisible="1" />
+                <field name="acknowledged" invisible="1" />
+                <field name="company_id" invisible="1" />
+                <field name="is_transfer_to_me" invisible="1" />
+                <header>
+                    <button
+                        name="action_acknowledged"
+                        type="object"
+                        string="รับทราบ"
+                        class="btn-primary oe_highlight"
+                        groups="ni_patient.group_user"
+                        attrs="{'invisible': ['|','|',('state','=','draft'),('acknowledged', '=', True),('is_transfer_to_me', '=', False)]}"
+                    />
+                    <button
+                        name="action_approve"
+                        type="object"
+                        string="อนุมัติ"
+                        class="btn-primary oe_highlight"
+                        groups="ni_patient.group_manager"
+                        attrs="{'invisible': [('state', '!=', 'pending')]}"
+                    />
+                    <button
+                        name="action_reject"
+                        type="object"
+                        string="ไม่อนุมัติ"
+                        groups="ni_patient.group_manager"
+                        attrs="{'invisible': [('state', '!=', 'pending')]}"
+                    />
+                </header>
+                <sheet>
+                    <field name="device_image" class="oe_avatar" options="{'zoom': true}" widget="image" readonly="1" />
+                    <div class="oe_title">
+                        <field name="identifier" readonly="1" />
+                        <h1>
+                            <field name="device_id" readonly="1" />
+                        </h1>
+                        <group>
+                            <group string="Detail">
+                                <field name="device_identifier" readonly="1" />
+                                <field
+                                    name="holder_employee_id"
+                                    readonly="1"
+                                    widget="many2one_avatar"
+                                    attrs="{'invisible': [('holder_employee_id','=',False)]}"
+                                />
+                                <field
+                                    name="holder_partner_id"
+                                    readonly="1"
+                                    widget="many2one_avatar"
+                                    attrs="{'invisible':[('holder_employee_id','!=',False)]}"
+                                />
+                                <field name="request_type" readonly="1" />
+                                <field name="create_date" string="Request Date" readonly="1" />
+                                <field
+                                    name="dispose_type_id"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_dispose')]}"
+                                    readonly="1"
+                                />
+                                <field name="request_reason" readonly="1" widget="html" />
+                                <field
+                                    name="image_1920"
+                                    style="float: left; margin-right: 10px;"
+                                    class="oe_avatar"
+                                    options="{'zoom': true}"
+                                    widget="image"
+                                    readonly="1"
+                                    attrs="{'invisible':[('request_type','=', 'request_hold')]}"
+                                />
+                                <!--                            <group string="New Holder"-->
+                                <!--                                 attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}">-->
+                                <separator
+                                    string="New Holder"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                                />
+                                <field
+                                    name="company_id"
+                                    groups="base.group_multi_company"
+                                    readonly="True"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                                />
+                                <field
+                                    name="new_holder_employee_id"
+                                    widget="many2one_avatar"
+                                    readonly="1"
+                                    attrs="{'invisible': ['|',('request_type', '!=', 'request_transfer'),('new_holder_employee_id','=',False)]}"
+                                />
+                                <field
+                                    name="new_holder_partner_id"
+                                    widget="many2one_avatar"
+                                    readonly="1"
+                                    attrs="{'invisible':['|',('request_type', '!=', 'request_transfer'),('new_holder_employee_id','!=',False)]}"
+                                />
+                                <field
+                                    name="acknowledged"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                                    readonly="1"
+                                />
+                                <field
+                                    name="acknowledged_date"
+                                    string="At"
+                                    readonly="1"
+                                    attrs="{'invisible': [('request_type', '!=', 'request_transfer')]}"
+                                />
+                            </group>
+                            <group string="Approval">
+                                <field
+                                    name="state"
+                                    readonly="1"
+                                    widget="badge"
+                                    decoration-success="state == 'approved'"
+                                    decoration-warning="state == 'pending'"
+                                    decoration-danger="state == 'rejected'"
+                                />
+                                <field
+                                    name="approved_by"
+                                    string="By"
+                                    readonly="1"
+                                    attrs="{'invisible': [('state','=','pending')]}"
+                                    widget="many2one_avatar"
+                                />
+                                <field
+                                    name="approve_date"
+                                    string="At"
+                                    readonly="1"
+                                    attrs="{'invisible': [('state', 'not in', ['approved', 'rejected'])]}"
+                                />
+                                <field
+                                    name="approval_note"
+                                    type="html"
+                                    options="{'collaborative': true, 'resizable': false}"
+                                    placeholder="Task description..."
+                                    attrs="{'invisible': [('state', 'not in', ['approved', 'rejected'])]}"
+                                    readonly="1"
+                                />
+                            </group>
+                        </group>
+                    </div>
+                    <group string="Debug" groups="base.group_no_one" attrs="{'invisible':[('state','=','draft')]}">
+                        <group>
+                            <field name="holder_employee_id" />
+                            <field name="holder_partner_id" />
+                        </group>
+                        <group>
+                            <field name="new_holder_employee_id" />
+                            <field name="new_holder_partner_id" />
+                        </group>
+                        <group>
+                            <field name="state" />
+                            <field name="is_holder" />
+                            <field name="is_transfer_to_me" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_device_request_view_form_wizard" model="ir.ui.view">
+        <field name="name">ni.device.request.view.form.wizard</field>
+        <field name="model">ni.device.request</field>
+        <field name="arch" type="xml">
+            <form string="คำขอถือครองอุปกรณ์">
+                <field name="state" invisible="1" />
+                <field name="company_id" invisible="1" />
+                <sheet>
+                    <group>
+                        <field name="request_type" readonly="1" />
+                        <field name="device_id" readonly="1" />
+                        <field
+                            name="holder_employee_id"
+                            readonly="1"
+                            widget="many2one_avatar"
+                            attrs="{'invisible': ['|',('holder_employee_id','=',False),('request_type','=','request_hold')]}"
+                        />
+                        <field
+                            name="holder_partner_id"
+                            readonly="1"
+                            widget="many2one_avatar"
+                            attrs="{'invisible':['|','|',('holder_employee_id','!=',False),('holder_partner_id','=',False),('request_type','=','request_hold')]}"
+                        />
+                    </group>
+                    <group
+                        string="New Holder"
+                        attrs="{'invisible':[('request_type','!=','request_hold'),('request_type','!=','request_transfer')]}"
+                    >
+                        <field name="company_id" groups="base.group_multi_company" readonly="True" />
+                        <field name="new_holder_type" widget="radio" options="{'horizontal': True}" />
+                        <field
+                            name="new_holder_employee_id"
+                            widget="many2one_avatar"
+                            attrs="{'invisible': [('new_holder_type','!=','employee')]}"
+                        />
+                        <field
+                            name="new_holder_partner_id"
+                            attrs="{'invisible': [('new_holder_type','!=','partner')]}"
+                        />
+                    </group>
+                    <group string="Detail">
+                        <field
+                            name="dispose_type_id"
+                            attrs="{'invisible': [('request_type', '!=', 'request_dispose')]}"
+                        />
+                        <field name="request_reason" />
+                        <field
+                            name="image_1920"
+                            style="float: left; margin-right: 10px;"
+                            class="oe_avatar"
+                            options="{'zoom': true}"
+                            widget="image"
+                            attrs="{'invisible': [('request_type', '=', 'request_hold')]}"
+                        />
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="ni_device_request_view_form_wizard_approval" model="ir.ui.view">
+        <field name="name">ni.device.request.view.form.wizard.approval</field>
+        <field name="model">ni.device.request</field>
+        <field name="arch" type="xml">
+            <form string="ยืนยันการอนุมัติ" edit="1" create="0" delete="0">
+                <sheet>
+                    <group>
+                        <field
+                            name="approval_note"
+                            widget="html"
+                            required="context.get('approval_action') == 'reject'"
+                        />
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="action_confirm_approval" class="btn-primary" />
+                    <button string="Cancel" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

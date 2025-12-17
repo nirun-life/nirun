@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ni_device_holder_view_search" model="ir.ui.view">
+        <field name="name">ni.device.holder.view.search</field>
+        <field name="model">ni.device.holder</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="device_id"
+                    string="ชื่อ"
+                    filter_domain="['|','|',('device_id', 'ilike', self), ('device_identifier', 'ilike', self),('holder_partner_id', 'ilike', self)]"
+                />
+            </search>
+        </field>
+    </record>
+    <record id="ni_device_holder_action" model="ir.actions.act_window">
+        <field name="name">ประวัติการถือครองอุปกรณ์ทั้งหมด</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.device.holder</field>
+        <field name="view_mode">tree,kanban</field>
+    </record>
+    <record id="ni_device_holder_view_tree" model="ir.ui.view">
+        <field name="name">ni.device.holder.view.tree</field>
+        <field name="model">ni.device.holder</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" decoration-muted="end_date" decoration-info="not end_date">
+                <field name="request_id" string="รหัสคำขอ" invisible="1" />
+                <field name="device_identifier" string="Identifier" />
+                <field name="device_id" string="Device Name" />
+                <field name="holder_name" string="Holder" />
+                <field name="start_date" string="Start Date" widget="date" />
+                <field name="end_date" string="End Date" widget="date" />
+                <field name="holder_partner_id" widget="many2one_avatar" groups="base.group_no_one" optional="hide" />
+                <field name="holder_employee_id" widget="many2one_avatar" groups="base.group_no_one" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_device_holder_view_kanban" model="ir.ui.view">
+        <field name="name">ni.device.holder.view.kanban</field>
+        <field name="model">ni.device.holder</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_details">
+                            <div class="o_kanban_record_headings">
+                                <strong class="o_kanban_record_title">
+                                    <field name="device_id" />
+                                </strong>
+                            </div>
+                            <div>
+                                <field name="device_identifier" />
+                            </div>
+                            <div>
+                                <field name="holder_partner_id" widget="many2one_avatar" />
+                            </div>
+                            <div class="o_kanban_record_subtitle">
+                                <i class="fa fa-calendar" aria-label="Period" role="img" title="Period" />
+                                <field name="start_date" widget="date" />
+                                -
+                                <t t-if="record.end_date.raw_value">
+                                    <field name="end_date" widget="date" />
+                                </t>
+                                <t t-else="">Now</t>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>
