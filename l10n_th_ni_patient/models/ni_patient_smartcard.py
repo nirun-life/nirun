@@ -26,6 +26,10 @@ class PatientSmartcard(models.Model):
     )
     reader = fields.Char("เครื่องอ่านบัตร")
     device = fields.Char("อุปกรณ์")
+    device_serial_number = fields.Char(string="Serial Number")
+    latitude = fields.Float(digits=(10, 7), help="Where the card was reading")
+    longitude = fields.Float(digits=(10, 7), help="Where the card was reading")
+
     card_data = fields.Text(required=True)
     card_expire_date = fields.Date("วันบัตรหมดอายุ")
     card_issue_date = fields.Date("วันออกบัตร")
