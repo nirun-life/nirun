@@ -35,8 +35,8 @@
         <field name="name">ni.device.repair.view.form</field>
         <field name="model">ni.device.repair</field>
         <field name="arch" type="xml">
-            <form create="0" edit="0">
-                <field name="company_id" />
+            <form create="0">
+                <field name="company_id" invisible="1" />
                 <field name="is_holder" invisible="1" />
                 <field name="is_manager" invisible="1" />
                 <field name="can_action_as_holder" invisible="1" />
@@ -78,11 +78,12 @@
                                 widget="many2one_avatar"
                                 attrs="{'invisible':[('device_holder_emp_id','!=',False)]}"
                             />
-                            <field name="damage_date" string="วันที่เกิดการชำรุด" widget="date" />
-                            <field name="note" string="หมายเหตุ" />
+                            <field name="damage_date" string="วันที่เกิดการชำรุด" readonly="1" widget="date" />
+                            <field name="note" string="หมายเหตุ" readonly="1" />
                             <field
                                 name="image_1920"
                                 string="ภาพประกอบ"
+                                readonly="1"
                                 style="float: left; margin-right: 10px;"
                                 class="oe_avatar"
                                 options="{'zoom': true}"
@@ -99,28 +100,29 @@
                                 decoration-muted="state == 'not_repairable'"
                                 readonly="1"
                             />
-                            <field name="create_uid" string="ผู้แจ้งซ่อม" />
+                            <field name="create_uid" string="ผู้แจ้งซ่อม" readonly="1" />
                         </group>
                     </group>
                     <notebook attrs="{'invisible': [('state', 'not in', ['completed', 'repairing','not_repairable'])]}">
                         <page string="ระยะเวลาและค่าใช้จ่าย" icon="fa-clock-o">
                             <group>
                                 <group string="Repair Estimation">
-                                    <field name="estimated_duration" />
-                                    <field name="estimated_cost" />
-                                    <field name="technician_id" />
+                                    <field name="estimated_duration" readonly="1" />
+                                    <field name="estimated_cost" readonly="1" />
+                                    <field name="technician_id" readonly="1" />
                                 </group>
                                 <group
                                     string="Repair Confirmation"
+                                    readonly="1"
                                     attrs="{'invisible': [('state', 'not in', ['completed','not_repairable'])]}"
                                 >
-                                    <field name="repair_duration" />
-                                    <field name="repair_cost" />
+                                    <field name="repair_duration" readonly="1" />
+                                    <field name="repair_cost" readonly="1" />
                                 </group>
                             </group>
                             <br />
                             <group attrs="{'invisible': [('state', 'not in', ['completed','not_repairable'])]}">
-                                <field name="repairing_note" />
+                                <field name="repairing_note" readonly="1" />
                             </group>
                         </page>
                     </notebook>
@@ -128,6 +130,8 @@
                         <field name="is_holder" readonly="1" />
                         <field name="is_manager" readonly="1" />
                         <field name="state" />
+                        <field name="repair_duration" />
+                        <field name="repair_cost" />
                     </group>
                 </sheet>
             </form>

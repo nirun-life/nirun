@@ -1,4 +1,3 @@
-#  Copyright (c) 2025 NSTDA
 import logging
 
 from odoo import api, fields, models
@@ -9,7 +8,13 @@ _logger = logging.getLogger(__name__)
 class Device(models.Model):
     _name = "ni.device"
     _description = "Device Registry"
-    _inherit = ["ni.identifier.mixin", "image.mixin", "mail.thread", "ni.holder.mixin"]
+    _inherit = [
+        "ni.identifier.mixin",
+        "image.mixin",
+        "mail.thread",
+        "ni.holder.mixin",
+        "age.mixin",
+    ]
     _rec_name = "name"
     _order = "name"
 
@@ -39,12 +44,14 @@ class Device(models.Model):
         "Serial Number",
         required=True,
         help="If no serial number is available, you may enter - instead.",
+        tracking=True,
     )
     model_number = fields.Char(
         "Model",
         compute="_compute_from_definition",
         store=True,
         readonly=False,
+        tracking=True,
     )
     currency_id = fields.Many2one(
         "res.currency", required=True, default=lambda self: self.env.company.currency_id
@@ -52,6 +59,7 @@ class Device(models.Model):
     price = fields.Monetary(
         "Price",
         currency_field="currency_id",
+        tracking=True,
     )
     barcode = fields.Char(string="Barcode", related="identifier")
 
@@ -139,17 +147,26 @@ class Device(models.Model):
         "device_id",
         string="Repair History",
     )
+    repair_cost = fields.Monetary(
+        string="Repair Cost",
+        currency_field="currency_id",
+        compute="_compute_repair_cost",
+        store=True,
+    )
 
     received_date = fields.Date(
         string="Received Date",
         help="The date the device was received and registered in the system.",
         required=True,
+        tracking=True,
     )
-    disposed_date = fields.Datetime(
+    disposed_date = fields.Date(
         string="Disposed Date",
         store=True,
         readonly=True,
     )
+    birthdate = fields.Date(related="received_date")
+    deceased_date = fields.Date(related="disposed_date")
 
     holder_history_count = fields.Integer(compute="_compute_holder_history_count")
     request_count = fields.Integer(compute="_compute_request_count")
@@ -165,6 +182,11 @@ class Device(models.Model):
         compute="_compute_is_not_repairable",
         store=False,
     )
+
+    @api.depends("repair_ids.repair_cost")
+    def _compute_repair_cost(self):
+        for rec in self:
+            rec.repair_cost = sum(rec.repair_ids.mapped("repair_cost"))
 
     # ── Compute from Definition ────────────────────────────────────────────────
 
@@ -250,8 +272,6 @@ class Device(models.Model):
                 and rec.active_repair_id
                 and rec.active_repair_id.repair_result == "not_repairable"
             )
-
-    # ── Actions ────────────────────────────────────────────────────────────────
 
     def action_repair(self):
         self.ensure_one()
