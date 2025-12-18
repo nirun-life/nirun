@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
+<odoo>
+    <record id="ni_observation_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.observation.view.form.inherit</field>
+        <field name="model">ni.observation</field>
+        <field name="inherit_id" ref="ni_observation.ni_observation_view_form" />
+        <field name="arch" type="xml">
+            <field name="encounter_id" position="after">
+                <field name="device_id" />
+            </field>
+        </field>
+    </record>
+    <record id="ni_encounter_observation_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.observation.view.form.inherit</field>
+        <field name="model">ni.encounter.observation</field>
+        <field name="inherit_id" ref="ni_observation.ni_encounter_ob_line_view_form" />
+        <field name="arch" type="xml">
+            <field name="occurrence" position="after">
+                <field name="device_id" attrs="{'invisible': [('device_id', '=', False)]}" />
+            </field>
+        </field>
+    </record>
+    <record id="ni_patient_observation_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.observation.view.form.inherit</field>
+        <field name="model">ni.patient.observation</field>
+        <field name="inherit_id" ref="ni_observation.ni_patient_ob_line_view_form" />
+        <field name="arch" type="xml">
+            <field name="occurrence" position="after">
+                <field name="device_id" attrs="{'invisible': [('device_id', '=', False)]}" />
+            </field>
+        </field>
+    </record>
+</odoo>

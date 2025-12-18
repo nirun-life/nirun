@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="device_company_rule" model="ir.rule">
+        <field name="name">Device: Multi-Company Rule</field>
+        <field ref="model_ni_device" name="model_id" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="device_request_company_rule" model="ir.rule">
+        <field name="name">Device Request: Multi-Company Rule</field>
+        <field ref="model_ni_device_request" name="model_id" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="device_holder_company_rule" model="ir.rule">
+        <field name="name">Device Holder: Multi-Company Rule</field>
+        <field ref="model_ni_device_holder" name="model_id" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="device_repair_company_rule" model="ir.rule">
+        <field name="name">Device Repair: Multi-Company Rule</field>
+        <field ref="model_ni_device_repair" name="model_id" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="device_usage_company_rule" model="ir.rule">
+        <field name="name">Device Usage: Multi-Company Rule</field>
+        <field ref="model_ni_device_usage" name="model_id" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

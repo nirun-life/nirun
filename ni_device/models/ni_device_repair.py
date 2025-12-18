@@ -7,10 +7,14 @@ class DeviceRepairHistory(models.Model):
     _rec_name = "identifier"
     _inherit = ["ni.identifier.mixin", "image.mixin"]
 
+    company_id = fields.Many2one(
+        "res.company", required=True, index=True, default=lambda self: self.env.company
+    )
     device_id = fields.Many2one(
         "ni.device",
         string="Device",
         required=True,
+        check_company=True,
         ondelete="cascade",
     )
     device_holder_emp_id = fields.Many2one(related="device_id.holder_employee_id")

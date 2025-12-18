@@ -9,21 +9,21 @@ class DeviceRequest(models.Model):
 
     _order = "create_date DESC"
 
-    # -------------------------
-    # อ้างอิงอุปกรณ์
-    # -------------------------
+    company_id = fields.Many2one(
+        "res.company", required=True, index=True, default=lambda self: self.env.company
+    )
     device_id = fields.Many2one(
         "ni.device",
         string="Device",
         required=True,
         ondelete="cascade",
         index=True,
+        check_company=True,
     )
     device_image = fields.Image(related="device_id.image_1920", string="Device Image")
     device_identifier = fields.Char(
         related="device_id.identifier", string="Device Identifier"
     )
-    company_id = fields.Many2one(related="device_id.company_id")
 
     # -------------------------
     # Request Type (Workflow)

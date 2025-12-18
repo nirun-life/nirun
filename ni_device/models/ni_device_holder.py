@@ -7,11 +7,15 @@ class DeviceHolder(models.Model):
     _order = "create_date DESC"
     _inherit = "ni.holder.mixin"
 
-    device_id = fields.Many2one("ni.device", string="Device", required=True)
+    company_id = fields.Many2one(
+        "res.company", required=True, index=True, default=lambda self: self.env.company
+    )
+    device_id = fields.Many2one(
+        "ni.device", string="Device", check_company=True, index=True, required=True
+    )
     device_identifier = fields.Char(
         related="device_id.identifier", string="Device Identifier"
     )
-
     start_date = fields.Datetime(string="Start Date", required=True)
     end_date = fields.Datetime(string="End Date")
 

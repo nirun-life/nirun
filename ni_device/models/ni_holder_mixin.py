@@ -6,7 +6,9 @@ class HolderMixin(models.AbstractModel):
     _description = "Mixin for common holder fields"
 
     holder_partner_id = fields.Many2one("res.partner", string="Holder")
-    holder_employee_id = fields.Many2one("hr.employee", string="Holder (Employee)")
+    holder_employee_id = fields.Many2one(
+        "hr.employee", string="Holder (Employee)", check_company=True
+    )
     holder_name = fields.Char("Holder Name", compute="_compute_holder_name")
 
     is_holder = fields.Boolean(

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
 <odoo>
     <record id="ni_device_holder_view_search" model="ir.ui.view">
         <field name="name">ni.device.holder.view.search</field>
@@ -7,9 +10,10 @@
             <search>
                 <field
                     name="device_id"
-                    string="ชื่อ"
+                    string="Device"
                     filter_domain="['|','|',('device_id', 'ilike', self), ('device_identifier', 'ilike', self),('holder_partner_id', 'ilike', self)]"
                 />
+                <field name="holder_name" />
             </search>
         </field>
     </record>

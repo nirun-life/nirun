@@ -12,6 +12,7 @@
     "depends": ["ni_patient", "ni_observation"],
     "data": [
         "security/ir.model.access.csv",
+        "security/ir_rule_data.xml",
         "data/ir_sequence_data.xml",
         "views/ni_device_views.xml",
         "views/ni_device_type_views.xml",
@@ -21,6 +22,7 @@
         "views/ni_device_dispose_type_views.xml",
         "views/ni_device_menu.xml",
         "views/ni_device_label_layout_views.xml",
+        "views/ni_observation_views.xml",
         "report/device_label_layout_template.xml",
     ],
     "demo": [

@@ -24,7 +24,10 @@ class Device(models.Model):
     manufacture_date = fields.Date("Manufacturer Date")
     serial_number = fields.Char("Serial Number")
     model_number = fields.Char("Model")
-    price = fields.Float("Price")
+    currency_id = fields.Many2one(
+        "res.currency", required=True, default=lambda self: self.env.company.currency_id
+    )
+    price = fields.Monetary("Price", currency_field="currency_id")
     barcode = fields.Char(string="Barcode", related="identifier")
 
     type_ids = fields.Many2many(
@@ -44,9 +47,10 @@ class Device(models.Model):
         string="Availability Status",
     )
 
-    observation_ids = fields.Many2many(
+    observation_type_ids = fields.Many2many(
         "ni.observation.type", string="Supported Observation Type"
     )
+
     state = fields.Selection(
         [
             ("available", "Available"),
