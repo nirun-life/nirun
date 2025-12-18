@@ -8,7 +8,13 @@ _logger = logging.getLogger(__name__)
 class Device(models.Model):
     _name = "ni.device"
     _description = "Device Registry"
-    _inherit = ["ni.identifier.mixin", "image.mixin", "mail.thread", "ni.holder.mixin"]
+    _inherit = [
+        "ni.identifier.mixin",
+        "image.mixin",
+        "mail.thread",
+        "ni.holder.mixin",
+        "age.mixin",
+    ]
     _rec_name = "name"
     _order = "name"
 
@@ -100,16 +106,24 @@ class Device(models.Model):
         "device_id",
         string="Repair History",
     )
+    repair_cost = fields.Monetary(
+        string="Repair Cost",
+        currency_field="currency_id",
+        compute="_compute_repair_cost",
+        store=True,
+    )
 
     received_date = fields.Date(
         string="Received Date",
         help="The date the device was received and registered in the system.",
     )
-    disposed_date = fields.Datetime(
+    disposed_date = fields.Date(
         string="Disposed Date",
         store=True,
         readonly=True,
     )
+    birthdate = fields.Date(related="received_date")
+    deceased_date = fields.Date(related="disposed_date")
 
     holder_history_count = fields.Integer(compute="_compute_holder_history_count")
     request_count = fields.Integer(compute="_compute_request_count")
@@ -124,6 +138,11 @@ class Device(models.Model):
         compute="_compute_is_not_repairable",
         store=False,
     )
+
+    @api.depends("repair_ids.repair_cost")
+    def _compute_repair_cost(self):
+        for rec in self:
+            rec.repair_cost = sum(rec.repair_ids.mapped("repair_cost"))
 
     @api.depends("holder_history_ids")
     def _compute_holder_history_count(self):
