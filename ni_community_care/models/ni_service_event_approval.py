@@ -574,9 +574,10 @@ class ServiceEventApproval(models.Model):
 
         users = self.env["res.users"].search(
             [
+                ("employee_id", "!=", False),  # <-- เฉพาะ user ที่มี employee
+                ("employee_id.active", "=", True),
                 ("groups_id", "in", [group_user.id]),
-                ("groups_id", "not in", [group_manager.id]),
-                ("groups_id", "not in", [group_admin.id]),
+                ("groups_id", "not in", [group_manager.id, group_admin.id]),
             ]
         )
 
