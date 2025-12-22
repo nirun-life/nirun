@@ -24,6 +24,7 @@
         "views/ni_device_label_layout_views.xml",
         "views/ni_observation_views.xml",
         "report/device_label_layout_template.xml",
+        "wizard/ni_device_report_lost_wizard.xml",
     ],
     "demo": [
         "demo/ni_device_type_demo.xml",

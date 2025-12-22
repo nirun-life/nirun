@@ -18,7 +18,7 @@ class Device(models.Model):
     _rec_name = "name"
     _order = "name"
 
-    name = fields.Char(string="Device Name")
+    name = fields.Char(string="Device Name", tracking=True)
     identifier = fields.Char("Identifier", readonly=True)
 
     manufacturer_id = fields.Many2one(
@@ -28,12 +28,12 @@ class Device(models.Model):
         store=True,
     )
     manufacture_date = fields.Date("Manufacturer Date")
-    serial_number = fields.Char("Serial Number")
-    model_number = fields.Char("Model")
+    serial_number = fields.Char("Serial Number", copy=False, tracking=True)
+    model_number = fields.Char("Model", tracking=True)
     currency_id = fields.Many2one(
         "res.currency", required=True, default=lambda self: self.env.company.currency_id
     )
-    price = fields.Monetary("Price", currency_field="currency_id")
+    price = fields.Monetary("Price", currency_field="currency_id", tracking=True)
     barcode = fields.Char(string="Barcode", related="identifier")
 
     type_ids = fields.Many2many(
@@ -51,6 +51,7 @@ class Device(models.Model):
         ],
         default="available",
         string="Availability Status",
+        tracking=True,
     )
 
     observation_type_ids = fields.Many2many(
@@ -67,12 +68,14 @@ class Device(models.Model):
         default="available",
         string="Holding Status",
         store=True,
+        tracking=True,
     )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         required=True,
         default=lambda self: self.env.company.id,
+        tracking=True,
     )
 
     holder_history_ids = fields.One2many(
@@ -116,14 +119,23 @@ class Device(models.Model):
     received_date = fields.Date(
         string="Received Date",
         help="The date the device was received and registered in the system.",
+        tracking=True,
     )
     disposed_date = fields.Date(
-        string="Disposed Date",
-        store=True,
-        readonly=True,
+        string="End Date", store=True, readonly=True, tracking=True
     )
-    birthdate = fields.Date(related="received_date")
-    deceased_date = fields.Date(related="disposed_date")
+
+    lost_date = fields.Date(string="Lost Report Date", tracking=True)
+
+    # note = fields.Char(
+    #     string="Note",
+    #     store=True,
+    #     readonly=True,
+    #     tracking=True
+    # )
+
+    birthdate = fields.Date(related="received_date", tracking=False)
+    deceased_date = fields.Date(related="disposed_date", tracking=False)
 
     holder_history_count = fields.Integer(compute="_compute_holder_history_count")
     request_count = fields.Integer(compute="_compute_request_count")
@@ -192,6 +204,7 @@ class Device(models.Model):
         for rec in self:
             rec.can_request_as_holder = (
                 rec.state == "in_use"
+                and rec.availability_status not in ["lost", "disposed"]
                 and (rec.is_holder or rec.is_manager)
                 and not rec.pending_request_id
                 and not rec.active_repair_id
@@ -325,3 +338,31 @@ class Device(models.Model):
     def action_print_device_label(self):
         self.ensure_one()
         return self.env.ref("ni_device.action_report_device_label").report_action(self)
+
+    def action_report_lost(self):
+        self.ensure_one()
+        return {
+            "name": "Report Lost",
+            "type": "ir.actions.act_window",
+            "res_model": "ni.device.report.lost.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_device_id": self.id,
+                "default_action_type": "lost",
+            },
+        }
+
+    def action_report_found(self):
+        self.ensure_one()
+        return {
+            "name": "Report Found",
+            "type": "ir.actions.act_window",
+            "res_model": "ni.device.report.lost.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_device_id": self.id,
+                "default_action_type": "found",
+            },
+        }
