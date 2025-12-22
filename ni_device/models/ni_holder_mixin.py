@@ -9,7 +9,9 @@ class HolderMixin(models.AbstractModel):
     holder_employee_id = fields.Many2one(
         "hr.employee", string="Holder (Employee)", check_company=True
     )
-    holder_name = fields.Char("Holder Name", compute="_compute_holder_name")
+    holder_name = fields.Char(
+        "Holder Name", compute="_compute_holder_name", tracking=True
+    )
 
     is_holder = fields.Boolean(
         compute="_compute_is_holder", store=False, search="_search_is_holder"

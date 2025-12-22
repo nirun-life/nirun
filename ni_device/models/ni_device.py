@@ -18,18 +18,8 @@ class Device(models.Model):
     _rec_name = "name"
     _order = "name"
 
-    name = fields.Char(string="Device Name", required=True)
+    name = fields.Char(string="Device Name", required=True, tracking=True)
     identifier = fields.Char("Identifier", readonly=True)
-
-    definition_id = fields.Many2one(
-        "ni.device.definition",
-        string="Device Definition",
-        required=True,
-        index=True,
-        tracking=True,
-        ondelete="restrict",
-        help="รุ่น/แบบของอุปกรณ์นี้ เช่น เครื่องวัดความดันแบบพกพา",
-    )
 
     manufacturer_id = fields.Many2one(
         "res.partner",
@@ -70,7 +60,6 @@ class Device(models.Model):
         compute="_compute_from_definition",
         store=True,
         readonly=False,
-        required=True,
     )
 
     availability_status = fields.Selection(
@@ -82,6 +71,7 @@ class Device(models.Model):
         ],
         default="available",
         string="Availability Status",
+        tracking=True,
     )
 
     observation_type_ids = fields.Many2many(
@@ -102,12 +92,14 @@ class Device(models.Model):
         default="available",
         string="Holding Status",
         store=True,
+        tracking=True,
     )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         required=True,
         default=lambda self: self.env.company.id,
+        tracking=True,
     )
 
     holder_history_ids = fields.One2many(
@@ -161,12 +153,20 @@ class Device(models.Model):
         tracking=True,
     )
     disposed_date = fields.Date(
-        string="Disposed Date",
-        store=True,
-        readonly=True,
+        string="End Date", store=True, readonly=True, tracking=True
     )
-    birthdate = fields.Date(related="received_date")
-    deceased_date = fields.Date(related="disposed_date")
+
+    lost_date = fields.Date(string="Lost Report Date", tracking=True)
+
+    # note = fields.Char(
+    #     string="Note",
+    #     store=True,
+    #     readonly=True,
+    #     tracking=True
+    # )
+
+    birthdate = fields.Date(related="received_date", tracking=False)
+    deceased_date = fields.Date(related="disposed_date", tracking=False)
 
     holder_history_count = fields.Integer(compute="_compute_holder_history_count")
     request_count = fields.Integer(compute="_compute_request_count")
@@ -259,6 +259,7 @@ class Device(models.Model):
         for rec in self:
             rec.can_request_as_holder = (
                 rec.state == "in_use"
+                and rec.availability_status not in ["lost", "disposed"]
                 and (rec.is_holder or rec.is_manager)
                 and not rec.pending_request_id
                 and not rec.active_repair_id
@@ -390,3 +391,31 @@ class Device(models.Model):
     def action_print_device_label(self):
         self.ensure_one()
         return self.env.ref("ni_device.action_report_device_label").report_action(self)
+
+    def action_report_lost(self):
+        self.ensure_one()
+        return {
+            "name": "Report Lost",
+            "type": "ir.actions.act_window",
+            "res_model": "ni.device.report.lost.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_device_id": self.id,
+                "default_action_type": "lost",
+            },
+        }
+
+    def action_report_found(self):
+        self.ensure_one()
+        return {
+            "name": "Report Found",
+            "type": "ir.actions.act_window",
+            "res_model": "ni.device.report.lost.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_device_id": self.id,
+                "default_action_type": "found",
+            },
+        }

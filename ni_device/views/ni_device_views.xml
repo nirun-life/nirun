@@ -142,12 +142,26 @@
                         string="ขอจำหน่ายอุปกรณ์"
                         attrs="{'invisible': [('can_request_as_holder','=',False),('not_repairable','=',False)]}"
                     />
+                    <button
+                        name="action_request_dispose"
+                        type="object"
+                        string="ขอจำหน่ายอุปกรณ์"
+                        attrs="{'invisible': [('availability_status','!=','lost')]}"
+                    />
                     <!-- ปุ่มแจ้งซ่อม -->
                     <button
                         name="action_repair"
                         type="object"
                         string="แจ้งซ่อม"
                         attrs="{'invisible': [('can_request_as_holder','=',False)]}"
+                    />
+                    <!-- แจ้งพบอุปกรณ์ -->
+                    <button
+                        name="action_report_found"
+                        string="แจ้งพบอุปกรณ์"
+                        type="object"
+                        class="btn-secondary"
+                        attrs="{'invisible': [('availability_status', '!=', 'lost')]}"
                     />
                     <button
                         name="action_print_device_label"
@@ -294,6 +308,11 @@
                                 attrs="{'invisible':[('state','!=','disposed')]}"
                             />
                             <field
+                                name="lost_date"
+                                string="วันที่สูญหาย"
+                                attrs="{'invisible':[('availability_status','!=','lost')]}"
+                            />
+                            <field
                                 name="pending_request_id"
                                 string="คำขอที่รออนุมัติ"
                                 attrs="{'invisible':[('pending_request_id','=',False)]}"
@@ -333,6 +352,10 @@
                         <field name="is_manager" invisible="True" />
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="message_ids" />
+                </div>
             </form>
         </field>
     </record>
@@ -386,5 +409,13 @@
                 </templates>
             </kanban>
         </field>
+    </record>
+    <record id="action_device_report_lost" model="ir.actions.server">
+        <field name="name">แจ้งสูญหาย</field>
+        <field name="model_id" ref="model_ni_device" />
+        <field name="binding_model_id" ref="model_ni_device" />
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_report_lost()</field>
     </record>
 </odoo>
