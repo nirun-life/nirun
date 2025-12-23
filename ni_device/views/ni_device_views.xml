@@ -10,12 +10,12 @@
             <search>
                 <field
                     name="name"
-                    string="ชื่อ"
+                    string="Name"
                     filter_domain="['|','|',('name', 'ilike', self), ('identifier', 'ilike', self),('holder_partner_id', 'ilike', self)]"
                 />
                 <filter
                     name="available_device"
-                    string="อุปกรณ์ที่ว่างอยู่"
+                    string="Available"
                     domain="[('state','=','available'),('availability_status','=','available')]"
                 />
                 <filter name="my_device" string="อุปกรณ์ของฉัน" domain="[('is_holder','=',True)]" />
