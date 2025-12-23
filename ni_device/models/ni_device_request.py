@@ -187,15 +187,22 @@ class DeviceRequest(models.Model):
             rec.device_image_1920 = rec.device_id.image_1920
 
     def action_submit(self):
-        for rec in self.sudo():  # ← สำคัญ!
-            rec.state = "pending"
-            if rec.device_id.state == "available":
-                rec.device_id.state = "pending"
+        for rec in self.sudo():
+            device = rec.device_id
 
-                # ขอถือครอง : ถ้าอุปกรณ์ว่าง → เปลี่ยนเป็น pending
-                if rec.request_type == "request_hold":
-                    if rec.device_id.state == "available":
-                        rec.device_id.state = "pending"
+            # state ของ request
+            rec.state = "pending"
+
+            if rec.request_type == "request_hold":
+                # device ต้องว่างก่อน
+                rec.holder_employee_id = rec.new_holder_employee_id.id
+                rec.holder_partner_id = rec.new_holder_partner_id.id
+                if device.state == "available":
+                    device.write(
+                        {
+                            "state": "pending",
+                        }
+                    )
 
     def action_approve(self):
         self.ensure_one()
