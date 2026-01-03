@@ -22,70 +22,70 @@
         </field>
     </record>
     <record id="ni_device_request_action" model="ir.actions.act_window">
-        <field name="name">คำขอถือครองอุปกรณ์ทั้งหมด</field>
+        <field name="name">All Device Holding Request</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device.request</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+            <p class="o_view_nocontent_smiling_face">No Requests</p>
         </field>
     </record>
     <!-- คำขอถือครองอุปกรณ์ของฉัน -->
     <record id="ni_device_request_my_action" model="ir.actions.act_window">
-        <field name="name">คำขอถือครองอุปกรณ์ของฉัน</field>
+        <field name="name">My Device Holding Request</field>
         <field name="res_model">ni.device.request</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('|'), ('is_holder', '=', True), ('is_transfer_to_me', '=', True)]</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+            <p class="o_view_nocontent_smiling_face">No Requests</p>
         </field>
     </record>
     <!-- คำขอถือครองอุปกรณ์ -->
     <record id="ni_device_request_action_hold" model="ir.actions.act_window">
-        <field name="name">คำขอถือครองอุปกรณ์</field>
+        <field name="name">Device Holding Request</field>
         <field name="res_model">ni.device.request</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('request_type', '=', 'request_hold')]</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+            <p class="o_view_nocontent_smiling_face">No Requests</p>
         </field>
     </record>
     <!-- คำขอคืนอุปกรณ์ -->
     <record id="ni_device_request_action_return" model="ir.actions.act_window">
-        <field name="name">คำขอคืนอุปกรณ์</field>
+        <field name="name">Device Return Request</field>
         <field name="res_model">ni.device.request</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('request_type', '=', 'request_return')]</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+            <p class="o_view_nocontent_smiling_face">No Requests</p>
         </field>
     </record>
     <!-- คำขอเปลี่ยนผู้ถือครอง -->
     <record id="ni_device_request_action_transfer" model="ir.actions.act_window">
-        <field name="name">คำขอเปลี่ยนผู้ถือครอง</field>
+        <field name="name">Transfer Holder Request</field>
         <field name="res_model">ni.device.request</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('request_type', '=', 'request_transfer')]</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+            <p class="o_view_nocontent_smiling_face">No Requests</p>
         </field>
         <field name="context">{'show_new_holder': 1}</field>
     </record>
     <!-- คำขอจำหน่ายอุปกรณ์ -->
     <record id="ni_device_request_action_dispose" model="ir.actions.act_window">
-        <field name="name">คำขอจำหน่ายอุปกรณ์</field>
+        <field name="name">Device Disposal Request</field>
         <field name="res_model">ni.device.request</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('request_type', '=', 'request_dispose')]</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">ไม่มีคำขอ</p>
+            <p class="o_view_nocontent_smiling_face">No Requests</p>
         </field>
     </record>
     <record id="ni_device_request_view_tree" model="ir.ui.view">
         <field name="name">ni.device.request.view.tree</field>
         <field name="model">ni.device.request</field>
         <field name="arch" type="xml">
-            <tree string="ประวัติผู้ถือครองอุปกรณ์" create="0">
+            <tree string="Device Holder History" create="0">
                 <field name="identifier" />
                 <field name="device_id" />
                 <field name="holder_name" />
@@ -100,11 +100,11 @@
                     decoration-warning="state == 'pending'"
                     decoration-danger="state == 'rejected'"
                 />
-                <field name="write_date" string="วันที่แก้ไข" widget="date" optional="hide" />
+                <field name="write_date" string="Date Updated" widget="date" optional="hide" />
                 <button
                     name="action_approve"
                     type="object"
-                    string="อนุมัติ"
+                    string="Approved"
                     icon="fa-check-circle"
                     groups="ni_patient.group_manager"
                     attrs="{'invisible': [('state', '!=', 'pending' )]}"
@@ -117,7 +117,7 @@
         <field name="name">ni.device.request.view.form</field>
         <field name="model">ni.device.request</field>
         <field name="arch" type="xml">
-            <form string="ขออนุมัติการถือครองอุปกรณ์" create="0">
+            <form string="Device Holding Approval Request" create="0">
                 <field name="state" invisible="1" />
                 <field name="is_holder" invisible="1" />
                 <field name="acknowledged" invisible="1" />
@@ -127,7 +127,7 @@
                     <button
                         name="action_acknowledged"
                         type="object"
-                        string="รับทราบ"
+                        string="Acknowledged"
                         class="btn-primary oe_highlight"
                         groups="ni_patient.group_user"
                         attrs="{'invisible': ['|','|',('state','=','draft'),('acknowledged', '=', True),('is_transfer_to_me', '=', False)]}"
@@ -135,7 +135,7 @@
                     <button
                         name="action_approve"
                         type="object"
-                        string="อนุมัติ"
+                        string="Approved"
                         class="btn-primary oe_highlight"
                         groups="ni_patient.group_manager"
                         attrs="{'invisible': [('state', '!=', 'pending')]}"
@@ -143,7 +143,7 @@
                     <button
                         name="action_reject"
                         type="object"
-                        string="ไม่อนุมัติ"
+                        string="Rejected"
                         groups="ni_patient.group_manager"
                         attrs="{'invisible': [('state', '!=', 'pending')]}"
                     />
@@ -345,7 +345,7 @@
         <field name="name">ni.device.request.view.form.wizard.approval</field>
         <field name="model">ni.device.request</field>
         <field name="arch" type="xml">
-            <form string="ยืนยันการอนุมัติ" edit="1" create="0" delete="0">
+            <form string="Confirm Approval" edit="1" create="0" delete="0">
                 <sheet>
                     <group>
                         <field

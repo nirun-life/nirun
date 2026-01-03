@@ -18,21 +18,21 @@
                     string="Available"
                     domain="[('state','=','available'),('availability_status','=','available')]"
                 />
-                <filter name="my_device" string="อุปกรณ์ของฉัน" domain="[('is_holder','=',True)]" />
+                <filter name="my_device" string="My device" domain="[('is_holder','=',True)]" />
                 <searchpanel>
-                    <field name="state" string="สถานะ" enable_counters="1" icon="fa-circle" />
+                    <field name="state" enable_counters="1" icon="fa-circle" />
                 </searchpanel>
             </search>
         </field>
     </record>
     <record id="ni_device_action" model="ir.actions.act_window">
-        <field name="name">ทะเบียนอุปกรณ์ทั้งหมด</field>
+        <field name="name">All Device Registry</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device</field>
         <field name="view_mode">tree,kanban,form</field>
     </record>
     <record id="ni_device_available_action" model="ir.actions.act_window">
-        <field name="name">ทะเบียนอุปกรณ์ที่ว่างอยู่</field>
+        <field name="name">Available Device Registry</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device</field>
         <field name="view_mode">tree,kanban,form</field>
@@ -43,7 +43,7 @@
         </field>
     </record>
     <record id="ni_device_action_my_device" model="ir.actions.act_window">
-        <field name="name">อุปกรณ์ของฉัน</field>
+        <field name="name">My Device</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device</field>
         <field name="view_mode">tree,kanban,form</field>
@@ -54,19 +54,19 @@
         </field>
     </record>
     <record id="ni_device_repair_action_this" model="ir.actions.act_window">
-        <field name="name">ประวัติการซ่อมอุปกรณ์</field>
+        <field name="name">Device Repair History</field>
         <field name="res_model">ni.device.repair</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('device_id', '=', active_id)]</field>
     </record>
     <record id="ni_device_holder_action_this" model="ir.actions.act_window">
-        <field name="name">ประวัติการถือครองอุปกรณ์</field>
+        <field name="name">Device Holding History</field>
         <field name="res_model">ni.device.holder</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('device_id', '=', active_id)]</field>
     </record>
     <record id="ni_device_request_action_this" model="ir.actions.act_window">
-        <field name="name">คำขอถือครองอุปกรณ์</field>
+        <field name="name">Device Holding Request</field>
         <field name="res_model">ni.device.request</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('device_id', '=', active_id)]</field>
@@ -78,11 +78,11 @@
             <tree>
                 <field name="identifier" />
                 <field name="name" />
-                <field name="type_ids" widget="many2many_tags" string="ประเภทอุปกรณ์" />
+                <field name="type_ids" widget="many2many_tags" string="Device Type" />
                 <field
                     name="availability_status"
                     widget="badge"
-                    string="สถานะความพร้อมใช้งาน"
+                    string="Availability Status"
                     decoration-success="availability_status == 'available'"
                     decoration-danger="availability_status == 'damaged'"
                     optional="hide"
@@ -90,12 +90,12 @@
                 <field
                     name="state"
                     widget="badge"
-                    string="สถานะการถือครอง"
+                    string="Holding Status"
                     decoration-success="state == 'available'"
                     decoration-warning="state == 'pending'"
                     decoration-info="state == 'in_use'"
                 />
-                <field name="holder_name" string="ผู้ถือครองอุปกรณ์ปัจจุบัน" />
+                <field name="holder_name" string="Current Holder" />
                 <field name="create_date" optional="hide" widget="date" />
             </tree>
         </field>
@@ -104,7 +104,7 @@
         <field name="name">ni.device.view.form</field>
         <field name="model">ni.device</field>
         <field name="arch" type="xml">
-            <form string="อุปกรณ์ตรวจสุขภาพ">
+            <form string="Medical Devices">
                 <field name="company_id" invisible="1" />
                 <field name="repair_count" invisible="1" />
                 <field name="is_holder" invisible="1" />
@@ -118,7 +118,7 @@
                     <button
                         name="action_request_hold"
                         type="object"
-                        string="ขอถือครอง"
+                        string="Request Holding"
                         class="btn-primary oe_highlight"
                         attrs="{'invisible': ['|', ('availability_status', '!=', 'available'), ('state', '!=', 'available')]}"
                     />
@@ -126,39 +126,39 @@
                     <button
                         name="action_request_return"
                         type="object"
-                        string="ขอคืนอุปกรณ์"
+                        string="Return Device"
                         class="oe_highlight"
                         attrs="{'invisible': [('can_request_as_holder','=',False)]}"
                     />
                     <button
                         name="action_request_transfer"
                         type="object"
-                        string="ขอเปลี่ยนผู้ถือครอง"
+                        string="Transfer Holder"
                         attrs="{'invisible': [('can_request_as_holder','=',False)]}"
                     />
                     <button
                         name="action_request_dispose"
                         type="object"
-                        string="ขอจำหน่ายอุปกรณ์"
+                        string="Device Disposal"
                         attrs="{'invisible': [('can_request_as_holder','=',False),('not_repairable','=',False)]}"
                     />
                     <button
                         name="action_request_dispose"
                         type="object"
-                        string="ขอจำหน่ายอุปกรณ์"
+                        string="Device Disposal"
                         attrs="{'invisible': [('availability_status','!=','lost')]}"
                     />
                     <!-- ปุ่มแจ้งซ่อม -->
                     <button
                         name="action_repair"
                         type="object"
-                        string="แจ้งซ่อม"
+                        string="Report Repair"
                         attrs="{'invisible': [('can_request_as_holder','=',False)]}"
                     />
                     <!-- แจ้งพบอุปกรณ์ -->
                     <button
                         name="action_report_found"
-                        string="แจ้งพบอุปกรณ์"
+                        string="Report Found Device"
                         type="object"
                         class="btn-secondary"
                         attrs="{'invisible': [('availability_status', '!=', 'lost')]}"
@@ -166,7 +166,7 @@
                     <button
                         name="action_print_device_label"
                         type="object"
-                        string="พิมพ์ฉลาก"
+                        string="Print Device Label"
                         attrs="{'invisible': [('barcode', '=',False )]}"
                     />
                 </header>
@@ -202,7 +202,7 @@
                             icon="fa-address-card"
                             type="action"
                         >
-                            <field name="holder_history_count" string="การถือครอง" widget="statinfo" />
+                            <field name="holder_history_count" string="Device Holding" widget="statinfo" />
                         </button>
                         <button
                             name="ni_device.ni_device_request_action_this"
@@ -212,7 +212,7 @@
                             type="action"
                             groups="ni_patient.group_manager"
                         >
-                            <field name="request_count" string="คำขออนุมัติ" widget="statinfo" />
+                            <field name="request_count" string="Approval Request" widget="statinfo" />
                         </button>
                     </div>
                     <field name="image_1920" class="oe_avatar" options="{'zoom': true}" widget="image" />
@@ -220,24 +220,24 @@
                         name="web_ribbon"
                         attrs="{'invisible': [('availability_status', '!=', 'damaged' )]}"
                         bg_color="bg-danger"
-                        title="ชำรุด"
+                        title="Damaged"
                     />
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('availability_status', '!=', 'lost' )]}"
                         bg_color="bg-dark"
-                        title="สูญหาย"
+                        title="Lost"
                     />
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('state', '!=', 'disposed' )]}"
                         bg_color="bg-dark"
-                        title="จำหน่ายแล้ว"
+                        title="Disposed"
                     />
                     <div class="oe_title mb24">
                         <field name="identifier" attrs="{'invisible':[('id','=',False)]}" />
                         <h1>
-                            <field name="name" placeholder="ชื่ออุปกรณ์" />
+                            <field name="name" placeholder="Device Name" />
                         </h1>
                         <div class="o_field_widget w-100">
                             <field
@@ -284,11 +284,11 @@
                             <field name="repair_cost" />
                             <field name="currency_id" invisible="1" />
                         </group>
-                        <group string="สถานะอุปกรณ์">
+                        <group string="สถานะอุปกรณ์"  attrs="{'invisible': [('id', '=', False)]}">
                             <field
                                 name="availability_status"
                                 widget="badge"
-                                string="สถานะความพร้อมใช้งาน"
+                                string="Availability Status"
                                 decoration-success="availability_status == 'available'"
                                 decoration-danger="availability_status == 'damaged'"
                                 attrs="{'invisible': [('id', '=', False)]}"
@@ -296,7 +296,7 @@
                             <field
                                 name="state"
                                 widget="badge"
-                                string="สถานะการถือครอง"
+                                string="Holding Status"
                                 decoration-success="state == 'available'"
                                 decoration-warning="state == 'pending'"
                                 decoration-info="state == 'in_use'"
@@ -304,39 +304,39 @@
                             />
                             <field
                                 name="disposed_date"
-                                string="วันที่จำหน่าย"
+                                string="Disposal Date"
                                 attrs="{'invisible':[('state','!=','disposed')]}"
                             />
                             <field
                                 name="lost_date"
-                                string="วันที่สูญหาย"
+                                string="Lost Date"
                                 attrs="{'invisible':[('availability_status','!=','lost')]}"
                             />
                             <field
                                 name="pending_request_id"
-                                string="คำขอที่รออนุมัติ"
+                                string="Pending Request"
                                 attrs="{'invisible':[('pending_request_id','=',False)]}"
                             />
                             <field
                                 name="active_repair_id"
-                                string="ติดตามการแจ้งซ่อม"
+                                string="Device Repair Tracking"
                                 attrs="{'invisible':[('active_repair_id','=',False)]}"
                             />
                             <field
                                 name="holder_employee_id"
-                                string="ผู้ถือครองอุปกรณ์ปัจจุบัน"
+                                string="Current Holder"
                                 readonly="1"
                                 widget="many2one_avatar"
                                 attrs="{'invisible':[('holder_employee_id','=',False)]}"
                             />
                             <field
                                 name="holder_partner_id"
-                                string="ผู้ถือครองอุปกรณ์ปัจจุบัน"
+                                string="Current Holder"
                                 readonly="1"
                                 widget="many2one_avatar"
                                 attrs="{'invisible':['|',('holder_employee_id','!=',False),('holder_partner_id','=',False)]}"
                             />
-                            <field name="company_id" string="หน่วยงาน" groups="base.group_multi_company" />
+                            <field name="company_id" groups="base.group_multi_company" />
                         </group>
                     </group>
                     <group string="Debug" groups="base.group_no_one">
@@ -411,7 +411,7 @@
         </field>
     </record>
     <record id="action_device_report_lost" model="ir.actions.server">
-        <field name="name">แจ้งสูญหาย</field>
+        <field name="name">Report Lost</field>
         <field name="model_id" ref="model_ni_device" />
         <field name="binding_model_id" ref="model_ni_device" />
         <field name="binding_type">action</field>
