@@ -38,7 +38,7 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="context">
             {
-                'search_default_available_device': 1
+            'search_default_available_device': 1
             }
         </field>
     </record>
@@ -49,7 +49,7 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="context">
             {
-                'search_default_my_device': 1
+            'search_default_my_device': 1
             }
         </field>
     </record>
@@ -317,11 +317,18 @@
                                 string="Pending Request"
                                 attrs="{'invisible':[('pending_request_id','=',False)]}"
                             />
-                            <field
-                                name="active_repair_id"
-                                string="Device Repair Tracking"
-                                attrs="{'invisible':[('active_repair_id','=',False)]}"
-                            />
+                            <label for="active_repair_id" attrs="{'invisible':[('active_repair_id','=',False)]}" />
+                            <div class="o_row" attrs="{'invisible':[('active_repair_id','=',False)]}">
+                                <field name="active_repair_id" string="Device Repair Tracking" />
+                                <field
+                                    name="active_repair_state"
+                                    widget="badge"
+                                    decoration-success="active_repair_state == 'completed'"
+                                    decoration-danger="active_repair_state == 'damaged'"
+                                    decoration-warning="active_repair_state == 'repairing'"
+                                    decoration-muted="active_repair_state == 'not_repairable'"
+                                />
+                            </div>
                             <field
                                 name="holder_employee_id"
                                 string="Current Holder"

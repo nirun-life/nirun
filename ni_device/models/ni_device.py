@@ -134,6 +134,13 @@ class Device(models.Model):
         store=True,
     )
 
+    active_repair_state = fields.Selection(
+        related="active_repair_id.state",
+        string="Repair Status",
+        store=True,
+        readonly=True,
+    )
+
     repair_ids = fields.One2many(
         "ni.device.repair",
         "device_id",
