@@ -20,6 +20,7 @@
         "views/ni_community_care_attendance_menu.xml",
         "views/hr_holidays_views.xml",
         "views/hr_holidays_menu.xml",
+        "views/hr_leave_views.xml",
     ],
     "assets": {
         "web.assets_backend": [
