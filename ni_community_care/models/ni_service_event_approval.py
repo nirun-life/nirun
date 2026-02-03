@@ -28,8 +28,8 @@ class ServiceEventApproval(models.Model):
     last_pdf_error = fields.Text(string="Last PDF Error", readonly=True)
 
     city_ids = fields.Many2many(
-        comodel_name="res.city",  # เปลี่ยนเป็นโมเดลจริงของคุณ ถ้าไม่ใช่ res.city
-        related="user_id.employee_id.city_ids",
+        comodel_name="res.city",
+        related="user_id.city_ids",
         string="เขตพื้นที่รับผิดชอบ",
         readonly=True,
     )

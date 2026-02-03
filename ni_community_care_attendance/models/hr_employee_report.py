@@ -5,76 +5,9 @@ class EmployeeReport(models.Model):
     _name = "ni.employee.report"
     _description = "Employee Report"
 
-    # @api.model
-    # def get_employee_dashboard(self):
-    #     user = self.env.user
-    #
-    #     employees = self.env["hr.employee"].search(
-    #         [("city_ids", "in", user.employee_id.city_ids.ids)]
-    #     )
-    #     employee_ids = employees.ids
-    #
-    #     total_employees = len(employees)
-    #     attended = employees.filtered(lambda e: e.attended_today)
-    #     attended_count = len(attended)
-    #
-    #     # วันนี้
-    #     today_start = datetime.combine(date.today(), datetime.min.time())
-    #     today_end = datetime.combine(date.today(), datetime.max.time())
-    #
-    #     # หา user_ids ของพนักงาน
-    #     user_ids = (
-    #         self.env["res.users"].search([("employee_id", "in", employee_ids)]).ids
-    #     )
-    #
-    #     # ดึงกิจกรรมวันนี้
-    #     events_today = self.env["ni.service.event"].search(
-    #         [
-    #             ("user_id", "in", user_ids),
-    #             ("stop", ">=", today_start),
-    #             ("start", "<=", today_end),
-    #         ]
-    #     )
-    #
-    #     # นับจำนวนผู้สูงอายุที่ได้รับการดูแล (ไม่ซ้ำ)
-    #     patient_ids_set = set()
-    #     for event in events_today:
-    #         patient_ids_set.update(event.plan_patient_ids.ids)
-    #     cared_count = len(patient_ids_set)
-    #
-    #     res = {
-    #         "attended_today": {
-    #             "description": _("เข้างานวันนี้"),
-    #             "amount": attended_count,
-    #             "target": total_employees,
-    #             "class": "text-success",
-    #             "icon": "fa-check-circle",
-    #         },
-    #         "cared_today": {
-    #             "description": _("ผู้สูงอายุที่ได้รับการดูแลในวันนี้"),
-    #             "amount": cared_count,
-    #             "target": 0,
-    #             "class": "text-odoo",
-    #             "icon": "fa-user",
-    #         },
-    #         "event_today": {
-    #             "description": _("กิจกรรมดูแลผู้สูงอายุในวันนี้"),
-    #             "amount": len(events_today),
-    #             "target": 0,
-    #             "class": "text-danger",
-    #             "icon": "fa-calendar",
-    #         },
-    #     }
-    #
-    #     return res
-
     @api.model
     def get_employee_dashboard(self):
-        user = self.env.user
-
-        employees = self.env["hr.employee"].search(
-            [("city_ids", "in", user.employee_id.city_ids.ids)]
-        )
+        employees = self.env["hr.employee"].search([("my_area", "=", True)])
         total_employees = len(employees)
 
         # คนที่มาทำงาน
