@@ -18,7 +18,6 @@
         "views/hr_employee_views.xml",
         "views/ni_service_event_approval_views.xml",
         "views/ni_community_care_attendance_menu.xml",
-        "views/hr_holidays_views.xml",
         "views/hr_holidays_menu.xml",
         "views/hr_leave_views.xml",
     ],
