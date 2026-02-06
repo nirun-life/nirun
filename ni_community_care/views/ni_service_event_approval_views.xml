@@ -104,15 +104,6 @@
                     decoration-success="state == 'approved'"
                     decoration-danger="state == 'rejected'"
                 />
-                <button
-                    name="action_approved_event"
-                    type="object"
-                    string="อนุมัติ"
-                    icon="fa-check-circle"
-                    attrs="{'invisible': [('state', 'in', ['approved'])]}"
-                    class="btn-info"
-                    groups="ni_patient.group_manager"
-                />
                 <!-- ให้เห็นเฉพาะกลุ่ม developer -->
                 <field name="has_pdf" groups="base.group_no_one" widget="boolean_toggle" />
                 <field name="last_pdf_date" groups="base.group_no_one" />
@@ -200,24 +191,45 @@
                         string="อัปเดตข้อมูลบันทึกงาน"
                         type="object"
                         class="btn"
+                        groups="ni_patient.group_admin"
                     />
-                    <button name="action_regenerate_report" string="อัปเดตรายงาน PDF" type="object" class="btn" />
+                    <button
+                        name="action_regenerate_report"
+                        string="อัปเดตรายงาน PDF"
+                        type="object"
+                        class="btn"
+                        groups="ni_patient.group_admin"
+                    />
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <field name="identifier" string="หมายเลขอ้างอิง" />
+                        <field name="identifier" class="text-muted" />
                         <h1>
                             <field name="employee_id" widget="many2one_avatar_user" readonly="1" />
                         </h1>
+                        <div class="mb-4">
+                            <span class="text-muted">
+                                ในวันที่ 1 ของทุกเดือน
+                                ระบบจะสร้างบันทึกงานผู้บริบาลของเดือนก่อนหน้าโดยอัตโนมัติ
+                            </span>
+                            <br />
+                        </div>
                     </div>
                     <group>
                         <group>
                             <!-- ด้านซ้าย -->
                             <field name="start" string="ตั้งแต่" readonly="1" />
                             <field name="stop" string="จนถึง" readonly="1" />
+                            <label for="write_date" />
+                            <div>
+                                <field name="write_date" string="อัปเดทเมื่อ" />
+                                <p class="text-muted">
+                                    <i class="fa fa-info-circle me-2" title="คำเตือน" />
+                                    <span>อัปเดตข้อมูลอัตโนมัติทุกสุดสัปดาห์จนกว่าจะอนุมัติ</span>
+                                </p>
+                            </div>
                         </group>
                         <group>
-                            <!-- ด้านขวา -->
                             <field
                                 name="state"
                                 string="สถานะ"
@@ -225,7 +237,14 @@
                                 decoration-warning="state == 'pending'"
                                 decoration-success="state == 'approved'"
                                 decoration-danger="state == 'rejected'"
+                                widget="badge"
                             />
+                            <label for="state_by" string="โดย" attrs="{'invisible':[('state','=','pending')]}" />
+                            <div class="o_row" attrs="{'invisible':[('state','=','pending')]}">
+                                <field name="state_by" />
+                                <label for="state_date" string="เมื่อ" />
+                                <field name="state_date" />
+                            </div>
                             <field name="city_ids" string="พื้นที่รับผิดชอบ" widget="many2many_tags" readonly="1" />
                             <field name="state_id" string="จังหวัด" readonly="1" />
                         </group>
@@ -237,6 +256,15 @@
                             icon="fa-address-book"
                             badge="patient_count"
                         >
+                            <div class="text-end">
+                                <button
+                                    name="%(service_event_approval_01_elder_action_report)d"
+                                    string="พิมพ์ข้อมูลพื้นฐานของผู้สูงอายุ ศผ.01"
+                                    type="action"
+                                    class="btn-outline-primary"
+                                    icon="fa-print"
+                                />
+                            </div>
                             <!--                            <field-->
                             <!--                                name="dashboard_data"-->
                             <!--                                widget="service_event_approval_dashboard"-->
@@ -283,12 +311,22 @@
 
                             </field>
                         </page>
-                        <page
-                            name="event_ids"
-                            string="กิจกรรมการดูแลผู้สูงอายุ (ศผ.02)"
-                            icon="fa-life-ring"
-                            badge="event_count"
-                        >
+                        <page name="event_ids" string="กิจกรรมการดูแลผู้สูงอายุ (ศผ.02)" icon="fa-life-ring">
+                            <div class="text-end mb-4">
+                                <button
+                                    name="%(service_event_approval_02_category_action_report)d"
+                                    string="พิมพ์ผลการปฏิบัติงาน ศผ.02"
+                                    type="action"
+                                    class="btn-outline-primary mb-2"
+                                    icon="fa-print"
+                                />
+                                <field name="has_pdf" invisible="1" />
+                                <div class="text-muted" groups="ni_patient.group_admin">
+                                    <label for="last_pdf_date" string="อัปเดตรายงานเมื่อ" />
+                                    <field name="last_pdf_date" />
+                                    <button name="action_regenerate_report" type="object" icon="fa-refresh" />
+                                </div>
+                            </div>
                             <div>
                                 <strong>สรุปผลกิจกรรมการดูแลผู้สูงอายุ</strong>
                             </div>
@@ -316,12 +354,16 @@
                                 }"
                             />
                         </page>
-                        <page
-                            name="service_ids"
-                            string="กิจกรรมพัฒนาคุณภาพชีวิตผู้สูงอายุ (ศผ.03)"
-                            icon="fa-heart"
-                            badge="service_count"
-                        >
+                        <page name="service_ids" string="กิจกรรมพัฒนาคุณภาพชีวิตผู้สูงอายุ (ศผ.03)" icon="fa-heart">
+                            <div class="text-end mb-4">
+                                <button
+                                    name="%(service_event_approval_03_service_action_report)d"
+                                    string="พิมพ์กิจกรรมพัฒนาคุณภาพชีวิตผู้สูงอายุ ศผ.03"
+                                    type="action"
+                                    class="btn-outline-primary"
+                                    icon="fa-print"
+                                />
+                            </div>
                             <field
                                 name="service_ids"
                                 mode="tree"
@@ -336,37 +378,48 @@
                             icon="fa-tasks"
                             badge="careplan_count"
                         >
+                            <div class="text-end mb-4">
+                                <button
+                                    name="%(service_event_approval_04_careplan_action_report)d"
+                                    string="แผนการให้ความช่วยเหลือดูแลผู้สูงอายุ ศผ.04"
+                                    type="action"
+                                    class="btn-outline-primary"
+                                    icon="fa-print"
+                                />
+                            </div>
                             <field name="careplan_count" invisible="1" />
                             <field name="careplan_ids">
 
                             </field>
                         </page>
+                        <page string="Debug" icon="fa-bug" groups="base.group_no_one">
+                            <group string="ข้อมูลที่แก้ไขได้" groups="base.group_no_one">
+                                <field name="user_id" widget="many2one_avatar_user" readonly="0" />
+                                <field name="employee_id" widget="many2one_avatar_user" readonly="1" />
+                                <field name="start" string="ตั้งแต่" readonly="0" />
+                                <field name="stop" string="จนถึง" readonly="0" />
+                                <field
+                                    name="state"
+                                    string="สถานะ"
+                                    decoration-warning="state == 'pending'"
+                                    decoration-success="state == 'approved'"
+                                    decoration-danger="state == 'rejected'"
+                                />
+                            </group>
+                            <group string="Last Update" groups="base.group_no_one">
+                                <field name="write_date" />
+                                <field name="write_uid" />
+                            </group>
+                        </page>
                     </notebook>
-                    <group string="ข้อมูลที่แก้ไขได้" groups="base.group_no_one">
-                        <field name="user_id" widget="many2one_avatar_user" readonly="0" />
-                        <field name="employee_id" widget="many2one_avatar_user" readonly="1" />
-                        <field name="start" string="ตั้งแต่" readonly="0" />
-                        <field name="stop" string="จนถึง" readonly="0" />
-                        <field
-                            name="state"
-                            string="สถานะ"
-                            decoration-warning="state == 'pending'"
-                            decoration-success="state == 'approved'"
-                            decoration-danger="state == 'rejected'"
-                        />
-                    </group>
-                    <group string="Last Update" groups="base.group_no_one">
-                        <field name="write_date" />
-                        <field name="write_uid" />
-                    </group>
-                    <div class="d-grid gap-2 d-md-block">
+                    <div class="text-end">
                         <button
                             name="action_approved_event"
                             type="object"
-                            string="อนุมัติ"
-                            icon="fa-check-circle"
+                            string="อนุมัติบันทึกงาน"
+                            icon="fa-check"
                             attrs="{'invisible': [('state', 'in', ['approved'])]}"
-                            class="btn-info me-4"
+                            class="btn-success me-4"
                             groups="ni_patient.group_manager"
                         />
                         <button
@@ -377,6 +430,7 @@
                             attrs="{'invisible': [('state', 'not in', ['pending'])]}"
                             class="btn-warning me-4"
                             groups="ni_patient.group_manager"
+                            invisible="1"
                         />
                     </div>
                 </sheet>

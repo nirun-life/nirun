@@ -51,6 +51,9 @@ class ServiceEventApproval(models.Model):
         default="pending",
     )
 
+    state_date = fields.Datetime(string="วันที่เปลี่ยนสถานะ", readonly=1)
+    state_by = fields.Many2one("res.users", string="ผู้อนุมัติ", readonly=1)
+
     start = fields.Date(default=fields.Date.context_today)
     stop = fields.Date(default=fields.Date.context_today)
 
@@ -255,33 +258,45 @@ class ServiceEventApproval(models.Model):
         for rec in self:
             rec.name = rec.identifier
 
-    def action_approved_event(self):
+    def _subscribe_partners(self):
+        """subscribe ผู้เกี่ยวข้อง + คนกดปุ่ม"""
         current_partner = self.env.user.partner_id
+
         for rec in self:
-            rec.state = "approved"
+            partners = []
 
-            # ✅ เพิ่ม user_id (ถ้ามี และยังไม่ได้ subscribe)
             if rec.user_id and rec.user_id.partner_id:
-                if rec.user_id.partner_id.id not in rec.message_partner_ids.ids:
-                    rec.message_subscribe(partner_ids=[rec.user_id.partner_id.id])
+                partners.append(rec.user_id.partner_id.id)
 
-            # ✅ เพิ่ม current user (คนกดปุ่ม)
-            if current_partner.id not in rec.message_partner_ids.ids:
-                rec.message_subscribe(partner_ids=[current_partner.id])
+            partners.append(current_partner.id)
+
+            partners = list(set(partners) - set(rec.message_partner_ids.ids))
+            if partners:
+                rec.message_subscribe(partner_ids=partners)
+
+    def action_approved_event(self):
+        for rec in self:
+            rec.write(
+                {
+                    "state": "approved",
+                    "state_date": fields.Datetime.now(),
+                    "state_by": self.env.user.id,
+                }
+            )
+
+        self._subscribe_partners()
 
     def action_rejected_event(self):
-        current_partner = self.env.user.partner_id
         for rec in self:
-            rec.state = "rejected"
+            rec.write(
+                {
+                    "state": "rejected",
+                    "state_date": fields.Datetime.now(),
+                    "state_by": self.env.user.id,
+                }
+            )
 
-            # ✅ เพิ่ม user_id (ถ้ามี และยังไม่ได้ subscribe)
-            if rec.user_id and rec.user_id.partner_id:
-                if rec.user_id.partner_id.id not in rec.message_partner_ids.ids:
-                    rec.message_subscribe(partner_ids=[rec.user_id.partner_id.id])
-
-            # ✅ เพิ่ม current user (คนกดปุ่ม)
-            if current_partner.id not in rec.message_partner_ids.ids:
-                rec.message_subscribe(partner_ids=[current_partner.id])
+        self._subscribe_partners()
 
     def write(self, vals):
         res = super(ServiceEventApproval, self).write(vals)
@@ -598,8 +613,14 @@ class ServiceEventApproval(models.Model):
             f"[CRON] Refreshing up to {batch_limit} approvals older than {cutoff_date}"
         )
 
-        # search record ตาม limit
-        records = self.search([("write_date", "<", cutoff_date)], limit=batch_limit)
+        # search record ตาม limit (เฉพาะที่ยังไม่ approved)
+        records = self.search(
+            [
+                ("write_date", "<", cutoff_date),
+                ("state", "!=", "approved"),
+            ],
+            limit=batch_limit,
+        )
 
         _logger.info(f"[CRON] Found {len(records)} record(s) to refresh.")
         records.action_refresh_computed_fields()
@@ -615,8 +636,23 @@ class ServiceEventApproval(models.Model):
         """
         retention_months = int(kwargs.get("retention_months", 0))
         batch_limit = int(kwargs.get("batch_limit", 50))
+        cooldown = int(kwargs.get("cooldown", 1))
 
-        domain = [("has_pdf", "=", False)]
+        now = fields.Datetime.now()
+        cutoff_date = now - relativedelta(days=cooldown)
+
+        _logger.info(
+            "[CRON][TIME] now=%s | regenerate_after_days=%s | cutoff_date=%s",
+            now,
+            cooldown,
+            cutoff_date,
+        )
+
+        domain = [
+            "|",
+            ("last_pdf_date", "=", False),
+            ("last_pdf_date", "<", cutoff_date),
+        ]
 
         if retention_months > 0:
             today = datetime.today()
@@ -633,49 +669,50 @@ class ServiceEventApproval(models.Model):
             f"[CRON] Found {len(records)} record(s) to generate PDF (batch_limit={batch_limit})."
         )
 
-        self._generate_pdf_for_records(records)
+        self._generate_pdf_for_records(records, force_regenerate=True)
 
-    @api.model
-    def _cron_cleanup_old_reports(self, **kwargs):
-        """
-        Cleanup old PDF attachments that exceed the retention period.
 
-        :param retention_months: int, number of months to keep reports (default=3)
-        :param batch_limit: int, number of records to process per cron run (default=50)
-        """
-        retention_months = int(kwargs.get("retention_months", 3))
-        batch_limit = int(kwargs.get("batch_limit", 50))
+@api.model
+def _cron_cleanup_old_reports(self, **kwargs):
+    """
+    Cleanup old PDF attachments that exceed the retention period.
 
-        today = fields.Datetime.now()
-        cutoff_date = today.replace(day=1) - relativedelta(months=retention_months)
+    :param retention_months: int, number of months to keep reports (default=3)
+    :param batch_limit: int, number of records to process per cron run (default=50)
+    """
+    retention_months = int(kwargs.get("retention_months", 3))
+    batch_limit = int(kwargs.get("batch_limit", 50))
 
-        _logger.info(
-            f"[CRON] Cleaning up reports older than {cutoff_date.date()} "
-            f"(retention_months={retention_months}, batch_limit={batch_limit})"
+    today = fields.Datetime.now()
+    cutoff_date = today.replace(day=1) - relativedelta(months=retention_months)
+
+    _logger.info(
+        f"[CRON] Cleaning up reports older than {cutoff_date.date()} "
+        f"(retention_months={retention_months}, batch_limit={batch_limit})"
+    )
+
+    # หา record ที่มีไฟล์และเก่ากว่าระยะเวลาที่กำหนด
+    old_records = self.search(
+        [("has_pdf", "=", True), ("start", "<", cutoff_date)],
+        limit=batch_limit,
+    )
+
+    _logger.info(f"[CRON] Found {len(old_records)} old record(s) to clean up.")
+
+    for rec in old_records:
+        attachments = self.env["ir.attachment"].search(
+            [
+                ("res_model", "=", rec._name),
+                ("res_id", "=", rec.id),
+                ("mimetype", "=", "application/pdf"),
+            ]
         )
-
-        # หา record ที่มีไฟล์และเก่ากว่าระยะเวลาที่กำหนด
-        old_records = self.search(
-            [("has_pdf", "=", True), ("start", "<", cutoff_date)],
-            limit=batch_limit,
-        )
-
-        _logger.info(f"[CRON] Found {len(old_records)} old record(s) to clean up.")
-
-        for rec in old_records:
-            attachments = self.env["ir.attachment"].search(
-                [
-                    ("res_model", "=", rec._name),
-                    ("res_id", "=", rec.id),
-                    ("mimetype", "=", "application/pdf"),
-                ]
+        if attachments:
+            _logger.info(
+                f"[CRON] Removing {len(attachments)} PDF(s) for record ID {rec.id}"
             )
-            if attachments:
-                _logger.info(
-                    f"[CRON] Removing {len(attachments)} PDF(s) for record ID {rec.id}"
-                )
-                attachments.unlink()
-                rec.has_pdf = False
-                rec.last_pdf_date = False
+            attachments.unlink()
+            rec.has_pdf = False
+            rec.last_pdf_date = False
 
-        _logger.info("[CRON] Cleanup complete.")
+    _logger.info("[CRON] Cleanup complete.")

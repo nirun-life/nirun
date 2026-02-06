@@ -8,18 +8,21 @@
             <xpath expr="//page[@name='patient_ids']" position="before">
                 <page name="attendance_days" string="การเข้างาน" icon="fa-list-alt" badge="attendance_days_count">
                     <group>
-                        <field name="attendance_days" string="จำนวนวันที่เข้างาน" readonly="1" />
-                        <field name="attendance_hours_total" string="จำนวนชั่วโมงทั้งหมด" readonly="1" />
-                        <field name="attendance_hours_avg" string="ชั่วโมงเฉลี่ยต่อวัน" readonly="1" />
+                        <group>
+                            <field name="attendance_days" string="จำนวนวันที่เข้างาน" readonly="1" />
+                            <field name="attendance_hours_total" string="จำนวนชั่วโมงทั้งหมด" readonly="1" />
+                            <field name="attendance_hours_avg" string="ชั่วโมงเฉลี่ยต่อวัน" readonly="1" />
+                        </group>
+                        <div class="text-end">
+                            <button
+                                name="action_view_attendance"
+                                string="ดูรายละเอียดการเข้างาน"
+                                type="object"
+                                class="btn-outline-secondary"
+                                icon="fa-search"
+                            />
+                        </div>
                     </group>
-                    <div>
-                        <button
-                            name="action_view_attendance"
-                            string="ดูรายละเอียดเข้างาน"
-                            type="object"
-                            class="btn-primary"
-                        />
-                    </div>
                 </page>
             </xpath>
         </field>
