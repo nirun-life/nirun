@@ -636,10 +636,10 @@ class ServiceEventApproval(models.Model):
         """
         retention_months = int(kwargs.get("retention_months", 0))
         batch_limit = int(kwargs.get("batch_limit", 50))
-        cooldown = int(kwargs.get("cooldown", 1))
+        cooldown = int(kwargs.get("cooldown", 1440))
 
         now = fields.Datetime.now()
-        cutoff_date = now - relativedelta(days=cooldown)
+        cutoff_date = now - relativedelta(minutes=cooldown)
 
         _logger.info(
             "[CRON][TIME] now=%s | regenerate_after_days=%s | cutoff_date=%s",
