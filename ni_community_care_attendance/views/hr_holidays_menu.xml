@@ -43,10 +43,26 @@
     />
     <menuitem
         id="menu_open_department_leave_approve"
-        name="การลา"
+        name="การลาทั้งหมด"
         parent="menu_hr_holidays_approvals"
         action="hr_holidays.hr_leave_action_action_approve_department"
         sequence="1"
+        groups="ni_patient.group_manager"
+    />
+    <menuitem
+        id="menu_open_department_leave_approve_waiting"
+        name="การลาที่รออนุมัติ"
+        parent="menu_hr_holidays_approvals"
+        action="action_hr_leave_waiting_approve"
+        sequence="2"
+        groups="ni_patient.group_manager"
+    />
+    <menuitem
+        id="menu_open_department_leave_approve_approved"
+        name="การลาที่อนุมัติแล้ว"
+        parent="menu_hr_holidays_approvals"
+        action="action_hr_leave_approved"
+        sequence="3"
         groups="ni_patient.group_manager"
     />
     <menuitem
@@ -54,7 +70,7 @@
         name="การจัดสรร"
         parent="menu_hr_holidays_approvals"
         action="hr_holidays.hr_leave_allocation_action_approve_department"
-        sequence="2"
+        sequence="4"
         groups="ni_patient.group_manager"
     />
     <menuitem

@@ -23,7 +23,7 @@
         <field name="name">Generate Approval Reports (PDF)</field>
         <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
         <field name="state">code</field>
-        <field name="code">model._cron_generate_reports_batch(retention_months=3, batch_limit=50)</field>
+        <field name="code">model._cron_generate_reports_batch(retention_months=3, batch_limit=50,cooldown=1440)</field>
         <field name="interval_number">1</field>
         <field name="interval_type">months</field>
         <field name="active">True</field>

@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <search>
                 <filter
-                    string="พนักงานในพื้นที่รับผิดชอบ"
+                    string="ผู้บริบาลในพื้นที่รับผิดชอบ"
                     name="my_area_employees"
                     domain="[('my_area','=',True)]"
                     groups="ni_patient.group_manager"
@@ -55,16 +55,18 @@
         </field>
     </record>
     <record id="action_hr_employee_responsible_area" model="ir.actions.act_window">
-        <field name="name">พนักงานในพื้นที่รับผิดชอบ</field>
+        <field name="name">ผู้บริบาลในพื้นที่รับผิดชอบ</field>
         <field name="res_model">hr.employee</field>
         <field name="view_mode">kanban,form</field>
         <field name="view_id" ref="hr_employee_view_kanban_dashboard" />
-        <field name="context">{'search_default_my_area_employees': 1}</field>
+        <field name="domain">[('my_area', '=', True)]</field>
+        <field name="context">{}</field>
     </record>
     <record id="action_hr_employee_departed" model="ir.actions.act_window">
-        <field name="name">พนักงานที่ออกจากงาน</field>
+        <field name="name">ผู้บริบาลที่ออกจากงาน</field>
         <field name="res_model">hr.employee</field>
         <field name="view_mode">kanban,form</field>
-        <field name="context">{'search_default_my_area_employees': 1, 'search_default_inactive': 1}</field>
+        <field name="domain">[('my_area', '=', True), ('active', '=', False)]</field>
+        <field name="context">{}</field>
     </record>
 </odoo>
