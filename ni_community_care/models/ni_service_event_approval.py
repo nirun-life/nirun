@@ -671,48 +671,47 @@ class ServiceEventApproval(models.Model):
 
         self._generate_pdf_for_records(records, force_regenerate=True)
 
+    @api.model
+    def _cron_cleanup_old_reports(self, **kwargs):
+        """
+        Cleanup old PDF attachments that exceed the retention period.
 
-@api.model
-def _cron_cleanup_old_reports(self, **kwargs):
-    """
-    Cleanup old PDF attachments that exceed the retention period.
+        :param retention_months: int, number of months to keep reports (default=3)
+        :param batch_limit: int, number of records to process per cron run (default=50)
+        """
+        retention_months = int(kwargs.get("retention_months", 3))
+        batch_limit = int(kwargs.get("batch_limit", 50))
 
-    :param retention_months: int, number of months to keep reports (default=3)
-    :param batch_limit: int, number of records to process per cron run (default=50)
-    """
-    retention_months = int(kwargs.get("retention_months", 3))
-    batch_limit = int(kwargs.get("batch_limit", 50))
+        today = fields.Datetime.now()
+        cutoff_date = today.replace(day=1) - relativedelta(months=retention_months)
 
-    today = fields.Datetime.now()
-    cutoff_date = today.replace(day=1) - relativedelta(months=retention_months)
-
-    _logger.info(
-        f"[CRON] Cleaning up reports older than {cutoff_date.date()} "
-        f"(retention_months={retention_months}, batch_limit={batch_limit})"
-    )
-
-    # หา record ที่มีไฟล์และเก่ากว่าระยะเวลาที่กำหนด
-    old_records = self.search(
-        [("has_pdf", "=", True), ("start", "<", cutoff_date)],
-        limit=batch_limit,
-    )
-
-    _logger.info(f"[CRON] Found {len(old_records)} old record(s) to clean up.")
-
-    for rec in old_records:
-        attachments = self.env["ir.attachment"].search(
-            [
-                ("res_model", "=", rec._name),
-                ("res_id", "=", rec.id),
-                ("mimetype", "=", "application/pdf"),
-            ]
+        _logger.info(
+            f"[CRON] Cleaning up reports older than {cutoff_date.date()} "
+            f"(retention_months={retention_months}, batch_limit={batch_limit})"
         )
-        if attachments:
-            _logger.info(
-                f"[CRON] Removing {len(attachments)} PDF(s) for record ID {rec.id}"
-            )
-            attachments.unlink()
-            rec.has_pdf = False
-            rec.last_pdf_date = False
 
-    _logger.info("[CRON] Cleanup complete.")
+        # หา record ที่มีไฟล์และเก่ากว่าระยะเวลาที่กำหนด
+        old_records = self.search(
+            [("has_pdf", "=", True), ("start", "<", cutoff_date)],
+            limit=batch_limit,
+        )
+
+        _logger.info(f"[CRON] Found {len(old_records)} old record(s) to clean up.")
+
+        for rec in old_records:
+            attachments = self.env["ir.attachment"].search(
+                [
+                    ("res_model", "=", rec._name),
+                    ("res_id", "=", rec.id),
+                    ("mimetype", "=", "application/pdf"),
+                ]
+            )
+            if attachments:
+                _logger.info(
+                    f"[CRON] Removing {len(attachments)} PDF(s) for record ID {rec.id}"
+                )
+                attachments.unlink()
+                rec.has_pdf = False
+                rec.last_pdf_date = False
+
+        _logger.info("[CRON] Cleanup complete.")

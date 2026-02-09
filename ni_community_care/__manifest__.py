@@ -57,7 +57,6 @@
         "report/event_approval_careplan_report.xml",
         "report/event_approval_elder_report.xml",
         "report/event_approval_category_report.xml",
-        "report/event_approval_all_report.xml",
         "views/ni_service_event_approval_views.xml",
         "views/ni_service_event_report_views.xml",
         "views/survey_survey_views.xml",

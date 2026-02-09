@@ -104,12 +104,12 @@
                     decoration-success="state == 'approved'"
                     decoration-danger="state == 'rejected'"
                 />
+                <field name="write_date" optional="hide" />
                 <!-- ให้เห็นเฉพาะกลุ่ม developer -->
-                <field name="has_pdf" groups="base.group_no_one" widget="boolean_toggle" />
-                <field name="last_pdf_date" groups="base.group_no_one" />
-                <field name="last_pdf_error" groups="base.group_no_one" invisible="True" />
-                <field name="write_date" groups="base.group_no_one" />
-                <field name="write_uid" groups="base.group_no_one" />
+                <field name="has_pdf" groups="base.group_no_one" widget="boolean_toggle" optional="hide" />
+                <field name="last_pdf_date" groups="base.group_no_one" optional="hide" />
+                <field name="last_pdf_error" groups="base.group_no_one" invisible="True" optional="hide" />
+                <field name="write_uid" groups="base.group_no_one" optional="hide" />
             </tree>
         </field>
     </record>

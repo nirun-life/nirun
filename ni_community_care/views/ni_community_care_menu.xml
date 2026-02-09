@@ -138,7 +138,7 @@
         name="การอนุมัติ"
         parent="ni_community_care.approval_menu_root"
         sequence="1"
-        groups="ni_patient.group_manager"
+        groups="ni_patient.group_admin"
     />
     <menuitem
         id="approval_menu_all"
@@ -146,7 +146,7 @@
         action="ni_service_event_approval_action"
         parent="ni_community_care.approval_menu_root_approval"
         sequence="0"
-        groups="ni_patient.group_manager"
+        groups="ni_patient.group_admin"
     />
     <menuitem
         id="approval_menu_pending"
@@ -154,7 +154,7 @@
         action="ni_service_event_approval_action_pending"
         parent="ni_community_care.approval_menu_root_approval"
         sequence="1"
-        groups="ni_patient.group_manager"
+        groups="ni_patient.group_admin"
     />
     <menuitem
         id="approval_menu_approved"
@@ -162,22 +162,23 @@
         action="ni_service_event_approval_action_approved"
         parent="ni_community_care.approval_menu_root_approval"
         sequence="2"
-        groups="ni_patient.group_manager"
+        groups="ni_patient.group_admin"
     />
-    <menuitem
-        id="approval_menu_rejected"
-        name="บันทึกงานที่ไม่ผ่านการอนุมัติ"
-        action="ni_service_event_approval_action_rejected"
-        parent="ni_community_care.approval_menu_root_approval"
-        sequence="3"
-        groups="ni_patient.group_manager"
-    />
+    <!--    <menuitem-->
+    <!--        id="approval_menu_rejected"-->
+    <!--        name="บันทึกงานที่ไม่ผ่านการอนุมัติ"-->
+    <!--        action="ni_service_event_approval_action_rejected"-->
+    <!--        parent="ni_community_care.approval_menu_root_approval"-->
+    <!--        sequence="3"-->
+    <!--        groups="ni_patient.group_admin"-->
+    <!--    />-->
     <menuitem
         id="service_event_approval_menu"
         name="บันทึกงานของฉัน"
         action="ni_service_event_approval_action_self"
         parent="ni_community_care.approval_menu_root"
         sequence="4"
+        groups="ni_patient.group_user"
     />
     <record model="ir.ui.menu" id="ni_service.event_menu_categ">
         <field name="active">0</field>
