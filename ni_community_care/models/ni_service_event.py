@@ -163,19 +163,51 @@ class ServiceEvent(models.Model):
     @api.constrains("start")
     def _check_start_date(self):
         now = fields.Datetime.now()
+        today = now.date()
+
         for rec in self:
-            acceptable_date = now.date() - relativedelta(days=7)
-            if rec.start.date() < acceptable_date:
-                be_date = acceptable_date.replace(year=acceptable_date.year + 543)
-                raise UserError(
-                    _(
-                        "บันทึกกิจกรรมย้อนหลังได้ไม่เกิน 7 วัน (วันที่ {})".format(
-                            be_date
+            if not rec.start:
+                continue
+
+            company = rec.company_id
+            start_date = rec.start.date()
+
+            # ❌ ห้ามบันทึกล่วงหน้า
+            if start_date > today:
+                raise UserError(_("ไม่สามารถบันทึกกิจกรรมล่วงหน้าได้"))
+
+            system_start = company.system_start_date
+            limit_days = company.backdate_limit_days
+
+            # -----------------------------
+            # กรณีเปิดย้อนหลังทั้งหมด (limit = -1)
+            # -----------------------------
+            if limit_days < 0:
+                if system_start and start_date < system_start:
+                    be_date = system_start.replace(year=system_start.year + 543)
+                    raise UserError(
+                        _(
+                            "ไม่สามารถบันทึกข้อมูลก่อนวันที่ {} ได้ เนื่องจากเป็นวันที่เริ่มต้นใช้งานระบบ".format(
+                                be_date
+                            )
                         )
                     )
-                )
-            if rec.start.date() > now.date():
-                raise UserError(_("ไม่สามารถบันทึกกิจกรรมล่วงหน้าได้"))
+
+            # -----------------------------
+            # กรณีปกติ (จำกัดตามจำนวนวัน)
+            # -----------------------------
+            else:
+                acceptable_date = today - relativedelta(days=limit_days or 7)
+
+                if start_date < acceptable_date:
+                    be_date = acceptable_date.replace(year=acceptable_date.year + 543)
+                    raise UserError(
+                        _(
+                            "บันทึกกิจกรรมย้อนหลังได้ไม่เกิน {} วัน (วันที่ {})".format(
+                                limit_days, be_date
+                            )
+                        )
+                    )
 
     @api.constrains("user_id", "employee_id")
     def _check_employee_id(self):

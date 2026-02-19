@@ -59,6 +59,7 @@
         "report/event_approval_category_report.xml",
         "views/ni_service_event_approval_views.xml",
         "views/ni_service_event_report_views.xml",
+        "views/res_company_views.xml",
         "views/survey_survey_views.xml",
         "wizard/survey_subject_views.xml",
         "views/ni_patient_smartcard_views.xml",

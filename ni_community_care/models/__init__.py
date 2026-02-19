@@ -23,3 +23,4 @@ from . import ni_patient_smartcard
 from . import ni_service_category
 from . import ni_patient_living_with
 from . import ni_patient_relative_benefit
+from . import res_company
