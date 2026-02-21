@@ -47,6 +47,7 @@ class Patient(models.Model):
         string="ยินยอมรับบริการจากผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ"
     )
     is_allow_photo = fields.Boolean(string="ยินยอมให้ถ่ายภาพระหว่างให้บริการ")
+    is_override_createdate = fields.Boolean(string="แก้ไขวันที่สร้างข้อมูล")
 
     relative_benefit_count = fields.Integer(compute="_compute_relative_benefit_count")
 
@@ -428,6 +429,109 @@ class Patient(models.Model):
                 "__count"
             ]
         return patient_type_status
+
+    create_date = fields.Datetime(readonly=False, store=True)
+
+    create_date_origin = fields.Datetime(
+        string="วันที่สร้างเดิม",
+        readonly=True,
+        copy=False,
+    )
+
+    # -------------------------------------------------
+    # Constraint: ตั้งค่า origin อัตโนมัติถ้ายังไม่มี
+    # -------------------------------------------------
+    # @api.constrains("create_date")
+    # def _set_create_date_origin(self):
+    #     for rec in self:
+    #         if rec.create_date and not rec.create_date_origin:
+    #             rec.create_date_origin = rec.create_date
+
+    # -------------------------------------------------
+    # Onchange: เอาติ๊กออก → revert ทันทีในหน้า form
+    # -------------------------------------------------
+    # @api.onchange("is_override_createdate")
+    # def _onchange_is_override_createdate(self):
+    #     for rec in self:
+    #         if not rec.is_override_createdate and rec.create_date_origin:
+    #             rec.create_date = rec.create_date_origin
+
+    # -------------------------------------------------
+    # ฟังก์ชันตรวจสอบ policy วันย้อนหลัง/ล่วงหน้า
+    # -------------------------------------------------
+    # def _validate_create_date_policy(self, target_datetime):
+    #     now = fields.Datetime.now()
+    #     today = now.date()
+    #
+    #     start_date = target_datetime.date()
+    #     company = self.company_id
+    #
+    #     # ❌ ห้ามล่วงหน้า
+    #     if start_date > today:
+    #         raise UserError(_("ไม่สามารถบันทึกกิจกรรมล่วงหน้าได้"))
+    #
+    #     system_start = company.system_start_date
+    #     limit_days = company.backdate_limit_days
+    #
+    #     # -----------------------------
+    #     # เปิดย้อนหลังทั้งหมด (limit < 0)
+    #     # -----------------------------
+    #     if limit_days < 0:
+    #         if system_start and start_date < system_start:
+    #             be_date = system_start.replace(year=system_start.year + 543)
+    #             raise UserError(
+    #                 _("ไม่สามารถบันทึกข้อมูลก่อนวันที่ {} ได้ เนื่องจากเป็นวันที่เริ่มต้นใช้งานระบบ").format(be_date)
+    #             )
+    #
+    #     # -----------------------------
+    #     # จำกัดจำนวนวันย้อนหลัง
+    #     # -----------------------------
+    #     else:
+    #         acceptable_date = today - relativedelta(days=limit_days or 7)
+    #
+    #         if start_date < acceptable_date:
+    #             be_date = acceptable_date.replace(year=acceptable_date.year + 543)
+    #             raise UserError(
+    #                 _("บันทึกกิจกรรมย้อนหลังได้ไม่เกิน {} วัน (วันที่ {})").format(
+    #                     limit_days, be_date
+    #                 )
+    #             )
+
+    # -------------------------------------------------
+    # WRITE override
+    # -------------------------------------------------
+    # def write(self, vals):
+    #     for rec in self:
+    #
+    #         # -----------------------------------------
+    #         # กรณีเอาติ๊ก override ออก (กัน bypass onchange)
+    #         # -----------------------------------------
+    #         if (
+    #             "is_override_createdate" in vals
+    #             and not vals.get("is_override_createdate")
+    #             and rec.create_date_origin
+    #         ):
+    #             vals["create_date"] = rec.create_date_origin
+    #
+    #         # -----------------------------------------
+    #         # กรณีมีการแก้ create_date
+    #         # -----------------------------------------
+    #
+    #         if "create_date" in vals:
+    #             # เก็บค่า origin ครั้งแรก
+    #             if not rec.create_date_origin:
+    #                 rec.create_date_origin = rec.create_date
+    #
+    #             # ❌ ไม่อนุญาตให้แก้ ถ้าไม่ได้ติ๊ก override
+    #             if not vals.get("is_override_createdate", rec.is_override_createdate):
+    #                 raise UserError(_("ไม่มีสิทธิ์แก้ไขวันที่สร้างข้อมูล"))
+    #
+    #             new_dt = fields.Datetime.to_datetime(vals.get("create_date"))
+    #             if not new_dt:
+    #                 continue
+    #
+    #             # ตรวจ policy วันย้อนหลัง/ล่วงหน้า
+    #             rec._validate_create_date_policy(new_dt)
 
 
 class PatientType(models.Model):

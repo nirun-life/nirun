@@ -270,6 +270,24 @@
                             </div>
                         </div>
                     </div>
+                    <br />
+                    <group attrs="{'invisible': ['|',('id','=',False),('is_accept_service','=',False)]}">
+                        <group groups="base.group_no_one">
+                            <field name="write_date" />
+                            <field name="create_date_origin" readonly="False" />
+                        </group>
+                        <group>
+                            <label for="create_date" />
+                            <div class="o_row compact">
+                                <field
+                                    name="create_date"
+                                    attrs="{'readonly': [('is_override_createdate','=',False)]}"
+                                />
+                                <field name="is_override_createdate" />
+                                <label for="is_override_createdate" />
+                            </div>
+                        </group>
+                    </group>
                     <notebook attrs="{'invisible': [('is_accept_service','=',False)]}">
                         <page name="personal" string="ข้อมูลส่วนบุคคล" icon="fa-address-book-o">
                             <group>
