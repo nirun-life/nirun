@@ -7,3 +7,5 @@ class ResCompany(models.Model):
     system_start_date = fields.Date(string="วันที่เริ่มใช้งานระบบ")
 
     backdate_limit_days = fields.Integer(string="จำนวนวันย้อนหลัง", default=7)
+
+    register_date_editable = fields.Boolean("แก้ไขวันที่ขึ้นทะเบียน")

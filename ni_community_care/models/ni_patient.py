@@ -3,16 +3,16 @@
 from dateutil.relativedelta import relativedelta
 
 from odoo import Command, _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 
 class Patient(models.Model):
     _inherit = "ni.patient"
 
     @api.model
-    def default_get(self, fields):
-        res = super(Patient, self).default_get(fields)
-        if "condition_categ_id" in fields and "condition_categ_id" not in res:
+    def default_get(self, _fields):
+        res = super(Patient, self).default_get(_fields)
+        if "condition_categ_id" in _fields and "condition_categ_id" not in res:
             categ = self.env["ni.condition.category"].search([], limit=1)
             if categ:
                 res["condition_categ_id"] = categ.id
@@ -62,6 +62,68 @@ class Patient(models.Model):
     chronic_disease_detail = fields.Char(
         string="ระบุโรค", help="เช่น เบาหวาน, ความดันโลหิตสูง"
     )
+
+    register_date_editable = fields.Boolean(related="company_id.register_date_editable")
+    register_date_change = fields.Boolean("แก้ไขวันที่ขึ้นทะเบียน")
+    register_date = fields.Datetime("วันที่ขึ้นทะเบียน")
+
+    @api.onchange("register_date_change")
+    def _onchange_register_date_change(self):
+        for rec in self:
+            if rec.register_date_change and not rec.register_date:
+                rec.register_date = fields.Datetime.now()
+            if not rec.register_date_change:
+                rec.register_date = rec.create_date or None
+
+    @api.constrains("register_date", "register_date_change")
+    def _check_register_date(self):
+        now = fields.Datetime.now()
+        company = self.env.company
+        system_start = company.system_start_date
+        limit = company.backdate_limit_days
+
+        for rec in self.filtered("register_date"):
+            if not rec.register_date_change:
+                if rec.register_date != rec.create_date:
+                    rec.register_date = rec.create_date
+                continue
+
+            be_regis_date = rec.register_date.replace(year=rec.register_date.year + 543)
+            if rec.register_date > now:
+                raise UserError(
+                    _(
+                        f"วันที่ขึ้นทะเบียน [{be_regis_date}] ต้องไม่เกินกว่าวันเวลาปัจจุบัน {now}"
+                    )
+                )
+
+            if limit < 0:
+                if system_start and rec.register_date < system_start:
+                    be_date = system_start.replace(year=system_start.year + 543)
+                    raise UserError(
+                        _(
+                            f"ไม่สามารถบันทึกวันที่ขึ้นทะเบียน [{be_regis_date}] ก่อนวันที่ {be_date} ได้"
+                        )
+                    )
+            else:
+                acceptable_date = rec.create_date.date() - relativedelta(
+                    days=limit or 7
+                )
+                if rec.register_date.date() < acceptable_date:
+                    be_date = acceptable_date.replace(year=acceptable_date.year + 543)
+                    be_create = rec.create_date.date().replace(
+                        year=rec.create_date.year + 543
+                    )
+                    raise UserError(
+                        _(
+                            f"สามารถวันที่ขึ้นทะเบียน [{be_regis_date}] ย้อนหลังได้ไม่เกิน {limit} วัน "
+                            f"จากวันที่บันทึกข้อมูล (วันที่ {be_date} ถึง {be_create})"
+                        )
+                    )
+
+    def _update_register_date(self, limit=3000):
+        patients = self.search([("register_date", "=", False)], limit=3000)
+        for patient in patients:
+            patient.register_date = patient.create_date
 
     @api.onchange("chronic_disease")
     def _onchange_chronic_disease(self):
@@ -123,6 +185,9 @@ class Patient(models.Model):
             else vals
             for vals in vals_list
         ]
+        for vals in vals_list:
+            if "register_date" not in vals:
+                vals["register_date"] = fields.Datetime.now()
         return super(Patient, self).create(vals_list)
 
     def write(self, vals):

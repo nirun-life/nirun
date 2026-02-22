@@ -257,7 +257,7 @@
                             decoration-muted="type_decoration == 'muted'"
                         />
                         <field name="type_decoration" invisible="1" />
-                        <!--                         <field name="type_id" widget="radio" options="{'horizontal': True}" groups="base.group_no_one"/>-->
+                        <label for="register_date" />
                         <div class="col-12 col-xl-6">
                             <separator string="การยินยอมรับบริการ" colspan="2" />
                             <div class="o_row">
@@ -269,6 +269,20 @@
                                 <p>ยินยอมให้ถ่ายภาพระหว่างให้บริการ</p>
                             </div>
                         </div>
+                        <field name="register_date_editable" invisible="1" />
+                        <group
+                            class="mt-4"
+                            attrs="{'invisible': ['|', ('register_date_editable', '=', False),('is_accept_service', '=', False)]}"
+                        >
+                            <field
+                                name="register_date"
+                                attrs="{
+                                   'readonly': [('register_date_change', '=', False)],
+                                   'required': [('register_date_change', '=', True)]
+                                   }"
+                            />
+                            <field name="register_date_change" />
+                        </group>
                     </div>
                     <notebook attrs="{'invisible': [('is_accept_service','=',False)]}">
                         <page name="personal" string="ข้อมูลส่วนบุคคล" icon="fa-address-book-o">
@@ -513,14 +527,7 @@
                                 context="{'default_patient_id': id, 'default_category_id': observation_category_id}"
                             />
                         </page>
-                        <page
-                            name="plan"
-                            string="แผนการให้ความช่วยเหลือ"
-                            badge="careplan_count"
-                            icon="fa-tasks"
-                            groups="base.group_no_one"
-                            invisible="0"
-                        >
+                        <page name="plan" string="แผนการให้ความช่วยเหลือ" badge="careplan_count" icon="fa-tasks">
                             <field name="careplan_count" invisible="1" />
                             <field name="careplan_ids" context="{'default_patient_id': id}" />
                         </page>
