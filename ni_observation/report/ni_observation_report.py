@@ -6,7 +6,6 @@ class ObservationReport(models.AbstractModel):
     _name = "ni.observation.report"
     _description = "Observation Report Abstract"
     _auto = False
-    _order = "occurrence desc"
     _inherit = ["ni.observation.abstract"]
 
     sheet_id = fields.Many2one("ni.observation.sheet", readonly=True)
