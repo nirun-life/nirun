@@ -111,13 +111,13 @@ class Observation(models.Model):
             self._cr,
             "ni_observation__patient__ob_type__idx",
             self._table,
-            ["patient_id", "type_id"],
+            ["patient_id", "type_id", "occurrence DESC", "id"],
         )
         tools.create_index(
             self._cr,
             "ni_observation__encounter__ob_type__idx",
             self._table,
-            ["encounter_id", "type_id"],
+            ["encounter_id", "type_id", "occurrence DESC", "id"],
         )
 
     @api.constrains("sheet_id", "occurrence")
