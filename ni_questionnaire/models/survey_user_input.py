@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023. NSTDA
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, tools
 from odoo.exceptions import ValidationError
 
 
@@ -18,6 +18,23 @@ class SurveyUserInput(models.Model):
         related="survey_id.observation_score_type"
     )
     observation_group_ids = fields.One2many(related="survey_id.question_group_ids")
+
+    def init(self):
+        super().init()
+        tools.create_index(
+            self._cr,
+            "survey_user_input_patient_survey_create_date_idx",
+            self._table,
+            ["patient_id", "survey_id", "create_date DESC", "id"],
+            where="state = 'done' AND patient_id IS NOT NULL",
+        )
+        tools.create_index(
+            self._cr,
+            "survey_user_input_encounter_survey_create_date_idx",
+            self._table,
+            ["encounter_id", "survey_id", "create_date DESC", "id"],
+            where="state = 'done' AND encounter_id IS NOT NULL",
+        )
 
     def write(self, vals):
         state = vals.get("state")
