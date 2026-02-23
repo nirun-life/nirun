@@ -13,14 +13,10 @@ class EncounterObservationLatest(models.Model):
         tools.drop_view_if_exists(self.env.cr, self._table)
         self.env.cr.execute(
             """CREATE OR REPLACE VIEW %s AS (
-            SELECT *
+            SELECT DISTINCT ON (encounter_id, type_id) *
             FROM ni_observation
-            WHERE id IN (
-                SELECT max(id)
-                FROM ni_observation
-                WHERE value IS NOT NULL
-                GROUP BY encounter_id, type_id
-            )
+            WHERE value IS NOT NULL
+            ORDER BY encounter_id, type_id, occurrence DESC
         )
         """
             % (self._table)
