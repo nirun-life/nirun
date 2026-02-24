@@ -77,6 +77,7 @@
                     decoration-success="state == 'approved'"
                     decoration-danger="state == 'rejected'"
                 />
+                <field name="due_date" states="approved" optional="hide" />
                 <field name="write_date" optional="hide" />
                 <!-- ให้เห็นเฉพาะกลุ่ม developer -->
                 <field name="has_pdf" groups="base.group_no_one" widget="boolean_toggle" optional="hide" />
@@ -193,6 +194,7 @@
                             <!-- ด้านซ้าย -->
                             <field name="start" string="ตั้งแต่" readonly="1" />
                             <field name="stop" string="จนถึง" readonly="1" />
+                            <field name="due_date" states="approved" />
                             <label for="write_date" />
                             <div>
                                 <field name="write_date" string="อัปเดตเมื่อ" />
@@ -385,25 +387,18 @@
                             </group>
                         </page>
                     </notebook>
+                    <group>
+                        <field name="due_date" states="pending" />
+                    </group>
                     <div class="text-end">
                         <button
                             name="action_approved_event"
                             type="object"
                             string="อนุมัติบันทึกงาน"
                             icon="fa-check"
-                            attrs="{'invisible': [('state', 'in', ['approved'])]}"
+                            states="pending"
                             class="btn-success me-4"
                             groups="ni_patient.group_manager"
-                        />
-                        <button
-                            name="action_rejected_event"
-                            type="object"
-                            string="ไม่อนุมัติ"
-                            icon="fa-times-circle"
-                            attrs="{'invisible': [('state', 'not in', ['pending'])]}"
-                            class="btn-warning me-4"
-                            groups="ni_patient.group_manager"
-                            invisible="1"
                         />
                     </div>
                 </sheet>

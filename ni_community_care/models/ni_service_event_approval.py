@@ -9,6 +9,7 @@ from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfMerger
 
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -152,6 +153,18 @@ class ServiceEventApproval(models.Model):
         compute="_compute_adl_counts",
         store=True,
     )
+
+    due_date = fields.Date("กำหนดจ่ายเงิน", help="วันที่คาดว่าจะจ่ายเงิน")
+
+    @api.constrains("due_date")
+    def _check_due_date(self):
+        for rec in self:
+            if rec.due_date and rec.due_date < rec.start:
+                raise ValidationError(
+                    _(
+                        f"กรุณาระบบ '{rec._fields['due_date'].string}' หลังจากวันเริ่มรายงาน {rec.start}"
+                    )
+                )
 
     @api.depends("patient_ids.type_id.code")
     def _compute_adl_counts(self):
