@@ -25,7 +25,7 @@ class Patient(models.Model):
         return res
 
     display_identification_id = fields.Char(
-        compute="_compute_display_identification_id"
+        store=True, index="trigram", compute="_compute_display_identification_id"
     )
 
     @api.onchange("identification_id")
@@ -64,7 +64,7 @@ class Patient(models.Model):
             domain += ("id", "!=", self.id)
         return not bool(self.search(domain, limit=1))
 
-    @api.depends("identification_id")
+    @api.depends("identification_id", "nationality_id")
     def _compute_display_identification_id(self):
         for rec in self:
             if rec.identification_id and rec.nationality_id.code == "TH":
