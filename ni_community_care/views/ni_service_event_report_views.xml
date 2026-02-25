@@ -10,7 +10,7 @@
             <search>
                 <field name="employee_id" />
                 <field name="patient_id" />
-                <filter name="start" date="start" default_period="this_month" />
+                <filter name="start" date="start" default_period="this_year" />
                 <separator />
                 <filter name="my_service" string="กิจกรรมของฉัน" domain="[('my_service', '=', 1)]" />
                 <filter
@@ -110,7 +110,7 @@
         <field name="model">ni.service.event.report</field>
         <field name="arch" type="xml">
             <pivot>
-                <field name="start" type="row" interval="day" />
+                <field name="start" type="row" interval="month" />
                 <field name="employee_id" type="row" />
                 <field name="patient_type_id" type="col" />
                 <field name="patient_id" type="measure" />
@@ -129,26 +129,26 @@
         </field>
     </record>
     <record id="ni_service_event_report_action_my" model="ir.actions.act_window">
-        <field name="name">ผลปฎิบัติงานของฉัน</field>
+        <field name="name">ผลปฎิบัติงานของฉัน ผศ.02</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service.event.report</field>
         <field name="view_mode">pivot,graph,tree,form</field>
-        <field name="context">{'group_by': 'start:day','search_default_start': 1}</field>
+        <field name="context">{'group_by': 'start:month','search_default_start': 1}</field>
         <field name="domain">[('my_service', '=', True)]</field>
     </record>
     <record id="ni_service_event_report_action_manager" model="ir.actions.act_window">
-        <field name="name">ผลปฎิบัติงานผู้บริบาลในพื้นที่</field>
+        <field name="name">ผลปฎิบัติงานผู้บริบาลในพื้นที่ ผศ.02</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service.event.report</field>
         <field name="view_mode">pivot,graph,tree,form</field>
-        <field name="context">{'search_default_start': 1}</field>
+        <field name="context">{'group_by': ['start:month', 'employee_id'], 'search_default_start': 1}</field>
         <field name="domain">[('my_area', '=', True)]</field>
     </record>
     <record id="ni_service_event_report_action_observer" model="ir.actions.act_window">
-        <field name="name">ผลปฎิบัติงานผู้บริบาลทั้งประเทศ</field>
+        <field name="name">ผลปฎิบัติงานผู้บริบาลทั้งประเทศ ผศ.02</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service.event.report</field>
         <field name="view_mode">pivot,graph,tree,form</field>
-        <field name="context">{'group_by': ['start:day', 'state_id'], 'search_default_start': 1}</field>
+        <field name="context">{'group_by': ['start:month', 'state_id'], 'search_default_start': 1}</field>
     </record>
 </odoo>

@@ -270,6 +270,7 @@ class Patient(models.Model):
     family_relation = fields.Many2one("ni.family.relation", "ความสัมพันธ์ในครอบครัว")
 
     type_id = fields.Many2one("ni.patient.type", "ประเภทผู้สูงอายุ")
+    type_name = fields.Char(related="type_id.name")
     type_decoration = fields.Selection(
         related="type_id.decoration",
         string="Type Decoration",
