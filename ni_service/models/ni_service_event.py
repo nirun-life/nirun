@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from pytz import timezone
 
-from odoo import SUPERUSER_ID, _, api, fields, models
+from odoo import SUPERUSER_ID, _, api, fields, models, tools
 from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.tools import pytz
@@ -176,6 +176,14 @@ class ServiceEvent(models.Model):
         "('mimetype', 'ilike', 'image')]",
         string="Cover Image",
     )
+
+    def init(self):
+        tools.create_index(
+            self._cr,
+            f"{self._table}_event_id_id_idx",
+            self._table,
+            ["event_id", "id"],
+        )
 
     def _get_attachments_search_domain(self):
         self.ensure_one()
