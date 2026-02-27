@@ -248,43 +248,40 @@
                             <!--                                record-id="id"-->
                             <!--                                groups="ni_patient.group_manager"-->
                             <!--                            />-->
-                            <div class="mt-2 py-3">
-                                <div
-                                    class="d-flex align-items-center justify-content-start mt-2 py-3 px-4 bg-white border rounded shadow-sm"
-                                >
-                                    <!-- ติดสังคม -->
-                                    <div class="d-flex align-items-center me-5">
-                                        <span class="fa fa-comments text-success me-3 fs-3" />
-                                        <field name="adl_high_count" readonly="1" class="fw-bold me-2 fs-3 text-dark" />
-                                        <span class="fs-5 text-muted">ติดสังคม</span>
+                            <div class="mt-2 py-3" attrs="{'invisible':[('patient_count','=',0)]}">
+                                <div class="stat-summary mt-2">
+                                    <div class="stat-item">
+                                        <i class="fa fa-comments text-success" />
+                                        <field name="adl_high_count" readonly="1" class="stat-value" />
+                                        <span class="stat-label">ติดสังคม</span>
                                     </div>
-                                    <!-- เส้นคั่น -->
-                                    <span class="mx-4 fw-light fs-3 text-dark">|</span>
-                                    <!-- ติดบ้าน -->
-                                    <div class="d-flex align-items-center me-5">
-                                        <span class="fa fa-home text-odoo me-3 fs-3" />
-                                        <field name="adl_mid_count" readonly="1" class="fw-bold me-2 fs-3 text-dark" />
-                                        <span class="fs-5 text-muted">ติดบ้าน</span>
+                                    <div class="stat-item">
+                                        <i class="fa fa-home text-odoo" />
+                                        <field name="adl_mid_count" readonly="1" class="stat-value" />
+                                        <span class="stat-label">ติดบ้าน</span>
                                     </div>
-                                    <!-- เส้นคั่น -->
-                                    <span class="mx-4 fw-light fs-3 text-dark">|</span>
-                                    <!-- ติดเตียง -->
-                                    <div class="d-flex align-items-center">
-                                        <span class="fa fa-bed text-danger me-3 fs-3" />
-                                        <field name="adl_low_count" readonly="1" class="fw-bold me-2 fs-3 text-dark" />
-                                        <span class="fs-5 text-muted">ติดเตียง</span>
+                                    <div class="stat-item">
+                                        <i class="fa fa-bed text-danger" />
+                                        <field name="adl_low_count" readonly="1" class="stat-value" />
+                                        <span class="stat-label">ติดเตียง</span>
+                                    </div>
+                                    <div class="stat-item" attrs="{'invisible':[('adl_unknown_count','=',0)]}">
+                                        <i class="fa fa-question-circle-o  text-muted" />
+                                        <field name="adl_unknown_count" readonly="1" class="stat-value" />
+                                        <span class="stat-label">ไม่ระบุ</span>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="mt-2 py-3 text-center" attrs="{'invisible':[('patient_count','!=',0)]}">
+                                <span class="text-muted" style="font-style: italic;">ไม่มีข้อมูล</span>
                             </div>
                             <field
                                 name="patient_ids"
                                 mode="kanban"
                                 readonly="1"
-                                context="{'kanban_view_ref': 'ni_community_care.ni_patient_view_kanban_simp'}"
+                                context="{ 'kanban_view_ref': 'ni_community_care.ni_patient_view_kanban_simp','form_view_ref': 'ni_community_care.ni_patient_view_form_simp'}"
                                 options="{'no_create': True, 'no_edit': True, 'no_open': True}"
-                            >
-
-                            </field>
+                            />
                         </page>
                         <page name="event_ids" string="กิจกรรมการดูแลผู้สูงอายุ (ศผ.02)" icon="fa-life-ring">
                             <div class="text-end mb-4">

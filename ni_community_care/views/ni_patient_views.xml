@@ -18,7 +18,7 @@
                     <filter name="my_patient" string="ที่ฉันขึ้นทะเบียน ศผ.01" domain="[('create_uid', '=', uid)]" />
                     <filter name="my_activity" string="ที่ฉันดูแล ศผ.02" domain="[('activity_user_id', '=', uid)]" />
                     <separator />
-                    <filter string="Archived" name="เสียชีวิต" domain="[('active', '=', False)]" />
+                    <filter name="archived" string="Archived" domain="[('active', '=', False)]" />
                     <filter name="group_zip_id" string="พื้นที่" context="{'group_by': 'zip_id'}" />
                     <filter
                         name="group_create_date"
@@ -64,15 +64,17 @@
         <field name="arch" type="xml">
             <kanban
                 class="o_res_partner_kanban"
-                default_order="encounter_id, name"
+                default_order="create_date desc"
                 js_class="patient_dashboard_kanban"
                 limit="16"
             >
                 <field name="id" />
                 <field name="name" />
+                <field name="create_date" />
                 <field name="identifier" />
                 <field name="age" />
                 <field name="gender" />
+                <field name="active" />
                 <field name="deceased" />
                 <field name="deceased_date" />
                 <field name="partner_id" />
@@ -96,7 +98,21 @@
                 />
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                        <div
+                            class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban kanban_ribbon_card"
+                        >
+                            <widget
+                                name="web_ribbon"
+                                attrs="{'invisible': [('deceased', '=', False)]}"
+                                bg_color="bg-dark"
+                                title="เสียชีวิต"
+                            />
+                            <widget
+                                name="web_ribbon"
+                                attrs="{'invisible': ['|', ('active', '=', True), ('deceased', '=', True)]}"
+                                bg_color="bg-danger"
+                                title="ลบชั่วคราว"
+                            />
                             <field
                                 name="image_256"
                                 class="o_kanban_image_fill_left d-block"
@@ -108,15 +124,15 @@
                             <div class="oe_kanban_details">
                                 <div name="kanban_top" class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
-                                        <div class="float-end" t-if="record.presence_state.raw_value == 'deceased'">
-                                            <span
-                                                name="presence_deceased"
-                                                aria-label="Deceased"
-                                                class="fa fa-circle"
-                                                role="img"
-                                                title="Deceased"
-                                            />
-                                        </div>
+                                        <!--                                        <div class="float-end" t-if="record.presence_state.raw_value == 'deceased'">-->
+                                        <!--                                            <span-->
+                                        <!--                                                name="presence_deceased"-->
+                                        <!--                                                aria-label="Deceased"-->
+                                        <!--                                                class="fa fa-circle"-->
+                                        <!--                                                role="img"-->
+                                        <!--                                                title="Deceased"-->
+                                        <!--                                            />-->
+                                        <!--                                        </div>-->
                                         <span class="o_kanban_record_title fs-2">
                                             <field name="name" placeholder="Patient's Name" />
                                         </span>

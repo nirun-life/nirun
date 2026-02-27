@@ -76,6 +76,7 @@ class ServiceEventApproval(models.Model):
         string="Patients",
         compute="_compute_patient_ids",
         store=True,
+        context={"active_test": False},
     )
     patient_count = fields.Integer(compute="_compute_patient_ids", store=True)
 
@@ -139,17 +140,23 @@ class ServiceEventApproval(models.Model):
 
     dashboard_data = fields.Text()
     adl_high_count = fields.Integer(
-        string="ติดสังคม",
+        string="จำนวนผู้สูงอายุประเภทติดสังคม",
         compute="_compute_adl_counts",
         store=True,
     )
     adl_mid_count = fields.Integer(
-        string="ติดบ้าน",
+        string="จำนวนผู้สูงอายุประเภทติดบ้าน",
         compute="_compute_adl_counts",
         store=True,
     )
     adl_low_count = fields.Integer(
-        string="ติดเตียง",
+        string="จำนวนผู้สูงอายุประเภทติดเตียง",
+        compute="_compute_adl_counts",
+        store=True,
+    )
+
+    adl_unknown_count = fields.Integer(
+        string="จำนวนผู้สูงอายุที่ยังไม่ระบุประเภท",
         compute="_compute_adl_counts",
         store=True,
     )
@@ -170,7 +177,7 @@ class ServiceEventApproval(models.Model):
     def _compute_adl_counts(self):
         """นับจำนวนผู้ป่วยแต่ละประเภท"""
         for rec in self:
-            high = mid = low = 0
+            high = mid = low = unknown = 0
             for p in rec.patient_ids:
                 code = p.type_id.code if p.type_id else None
                 if code == "adl-high":
@@ -179,9 +186,13 @@ class ServiceEventApproval(models.Model):
                     mid += 1
                 elif code == "adl-low":
                     low += 1
+                else:
+                    unknown += 1
+
             rec.adl_high_count = high
             rec.adl_mid_count = mid
             rec.adl_low_count = low
+            rec.adl_unknown_count = unknown
 
     @api.model
     def get_patient_type_dashboard(self, record_id):

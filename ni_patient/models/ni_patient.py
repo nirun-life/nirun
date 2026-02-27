@@ -306,7 +306,7 @@ class Patient(models.Model):
                 if not rec._origin.identification_id and rec.partner_id.vat:
                     rec.identification_id = rec.partner_id.vat
 
-    @api.depends("encounter_ids")
+    @api.depends("encounter_ids", "active", "deceased")
     def _compute_encounter(self):
         enc = self.env["ni.encounter"].search(
             [
