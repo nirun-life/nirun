@@ -240,14 +240,6 @@
                                     icon="fa-print"
                                 />
                             </div>
-                            <!--                            <field-->
-                            <!--                                name="dashboard_data"-->
-                            <!--                                widget="service_event_approval_dashboard"-->
-                            <!--                                nolabel="1"-->
-                            <!--                                style="height: 100%; width: 100%;"-->
-                            <!--                                record-id="id"-->
-                            <!--                                groups="ni_patient.group_manager"-->
-                            <!--                            />-->
                             <div class="mt-2 py-3" attrs="{'invisible':[('patient_count','=',0)]}">
                                 <div class="stat-summary mt-2">
                                     <div class="stat-item">
@@ -268,7 +260,7 @@
                                     <div class="stat-item" attrs="{'invisible':[('adl_unknown_count','=',0)]}">
                                         <i class="fa fa-question-circle-o  text-muted" />
                                         <field name="adl_unknown_count" readonly="1" class="stat-value" />
-                                        <span class="stat-label">ไม่ระบุ</span>
+                                        <span class="stat-label">รอการประเมิน</span>
                                     </div>
                                 </div>
                             </div>
@@ -299,22 +291,52 @@
                                     <button name="action_regenerate_report" type="object" icon="fa-refresh" />
                                 </div>
                             </div>
-                            <div>
+                            <div class="mb-2">
                                 <strong>สรุปผลกิจกรรมการดูแลผู้สูงอายุ</strong>
                             </div>
                             <field
+                                name="event_summary_type"
+                                widget="radio"
+                                options="{'horizontal':True}"
+                                attrs="{'invisible':[('event_count','=',0)]}"
+                            />
+                            <!-- By Category -->
+                            <field
                                 name="category_ids"
                                 mode="kanban"
-                                context="{'approval_id': active_id, 'kanban_view_ref': 'ni_community_care.ni_service_category_view_kanban_inherit_service_category'
-                                }"
+                                context="{'approval_id': active_id, 'kanban_view_ref': 'ni_community_care.ni_service_category_view_kanban_inherit_service_category'}"
+                                attrs="{'invisible':[('event_summary_type','!=','category')]}"
                             />
-                            <div attrs="{'invisible': [('category_ids', '!=', [])]}" class="text-center mt-3">
+                            <!-- By ADL -->
+                            <div class="mt-2 py-3" attrs="{'invisible':[('event_summary_type','!=','adl')]}">
+                                <div class="stat-summary mt-2">
+                                    <div class="stat-item">
+                                        <i class="fa fa-comments text-success" />
+                                        <field name="event_adl_high_count" readonly="1" class="stat-value" />
+                                        <span class="stat-label">ติดสังคม</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <i class="fa fa-home text-odoo" />
+                                        <field name="event_adl_mid_count" readonly="1" class="stat-value" />
+                                        <span class="stat-label">ติดบ้าน</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <i class="fa fa-bed text-danger" />
+                                        <field name="event_adl_low_count" readonly="1" class="stat-value" />
+                                        <span class="stat-label">ติดเตียง</span>
+                                    </div>
+                                    <div class="stat-item" attrs="{'invisible':[('event_adl_unknown_count','=',0)]}">
+                                        <i class="fa fa-question-circle-o  text-muted" />
+                                        <field name="event_adl_unknown_count" readonly="1" class="stat-value" />
+                                        <span class="stat-label">รอการประเมิน</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Empty -->
+                            <div attrs="{'invisible': [('event_count', '!=', 0)]}" class="text-center mt-3">
                                 <span class="text-muted" style="font-style: italic;">ไม่มีข้อมูล</span>
                             </div>
-                            <br />
-                            <br />
-                            <br />
-                            <div>
+                            <div class="mt-5 mb-2">
                                 <strong>ประวัติกิจกรรมการดูแลผู้สูงอายุ</strong>
                             </div>
                             <field

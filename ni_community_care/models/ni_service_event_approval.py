@@ -159,6 +159,38 @@ class ServiceEventApproval(models.Model):
         store=True,
     )
 
+    event_summary_type = fields.Selection(
+        [
+            ("adl", "แบ่งตามจำนวนผู้สูงอายุที่ได้รับการดูแล"),
+            ("category", "แบ่งตามมิติ"),
+        ],
+        string="การแสดงผล",
+        default="adl",
+        required=True,
+    )
+
+    event_adl_high_count = fields.Integer(
+        string="จำนวนผู้สูงอายุประเภทติดสังคมที่เข้าร่วมกิจกรรม",
+        compute="_compute_event_adl_counts",
+        store=True,
+    )
+    event_adl_mid_count = fields.Integer(
+        string="จำนวนผู้สูงอายุประเภทติดบ้านที่เข้าร่วมกิจกรรม",
+        compute="_compute_event_adl_counts",
+        store=True,
+    )
+    event_adl_low_count = fields.Integer(
+        string="จำนวนผู้สูงอายุประเภทติดเตียงที่เข้าร่วมกิจกรรม",
+        compute="_compute_event_adl_counts",
+        store=True,
+    )
+
+    event_adl_unknown_count = fields.Integer(
+        string="จำนวนผู้สูงอายุที่ยังไม่ระบุประเภทที่เข้าร่วมกิจกรรม",
+        compute="_compute_event_adl_counts",
+        store=True,
+    )
+
     due_date = fields.Date("กำหนดจ่ายเงิน", help="วันที่คาดว่าจะจ่ายเงิน")
 
     @api.constrains("due_date")
@@ -191,6 +223,34 @@ class ServiceEventApproval(models.Model):
             rec.adl_mid_count = mid
             rec.adl_low_count = low
             rec.adl_unknown_count = unknown
+
+    @api.depends("event_ids", "event_ids.plan_patient_ids")
+    def _compute_event_adl_counts(self):
+        """นับจำนวนผู้เข้าร่วมกิจกรรมแบบไม่ซ้ำ แยกตามประเภทผู้สูงอายุ"""
+        for rec in self:
+            high = mid = low = unknown = 0
+
+            # รวม id แบบไม่ซ้ำ
+            patient_ids = set(rec.event_ids.mapped("plan_patient_ids").ids)
+
+            patients = self.env["ni.patient"].browse(patient_ids)
+
+            for p in patients:
+                code = p.type_id.code if p.type_id else None
+
+                if code == "adl-high":
+                    high += 1
+                elif code == "adl-mid":
+                    mid += 1
+                elif code == "adl-low":
+                    low += 1
+                else:
+                    unknown += 1
+
+            rec.event_adl_high_count = high
+            rec.event_adl_mid_count = mid
+            rec.event_adl_low_count = low
+            rec.event_adl_unknown_count = unknown
 
     @api.depends("event_ids.service_category_id")
     def _compute_category_ids(self):
@@ -231,7 +291,11 @@ class ServiceEventApproval(models.Model):
                 ("create_date", ">=", record.start),
                 ("create_date", "<=", record.stop),
             ]
-            patients = self.env["ni.patient"].search(domain)
+
+            patients = (
+                self.env["ni.patient"].with_context(active_test=False).search(domain)
+            )
+
             record.patient_ids = patients
             record.patient_count = len(patients)
 
