@@ -124,15 +124,6 @@
                             <div class="oe_kanban_details">
                                 <div name="kanban_top" class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
-                                        <!--                                        <div class="float-end" t-if="record.presence_state.raw_value == 'deceased'">-->
-                                        <!--                                            <span-->
-                                        <!--                                                name="presence_deceased"-->
-                                        <!--                                                aria-label="Deceased"-->
-                                        <!--                                                class="fa fa-circle"-->
-                                        <!--                                                role="img"-->
-                                        <!--                                                title="Deceased"-->
-                                        <!--                                            />-->
-                                        <!--                                        </div>-->
                                         <span class="o_kanban_record_title fs-2">
                                             <field name="name" placeholder="Patient's Name" />
                                         </span>
@@ -163,6 +154,13 @@
                                             <t t-if="record.gender.value">,</t>
                                             <field name="age" class="me-1" />
                                             <span>ปี</span>
+                                        </t>
+                                        <t t-if="record.deceased_date.value">
+                                            <span class="ms-1">
+                                                (เสียชีวิตเมื่อ
+                                                <field name="deceased_date" />
+                                                )
+                                            </span>
                                         </t>
                                     </li>
                                     <li t-if="context.show_deceased and record.deceased_date.value">
