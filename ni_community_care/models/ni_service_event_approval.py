@@ -1,6 +1,5 @@
 import base64
 import io
-import json
 import logging
 from collections import defaultdict
 from datetime import datetime
@@ -138,7 +137,6 @@ class ServiceEventApproval(models.Model):
         string="Stop Year (TH)", compute="_compute_month_year_thai", store=False
     )
 
-    dashboard_data = fields.Text()
     adl_high_count = fields.Integer(
         string="จำนวนผู้สูงอายุประเภทติดสังคม",
         compute="_compute_adl_counts",
@@ -193,41 +191,6 @@ class ServiceEventApproval(models.Model):
             rec.adl_mid_count = mid
             rec.adl_low_count = low
             rec.adl_unknown_count = unknown
-
-    @api.model
-    def get_patient_type_dashboard(self, record_id):
-        """อ่านค่าจาก computed fields แทนที่จะคำนวณใหม่"""
-        record = self.browse(record_id)
-        if not record.exists():
-            return {}
-
-        patient_type_status = {
-            "adl-high": {
-                "description": _("ติดสังคม"),
-                "amount": record.adl_high_count,
-                "target": 0,
-                "class": "text-success",
-                "icon": "fa-comments",
-            },
-            "adl-mid": {
-                "description": _("ติดบ้าน"),
-                "amount": record.adl_mid_count,
-                "target": 0,
-                "class": "text-odoo",
-                "icon": "fa-home",
-            },
-            "adl-low": {
-                "description": _("ติดเตียง"),
-                "amount": record.adl_low_count,
-                "target": 0,
-                "class": "text-danger",
-                "icon": "fa-bed",
-            },
-        }
-
-        # sync กลับไปยัง dashboard_data ด้วย (เพื่อให้ UI อื่นๆ ใช้ได้)
-        record.dashboard_data = json.dumps(patient_type_status, ensure_ascii=False)
-        return patient_type_status
 
     @api.depends("event_ids.service_category_id")
     def _compute_category_ids(self):
