@@ -214,8 +214,12 @@
                                 decoration-danger="state == 'rejected'"
                                 widget="badge"
                             />
-                            <label for="state_by" string="โดย" attrs="{'invisible':[('state','=','pending')]}" />
-                            <div class="o_row" attrs="{'invisible':[('state','=','pending')]}">
+                            <label
+                                for="state_by"
+                                string="โดย"
+                                attrs="{'invisible':[('state','in',['pending','archived'])]}"
+                            />
+                            <div class="o_row" attrs="{'invisible':[('state','in',['pending','archived'])]}">
                                 <field name="state_by" />
                                 <label for="state_date" string="เมื่อ" />
                                 <field name="state_date" />

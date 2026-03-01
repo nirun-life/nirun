@@ -38,17 +38,17 @@ class ServiceEventApproval(models.Model):
         comodel_name="res.country.state", compute="_compute_state_id", store=True
     )
 
-    identifier = fields.Char(
-        "หมายเลขอ้างอิง", readonly=True, states={"draft": [("readonly", False)]}
-    )
+    identifier = fields.Char("หมายเลขอ้างอิง", readonly=True)
     state = fields.Selection(
         [
             ("pending", "รอการอนุมัติ"),
             ("approved", "อนุมัติแล้ว"),
             ("rejected", "ไม่ผ่านการอนุมัติ"),
+            ("archived", "เก็บเป็นประวัติ"),
         ],
         tracking=True,
         default="pending",
+        index=True,
     )
 
     state_date = fields.Datetime(string="วันที่เปลี่ยนสถานะ", readonly=1)
@@ -622,33 +622,138 @@ class ServiceEventApproval(models.Model):
 
     @api.model
     def _cron_create_approvals(self):
-        """สร้าง record สำหรับผู้ใช้ทุกคน"""
-        # เลื่อนเวลาไปเดือนก่อนหน้า
         today = fields.Date.today()
         prev_month = today - relativedelta(months=1)
+        month_start = prev_month.replace(day=1)
 
-        # วันแรกของเดือนก่อนหน้า
-        start_date = prev_month.replace(day=1)
+        self._create_approvals_by_month_range(
+            start_month=month_start,
+            end_month=month_start,
+            batch_limit=0,  # ไม่ต้อง limit
+        )
 
-        # วันสุดท้ายของเดือนก่อนหน้า
-        last_day = start_date + relativedelta(months=1, days=-1)
+    @api.model
+    def _cron_backfill_approvals(self, **kwargs):
+        batch_limit = int(kwargs.get("batch_limit", 500))
+        stale_months = int(kwargs.get("stale_months", 6))
 
-        # ดึง user ทั้งหมด (กรองได้ถ้าต้องการเฉพาะ group)
+        company = self.env.company
+        if not company.system_start_date:
+            return
+
+        start_month = company.system_start_date.replace(day=1)
+        today = fields.Date.today()
+        prev_month = today - relativedelta(months=1)
+        end_month = prev_month.replace(day=1)
+
+        self._create_approvals_by_month_range(
+            start_month=start_month,
+            end_month=end_month,
+            batch_limit=batch_limit,
+        )
+        self._cleanup_backfilled_approvals(stale_months=stale_months)
+
+    def _cleanup_backfilled_approvals(self, stale_months=6):
+        """
+        - ลบ record ที่ field สำคัญว่างหมด
+        - เปลี่ยนสถานะเป็น stale ถ้าเก่าเกิน X เดือน
+        """
+
+        today = fields.Date.today()
+        stale_date = today - relativedelta(months=stale_months)
+
+        # 🔹 1. ลบ record ที่ field ว่างหมด
+        fields_to_check = [
+            "patient_ids",
+            "event_ids",
+            "category_ids",
+            "careplan_ids",
+            "service_ids",
+        ]
+
+        domain_empty = []
+        for f in fields_to_check:
+            domain_empty.append((f, "=", False))
+
+        # AND ทั้งหมด
+        empty_records = self.search(domain_empty)
+
+        empty_records.unlink()
+
+        # 🔹 2. เปลี่ยนสถานะเป็น stale
+        old_records = self.search(
+            [
+                ("start", "<", stale_date),
+                ("state", "=", "pending"),
+            ]
+        )
+
+        old_records.write({"state": "archived"})
+
+    @api.model
+    def _create_approvals_by_month_range(
+        self,
+        start_month,
+        end_month,
+        batch_limit=0,
+    ):
+        """
+        สร้าง approvals ตามช่วงเดือน
+        batch_limit = 0  -> ไม่จำกัด
+        batch_limit > 0  -> สร้างไม่เกิน N record ต่อรอบ
+        """
+        batch_limit = int(batch_limit or 0)
+
         group_user = self.env.ref("ni_patient.group_user")
         group_manager = self.env.ref("ni_patient.group_manager")
         group_admin = self.env.ref("ni_patient.group_admin")
 
         users = self.env["res.users"].search(
             [
-                ("employee_id", "!=", False),  # <-- เฉพาะ user ที่มี employee
+                ("employee_id", "!=", False),
                 ("employee_id.active", "=", True),
                 ("groups_id", "in", [group_user.id]),
                 ("groups_id", "not in", [group_manager.id, group_admin.id]),
             ]
         )
 
-        for user in users:
-            self.create({"start": start_date, "stop": last_day, "user_id": user.id})
+        vals_list = []
+        month_cursor = start_month
+
+        while month_cursor <= end_month:
+
+            month_start = month_cursor
+            month_end = month_start + relativedelta(months=1, days=-1)
+
+            existing = self.search(
+                [
+                    ("start", "=", month_start),
+                    ("stop", "=", month_end),
+                    ("user_id", "in", users.ids),
+                ]
+            )
+            existing_user_ids = set(existing.mapped("user_id").ids)
+
+            for user in users:
+                if user.id not in existing_user_ids:
+                    vals_list.append(
+                        {
+                            "start": month_start,
+                            "stop": month_end,
+                            "user_id": user.id,
+                        }
+                    )
+
+                    if batch_limit and len(vals_list) >= batch_limit:
+                        self.create(vals_list)
+                        return len(vals_list)
+
+            month_cursor += relativedelta(months=1)
+
+        if vals_list:
+            self.create(vals_list)
+
+        return len(vals_list)
 
     @api.model
     def _cron_refresh_approvals(self, **kwargs):
