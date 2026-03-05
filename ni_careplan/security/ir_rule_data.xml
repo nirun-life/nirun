@@ -9,4 +9,9 @@
         <field name="global" eval="True" />
         <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
+    <record id="careplan_company_rule" model="ir.rule">
+        <field name="name">Careplan: multi-company</field>
+        <field ref="model_ni_careplan" name="model_id" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
 </odoo>
