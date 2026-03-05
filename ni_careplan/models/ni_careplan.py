@@ -102,6 +102,7 @@ class Careplan(models.Model):
     achievement_id = fields.Many2one(
         "ni.goal.achievement", domain=[("careplan", "=", True)], states=LOCK_STATE_DICT
     )
+    achievement_decoration = fields.Selection(related="achievement_id.decoration")
     achievement_reason = fields.Html(help="Reason for current achievement")
     achievement_date = fields.Datetime(
         help="When achievement status took effect", readonly=1
@@ -241,7 +242,9 @@ class Careplan(models.Model):
     def apply_template(self):
         self.ensure_one()
         if not self.template_id:
-            if self.category_id and self.category_id.template_ids:
+            if not self.category_id or not self.category_id.template_ids:
+                raise UserError(_("Please select template"))
+            else:
                 first = True
                 for template in self.category_id.template_ids.filtered_domain(
                     [
@@ -258,8 +261,6 @@ class Careplan(models.Model):
                 if not first:
                     self.template_id = False
                     return
-            else:
-                raise UserError(_("Please select template"))
 
         keep = self.env.context.get("keep_careplan", 0)
         logging.debug(
@@ -269,7 +270,7 @@ class Careplan(models.Model):
         if self.template_id.condition_code_ids:
             condition = self.env["ni.condition"].search(
                 [
-                    ("partner_id", "=", self.partner_id.ids[0]),
+                    ("patient_id", "=", self.patient_id.id),
                     ("code_id", "in", self.template_id.condition_code_ids.ids),
                     ("clinical_state", "=", "active"),
                 ]
@@ -334,3 +335,23 @@ class Careplan(models.Model):
                     "the Selected template not properly setting the patient's conditions."
                 )
             )
+
+    def __check_period_start(self, encounter_id, period_start):
+        # careplan may be created in advance or reversed way
+        # so Ignore careplan.period_start and encounter.period_start check
+        return
+
+    def action_edit(self):
+        self.ensure_one()
+        context = dict(self.env.context)
+        view = {
+            "name": self[self._rec_name] or self._description,
+            "res_model": self._name,
+            "type": "ir.actions.act_window",
+            "target": context.pop("target", "new"),
+            "res_id": self.id,
+            "view_type": "form",
+            "views": [[False, "form"]],
+            "context": context,
+        }
+        return view

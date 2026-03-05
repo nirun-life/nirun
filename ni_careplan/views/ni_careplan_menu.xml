@@ -3,19 +3,20 @@
   ~ Copyright (c) 2024 NSTDA
   -->
 <odoo>
-    <menuitem id="configuration_menu" name="Careplan" parent="ni_patient.configuration_menu" />
-    <menuitem id="category_menu" name="Category" parent="configuration_menu" action="ni_careplan_category_action" />
+    <menuitem id="careplan_menu_root" name="Careplan" web_icon="ni_careplan,static/description/careplan.png" />
+    <menuitem id="careplan_menu" name="Careplan" sequence="0" action="ni_careplan_action" parent="careplan_menu_root" />
     <menuitem
         id="category_template_menu"
         name="Template"
-        parent="configuration_menu"
+        parent="careplan_menu_root"
         action="ni_careplan_template_action"
     />
     <menuitem
-        id="careplan_menu"
-        name="Careplan"
-        parent="configuration_menu"
-        action="ni_careplan_action"
-        groups="base.group_no_one"
+        id="configuration_menu"
+        name="Configuration"
+        parent="careplan_menu_root"
+        sequence="99"
+        groups="ni_patient.group_admin"
     />
+    <menuitem id="category_menu" name="Category" parent="configuration_menu" action="ni_careplan_category_action" />
 </odoo>

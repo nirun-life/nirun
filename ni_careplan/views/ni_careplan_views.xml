@@ -7,7 +7,27 @@
         <field name="name">Careplan</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.careplan</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+    <record id="ni_careplan_view_search" model="ir.ui.view">
+        <field name="name">ni.careplan.view.search</field>
+        <field name="model">ni.careplan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <filter name="period_start" date="period_start" default_period="month" />
+                <filter name="period_end" date="period_end" default_period="month" />
+                <filter name="group_patient_id" context="{'group_by': 'patient_id'}" />
+                <filter name="group_category_id" context="{'group_by': 'category_id'}" />
+                <filter name="group_state" context="{'group_by': 'state'}" />
+                <separator />
+                <filter name="group_create_uid" context="{'group_by': 'create_uid'}" />
+                <searchpanel>
+                    <field name="category_id" icon="fa-th-large" />
+                    <field name="state" />
+                </searchpanel>
+            </search>
+        </field>
     </record>
     <record id="ni_careplan_view_tree" model="ir.ui.view">
         <field name="name">ni.careplan.view.tree</field>
@@ -35,8 +55,6 @@
         <field name="arch" type="xml">
             <form>
                 <field name="id" invisible="1" />
-                <field name="patient_id" invisible="1" />
-                <field name="encounter_id" invisible="1" />
                 <field name="intent" invisible="1" />
                 <header>
                     <button
@@ -65,6 +83,16 @@
                 <sheet>
                     <group>
                         <field
+                            name="patient_id"
+                            invisible="context.get('default_patient_id')"
+                            attrs="{'readonly': [('id', '!=', False)]}"
+                        />
+                        <field
+                            name="encounter_id"
+                            invisible="context.get('default_encounter_id')"
+                            attrs="{'readonly': [('id', '!=', False)]}"
+                        />
+                        <field
                             name="category_id"
                             attrs="{'readonly': [('state', '!=', 'draft')]}"
                             options="{'no_create': True, 'no_open':True}"
@@ -82,7 +110,7 @@
                                 name="apply_template"
                                 type="object"
                                 string="apply"
-                                class="oe_edit_only"
+                                class="oe_edit_only text-primary"
                                 states="draft"
                                 attrs="{'readonly': [('template_id', '=', False)]}"
                             />
@@ -231,7 +259,7 @@
         <field name="name">ni.careplan.view.kanban</field>
         <field name="model">ni.careplan</field>
         <field name="arch" type="xml">
-            <kanban>
+            <kanban default_group_by="patient_id" records_draggable="0" limit="10" quick_create="0" group_create="0">
                 <field name="period_end" />
                 <field name="period_start_date" />
                 <field name="condition_ids" />
@@ -239,21 +267,48 @@
                 <field name="service_request_ids" />
                 <field name="medication_request_ids" />
                 <field name="action_count" />
+                <field name="achievement_decoration" />
+                <progressbar field="state" colors='{ "active": "info", "completed": "success", "revoked": "danger"}' />
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click">
-                            <div class="o_kanban_record_top mb16">
+                            <div class="o_kanban_record_top mb-3">
                                 <div class="o_kanban_record_headings">
                                     <strong class="o_kanban_record_title">
+                                        <i class="fa fa-th-large me-2" aria-hidden="true" title="category" />
                                         <field name="category_id" />
                                     </strong>
-                                </div>
-                                <strong>
-                                    <t t-if="record.period_end.value">
+                                    <span
+                                        class="mx-2 badge text-bg-secondary"
+                                        t-if="record.state.raw_value != 'active'"
+                                    >
+                                        <field name="state" />
+                                    </span>
+                                    <span class="text-muted" t-if="record.period_end.value">
+                                        <br />
                                         <i class="fa fa-clock-o me-2" aria-hidden="true" title="period_end" />
-                                        <field name="period_end" widget="remaining_days" />
-                                    </t>
-                                </strong>
+                                        <field class="small" name="period_end" widget="remaining_days" />
+                                    </span>
+                                </div>
+                                <div class="o_dropdown_kanban dropdown" t-if="!selection_mode" groups="base.group_user">
+                                    <a
+                                        role="button"
+                                        class="dropdown-toggle o-no-caret btn"
+                                        data-bs-toggle="dropdown"
+                                        data-bs-display="static"
+                                        href="#"
+                                        aria-label="Dropdown menu"
+                                        title="Dropdown menu"
+                                    >
+                                        <span class="fa fa-ellipsis-v" />
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <button class="dropdown-item" name="action_edit" type="object" string="Edit" />
+                                        <a t-if="widget.editable" role="menuitem" type="delete" class="dropdown-item">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="oe_kanban_details">
                                 <ul>
@@ -301,7 +356,17 @@
                                     <field name="goal_ratio" widget="progressbar" />
                                 </div>
                                 <div class="oe_kanban_bottom_right">
-                                    <field name="achievement_id" widget="badge" />
+                                    <field
+                                        name="achievement_id"
+                                        widget="badge"
+                                        decoration-info="achievement_decoration == 'info'"
+                                        decoration-success="achievement_decoration == 'success'"
+                                        decoration-warning="achievement_decoration == 'warning'"
+                                        decoration-danger="achievement_decoration == 'danger'"
+                                        decoration-muted="achievement_decoration == 'muted'"
+                                        decoration-primary="achievement_decoration == 'primary'"
+                                    />
+                                    <field name="create_uid" widget="many2one_avatar_user" />
                                 </div>
                             </div>
                         </div>
