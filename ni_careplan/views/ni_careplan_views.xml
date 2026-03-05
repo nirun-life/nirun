@@ -284,10 +284,12 @@
                                     >
                                         <field name="state" />
                                     </span>
-                                    <span class="text-muted" t-if="record.period_end.value">
+                                    <span class="text-muted">
                                         <br />
                                         <i class="fa fa-clock-o me-2" aria-hidden="true" title="period_end" />
-                                        <field class="small" name="period_end" widget="remaining_days" />
+                                        <field class="small" name="period_start" widget="date" />
+                                        <span class="mx-1">-</span>
+                                        <field class="small" name="period_end" widget="date" />
                                     </span>
                                 </div>
                                 <div class="o_dropdown_kanban dropdown" t-if="!selection_mode" groups="base.group_user">
