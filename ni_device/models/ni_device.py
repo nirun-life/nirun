@@ -12,7 +12,7 @@ class Device(models.Model):
     _rec_name = "name"
     _order = "name"
 
-    name = fields.Char(string="Device Name")
+    name = fields.Char(string="Device Name", required=True)
     identifier = fields.Char("Identifier", readonly=True)
 
     manufacturer_id = fields.Many2one(
@@ -22,18 +22,26 @@ class Device(models.Model):
         store=True,
     )
     manufacture_date = fields.Date("Manufacturer Date")
-    serial_number = fields.Char("Serial Number")
+    serial_number = fields.Char(
+        "Serial Number",
+        required=True,
+        help="If no serial number is available, you may enter - instead.",
+    )
     model_number = fields.Char("Model")
     currency_id = fields.Many2one(
         "res.currency", required=True, default=lambda self: self.env.company.currency_id
     )
-    price = fields.Monetary("Price", currency_field="currency_id")
+    price = fields.Monetary(
+        "Price",
+        currency_field="currency_id",
+    )
     barcode = fields.Char(string="Barcode", related="identifier")
 
     type_ids = fields.Many2many(
         "ni.device.type",
         string="Device Types",
         help="Examples: Blood Pressure Monitor, Weighing Scale, Thermometer",
+        required=True,
     )
 
     availability_status = fields.Selection(
@@ -48,7 +56,8 @@ class Device(models.Model):
     )
 
     observation_type_ids = fields.Many2many(
-        "ni.observation.type", string="Supported Observation Type"
+        "ni.observation.type",
+        string="Supported Observation Type",
     )
 
     state = fields.Selection(
@@ -104,6 +113,7 @@ class Device(models.Model):
     received_date = fields.Date(
         string="Received Date",
         help="The date the device was received and registered in the system.",
+        required=True,
     )
     disposed_date = fields.Datetime(
         string="Disposed Date",
