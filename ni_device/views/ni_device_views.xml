@@ -53,6 +53,12 @@
             }
         </field>
     </record>
+    <record id="ni_device_usage_log_action_this" model="ir.actions.act_window">
+        <field name="name">ประวัติการใช้งานอุปกรณ์</field>
+        <field name="res_model">ni.device.usage.log</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('device_id', '=', active_id)]</field>
+    </record>
     <record id="ni_device_repair_action_this" model="ir.actions.act_window">
         <field name="name">ประวัติการซ่อมอุปกรณ์</field>
         <field name="res_model">ni.device.repair</field>
@@ -163,6 +169,15 @@
                         class="oe_button_box"
                         groups="ni_patient.group_user"
                     >
+                        <button
+                            name="ni_device.ni_device_usage_log_action_this"
+                            attrs="{'invisible': [('usage_log_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-list-alt"
+                            type="action"
+                        >
+                            <field name="usage_log_count" string="ประวัติใช้งาน" widget="statinfo" />
+                        </button>
                         <button
                             name="ni_device.ni_device_repair_action_this"
                             attrs="{'invisible': [('repair_count', '=', 0)]}"

@@ -20,9 +20,10 @@
         "views/ni_device_holder_views.xml",
         "views/ni_device_repair_views.xml",
         "views/ni_device_dispose_type_views.xml",
-        "views/ni_device_menu.xml",
         "views/ni_device_label_layout_views.xml",
         "views/ni_observation_views.xml",
+        "views/ni_device_usage_logs_views.xml",
+        "views/ni_device_menu.xml",
         "report/device_label_layout_template.xml",
     ],
     "demo": [
