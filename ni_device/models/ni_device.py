@@ -27,7 +27,6 @@ class Device(models.Model):
         domain="[('is_company', '=', True)]",
         compute="_compute_from_definition",
         store=True,
-        readonly=False,
     )
     manufacture_date = fields.Date("Manufacturer Date")
     serial_number = fields.Char(
