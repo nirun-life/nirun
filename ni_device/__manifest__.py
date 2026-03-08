@@ -21,8 +21,10 @@
         "views/ni_device_holder_views.xml",
         "views/ni_device_repair_views.xml",
         "views/ni_device_dispose_type_views.xml",
+        "views/ni_device_menu.xml",
         "views/ni_device_label_layout_views.xml",
         "views/ni_observation_views.xml",
+        "views/ni_device_menu.xml",
         "views/ni_observation_sheet_views.xml",
         "views/ni_patient_smartcard_views.xml",
         "views/ni_patient_views.xml",
@@ -31,7 +33,7 @@
         "views/ni_device_menu.xml",
         "report/device_label_layout_template.xml",
         "wizard/ni_device_report_lost_wizard.xml",
-
+        "views/hr_employee_views.xml",
     ],
     "demo": [
         "demo/ni_device_type_demo.xml",
