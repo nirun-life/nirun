@@ -3,7 +3,7 @@ from odoo import fields, models
 
 class DeviceUsageLog(models.Model):
     _name = "ni.device.usage.log"
-    _inherit = "ni.observation.vitalsign.mixin", "image.mixin"
+    _inherit = "ni.observation.vitalsign.mixin", "ni.patient.smartcard"
 
     company_id = fields.Many2one(
         "res.company", required=True, index=True, default=lambda self: self.env.company

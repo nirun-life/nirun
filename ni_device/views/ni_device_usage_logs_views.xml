@@ -7,7 +7,7 @@
         <field name="name">ประวัติการใช้งานอุปกรณ์ทั้งหมด</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device.usage.log</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="context">{'search_default_group_device': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">ไม่มีประวัติการใช้งานอุปกรณ์</p>
@@ -25,9 +25,9 @@
         <field name="domain">[('device_id', '=', active_id)]</field>
         <field name="context">
             {
-            'search_default_group_month': 1,
-            'default_device_id': active_id
-        }
+                'search_default_group_month': 1,
+                'default_device_id': active_id
+            }
         </field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">ยังไม่มีการบันทึกการใช้งาน</p>
@@ -128,11 +128,12 @@
                 class="o_kanban_small_column"
                 sample="1"
             >
+                <field name="id" />
                 <field name="create_date" />
                 <field name="patient_id" />
                 <field name="user_id" />
                 <field name="device_id" />
-                <field name="image_128" />
+                <field name="image_1920" />
                 <!-- Vital Signs -->
                 <field name="body_temp" />
                 <field name="bp_s" />
@@ -154,21 +155,89 @@
                 <!-- Pain -->
                 <field name="pain_score_enum" />
                 <field name="pain_area" />
+                <!-- Smartcard -->
+                <field name="identifier" />
+                <field name="firstname" />
+                <field name="lastname" />
+                <field name="birthdate" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click o_kanban_record p-0">
                             <div class="p-3">
-                                <!-- ชื่อผู้ป่วย + วันที่ -->
-                                <t t-if="record.patient_id.raw_value">
-                                    <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
+                                <!-- ── Header ── -->
+                                <!-- มีบัตร: แสดงรูป + ชื่อ -->
+                                <t t-if="record.identifier.raw_value">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div
+                                            class="rounded-circle flex-shrink-0 d-flex align-items-center justify-content-center bg-light position-relative overflow-hidden"
+                                            style="width:40px;height:40px;border:1px solid #dee2e6;"
+                                        >
+                                            <img
+                                                t-att-src="kanban_image('ni.device.usage.log', 'image_1920', record.id.raw_value)"
+                                                class="rounded-circle"
+                                                style="width:40px;height:40px;object-fit:cover;"
+                                                onerror="this.src='';this.style.display='none';this.parentElement.querySelector('.fa-user').style.display='inline-block';"
+                                                onload="this.parentElement.querySelector('.fa-user').style.display='none';"
+                                            />
+                                            <i class="fa fa-user text-muted position-absolute" style="display:none;" />
+                                        </div>
+                                        <div class="overflow-hidden">
+                                            <t t-if="record.firstname.raw_value">
+                                                <strong class="d-block text-truncate">
+                                                    <t t-esc="record.firstname.value" />&#160;<t
+                                                        t-esc="record.lastname.value"
+                                                    />
+                                                </strong>
+                                            </t>
+                                            <t t-elif="record.patient_id.raw_value">
+                                                <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted fst-italic d-block">ไม่ระบุผู้ป่วย</span>
+                                            </t>
+                                            <div class="text-muted small">
+                                                <i class="fa fa-clock-o me-1" />
+                                                <t t-esc="record.create_date.value" />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </t>
+                                <!-- ไม่มีบัตร: ชื่อชิดซ้าย ไม่มีรูป -->
                                 <t t-else="">
-                                    <span class="text-muted fst-italic d-block">ไม่ระบุผู้ป่วย</span>
+                                    <div class="mb-2">
+                                        <t t-if="record.patient_id.raw_value">
+                                            <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted fst-italic d-block">ไม่ระบุผู้ป่วย</span>
+                                        </t>
+                                        <div class="text-muted small">
+                                            <i class="fa fa-clock-o me-1" />
+                                            <t t-esc="record.create_date.value" />
+                                        </div>
+                                    </div>
                                 </t>
-                                <div class="text-muted small mb-2">
-                                    <i class="fa fa-clock-o me-1" />
-                                    <t t-esc="record.create_date.value" />
-                                </div>
+                                <!-- ── ข้อมูลจากบัตรประชาชน ── -->
+                                <t t-if="record.identifier.raw_value">
+                                    <div class="mb-2 px-2 py-1 rounded" style="background:#f8f9fa;">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="text-muted small">
+                                                <i class="fa fa-id-card-o me-1 opacity-75" />
+                                                เลขบัตร
+                                            </span>
+                                            <span class="small font-monospace" t-esc="record.identifier.value" />
+                                        </div>
+                                        <t t-if="record.birthdate.raw_value">
+                                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                                <span class="text-muted small">
+                                                    <i class="fa fa-birthday-cake me-1 opacity-75" />
+                                                    วันเกิด
+                                                </span>
+                                                <span class="small" t-esc="record.birthdate.value" />
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
                                 <!-- Vital Signs: แสดงเฉพาะที่มีค่า -->
                                 <t t-if="record.bp_s.raw_value or record.bp_d.raw_value">
                                     <div class="d-flex justify-content-between align-items-center py-1">
@@ -335,6 +404,47 @@
                             <field name="create_date" string="วันที่บันทึก" />
                         </group>
                     </group>
+                    <notebook>
+                        <page string="ข้อมูลหน้าบัตร" icon="fa-id-card-o">
+                            <field
+                                name="image_1920"
+                                class="oe_avatar mt-4"
+                                options="{&quot;preview_image&quot;:&quot;image_128&quot;}"
+                                widget="image"
+                            />
+                            <group>
+                                <field name="identifier" readonly="1" />
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="title_id" readonly="1" />
+                                    <field name="firstname" readonly="1" />
+                                    <field name="lastname" readonly="1" />
+                                </group>
+                                <group>
+                                    <field name="firstname_en" readonly="1" />
+                                    <field name="lastname_en" readonly="1" />
+                                </group>
+                            </group>
+                            <group>
+                                <field name="birthdate" readonly="1" />
+                                <field name="address" readonly="1" />
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="card_issue" readonly="1" />
+                                    <field name="card_ref" readonly="1" />
+                                </group>
+                                <group>
+                                    <field name="card_issue_date" readonly="1" />
+                                    <field name="card_expire_date" readonly="1" />
+                                </group>
+                            </group>
+                        </page>
+                        <page name="raw_data" string="Raw Data" groups="base.group_no_one">
+                            <field name="card_data" />
+                        </page>
+                    </notebook>
                     <notebook>
                         <page name="vitalsign" string="Vital-sign">
                             <div class="text-center d-none d-lg-block">

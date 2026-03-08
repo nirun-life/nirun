@@ -9,7 +9,7 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["ni_patient", "ni_observation"],
+    "depends": ["ni_patient", "ni_observation", "l10n_th_ni_patient"],
     "data": [
         "security/ir.model.access.csv",
         "security/ir_rule_data.xml",
