@@ -1,14 +1,325 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
+    <!-- ───────────────────────────────────────────────
+         ACTION  (เปิดจาก Menu หลัก)
+    ─────────────────────────────────────────────────── -->
     <record id="ni_device_usage_log_action" model="ir.actions.act_window">
         <field name="name">ประวัติการใช้งานอุปกรณ์ทั้งหมด</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device.usage.log</field>
         <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{'search_default_group_device': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">ไม่มีประวัติการใช้งานอุปกรณ์</p>
         </field>
     </record>
+    <!-- ACTION เปิดจากหน้า Device — ชื่อ title ใช้ display_name ของ device นั้น
+         Odoo จะแสดง breadcrumb เป็น "<Device name>" อัตโนมัติเพราะ
+         action ถูก trigger จาก smart button บน form ของ ni.device
+         ซึ่ง Odoo ใช้ display_name ของ record นั้นเป็น breadcrumb title
+    -->
+    <record id="ni_device_usage_log_action_this" model="ir.actions.act_window">
+        <field name="name">ประวัติการใช้งานอุปกรณ์</field>
+        <field name="res_model">ni.device.usage.log</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('device_id', '=', active_id)]</field>
+        <field name="context">
+            {
+            'search_default_group_month': 1,
+            'default_device_id': active_id
+        }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ยังไม่มีการบันทึกการใช้งาน</p>
+            <p>เริ่มบันทึกผลการตรวจวัดจากอุปกรณ์นี้</p>
+        </field>
+    </record>
+    <!-- ───────────────────────────────────────────────
+         SEARCH VIEW
+    ─────────────────────────────────────────────────── -->
+    <record id="ni_device_usage_log_view_search" model="ir.ui.view">
+        <field name="name">ni.device.usage.log.view.search</field>
+        <field name="model">ni.device.usage.log</field>
+        <field name="arch" type="xml">
+            <search string="ค้นหาประวัติการใช้งาน">
+                <field name="patient_id" string="ผู้ป่วย" />
+                <field name="user_id" string="ผู้บันทึก" />
+                <field name="device_id" string="อุปกรณ์" />
+                <!-- Filter shortcuts -->
+                <filter
+                    name="filter_today"
+                    string="วันนี้"
+                    domain="[('create_date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)).strftime('%Y-%m-%d %H:%M:%S')),
+                                 ('create_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)).strftime('%Y-%m-%d %H:%M:%S'))]"
+                />
+                <filter
+                    name="filter_this_month"
+                    string="เดือนนี้"
+                    domain="[('create_date','&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('create_date','&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d'))]"
+                />
+                <filter name="filter_has_patient" string="มีผู้ป่วย" domain="[('patient_id','!=',False)]" />
+                <separator />
+                <!-- Group by -->
+                <filter name="group_month" string="เดือน" context="{'group_by': 'create_date:month'}" />
+                <filter name="group_patient" string="ผู้ป่วย" context="{'group_by': 'patient_id'}" />
+                <filter name="group_device" string="อุปกรณ์" context="{'group_by': 'device_id'}" />
+                <filter name="group_user" string="ผู้บันทึก" context="{'group_by': 'user_id'}" />
+            </search>
+        </field>
+    </record>
+    <!-- ───────────────────────────────────────────────
+         TREE VIEW
+         • แสดงเฉพาะคอลัมน์ที่มีค่า (optional="hide" สำหรับฟิลด์ที่ไม่ใช่ทุกอุปกรณ์จะมี)
+         • เรียงล่าสุดก่อน
+    ─────────────────────────────────────────────────── -->
+    <record id="ni_device_usage_log_view_tree" model="ir.ui.view">
+        <field name="name">ni.device.usage.log.view.tree</field>
+        <field name="model">ni.device.usage.log</field>
+        <field name="arch" type="xml">
+            <tree
+                string="ประวัติการใช้งานอุปกรณ์"
+                default_order="create_date desc"
+                decoration-muted="patient_id == False"
+                sample="1"
+            >
+                <!-- ── หลัก (แสดงเสมอ) ── -->
+                <field name="create_date" string="วันที่/เวลา" widget="datetime" />
+                <field name="device_id" string="อุปกรณ์" optional="show" />
+                <field name="patient_id" widget="many2one_avatar" optional="show" />
+                <field name="user_id" string="ผู้บันทึก" widget="many2one_avatar" optional="show" />
+                <!-- ── Vital Signs (แสดงตามอุปกรณ์ที่วัดได้) ── -->
+                <field name="body_temp" string="Temp (°C)" optional="hide" />
+                <field name="bp_s" string="SBP" optional="hide" />
+                <field name="bp_d" string="DBP" optional="hide" />
+                <field name="heart_rate" string="HR (/min)" optional="hide" />
+                <field name="oxygen_sat" string="SpO₂ (%)" optional="hide" />
+                <field name="respiratory_rate" string="RR (/min)" optional="hide" />
+                <!-- ── Body ── -->
+                <field name="body_weight" string="น้ำหนัก (kg)" optional="hide" />
+                <field name="body_height" string="ส่วนสูง (cm)" optional="hide" />
+                <field name="bmi" string="BMI" optional="hide" />
+                <field name="waist" string="รอบเอว (in)" optional="hide" />
+                <!-- ── Glucose ── -->
+                <field name="glucose_type" string="ประเภทน้ำตาล" optional="hide" />
+                <field name="fbs" string="FBS (mg/dl)" optional="hide" />
+                <field name="dtx" string="DTX (mg/dl)" optional="hide" />
+                <!-- ── Pain ── -->
+                <field name="pain_score_enum" string="ความเจ็บปวด" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <!-- ───────────────────────────────────────────────
+         KANBAN VIEW
+         • Group by create_date:month  (ล่าสุดบน)
+         • Limit 20 per group
+         • Card แสดงเฉพาะฟิลด์ที่มีค่าด้วย attrs invisible
+    ─────────────────────────────────────────────────── -->
+    <record id="ni_device_usage_log_view_kanban" model="ir.ui.view">
+        <field name="name">ni.device.usage.log.view.kanban</field>
+        <field name="model">ni.device.usage.log</field>
+        <field name="arch" type="xml">
+            <kanban
+                string="ประวัติการใช้งานอุปกรณ์"
+                default_group_by="create_date:month"
+                default_order="create_date desc"
+                limit="20"
+                group_limit="20"
+                class="o_kanban_small_column"
+                sample="1"
+            >
+                <field name="create_date" />
+                <field name="patient_id" />
+                <field name="user_id" />
+                <field name="device_id" />
+                <field name="image_128" />
+                <!-- Vital Signs -->
+                <field name="body_temp" />
+                <field name="bp_s" />
+                <field name="bp_d" />
+                <field name="heart_rate" />
+                <field name="oxygen_sat" />
+                <field name="respiratory_rate" />
+                <!-- Body -->
+                <field name="body_weight" />
+                <field name="body_height" />
+                <field name="bmi" />
+                <field name="waist" />
+                <field name="hip" />
+                <field name="whr" />
+                <!-- Glucose -->
+                <field name="glucose_type" />
+                <field name="fbs" />
+                <field name="dtx" />
+                <!-- Pain -->
+                <field name="pain_score_enum" />
+                <field name="pain_area" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record p-0">
+                            <div class="p-3">
+                                <!-- ชื่อผู้ป่วย + วันที่ -->
+                                <t t-if="record.patient_id.raw_value">
+                                    <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
+                                </t>
+                                <t t-else="">
+                                    <span class="text-muted fst-italic d-block">ไม่ระบุผู้ป่วย</span>
+                                </t>
+                                <div class="text-muted small mb-2">
+                                    <i class="fa fa-clock-o me-1" />
+                                    <t t-esc="record.create_date.value" />
+                                </div>
+                                <!-- Vital Signs: แสดงเฉพาะที่มีค่า -->
+                                <t t-if="record.bp_s.raw_value or record.bp_d.raw_value">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-heartbeat me-1 text-danger opacity-75" />
+                                            BP
+                                        </span>
+                                        <strong>
+                                            <t t-esc="record.bp_s.value" />
+                                            /
+                                            <t t-esc="record.bp_d.value" />
+                                            <span class="text-muted fw-normal">mmHg</span>
+                                        </strong>
+                                    </div>
+                                </t>
+                                <t t-if="record.heart_rate.raw_value">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-heartbeat me-1 text-danger opacity-75" />
+                                            HR
+                                        </span>
+                                        <strong>
+                                            <t t-esc="record.heart_rate.value" />
+                                            <span class="text-muted fw-normal">/min</span>
+                                        </strong>
+                                    </div>
+                                </t>
+                                <t t-if="record.oxygen_sat.raw_value">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-tint me-1 text-info opacity-75" />
+                                            SpO₂
+                                        </span>
+                                        <strong>
+                                            <t t-esc="record.oxygen_sat.value" />
+                                            <span class="text-muted fw-normal">%</span>
+                                        </strong>
+                                    </div>
+                                </t>
+                                <t t-if="record.body_temp.raw_value">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-thermometer-three-quarters me-1 text-warning opacity-75" />
+                                            Temp
+                                        </span>
+                                        <strong>
+                                            <t t-esc="record.body_temp.value" />
+                                            <span class="text-muted fw-normal">°C</span>
+                                        </strong>
+                                    </div>
+                                </t>
+                                <t t-if="record.respiratory_rate.raw_value">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-skyatlas me-1 text-primary opacity-75" />
+                                            RR
+                                        </span>
+                                        <strong>
+                                            <t t-esc="record.respiratory_rate.value" />
+                                            <span class="text-muted fw-normal">/min</span>
+                                        </strong>
+                                    </div>
+                                </t>
+                                <t t-if="record.body_weight.raw_value">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-balance-scale me-1 opacity-75" />
+                                            น้ำหนัก
+                                        </span>
+                                        <strong>
+                                            <t t-esc="record.body_weight.value" />
+                                            <span class="text-muted fw-normal">kg</span>
+                                        </strong>
+                                    </div>
+                                </t>
+                                <t t-if="record.body_height.raw_value">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-arrows-v me-1 opacity-75" />
+                                            ส่วนสูง
+                                        </span>
+                                        <strong>
+                                            <t t-esc="record.body_height.value" />
+                                            <span class="text-muted fw-normal">cm</span>
+                                        </strong>
+                                    </div>
+                                </t>
+                                <t t-if="record.bmi.raw_value">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-calculator me-1 opacity-75" />
+                                            BMI
+                                        </span>
+                                        <strong>
+                                            <t t-esc="record.bmi.value" />
+                                            <span class="text-muted fw-normal">kg/m²</span>
+                                        </strong>
+                                    </div>
+                                </t>
+                                <t t-if="record.fbs.raw_value">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-flask me-1 text-success" />
+                                            FBS
+                                        </span>
+                                        <strong>
+                                            <t t-esc="record.fbs.value" />
+                                            <span class="text-muted fw-normal">mg/dl</span>
+                                        </strong>
+                                    </div>
+                                </t>
+                                <t t-if="record.dtx.raw_value">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-flask me-1 text-success" />
+                                            DTX
+                                        </span>
+                                        <strong>
+                                            <t t-esc="record.dtx.value" />
+                                            <span class="text-muted fw-normal">mg/dl</span>
+                                        </strong>
+                                    </div>
+                                </t>
+                                <t t-if="record.pain_score_enum.raw_value and record.pain_score_enum.raw_value != '0'">
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="text-muted small">
+                                            <i class="fa fa-meh-o me-1 text-warning opacity-75" />
+                                            ความเจ็บปวด
+                                        </span>
+                                        <strong t-esc="record.pain_score_enum.value" />
+                                    </div>
+                                </t>
+                                <!-- ผู้บันทึก -->
+                                <div class="d-flex align-items-center gap-1 mt-2 pt-1 border-top">
+                                    <img
+                                        t-att-src="kanban_image('res.users', 'avatar_128', record.user_id.raw_value)"
+                                        class="rounded-circle"
+                                        style="width:18px;height:18px;object-fit:cover;"
+                                    />
+                                    <small class="text-muted" t-esc="record.user_id.value" />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!-- ───────────────────────────────────────────────
+         FORM VIEW  (เดิม — เพิ่ม device_id + patient_id ที่ header)
+    ─────────────────────────────────────────────────── -->
     <record id="ni_device_usage_log_view_form" model="ir.ui.view">
         <field name="name">ni.device.usage.log.view.form</field>
         <field name="model">ni.device.usage.log</field>
@@ -18,10 +329,10 @@
                     <group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
-                            <field name="user_id" widget="many2one_avatar" readonly="1" />
-                            <field name="create_date" />
-                            <field name="patient_id" readonly="1" />
                             <field name="device_id" readonly="1" />
+                            <field name="patient_id" readonly="1" />
+                            <field name="user_id" widget="many2one_avatar" readonly="1" />
+                            <field name="create_date" string="วันที่บันทึก" />
                         </group>
                     </group>
                     <notebook>
@@ -108,6 +419,12 @@
                                         <span class="text-muted me-4">mg/dl</span>
                                     </div>
                                 </group>
+                            </group>
+                        </page>
+                        <page name="debug" string="Debug" groups="base.group_no_one">
+                            <group>
+                                <field name="device_id" />
+                                <field name="patient_id" />
                             </group>
                         </page>
                     </notebook>
