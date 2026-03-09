@@ -170,10 +170,11 @@ class ObservationAbstract(models.AbstractModel):
     )
     def _compute_value(self):
         for rec in self:
-            if (
+            if not rec.type_id or (
                 not rec["value_%s" % rec.type_id.value_type]
                 and not rec.type_id.keep_falsy
             ):
+                rec.value = None
                 continue
             match rec.type_id.value_type:
                 case "char":
