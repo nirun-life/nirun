@@ -3,7 +3,9 @@
   ~ Copyright (c) 2023-2025 NSTDA
   -->
 <odoo>
-    <!-- Report Action -->
+    <!-- ============================================================
+         Report Action
+         ============================================================ -->
     <record id="service_event_approval_01_elder_action_report" model="ir.actions.report">
         <field name="name">ข้อมูลพื้นฐานของผู้สูงอายุ ศผ.01</field>
         <field name="model">ni.service.event.approval</field>
@@ -16,131 +18,112 @@
         <field name="binding_view_types">form</field>
         <field name="paperformat_id" ref="report_paperformat_a4_landscape" />
     </record>
+    <!-- ============================================================
+         Main Report Template
+         ============================================================ -->
     <template id="service_event_approval_encounter_report_template">
         <t t-call="web.html_container">
-            <tr t-foreach="docs" t-as="d">
+            <t t-foreach="docs" t-as="d">
                 <t t-call="web.external_layout">
-                    <div class="page">
-                        <div class="oe_structure" />
-                        <h2 name="title">
-                            <span>
-                                ข้อมูลพื้นฐานของผู้สูงอายุ -
-                                <t t-esc="docs.start_month_name" />
-                                <t t-esc="docs.start_year_thai" />
-                            </span>
-                            <small class="text-muted mx-2 border p-1 float-end">แบบ ศผ.01</small>
-                        </h2>
-                        <div class="row" id="caregiver_3">
-                            <div class="col-auto col-5 mw-100">
-                                <strong>ชื่อ-สกุลผู้บริบาลคุ้มครองสิทธิผู้สูงอายุ:</strong>
-                                <p class="m-0" t-esc="docs.employee_id.name" />
-                            </div>
-                            <div class="col-auto col-4 mw-100">
-                                <strong>พื้นที่:</strong>
-                                <p class="m-0" t-esc="', '.join(docs.user_id.city_ids.mapped('display_name'))" />
-                            </div>
-                        </div>
-                        <div class="row" id="caregiver_4">
-                            <div class="col-auto col-5 mw-100">
-                                <strong>ระยะเวลา:</strong>
-                                <p class="m-0">
-                                    <t t-esc="docs.start.day" />
-                                    <t t-esc="docs.start_month_name" />
-                                    <t t-esc="docs.start_year_thai" />
-                                    -
-                                    <t t-esc="docs.stop.day" />
-                                    <t t-esc="docs.stop_month_name" />
-                                    <t t-esc="docs.stop_year_thai" />
-                                </p>
-                            </div>
-                        </div>
-                        <table class="table table-condensed mt-4" id="elder-table">
-                            <thead style="display: table-row-group">
-                                <tr>
-                                    <th name="th_name" class="text-start">ชื่อ-นามสกุล</th>
-                                    <th name="th_age" class="text-start">อายุ</th>
-                                    <th name="th_address" class="text-start">ที่อยู่</th>
-                                    <th name="th_target" class="text-start">
-                                        ประเภท
-                                        <br />
-                                        ผู้สูงอายุ
-                                    </th>
-                                    <th name="th_function" class="text-start">อาชีพ</th>
-                                    <th name="th_family_count" class="text-start">
-                                        จำนวน
-                                        <br />
-                                        สมาชิกใน
-                                        <br />
-                                        ครอบครัว
-                                    </th>
-                                    <th name="th_family_relation" class="text-start">
-                                        ความ
-                                        <br />
-                                        สัมพันธ์ใน
-                                        <br />
-                                        ครอบครัว
-                                    </th>
-                                    <th name="th_condition" class="text-start">สภาพปัญหา</th>
-                                    <th name="th_plan" class="text-start">
-                                        แนวทางการ
-                                        <br />
-                                        ให้ความช่วย
-                                        <br />
-                                        เหลือดูแล
-                                    </th>
-                                    <th name="th_phone" class="text-start">เบอร์โทรศัพท์</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="d.patient_ids" t-as="line">
-                                    <td name="td_name">
-                                        <span t-field="line.name" />
-                                    </td>
-                                    <td name="td_age">
-                                        <span t-field="line.age" />
-                                    </td>
-                                    <td name="td_street">
-                                        <span t-field="line.street" />
-                                    </td>
-                                    <td name="td_type">
-                                        <span t-field="line.type_id" />
-                                    </td>
-                                    <td name="td_function">
-                                        <span t-field="line.function" />
-                                    </td>
-                                    <td name="td_family_count">
-                                        <span t-field="line.family_count" />
-                                    </td>
-                                    <td name="td_family_relation">
-                                        <span t-field="line.family_relation" />
-                                    </td>
-                                    <td name="td_condition">
-                                        <t t-foreach="line.condition_code_ids" t-as="cond">
-                                            <span t-field="cond.name" />
-                                            <t t-if="not cond_last">
-                                                <br />
+                    <!-- ส่วนหัว -->
+                    <t t-call="ni_community_care.service_event_approval_title_template">
+                        <t t-set="report_title" t-value="'ข้อมูลพื้นฐานของผู้สูงอายุ'" />
+                        <t t-set="report_form_code" t-value="'แบบ ศผ.01'" />
+                    </t>
+                    <t t-if="d.patient_ids">
+                        <div class="page">
+                            <!-- ตารางรายชื่อผู้สูงอายุ -->
+                            <table class="table table-condensed mt-4" id="elder-table">
+                                <thead style="display: table-row-group">
+                                    <tr>
+                                        <th class="text-start">ชื่อ-นามสกุล</th>
+                                        <th class="text-start">อายุ</th>
+                                        <th class="text-start">ที่อยู่</th>
+                                        <th class="text-start">
+                                            ประเภท
+                                            <br />
+                                            ผู้สูงอายุ
+                                        </th>
+                                        <th class="text-start">อาชีพ</th>
+                                        <th class="text-start">
+                                            จำนวน
+                                            <br />
+                                            สมาชิกใน
+                                            <br />
+                                            ครอบครัว
+                                        </th>
+                                        <th class="text-start">
+                                            ความ
+                                            <br />
+                                            สัมพันธ์ใน
+                                            <br />
+                                            ครอบครัว
+                                        </th>
+                                        <th class="text-start">สภาพปัญหา</th>
+                                        <th class="text-start">
+                                            แนวทางการ
+                                            <br />
+                                            ให้ความช่วย
+                                            <br />
+                                            เหลือดูแล
+                                        </th>
+                                        <th class="text-start">เบอร์โทรศัพท์</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="d.patient_ids" t-as="line">
+                                        <td>
+                                            <span t-field="line.name" />
+                                        </td>
+                                        <td>
+                                            <span t-field="line.age" />
+                                        </td>
+                                        <td>
+                                            <span t-field="line.street" />
+                                        </td>
+                                        <td>
+                                            <span t-field="line.type_id" />
+                                        </td>
+                                        <td>
+                                            <span t-field="line.function" />
+                                        </td>
+                                        <td>
+                                            <span t-field="line.family_count" />
+                                        </td>
+                                        <td>
+                                            <span t-field="line.family_relation" />
+                                        </td>
+                                        <td>
+                                            <t t-foreach="line.condition_code_ids" t-as="cond">
+                                                <span t-field="cond.name" />
+                                                <t t-if="not cond_last">
+                                                    <br />
+                                                </t>
                                             </t>
-                                        </t>
-                                        <t t-if="line.condition_other">
-                                            <t t-if="line.condition_code_ids">
-                                                <br />
+                                            <t t-if="line.condition_other">
+                                                <t t-if="line.condition_code_ids">
+                                                    <br />
+                                                </t>
+                                                <span t-field="line.condition_other" />
                                             </t>
-                                            <span t-field="line.condition_other" />
-                                        </t>
-                                    </td>
-                                    <td name="td_plan">
-                                        <span t-field="line.plan" />
-                                    </td>
-                                    <td name="td_phone">
-                                        <span t-field="line.mobile" t-if="line.mobile" />
-                                        <span t-field="line.phone" t-else="" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.plan" />
+                                        </td>
+                                        <td>
+                                            <span t-field="line.mobile" t-if="line.mobile" />
+                                            <span t-field="line.phone" t-else="" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <t t-call="ni_community_care.service_event_approval_no_data_template" />
+                    </t>
                 </t>
-            </tr>
+            </t>
         </t>
     </template>
 </odoo>

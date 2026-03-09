@@ -53,6 +53,7 @@
         "report/patient_service_report.xml",
         "report/patient_careplan_report.xml",
         "report/service_report.xml",
+        "report/event_approval_shared_templates.xml",
         "report/event_approval_service_report.xml",
         "report/event_approval_careplan_report.xml",
         "report/event_approval_elder_report.xml",
