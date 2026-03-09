@@ -184,12 +184,12 @@
                         context="{'default_patient_id': patient_id ,'default_encounter_id': id}"
                     />
                     <button
-                        name="%(ni_observation_sheet_action_form)d"
-                        type="action"
+                        name="action_observation_wizard"
+                        type="object"
                         string="New Observation"
                         icon="fa-pencil"
                         class="btn-primary"
-                        context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [observation_category_id]}"
+                        context="{'default_patient_id': patient_id ,'default_encounter_id': id,  'default_category_ids': [observation_category_id]}"
                         attrs="{'invisible': [('state', 'not in', ['in-progress'])]}"
                     />
                 </page>
