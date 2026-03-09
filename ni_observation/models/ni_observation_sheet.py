@@ -38,6 +38,9 @@ class ObservationSheet(models.Model):
         required=False,
     )
 
+    def garbage_collect(self):
+        self.observation_ids.garbage_collect(0, "day")
+
     def write(self, vals):
         result = super(ObservationSheet, self).write(vals)
         if result and vals.get("occurrence"):
