@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-13 07:16+0000\n"
-"PO-Revision-Date: 2024-12-13 07:16+0000\n"
+"POT-Creation-Date: 2026-03-09 10:11+0000\n"
+"PO-Revision-Date: 2026-03-09 10:11+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -130,9 +130,20 @@ msgid "/sec"
 msgstr "/วินาที"
 
 #. module: ni_observation
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_wizard__state__1
+msgid "1. Category"
+msgstr ""
+
+#. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter__pain_score_enum__10
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_vitalsign_mixin__pain_score_enum__10
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_smartcard__pain_score_enum__10
 msgid "10"
+msgstr ""
+
+#. module: ni_observation
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_wizard__state__2
+msgid "2. Observation"
 msgstr ""
 
 #. module: ni_observation
@@ -239,10 +250,8 @@ msgstr "<span class=\"text-muted me-4\">นิ้ว</span>"
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
-msgid ""
-"<span class=\"text-muted me-4\">kg/m²</span>\n"
-"                            \\"
-msgstr "<span class=\"text-muted me-4\">kg/m²</span>"
+msgid "<span class=\"text-muted me-4\">kg/m²</span>"
+msgstr ""
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
@@ -342,6 +351,13 @@ msgstr "กิจกรรม"
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_sheet_view_form
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_wizard_view_form
+msgid "Add Observation"
+msgstr "เพิ่มผลตรวจ"
+
+#. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_sheet_view_form
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_wizard_view_form
 msgid "Additional Note..."
 msgstr "หมายเหตุเพิ่มเติม"
 
@@ -354,6 +370,24 @@ msgstr "อายุสูงสุด"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__age_low
 msgid "Age Low"
 msgstr "อายุต่ำสุด"
+
+#. module: ni_observation
+#: model:ir.model.fields,help:ni_observation.field_ni_encounter_observation__effective_date
+#: model:ir.model.fields,help:ni_observation.field_ni_observation__effective_date
+#: model:ir.model.fields,help:ni_observation.field_ni_observation_abstract__effective_date
+#: model:ir.model.fields,help:ni_observation.field_ni_observation_report__effective_date
+#: model:ir.model.fields,help:ni_observation.field_ni_patient_observation__effective_date
+msgid "Alias for occurrence"
+msgstr ""
+
+#. module: ni_observation
+#: model:ir.model.fields,help:ni_observation.field_ni_encounter_observation__code_id
+#: model:ir.model.fields,help:ni_observation.field_ni_observation__code_id
+#: model:ir.model.fields,help:ni_observation.field_ni_observation_abstract__code_id
+#: model:ir.model.fields,help:ni_observation.field_ni_observation_report__code_id
+#: model:ir.model.fields,help:ni_observation.field_ni_patient_observation__code_id
+msgid "Alias for type_id"
+msgstr ""
 
 #. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter__observation_filter__patient
@@ -392,6 +426,7 @@ msgstr "ต่ํากว่าขีดจํากัดต่ําสุด
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__compare_interpret__better
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__compare_interpret__better
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__compare_interpret__better
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__compare_interpret__better
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__compare_interpret__better
 msgid "Better"
 msgstr "ดีขึ้น"
@@ -473,11 +508,18 @@ msgid "Body Weight (kg)"
 msgstr "น้ำหนัก (กก.)"
 
 #. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_wizard_view_form
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__category_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__category_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__category_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__category_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__category_ids
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__category_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__category_ids
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__category_id
 #: model:ir.ui.menu,name:ni_observation.observation_category_menu
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_type_view_search
@@ -489,6 +531,7 @@ msgstr "หมวด"
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__value_type__char
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__value_type__char
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__value_type__char
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__value_type__char
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_type__value_type__char
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__value_type__char
 msgid "Char"
@@ -496,6 +539,7 @@ msgstr "ข้อความ"
 
 #. module: ni_observation
 #: model:ir.model.fields,help:ni_observation.field_ni_encounter__observation_problem_only
+#: model:ir.model.fields,help:ni_observation.field_ni_patient__observation_problem_only
 msgid "Check here to display only the problem observations"
 msgstr ""
 
@@ -512,30 +556,43 @@ msgid "Child"
 msgstr ""
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__code
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation__code
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__code
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__code
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__code
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__code
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__code
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__code
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__code
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__value_type__code_id
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__value_type__code_id
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__value_type__code_id
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__value_type__code_id
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_type__value_type__code_id
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__value_type__code_id
 msgid "Code"
 msgstr "รหัส"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__color
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation__color
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__color
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__color
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__color
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__color
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__color
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__color
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__color
 msgid "Color"
 msgstr "สี"
 
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__company_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__company_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__company_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__company_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__company_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__company_id
 msgid "Company"
 msgstr "บริษัท"
@@ -544,6 +601,7 @@ msgstr "บริษัท"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__compare
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__compare
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__compare
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__compare
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__compare
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__compare
 msgid "Compare"
@@ -553,6 +611,7 @@ msgstr "เปรียบเทียบ"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__compare_interpret
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__compare_interpret
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__compare_interpret
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__compare_interpret
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__compare_interpret
 msgid "Compare Interpret"
 msgstr "ผลการเปรียบเทียบ"
@@ -561,6 +620,7 @@ msgstr "ผลการเปรียบเทียบ"
 #: model:ir.model.fields,help:ni_observation.field_ni_encounter_observation__compare
 #: model:ir.model.fields,help:ni_observation.field_ni_observation__compare
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_abstract__compare
+#: model:ir.model.fields,help:ni_observation.field_ni_observation_report__compare
 #: model:ir.model.fields,help:ni_observation.field_ni_patient_observation__compare
 msgid "Compare this observation value to previous observation"
 msgstr "เปรียบเทียบผลการตรวจนี้กับครั้งก่อนหน้า"
@@ -569,7 +629,7 @@ msgstr "เปรียบเทียบผลการตรวจนี้ก
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__child_ids
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_type_view_form
 msgid "Component"
-msgstr ""
+msgstr "องค์ประกอบ"
 
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__compute
@@ -593,24 +653,33 @@ msgid "Configurations"
 msgstr "การตั้งค่า"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__create_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__create_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__create_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__create_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__create_uid
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__create_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__create_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__create_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__create_uid
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__create_uid
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__sheet_uid
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__create_uid
 msgid "Created by"
 msgstr "สร้างโดย"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__create_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__create_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__create_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__create_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__create_date
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__create_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__create_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__create_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__create_date
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__create_date
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__create_date
 msgid "Created on"
 msgstr "สร้างเมื่อ"
 
@@ -632,6 +701,7 @@ msgstr "ต่ำวิกฤต"
 #. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter__glucose_type__dtx
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_vitalsign_mixin__glucose_type__dtx
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_smartcard__glucose_type__dtx
 msgid "DTX"
 msgstr ""
 
@@ -655,6 +725,11 @@ msgstr "คำนิยาม"
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_value_code_view_form
 msgid "Definition..."
 msgstr "คำนิยาม..."
+
+#. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_wizard_view_form
+msgid "Delete Observation?"
+msgstr "ต้องการลบผลการตรวจร่างกาย?"
 
 #. module: ni_observation
 #: model:uom.category,name:ni_observation.uom_categ_density
@@ -693,6 +768,11 @@ msgid "Diastolic Blood Pressure (mmHg)"
 msgstr "ความดันโลหิตตัวล่าง DIA (mmHg)"
 
 #. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_wizard_view_form
+msgid "Discard"
+msgstr "ละทิ้ง"
+
+#. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_interpretation_view_form
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_value_code_view_form
 msgid "Display"
@@ -704,6 +784,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__display_class
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__display_class
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__display_class
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__display_class
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__display_class
 msgid "Display Class"
 msgstr ""
@@ -717,6 +798,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__display_name
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__display_name
 msgid "Display Name"
 msgstr "ชื่อที่ใช้แสดง"
@@ -725,6 +807,7 @@ msgstr "ชื่อที่ใช้แสดง"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__display_type
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__display_type
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__display_type
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__display_type
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__display_type
 msgid "Display Type"
 msgstr ""
@@ -735,8 +818,16 @@ msgid "Duplication observation type!"
 msgstr "ประเภทการตรวจซ้ำ!"
 
 #. module: ni_observation
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_wizard__type__edit
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_wizard_view_form
+msgid "Edit"
+msgstr "แก้ไข"
+
+#. module: ni_observation
 #: model:ir.model,name:ni_observation.model_ni_encounter
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__encounter_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__encounter_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__encounter_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__encounter_id
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_view_search
 msgid "Encounter"
@@ -768,6 +859,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__compare__eq
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__compare__eq
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__compare__eq
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__compare__eq
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__compare__eq
 msgid "Equal"
 msgstr "เท่าเดิม"
@@ -808,6 +900,7 @@ msgstr "ข้อมูลเพิ่มเติม"
 #. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter__glucose_type__fbs
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_vitalsign_mixin__glucose_type__fbs
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_smartcard__glucose_type__fbs
 msgid "FBS"
 msgstr ""
 
@@ -836,6 +929,7 @@ msgstr ""
 
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__filtered_patient_observation_ids
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient__filtered_patient_observation_ids
 msgid "Filtered Patient Observation"
 msgstr ""
 
@@ -843,6 +937,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__value_type__float
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__value_type__float
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__value_type__float
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__value_type__float
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_type__value_type__float
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__value_type__float
 msgid "Float"
@@ -857,6 +952,11 @@ msgstr "เศษส่วน"
 #: model:uom.category,name:ni_observation.uom_categ_frequency
 msgid "Frequency"
 msgstr "ความถี่"
+
+#. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_sheet_view_form
+msgid "Garbage Collect"
+msgstr ""
 
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__gender
@@ -883,6 +983,7 @@ msgstr "กราฟ"
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__compare__gt
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__compare__gt
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__compare__gt
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__compare__gt
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__compare__gt
 msgid "Greater"
 msgstr "มากกว่า"
@@ -936,6 +1037,21 @@ msgid "Hip"
 msgstr "รอบสะโพก"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__history_ids
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__history_ids
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__history_ids
+msgid "History"
+msgstr "ประวัติ"
+
+#. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__history_count
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation__history_count
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__history_count
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__history_count
+msgid "History Count"
+msgstr "จำนวนประวัติ"
+
+#. module: ni_observation
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_type__graph_type
 msgid "How this observation should display on graph view"
 msgstr ""
@@ -949,6 +1065,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__id
 msgid "ID"
 msgstr "รหัส"
@@ -981,6 +1098,7 @@ msgstr "ไม่แน่ชัด"
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_abstract__is_problem
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_interpretation__is_problem
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_reference_range__is_problem
+#: model:ir.model.fields,help:ni_observation.field_ni_observation_report__is_problem
 #: model:ir.model.fields,help:ni_observation.field_ni_patient_observation__is_problem
 msgid "Indicator patient problem"
 msgstr ""
@@ -991,9 +1109,15 @@ msgid "Info"
 msgstr "ข้อมูลรายละเอียด"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__init_occurrence
+msgid "Init Occurrence"
+msgstr "ผลตรวจเมื่อ"
+
+#. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__value_type__int
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__value_type__int
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__value_type__int
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__value_type__int
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_type__value_type__int
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__value_type__int
 msgid "Integer"
@@ -1006,6 +1130,7 @@ msgstr "เลขจำนวนเต็ม"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__interpretation_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__interpretation_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__interpretation_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__interpretation_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__interpretation_id
 #: model:ir.ui.menu,name:ni_observation.interpretation_menu
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_reference_range_view_search
@@ -1018,6 +1143,7 @@ msgstr "การแปลผล"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__is_problem
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__is_problem
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__is_problem
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__is_problem
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__is_problem
 msgid "Is Problem"
 msgstr "เป็นปัญหา"
@@ -1041,29 +1167,38 @@ msgstr "ผลแล็ป"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet____last_update
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type____last_update
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code____last_update
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard____last_update
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation____last_update
 msgid "Last Modified on"
 msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__write_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__write_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__write_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__write_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__write_uid
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__write_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__write_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__write_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__write_uid
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__write_uid
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__write_uid
 msgid "Last Updated by"
 msgstr "อัพเดทครั้งสุดท้ายโดย"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__write_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__write_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__write_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__write_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__write_date
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__write_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__write_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__write_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__write_date
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__write_date
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__write_date
 msgid "Last Updated on"
 msgstr "อัพเดทครั้งสุดท้ายเมื่อ"
 
@@ -1071,6 +1206,7 @@ msgstr "อัพเดทครั้งสุดท้ายเมื่อ"
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__compare__lt
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__compare__lt
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__compare__lt
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__compare__lt
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__compare__lt
 msgid "Lesser"
 msgstr "น้อยกว่า"
@@ -1149,6 +1285,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__name
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__name
@@ -1165,9 +1302,15 @@ msgstr "ค่าลบ"
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__compare_interpret__neutral
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__compare_interpret__neutral
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__compare_interpret__neutral
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__compare_interpret__neutral
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__compare_interpret__neutral
 msgid "Neutral"
 msgstr "คงที่"
+
+#. module: ni_observation
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_wizard__type__new
+msgid "New"
+msgstr "ใหม่"
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
@@ -1185,6 +1328,16 @@ msgid "New Vital Sign"
 msgstr "บันทึกสัญญาณชีพ"
 
 #. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_wizard_view_form
+msgid "Next"
+msgstr "ถัดไป"
+
+#. module: ni_observation
+#: model_terms:ir.actions.act_window,help:ni_observation.ni_observation_wizard_action_from_encounter
+msgid "No Observation found. Let's create one!"
+msgstr "ไม่พบผลการตรวจร่างกาย!"
+
+#. module: ni_observation
 #: model:ni.observation.interpretation,name:ni_observation.interpretation_N
 msgid "Normal"
 msgstr "ปกติ"
@@ -1197,18 +1350,12 @@ msgid "Not found match value for \"%s\"!"
 msgstr "ไม่พบค่าที่เหมาะสมสำหรับ \"%s\"!"
 
 #. module: ni_observation
-#. odoo-python
-#: code:addons/ni_observation/report/ni_encounter_observation.py:0
-#: code:addons/ni_observation/report/ni_patient_observation.py:0
-#, python-format
-msgid "Not found observation!"
-msgstr "ไม่พบการบันทึก"
-
-#. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__note
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__note
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__display_type__line_note
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__display_type__line_note
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__display_type__line_note
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__display_type__line_note
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__display_type__line_note
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_sheet_view_form
 msgid "Note"
@@ -1217,13 +1364,19 @@ msgstr "หมายเหตุ"
 #. module: ni_observation
 #: model:ir.actions.act_window,name:ni_observation.ni_observation_action
 #: model:ir.actions.act_window,name:ni_observation.ni_observation_action_graph
+#: model:ir.actions.act_window,name:ni_observation.ni_observation_wizard_action_from_encounter
 #: model:ir.model,name:ni_observation.model_ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__observation_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__observation_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__observation_ids
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__observation_ids
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__observation_id
 #: model:ir.module.category,name:ni_observation.module_category_medical_observation
 #: model:ir.ui.menu,name:ni_observation.observation_line_menu
 #: model:ir.ui.menu,name:ni_observation.observation_menu_main
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_category_view_form
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_patient_view_form_inherit
 msgid "Observation"
 msgstr "การตรวจร่างกาย"
 
@@ -1241,6 +1394,7 @@ msgstr "หมวดการตรวจร่างกาย"
 #: model:ir.model,name:ni_observation.model_ni_observation_category
 #: model:ir.model,name:ni_observation.model_ni_observation_value_code
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__observation_category_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient__observation_category_id
 msgid "Observation Category"
 msgstr "หมวดการตรวจร่างกาย"
 
@@ -1287,6 +1441,7 @@ msgstr ""
 
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__observation_problem_only
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient__observation_problem_only
 msgid "Observation Problem Only"
 msgstr ""
 
@@ -1294,6 +1449,11 @@ msgstr ""
 #: model:ir.model,name:ni_observation.model_ni_observation_reference_range
 msgid "Observation Reference Range"
 msgstr "ค่าอ้างอิงการตรวจร่างกาย"
+
+#. module: ni_observation
+#: model:ir.model,name:ni_observation.model_ni_observation_report
+msgid "Observation Report Abstract"
+msgstr ""
 
 #. module: ni_observation
 #: model:ir.model,name:ni_observation.model_ni_observation_sheet
@@ -1320,6 +1480,11 @@ msgid "Observation Types"
 msgstr "ประเภทการตรวจร่างกาย"
 
 #. module: ni_observation
+#: model:ir.model,name:ni_observation.model_ni_observation_wizard
+msgid "Observation Wizard"
+msgstr "บันทึกผลการตรวจร่างกาย"
+
+#. module: ni_observation
 #: model:ir.actions.server,name:ni_observation.ir_cron_observation_garbage_collect_ir_actions_server
 #: model:ir.cron,cron_name:ni_observation.ir_cron_observation_garbage_collect
 msgid "Observation: Garbage Collect"
@@ -1333,12 +1498,20 @@ msgid "Observations"
 msgstr "การตรวจร่างกาย"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__effective_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__occurrence
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation__effective_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__occurrence
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__effective_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__occurrence
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__effective_date
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__occurrence
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__occurrence
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__occurrence
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__effective_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__occurrence
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_view_search
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_wizard_view_form
 msgid "Occurrence"
 msgstr "เมื่อ"
 
@@ -1357,13 +1530,13 @@ msgstr "เกินเกณฑ์ที่กำหนด"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_vitalsign_mixin__oxygen_sat
 #: model:ni.observation.type,name:ni_observation.type_oxygen_sat
 msgid "Oxygen Saturation"
-msgstr "ความอิ่มตัวออกซิเจน"
+msgstr "ออกซิเจนในเลือด"
 
 #. module: ni_observation
 #: model:ir.model.fields,help:ni_observation.field_ni_encounter__oxygen_sat
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_vitalsign_mixin__oxygen_sat
 msgid "Oxygen sat (%)"
-msgstr "ความอิ่มตัวออกซิเจน SpO2 (%)"
+msgstr "ออกซิเจนในเลือด (%)"
 
 #. module: ni_observation
 #: model:ni.observation.type,name:ni_observation.type_pain_score
@@ -1398,7 +1571,9 @@ msgstr "คู่ค้าที่เกี่ยวข้อง"
 #: model:ir.model,name:ni_observation.model_ni_patient
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__patient_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__patient_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__patient_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__patient_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__patient_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__patient_id
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_sheet__performer_ref__ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_view_search
@@ -1429,6 +1604,13 @@ msgid "Period"
 msgstr "ช่วงเวลา"
 
 #. module: ni_observation
+#. odoo-python
+#: code:addons/ni_observation/wizard/ni_observation_wizard.py:0
+#, python-format
+msgid "Please specify at least one category"
+msgstr "กรุณาระบุอย่างน้อยหนุ่งหมวดหมู่"
+
+#. module: ni_observation
 #: model:ni.observation.interpretation,name:ni_observation.interpretation_POS
 #: model:ni.observation.value.code,name:ni_observation.code_positive
 msgid "Positive"
@@ -1451,6 +1633,7 @@ msgstr "ประถม"
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_patient_view_form_inherit
 msgid "Problem only"
 msgstr "แสดงปัญหาเท่านั้น"
 
@@ -1509,9 +1692,15 @@ msgid "Respiratory Rate (/min)"
 msgstr "อัตราการหายใจ (/นาที)"
 
 #. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_wizard_view_form
+msgid "Save"
+msgstr "บันทึก"
+
+#. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__display_type__line_section
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__display_type__line_section
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__display_type__line_section
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__display_type__line_section
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__display_type__line_section
 msgid "Section"
 msgstr "หัวข้อ"
@@ -1527,6 +1716,7 @@ msgstr "ดูเพิ่มเติม"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__sequence
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__sequence
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__sequence
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__sequence
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__sequence
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__sequence
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__sequence
@@ -1536,6 +1726,8 @@ msgstr "ลำดับ"
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__sheet_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__sheet_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__sheet_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__sheet_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__sheet_id
 msgid "Sheet"
 msgstr "แบบบันทึก"
@@ -1557,6 +1749,7 @@ msgstr "ทางสังคม"
 
 #. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__state
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__state
 msgid "State"
 msgstr "สถานะ"
 
@@ -1602,6 +1795,7 @@ msgstr ""
 #: model:ir.model.fields,help:ni_observation.field_ni_encounter_observation__display_type
 #: model:ir.model.fields,help:ni_observation.field_ni_observation__display_type
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_abstract__display_type
+#: model:ir.model.fields,help:ni_observation.field_ni_observation_report__display_type
 #: model:ir.model.fields,help:ni_observation.field_ni_patient_observation__display_type
 msgid "Technical field for UX purpose."
 msgstr ""
@@ -1640,6 +1834,7 @@ msgstr "บริการครั้งนี้"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__title
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__title
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__title
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__title
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__title
 msgid "Title"
 msgstr ""
@@ -1653,13 +1848,20 @@ msgid "Today"
 msgstr "วันนี้"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__code_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__type_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation__code_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__type_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__code_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__type_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__type_ids
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__type_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__code_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__type_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__type_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__type_ids
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__type
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__code_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__type_id
 #: model:ir.ui.menu,name:ni_observation.observation_type_menu
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_reference_range_view_search
@@ -1682,6 +1884,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__unit_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__unit_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__unit_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__unit_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__unit_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__unit_id
 #: model:ir.ui.menu,name:ni_observation.uom_menu
@@ -1724,6 +1927,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__value_code_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__value_float
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__value_int
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__value
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__value_char
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__value_code_id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__value_float
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__value_int
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__value
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__value_char
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__value_code_id
@@ -1737,6 +1945,7 @@ msgstr "ค่า"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__value_code_ids
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__value_code_ids
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__value_code_ids
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__value_code_ids
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__value_code_ids
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__value_code_ids
 msgid "Value Code"
@@ -1751,17 +1960,11 @@ msgstr "ช่วงค่า"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__value_type
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__value_type
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__value_type
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__value_type
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__value_type
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__value_type
 msgid "Value Type"
 msgstr "รูปแบบค่า"
-
-#. module: ni_observation
-#. odoo-python
-#: code:addons/ni_observation/models/ni_observation_abstract.py:0
-#, python-format
-msgid "Value type is mismatch! please contact your administrator"
-msgstr "รูปแบบค่าไม่สอดคล้องกัน! โปรดติดต่อผู้ดูแลระบบ"
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_ob_line_view_tree
@@ -1813,6 +2016,7 @@ msgstr "คำเตือน"
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__compare_interpret__worsen
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__compare_interpret__worsen
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__compare_interpret__worsen
+#: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_report__compare_interpret__worsen
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__compare_interpret__worsen
 msgid "Worsen"
 msgstr "แย่ลง"
@@ -1830,6 +2034,11 @@ msgstr "เมื่อวาน"
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_value_code_view_form
 msgid "abbr."
 msgstr ""
+
+#. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_type_view_form
+msgid "copy"
+msgstr "คัดลอก"
 
 #. module: ni_observation
 #: model:uom.uom,name:ni_observation.uom_kg_m2
@@ -1889,4 +2098,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_vitalsign_mixin__pain_area
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
 msgid "บริเวณที่เจ็บปวด"
+msgstr ""
+
+#. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation__history_ids
+msgid "ประวัติ"
 msgstr ""

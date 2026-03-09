@@ -21,6 +21,7 @@
         "data/ni_observation_category_data.xml",
         "data/ni_observation_type_data.xml",
         "data/ni_observation_reference_range_data.xml",
+        "wizard/ni_observation_wizard_views.xml",
         "views/ni_observation_category_views.xml",
         "views/ni_observation_interpretation_views.xml",
         "views/ni_observation_reference_range_views.xml",
