@@ -55,7 +55,6 @@
                 <field name="patient_id" />
                 <field name="encounter_id" />
                 <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show" />
-                <field name="performer_ref" optional="hide" />
                 <field name="observation_ids" />
                 <field name="note" optional="hide" />
                 <field name="active" optional="hide" />
@@ -115,7 +114,6 @@
                         <group>
                             <field name="company_id" invisible="1" />
                             <field name="occurrence" />
-                            <field name="performer_ref" invisible="1" />
                         </group>
                     </group>
                     <notebook attrs="{'invisible': [('id', '=', False)]}">
@@ -159,8 +157,20 @@
                                         decoration-warning="display_class == 'warning'"
                                         optional="show"
                                     />
+                                    <field name="value" />
+                                    <control>
+                                        <create string="Add Observation" context="{}" />
+                                    </control>
                                 </tree>
                             </field>
+                            <button
+                                name="garbage_collect"
+                                type="object"
+                                class="btn-outline-danger"
+                                icon="fa-trash"
+                                string="Garbage Collect"
+                                groups="base.group_no_one"
+                            />
                         </page>
                         <page name="note" string="Note" icon="fa-sticky-note-o">
                             <field name="note" placeholder="Additional Note..." />

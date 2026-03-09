@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_observation_wizard_action_from_encounter" model="ir.actions.act_window">
+        <field name="name">Observation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.observation.wizard</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No Observation found. Let's create one!</p>
+        </field>
+    </record>
+    <record id="ni_observation_wizard_view_form" model="ir.ui.view">
+        <field name="name">ni.observation.wizard.view.form</field>
+        <field name="model">ni.observation.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="company_id" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="encounter_id" invisible="1" />
+                <field name="sheet_id" invisible="1" />
+                <field name="state" invisible="1" />
+                <field name="occurrence" invisible="1" />
+                <group states="1">
+                    <field name="patient_id" invisible="context.get('default_patient_id')" />
+                    <field name="encounter_id" invisible="context.get('default_encounter_id')" />
+                </group>
+                <field name="type" class="mb-4" widget="radio" options="{'horizontal': True}" states="1" />
+                <group attrs="{'invisible': ['|', ('state', '!=', '1'), ('type', '!=', 'new')]}">
+                    <field name="category_ids" widget="many2many_checkboxes" />
+                    <field name="init_occurrence" string="Occurrence" />
+                </group>
+                <group attrs="{'invisible': ['|', ('state', '!=', '1'), ('type', '!=', 'edit')]}">
+                    <field
+                        name="sheet_id"
+                        options="{'no_create': True, 'no_open':True}"
+                        attrs="{'invisible': [('type', '!=', 'edit')]}"
+                    />
+                    <label for="occurrence" attrs="{'invisible': [('sheet_id', '=', False)]}" />
+                    <div class="o_row" attrs="{'invisible': [('sheet_id', '=', False)]}">
+                        <field name="occurrence" />
+                        <label for="sheet_uid" />
+                        <field name="sheet_uid" widget="many2one_avatar_user" />
+                    </div>
+                </group>
+                <field
+                    name="observation_ids"
+                    context="{'default_sheet_id':sheet_id, 'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_occurrence': occurrence}"
+                    widget="ob_section_and_note_one2many"
+                    states="2"
+                >
+                    <tree editable="bottom">
+                        <field name="display_type" invisible="1" />
+                        <field name="display_class" invisible="1" />
+                        <field name="value_type" invisible="1" />
+                        <field name="sequence" widget="handle" />
+                        <field name="type_id" />
+                        <field name="title" widget="ob_section_and_note_text" optional="show" nolabel="1" />
+                        <field name="value_char" />
+                        <field name="value_int" nolabel="1" />
+                        <field name="value_float" nolabel="1" />
+                        <field name="value_code_id" nolabel="1" />
+                        <field
+                            name="value_code_ids"
+                            nolabel="1"
+                            widget="many2many_tags"
+                            options="{'color_field': 'color'}"
+                        />
+                        <field
+                            name="unit_id"
+                            optional="show"
+                            decoration-muted="1"
+                            attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                        />
+                        <field
+                            name="interpretation_id"
+                            widget="badge"
+                            decoration-danger="display_class == 'danger'"
+                            decoration-info="display_class == 'info'"
+                            decoration-muted="display_class == 'muted'"
+                            decoration-primary="display_class == 'primary'"
+                            decoration-success="display_class == 'success'"
+                            decoration-warning="display_class == 'warning'"
+                            optional="show"
+                        />
+                        <control>
+                            <create string="Add Observation" context="{}" />
+                        </control>
+                    </tree>
+                </field>
+                <label for="note" states="2" />
+                <field name="note" placeholder="Additional Note..." states="2" />
+                <footer attrs="{'invisible': [('type', '!=', 'new')]}">
+                    <button class="oe_highlight" name="prepare_sheet" type="object" string="Next" states="1" />
+                    <button class="btn-secondary" special="cancel" string="Cancel" states="1" />
+                    <button class="oe_highlight" name="submit_sheet" type="object" string="Save" states="2" />
+                    <button
+                        class="text-danger"
+                        name="discard_sheet"
+                        type="object"
+                        string="Discard"
+                        states="2"
+                        attrs="{'invisible': [('state', '!=', '2')]}"
+                    />
+                </footer>
+                <footer attrs="{'invisible': [('type', '!=', 'edit')]}">
+                    <button class="oe_highlight" name="next_state" type="object" string="Edit" states="1" />
+                    <button class="oe_highlight" name="submit_sheet" type="object" string="Save" states="2" />
+                    <button class="btn-secondary" special="cancel" string="Cancel" />
+                    <button
+                        class="btn-secondary text-danger"
+                        name="discard_sheet"
+                        type="object"
+                        icon="fa-trash"
+                        string="Discard"
+                        states="2"
+                        attrs="{'invisible': [('state', '!=', '2')]}"
+                        confirm="Delete Observation?"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

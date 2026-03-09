@@ -1,5 +1,4 @@
 #  Copyright (c) 2021-2023. NSTDA
-from pprint import pprint
 
 from odoo import api, fields, models
 
@@ -165,5 +164,24 @@ class Encounter(models.Model):
 
     def action_view_observation_sheet(self):
         action = self.patient_id.action_view_observation_sheet()
-        pprint(action["context"])
         return action
+
+    def action_observation_wizard(self):
+        self.ensure_one()
+        context = dict(self.env.context)
+        context.update(
+            {
+                "default_patient_id": self[0].patient_id.id,
+                "default_encounter_id": self[0].encounter_id.id,
+            }
+        )
+        view = {
+            "name": "Observation_wizard",
+            "res_model": "ni.observation.wizard",
+            "type": "ir.actions.act_window",
+            "target": context.get("target", "new"),
+            "view_type": "form",
+            "views": [[False, "form"]],
+            "context": context,
+        }
+        return view

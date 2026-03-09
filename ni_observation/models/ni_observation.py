@@ -20,6 +20,7 @@ class Observation(models.Model):
                 [
                     ("patient_id", "=", self.patient_id.id),
                     ("type_id", "=", self.type_id.get_display_type().ids),
+                    ("value", "!=", False),
                 ],
                 order="occurrence desc",
             )
@@ -165,8 +166,10 @@ class Observation(models.Model):
         return "{} {} {}".format(self.type_id.name, self.value, self.unit_id.name or "")
 
     @api.model
-    def garbage_collect(self):
-        limit_date = fields.datetime.utcnow() - get_timedelta(1, "day")
+    def garbage_collect(self, delta_qty=1, deltay_granularity="day"):
+        limit_date = fields.Datetime.now() - get_timedelta(
+            delta_qty, deltay_granularity
+        )
         return self.search(
             [
                 ("value", "=", False),
