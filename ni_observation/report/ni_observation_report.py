@@ -47,6 +47,11 @@ class ObservationReport(models.AbstractModel):
     )
     history_count = fields.Integer(compute="_compute_observation", compute_sudo=True)
 
+    create_date = fields.Datetime("Created on")
+    create_uid = fields.Many2one("res.users", "Created by")
+    write_date = fields.Datetime("Last Updated on")
+    write_uid = fields.Many2one("res.users", "Last Updated by")
+
     def _compute_observation(self):
         for rec in self:
             obs = self.env["ni.observation"].browse(self.id)
