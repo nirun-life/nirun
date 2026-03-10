@@ -55,42 +55,47 @@
                             <t t-set="p" t-value="patient_events[0]" />
                             <t t-call="ni_community_care.service_event_approval_patient_info_template" />
                             <!-- ตารางกิจกรรม -->
-                            <table class="table table-condensed mt-4">
+                            <table
+                                class="table table-condensed mt-4"
+                                style="font-size: 14px; table-layout: fixed; width: 100%;"
+                            >
                                 <thead>
                                     <tr>
-                                        <th class="text-start">วันที่</th>
-                                        <th class="text-start">มิติ</th>
-                                        <th class="text-start">วิธีการหรือบริการให้ความช่วยเหลือดูแล</th>
-                                        <th class="text-start">
+                                        <th class="text-start" style="width:10%">วันที่</th>
+                                        <th class="text-start" style="width:8%">มิติ</th>
+                                        <th class="text-start" style="width:30%">
+                                            วิธีการหรือบริการให้ความช่วยเหลือดูแล
+                                        </th>
+                                        <th class="text-start" style="width:7%">
                                             เวลา
                                             <br />
                                             เริ่ม
                                         </th>
-                                        <th class="text-start">
+                                        <th class="text-start" style="width:7%">
                                             เวลา
                                             <br />
                                             เลิก
                                         </th>
-                                        <th class="text-start">
+                                        <th class="text-start" style="width:6%">
                                             รวม
                                             <br />
                                             (ชั่วโมง)
                                         </th>
-                                        <th class="text-start">ผลการให้ความช่วยเหลือ</th>
+                                        <th class="text-start" style="width:32%">ผลการให้ความช่วยเหลือ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <t t-foreach="patient_events[1]" t-as="d">
                                         <tr>
-                                            <td>
+                                            <td style="word-wrap: break-word">
                                                 <span
                                                     t-esc="context_timestamp(d.start).strftime(lang_id.date_format)"
                                                 />
                                             </td>
-                                            <td>
+                                            <td style="word-wrap: break-word">
                                                 <span t-esc="d.service_category_id.name" />
                                             </td>
-                                            <td>
+                                            <td style="word-wrap: break-word">
                                                 <span t-esc="d.name" />
                                             </td>
                                             <td>
@@ -102,10 +107,10 @@
                                                 <span t-esc="context_timestamp(d.stop).strftime(lang_id.time_format)" />
                                             </td>
                                             <td>
-                                                <span t-esc="d.duration" />
+                                                <span t-esc="'%.2f' % d.duration" />
                                             </td>
-                                            <td>
-                                                <span t-esc="d.outcome" />
+                                            <td style="word-wrap: break-word">
+                                                <span t-out="d.outcome" />
                                             </td>
                                         </tr>
                                     </t>
