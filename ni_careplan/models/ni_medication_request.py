@@ -20,3 +20,12 @@ class MedicationRequest(models.Model):
             if rec.careplan_id and rec.encounter_id:
                 # We don't want SR to show on Encounter order when it was created from careplan
                 rec.encounter_id = None
+
+    def _check_period_start_encounter(
+        self, encounter_id, period_start, vals: dict = None
+    ):
+        # careplan may be created in advance or reversed way
+        # so Ignore careplan.period_start and encounter.period_start check
+        if vals.get("careplan_id") or getattr(self, "careplan_id", None):
+            return
+        return super()._check_period_start_encounter(encounter_id, period_start)
