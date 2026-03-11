@@ -33,9 +33,8 @@ class ServiceEventApproval(models.Model):
         string="เขตพื้นที่รับผิดชอบ",
         readonly=True,
     )
-
     state_id = fields.Many2one(
-        comodel_name="res.country.state", compute="_compute_state_id", store=True
+        "res.country.state", "จังหวัด", compute="_compute_state_id", store=True
     )
 
     identifier = fields.Char("หมายเลขอ้างอิง", readonly=True)
