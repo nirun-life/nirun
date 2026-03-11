@@ -305,10 +305,21 @@
                                         <span class="fa fa-ellipsis-v" />
                                     </a>
                                     <div class="dropdown-menu" role="menu">
-                                        <button class="dropdown-item" name="action_edit" type="object" string="Edit" />
-                                        <a t-if="widget.editable" role="menuitem" type="delete" class="dropdown-item">
-                                            Delete
-                                        </a>
+                                        <button
+                                            t-if="widget.editable"
+                                            class="dropdown-item"
+                                            name="action_edit"
+                                            type="object"
+                                            string="Edit"
+                                        />
+                                        <button
+                                            t-if="widget.editable"
+                                            class="dropdown-item"
+                                            name="unlink"
+                                            type="object"
+                                            string="Delete"
+                                            confirm="Are you sure you want to delete this record?"
+                                        />
                                     </div>
                                 </div>
                             </div>
