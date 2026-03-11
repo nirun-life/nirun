@@ -336,11 +336,6 @@ class Careplan(models.Model):
                 )
             )
 
-    def __check_period_start(self, encounter_id, period_start):
-        # careplan may be created in advance or reversed way
-        # so Ignore careplan.period_start and encounter.period_start check
-        return
-
     def action_edit(self):
         self.ensure_one()
         context = dict(self.env.context)

@@ -98,9 +98,10 @@ class PatientResource(models.AbstractModel):
         # check it on create() and write()
         for vals in vals_list:
             if self._check_period_start:
-                self.__check_period_start(
+                self._check_period_start_encounter(
                     vals.get("encounter_id") or self.encounter_id.id,
                     vals.get("period_start"),
+                    vals,
                 )
 
             if self.env.user.has_group("base.group_multi_company"):
@@ -116,16 +117,18 @@ class PatientResource(models.AbstractModel):
         # So, we can't use @api.constraints to check this and have to manual
         # check it on create() and write()
         if self._check_period_start:
-            self.__check_period_start(
+            self._check_period_start_encounter(
                 vals.get("encounter_id") or self.encounter_id.id,
                 vals.get("period_start"),
+                vals,
             )
         return super().write(vals)
 
-    def __check_period_start(self, encounter_id, period_start):
+    def _check_period_start_encounter(
+        self, encounter_id, period_start, vals: dict = None
+    ):
         if not encounter_id or not period_start:
             return
-
         enc = self.env["ni.encounter"].browse(encounter_id)
         start = fields.Datetime.to_datetime(period_start)
         if start.replace(microsecond=0) < enc.period_start.replace(microsecond=0):
