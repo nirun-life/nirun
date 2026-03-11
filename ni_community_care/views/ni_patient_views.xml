@@ -15,21 +15,28 @@
                         name="name"
                         filter_domain="['|','|' ,('name', 'ilike', self), ('identifier', 'ilike', self),('identification_id', 'ilike', self)]"
                     />
+                    <field name="state_id" />
                     <filter name="my_patient" string="ที่ฉันขึ้นทะเบียน ศผ.01" domain="[('create_uid', '=', uid)]" />
                     <filter name="my_activity" string="ที่ฉันดูแล ศผ.02" domain="[('activity_user_id', '=', uid)]" />
                     <separator />
-                    <filter name="archived" string="Archived" domain="[('active', '=', False)]" />
-                    <filter name="group_zip_id" string="พื้นที่" context="{'group_by': 'zip_id'}" />
-                    <filter
-                        name="group_create_date"
-                        context="{'group_by': 'create_date:month'}"
-                        string="วันที่บันทึก"
-                    />
-                    <searchpanel>
-                        <field name="type_id" enable_counters="1" />
-                        <field name="age_range_id" enable_counters="1" icon="fa-birthday-cake" />
-                        <field name="family_relation" enable_counters="1" icon="fa-heart" />
-                    </searchpanel>
+                    <filter name="no_ald" string="รอการประเมิน ADL" domain="[('type_id', '=', False)]" />
+                    <separator />
+                    <filter name="deceased" string="เสียชีวิต" domain="[('deceased', '=', True)]" />
+                    <filter name="archived" string="ถูกเก็บถาวร" domain="[('active', '=', False)]" />
+                    <group>
+                        <filter name="group_state_id" context="{'group_by': 'state_id'}" />
+                        <filter name="group_zip_id" string="พื้นที่" context="{'group_by': 'zip_id'}" />
+                        <separator />
+                        <filter name="group_type_id" context="{'group_by': 'type_id'}" />
+                        <filter name="group_age_range_id" context="{'group_by': 'age_range_id'}" />
+                        <separator />
+                        <filter name="group_create_uid" string="บันทึกโดย" context="{'group_by': 'create_uid'}" />
+                        <filter
+                            name="group_create_date"
+                            context="{'group_by': 'create_date:month'}"
+                            string="บันทึกเมื่อ"
+                        />
+                    </group>
                 </search>
             </xpath>
         </field>
@@ -65,6 +72,7 @@
             <kanban
                 class="o_res_partner_kanban"
                 default_order="create_date desc"
+                default_group_by="create_date:month"
                 js_class="patient_dashboard_kanban"
                 limit="16"
             >
@@ -92,10 +100,7 @@
                 <field name="econ_progress" />
                 <field name="envi_progress" />
                 <field name="tech_progress" />
-                <progressbar
-                    field="type_name"
-                    colors='{"ติดสังคม": "success", "ติดบ้าน": "warning", "ติดเตียง": "danger"}'
-                />
+                <progressbar field="type_id" colors='{"1": "success", "2": "warning", "3": "danger"}' />
                 <templates>
                     <t t-name="kanban-box">
                         <div
@@ -114,7 +119,7 @@
                                 title="ลบชั่วคราว"
                             />
                             <field
-                                name="image_256"
+                                name="image_128"
                                 class="o_kanban_image_fill_left d-block"
                                 preview_image="image_128"
                                 widget="background_image"
@@ -290,7 +295,6 @@
                             decoration-muted="type_decoration == 'muted'"
                         />
                         <field name="type_decoration" invisible="1" />
-                        <label for="register_date" />
                         <div class="col-12 col-xl-6">
                             <separator string="การยินยอมรับบริการ" colspan="2" />
                             <div class="o_row">
@@ -734,25 +738,33 @@
             </form>
         </field>
     </record>
+    <record id="ni_patient_view_pivot_01" model="ir.ui.view">
+        <field name="name">ni.patient.view.pivot.01</field>
+        <field name="model">ni.patient</field>
+        <field name="arch" type="xml">
+            <pivot string="ผู้สูงอายุ">
+                <field name="type_id" type="col" />
+                <field name="create_date" interval="month" type="row" />
+            </pivot>
+        </field>
+    </record>
     <record id="ni_patient_action" model="ir.actions.act_window">
-        <field name="name">ทะเบียนผู้สูงอายุ ผศ.01</field>
+        <field name="name">ทะเบียนผู้สูงอายุ ศผ.01</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.patient</field>
-        <field name="view_mode">kanban,tree,form</field>
-        <field name="context">{'search_default_group_create_date': 1}</field>
+        <field name="view_mode">kanban,tree,pivot,form</field>
+        <field name="context">{}</field>
         <field
             name="view_ids"
             eval="[(5, 0, 0),
                (0, 0, {'view_mode': 'kanban', 'view_id': ref('ni_patient_view_kanban_simp')}),
                (0, 0, {'view_mode': 'tree', 'view_id': ref('ni_patient.ni_patient_view_tree')}),
+               (0, 0, {'view_mode': 'pivot', 'view_id': ref('ni_patient_view_pivot_01')}),
                (0, 0, {'view_mode': 'form', 'view_id': ref('ni_patient_view_form_simp')}),
                ]"
         />
         <field name="help" type="html">
-            <p class="oe_view_nocontent_create">ไม่พบผู้สูงอายุ</p>
-            <p>
-
-            </p>
+            <p class="oe_view_nocontent_create">ไม่พบทะเบียนผู้สูงอายุ</p>
         </field>
     </record>
 </odoo>
