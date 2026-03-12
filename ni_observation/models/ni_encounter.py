@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023. NSTDA
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 from .ni_observation_vitalsign_mixin import VITALSIGN_FIELDS
 
@@ -172,11 +172,11 @@ class Encounter(models.Model):
         context.update(
             {
                 "default_patient_id": self[0].patient_id.id,
-                "default_encounter_id": self[0].encounter_id.id,
+                "default_encounter_id": self[0].id,
             }
         )
         view = {
-            "name": "Observation_wizard",
+            "name": _("Observation Wizard"),
             "res_model": "ni.observation.wizard",
             "type": "ir.actions.act_window",
             "target": context.get("target", "new"),
