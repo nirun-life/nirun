@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-09 10:11+0000\n"
-"PO-Revision-Date: 2026-03-09 10:11+0000\n"
+"POT-Creation-Date: 2026-03-12 10:04+0000\n"
+"PO-Revision-Date: 2026-03-12 10:04+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -551,6 +551,7 @@ msgid ""
 msgstr ""
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__child_ids
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__child_ids
 msgid "Child"
 msgstr ""
@@ -663,7 +664,7 @@ msgstr "การตั้งค่า"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__create_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__create_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__create_uid
-#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__sheet_uid
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__sheet_create_uid
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__create_uid
 msgid "Created by"
 msgstr "สร้างโดย"
@@ -679,6 +680,7 @@ msgstr "สร้างโดย"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__create_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__create_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__create_date
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__sheet_create_date
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__create_date
 msgid "Created on"
 msgstr "สร้างเมื่อ"
@@ -866,6 +868,7 @@ msgstr "เท่าเดิม"
 
 #. module: ni_observation
 #. odoo-python
+#: code:addons/ni_observation/models/ni_observation_category.py:0
 #: code:addons/ni_observation/models/ni_observation_interpretation.py:0
 #: code:addons/ni_observation/models/ni_observation_reference_range.py:0
 #: code:addons/ni_observation/models/ni_observation_type.py:0
@@ -1480,7 +1483,11 @@ msgid "Observation Types"
 msgstr "ประเภทการตรวจร่างกาย"
 
 #. module: ni_observation
+#. odoo-python
+#: code:addons/ni_observation/models/ni_encounter.py:0
+#: code:addons/ni_observation/models/ni_patient.py:0
 #: model:ir.model,name:ni_observation.model_ni_observation_wizard
+#, python-format
 msgid "Observation Wizard"
 msgstr "บันทึกผลการตรวจร่างกาย"
 
@@ -1544,12 +1551,14 @@ msgid "Pain Score"
 msgstr "ระดับความเจ็บปวด"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__parent_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__parent_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__parent_id
 msgid "Parent"
 msgstr ""
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__parent_path
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__parent_path
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__parent_path
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__parent_path
@@ -1858,7 +1867,6 @@ msgstr "วันนี้"
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__type_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__code_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__type_id
-#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__type_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__type_ids
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__type
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__code_id
@@ -2034,6 +2042,11 @@ msgstr "เมื่อวาน"
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_value_code_view_form
 msgid "abbr."
 msgstr ""
+
+#. module: ni_observation
+#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_wizard_view_form
+msgid "by"
+msgstr "โดย"
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_type_view_form
