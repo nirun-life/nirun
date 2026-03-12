@@ -101,3 +101,22 @@ class Patient(models.Model):
         action["context"] = context
         action["domain"] = [("patient_id", "=", self.id)]
         return action
+
+    def action_observation_wizard(self):
+        self.ensure_one()
+        context = dict(self.env.context)
+        context.update(
+            {
+                "default_patient_id": self[0].id,
+            }
+        )
+        view = {
+            "name": _("Observation Wizard"),
+            "res_model": "ni.observation.wizard",
+            "type": "ir.actions.act_window",
+            "target": context.get("target", "new"),
+            "view_type": "form",
+            "views": [[False, "form"]],
+            "context": context,
+        }
+        return view
