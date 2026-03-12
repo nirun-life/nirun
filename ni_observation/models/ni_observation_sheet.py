@@ -38,6 +38,16 @@ class ObservationSheet(models.Model):
         required=False,
     )
 
+    def name_get(self):
+        return [(sheet.id, sheet._get_name()) for sheet in self]
+
+    def _get_name(self):
+        sheet = self
+        name = sheet.identifier
+        if self._context.get("show_occurrence") and self.occurrence:
+            name = "{} • {}".format(name, sheet.occurrence)
+        return name
+
     def garbage_collect(self):
         self.observation_ids.garbage_collect(0, "day")
 
