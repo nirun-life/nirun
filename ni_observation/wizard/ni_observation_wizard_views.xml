@@ -26,24 +26,34 @@
                 <field name="occurrence" invisible="1" />
                 <group states="1">
                     <field name="patient_id" invisible="context.get('default_patient_id')" />
-                    <field name="encounter_id" invisible="context.get('default_encounter_id')" />
+                    <field name="encounter_id" invisible="context.get('default_patient_id')" />
                 </group>
-                <field name="type" class="mb-4" widget="radio" options="{'horizontal': True}" states="1" />
+                <field
+                    name="type"
+                    class="mb-4"
+                    widget="radio"
+                    options="{'horizontal': True}"
+                    states="1"
+                    invisible="context.get('default_type')"
+                />
                 <group attrs="{'invisible': ['|', ('state', '!=', '1'), ('type', '!=', 'new')]}">
-                    <field name="category_ids" widget="many2many_checkboxes" />
+                    <field name="category_ids" widget="many2many_checkboxes" invisible="context.get('hide_category')" />
                     <field name="init_occurrence" string="Occurrence" />
                 </group>
                 <group attrs="{'invisible': ['|', ('state', '!=', '1'), ('type', '!=', 'edit')]}">
                     <field
                         name="sheet_id"
+                        context="{'show_occurrence': 1}"
                         options="{'no_create': True, 'no_open':True}"
                         attrs="{'invisible': [('type', '!=', 'edit')]}"
                     />
                     <label for="occurrence" attrs="{'invisible': [('sheet_id', '=', False)]}" />
                     <div class="o_row" attrs="{'invisible': [('sheet_id', '=', False)]}">
-                        <field name="occurrence" />
-                        <label for="sheet_uid" />
-                        <field name="sheet_uid" widget="many2one_avatar_user" />
+                        <field name="occurrence" widget="remaining_days" />
+                        <label for="sheet_create_date" />
+                        <field name="sheet_create_date" class="w-25" />
+                        <label for="sheet_create_uid" string="by" />
+                        <field name="sheet_create_uid" class="w-25" widget="many2one_avatar_user" />
                     </div>
                 </group>
                 <field

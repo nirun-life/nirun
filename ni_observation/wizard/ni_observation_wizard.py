@@ -36,7 +36,8 @@ class ObservationWizard(models.TransientModel):
     )
     init_occurrence = fields.Datetime(default=fields.Datetime.now())
     occurrence = fields.Datetime(related="sheet_id.occurrence")
-    sheet_uid = fields.Many2one(related="sheet_id.create_uid")
+    sheet_create_uid = fields.Many2one(related="sheet_id.create_uid")
+    sheet_create_date = fields.Datetime(related="sheet_id.create_date")
     observation_ids = fields.One2many(
         related="sheet_id.observation_ids", readonly=False
     )
