@@ -19,14 +19,7 @@ class BloodGroupMixin(models.AbstractModel):
         "ni.observation.value.code",
         "RH",
         domain=lambda self: [
-            (
-                "type_ids",
-                "in",
-                [
-                    self.env.ref("ni_observation.code_positive").id,
-                    self.env.ref("ni_observation.code_negative").id,
-                ],
-            )
+            ("type_ids", "=", self.env.ref("ni_observation.type_blood_rh").id)
         ],
     )
     blood_group = fields.Char(compute="_compute_blood_group")
