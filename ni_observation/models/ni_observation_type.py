@@ -63,6 +63,19 @@ class ObservationType(models.Model):
         help="Check this if Falsy (0, 0.0 and empty) have meaning on this observation. Otherwise, It will see as garbage input",
     )
 
+    icon = fields.Char(
+        "Icon",
+        default="fa-circle",
+        help="Font Awesome class (e.g. fa-heartbeat, fa-thermometer-three-quarters)",
+    )
+    icon_color = fields.Char(
+        string="Icon Color", help="Hex color for icon (e.g. #FF5733)", default="#6c757d"
+    )
+
+    short_name = fields.Char(
+        string="Short Name", help="Short name for kanban (e.g. BP, HR)"
+    )
+
     @api.depends("ref_range_ids")
     def _compute_ref_range_count(self):
         ref_range = self.env["ni.observation.reference.range"].sudo()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!-- ───────────────────────────────────────────────
-         ACTION  (เปิดจาก Menu หลัก)
+         ACTION  (เปิดจาก Menu หลัก — group by device)
     ─────────────────────────────────────────────────── -->
     <record id="ni_device_usage_log_action" model="ir.actions.act_window">
         <field name="name">ประวัติการใช้งานอุปกรณ์ทั้งหมด</field>
@@ -13,11 +13,7 @@
             <p class="o_view_nocontent_smiling_face">ไม่มีประวัติการใช้งานอุปกรณ์</p>
         </field>
     </record>
-    <!-- ACTION เปิดจากหน้า Device — ชื่อ title ใช้ display_name ของ device นั้น
-         Odoo จะแสดง breadcrumb เป็น "<Device name>" อัตโนมัติเพราะ
-         action ถูก trigger จาก smart button บน form ของ ni.device
-         ซึ่ง Odoo ใช้ display_name ของ record นั้นเป็น breadcrumb title
-    -->
+    <!-- ACTION เปิดจากหน้า Device — group by month, filter device นั้น -->
     <record id="ni_device_usage_log_action_this" model="ir.actions.act_window">
         <field name="name">ประวัติการใช้งานอุปกรณ์</field>
         <field name="res_model">ni.device.usage.log</field>
@@ -25,9 +21,9 @@
         <field name="domain">[('device_id', '=', active_id)]</field>
         <field name="context">
             {
-                'search_default_group_month': 1,
-                'default_device_id': active_id
-            }
+            'search_default_group_month': 1,
+            'default_device_id': active_id
+        }
         </field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">ยังไม่มีการบันทึกการใช้งาน</p>
@@ -45,7 +41,8 @@
                 <field name="patient_id" string="ผู้ป่วย" />
                 <field name="user_id" string="ผู้บันทึก" />
                 <field name="device_id" string="อุปกรณ์" />
-                <!-- Filter shortcuts -->
+                <field name="card_pid" string="เลขบัตร" />
+                <field name="card_name" string="ชื่อ (บัตร)" />
                 <filter
                     name="filter_today"
                     string="วันนี้"
@@ -59,8 +56,8 @@
                                  ('create_date','&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d'))]"
                 />
                 <filter name="filter_has_patient" string="มีผู้ป่วย" domain="[('patient_id','!=',False)]" />
+                <filter name="filter_has_card" string="มีบัตร" domain="[('card_pid','!=',False)]" />
                 <separator />
-                <!-- Group by -->
                 <filter name="group_month" string="เดือน" context="{'group_by': 'create_date:month'}" />
                 <filter name="group_patient" string="ผู้ป่วย" context="{'group_by': 'patient_id'}" />
                 <filter name="group_device" string="อุปกรณ์" context="{'group_by': 'device_id'}" />
@@ -70,8 +67,8 @@
     </record>
     <!-- ───────────────────────────────────────────────
          TREE VIEW
-         • แสดงเฉพาะคอลัมน์ที่มีค่า (optional="hide" สำหรับฟิลด์ที่ไม่ใช่ทุกอุปกรณ์จะมี)
-         • เรียงล่าสุดก่อน
+         • ตัด vitalsign flat fields ออก — ไม่มีใน model แล้ว
+         • เพิ่ม card_name, card_pid, sheet_id
     ─────────────────────────────────────────────────── -->
     <record id="ni_device_usage_log_view_tree" model="ir.ui.view">
         <field name="name">ni.device.usage.log.view.tree</field>
@@ -80,40 +77,25 @@
             <tree
                 string="ประวัติการใช้งานอุปกรณ์"
                 default_order="create_date desc"
-                decoration-muted="patient_id == False"
+                decoration-muted="patient_id == False and card_pid == False"
                 sample="1"
             >
-                <!-- ── หลัก (แสดงเสมอ) ── -->
                 <field name="create_date" string="วันที่/เวลา" widget="datetime" />
                 <field name="device_id" string="อุปกรณ์" optional="show" />
+                <field name="card_name" string="ชื่อ (บัตร)" optional="show" />
+                <field name="card_pid" string="เลขบัตร" optional="show" />
                 <field name="patient_id" widget="many2one_avatar" optional="show" />
                 <field name="user_id" string="ผู้บันทึก" widget="many2one_avatar" optional="show" />
-                <!-- ── Vital Signs (แสดงตามอุปกรณ์ที่วัดได้) ── -->
-                <field name="body_temp" string="Temp (°C)" optional="hide" />
-                <field name="bp_s" string="SBP" optional="hide" />
-                <field name="bp_d" string="DBP" optional="hide" />
-                <field name="heart_rate" string="HR (/min)" optional="hide" />
-                <field name="oxygen_sat" string="SpO₂ (%)" optional="hide" />
-                <field name="respiratory_rate" string="RR (/min)" optional="hide" />
-                <!-- ── Body ── -->
-                <field name="body_weight" string="น้ำหนัก (kg)" optional="hide" />
-                <field name="body_height" string="ส่วนสูง (cm)" optional="hide" />
-                <field name="bmi" string="BMI" optional="hide" />
-                <field name="waist" string="รอบเอว (in)" optional="hide" />
-                <!-- ── Glucose ── -->
-                <field name="glucose_type" string="ประเภทน้ำตาล" optional="hide" />
-                <field name="fbs" string="FBS (mg/dl)" optional="hide" />
-                <field name="dtx" string="DTX (mg/dl)" optional="hide" />
-                <!-- ── Pain ── -->
-                <field name="pain_score_enum" string="ความเจ็บปวด" optional="hide" />
+                <field name="sheet_id" string="Sheet" optional="hide" />
             </tree>
         </field>
     </record>
     <!-- ───────────────────────────────────────────────
          KANBAN VIEW
-         • Group by create_date:month  (ล่าสุดบน)
-         • Limit 20 per group
-         • Card แสดงเฉพาะฟิลด์ที่มีค่าด้วย attrs invisible
+         • group_limit="4"  → 4 เดือนล่าสุด เดือนที่เหลือหุบ
+         • limit="10"        → 10 cards / group มี load more
+         • vitalsign_summary → loop render จาก observation_ids
+         • card_image แทน image_1920
     ─────────────────────────────────────────────────── -->
     <record id="ni_device_usage_log_view_kanban" model="ir.ui.view">
         <field name="name">ni.device.usage.log.view.kanban</field>
@@ -123,9 +105,10 @@
                 string="ประวัติการใช้งานอุปกรณ์"
                 default_group_by="create_date:month"
                 default_order="create_date desc"
-                limit="20"
-                group_limit="20"
+                limit="10"
+                group_limit="4"
                 class="o_kanban_small_column"
+                quick_add="false"
                 sample="1"
             >
                 <field name="id" />
@@ -133,77 +116,52 @@
                 <field name="patient_id" />
                 <field name="user_id" />
                 <field name="device_id" />
-                <field name="image_1920" />
-                <!-- Vital Signs -->
-                <field name="body_temp" />
-                <field name="bp_s" />
-                <field name="bp_d" />
-                <field name="heart_rate" />
-                <field name="oxygen_sat" />
-                <field name="respiratory_rate" />
-                <!-- Body -->
-                <field name="body_weight" />
-                <field name="body_height" />
-                <field name="bmi" />
-                <field name="waist" />
-                <field name="hip" />
-                <field name="whr" />
-                <!-- Glucose -->
-                <field name="glucose_type" />
-                <field name="fbs" />
-                <field name="dtx" />
-                <!-- Pain -->
-                <field name="pain_score_enum" />
-                <field name="pain_area" />
-                <!-- Smartcard -->
-                <field name="identifier" />
-                <field name="firstname" />
-                <field name="lastname" />
-                <field name="birthdate" />
+                <field name="card_pid" />
+                <field name="card_name" />
+                <field name="card_image" />
+                <field name="vitalsign_summary" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click o_kanban_record p-0">
                             <div class="p-3">
                                 <!-- ── Header ── -->
-                                <!-- มีบัตร: แสดงรูป + ชื่อ -->
-                                <t t-if="record.identifier.raw_value">
+                                <t t-if="record.card_pid.raw_value">
+                                    <!-- มีบัตร: รูป + ชื่อจากบัตร -->
                                     <div class="d-flex align-items-center gap-2 mb-2">
                                         <div
                                             class="rounded-circle flex-shrink-0 d-flex align-items-center justify-content-center bg-light position-relative overflow-hidden"
                                             style="width:40px;height:40px;border:1px solid #dee2e6;"
                                         >
                                             <img
-                                                t-att-src="kanban_image('ni.device.usage.log', 'image_1920', record.id.raw_value)"
+                                                t-att-src="kanban_image('ni.device.usage.log', 'card_image', record.id.raw_value)"
                                                 class="rounded-circle"
                                                 style="width:40px;height:40px;object-fit:cover;"
-                                                onerror="this.src='';this.style.display='none';this.parentElement.querySelector('.fa-user').style.display='inline-block';"
+                                                onerror="this.style.display='none';this.parentElement.querySelector('.fa-user').style.display='inline-block';"
                                                 onload="this.parentElement.querySelector('.fa-user').style.display='none';"
                                             />
                                             <i class="fa fa-user text-muted position-absolute" style="display:none;" />
                                         </div>
                                         <div class="overflow-hidden">
-                                            <t t-if="record.firstname.raw_value">
-                                                <strong class="d-block text-truncate">
-                                                    <t t-esc="record.firstname.value" />&#160;<t
-                                                        t-esc="record.lastname.value"
-                                                    />
-                                                </strong>
-                                            </t>
-                                            <t t-elif="record.patient_id.raw_value">
-                                                <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
-                                            </t>
-                                            <t t-else="">
-                                                <span class="text-muted fst-italic d-block">ไม่ระบุผู้ป่วย</span>
-                                            </t>
+                                            <strong class="d-block text-truncate" t-esc="record.card_name.value" />
                                             <div class="text-muted small">
                                                 <i class="fa fa-clock-o me-1" />
                                                 <t t-esc="record.create_date.value" />
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- เลขบัตร -->
+                                    <div class="mb-2 px-2 py-1 rounded" style="background:#f8f9fa;">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="text-muted small">
+                                                <i class="fa fa-id-card-o me-1 opacity-75" />
+                                                เลขบัตร
+                                            </span>
+                                            <span class="small font-monospace" t-esc="record.card_pid.value" />
+                                        </div>
+                                    </div>
                                 </t>
-                                <!-- ไม่มีบัตร: ชื่อชิดซ้าย ไม่มีรูป -->
                                 <t t-else="">
+                                    <!-- ไม่มีบัตร: ชื่อ patient ชิดซ้าย -->
                                     <div class="mb-2">
                                         <t t-if="record.patient_id.raw_value">
                                             <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
@@ -217,160 +175,27 @@
                                         </div>
                                     </div>
                                 </t>
-                                <!-- ── ข้อมูลจากบัตรประชาชน ── -->
-                                <t t-if="record.identifier.raw_value">
-                                    <div class="mb-2 px-2 py-1 rounded" style="background:#f8f9fa;">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span class="text-muted small">
-                                                <i class="fa fa-id-card-o me-1 opacity-75" />
-                                                เลขบัตร
-                                            </span>
-                                            <span class="small font-monospace" t-esc="record.identifier.value" />
+                                <!-- ── ค่าตรวจวัด: loop จาก vitalsign_summary ── -->
+                                <t t-set="vitals" t-value="record.vitalsign_summary.raw_value or []" />
+                                <t t-foreach="vitals" t-as="vs">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <div>
+                                            <t t-if="vs.i">
+                                                <i
+                                                    t-att-class="'fa ' + vs.i"
+                                                    t-att-style="'color:' + (vs.color or '#6c757d')"
+                                                    class="me-2"
+                                                />
+                                            </t>
+                                            <span t-esc="vs.l" />
                                         </div>
-                                        <t t-if="record.birthdate.raw_value">
-                                            <div class="d-flex justify-content-between align-items-center mt-1">
-                                                <span class="text-muted small">
-                                                    <i class="fa fa-birthday-cake me-1 opacity-75" />
-                                                    วันเกิด
-                                                </span>
-                                                <span class="small" t-esc="record.birthdate.value" />
-                                            </div>
-                                        </t>
+                                        <div>
+                                            <strong t-esc="vs.v" />
+                                            <span t-esc="vs.u" />
+                                        </div>
                                     </div>
                                 </t>
-                                <!-- Vital Signs: แสดงเฉพาะที่มีค่า -->
-                                <t t-if="record.bp_s.raw_value or record.bp_d.raw_value">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-heartbeat me-1 text-danger opacity-75" />
-                                            BP
-                                        </span>
-                                        <strong>
-                                            <t t-esc="record.bp_s.value" />
-                                            /
-                                            <t t-esc="record.bp_d.value" />
-                                            <span class="text-muted fw-normal">mmHg</span>
-                                        </strong>
-                                    </div>
-                                </t>
-                                <t t-if="record.heart_rate.raw_value">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-heartbeat me-1 text-danger opacity-75" />
-                                            HR
-                                        </span>
-                                        <strong>
-                                            <t t-esc="record.heart_rate.value" />
-                                            <span class="text-muted fw-normal">/min</span>
-                                        </strong>
-                                    </div>
-                                </t>
-                                <t t-if="record.oxygen_sat.raw_value">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-tint me-1 text-info opacity-75" />
-                                            SpO₂
-                                        </span>
-                                        <strong>
-                                            <t t-esc="record.oxygen_sat.value" />
-                                            <span class="text-muted fw-normal">%</span>
-                                        </strong>
-                                    </div>
-                                </t>
-                                <t t-if="record.body_temp.raw_value">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-thermometer-three-quarters me-1 text-warning opacity-75" />
-                                            Temp
-                                        </span>
-                                        <strong>
-                                            <t t-esc="record.body_temp.value" />
-                                            <span class="text-muted fw-normal">°C</span>
-                                        </strong>
-                                    </div>
-                                </t>
-                                <t t-if="record.respiratory_rate.raw_value">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-skyatlas me-1 text-primary opacity-75" />
-                                            RR
-                                        </span>
-                                        <strong>
-                                            <t t-esc="record.respiratory_rate.value" />
-                                            <span class="text-muted fw-normal">/min</span>
-                                        </strong>
-                                    </div>
-                                </t>
-                                <t t-if="record.body_weight.raw_value">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-balance-scale me-1 opacity-75" />
-                                            น้ำหนัก
-                                        </span>
-                                        <strong>
-                                            <t t-esc="record.body_weight.value" />
-                                            <span class="text-muted fw-normal">kg</span>
-                                        </strong>
-                                    </div>
-                                </t>
-                                <t t-if="record.body_height.raw_value">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-arrows-v me-1 opacity-75" />
-                                            ส่วนสูง
-                                        </span>
-                                        <strong>
-                                            <t t-esc="record.body_height.value" />
-                                            <span class="text-muted fw-normal">cm</span>
-                                        </strong>
-                                    </div>
-                                </t>
-                                <t t-if="record.bmi.raw_value">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-calculator me-1 opacity-75" />
-                                            BMI
-                                        </span>
-                                        <strong>
-                                            <t t-esc="record.bmi.value" />
-                                            <span class="text-muted fw-normal">kg/m²</span>
-                                        </strong>
-                                    </div>
-                                </t>
-                                <t t-if="record.fbs.raw_value">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-flask me-1 text-success" />
-                                            FBS
-                                        </span>
-                                        <strong>
-                                            <t t-esc="record.fbs.value" />
-                                            <span class="text-muted fw-normal">mg/dl</span>
-                                        </strong>
-                                    </div>
-                                </t>
-                                <t t-if="record.dtx.raw_value">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-flask me-1 text-success" />
-                                            DTX
-                                        </span>
-                                        <strong>
-                                            <t t-esc="record.dtx.value" />
-                                            <span class="text-muted fw-normal">mg/dl</span>
-                                        </strong>
-                                    </div>
-                                </t>
-                                <t t-if="record.pain_score_enum.raw_value and record.pain_score_enum.raw_value != '0'">
-                                    <div class="d-flex justify-content-between align-items-center py-1">
-                                        <span class="text-muted small">
-                                            <i class="fa fa-meh-o me-1 text-warning opacity-75" />
-                                            ความเจ็บปวด
-                                        </span>
-                                        <strong t-esc="record.pain_score_enum.value" />
-                                    </div>
-                                </t>
-                                <!-- ผู้บันทึก -->
+                                <!-- ── Footer: ผู้บันทึก ── -->
                                 <div class="d-flex align-items-center gap-1 mt-2 pt-1 border-top">
                                     <img
                                         t-att-src="kanban_image('res.users', 'avatar_128', record.user_id.raw_value)"
@@ -386,155 +211,115 @@
             </kanban>
         </field>
     </record>
-    <!-- ───────────────────────────────────────────────
-         FORM VIEW  (เดิม — เพิ่ม device_id + patient_id ที่ header)
-    ─────────────────────────────────────────────────── -->
     <record id="ni_device_usage_log_view_form" model="ir.ui.view">
         <field name="name">ni.device.usage.log.view.form</field>
         <field name="model">ni.device.usage.log</field>
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- ปุ่ม drill down ไปหา sheet เพื่อแก้ไขค่า -->
+                        <button
+                            name="action_view_sheet"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-file-text-o"
+                            attrs="{'invisible': [('sheet_id', '=', False)]}"
+                        >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Observation Sheet</span>
+                            </div>
+                        </button>
+                    </div>
                     <group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company" />
                             <field name="device_id" readonly="1" />
+                            <field name="sheet_id" readonly="1" />
                             <field name="patient_id" readonly="1" />
                             <field name="user_id" widget="many2one_avatar" readonly="1" />
                             <field name="create_date" string="วันที่บันทึก" />
                         </group>
                     </group>
                     <notebook>
-                        <page string="ข้อมูลหน้าบัตร" icon="fa-id-card-o">
+                        <!-- ── ผลการตรวจวัด (แก้ไขได้) ── -->
+                        <page
+                            name="observations"
+                            string="ผลการตรวจวัด"
+                            icon="fa-stethoscope"
+                            attrs="{'invisible': [('id', '=', False)]}"
+                        >
                             <field
-                                name="image_1920"
+                                name="observation_ids"
+                                context="{'default_usage_log_id':id,'default_device_id':device_id, 'default_patient_id': patient_id}"
+                                widget="ob_section_and_note_one2many"
+                            >
+                                <tree editable="bottom">
+                                    <field name="code" invisible="1" />
+                                    <field name="patient_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="display_class" invisible="1" />
+                                    <field name="value_type" invisible="1" />
+                                    <field name="sequence" widget="handle" />
+                                    <field name="type_id" />
+                                    <field name="title" widget="ob_section_and_note_text" optional="show" nolabel="1" />
+                                    <field name="value_char" />
+                                    <field name="value_int" nolabel="1" />
+                                    <field name="value_float" nolabel="1" />
+                                    <field name="value_code_id" nolabel="1" />
+                                    <field
+                                        name="value_code_ids"
+                                        nolabel="1"
+                                        widget="many2many_tags"
+                                        options="{'color_field': 'color'}"
+                                    />
+                                    <field
+                                        name="unit_id"
+                                        optional="show"
+                                        decoration-muted="1"
+                                        attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                                    />
+                                    <field
+                                        name="interpretation_id"
+                                        widget="badge"
+                                        decoration-danger="display_class == 'danger'"
+                                        decoration-info="display_class == 'info'"
+                                        decoration-muted="display_class == 'muted'"
+                                        decoration-primary="display_class == 'primary'"
+                                        decoration-success="display_class == 'success'"
+                                        decoration-warning="display_class == 'warning'"
+                                        optional="show"
+                                    />
+                                    <field name="value" />
+                                    <control>
+                                        <create string="Add Observation" context="{}" />
+                                    </control>
+                                </tree>
+                            </field>
+                        </page>
+                        <!-- ── ข้อมูลบัตร ── -->
+                        <page name="smartcard" string="ข้อมูลบัตร" icon="fa-id-card-o">
+                            <field
+                                name="card_image"
                                 class="oe_avatar mt-4"
-                                options="{&quot;preview_image&quot;:&quot;image_128&quot;}"
+                                options="{&quot;preview_image&quot;:&quot;card_image&quot;}"
                                 widget="image"
                             />
                             <group>
-                                <field name="identifier" readonly="1" />
-                            </group>
-                            <group>
-                                <group>
-                                    <field name="title_id" readonly="1" />
-                                    <field name="firstname" readonly="1" />
-                                    <field name="lastname" readonly="1" />
-                                </group>
-                                <group>
-                                    <field name="firstname_en" readonly="1" />
-                                    <field name="lastname_en" readonly="1" />
-                                </group>
-                            </group>
-                            <group>
-                                <field name="birthdate" readonly="1" />
-                                <field name="address" readonly="1" />
-                            </group>
-                            <group>
-                                <group>
-                                    <field name="card_issue" readonly="1" />
-                                    <field name="card_ref" readonly="1" />
-                                </group>
-                                <group>
-                                    <field name="card_issue_date" readonly="1" />
-                                    <field name="card_expire_date" readonly="1" />
-                                </group>
+                                <field name="card_pid" string="เลขบัตรประชาชน" readonly="1" />
+                                <field name="card_name" string="ชื่อ-นามสกุล" readonly="1" />
                             </group>
                         </page>
+                        <!-- ── Raw data / Debug ── -->
                         <page name="raw_data" string="Raw Data" groups="base.group_no_one">
                             <field name="card_data" />
                         </page>
-                    </notebook>
-                    <notebook>
-                        <page name="vitalsign" string="Vital-sign">
-                            <div class="text-center d-none d-lg-block">
-                                <label for="pain_score_enum" />
-                                <div class="mt-2">
-                                    <field name="pain_score_enum" widget="radio" options="{'horizontal': True}" />
-                                </div>
-                                <div>
-                                    <field name="pain_area" placeholder="บริเวณที่เจ็บปวด" class="w-75" />
-                                </div>
-                            </div>
-                            <group class="my-4">
-                                <group>
-                                    <label for="body_temp" />
-                                    <div class="o_row">
-                                        <field class="narrow_field" name="body_temp" />
-                                        <span class="text-muted me-4">°C</span>
-                                    </div>
-                                    <label for="respiratory_rate" />
-                                    <div class="o_row">
-                                        <field class="narrow_field" name="respiratory_rate" />
-                                        <span class="text-muted me-4">/min</span>
-                                    </div>
-                                    <label for="bp_s" string="Blood Pressure" />
-                                    <div class="o_row">
-                                        <field class="narrow_field" name="bp_s" />
-                                        <span class="mx-1">/</span>
-                                        <field class="narrow_field" name="bp_d" />
-                                        <span class="text-muted me-4">mmHg</span>
-                                    </div>
-                                    <label for="heart_rate" />
-                                    <div class="o_row">
-                                        <field class="narrow_field" name="heart_rate" />
-                                        <span class="text-muted me-4">/min</span>
-                                    </div>
-                                    <label for="oxygen_sat" />
-                                    <div class="o_row">
-                                        <field class="narrow_field" name="oxygen_sat" />
-                                        <span class="text-muted me-4">%</span>
-                                    </div>
-                                </group>
-                                <group>
-                                    <label for="body_weight" />
-                                    <div class="o_row">
-                                        <field class="narrow_field" name="body_weight" />
-                                        <span class="text-muted me-4">kg</span>
-                                    </div>
-                                    <label for="body_height" />
-                                    <div class="o_row">
-                                        <field class="narrow_field" name="body_height" />
-                                        <span class="text-muted me-4">cm</span>
-                                        <label for="bmi" />
-                                        <field class="narrow_field mx-1" name="bmi" />
-                                        <span class="text-muted me-4">kg/m²</span>
-                                    </div>
-                                    <label for="waist" />
-                                    <div class="o_row">
-                                        <field class="narrow_field" name="waist" />
-                                        <span class="text-muted me-4">in</span>
-                                    </div>
-                                    <label for="hip" />
-                                    <div class="o_row">
-                                        <field class="narrow_field" name="hip" />
-                                        <span class="text-muted me-4">in</span>
-                                        <label for="whr" />
-                                        <field class="narrow_field mx-1" name="whr" />
-                                    </div>
-                                    <span class="o_form_label o_td_label" name="glucose_type">
-                                        <field name="glucose_type" class="fw-bold" />
-                                    </span>
-                                    <div class="o_row">
-                                        <field
-                                            class="narrow_field"
-                                            name="fbs"
-                                            attrs="{'invisible': [('glucose_type', '!=', 'fbs')]}"
-                                        />
-                                        <field
-                                            class="narrow_field"
-                                            name="dtx"
-                                            attrs="{'invisible': [('glucose_type', '!=', 'dtx')]}"
-                                        />
-                                        <span class="text-muted me-4">mg/dl</span>
-                                    </div>
-                                </group>
-                            </group>
-                        </page>
                         <page name="debug" string="Debug" groups="base.group_no_one">
                             <group>
+                                <field name="vitalsign_summary" widget="text" />
                                 <field name="device_id" />
                                 <field name="patient_id" />
+                                <field name="sheet_id" />
                             </group>
                         </page>
                     </notebook>

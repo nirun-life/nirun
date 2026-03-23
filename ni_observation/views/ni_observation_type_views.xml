@@ -92,6 +92,11 @@
                                 attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
                             />
                         </group>
+                        <group>
+                            <field name="icon" />
+                            <field name="icon_color" widget="color" />
+                            <field name="short_name" />
+                        </group>
                     </group>
                     <notebook>
                         <page name="component" string="Component">
@@ -145,7 +150,7 @@
                         <page string="Extra Info" groups="base.group_no_one">
                             <group>
                                 <group>
-                                    <field name="color" />
+                                    <field name="color" widget="color_picker" />
                                     <field name="sequence" />
                                 </group>
                                 <group>

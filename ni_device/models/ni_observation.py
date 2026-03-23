@@ -6,3 +6,6 @@ class Observation(models.Model):
     _inherit = "ni.observation"
 
     device_id = fields.Many2one("ni.device", index=True, ondelete="restrict")
+    usage_log_id = fields.Many2one(
+        "ni.device.usage.log", index=True, ondelete="cascade"
+    )
