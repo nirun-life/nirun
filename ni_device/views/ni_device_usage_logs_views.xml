@@ -21,9 +21,9 @@
         <field name="domain">[('device_id', '=', active_id)]</field>
         <field name="context">
             {
-            'search_default_group_month': 1,
-            'default_device_id': active_id
-        }
+                'search_default_group_month': 1,
+                'default_device_id': active_id
+            }
         </field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">ยังไม่มีการบันทึกการใช้งาน</p>
@@ -41,8 +41,7 @@
                 <field name="patient_id" string="ผู้ป่วย" />
                 <field name="user_id" string="ผู้บันทึก" />
                 <field name="device_id" string="อุปกรณ์" />
-                <field name="card_pid" string="เลขบัตร" />
-                <field name="card_name" string="ชื่อ (บัตร)" />
+                <field name="card_identifier" string="เลขบัตร" />
                 <filter
                     name="filter_today"
                     string="วันนี้"
@@ -56,7 +55,7 @@
                                  ('create_date','&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d'))]"
                 />
                 <filter name="filter_has_patient" string="มีผู้ป่วย" domain="[('patient_id','!=',False)]" />
-                <filter name="filter_has_card" string="มีบัตร" domain="[('card_pid','!=',False)]" />
+                <filter name="filter_has_card" string="มีบัตร" domain="[('card_id','!=',False)]" />
                 <separator />
                 <filter name="group_month" string="เดือน" context="{'group_by': 'create_date:month'}" />
                 <filter name="group_patient" string="ผู้ป่วย" context="{'group_by': 'patient_id'}" />
@@ -65,11 +64,6 @@
             </search>
         </field>
     </record>
-    <!-- ───────────────────────────────────────────────
-         TREE VIEW
-         • ตัด vitalsign flat fields ออก — ไม่มีใน model แล้ว
-         • เพิ่ม card_name, card_pid, sheet_id
-    ─────────────────────────────────────────────────── -->
     <record id="ni_device_usage_log_view_tree" model="ir.ui.view">
         <field name="name">ni.device.usage.log.view.tree</field>
         <field name="model">ni.device.usage.log</field>
@@ -77,16 +71,14 @@
             <tree
                 string="ประวัติการใช้งานอุปกรณ์"
                 default_order="create_date desc"
-                decoration-muted="patient_id == False and card_pid == False"
+                decoration-muted="patient_id == False and card_id == False"
                 sample="1"
             >
                 <field name="create_date" string="วันที่/เวลา" widget="datetime" />
                 <field name="device_id" string="อุปกรณ์" optional="show" />
-                <field name="card_name" string="ชื่อ (บัตร)" optional="show" />
-                <field name="card_pid" string="เลขบัตร" optional="show" />
                 <field name="patient_id" widget="many2one_avatar" optional="show" />
+                <field name="card_id" optional="hide" />
                 <field name="user_id" string="ผู้บันทึก" widget="many2one_avatar" optional="show" />
-                <field name="sheet_id" string="Sheet" optional="hide" />
             </tree>
         </field>
     </record>
@@ -116,16 +108,15 @@
                 <field name="patient_id" />
                 <field name="user_id" />
                 <field name="device_id" />
-                <field name="card_pid" />
-                <field name="card_name" />
-                <field name="card_image" />
+                <field name="card_id" />
+                <field name="card_identifier" />
                 <field name="vitalsign_summary" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click o_kanban_record p-0">
                             <div class="p-3">
                                 <!-- ── Header ── -->
-                                <t t-if="record.card_pid.raw_value">
+                                <t t-if="record.card_id.raw_value">
                                     <!-- มีบัตร: รูป + ชื่อจากบัตร -->
                                     <div class="d-flex align-items-center gap-2 mb-2">
                                         <div
@@ -133,7 +124,7 @@
                                             style="width:40px;height:40px;border:1px solid #dee2e6;"
                                         >
                                             <img
-                                                t-att-src="kanban_image('ni.device.usage.log', 'card_image', record.id.raw_value)"
+                                                t-att-src="kanban_image('ni.device.usage.log', 'image_1920', record.id.raw_value)"
                                                 class="rounded-circle"
                                                 style="width:40px;height:40px;object-fit:cover;"
                                                 onerror="this.style.display='none';this.parentElement.querySelector('.fa-user').style.display='inline-block';"
@@ -142,7 +133,7 @@
                                             <i class="fa fa-user text-muted position-absolute" style="display:none;" />
                                         </div>
                                         <div class="overflow-hidden">
-                                            <strong class="d-block text-truncate" t-esc="record.card_name.value" />
+                                            <strong class="d-block text-truncate" t-esc="record.card_id.value" />
                                             <div class="text-muted small">
                                                 <i class="fa fa-clock-o me-1" />
                                                 <t t-esc="record.create_date.value" />
@@ -156,7 +147,7 @@
                                                 <i class="fa fa-id-card-o me-1 opacity-75" />
                                                 เลขบัตร
                                             </span>
-                                            <span class="small font-monospace" t-esc="record.card_pid.value" />
+                                            <span class="small font-monospace" t-esc="record.card_identifier.value" />
                                         </div>
                                     </div>
                                 </t>
@@ -218,107 +209,123 @@
             <form string="">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <!-- ปุ่ม drill down ไปหา sheet เพื่อแก้ไขค่า -->
                         <button
-                            name="action_view_sheet"
-                            type="object"
                             class="oe_stat_button"
-                            icon="fa-file-text-o"
-                            attrs="{'invisible': [('sheet_id', '=', False)]}"
+                            type="object"
+                            name="action_gmap_location"
+                            icon="fa-location-arrow"
+                            string="Map Location"
+                            attrs="{'invisible':['|',('latitude','=',False), ('longitude', '=', False)]}"
                         >
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Observation Sheet</span>
-                            </div>
+
                         </button>
+                    </div>
+                    <div class="oe_title mb24">
+                        <h1>
+                            <span>Device Usage Logs</span>
+                        </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="company_id" groups="base.group_multi_company" />
                             <field name="device_id" readonly="1" />
-                            <field name="sheet_id" readonly="1" />
-                            <field name="patient_id" readonly="1" />
+                            <field name="latitude" />
+                            <field name="longitude" />
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" />
                             <field name="user_id" widget="many2one_avatar" readonly="1" />
                             <field name="create_date" string="วันที่บันทึก" />
                         </group>
                     </group>
                     <notebook>
-                        <!-- ── ผลการตรวจวัด (แก้ไขได้) ── -->
                         <page
                             name="observations"
-                            string="ผลการตรวจวัด"
+                            string="ข้อมูลการตรวจวัด"
                             icon="fa-stethoscope"
                             attrs="{'invisible': [('id', '=', False)]}"
                         >
-                            <field
-                                name="observation_ids"
-                                context="{'default_usage_log_id':id,'default_device_id':device_id, 'default_patient_id': patient_id}"
-                                widget="ob_section_and_note_one2many"
-                            >
-                                <tree editable="bottom">
-                                    <field name="code" invisible="1" />
-                                    <field name="patient_id" invisible="1" />
-                                    <field name="display_type" invisible="1" />
-                                    <field name="display_class" invisible="1" />
-                                    <field name="value_type" invisible="1" />
-                                    <field name="sequence" widget="handle" />
-                                    <field name="type_id" />
-                                    <field name="title" widget="ob_section_and_note_text" optional="show" nolabel="1" />
-                                    <field name="value_char" />
-                                    <field name="value_int" nolabel="1" />
-                                    <field name="value_float" nolabel="1" />
-                                    <field name="value_code_id" nolabel="1" />
-                                    <field
-                                        name="value_code_ids"
-                                        nolabel="1"
-                                        widget="many2many_tags"
-                                        options="{'color_field': 'color'}"
-                                    />
-                                    <field
-                                        name="unit_id"
-                                        optional="show"
-                                        decoration-muted="1"
-                                        attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
-                                    />
-                                    <field
-                                        name="interpretation_id"
-                                        widget="badge"
-                                        decoration-danger="display_class == 'danger'"
-                                        decoration-info="display_class == 'info'"
-                                        decoration-muted="display_class == 'muted'"
-                                        decoration-primary="display_class == 'primary'"
-                                        decoration-success="display_class == 'success'"
-                                        decoration-warning="display_class == 'warning'"
-                                        optional="show"
-                                    />
-                                    <field name="value" />
-                                    <control>
-                                        <create string="Add Observation" context="{}" />
-                                    </control>
-                                </tree>
-                            </field>
-                        </page>
-                        <!-- ── ข้อมูลบัตร ── -->
-                        <page name="smartcard" string="ข้อมูลบัตร" icon="fa-id-card-o">
-                            <field
-                                name="card_image"
-                                class="oe_avatar mt-4"
-                                options="{&quot;preview_image&quot;:&quot;card_image&quot;}"
-                                widget="image"
-                            />
+                            <div>
+                                <field
+                                    name="image_1920"
+                                    class="oe_avatar"
+                                    options="{&quot;preview_image&quot;:&quot;image_128&quot;}"
+                                    widget="image"
+                                />
+                            </div>
                             <group>
-                                <field name="card_pid" string="เลขบัตรประชาชน" readonly="1" />
-                                <field name="card_name" string="ชื่อ-นามสกุล" readonly="1" />
+                                <group>
+                                    <field name="patient_id" readonly="1" />
+                                    <field name="card_id" string="ชื่อตามบัตรประชาชน" readonly="1" />
+                                    <field name="card_identifier" />
+                                </group>
                             </group>
-                        </page>
-                        <!-- ── Raw data / Debug ── -->
-                        <page name="raw_data" string="Raw Data" groups="base.group_no_one">
-                            <field name="card_data" />
+                            <button
+                                name="action_view_smartcard"
+                                string="ดูข้อมูลบัตรประชาชน"
+                                type="object"
+                                class="btn-outline-primary ms-2"
+                                icon="fa-search"
+                            />
+                            <div class="mt-5 mb-2 me-4">
+                                <field
+                                    name="observation_ids"
+                                    context="{'default_usage_log_id':id,'default_device_id':device_id, 'default_patient_id': patient_id}"
+                                    widget="ob_section_and_note_one2many"
+                                >
+                                    <tree editable="bottom">
+                                        <field name="code" invisible="1" />
+                                        <field name="patient_id" invisible="1" />
+                                        <field name="display_type" invisible="1" />
+                                        <field name="display_class" invisible="1" />
+                                        <field name="value_type" invisible="1" />
+                                        <field name="sequence" widget="handle" />
+                                        <field name="type_id" />
+                                        <field
+                                            name="title"
+                                            widget="ob_section_and_note_text"
+                                            optional="show"
+                                            nolabel="1"
+                                        />
+                                        <field name="value_char" />
+                                        <field name="value_int" nolabel="1" />
+                                        <field name="value_float" nolabel="1" />
+                                        <field name="value_code_id" nolabel="1" />
+                                        <field
+                                            name="value_code_ids"
+                                            nolabel="1"
+                                            widget="many2many_tags"
+                                            options="{'color_field': 'color'}"
+                                        />
+                                        <field
+                                            name="unit_id"
+                                            optional="show"
+                                            decoration-muted="1"
+                                            attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                                        />
+                                        <field
+                                            name="interpretation_id"
+                                            widget="badge"
+                                            decoration-danger="display_class == 'danger'"
+                                            decoration-info="display_class == 'info'"
+                                            decoration-muted="display_class == 'muted'"
+                                            decoration-primary="display_class == 'primary'"
+                                            decoration-success="display_class == 'success'"
+                                            decoration-warning="display_class == 'warning'"
+                                            optional="show"
+                                        />
+                                        <field name="value" />
+                                        <control>
+                                            <create string="Add Observation" context="{}" />
+                                        </control>
+                                    </tree>
+                                </field>
+                            </div>
                         </page>
                         <page name="debug" string="Debug" groups="base.group_no_one">
                             <group>
-                                <field name="vitalsign_summary" widget="text" />
                                 <field name="device_id" />
                                 <field name="patient_id" />
+                                <field name="card_id" />
                                 <field name="sheet_id" />
                             </group>
                         </page>
