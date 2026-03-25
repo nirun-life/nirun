@@ -71,7 +71,7 @@ class ServiceEventApproval(models.Model):
         "ni_service_event_approval_patient",
         "approval_id",
         "patient_id",
-        string="Patients",
+        string="ผู้สูงอายุใหม่",
         compute="_compute_patient_ids",
         store=True,
         context={"active_test": False},
@@ -158,14 +158,35 @@ class ServiceEventApproval(models.Model):
         store=True,
     )
 
-    event_summary_type = fields.Selection(
+    patient_filter = fields.Selection(
         [
-            ("adl", "แบ่งตามจำนวนผู้สูงอายุที่ได้รับการดูแล"),
-            ("category", "แบ่งตามมิติ"),
+            ("all", "ทั้งหมด"),
+            ("new", "ผู้สูงอายุใหม่"),
+            ("event", "ผู้สูงอายุเดิมที่ได้รับการดูแล"),
         ],
-        string="การแสดงผล",
-        default="adl",
-        required=True,
+        default="all",
+        string="ประเภทการแสดงผล",
+    )
+
+    event_patient_ids = fields.Many2many(
+        "ni.patient",
+        "ni_service_event_approval_event_patient_rel",
+        string="ผู้สูงอายุเดิมที่ได้รับการดูแล",
+        compute="_compute_event_patient_ids",
+        store=True,
+    )
+
+    all_patient_ids = fields.Many2many(
+        "ni.patient",
+        "ni_service_event_approval_all_patient_rel",
+        string="ผู้สูงอายุทั้งหมด",
+        compute="_compute_all_patient_ids",
+        store=True,
+        context={"active_test": False},
+    )
+
+    all_patient_count = fields.Integer(
+        compute="_compute_all_patient_ids",
     )
 
     event_adl_high_count = fields.Integer(
@@ -190,7 +211,50 @@ class ServiceEventApproval(models.Model):
         store=True,
     )
 
+    all_adl_high_count = fields.Integer(
+        string="จำนวนผู้สูงอายุประเภทติดสังคมทั้งหมด",
+        compute="_compute_all_adl_counts",
+        store=True,
+    )
+    all_adl_mid_count = fields.Integer(
+        string="จำนวนผู้สูงอายุประเภทติดบ้านทั้งหมด",
+        compute="_compute_all_adl_counts",
+        store=True,
+    )
+    all_adl_low_count = fields.Integer(
+        string="จำนวนผู้สูงอายุประเภทติดเตียงทั้งหมด",
+        compute="_compute_all_adl_counts",
+        store=True,
+    )
+    all_adl_unknown_count = fields.Integer(
+        string="จำนวนผู้สูงอายุที่ยังไม่ระบุประเภททั้งหมด",
+        compute="_compute_all_adl_counts",
+        store=True,
+    )
+
     due_date = fields.Date("กำหนดจ่ายเงิน", help="วันที่คาดว่าจะจ่ายเงิน")
+
+    @api.depends("patient_ids", "event_patient_ids")
+    def _compute_all_patient_ids(self):
+        for rec in self:
+            patients = rec.patient_ids | rec.event_patient_ids
+
+            rec.all_patient_ids = patients  # ✅ แบบ clean
+            rec.all_patient_count = len(patients)
+
+    @api.depends("event_ids.plan_patient_ids", "patient_ids")
+    def _compute_event_patient_ids(self):
+        for rec in self:
+            # คนที่เข้าร่วมกิจกรรม (กันซ้ำในตัวมันเอง)
+            event_ids = set(rec.event_ids.mapped("plan_patient_ids").ids)
+
+            # คนที่เป็นผู้สูงอายุใหม่
+            new_ids = set(rec.patient_ids.ids)
+
+            # เอาเฉพาะ "ผู้สูงอายุเดิมที่ได้รับการดูแล"
+            filtered_ids = event_ids - new_ids
+
+            rec.event_patient_ids = [(6, 0, list(filtered_ids))]
 
     @api.constrains("due_date")
     def _check_due_date(self):
@@ -223,16 +287,13 @@ class ServiceEventApproval(models.Model):
             rec.adl_low_count = low
             rec.adl_unknown_count = unknown
 
-    @api.depends("event_ids", "event_ids.plan_patient_ids")
+    @api.depends("event_patient_ids.type_id.code")
     def _compute_event_adl_counts(self):
         """นับจำนวนผู้เข้าร่วมกิจกรรมแบบไม่ซ้ำ แยกตามประเภทผู้สูงอายุ"""
         for rec in self:
             high = mid = low = unknown = 0
 
-            # รวม id แบบไม่ซ้ำ
-            patient_ids = set(rec.event_ids.mapped("plan_patient_ids").ids)
-
-            patients = self.env["ni.patient"].browse(patient_ids)
+            patients = rec.event_patient_ids
 
             for p in patients:
                 code = p.type_id.code if p.type_id else None
@@ -250,6 +311,35 @@ class ServiceEventApproval(models.Model):
             rec.event_adl_mid_count = mid
             rec.event_adl_low_count = low
             rec.event_adl_unknown_count = unknown
+
+    @api.depends(
+        "patient_ids.type_id.code",
+        "event_patient_ids.type_id.code",
+    )
+    def _compute_all_adl_counts(self):
+        """นับจำนวนผู้สูงอายุทั้งหมด (เพิ่มใหม่ ∪ เข้าร่วมกิจกรรม) แบบไม่ซ้ำ"""
+        for rec in self:
+            high = mid = low = unknown = 0
+
+            # union แบบไม่ซ้ำ (Odoo handle ให้แล้ว)
+            patients = rec.patient_ids | rec.event_patient_ids
+
+            for p in patients:
+                code = p.type_id.code if p.type_id else None
+
+                if code == "adl-high":
+                    high += 1
+                elif code == "adl-mid":
+                    mid += 1
+                elif code == "adl-low":
+                    low += 1
+                else:
+                    unknown += 1
+
+            rec.all_adl_high_count = high
+            rec.all_adl_mid_count = mid
+            rec.all_adl_low_count = low
+            rec.all_adl_unknown_count = unknown
 
     @api.depends("event_ids.service_category_id")
     def _compute_category_ids(self):

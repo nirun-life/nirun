@@ -30,7 +30,7 @@
                         <t t-set="report_title" t-value="'ข้อมูลพื้นฐานของผู้สูงอายุ'" />
                         <t t-set="report_form_code" t-value="'แบบ ศผ.01'" />
                     </t>
-                    <t t-if="d.patient_ids">
+                    <t t-if="d.all_patient_ids">
                         <div class="page">
                             <!-- ตารางรายชื่อผู้สูงอายุ -->
                             <table class="table table-condensed mt-4" id="elder-table">
@@ -71,7 +71,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr t-foreach="d.patient_ids" t-as="line">
+                                    <tr t-foreach="d.all_patient_ids" t-as="line">
                                         <td>
                                             <span t-field="line.name" />
                                         </td>
