@@ -174,6 +174,7 @@ class ServiceEventApproval(models.Model):
         string="ผู้สูงอายุเดิมที่ได้รับการดูแล",
         compute="_compute_event_patient_ids",
         store=True,
+        context={"active_test": False},
     )
 
     all_patient_ids = fields.Many2many(
@@ -703,10 +704,13 @@ class ServiceEventApproval(models.Model):
     def action_refresh_computed_fields(self):
         for rec in self:
             rec._compute_patient_ids()
+            rec._compute_event_patient_ids()
+            rec._compute_all_patient_ids()
             rec._compute_service_event()
             rec._compute_category_ids()
             rec._compute_careplan_ids()
             rec._compute_service_ids()
+
         _logger.info("✅ Recomputed stored fields for %d record(s)", len(self))
 
     @api.model
