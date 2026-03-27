@@ -55,14 +55,21 @@
             </field>
         </field>
     </record>
-    <record id="ni_patient_view_tree_inherit" model="ir.ui.view">
-        <field name="name">ni.patient.view.tree.inherit</field>
+    <record id="ni_patient_view_tree_simp" model="ir.ui.view">
+        <field name="name">ni.patient.view.tree.simp</field>
         <field name="model">ni.patient</field>
-        <field name="inherit_id" ref="ni_patient.ni_patient_view_tree" />
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="attributes">
-                <attribute name="js_class">patient_dashboard_tree</attribute>
-            </xpath>
+            <tree default_order="create_date desc" js_class="patient_dashboard_tree">
+                <field name="identifier" optional="hide" />
+                <field name="name" />
+                <field name="gender" optional="show" />
+                <field name="age" string="Age" optional="show" />
+                <field name="birthdate" optional="hide" />
+                <field name="phone" optional="show" />
+                <field name="mobile" optional="show" />
+                <field name="presence_state" invisible="1" />
+                <field name="company_id" groups="base.group_multi_company" />
+            </tree>
         </field>
     </record>
     <record id="ni_patient_view_kanban_simp" model="ir.ui.view">
@@ -758,7 +765,7 @@
             name="view_ids"
             eval="[(5, 0, 0),
                (0, 0, {'view_mode': 'kanban', 'view_id': ref('ni_patient_view_kanban_simp')}),
-               (0, 0, {'view_mode': 'tree', 'view_id': ref('ni_patient.ni_patient_view_tree')}),
+               (0, 0, {'view_mode': 'tree', 'view_id': ref('ni_patient_view_tree_simp')}),
                (0, 0, {'view_mode': 'pivot', 'view_id': ref('ni_patient_view_pivot_01')}),
                (0, 0, {'view_mode': 'form', 'view_id': ref('ni_patient_view_form_simp')}),
                ]"

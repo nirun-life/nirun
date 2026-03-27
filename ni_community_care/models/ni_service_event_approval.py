@@ -964,3 +964,49 @@ class ServiceEventApproval(models.Model):
                 rec.last_pdf_date = False
 
         _logger.info("[CRON] Cleanup complete.")
+
+    def action_view_patients(self):
+        self.ensure_one()
+
+        # เลือก dataset ตาม filter
+        if self.patient_filter == "new":
+            patients = self.patient_ids
+            name = "ผู้สูงอายุที่เพิ่มใหม่"
+
+        elif self.patient_filter == "event":
+            patients = self.event_patient_ids
+            name = "ผู้สูงอายุที่ได้รับการดูแล"
+
+        else:  # all
+            patients = self.all_patient_ids
+            name = "ผู้สูงอายุทั้งหมด"
+
+        # กัน empty
+        if not patients:
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "ไม่มีข้อมูล",
+                    "message": "ไม่พบผู้สูงอายุตามเงื่อนไขที่เลือก",
+                    "type": "warning",
+                },
+            }
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": name,
+            "res_model": "ni.patient",
+            "view_mode": "tree,form",
+            "views": [
+                (self.env.ref("ni_patient.ni_patient_view_tree").id, "tree"),
+                (
+                    self.env.ref("ni_community_care.ni_patient_view_form_simp").id,
+                    "form",
+                ),
+            ],
+            "domain": [("id", "in", patients.ids)],
+            "context": {
+                "create": False,
+            },
+        }
