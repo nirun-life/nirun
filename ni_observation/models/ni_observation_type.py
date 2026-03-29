@@ -65,15 +65,10 @@ class ObservationType(models.Model):
 
     icon = fields.Char(
         "Icon",
-        default="fa-circle",
         help="Font Awesome class (e.g. fa-heartbeat, fa-thermometer-three-quarters)",
     )
     icon_color = fields.Char(
         string="Icon Color", help="Hex color for icon (e.g. #FF5733)", default="#6c757d"
-    )
-
-    short_name = fields.Char(
-        string="Short Name", help="Short name for kanban (e.g. BP, HR)"
     )
 
     @api.depends("ref_range_ids")

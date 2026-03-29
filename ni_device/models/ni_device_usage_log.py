@@ -1,106 +1,85 @@
 #  Copyright (c) 2025 NSTDA
-from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo import fields, models
 
 
 class DeviceUsageLog(models.Model):
     _name = "ni.device.usage.log"
     _description = "Device Usage Log"
     _order = "create_date desc"
-    _inherit = ["ni.patient.res", "ni.identifier.mixin", "image.mixin"]
+    _inherit = ["ni.identifier.mixin", "image.mixin"]
 
-    company_id = fields.Many2one(
-        "res.company", required=True, index=True, default=lambda self: self.env.company
+    res_model = fields.Selection(
+        [
+            ("ni.observation.sheet", "Observation Sheet"),
+            ("ni.patient.smartcard", "Smartcard"),
+        ],
+        "Reference Model",
+        required=True,
+        index=True,
     )
-    device_id = fields.Many2one(
-        "ni.device", required=True, index=True, ondelete="restrict"
-    )
-    # patient_id = fields.Many2one("ni.patient", copy=False, index=True)
-    user_id = fields.Many2one(
-        "res.users", "ผู้อ่านบัตร", required=True, default=lambda self: self.env.user
-    )
-    card_id = fields.Many2one("ni.patient.smartcard", "บัตรประชาชน")
-    card_identifier = fields.Char(related="card_id.identifier")
+    res_id = fields.Integer(index=True)
 
-    # link ไปหา sheet (optional — กรณีมาจาก sheet)
-    sheet_id = fields.Many2one(
-        "ni.observation.sheet", readonly=True, index=True, ondelete="restrict"
-    )
-
-    # observations — One2many จริง ไม่ใช่ related
-    # รองรับทั้งกรณีมาจาก sheet และกรอกตรงใน log
-    observation_ids = fields.One2many(
-        "ni.observation", "usage_log_id", string="ผลการตรวจวัด"
-    )
-
-    # computed summary สำหรับ kanban — ดึง icon/color จาก type_id โดยตรง
-    vitalsign_summary = fields.Json(
-        compute="_compute_vitalsign_summary",
+    res_name = fields.Char(
+        string="Reference Name",
+        compute="_compute_res_name",
         store=False,
     )
 
-    latitude = fields.Float(digits=(10, 7), help="Where the card was reading")
-    longitude = fields.Float(digits=(10, 7), help="Where the card was reading")
-
-    def action_gmap_location(self):
-        if not self.latitude or not self.longitude:
-            raise ValidationError(_("Location coordinates required"))
-        http_url = (
-            "https://maps.google.com/maps?q=loc:" + self.latitude + "," + self.longitude
-        )
-        return {
-            "type": "ir.actions.act_url",
-            "target": "new",
-            "url": http_url,
-        }
-
-    @api.depends(
-        "observation_ids",
-        "observation_ids.value",
-        "observation_ids.type_id",
-        "observation_ids.unit_id",
-    )
-    def _compute_vitalsign_summary(self):
+    def _compute_res_name(self):
         for rec in self:
-            result = []
+            name = False
+            if rec.res_model and rec.res_id:
+                record = self.env[rec.res_model].browse(rec.res_id)
+                if record.exists():
+                    name = record.display_name
+            rec.res_name = name
 
-            for ob in rec.observation_ids:
-                result.append(
-                    {
-                        "l": ob.type_id.short_name
-                        or ob.type_id.name
-                        or ob.type_id.code
-                        or "",
-                        "v": ob.value,
-                        "u": ob.unit_id.name or "",
-                        "i": ob.type_id.icon,  # 👈 เอา default ออกแล้ว
-                        "color": ob.type_id.icon_color or "#6c757d",
-                    }
-                )
+    company_id = fields.Many2one(
+        "res.company", index=True, default=lambda self: self.env.company
+    )
+    device_id = fields.Many2one("ni.device", index=True, ondelete="restrict")
+    user_id = fields.Many2one("res.users", "User", default=lambda self: self.env.user)
 
-            rec.vitalsign_summary = result or []
+    patient_id = fields.Many2one(
+        "ni.patient",
+        "Patient",
+        index=True,
+        ondelete="cascade",
+    )
 
-    def action_view_sheet(self):
+    def action_open_source(self):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "res_model": "ni.observation.sheet",
+            "res_model": self.res_model,
+            "res_id": self.res_id,
             "view_mode": "form",
-            "res_id": self.sheet_id.id,
+            "target": "current",
         }
 
-    def action_view_smartcard(self):
+    def action_fetch_from_source(self):
         self.ensure_one()
-        if not self.card_id:
+
+        if not self.res_model or not self.res_id:
             return False
 
-        return {
-            "type": "ir.actions.act_window",
-            "res_model": "ni.patient.smartcard",
-            "view_mode": "form",
-            "res_id": self.card_id.id,
-            "target": "new",
-            "context": {
-                "form_view_initial_mode": "view",
-            },
-        }
+        record = self.env[self.res_model].browse(self.res_id)
+        if not record.exists():
+            return False
+
+        # ใช้ logic เดียวกับ mixin
+        vals = {}
+
+        # device
+        if hasattr(record, "device_id"):
+            vals["device_id"] = record.device_id.id
+
+        # patient
+        if hasattr(record, "patient_id"):
+            vals["patient_id"] = record.patient_id.id
+
+        # user
+        if hasattr(record, "user_id"):
+            vals["user_id"] = record.user_id.id
+
+        self.write(vals)
