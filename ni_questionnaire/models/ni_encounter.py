@@ -10,9 +10,41 @@ class Encounter(models.Model):
     response_id = fields.Many2one(
         "survey.user_input", store=True, groups="survey.group_survey_user"
     )
+
+    response_ids = fields.One2many(
+        "survey.user_input",
+        "encounter_id",
+        domain=[("state", "=", "done")],
+        help="Completed survey's response",
+    )
+
+    response_count = fields.Integer(
+        compute="_compute_response_count",
+        sudo_compute=True,
+    )
+
+    @api.depends("response_ids")
+    def _compute_response_count(self):
+        for rec in self:
+            rec.response_count = len(rec.response_ids)
+
+    response_filter = fields.Selection(
+        [
+            ("encounter", "This Encounter"),
+            ("patient", "All"),
+        ],
+        default="patient",
+        required=True,
+    )
+
+    patient_response_latest_ids = fields.One2many(
+        related="patient_ids.response_latest_ids"
+    )
+
     response_latest_ids = fields.One2many(
         "ni.encounter.survey_latest", "encounter_id", "Latest Surveys"
     )
+
     response_latest_id = fields.Many2one(
         "ni.encounter.survey_latest",
         "Latest Survey",
