@@ -11,12 +11,10 @@ class Patient(models.Model):
         "patient_id",
         domain=[("state", "=", "done")],
         help="Completed survey's response",
-        groups="survey.group_survey_user",
     )
     response_count = fields.Integer(
         compute="_compute_response_count",
         sudo_compute=True,
-        groups="survey.group_survey_user",
     )
     response_latest_ids = fields.One2many("ni.patient.survey_latest", "patient_id")
 
