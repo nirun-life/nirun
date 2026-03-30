@@ -61,7 +61,40 @@
             </xpath>
             <xpath expr="//page[@name='questionnaire']" position="inside">
                 <field name="response_count" invisible="1" />
-                <field name="response_latest_ids">
+                <div class="row">
+                    <div class="col-12 col-lg-9" />
+                    <div class="col-12 col-lg-3 text-end">
+                        <i class="fa fa-filter me-2" aria-hidden="true" title="Filter" />
+                        <field name="response_filter" />
+                    </div>
+                </div>
+                <field name="patient_response_latest_ids" attrs="{'invisible': [('response_filter', '!=', 'patient')]}">
+                    <tree>
+                        <field name="survey_id" />
+                        <field name="grade_id" />
+                        <field name="scoring_total" optional="show" />
+                        <field name="scoring_percentage" widget="progressbar" optional="hide" />
+                        <field name="create_uid" optional="show" />
+                        <field name="create_date" optional="show" />
+                        <button name="action_print_answers" type="object" icon="fa-print" title="View Answer" />
+                        <button name="action_graph_view" type="object" icon="fa-bar-chart" title="View Graph" />
+                        <button
+                            name="action_monthly_pivot_view"
+                            type="object"
+                            icon="fa-table"
+                            title="View Monthly Report"
+                        />
+                        <button
+                            name="action_survey_subject_wizard"
+                            string="Survey"
+                            type="object"
+                            icon="fa-commenting"
+                            title="Start Questionnaire"
+                            attrs="{'column_invisible': [('parent.state', 'not in', ['in-progress'])]}"
+                        />
+                    </tree>
+                </field>
+                <field name="response_latest_ids" attrs="{'invisible': [('response_filter', '!=', 'encounter')]}">
                     <tree>
                         <field name="survey_id" />
                         <field name="grade_id" />
