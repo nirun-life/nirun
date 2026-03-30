@@ -13,6 +13,12 @@
                 <div class="o_row" attrs="{'invisible': [('survey_response_id', '=', False)]}">
                     <field name="survey_response_id" />
                     <button name="action_print_survey" type="object" icon="fa-print" title="See Result" />
+                    <button
+                        name="action_survey_monthly_pivot"
+                        type="object"
+                        title="View Monthly Report"
+                        icon="fa-table"
+                    />
                 </div>
             </field>
         </field>
@@ -25,12 +31,20 @@
             <field name="occurrence" position="after">
                 <field name="survey_id" invisible="1" />
                 <field name="survey_response_id" invisible="1" />
+            </field>
+            <xpath expr="//button[@name='action_graph_view']" position="after">
+                <button
+                    name="action_survey_monthly_pivot"
+                    type="object"
+                    title="View Monthly Report"
+                    icon="fa-table"
+                    attrs="{'invisible': [('survey_id', '=', False)]}"
+                />
                 <button
                     name="action_print_survey"
                     type="object"
                     icon="fa-eye"
                     title="See Result"
-                    class="text-primary"
                     attrs="{'invisible': ['|',('survey_id', '=', False), ('survey_response_id', '=', False)]}"
                 />
                 <button
@@ -40,7 +54,7 @@
                     title="Start Survey"
                     attrs="{'invisible': [('survey_id', '=', False)]}"
                 />
-            </field>
+            </xpath>
         </field>
     </record>
 </odoo>
