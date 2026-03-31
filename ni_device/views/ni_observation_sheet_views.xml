@@ -14,6 +14,16 @@
                 <field name="device_id" />
                 <field name="user_id" />
             </xpath>
+            <!-- เพิ่มปุ่มใน header -->
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_create_device_log"
+                    type="object"
+                    string="Create Device Usage"
+                    icon="fa-bug"
+                    groups="base.group_no_one"
+                />
+            </xpath>
         </field>
     </record>
     <record id="ni_observation_sheet_view_kanban" model="ir.ui.view">

@@ -1,4 +1,4 @@
-from odoo import api, models
+from odoo import api, fields, models
 
 
 class DeviceUsageLogMixin(models.AbstractModel):
@@ -12,6 +12,12 @@ class DeviceUsageLogMixin(models.AbstractModel):
     def _prepare_device_log_vals(self):
         self.ensure_one()
 
+        occurrence = False
+        if hasattr(self, "occurrence") and self.occurrence:
+            occurrence = self.occurrence
+        else:
+            occurrence = self.create_date or fields.Datetime.now()
+
         return {
             "device_id": self.device_id.id,
             "patient_id": getattr(self, "patient_id", False) and self.patient_id.id,
@@ -19,6 +25,8 @@ class DeviceUsageLogMixin(models.AbstractModel):
             "user_id": self.user_id.id,
             "res_model": self._name,
             "res_id": self.id,
+            "occurrence": occurrence,
+            "state": "completed",
         }
 
     def _prepare_device_log_extra_vals(self):
@@ -37,7 +45,7 @@ class DeviceUsageLogMixin(models.AbstractModel):
             vals = rec._prepare_device_log_vals()
             vals.update(rec._prepare_device_log_extra_vals())
 
-            self.env["ni.device.usage.log"].create(vals)
+            self.env["ni.device.usage"].create(vals)
 
     # -------------------------
     # ORM override
@@ -51,3 +59,11 @@ class DeviceUsageLogMixin(models.AbstractModel):
         records._create_device_usage_log()
 
         return records
+
+    # -------------------------
+    # Dev
+    # -------------------------
+
+    def action_create_device_log(self):
+        for rec in self:
+            rec._create_device_usage_log()
