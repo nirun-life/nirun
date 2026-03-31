@@ -16,9 +16,9 @@ class DeviceRequest(models.Model):
         "ni.device",
         string="Device",
         required=True,
-        ondelete="cascade",
         index=True,
         check_company=True,
+        ondelete="cascade",
     )
     device_image = fields.Image(related="device_id.image_1920", string="Device Image")
     device_identifier = fields.Char(

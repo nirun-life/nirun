@@ -3,10 +3,10 @@
     <!-- ───────────────────────────────────────────────
          ACTION  (เปิดจาก Menu หลัก — group by device)
     ─────────────────────────────────────────────────── -->
-    <record id="ni_device_usage_log_action" model="ir.actions.act_window">
+    <record id="ni_device_usage_action" model="ir.actions.act_window">
         <field name="name">ประวัติการใช้งานอุปกรณ์ทั้งหมด</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">ni.device.usage.log</field>
+        <field name="res_model">ni.device.usage</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="context">{'search_default_group_device': 1}</field>
         <field name="help" type="html">
@@ -14,9 +14,9 @@
         </field>
     </record>
     <!-- ACTION เปิดจากหน้า Device — group by month, filter device นั้น -->
-    <record id="ni_device_usage_log_action_this" model="ir.actions.act_window">
+    <record id="ni_device_usage_action_this" model="ir.actions.act_window">
         <field name="name">ประวัติการใช้งานอุปกรณ์</field>
-        <field name="res_model">ni.device.usage.log</field>
+        <field name="res_model">ni.device.usage</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="domain">[('device_id', '=', active_id)]</field>
         <field name="context">
@@ -33,9 +33,9 @@
     <!-- ───────────────────────────────────────────────
          SEARCH VIEW
     ─────────────────────────────────────────────────── -->
-    <record id="ni_device_usage_log_view_search" model="ir.ui.view">
-        <field name="name">ni.device.usage.log.view.search</field>
-        <field name="model">ni.device.usage.log</field>
+    <record id="ni_device_usage_view_search" model="ir.ui.view">
+        <field name="name">ni.device.usage.view.search</field>
+        <field name="model">ni.device.usage</field>
         <field name="arch" type="xml">
             <search string="ค้นหาประวัติการใช้งาน">
                 <field name="patient_id" string="ผู้ป่วย" />
@@ -44,56 +44,56 @@
                 <filter
                     name="filter_today"
                     string="วันนี้"
-                    domain="[('create_date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)).strftime('%Y-%m-%d %H:%M:%S')),
-                                 ('create_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)).strftime('%Y-%m-%d %H:%M:%S'))]"
+                    domain="[('occurrence','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)).strftime('%Y-%m-%d %H:%M:%S')),
+                                 ('occurrence','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)).strftime('%Y-%m-%d %H:%M:%S'))]"
                 />
                 <filter
                     name="filter_this_month"
                     string="เดือนนี้"
-                    domain="[('create_date','&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
-                                 ('create_date','&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d'))]"
+                    domain="[('occurrence','&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('occurrence','&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d'))]"
                 />
                 <filter name="filter_has_patient" string="มีผู้ป่วย" domain="[('patient_id','!=',False)]" />
                 <separator />
-                <filter name="group_month" string="เดือน" context="{'group_by': 'create_date:month'}" />
+                <filter name="group_month" string="เดือน" context="{'group_by': 'occurrence:month'}" />
                 <filter name="group_patient" string="ผู้ป่วย" context="{'group_by': 'patient_id'}" />
                 <filter name="group_device" string="อุปกรณ์" context="{'group_by': 'device_id'}" />
                 <filter name="group_user" string="ผู้บันทึก" context="{'group_by': 'user_id'}" />
             </search>
         </field>
     </record>
-    <record id="ni_device_usage_log_view_tree" model="ir.ui.view">
-        <field name="name">ni.device.usage.log.view.tree</field>
-        <field name="model">ni.device.usage.log</field>
+    <record id="ni_device_usage_view_tree" model="ir.ui.view">
+        <field name="name">ni.device.usage.view.tree</field>
+        <field name="model">ni.device.usage</field>
         <field name="arch" type="xml">
             <tree
                 string="ประวัติการใช้งานอุปกรณ์"
-                default_order="create_date desc"
+                default_order="occurrence desc"
                 decoration-muted="patient_id == False"
                 sample="1"
             >
-                <field name="create_date" string="วันที่/เวลา" widget="datetime" />
+                <field name="occurrence" string="วันที่/เวลา" widget="datetime" />
                 <field name="device_id" string="อุปกรณ์" optional="show" />
                 <field name="patient_id" widget="many2one_avatar" optional="show" />
                 <field name="user_id" string="ผู้บันทึก" widget="many2one_avatar" optional="show" />
             </tree>
         </field>
     </record>
-    <record id="ni_device_usage_log_view_kanban" model="ir.ui.view">
-        <field name="name">ni.device.usage.log.view.kanban</field>
-        <field name="model">ni.device.usage.log</field>
+    <record id="ni_device_usage_view_kanban" model="ir.ui.view">
+        <field name="name">ni.device.usage.view.kanban</field>
+        <field name="model">ni.device.usage</field>
         <field name="arch" type="xml">
             <kanban
                 string="ประวัติการใช้งานอุปกรณ์"
-                default_group_by="create_date:month"
-                default_order="create_date desc"
+                default_group_by="occurrence:month"
+                default_order="occurrence desc"
                 limit="16"
                 class="o_kanban_small_column"
                 quick_add="false"
                 sample="1"
             >
                 <field name="id" />
-                <field name="create_date" />
+                <field name="occurrence" />
                 <field name="patient_id" />
                 <field name="user_id" />
                 <field name="device_id" />
@@ -115,15 +115,9 @@
                                     />
                                     <div class="text-muted small">
                                         <i class="fa fa-clock-o me-1" />
-                                        <t t-esc="record.create_date.value" />
+                                        <t t-esc="record.occurrence.value" />
                                     </div>
                                 </div>
-                                <t t-if="record.patient_id.raw_value">
-                                    <div class="text-muted small text-truncate">
-                                        <i class="fa fa-user me-1" />
-                                        <t t-esc="record.patient_id.value" />
-                                    </div>
-                                </t>
                                 <t t-if="record.res_name.raw_value">
                                     <div class="text-primary small text-truncate">
                                         <i class="fa fa-link me-1" />
@@ -146,9 +140,9 @@
             </kanban>
         </field>
     </record>
-    <record id="ni_device_usage_log_view_form" model="ir.ui.view">
-        <field name="name">ni.device.usage.log.view.form</field>
-        <field name="model">ni.device.usage.log</field>
+    <record id="ni_device_usage_view_form" model="ir.ui.view">
+        <field name="name">ni.device.usage.view.form</field>
+        <field name="model">ni.device.usage</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -169,18 +163,21 @@
                         <group>
                             <field name="device_id" readonly="1" />
                             <field name="patient_id" widget="many2one_avatar" readonly="1" />
-                            <field
-                                name="res_model"
-                                readonly="1"
-                                decoration-info="res_model == 'ni.observation.sheet'"
-                                decoration-success="res_model == 'ni.patient.smartcard'"
-                                widget="badge"
-                            />
+                            <field name="res_model" readonly="1" />
                             <field name="res_name" />
                         </group>
                         <group>
+                            <field
+                                name="state"
+                                widget="badge"
+                                decoration-info="state == 'in-progress'"
+                                decoration-warning="state == 'suspended'"
+                                decoration-danger="state == 'abort'"
+                                decoration-success="state == 'completed'"
+                                readonly="1"
+                            />
                             <field name="user_id" widget="many2one_avatar" readonly="1" />
-                            <field name="create_date" readonly="1" />
+                            <field name="occurrence" readonly="1" />
                         </group>
                     </group>
                     <!-- ปุ่มใหญ่ -->

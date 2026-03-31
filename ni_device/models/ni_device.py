@@ -90,8 +90,8 @@ class Device(models.Model):
         string="Holding Change Request",
     )
 
-    usage_log_ids = fields.One2many(
-        "ni.device.usage.log",
+    usage_ids = fields.One2many(
+        "ni.device.usage",
         "device_id",
         string="Device Usage Logs",
     )
@@ -130,7 +130,7 @@ class Device(models.Model):
     holder_history_count = fields.Integer(compute="_compute_holder_history_count")
     request_count = fields.Integer(compute="_compute_request_count")
     repair_count = fields.Integer(compute="_compute_repair_count")
-    usage_log_count = fields.Integer(compute="_compute_usage_log_count")
+    usage_count = fields.Integer(compute="_compute_usage_count")
 
     can_request_as_holder = fields.Boolean(
         compute="_compute_can_request_as_holder",
@@ -157,10 +157,10 @@ class Device(models.Model):
         for rec in self:
             rec.repair_count = len(rec.repair_ids)
 
-    @api.depends("usage_log_ids")
-    def _compute_usage_log_count(self):
+    @api.depends("usage_ids")
+    def _compute_usage_count(self):
         for rec in self:
-            rec.usage_log_count = len(rec.usage_log_ids)
+            rec.usage_count = len(rec.usage_ids)
 
     @api.depends("request_ids", "request_ids.state")
     def _compute_pending_request(self):

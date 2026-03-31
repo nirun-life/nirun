@@ -11,7 +11,12 @@ class DeviceHolder(models.Model):
         "res.company", required=True, index=True, default=lambda self: self.env.company
     )
     device_id = fields.Many2one(
-        "ni.device", string="Device", check_company=True, index=True, required=True
+        "ni.device",
+        string="Device",
+        check_company=True,
+        index=True,
+        required=True,
+        ondelete="cascade",
     )
     device_identifier = fields.Char(
         related="device_id.identifier", string="Device Identifier"
