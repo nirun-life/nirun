@@ -25,6 +25,7 @@
         "views/ni_observation_views.xml",
         "views/ni_observation_sheet_views.xml",
         "views/ni_patient_smartcard_views.xml",
+        "views/ni_patient_views.xml",
         "views/ni_device_menu.xml",
         "report/device_label_layout_template.xml",
     ],
