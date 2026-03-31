@@ -4,7 +4,7 @@
          ACTION  (เปิดจาก Menu หลัก — group by device)
     ─────────────────────────────────────────────────── -->
     <record id="ni_device_usage_action" model="ir.actions.act_window">
-        <field name="name">ประวัติการใช้งานอุปกรณ์ทั้งหมด</field>
+        <field name="name">All Device Usage</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device.usage</field>
         <field name="view_mode">kanban,tree,form</field>
@@ -14,8 +14,8 @@
         </field>
     </record>
     <!-- ACTION เปิดจากหน้า Device — group by month, filter device นั้น -->
-    <record id="ni_device_usage_action_this" model="ir.actions.act_window">
-        <field name="name">ประวัติการใช้งานอุปกรณ์</field>
+    <record id="ni_device_usage_action_by_device" model="ir.actions.act_window">
+        <field name="name">Device Usage</field>
         <field name="res_model">ni.device.usage</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="domain">[('device_id', '=', active_id)]</field>
@@ -28,6 +28,22 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">ยังไม่มีการบันทึกการใช้งาน</p>
             <p>เริ่มบันทึกผลการตรวจวัดจากอุปกรณ์นี้</p>
+        </field>
+    </record>
+    <!-- ACTION เปิดจากหน้า Patient — group by month, filter patient นั้น -->
+    <record id="ni_device_usage_action_by_patient" model="ir.actions.act_window">
+        <field name="name">ประวัติการใช้งานอุปกรณ์</field>
+        <field name="res_model">ni.device.usage</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('patient_id', '=', active_id)]</field>
+        <field name="context">
+            {
+                'search_default_group_month': 1,
+                'default_patient_id': active_id
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ยังไม่มีการบันทึกการใช้งาน</p>
         </field>
     </record>
     <!-- ───────────────────────────────────────────────
@@ -106,13 +122,24 @@
                             <div class="p-3">
                                 <!-- ── Header ── -->
                                 <div class="mb-2">
-                                    <field
-                                        name="res_model"
-                                        readonly="1"
-                                        decoration-info="res_model == 'ni.observation.sheet'"
-                                        decoration-success="res_model == 'ni.patient.smartcard'"
-                                        widget="badge"
-                                    />
+                                    <t t-if="!context.default_patient_id">
+                                        <t t-if="record.patient_id.raw_value">
+                                            <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted fst-italic d-block">ไม่ระบุผู้ป่วย</span>
+                                        </t>
+                                    </t>
+                                    <t t-if="!context.default_device_id">
+                                        <t t-if="record.device_id.raw_value">
+                                            <div class="text-truncate">
+                                                <t t-esc="record.device_id.value" />
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted fst-italic d-block">ไม่ระบุอุปกรณ์</span>
+                                        </t>
+                                    </t>
                                     <div class="text-muted small">
                                         <i class="fa fa-clock-o me-1" />
                                         <t t-esc="record.occurrence.value" />
