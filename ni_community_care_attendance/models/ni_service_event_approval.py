@@ -1,3 +1,7 @@
+from datetime import datetime, time, timezone
+
+import pytz
+
 from odoo import api, fields, models
 
 
@@ -28,8 +32,14 @@ class ServiceEventApprovalAttendance(models.Model):
         string="จำนวนชั่วโมงเฉลี่ยต่อวัน", compute="_compute_attendance_ids", store=True
     )
 
+    def _get_user_tz(self):
+        tz_name = self.env.context.get("tz") or self.env.user.tz or "UTC"
+        return pytz.timezone(tz_name)
+
     @api.depends("user_id", "start", "stop")
     def _compute_attendance_ids(self):
+        tz = self._get_user_tz()
+
         for rec in self:
             rec.attendance_ids = False
             rec.attendance_days = 0
@@ -46,28 +56,40 @@ class ServiceEventApprovalAttendance(models.Model):
             if not employee:
                 continue
 
+            # start: localize เป็น local 00:00 แล้วแปลงเป็น naive UTC
+            start_of_first_day = tz.localize(datetime.combine(rec.start, time.min))
+            query_start = start_of_first_day.astimezone(timezone.utc).replace(
+                tzinfo=None
+            )
+
+            # stop: localize เป็น local 23:59:59 แล้วแปลงเป็น naive UTC
+            end_of_last_day = tz.localize(datetime.combine(rec.stop, time.max))
+            query_stop = end_of_last_day.astimezone(timezone.utc).replace(tzinfo=None)
+
             attendances = self.env["hr.attendance"].search(
                 [
                     ("employee_id", "=", employee.id),
-                    ("check_in", ">=", rec.start),
-                    ("check_in", "<=", rec.stop),
+                    ("check_in", ">=", query_start),
+                    ("check_in", "<=", query_stop),
                 ]
             )
 
             rec.attendance_ids = attendances
 
-            # วันที่ไม่ซ้ำที่เข้างาน
-            days = {a.check_in.date() for a in attendances if a.check_in}
+            # ✅ แปลง check_in UTC → local date ก่อนนับวัน
+            days = {
+                att.check_in.replace(tzinfo=timezone.utc).astimezone(tz).date()
+                for att in attendances
+                if att.check_in
+            }
             rec.attendance_days = len(days)
 
-            # ชั่วโมงรวม และเฉลี่ย
             total_hours = sum(att.worked_hours for att in attendances)
             rec.attendance_hours_total = total_hours
             rec.attendance_hours_avg = total_hours / len(days) if days else 0.0
 
     def action_view_attendance(self):
         self.ensure_one()
-        # หา employee ที่สัมพันธ์กับ user_id
         employee = self.env["hr.employee"].search(
             [("user_id", "=", self.user_id.id)], limit=1
         )
@@ -92,9 +114,12 @@ class ServiceEventApprovalAttendance(models.Model):
 
     @api.depends("attendance_ids")
     def _compute_attendance_days_count(self):
+        tz = self._get_user_tz()
         for record in self:
-            # นับวันที่ไม่ซ้ำกันจาก attendance_ids
+            # ✅ แปลง check_in UTC → local date ก่อนนับ
             unique_days = {
-                att.date() for att in record.attendance_ids.mapped("check_in") if att
+                att.replace(tzinfo=timezone.utc).astimezone(tz).date()
+                for att in record.attendance_ids.mapped("check_in")
+                if att
             }
             record.attendance_days_count = len(unique_days)

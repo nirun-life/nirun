@@ -1,3 +1,7 @@
+from datetime import datetime, timezone
+
+import pytz
+
 from odoo import api, fields, models
 
 
@@ -19,11 +23,16 @@ class Employee(models.Model):
         string="On Leave Today", compute="_compute_on_leave_today", store=False
     )
 
+    def _get_local_today(self):
+        """คืนค่า date ของวันนี้ตาม timezone ของ user"""
+        tz_name = self.env.context.get("tz") or self.env.user.tz or "UTC"
+        tz = pytz.timezone(tz_name)
+        return datetime.now(tz).date()
+
     @api.depends("user_id")
     def _compute_on_leave_today(self):
-        today = fields.Date.today()
+        today = self._get_local_today()
         Leave = self.env["hr.leave"]
-        # ดึง leave ทั้งหมดที่อนุมัติและครอบคลุมวันนี้ของพนักงานทั้งหมดใน self
         for emp in self:
             leave = Leave.search(
                 [
@@ -35,46 +44,69 @@ class Employee(models.Model):
             )
             emp.on_leave_today = bool(leave)
 
-    @api.depends("user_id")  # เพิ่ม fields ที่จะเปลี่ยน
+    @api.depends("user_id")
     def _compute_attendance_summary(self):
-        today = fields.Date.today()
-        start_of_month = today.replace(day=1)
+        tz_name = self.env.context.get("tz") or self.env.user.tz or "UTC"
+        tz = pytz.timezone(tz_name)
+
+        now_local = datetime.now(tz)
+        today = now_local.date()
+
+        # แปลง start_of_month เป็น naive UTC สำหรับ query
+        start_of_month_utc = (
+            tz.localize(datetime(today.year, today.month, 1))
+            .astimezone(timezone.utc)
+            .replace(tzinfo=None)
+        )
+
         for rec in self:
             attendances = self.env["hr.attendance"].search(
                 [
                     ("employee_id", "=", rec.id),
-                    ("check_in", ">=", start_of_month),
-                    ("check_in", "<=", today),
+                    ("check_in", ">=", start_of_month_utc),
                 ]
             )
-            rec.days_attended_this_month = len(
-                {att.date() for att in attendances.mapped("check_in") if att}
-            )
-            rec.attended_today = any(
-                att.check_in and att.check_in.date() == today for att in attendances
-            )
+
+            # แปลง check_in UTC → local date ก่อนเทียบ
+            local_dates = {
+                att.check_in.replace(tzinfo=timezone.utc).astimezone(tz).date()
+                for att in attendances
+                if att.check_in
+            }
+
+            rec.days_attended_this_month = len(local_dates)
+            rec.attended_today = today in local_dates
 
     @api.depends("user_id")
     def _compute_care_days_this_month(self):
-        today = fields.Date.today()
-        start_of_month = today.replace(day=1)
+        tz_name = self.env.context.get("tz") or self.env.user.tz or "UTC"
+        tz = pytz.timezone(tz_name)
+
+        now_local = datetime.now(tz)
+        today = now_local.date()
+
+        # แปลง start_of_month เป็น naive UTC สำหรับ query
+        start_of_month_utc = (
+            tz.localize(datetime(today.year, today.month, 1))
+            .astimezone(timezone.utc)
+            .replace(tzinfo=None)
+        )
+        today_utc_end = (
+            now_local.replace(hour=23, minute=59, second=59)
+            .astimezone(timezone.utc)
+            .replace(tzinfo=None)
+        )
+
         for rec in self:
-            # ค้นหา event ที่ user_id ตรงกับ record นี้
-            # และมีช่วงเวลา start-stop ซ้อนทับกับช่วงของ record นี้
             events = self.env["ni.service.event"].search(
                 [
                     ("user_id", "=", rec.user_id.id),
-                    (
-                        "stop",
-                        ">=",
-                        start_of_month,
-                    ),  # event ยังไม่จบก่อน start ของ record
-                    ("start", "<=", today),  # event เริ่มไม่หลัง stop ของ record
+                    ("stop", ">=", start_of_month_utc),
+                    ("start", "<=", today_utc_end),
                 ],
                 order="start desc",
             )
 
-            # รวม patient_id ที่ไม่ซ้ำ
             patient_ids = set()
             for ev in events:
                 patient_ids.update(ev.plan_patient_ids.ids)
