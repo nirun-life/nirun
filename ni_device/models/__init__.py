@@ -14,3 +14,4 @@ from . import ni_observation_report
 from . import ni_observation_sheet
 from . import ni_patient
 from . import ni_patient_smartcard
+from . import ni_device_definition

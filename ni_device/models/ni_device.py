@@ -1,3 +1,4 @@
+#  Copyright (c) 2025 NSTDA
 import logging
 
 from odoo import api, fields, models
@@ -15,11 +16,23 @@ class Device(models.Model):
     name = fields.Char(string="Device Name", required=True)
     identifier = fields.Char("Identifier", readonly=True)
 
+    definition_id = fields.Many2one(
+        "ni.device.definition",
+        string="Device Definition",
+        required=True,
+        index=True,
+        tracking=True,
+        ondelete="restrict",
+        help="รุ่น/แบบของอุปกรณ์นี้ เช่น เครื่องวัดความดันแบบพกพา",
+    )
+
     manufacturer_id = fields.Many2one(
         "res.partner",
         string="Manufacturer",
         domain="[('is_company', '=', True)]",
+        compute="_compute_from_definition",
         store=True,
+        readonly=False,
     )
     manufacture_date = fields.Date("Manufacturer Date")
     serial_number = fields.Char(
@@ -27,7 +40,12 @@ class Device(models.Model):
         required=True,
         help="If no serial number is available, you may enter - instead.",
     )
-    model_number = fields.Char("Model")
+    model_number = fields.Char(
+        "Model",
+        compute="_compute_from_definition",
+        store=True,
+        readonly=False,
+    )
     currency_id = fields.Many2one(
         "res.currency", required=True, default=lambda self: self.env.company.currency_id
     )
@@ -41,6 +59,9 @@ class Device(models.Model):
         "ni.device.type",
         string="Device Types",
         help="Examples: Blood Pressure Monitor, Weighing Scale, Thermometer",
+        compute="_compute_from_definition",
+        store=True,
+        readonly=False,
         required=True,
     )
 
@@ -58,6 +79,9 @@ class Device(models.Model):
     observation_type_ids = fields.Many2many(
         "ni.observation.type",
         string="Supported Observation Type",
+        compute="_compute_from_definition",
+        store=True,
+        readonly=False,
     )
 
     state = fields.Selection(
@@ -142,6 +166,25 @@ class Device(models.Model):
         store=False,
     )
 
+    # ── Compute from Definition ────────────────────────────────────────────────
+
+    @api.depends("definition_id")
+    def _compute_from_definition(self):
+        for rec in self:
+            dfn = rec.definition_id
+            if not dfn:
+                continue
+            if dfn.manufacturer_id:
+                rec.manufacturer_id = dfn.manufacturer_id
+            if dfn.model_number:
+                rec.model_number = dfn.model_number
+            if dfn.type_ids:
+                rec.type_ids = dfn.type_ids
+            if dfn.observation_type_ids:
+                rec.observation_type_ids = dfn.observation_type_ids
+
+    # ── Counts ─────────────────────────────────────────────────────────────────
+
     @api.depends("holder_history_ids")
     def _compute_holder_history_count(self):
         for rec in self:
@@ -162,13 +205,12 @@ class Device(models.Model):
         for rec in self:
             rec.usage_count = len(rec.usage_ids)
 
+    # ── Business Logic ─────────────────────────────────────────────────────────
+
     @api.depends("request_ids", "request_ids.state")
     def _compute_pending_request(self):
         for rec in self:
-            # หา request ที่ยัง pending
             pending = rec.request_ids.filtered(lambda r: r.state in ("pending"))
-
-            # ถ้ามีหลายตัว → เอาตัวล่าสุดจาก create_date
             if pending:
                 rec.pending_request_id = pending.sorted("create_date")[-1]
             else:
@@ -177,12 +219,9 @@ class Device(models.Model):
     @api.depends("repair_ids", "repair_ids.state")
     def _compute_active_repair(self):
         for rec in self:
-            # หา repair ที่ยัง
             current = rec.repair_ids.filtered(
                 lambda r: r.state in ("damaged", "repairing", "not_repairable")
             )
-
-            # ถ้ามีหลายตัว → เอาตัวล่าสุดจาก create_date
             if current:
                 rec.active_repair_id = current.sorted("create_date")[-1]
             else:
@@ -209,10 +248,10 @@ class Device(models.Model):
                 and rec.active_repair_id.repair_result == "not_repairable"
             )
 
+    # ── Actions ────────────────────────────────────────────────────────────────
+
     def action_repair(self):
         self.ensure_one()
-        # เซ็ตสถานะอุปกรณ์ให้เป็น damaged
-
         return {
             "type": "ir.actions.act_window",
             "name": "Report Device Repair",
@@ -221,7 +260,7 @@ class Device(models.Model):
             "view_id": self.env.ref(
                 "ni_device.ni_device_repair_view_form_wizard_create"
             ).id,
-            "target": "new",  # เปิด popup
+            "target": "new",
             "context": {
                 "default_device_id": self.id,
                 "default_damage_date": fields.Datetime.now(),
@@ -262,7 +301,7 @@ class Device(models.Model):
         *,
         request_type,
         action_name,
-        employee_source="current_user",  # current_user | device_holder
+        employee_source="current_user",
         include_new_holder=False,
     ):
         self.ensure_one()

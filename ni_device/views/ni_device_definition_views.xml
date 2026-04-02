@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- ───────────────────────────────────────────────
+         ACTIONS
+    ─────────────────────────────────────────────────── -->
+    <record id="ni_device_definition_action" model="ir.actions.act_window">
+        <field name="name">Device Definitions</field>
+        <field name="res_model">ni.device.definition</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ยังไม่มี Device Definition</p>
+            <p>สร้าง Definition เพื่อกำหนดรุ่น/แบบของอุปกรณ์ก่อนเพิ่มอุปกรณ์</p>
+        </field>
+    </record>
+    <!-- ───────────────────────────────────────────────
+         SEARCH
+    ─────────────────────────────────────────────────── -->
+    <record id="ni_device_definition_view_search" model="ir.ui.view">
+        <field name="name">ni.device.definition.view.search</field>
+        <field name="model">ni.device.definition</field>
+        <field name="arch" type="xml">
+            <search string="ค้นหา Device Definition">
+                <field name="name" string="ชื่อ" />
+                <field name="manufacturer_id" string="ผู้ผลิต" />
+                <field name="type_ids" string="ประเภท" />
+                <separator />
+                <filter name="group_type" string="ประเภทอุปกรณ์" context="{'group_by': 'type_ids'}" />
+                <filter name="group_manufacturer" string="ผู้ผลิต" context="{'group_by': 'manufacturer_id'}" />
+            </search>
+        </field>
+    </record>
+    <!-- ───────────────────────────────────────────────
+         TREE
+    ─────────────────────────────────────────────────── -->
+    <record id="ni_device_definition_view_tree" model="ir.ui.view">
+        <field name="name">ni.device.definition.view.tree</field>
+        <field name="model">ni.device.definition</field>
+        <field name="arch" type="xml">
+            <tree string="Device Definitions">
+                <field name="name" string="Definition Name" />
+                <field name="type_ids" string="ประเภท" widget="many2many_tags" />
+                <field name="manufacturer_id" string="ผู้ผลิต" optional="show" />
+                <field name="model_number" string="รุ่น" optional="show" />
+                <field name="device_count" string="จำนวนอุปกรณ์" />
+            </tree>
+        </field>
+    </record>
+    <!-- ───────────────────────────────────────────────
+         KANBAN
+    ─────────────────────────────────────────────────── -->
+    <record id="ni_device_definition_view_kanban" model="ir.ui.view">
+        <field name="name">ni.device.definition.view.kanban</field>
+        <field name="model">ni.device.definition</field>
+        <field name="arch" type="xml">
+            <kanban
+                string="Device Definitions"
+                default_order="name"
+                class="o_kanban_small_column"
+                quick_add="false"
+                sample="1"
+            >
+                <field name="id" />
+                <field name="name" />
+                <field name="type_ids" />
+                <field name="manufacturer_id" />
+                <field name="model_number" />
+                <field name="device_count" />
+                <field name="image_128" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record">
+                            <div class="o_kanban_image">
+                                <img
+                                    t-att-src="kanban_image('ni.device.definition', 'image_128', record.id.raw_value)"
+                                    alt="Device Definition"
+                                    class="o_image_64_cover"
+                                />
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name" />
+                                </strong>
+                                <div class="o_kanban_tags_section">
+                                    <field name="type_ids" widget="many2many_tags" />
+                                </div>
+                                <ul>
+                                    <li t-if="record.manufacturer_id.raw_value">
+                                        <span class="text-muted">ผู้ผลิต:</span>
+                                        <t t-esc="record.manufacturer_id.value" />
+                                    </li>
+                                    <li t-if="record.model_number.raw_value">
+                                        <span class="text-muted">รุ่น:</span>
+                                        <t t-esc="record.model_number.value" />
+                                    </li>
+                                </ul>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left text-muted small">
+                                        <i class="fa fa-cubes me-1" />
+                                        <t t-esc="record.device_count.value" />
+                                        อุปกรณ์
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!-- ───────────────────────────────────────────────
+         FORM
+    ─────────────────────────────────────────────────── -->
+    <record id="ni_device_definition_view_form" model="ir.ui.view">
+        <field name="name">ni.device.definition.view.form</field>
+        <field name="model">ni.device.definition</field>
+        <field name="arch" type="xml">
+            <form string="Device Definition">
+                <sheet>
+                    <!-- Smart Buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_devices" type="object" class="oe_stat_button" icon="fa-cubes">
+                            <field name="device_count" widget="statinfo" string="อุปกรณ์" />
+                        </button>
+                        <button name="action_view_usage" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="usage_count" widget="statinfo" string="การใช้งาน" />
+                        </button>
+                    </div>
+                    <!-- Image + Title -->
+                    <div class="d-flex">
+                        <field
+                            name="image_1920"
+                            widget="image"
+                            class="oe_avatar me-3"
+                            options="{'preview_image': 'image_128'}"
+                        />
+                        <div class="oe_title flex-grow-1">
+                            <label for="name" string="Definition Name" />
+                            <h1>
+                                <field name="name" placeholder="เช่น เครื่องวัดความดันแบบพกพา" />
+                            </h1>
+                            <field name="type_ids" widget="many2many_tags" placeholder="เลือกประเภทอุปกรณ์..." />
+                        </div>
+                    </div>
+                    <!-- Details -->
+                    <group>
+                        <group string="ข้อมูลทั่วไป">
+                            <field name="manufacturer_id" />
+                            <field name="model_number" />
+                        </group>
+                        <group string="การวัด">
+                            <field name="observation_type_ids" widget="many2many_tags" />
+                        </group>
+                    </group>
+                    <separator string="หมายเหตุ" />
+                    <div>
+                        <field name="notes" nolabel="1" />
+                    </div>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>
