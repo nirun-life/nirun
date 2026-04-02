@@ -225,32 +225,50 @@
                         <h1>
                             <field name="name" placeholder="ชื่ออุปกรณ์" />
                         </h1>
+                        <div class="o_field_widget w-100">
+                            <field
+                                name="definition_id"
+                                string="แม่แบบอุปกรณ์"
+                                placeholder="เลือกแม่แบบอุปกรณ์..."
+                                options="{'no_create': True}"
+                                class="w-100"
+                            />
+                            <small
+                                class="text-warning fst-italic"
+                                attrs="{'invisible': [('id', '=', False)]}"
+                                groups="ni_device.access_ni_device_admin,base.group_no_one"
+                            >
+                                <i class="fa fa-exclamation-triangle me-1" />
+                                การเปลี่ยนแม่แบบจะดึงข้อมูลจากแม่แบบมาทับข้อมูลปัจจุบัน
+                            </small>
+                        </div>
                     </div>
                     <group>
-                        <field name="definition_id" string="แม่แบบข้อมูลอุปกรณ์" options="{'no_create': True}" />
-                        <field
-                            name="type_ids"
-                            widget="many2many_tags"
-                            string="ประเภทอุปกรณ์"
-                            options="{'no_create': True}"
-                        />
-                        <field name="observation_type_ids" widget="many2many_tags" string="ประเภทข้อมูลตรวจวัด" />
+
                     </group>
                     <group class="mt-2">
-                        <group>
+                        <group string="ข้อมูลอุปกรณ์">
+                            <field
+                                name="type_ids"
+                                string="ประเภทอุปกรณ์"
+                                widget="many2many_tags"
+                                options="{'no_create': True}"
+                            />
+                            <field name="observation_type_ids" string="ประเภทข้อมูลตรวจวัด" widget="many2many_tags" />
                             <field
                                 name="manufacturer_id"
                                 domain="[('is_company', '=', True)]"
                                 context="{'default_is_company': True}"
                             />
-                            <field name="serial_number" />
                             <field name="model_number" />
+                            <separator string="ทะเบียนอุปกรณ์" />
+                            <field name="serial_number" />
                             <field name="manufacture_date" />
                             <field name="received_date" />
                             <field name="price" />
                             <field name="currency_id" invisible="1" />
                         </group>
-                        <group>
+                        <group string="สถานะอุปกรณ์">
                             <field
                                 name="availability_status"
                                 widget="badge"

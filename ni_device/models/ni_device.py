@@ -182,6 +182,9 @@ class Device(models.Model):
                 rec.type_ids = dfn.type_ids
             if dfn.observation_type_ids:
                 rec.observation_type_ids = dfn.observation_type_ids
+            # ดึงรูปจาก definition เฉพาะเมื่อยังไม่มีรูปของตัวเอง
+            if dfn.image_1920 and not rec.image_1920:
+                rec.image_1920 = dfn.image_1920
 
     # ── Counts ─────────────────────────────────────────────────────────────────
 
