@@ -93,25 +93,33 @@
     <!--====== ADMIN ====== -->
     <menuitem
         id="menu_device_admin_root"
-        name="สำหรับแอดมิน"
+        name="สำหรับผู้ดูแล"
         groups="ni_patient.group_admin"
         parent="device_menu_root"
         sequence="99"
+    />
+    <menuitem
+        id="menu_device_definition_all"
+        name="แม่แบบข้อมูลอุปกรณ์ทั้งหมด"
+        groups="ni_patient.group_admin"
+        parent="menu_device_admin_root"
+        sequence="1"
+        action="ni_device.ni_device_definition_action"
     />
     <menuitem
         id="menu_device_approval_request_all"
         name="All Requests"
         groups="ni_patient.group_admin"
         parent="menu_device_admin_root"
-        sequence="1"
+        sequence="2"
         action="ni_device.ni_device_request_action"
     />
     <menuitem
-        id="menu_device_admin_usage_all"
+        id="menu_device_usage_all"
         name="ประวัติการใช้งานอุปกรณ์ทั้งหมด"
         groups="ni_patient.group_admin"
         parent="menu_device_admin_root"
-        sequence="2"
+        sequence="3"
         action="ni_device.ni_device_usage_action"
     />
     <menuitem

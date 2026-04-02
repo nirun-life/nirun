@@ -21,12 +21,23 @@ class Device(models.Model):
     name = fields.Char(string="Device Name", required=True, tracking=True)
     identifier = fields.Char("Identifier", readonly=True)
 
+    definition_id = fields.Many2one(
+        "ni.device.definition",
+        string="Device Definition",
+        required=True,
+        index=True,
+        tracking=True,
+        ondelete="restrict",
+        help="รุ่น/แบบของอุปกรณ์นี้ เช่น เครื่องวัดความดันแบบพกพา",
+    )
+
     manufacturer_id = fields.Many2one(
         "res.partner",
         string="Manufacturer",
         domain="[('is_company', '=', True)]",
         compute="_compute_from_definition",
         store=True,
+        readonly=False,
     )
     manufacture_date = fields.Date("Manufacturer Date")
     serial_number = fields.Char(
@@ -59,6 +70,8 @@ class Device(models.Model):
         compute="_compute_from_definition",
         store=True,
         readonly=False,
+        required=True,
+        tracking=True,
     )
 
     availability_status = fields.Selection(
@@ -158,18 +171,14 @@ class Device(models.Model):
         required=True,
         tracking=True,
     )
-    disposed_date = fields.Date(
-        string="End Date", store=True, readonly=True, tracking=True
+    disposed_date = fields.Datetime(
+        string="End Date",
+        store=True,
+        readonly=True,
+        tracking=True,
     )
 
     lost_date = fields.Date(string="Lost Report Date", tracking=True)
-
-    # note = fields.Char(
-    #     string="Note",
-    #     store=True,
-    #     readonly=True,
-    #     tracking=True
-    # )
 
     birthdate = fields.Date(related="received_date", tracking=False)
     deceased_date = fields.Date(related="disposed_date", tracking=False)
@@ -210,9 +219,6 @@ class Device(models.Model):
                 rec.type_ids = dfn.type_ids
             if dfn.observation_type_ids:
                 rec.observation_type_ids = dfn.observation_type_ids
-            # ดึงรูปจาก definition เฉพาะเมื่อยังไม่มีรูปของตัวเอง
-            if dfn.image_1920 and not rec.image_1920:
-                rec.image_1920 = dfn.image_1920
 
     # ── Counts ─────────────────────────────────────────────────────────────────
 
@@ -235,8 +241,6 @@ class Device(models.Model):
     def _compute_usage_count(self):
         for rec in self:
             rec.usage_count = len(rec.usage_ids)
-
-    # ── Business Logic ─────────────────────────────────────────────────────────
 
     @api.depends("request_ids", "request_ids.state")
     def _compute_pending_request(self):
