@@ -22,6 +22,9 @@ class ServiceEventReport(models.Model):
         "ni.service", "ni_service_event_rel", "event_id", "service_id", "กิจกรรม"
     )
     service_category_id = fields.Many2one("ni.service.category", "มิติ", readonly=True)
+    service_category_ids = fields.Many2many(
+        related="event_id.service_category_ids", readonly=True
+    )
     outcome = fields.Html(related="event_id.outcome", readonly=True)
     location = fields.Char(related="event_id.location", string="สถานที่", readonly=True)
     patient_id = fields.Many2one("ni.patient", "ผู้สูงอายุ", readonly=True)
@@ -52,6 +55,20 @@ class ServiceEventReport(models.Model):
         compute="_compute_my_service", search="_search_my_service"
     )
     my_area = fields.Boolean(compute="_compute_my_area", search="_search_my_area")
+
+    def action_service_event(self):
+        self.ensure_one()
+        view = {
+            "name": self.event_id.name,
+            "res_model": "ni.service.event",
+            "type": "ir.actions.act_window",
+            "target": "current",
+            "res_id": self.event_id.id,
+            "view_type": "form",
+            "views": [[False, "form"]],
+            "context": self.env.context,
+        }
+        return view
 
     @api.depends("user_id")
     def _compute_my_service(self):

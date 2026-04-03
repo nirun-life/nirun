@@ -26,7 +26,7 @@
                     groups="ni_patient.group_manager"
                 />
                 <separator />
-                <filter name="group_start" context="{'group_by': 'start'}" />
+                <filter name="group_start" context="{'group_by': 'start:day'}" />
                 <filter
                     name="group_state_id"
                     context="{'group_by': 'state_id'}"
@@ -36,6 +36,7 @@
                 <separator />
                 <filter name="group_service_category_id" context="{'group_by': 'service_category_id'}" />
                 <separator />
+                <filter name="group_user_id" context="{'group_by': 'user_id'}" groups="base.group_no_one" />
                 <filter name="group_employee_id" context="{'group_by': 'employee_id'}" />
                 <filter name="group_patient_id" context="{'group_by': 'patient_id'}" />
                 <filter name="group_patient_type_id" context="{'group_by': 'patient_type_id'}" />
@@ -53,8 +54,15 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="patient_id" widget="many2one_avatar" />
-                <field name="service_category_id" />
-                <field name="service_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                <field
+                    name="service_category_ids"
+                    string="มิติ"
+                    optional="show"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                />
+                <field name="service_id" optional="show" />
+                <field name="service_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide" />
                 <field name="start" />
                 <field name="stop" />
                 <field name="duration" widget="float_time" />
@@ -69,17 +77,38 @@
         <field name="model">ni.service.event.report</field>
         <field name="arch" type="xml">
             <form edit="0">
+                <header>
+                    <button
+                        name="action_service_event"
+                        string="แก้ไข"
+                        icon="fa-pencil"
+                        type="object"
+                        attrs="{'invisible': [('my_service', '=', False)]}"
+                    />
+                </header>
                 <sheet>
+                    <field name="my_area" invisible="1" />
+                    <field name="my_service" invisible="1" />
+                    <field name="service_id" invisible="1" />
                     <group>
+                        <label for="employee_id" />
+                        <div class="o_row">
+                            <field name="employee_id" widget="many2one_avatar_employee" class="pe-1" />
+                            <span>
+                                (
+                                <field name="user_id" class="oe_inline px-1" />
+                                )
+                            </span>
+                        </div>
                         <label for="city_id" string="พื้นที่" />
                         <div class="o_row">
                             <field name="city_id" class="oe_inline" options="{'no_open': True}" />
                             <field name="state_id" options="{'no_open': True}" />
                         </div>
-                        <field name="employee_id" widget="many2one_avatar_employee" />
+                        <separator string="กิจกรรมการดูแลผู้สูงอายุ" />
+                        <field name="patient_id" widget="many2one_avatar" />
                         <field name="service_category_id" options="{'no_open': True}" />
                         <field name="service_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
-                        <field name="patient_id" widget="many2one_avatar" />
                     </group>
                     <group>
                         <group string="เวลาที่ปฎิบัติงาน">
@@ -101,6 +130,19 @@
                         <field name="image_1" widget="image" class="oe_avatar" options="{'zoom': true}" />
                         <field name="image_2" widget="image" class="oe_avatar" options="{'zoom': true}" />
                     </div>
+                    <group string="For Developer" groups="base.group_no_one">
+                        <field name="service_id" />
+                        <field name="my_area" />
+                        <field name="my_service" />
+                    </group>
+                    <button
+                        name="action_service_event"
+                        class="oe_highlight"
+                        string="แก้ไข"
+                        icon="fa-pencil"
+                        type="object"
+                        groups="base.group_no_one"
+                    />
                 </sheet>
             </form>
         </field>

@@ -76,16 +76,12 @@ class ServiceEvent(models.Model):
 
     prediction_id = fields.Many2one("ni.risk.assessment.prediction")
     plan_patient_ids = fields.Many2many(string="ผู้สูงอายุ")
-    user_name = fields.Char(
-        related="event_id.user_id.display_name",
-        string="ชื่อ-นามสกุลผู้บริบาล",
-        store=True,
-    )
     user_id = fields.Many2one(
         string="ผู้บริบาล",
         related="event_id.user_id",
         group_operator="count_distinct",
         store=True,
+        readonly=False,
     )
     employee_id = fields.Many2one(
         related="user_id.employee_id", store=True, group_operator="count_distinct"

@@ -158,13 +158,16 @@
                         />
                     </group>
                     <group class="mt-4">
-                        <field
-                            name="user_id"
-                            string="ผู้บริบาล"
-                            widget="many2one_avatar_user"
-                            attrs="{
-                        'invisible': [('id', '=', False)], 'readonly': [('id', '!=', False)]}"
-                        />
+                        <label for="employee_id" string="ผู้บริบาล" attrs="{'invisible': [('id', '=', False)]}" />
+                        <div attrs="{'invisible': [('id', '=', False)]}">
+                            <field
+                                name="employee_id"
+                                widget="many2one_avatar_employee"
+                                class="pe-1"
+                                attrs="{'readonly': [('id', '!=', False)]}"
+                            />
+                            <field name="user_id" class="px-1" attrs="{'readonly': [('id', '!=', False)]}" />
+                        </div>
                     </group>
                 </sheet>
             </form>
