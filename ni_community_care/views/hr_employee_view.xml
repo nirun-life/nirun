@@ -5,6 +5,17 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form" />
         <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_daily_report" class="oe_stat_button" icon="fa-bar-chart" type="object">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">
+                            สถิติดูแล
+                            <br />
+                            ผู้สูงอายุรายวัน
+                        </span>
+                    </div>
+                </button>
+            </div>
             <xpath expr="//notebook/page[@name='public']/div" position="after">
                 <group string="พื้นที่รับผิดชอบ" class="mt-4">
                     <field name="state_id" invisible="1" />

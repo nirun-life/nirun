@@ -17,21 +17,29 @@ class ServiceEventDailyReport(models.Model):
     state_id = fields.Many2one("res.country.state", "จังหวัด", readonly=True)
     city_id = fields.Many2one("res.city", "ตำบล", readonly=True)
     user_id = fields.Many2one("res.users", "บัญชีผู้ใช้", readonly=True)
-    duration = fields.Float("ระยะเวลารวม", readonly=True)
-    total_service = fields.Integer("ประเภทกิจกรรม")
-    total_events = fields.Integer("จำนวนกิจกรรม")
-    total_patients = fields.Integer("จำนวนผู้สูงอายุ")
+    duration = fields.Float("ระยะเวลารวม", readonly=True, group_operator="avg")
+    total_services = fields.Integer("ประเภทกิจกรรม", group_operator="avg")
+    total_events = fields.Integer("จำนวนกิจกรรม", group_operator="avg")
+    total_patients = fields.Integer("จำนวนผู้สูงอายุ", group_operator="avg")
     ma_7d_events = fields.Float(
-        "จำนวนกิจกรรมเฉลี่ย 7 วัน", help="7 Days Moving Average ของทั้งระบบ"
+        "จำนวนกิจกรรมเฉลี่ย 7 วัน",
+        help="7 Days Moving Average ของทั้งระบบ",
+        group_operator="avg",
     )
     ma_30d_events = fields.Float(
-        "จำนวนกิจกรรมเฉลี่ย 30 วัน", help="30 Days Moving Average ของทั้งระบบ"
+        "จำนวนกิจกรรมเฉลี่ย 30 วัน",
+        help="30 Days Moving Average ของทั้งระบบ",
+        group_operator="avg",
     )
     ma_7d_patients = fields.Float(
-        "จำนวนผู้สูงอายุเฉลี่ย 7 วัน", help="7 Days Moving Average ของทั้งระบบ"
+        "จำนวนผู้สูงอายุเฉลี่ย 7 วัน",
+        help="7 Days Moving Average ของทั้งระบบ",
+        group_operator="avg",
     )
     ma_30d_patients = fields.Float(
-        "จำนวนผู้สูงอายุเฉลี่ย 30 วัน", help="30 Days Moving Average ของทั้งระบบ"
+        "จำนวนผู้สูงอายุเฉลี่ย 30 วัน",
+        help="30 Days Moving Average ของทั้งระบบ",
+        group_operator="avg",
     )
 
     my_service = fields.Boolean(
@@ -92,6 +100,7 @@ class ServiceEventDailyReport(models.Model):
                 SELECT
                     DATE(se.start) AS service_date,
                     se.employee_id,
+                    MAX(se.user_id) as user_id,
                     COUNT(DISTINCT se.service_id) AS total_services,
                     COUNT(DISTINCT se.id) AS total_events,
                     COUNT(DISTINCT pe.ni_patient_id) AS total_patients,

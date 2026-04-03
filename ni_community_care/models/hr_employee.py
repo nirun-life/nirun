@@ -70,3 +70,18 @@ class Employee(models.Model):
                     "city_ids": self.city_ids.ids,
                 }
             )
+
+    def action_daily_report(self):
+        self.ensure_one()
+        ctx = dict(self.env.context)
+        ctx.update({"search_default_service_date": 1})
+        view = {
+            "name": "สถิติการดูแลผู้สูงอายุรายวัน",
+            "res_model": "ni.service.event.daily.report",
+            "type": "ir.actions.act_window",
+            "target": "current",
+            "view_mode": "pivot",
+            "context": ctx,
+            "domain": [("employee_id", "=", self.id)],
+        }
+        return view
