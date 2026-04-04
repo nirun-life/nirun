@@ -789,6 +789,7 @@ class ServiceEventApproval(models.Model):
         start_month,
         end_month,
         batch_limit=0,
+        job_ids=False,
     ):
         """
         สร้าง approvals ตามช่วงเดือน
@@ -801,14 +802,19 @@ class ServiceEventApproval(models.Model):
         group_manager = self.env.ref("ni_patient.group_manager")
         group_admin = self.env.ref("ni_patient.group_admin")
 
-        users = self.env["res.users"].search(
-            [
-                ("employee_id", "!=", False),
-                ("employee_id.active", "=", True),
+        domain = [
+            ("employee_id", "!=", False),
+            ("employee_id.active", "=", True),
+        ]
+        if job_ids:
+            domain += [("employee_id.job_id", "in", "job_ids")]
+        else:
+            domain += [
                 ("groups_id", "in", [group_user.id]),
                 ("groups_id", "not in", [group_manager.id, group_admin.id]),
             ]
-        )
+
+        users = self.env["res.users"].search(domain)
 
         vals_list = []
         month_cursor = start_month
