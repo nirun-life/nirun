@@ -171,7 +171,7 @@ class Device(models.Model):
         required=True,
         tracking=True,
     )
-    disposed_date = fields.Datetime(
+    disposed_date = fields.Date(
         string="End Date",
         store=True,
         readonly=True,

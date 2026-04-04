@@ -27,7 +27,6 @@
         "views/ni_patient_smartcard_views.xml",
         "views/ni_patient_views.xml",
         "views/ni_device_definition_views.xml",
-        "views/hr_employee_views.xml",
         "views/ni_device_menu.xml",
         "report/device_label_layout_template.xml",
         "wizard/ni_device_report_lost_wizard.xml",
