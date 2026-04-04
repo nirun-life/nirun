@@ -28,7 +28,7 @@ class Device(models.Model):
         index=True,
         tracking=True,
         ondelete="restrict",
-        help="รุ่น/แบบของอุปกรณ์นี้ เช่น เครื่องวัดความดันแบบพกพา",
+        help="This model/type of device includes, for example, a portable blood pressure monitor.",
     )
 
     manufacturer_id = fields.Many2one(

@@ -242,8 +242,8 @@
                         <div class="o_field_widget w-100">
                             <field
                                 name="definition_id"
-                                string="แม่แบบอุปกรณ์"
-                                placeholder="เลือกแม่แบบอุปกรณ์..."
+                                string="Device template"
+                                placeholder="Select device template..."
                                 options="{'no_create': True}"
                                 class="w-100"
                             />
@@ -253,7 +253,8 @@
                                 groups="ni_device.access_ni_device_admin,base.group_no_one"
                             >
                                 <i class="fa fa-exclamation-triangle me-1" />
-                                การเปลี่ยนแม่แบบจะดึงข้อมูลจากแม่แบบมาทับข้อมูลปัจจุบัน
+                                Changing the template will overwrite the current data with information from the
+                                template.
                             </small>
                         </div>
                     </div>
@@ -261,21 +262,21 @@
 
                     </group>
                     <group class="mt-2">
-                        <group string="ข้อมูลอุปกรณ์">
+                        <group string="Device information">
                             <field
                                 name="type_ids"
-                                string="ประเภทอุปกรณ์"
+                                string="Device Type"
                                 widget="many2many_tags"
                                 options="{'no_create': True}"
                             />
-                            <field name="observation_type_ids" string="ประเภทข้อมูลตรวจวัด" widget="many2many_tags" />
+                            <field name="observation_type_ids" string="Observation Type" widget="many2many_tags" />
                             <field
                                 name="manufacturer_id"
                                 domain="[('is_company', '=', True)]"
                                 context="{'default_is_company': True}"
                             />
                             <field name="model_number" />
-                            <separator string="ทะเบียนอุปกรณ์" />
+                            <separator string="Device Registry" />
                             <field name="serial_number" />
                             <field name="manufacture_date" />
                             <field name="received_date" />
@@ -284,7 +285,7 @@
                             <field name="repair_cost" />
                             <field name="currency_id" invisible="1" />
                         </group>
-                        <group string="สถานะอุปกรณ์"  attrs="{'invisible': [('id', '=', False)]}">
+                        <group string="Device Status" attrs="{'invisible': [('id', '=', False)]}">
                             <field
                                 name="availability_status"
                                 widget="badge"
