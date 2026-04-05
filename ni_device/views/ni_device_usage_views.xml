@@ -123,57 +123,59 @@
                 <field name="res_name" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click o_kanban_record p-0">
-                            <div class="p-3">
-                                <!-- ── Header ── -->
-                                <div class="mb-2">
-                                    <t t-if="!context.default_patient_id">
-                                        <t t-if="record.patient_id.raw_value">
-                                            <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
+                        <div class="o_kanban_record p-0">
+                            <a type="object" name="action_open_source" class="d-block text-reset text-decoration-none">
+                                <div class="p-3">
+                                    <!-- ── Header ── -->
+                                    <div class="mb-2">
+                                        <t t-if="!context.default_patient_id">
+                                            <t t-if="record.patient_id.raw_value">
+                                                <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted fst-italic d-block">Patient not specified</span>
+                                            </t>
                                         </t>
-                                        <t t-else="">
-                                            <span class="text-muted fst-italic d-block">Patient not specified</span>
+                                        <t t-if="!context.default_device_id">
+                                            <t t-if="record.device_id.raw_value">
+                                                <div class="text-truncate">
+                                                    <t t-esc="record.device_id.value" />
+                                                </div>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted fst-italic d-block">Device not specified</span>
+                                            </t>
                                         </t>
-                                    </t>
-                                    <t t-if="!context.default_device_id">
-                                        <t t-if="record.device_id.raw_value">
-                                            <div class="text-truncate">
-                                                <t t-esc="record.device_id.value" />
-                                            </div>
-                                        </t>
-                                        <t t-else="">
-                                            <span class="text-muted fst-italic d-block">Device not specified</span>
-                                        </t>
-                                    </t>
-                                    <div class="text-muted small">
-                                        <i class="fa fa-clock-o me-1" />
-                                        <t t-esc="record.occurrence.value" />
+                                        <div class="text-muted small">
+                                            <i class="fa fa-clock-o me-1" />
+                                            <t t-esc="record.occurrence.value" />
+                                        </div>
                                     </div>
-                                </div>
-                                <t
-                                    t-set="color_class"
-                                    t-value="
+                                    <t
+                                        t-set="color_class"
+                                        t-value="
                                        record.res_model.raw_value == 'ni.observation.sheet' and 'text-primary' or
                                        record.res_model.raw_value == 'ni.patient.smartcard' and 'text-info' or
                                        'text-muted'
                                    "
-                                />
-                                <t t-if="record.res_name.raw_value">
-                                    <div t-att-class="'small text-truncate ' + color_class">
-                                        <i class="fa fa-link me-1" />
-                                        <t t-esc="record.res_name.value" />
-                                    </div>
-                                </t>
-                                <!-- ── Footer: ผู้บันทึก ── -->
-                                <div class="d-flex align-items-center gap-1 mt-2 pt-1 border-top">
-                                    <img
-                                        t-att-src="kanban_image('res.users', 'avatar_128', record.user_id.raw_value)"
-                                        class="rounded-circle"
-                                        style="width:18px;height:18px;object-fit:cover;"
                                     />
-                                    <small class="text-muted" t-esc="record.user_id.value" />
+                                    <t t-if="record.res_name.raw_value">
+                                        <div t-att-class="'small text-truncate ' + color_class">
+                                            <i class="fa fa-link me-1" />
+                                            <t t-esc="record.res_name.value" />
+                                        </div>
+                                    </t>
+                                    <!-- ── Footer: ผู้บันทึก ── -->
+                                    <div class="d-flex align-items-center gap-1 mt-2 pt-1 border-top">
+                                        <img
+                                            t-att-src="kanban_image('res.users', 'avatar_128', record.user_id.raw_value)"
+                                            class="rounded-circle"
+                                            style="width:18px;height:18px;object-fit:cover;"
+                                        />
+                                        <small class="text-muted" t-esc="record.user_id.value" />
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </t>
                 </templates>
