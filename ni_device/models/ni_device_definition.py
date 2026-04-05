@@ -17,14 +17,14 @@ class DeviceDefinition(models.Model):
         string="Definition Name",
         required=True,
         tracking=True,
-        help="ชื่อรุ่น/แบบของอุปกรณ์ เช่น เครื่องวัดความดันแบบพกพา, เครื่องวัดความดันแบบสอดแขน",
+        help="The name/model of the device, e.g., portable blood pressure monitor, arm-type blood pressure monitor",
     )
 
     type_ids = fields.Many2many(
         "ni.device.type",
         string="Device Types",
         required=True,
-        help="ประเภทของอุปกรณ์ เช่น เครื่องวัดความดัน, เครื่องชั่งน้ำหนัก",
+        help="The type of device, e.g., blood pressure monitor, weighing scale",
     )
 
     manufacturer_id = fields.Many2one(
@@ -39,7 +39,7 @@ class DeviceDefinition(models.Model):
     observation_type_ids = fields.Many2many(
         "ni.observation.type",
         string="Supported Observation Types",
-        help="ประเภทการวัดที่อุปกรณ์รุ่นนี้รองรับ",
+        help="Types of measurements supported by this device model",
     )
 
     notes = fields.Html("Notes")
