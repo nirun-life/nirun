@@ -145,8 +145,16 @@
                                         <t t-esc="record.occurrence.value" />
                                     </div>
                                 </div>
+                                <t
+                                    t-set="color_class"
+                                    t-value="
+                                       record.res_model.raw_value == 'ni.observation.sheet' and 'text-primary' or
+                                       record.res_model.raw_value == 'ni.patient.smartcard' and 'text-info' or
+                                       'text-muted'
+                                   "
+                                />
                                 <t t-if="record.res_name.raw_value">
-                                    <div class="text-primary small text-truncate">
+                                    <div t-att-class="'small text-truncate ' + color_class">
                                         <i class="fa fa-link me-1" />
                                         <t t-esc="record.res_name.value" />
                                     </div>

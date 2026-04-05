@@ -5,6 +5,8 @@ class DeviceUsageLogMixin(models.AbstractModel):
     _name = "ni.device.usage.log.mixin"
     _description = "Device Log Mixin"
 
+    device_id = fields.Many2one("ni.device", index=True)
+
     # -------------------------
     # HOOK (override ได้)
     # -------------------------
@@ -59,6 +61,25 @@ class DeviceUsageLogMixin(models.AbstractModel):
         records._create_device_usage_log()
 
         return records
+
+    def write(self, vals):
+        result = super().write(vals)
+
+        if "device_id" in vals:
+            for rec in self:
+                existing = self.env["ni.device.usage"].search(
+                    [
+                        ("res_model", "=", rec._name),
+                        ("res_id", "=", rec.id),
+                    ]
+                )
+                if existing:
+                    existing.unlink()
+
+                if rec.device_id:
+                    rec._create_device_usage_log()
+
+        return result
 
     # -------------------------
     # Dev
