@@ -158,7 +158,11 @@
         <field name="model">ni.service.event.approval</field>
         <field name="arch" type="xml">
             <form string="Event Approval" readonly="1">
+                <field name="patient_ids" invisible="1" />
                 <field name="patient_count" invisible="1" />
+                <field name="all_patient_ids" invisible="1" />
+                <field name="all_patient_count" invisible="1" />
+                <field name="event_patient_ids" invisible="1" />
                 <field name="event_count" invisible="1" />
                 <header>
                     <button
@@ -230,12 +234,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page
-                            name="patient_ids"
-                            string="ผู้สูงอายุ (ศผ.01)"
-                            icon="fa-address-book"
-                            badge="patient_count"
-                        >
+                        <page name="patient_ids" string="ผู้สูงอายุ (ศผ.01)" icon="fa-address-book">
                             <div class="text-end">
                                 <button
                                     name="%(service_event_approval_01_elder_action_report)d"
@@ -245,40 +244,163 @@
                                     icon="fa-print"
                                 />
                             </div>
-                            <div class="mt-2 py-3" attrs="{'invisible':[('patient_count','=',0)]}">
+                            <field
+                                name="patient_filter"
+                                class="ms-2"
+                                widget="radio"
+                                options="{'horizontal':True}"
+                                attrs="{'invisible':[('all_patient_count','=',0)]}"
+                            />
+                            <!-- มีข้อมูล -->
+                            <div class="mt-2 py-3" attrs="{'invisible':[('all_patient_count','=',0)]}">
                                 <div class="stat-summary mt-2">
+                                    <!-- ติดสังคม -->
                                     <div class="stat-item">
                                         <i class="fa fa-comments text-success" />
-                                        <field name="adl_high_count" readonly="1" class="stat-value" />
+                                        <!-- NEW -->
+                                        <field
+                                            name="adl_high_count"
+                                            attrs="{'invisible':[('patient_filter','!=','new')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
+                                        <!-- EVENT -->
+                                        <field
+                                            name="event_adl_high_count"
+                                            attrs="{'invisible':[('patient_filter','!=','event')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
+                                        <!-- ALL -->
+                                        <field
+                                            name="all_adl_high_count"
+                                            attrs="{'invisible':[('patient_filter','!=','all')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
                                         <span class="stat-label">ติดสังคม</span>
                                     </div>
+                                    <!-- ติดบ้าน -->
                                     <div class="stat-item">
                                         <i class="fa fa-home text-odoo" />
-                                        <field name="adl_mid_count" readonly="1" class="stat-value" />
+                                        <field
+                                            name="adl_mid_count"
+                                            attrs="{'invisible':[('patient_filter','!=','new')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
+                                        <field
+                                            name="event_adl_mid_count"
+                                            attrs="{'invisible':[('patient_filter','!=','event')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
+                                        <field
+                                            name="all_adl_mid_count"
+                                            attrs="{'invisible':[('patient_filter','!=','all')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
                                         <span class="stat-label">ติดบ้าน</span>
                                     </div>
+                                    <!-- ติดเตียง -->
                                     <div class="stat-item">
                                         <i class="fa fa-bed text-danger" />
-                                        <field name="adl_low_count" readonly="1" class="stat-value" />
+                                        <field
+                                            name="adl_low_count"
+                                            attrs="{'invisible':[('patient_filter','!=','new')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
+                                        <field
+                                            name="event_adl_low_count"
+                                            attrs="{'invisible':[('patient_filter','!=','event')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
+                                        <field
+                                            name="all_adl_low_count"
+                                            attrs="{'invisible':[('patient_filter','!=','all')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
                                         <span class="stat-label">ติดเตียง</span>
                                     </div>
-                                    <div class="stat-item" attrs="{'invisible':[('adl_unknown_count','=',0)]}">
-                                        <i class="fa fa-question-circle-o  text-muted" />
-                                        <field name="adl_unknown_count" readonly="1" class="stat-value" />
+                                    <!-- unknown -->
+                                    <div
+                                        class="stat-item"
+                                        attrs="{'invisible':[('patient_filter','=','new'),('adl_unknown_count','=',0)]}"
+                                    >
+                                        <i class="fa fa-question-circle-o text-muted" />
+                                        <field
+                                            name="adl_unknown_count"
+                                            attrs="{'invisible':[('patient_filter','!=','new')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
+                                        <field
+                                            name="event_adl_unknown_count"
+                                            attrs="{'invisible':[('patient_filter','!=','event')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
+                                        <field
+                                            name="all_adl_unknown_count"
+                                            attrs="{'invisible':[('patient_filter','!=','all')]}"
+                                            readonly="1"
+                                            class="stat-value"
+                                        />
                                         <span class="stat-label">รอการประเมิน</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-2 py-3 text-center" attrs="{'invisible':[('patient_count','!=',0)]}">
+                            <!-- ไม่มีข้อมูล -->
+                            <div class="mt-2 py-3 text-center" attrs="{'invisible':[('all_patient_count','!=',0)]}">
                                 <span class="text-muted" style="font-style: italic;">ไม่มีข้อมูล</span>
                             </div>
+                            <!-- แสดงรายการผู้สูงอายุ (เฉพาะตอนเลือก all) -->
+                            <field
+                                name="all_patient_ids"
+                                mode="kanban"
+                                readonly="1"
+                                attrs="{'invisible':[('patient_filter','!=','all')]}"
+                                context="{
+                                    'kanban_view_ref': 'ni_community_care.ni_patient_view_kanban_simp',
+                                    'form_view_ref': 'ni_community_care.ni_patient_view_form_simp'
+                                }"
+                                options="{'no_create': True, 'no_edit': True, 'no_open': True}"
+                            />
                             <field
                                 name="patient_ids"
                                 mode="kanban"
                                 readonly="1"
-                                context="{ 'kanban_view_ref': 'ni_community_care.ni_patient_view_kanban_simp','form_view_ref': 'ni_community_care.ni_patient_view_form_simp'}"
+                                attrs="{'invisible':[('patient_filter','!=','new')]}"
+                                context="{
+                                    'kanban_view_ref': 'ni_community_care.ni_patient_view_kanban_simp',
+                                    'form_view_ref': 'ni_community_care.ni_patient_view_form_simp'
+                                }"
                                 options="{'no_create': True, 'no_edit': True, 'no_open': True}"
                             />
+                            <field
+                                name="event_patient_ids"
+                                mode="kanban"
+                                readonly="1"
+                                attrs="{'invisible':[('patient_filter','!=','event')]}"
+                                context="{
+                                    'kanban_view_ref': 'ni_community_care.ni_patient_view_kanban_simp',
+                                    'form_view_ref': 'ni_community_care.ni_patient_view_form_simp'
+                                }"
+                                options="{'no_create': True, 'no_edit': True, 'no_open': True}"
+                            />
+                            <div class="mt-2 py-3 text-center" attrs="{'invisible':[('all_patient_count','=',0)]}">
+                                <button
+                                    name="action_view_patients"
+                                    class="btn btn-outline-warning rounded px-5"
+                                    type="object"
+                                    icon="fa-search"
+                                    string="ดูเพิ่มเติม"
+                                />
+                            </div>
                         </page>
                         <page name="event_ids" string="กิจกรรมการดูแลผู้สูงอายุ (ศผ.02)" icon="fa-life-ring">
                             <div class="text-end mb-4">
@@ -299,44 +421,12 @@
                             <div class="mb-2">
                                 <strong>สรุปผลกิจกรรมการดูแลผู้สูงอายุ</strong>
                             </div>
-                            <field
-                                name="event_summary_type"
-                                widget="radio"
-                                options="{'horizontal':True}"
-                                attrs="{'invisible':[('event_count','=',0)]}"
-                            />
                             <!-- By Category -->
                             <field
                                 name="category_ids"
                                 mode="kanban"
                                 context="{'approval_id': active_id, 'kanban_view_ref': 'ni_community_care.ni_service_category_view_kanban_inherit_service_category'}"
-                                attrs="{'invisible':[('event_summary_type','!=','category')]}"
                             />
-                            <!-- By ADL -->
-                            <div class="mt-2 py-3" attrs="{'invisible':[('event_summary_type','!=','adl')]}">
-                                <div class="stat-summary mt-2">
-                                    <div class="stat-item">
-                                        <i class="fa fa-comments text-success" />
-                                        <field name="event_adl_high_count" readonly="1" class="stat-value" />
-                                        <span class="stat-label">ติดสังคม</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <i class="fa fa-home text-odoo" />
-                                        <field name="event_adl_mid_count" readonly="1" class="stat-value" />
-                                        <span class="stat-label">ติดบ้าน</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <i class="fa fa-bed text-danger" />
-                                        <field name="event_adl_low_count" readonly="1" class="stat-value" />
-                                        <span class="stat-label">ติดเตียง</span>
-                                    </div>
-                                    <div class="stat-item" attrs="{'invisible':[('event_adl_unknown_count','=',0)]}">
-                                        <i class="fa fa-question-circle-o  text-muted" />
-                                        <field name="event_adl_unknown_count" readonly="1" class="stat-value" />
-                                        <span class="stat-label">รอการประเมิน</span>
-                                    </div>
-                                </div>
-                            </div>
                             <!-- Empty -->
                             <div attrs="{'invisible': [('event_count', '!=', 0)]}" class="text-center mt-3">
                                 <span class="text-muted" style="font-style: italic;">ไม่มีข้อมูล</span>

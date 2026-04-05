@@ -1,4 +1,8 @@
-from odoo import _, api, fields, models
+from datetime import datetime, timezone
+
+import pytz
+
+from odoo import _, api, models
 
 
 class EmployeeReport(models.Model):
@@ -7,10 +11,19 @@ class EmployeeReport(models.Model):
 
     @api.model
     def get_employee_dashboard(self):
-        today = fields.Date.today()
-        # ใช้ tzinfo-aware datetime เพื่อให้ตรงกับ check_in ที่เป็น Datetime
-        start_of_day = fields.Datetime.now().replace(
+        # ✅ ดึง tz จาก context ของ user
+        tz_name = self.env.context.get("tz") or self.env.user.tz or "UTC"
+        tz = pytz.timezone(tz_name)
+
+        now_local = datetime.now(tz)
+        today = now_local.date()
+
+        # start_of_day ตาม local timezone แปลงกลับเป็น naive UTC สำหรับ query
+        start_of_day_local = now_local.replace(
             hour=0, minute=0, second=0, microsecond=0
+        )
+        start_of_day_utc = start_of_day_local.astimezone(timezone.utc).replace(
+            tzinfo=None
         )
 
         employees = self.env["hr.employee"].search([("my_area", "=", True)])
@@ -46,13 +59,12 @@ class EmployeeReport(models.Model):
         attendances = self.env["hr.attendance"].search(
             [
                 ("employee_id", "in", emp_ids),
-                ("check_in", ">=", start_of_day),
+                ("check_in", ">=", start_of_day_utc),  # ✅ naive UTC
             ]
         )
         attended_ids = set(attendances.mapped("employee_id").ids)
 
         # ✅ Batch query: ดึง leave วันนี้ของทุก employee พร้อมกัน (1 query)
-        # นับทุก state ยกเว้น refuse
         leaves = self.env["hr.leave"].search(
             [
                 ("employee_id", "in", emp_ids),
@@ -61,7 +73,6 @@ class EmployeeReport(models.Model):
                 ("state", "!=", "refuse"),
             ]
         )
-        # ยกเว้นคนที่เข้างานแล้ว (logic เดิม)
         leave_ids = set(leaves.mapped("employee_id").ids) - attended_ids
 
         attended_count = len(attended_ids)

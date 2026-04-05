@@ -24,7 +24,7 @@
             <xpath expr="//kanban" position="attributes">
                 <attribute name="js_class">employee_dashboard_kanban</attribute>
             </xpath>
-            <field name="work_phone" position="after">
+            <xpath expr="//ul" position="inside">
                 <!-- preload fields -->
                 <field name="attended_today" invisible="1" />
                 <field name="days_attended_this_month" invisible="1" />
@@ -51,7 +51,7 @@
                     <t t-esc="record.care_days_this_month.value" />
                     คน
                 </div>
-            </field>
+            </xpath>
         </field>
     </record>
     <record id="action_hr_employee_responsible_area" model="ir.actions.act_window">

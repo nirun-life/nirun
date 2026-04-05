@@ -67,6 +67,7 @@
         "views/ni_living_with_views.xml",
         "views/ni_relative_benefit_views.xml",
         "views/ni_community_care_menu.xml",
+        "views/ni_service_event_daily_report_views.xml",
     ],
     "assets": {
         "web.assets_backend": [

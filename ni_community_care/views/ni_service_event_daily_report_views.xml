@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
+<odoo>
+    <record id="ni_service_event_report_view_search" model="ir.ui.view">
+        <field name="name">ni.service.event.daily.report.view.search</field>
+        <field name="model">ni.service.event.daily.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id" />
+                <filter name="service_date" date="service_date" default_period="this_year" />
+                <separator />
+                <filter name="my_service" string="กิจกรรมของฉัน" domain="[('my_service', '=', 1)]" />
+                <filter
+                    name="other_service"
+                    string="กิจกรรมผู้บริบาล"
+                    domain="[('my_service', '=', 0)]"
+                    groups="ni_patient.group_manager"
+                />
+                <filter
+                    name="my_area"
+                    string="ในพื้นที่ของฉัน"
+                    domain="[('my_area', '=', 1)]"
+                    groups="ni_patient.group_manager"
+                />
+                <separator />
+                <filter name="group_service_date" context="{'group_by': 'service_date:day'}" />
+                <filter
+                    name="group_state_id"
+                    context="{'group_by': 'state_id'}"
+                    groups="ni_community_care.group_observer"
+                />
+                <filter name="group_city_id" context="{'group_by': 'city_id'}" />
+                <separator />
+                <filter name="group_user_id" context="{'group_by': 'user_id'}" groups="base.group_no_one" />
+                <filter name="group_employee_id" context="{'group_by': 'employee_id'}" />
+            </search>
+        </field>
+    </record>
+    <record id="ni_service_event_report_view_tree" model="ir.ui.view">
+        <field name="name">ni.service.event.daily.report.view.tree</field>
+        <field name="model">ni.service.event.daily.report</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field
+                    name="employee_id"
+                    widget="many2one_avatar_employee"
+                    invisible="context.get('default_employee_id')"
+                />
+                <field name="service_date" />
+                <field name="total_events" />
+                <field name="total_services" />
+                <field name="duration" widget="float_time" />
+                <field name="state_id" optional="hide" />
+                <field name="city_id" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_service_event_report_view_pivot" model="ir.ui.view">
+        <field name="name">ni.service.event.daily.report.view.pivot</field>
+        <field name="model">ni.service.event.daily.report</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="service_date" type="row" interval="day" />
+                <field name="total_patients" type="measure" />
+                <field name="ma_7d_patients" type="measure" string="MA7" />
+                <field name="ma_30d_patients" type="measure" string="MA30" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_service_event_report_view_graph" model="ir.ui.view">
+        <field name="name">ni.service.event.daily.report.view.graph</field>
+        <field name="model">ni.service.event.daily.report</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="service_date" type="row" interval="day" />
+                <field name="total_events" type="measure" />
+                <field name="ma_30d_events" type="measure" string="MA7" />
+                <field name="ma_7d_events" type="measure" string="MA30" />
+            </graph>
+        </field>
+    </record>
+</odoo>
