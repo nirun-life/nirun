@@ -52,30 +52,29 @@
         <field name="name">ni.device.definition.view.kanban</field>
         <field name="model">ni.device.definition</field>
         <field name="arch" type="xml">
-            <kanban
-                string="Device Definitions"
-                default_order="name"
-                class="o_kanban_small_column"
-                quick_add="false"
-                sample="1"
-            >
+            <kanban string="Device Definitions" default_order="name" quick_add="false" sample="1">
                 <field name="id" />
                 <field name="name" />
                 <field name="type_ids" />
                 <field name="manufacturer_id" />
                 <field name="model_number" />
                 <field name="device_count" />
+                <field name="usage_count" />
                 <field name="image_128" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click o_kanban_record">
-                            <div class="o_kanban_image">
-                                <img
-                                    t-att-src="kanban_image('ni.device.definition', 'image_128', record.id.raw_value)"
-                                    alt="Device Definition"
-                                    class="o_image_64_cover"
+                        <div class="oe_kanban_global_click o_kanban_card">
+                            <!-- รูป -->
+                            <div class="o_kanban_image me-1">
+                                <field
+                                    name="image_128"
+                                    class="oe_avatar o_image_64_contain"
+                                    options="{'zoom': true}"
+                                    widget="image"
+                                    style="width:100%; height:100%; object-fit:cover;"
                                 />
                             </div>
+                            <!-- เนื้อหา -->
                             <div class="oe_kanban_details">
                                 <strong class="o_kanban_record_title">
                                     <field name="name" />
@@ -83,22 +82,32 @@
                                 <div class="o_kanban_tags_section">
                                     <field name="type_ids" widget="many2many_tags" />
                                 </div>
-                                <ul>
-                                    <li t-if="record.manufacturer_id.raw_value">
-                                        <span class="text-muted">Manufacturer:</span>
-                                        <t t-esc="record.manufacturer_id.value" />
-                                    </li>
-                                    <li t-if="record.model_number.raw_value">
-                                        <span class="text-muted">Model:</span>
-                                        <t t-esc="record.model_number.value" />
-                                    </li>
-                                </ul>
-                                <div class="o_kanban_record_bottom">
-                                    <div class="oe_kanban_bottom_left text-muted small">
-                                        <i class="fa fa-cubes me-1" />
-                                        <t t-esc="record.device_count.value" />
-                                        Device
-                                    </div>
+                                <div class="mb-1">
+                                    <span class="text-muted small">
+                                        <t t-if="record.manufacturer_id and record.manufacturer_id.raw_value">
+                                            <t t-esc="record.manufacturer_id.value" />
+                                            <t t-if="record.model_number and record.model_number.raw_value">
+                                                ·
+                                                <t t-esc="record.model_number.value" />
+                                            </t>
+                                        </t>
+                                    </span>
+                                </div>
+                                <div class="o_kanban_tags_section mb-2">
+                                    <field name="type_ids" widget="many2many_tags" />
+                                </div>
+                                <!-- footer badges -->
+                                <div class="d-flex gap-2 pt-1 border-top">
+                                    <span class="o_kanban_inline_stat_info">
+                                        <i class="fa fa-cubes text-info me-1" />
+                                        <strong class="text-info" t-esc="record.device_count.value" />
+                                        <span class="text-muted ms-1">Devices</span>
+                                    </span>
+                                    <span class="o_kanban_inline_stat_info">
+                                        <i class="fa fa-history text-primary me-1" />
+                                        <strong class="text-primary" t-esc="record.usage_count.value" />
+                                        <span class="text-muted ms-1">Usages</span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -151,7 +160,7 @@
                             <field name="observation_type_ids" widget="many2many_tags" />
                         </group>
                     </group>
-                    <separator string="หมายเหตุ" />
+                    <separator string="Note" />
                     <div>
                         <field name="notes" nolabel="1" />
                     </div>

@@ -373,44 +373,61 @@
         <field name="arch" type="xml">
             <kanban>
                 <field name="image_128" />
+                <field name="holder_name" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_global_click o_kanban_card ">
-                            <div class="o_kanban_image me-1 ">
+                        <div class="oe_kanban_global_click o_kanban_card">
+                            <div class="o_kanban_image me-1">
                                 <field
                                     name="image_128"
                                     class="oe_avatar o_image_64_contain"
                                     options="{'zoom': true}"
                                     widget="image"
-                                    style="width: 100%; height: 100%; object-fit: cover;"
+                                    style="width:100%; height:100%; object-fit:cover;"
                                 />
                             </div>
                             <div class="oe_kanban_details">
-                                <div name="kanban_top" class="o_kanban_record_top mb-1">
-                                    <div class="o_kanban_record_headings">
-                                        <strong class="o_kanban_record_title">
+                                <div class="d-flex align-items-start justify-content-between gap-2 mb-0">
+                                    <div style="min-width:0;">
+                                        <strong
+                                            class="o_kanban_record_title d-block"
+                                            style="-webkit-line-clamp:2; display:-webkit-box !important; -webkit-box-orient:vertical; overflow:hidden;"
+                                        >
                                             <field name="name" />
                                         </strong>
+                                        <div class="text-muted small text-truncate">
+                                            <field name="identifier" />
+                                        </div>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <field
+                                            name="state"
+                                            widget="badge"
+                                            decoration-success="state == 'available'"
+                                            decoration-warning="state == 'pending'"
+                                            decoration-info="state == 'in_use'"
+                                        />
                                     </div>
                                 </div>
-                                <field name="identifier" />
-                                <div class="o_kanban_record_top mb-1 d-flex">
-                                    <span class="text-muted" style="white-space: nowrap;">
-
-                                    </span>
-                                    <span class="ms-1">
-                                        <field name="holder_partner_id" widget="many2one_avatar" />
-                                    </span>
+                                <div class="o_kanban_tags_section mt-1">
+                                    <field name="type_ids" widget="many2many_tags" />
                                 </div>
-                            </div>
-                            <div class="d-flex justify-content-end mt-auto">
-                                <field
-                                    name="state"
-                                    widget="badge"
-                                    decoration-success="state == 'available'"
-                                    decoration-warning="state == 'pending'"
-                                    decoration-info="state == 'in_use'"
-                                />
+                                <t t-if="record.holder_name.raw_value">
+                                    <div class="d-flex align-items-center mt-2 pt-1 border-top">
+                                        <field
+                                            name="holder_employee_id"
+                                            readonly="1"
+                                            widget="many2one_avatar"
+                                            attrs="{'invisible':[('holder_employee_id','=',False)]}"
+                                        />
+                                        <field
+                                            name="holder_partner_id"
+                                            readonly="1"
+                                            widget="many2one_avatar"
+                                            attrs="{'invisible':['|',('holder_employee_id','!=',False),('holder_partner_id','=',False)]}"
+                                        />
+                                    </div>
+                                </t>
                             </div>
                         </div>
                     </t>

@@ -14,6 +14,7 @@
         "security/ir.model.access.csv",
         "security/ir_rule_data.xml",
         "data/ir_sequence_data.xml",
+        "data/ni_device_definition_data.xml",
         "views/ni_device_usage_views.xml",
         "views/ni_device_views.xml",
         "views/ni_device_type_views.xml",
