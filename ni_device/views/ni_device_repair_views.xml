@@ -212,30 +212,44 @@
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click d-flex flex-column" style="height:100%;">
-                            <div class="o_kanban_record_headings">
-                                <strong class="o_kanban_record_title">
-                                    <field name="device_id" />
-                                </strong>
+                            <!-- ชื่อ + badge -->
+                            <div class="d-flex align-items-start justify-content-between gap-2 mb-1">
+                                <div style="min-width:0;">
+                                    <strong
+                                        class="o_kanban_record_title d-block"
+                                        style="-webkit-line-clamp:2; display:-webkit-box !important; -webkit-box-orient:vertical; overflow:hidden;"
+                                    >
+                                        <field name="device_id" />
+                                    </strong>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <field
+                                        name="state"
+                                        widget="badge"
+                                        decoration-success="state == 'completed'"
+                                        decoration-danger="state == 'damaged'"
+                                        decoration-warning="state == 'repairing'"
+                                        decoration-muted="state == 'not_repairable'"
+                                        readonly="1"
+                                    />
+                                </div>
                             </div>
                             <div>
-                                <field name="create_uid" widget="many2one_avatar" />
-                            </div>
-                            <div class="o_kanban_record_subtitle">
-                                <i
-                                    class="fa fa-exclamation-triangle text-primary"
-                                    aria-label="Period"
-                                    role="img"
-                                    title="Period"
-                                />
+                                <label for="damage_date" class="text-muted me-2">Damaged:</label>
                                 <field name="damage_date" widget="date" />
                             </div>
                             <div>
                                 <label for="repair_duration" class="text-muted me-2">Repair Duration:</label>
                                 <field name="repair_duration" />
+                                <span class="text-muted ms-1">day(s)</span>
                             </div>
                             <div>
                                 <label for="repair_cost" class="text-muted me-2">Repair Cost:</label>
                                 <field name="repair_cost" />
+                            </div>
+                            <!-- footer -->
+                            <div class="d-flex align-items-center mt-auto pt-1 border-top">
+                                <field name="create_uid" widget="many2one_avatar" readonly="1" />
                             </div>
                         </div>
                     </t>

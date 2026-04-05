@@ -12,6 +12,10 @@ class DeviceUsage(models.Model):
         "ni.device", required=True, index=True, ondelete="cascade"
     )
 
+    definition_id = fields.Many2one(
+        related="device_id.definition_id", store=True, index=True
+    )
+
     state = fields.Selection(
         [
             ("in-progress", "Active"),

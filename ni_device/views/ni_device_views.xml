@@ -11,7 +11,7 @@
                 <field
                     name="name"
                     string="Name"
-                    filter_domain="['|','|',('name', 'ilike', self), ('identifier', 'ilike', self),('holder_partner_id', 'ilike', self)]"
+                    filter_domain="['|','|','|',('name', 'ilike', self), ('identifier', 'ilike', self),('holder_partner_id', 'ilike', self),('definition_id', 'ilike', self)]"
                 />
                 <filter
                     name="available_device"
@@ -19,6 +19,11 @@
                     domain="[('state','=','available'),('availability_status','=','available')]"
                 />
                 <filter name="my_device" string="My device" domain="[('is_holder','=',True)]" />
+                <filter
+                    name="group_device_definition"
+                    string="Device Definition"
+                    context="{'group_by': 'definition_id'}"
+                />
                 <searchpanel>
                     <field name="state" enable_counters="1" icon="fa-circle" />
                 </searchpanel>
@@ -29,13 +34,13 @@
         <field name="name">All Device Registry</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">kanban,tree,form</field>
     </record>
     <record id="ni_device_available_action" model="ir.actions.act_window">
         <field name="name">Available Device Registry</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="context">
             {
                 'search_default_available_device': 1
@@ -46,7 +51,7 @@
         <field name="name">My Device</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.device</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="context">
             {
                 'search_default_my_device': 1
@@ -78,6 +83,7 @@
             <tree>
                 <field name="identifier" />
                 <field name="name" />
+                <field name="definition_id" optional="hide" />
                 <field name="type_ids" widget="many2many_tags" string="Device Type" />
                 <field
                     name="availability_status"
