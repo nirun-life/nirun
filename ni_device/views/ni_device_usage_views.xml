@@ -10,7 +10,7 @@
         <field name="view_mode">kanban,tree,form</field>
         <field name="context">{'search_default_group_device': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">ไม่มีประวัติการใช้งานอุปกรณ์</p>
+            <p class="o_view_nocontent_smiling_face">No device usage history available</p>
         </field>
     </record>
     <!-- ACTION เปิดจากหน้า Device — group by month, filter device นั้น -->
@@ -26,8 +26,8 @@
             }
         </field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">ยังไม่มีการบันทึกการใช้งาน</p>
-            <p>เริ่มบันทึกผลการตรวจวัดจากอุปกรณ์นี้</p>
+            <p class="o_view_nocontent_smiling_face">No usage records available</p>
+            <p>Start recording measurement results from this device</p>
         </field>
     </record>
     <!-- ACTION เปิดจากหน้า Patient — group by month, filter patient นั้น -->
@@ -43,7 +43,7 @@
             }
         </field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">ยังไม่มีการบันทึกการใช้งาน</p>
+            <p class="o_view_nocontent_smiling_face">No usage records available</p>
         </field>
     </record>
     <!-- ───────────────────────────────────────────────
@@ -53,28 +53,28 @@
         <field name="name">ni.device.usage.view.search</field>
         <field name="model">ni.device.usage</field>
         <field name="arch" type="xml">
-            <search string="ค้นหาประวัติการใช้งาน">
-                <field name="patient_id" string="ผู้ป่วย" />
-                <field name="user_id" string="ผู้บันทึก" />
-                <field name="device_id" string="อุปกรณ์" />
+            <search string="Search usage history">
+                <field name="patient_id" string="Patient" />
+                <field name="user_id" string="Recorded by" />
+                <field name="device_id" string="Device" />
                 <filter
                     name="filter_today"
-                    string="วันนี้"
+                    string="Today"
                     domain="[('occurrence','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)).strftime('%Y-%m-%d %H:%M:%S')),
                                  ('occurrence','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)).strftime('%Y-%m-%d %H:%M:%S'))]"
                 />
                 <filter
                     name="filter_this_month"
-                    string="เดือนนี้"
+                    string="This month"
                     domain="[('occurrence','&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
                                  ('occurrence','&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d'))]"
                 />
-                <filter name="filter_has_patient" string="มีผู้ป่วย" domain="[('patient_id','!=',False)]" />
+                <filter name="filter_has_patient" string="Number of patients" domain="[('patient_id','!=',False)]" />
                 <separator />
-                <filter name="group_month" string="เดือน" context="{'group_by': 'occurrence:month'}" />
-                <filter name="group_patient" string="ผู้ป่วย" context="{'group_by': 'patient_id'}" />
-                <filter name="group_device" string="อุปกรณ์" context="{'group_by': 'device_id'}" />
-                <filter name="group_user" string="ผู้บันทึก" context="{'group_by': 'user_id'}" />
+                <filter name="group_month" string="Month" context="{'group_by': 'occurrence:month'}" />
+                <filter name="group_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                <filter name="group_device" string="Device" context="{'group_by': 'device_id'}" />
+                <filter name="group_user" string="Recorded by" context="{'group_by': 'user_id'}" />
             </search>
         </field>
     </record>
@@ -83,15 +83,15 @@
         <field name="model">ni.device.usage</field>
         <field name="arch" type="xml">
             <tree
-                string="ประวัติการใช้งานอุปกรณ์"
+                string="Device usage history"
                 default_order="occurrence desc"
                 decoration-muted="patient_id == False"
                 sample="1"
             >
-                <field name="occurrence" string="วันที่/เวลา" widget="datetime" />
-                <field name="device_id" string="อุปกรณ์" optional="show" />
+                <field name="occurrence" string="Date/Time" widget="datetime" />
+                <field name="device_id" string="Device" optional="show" />
                 <field name="patient_id" widget="many2one_avatar" optional="show" />
-                <field name="user_id" string="ผู้บันทึก" widget="many2one_avatar" optional="show" />
+                <field name="user_id" string="Recorded by" widget="many2one_avatar" optional="show" />
             </tree>
         </field>
     </record>
@@ -100,7 +100,7 @@
         <field name="model">ni.device.usage</field>
         <field name="arch" type="xml">
             <kanban
-                string="ประวัติการใช้งานอุปกรณ์"
+                string="Device usage history"
                 default_group_by="occurrence:month"
                 default_order="occurrence desc"
                 limit="16"
@@ -127,7 +127,7 @@
                                             <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
                                         </t>
                                         <t t-else="">
-                                            <span class="text-muted fst-italic d-block">ไม่ระบุผู้ป่วย</span>
+                                            <span class="text-muted fst-italic d-block">Patient not specified</span>
                                         </t>
                                     </t>
                                     <t t-if="!context.default_device_id">
@@ -137,7 +137,7 @@
                                             </div>
                                         </t>
                                         <t t-else="">
-                                            <span class="text-muted fst-italic d-block">ไม่ระบุอุปกรณ์</span>
+                                            <span class="text-muted fst-italic d-block">Device not specified</span>
                                         </t>
                                     </t>
                                     <div class="text-muted small">
@@ -183,7 +183,7 @@
                 <header>
                     <button
                         name="action_open_source"
-                        string="ดูข้อมูลฉบับเต็ม"
+                        string="View full details"
                         icon="fa-search"
                         type="object"
                         class="btn btn-primary"
@@ -223,7 +223,7 @@
                     <button
                         name="action_fetch_from_source"
                         type="object"
-                        string="อัพเดทข้อมูลจากต้นทาง"
+                        string="Update data from source"
                         class="btn btn-outline-danger"
                     />
                 </sheet>

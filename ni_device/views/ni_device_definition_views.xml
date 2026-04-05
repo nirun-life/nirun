@@ -8,8 +8,8 @@
         <field name="res_model">ni.device.definition</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">ยังไม่มี Device Definition</p>
-            <p>สร้าง Definition เพื่อกำหนดรุ่น/แบบของอุปกรณ์ก่อนเพิ่มอุปกรณ์</p>
+            <p class="o_view_nocontent_smiling_face">There are no device definitions yet</p>
+            <p>Create a definition to specify the device model/type before adding a device</p>
         </field>
     </record>
     <!-- ───────────────────────────────────────────────
@@ -19,13 +19,13 @@
         <field name="name">ni.device.definition.view.search</field>
         <field name="model">ni.device.definition</field>
         <field name="arch" type="xml">
-            <search string="ค้นหา Device Definition">
-                <field name="name" string="ชื่อ" />
-                <field name="manufacturer_id" string="ผู้ผลิต" />
-                <field name="type_ids" string="ประเภท" />
+            <search string="Search device definitions">
+                <field name="name" string="Name" />
+                <field name="manufacturer_id" string="Manufacturer" />
+                <field name="type_ids" string="Type" />
                 <separator />
-                <filter name="group_type" string="ประเภทอุปกรณ์" context="{'group_by': 'type_ids'}" />
-                <filter name="group_manufacturer" string="ผู้ผลิต" context="{'group_by': 'manufacturer_id'}" />
+                <filter name="group_type" string="Device type" context="{'group_by': 'type_ids'}" />
+                <filter name="group_manufacturer" string="Manufacturer" context="{'group_by': 'manufacturer_id'}" />
             </search>
         </field>
     </record>
@@ -38,10 +38,10 @@
         <field name="arch" type="xml">
             <tree string="Device Definitions">
                 <field name="name" string="Definition Name" />
-                <field name="type_ids" string="ประเภท" widget="many2many_tags" />
-                <field name="manufacturer_id" string="ผู้ผลิต" optional="show" />
-                <field name="model_number" string="รุ่น" optional="show" />
-                <field name="device_count" string="จำนวนอุปกรณ์" />
+                <field name="type_ids" string="Type" widget="many2many_tags" />
+                <field name="manufacturer_id" string="Manufacturer" optional="show" />
+                <field name="model_number" string="Model" optional="show" />
+                <field name="device_count" string="Device count" />
             </tree>
         </field>
     </record>
@@ -85,11 +85,11 @@
                                 </div>
                                 <ul>
                                     <li t-if="record.manufacturer_id.raw_value">
-                                        <span class="text-muted">ผู้ผลิต:</span>
+                                        <span class="text-muted">Manufacturer:</span>
                                         <t t-esc="record.manufacturer_id.value" />
                                     </li>
                                     <li t-if="record.model_number.raw_value">
-                                        <span class="text-muted">รุ่น:</span>
+                                        <span class="text-muted">Model:</span>
                                         <t t-esc="record.model_number.value" />
                                     </li>
                                 </ul>
@@ -97,7 +97,7 @@
                                     <div class="oe_kanban_bottom_left text-muted small">
                                         <i class="fa fa-cubes me-1" />
                                         <t t-esc="record.device_count.value" />
-                                        อุปกรณ์
+                                        Device
                                     </div>
                                 </div>
                             </div>
@@ -119,10 +119,10 @@
                     <!-- Smart Buttons -->
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_devices" type="object" class="oe_stat_button" icon="fa-cubes">
-                            <field name="device_count" widget="statinfo" string="อุปกรณ์" />
+                            <field name="device_count" widget="statinfo" string="Device" />
                         </button>
                         <button name="action_view_usage" type="object" class="oe_stat_button" icon="fa-history">
-                            <field name="usage_count" widget="statinfo" string="การใช้งาน" />
+                            <field name="usage_count" widget="statinfo" string="Usage" />
                         </button>
                     </div>
                     <!-- Image + Title -->
@@ -136,18 +136,18 @@
                         <div class="oe_title flex-grow-1">
                             <label for="name" string="Definition Name" />
                             <h1>
-                                <field name="name" placeholder="เช่น เครื่องวัดความดันแบบพกพา" />
+                                <field name="name" placeholder="e.g., portable blood pressure monitor" />
                             </h1>
-                            <field name="type_ids" widget="many2many_tags" placeholder="เลือกประเภทอุปกรณ์..." />
+                            <field name="type_ids" widget="many2many_tags" placeholder="Select device type..." />
                         </div>
                     </div>
                     <!-- Details -->
                     <group>
-                        <group string="ข้อมูลทั่วไป">
+                        <group string="Basic information">
                             <field name="manufacturer_id" />
                             <field name="model_number" />
                         </group>
-                        <group string="การวัด">
+                        <group string="Measurement">
                             <field name="observation_type_ids" widget="many2many_tags" />
                         </group>
                     </group>
