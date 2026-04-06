@@ -8,6 +8,7 @@ class PatientSmartcard(models.Model):
     _name = "ni.patient.smartcard"
     _inherit = "image.mixin"
     _description = "Smart Card Reading Log"
+    _order = "create_date desc"
 
     company_id = fields.Many2one(
         "res.company",
@@ -48,6 +49,21 @@ class PatientSmartcard(models.Model):
     middle_name_en = fields.Char("Middel Name")
     lastname_en = fields.Char("Lastname")
     address = fields.Char("ที่อยู่")
+    street = fields.Char("ถนน", help="Mapping to partner model")
+
+    @api.model_create_multi
+    def create(self, vals):
+        res = super().create(vals)
+        res.link_patient()
+        return res
+
+    def link_patient(self):
+        for rec in self:
+            patient = self.env["ni.patient"].search(
+                [("identification_id", "=", self.identifier)], limit=1
+            )
+            if patient:
+                rec.patient_id = patient
 
     @api.depends("firstname", "lastname")
     def _compute_name(self):
@@ -66,31 +82,35 @@ class PatientSmartcard(models.Model):
             rec.read_date = rec.create_date.date()
 
     @api.constrains("card_data")
-    def _extract_card_data(self):
+    def extract_card_data(self):
         for rec in self:
             if not rec.card_data:
                 raise ValidationError(_("Must have card data"))
+            rec._extract_card_info()
 
-            names = rec.card_data.split("#")
-            rec.identifier = names[0]
-            rec.title_id = self.env["res.partner.title"].search(
-                [("name", "=", names[1])], limit=1
-            )
-            rec.firstname = names[2]
-            rec.middle_name = names[3]
-            rec.lastname = names[4]
+    def _extract_card_info(self):
+        rec = self
+        names = rec.card_data.split("#")
+        rec.identifier = names[0]
+        rec.title_id = self.env["res.partner.title"].search(
+            [("name", "=", names[1])], limit=1
+        )
+        rec.firstname = names[2]
+        rec.middle_name = names[3]
+        rec.lastname = names[4]
 
-            rec.firstname_en = names[6]
-            rec.middle_name_en = names[7]
-            rec.lastname_en = names[8]
+        rec.firstname_en = names[6]
+        rec.middle_name_en = names[7]
+        rec.lastname_en = names[8]
 
-            rec.address = " ".join([names[i] for i in range(9, 17) if names[i]])
+        rec.street = " ".join([names[i] for i in range(9, 14) if names[i]])
+        rec.address = " ".join([names[i] for i in range(9, 17) if names[i]])
 
-            rec.birthdate = self._parse_th_date(names[18])
-            rec.card_issue = names[19]
-            rec.card_issue_date = self._parse_th_date(names[20])
-            rec.card_expire_date = self._parse_th_date(names[21])
-            rec.card_ref = names[22]
+        rec.birthdate = self._parse_th_date(names[18])
+        rec.card_issue = names[19]
+        rec.card_issue_date = self._parse_th_date(names[20])
+        rec.card_expire_date = self._parse_th_date(names[21])
+        rec.card_ref = names[22]
 
     @api.model
     def _parse_th_date(self, date_str):
@@ -112,6 +132,6 @@ class PatientSmartcard(models.Model):
             for key, value in self.copy_data()[0].items()
             if key in self.env["ni.patient"]._fields
         }
-        patient.write(vals)
+        patient.update(vals)
         if not self.patient_id:
             self.patient_id = patient

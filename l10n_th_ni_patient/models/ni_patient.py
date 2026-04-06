@@ -16,6 +16,16 @@ class Patient(models.Model):
     smartcard_ids = fields.One2many(
         "ni.patient.smartcard", "patient_id", "Smart Card Reading Logs"
     )
+    smartcard_id = fields.Many2one(
+        "ni.patient.smartcard",
+        "Smart Card Reading Logs",
+        help="This patent info refer to Smartcard's Log",
+    )
+    smartcard_count = fields.Integer(compute="_compute_smartcard_card")
+
+    def _compute_smartcard_card(self):
+        for rec in self:
+            rec.smartcard_count = len(rec.smartcard_ids)
 
     @api.model
     def default_get(self, fields):
@@ -49,6 +59,19 @@ class Patient(models.Model):
                         "message": _("Patient's identification ID must be unique!"),
                     }
                 }
+            if not self.id:
+                self.link_smartcard()
+
+    def link_smartcard(self):
+        for rec in self.filtered("identification_id"):
+            card = self.env["ni.patient.smartcard"].search(
+                [("identifier", "=", rec.identification_id)],
+                order="create_date desc",
+                limit=1,
+            )
+            if card:
+                card.update_to(rec)
+                rec.smartcard_id = card
 
     def _is_unique(self):
         self.ensure_one()

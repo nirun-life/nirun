@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_patient_smartcard_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.smartcard.view.form.inherit</field>
+        <field name="model">ni.patient.smartcard</field>
+        <field name="inherit_id" ref="l10n_th_ni_patient.ni_person_smartcard_view_form" />
+        <field name="arch" type="xml">
+            <field name="address" position="after">
+                <label for="city_id" />
+                <div class="o_row">
+                    <field name="city_id" />
+                    <label for="state_id" />
+                    <field name="state_id" />
+                    <label for="country_id" />
+                    <field name="country_id" />
+                </div>
+                <field name="zip_id" />
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -9,9 +9,10 @@
     "website": "https://nirun.life/",
     "license": "OPL-1",
     "maintainers": ["piruin"],
-    "depends": ["ni_patient", "l10n_th_base_location"],
+    "depends": ["l10n_th_ni_patient", "l10n_th_base_location"],
     "data": [
         "views/ni_patient_views.xml",
+        "views/ni_patient_smartcard_views.xml",
     ],
     "application": False,
     "auto_install": False,
