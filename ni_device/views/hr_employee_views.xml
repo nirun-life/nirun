@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_employee_view_search_inherit_device" model="ir.ui.view">
+        <field name="name">hr.employee.search.inherit.device</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter" />
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field
+                    name="device_ids"
+                    filter_domain="['|','|',('device_ids.name','ilike',self),('device_ids.identifier','ilike',self),('device_ids.serial_number','ilike',self)]"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="view_employee_form_inherit_device" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.device</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="holder_ids" invisible="1" />
+                <field name="holder_count" invisible="1" />
+                <!-- Devices -->
+                <button
+                    name="action_view_device_holders"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-archive"
+                    attrs="{'invisible': [('holder_count', '=', 0)]}"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="holder_count" />
+                        </span>
+                        <span class="o_stat_text">Holding History</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Devices">
+                    <field name="device_count" invisible="1" />
+                    <!-- Empty state -->
+                    <div class="oe_empty_state" attrs="{'invisible': [('device_count', '!=', 0)]}">
+                        <p class="text-muted">No devices assigned to this employee.</p>
+                    </div>
+                    <!-- Kanban -->
+                    <field
+                        name="device_ids"
+                        nolabel="1"
+                        mode="kanban"
+                        attrs="{'invisible': [('device_count', '=', 0)]}"
+                        context="{'default_holder_employee_id': active_id}"
+                    />
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

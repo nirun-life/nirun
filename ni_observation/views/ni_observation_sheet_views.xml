@@ -6,7 +6,7 @@
     <record id="ni_observation_sheet_action" model="ir.actions.act_window">
         <field name="name">Observations</field>
         <field name="res_model">ni.observation.sheet</field>
-        <field name="view_mode">tree,form,graph</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
     </record>
     <record id="ni_observation_sheet_action_form" model="ir.actions.act_window">
         <field name="name">Observations</field>
@@ -82,6 +82,7 @@
             <form>
                 <field name="id" invisible="True" />
                 <field name="active" invisible="True" />
+                <header />
                 <sheet>
                     <div name="button_box" class="oe_button_box" groups="base.group_user" />
                     <widget
@@ -114,6 +115,7 @@
                         <group>
                             <field name="company_id" invisible="1" />
                             <field name="occurrence" />
+                            <field name="user_id" />
                         </group>
                     </group>
                     <notebook attrs="{'invisible': [('id', '=', False)]}">
@@ -178,6 +180,77 @@
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+    <record id="ni_observation_sheet_view_kanban" model="ir.ui.view">
+        <field name="name">ni.observation.sheet.view.kanban</field>
+        <field name="model">ni.observation.sheet</field>
+        <field name="arch" type="xml">
+            <kanban
+                default_group_by="create_date:month"
+                default_order="create_date desc"
+                limit="16"
+                group_limit="6"
+                class="o_kanban_small_column"
+                quick_add="false"
+                sample="1"
+            >
+                <field name="id" />
+                <field name="occurrence" />
+                <field name="patient_id" />
+                <field name="user_id" />
+                <field name="vitalsign_summary" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record p-0">
+                            <div class="p-3">
+                                <!-- ── Header ── -->
+                                <div class="mb-2">
+                                    <t t-if="record.patient_id.raw_value">
+                                        <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-muted fst-italic d-block">ไม่ระบุผู้ป่วย</span>
+                                    </t>
+                                    <div class="text-muted small">
+                                        <i class="fa fa-clock-o me-1" />
+                                        <t t-esc="record.occurrence.value" />
+                                    </div>
+                                </div>
+                                <!-- ── ค่าตรวจวัด: loop จาก vitalsign_summary ── -->
+                                <t t-set="vitals" t-value="record.vitalsign_summary.raw_value or []" />
+                                <t t-foreach="vitals" t-as="vs">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <div>
+                                            <t t-if="vs.i">
+                                                <i
+                                                    t-att-class="'fa ' + vs.i"
+                                                    t-att-style="'color:' + (vs.color or '#6c757d')"
+                                                    class="me-2"
+                                                />
+                                            </t>
+                                            <span t-esc="vs.l" />
+                                        </div>
+                                        <div>
+                                            <strong t-esc="vs.v" />
+                                            <span class="ms-1" t-esc="vs.u" />
+                                        </div>
+                                    </div>
+                                </t>
+                                <!-- ── Footer: ผู้บันทึก ── -->
+                                <div class="d-flex align-items-center gap-1 mt-2 pt-1 border-top">
+                                    <img
+                                        t-att-src="kanban_image('res.users', 'avatar_128', record.user_id.raw_value)"
+                                        class="rounded-circle"
+                                        style="width:18px;height:18px;object-fit:cover;"
+                                    />
+                                    <small class="text-muted" t-esc="record.user_id.value" />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
 </odoo>

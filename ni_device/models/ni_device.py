@@ -8,32 +8,70 @@ _logger = logging.getLogger(__name__)
 class Device(models.Model):
     _name = "ni.device"
     _description = "Device Registry"
-    _inherit = ["ni.identifier.mixin", "image.mixin", "mail.thread", "ni.holder.mixin"]
+    _inherit = [
+        "ni.identifier.mixin",
+        "image.mixin",
+        "mail.thread",
+        "ni.holder.mixin",
+        "age.mixin",
+    ]
     _rec_name = "name"
     _order = "name"
 
-    name = fields.Char(string="Device Name")
+    name = fields.Char(string="Device Name", required=True, tracking=True)
     identifier = fields.Char("Identifier", readonly=True)
+
+    definition_id = fields.Many2one(
+        "ni.device.definition",
+        string="Device Definition",
+        required=True,
+        index=True,
+        tracking=True,
+        ondelete="restrict",
+        help="This model/type of device includes, for example, a portable blood pressure monitor.",
+    )
 
     manufacturer_id = fields.Many2one(
         "res.partner",
         string="Manufacturer",
         domain="[('is_company', '=', True)]",
+        compute="_compute_from_definition",
         store=True,
+        readonly=False,
     )
     manufacture_date = fields.Date("Manufacturer Date")
-    serial_number = fields.Char("Serial Number")
-    model_number = fields.Char("Model")
+    serial_number = fields.Char(
+        "Serial Number",
+        required=True,
+        help="If no serial number is available, you may enter - instead.",
+        tracking=True,
+    )
+    model_number = fields.Char(
+        "Model",
+        compute="_compute_from_definition",
+        store=True,
+        readonly=False,
+        tracking=True,
+    )
     currency_id = fields.Many2one(
         "res.currency", required=True, default=lambda self: self.env.company.currency_id
     )
-    price = fields.Monetary("Price", currency_field="currency_id")
+    price = fields.Monetary(
+        "Price",
+        currency_field="currency_id",
+        tracking=True,
+    )
     barcode = fields.Char(string="Barcode", related="identifier")
 
     type_ids = fields.Many2many(
         "ni.device.type",
         string="Device Types",
         help="Examples: Blood Pressure Monitor, Weighing Scale, Thermometer",
+        compute="_compute_from_definition",
+        store=True,
+        readonly=False,
+        required=True,
+        tracking=True,
     )
 
     availability_status = fields.Selection(
@@ -45,10 +83,15 @@ class Device(models.Model):
         ],
         default="available",
         string="Availability Status",
+        tracking=True,
     )
 
     observation_type_ids = fields.Many2many(
-        "ni.observation.type", string="Supported Observation Type"
+        "ni.observation.type",
+        string="Supported Observation Type",
+        compute="_compute_from_definition",
+        store=True,
+        readonly=False,
     )
 
     state = fields.Selection(
@@ -61,12 +104,14 @@ class Device(models.Model):
         default="available",
         string="Holding Status",
         store=True,
+        tracking=True,
     )
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         required=True,
         default=lambda self: self.env.company.id,
+        tracking=True,
     )
 
     holder_history_ids = fields.One2many(
@@ -79,6 +124,12 @@ class Device(models.Model):
         "ni.device.request",
         "device_id",
         string="Holding Change Request",
+    )
+
+    usage_ids = fields.One2many(
+        "ni.device.usage",
+        "device_id",
+        string="Device Usage Logs",
     )
 
     pending_request_id = fields.Many2one(
@@ -95,25 +146,47 @@ class Device(models.Model):
         store=True,
     )
 
+    active_repair_state = fields.Selection(
+        related="active_repair_id.state",
+        string="Repair Status",
+        store=True,
+        readonly=True,
+    )
+
     repair_ids = fields.One2many(
         "ni.device.repair",
         "device_id",
         string="Repair History",
     )
+    repair_cost = fields.Monetary(
+        string="Repair Cost",
+        currency_field="currency_id",
+        compute="_compute_repair_cost",
+        store=True,
+    )
 
     received_date = fields.Date(
         string="Received Date",
         help="The date the device was received and registered in the system.",
+        required=True,
+        tracking=True,
     )
-    disposed_date = fields.Datetime(
-        string="Disposed Date",
+    disposed_date = fields.Date(
+        string="End Date",
         store=True,
         readonly=True,
+        tracking=True,
     )
+
+    lost_date = fields.Date(string="Lost Report Date", tracking=True)
+
+    birthdate = fields.Date(related="received_date", tracking=False)
+    deceased_date = fields.Date(related="disposed_date", tracking=False)
 
     holder_history_count = fields.Integer(compute="_compute_holder_history_count")
     request_count = fields.Integer(compute="_compute_request_count")
     repair_count = fields.Integer(compute="_compute_repair_count")
+    usage_count = fields.Integer(compute="_compute_usage_count")
 
     can_request_as_holder = fields.Boolean(
         compute="_compute_can_request_as_holder",
@@ -124,6 +197,33 @@ class Device(models.Model):
         compute="_compute_is_not_repairable",
         store=False,
     )
+
+    @api.depends("repair_ids.repair_cost")
+    def _compute_repair_cost(self):
+        for rec in self:
+            rec.repair_cost = sum(rec.repair_ids.mapped("repair_cost"))
+
+    # ── Compute from Definition ────────────────────────────────────────────────
+
+    @api.depends("definition_id")
+    def _compute_from_definition(self):
+        for rec in self:
+            dfn = rec.definition_id
+            if not dfn:
+                continue
+            if dfn.manufacturer_id:
+                rec.manufacturer_id = dfn.manufacturer_id
+            if dfn.model_number:
+                rec.model_number = dfn.model_number
+            if dfn.type_ids:
+                rec.type_ids = dfn.type_ids
+            if dfn.observation_type_ids:
+                rec.observation_type_ids = dfn.observation_type_ids
+            # ดึงรูปจาก definition เฉพาะเมื่อยังไม่มีรูปของตัวเอง
+            if dfn.image_1920 and not rec.image_1920:
+                rec.image_1920 = dfn.image_1920
+
+    # ── Counts ─────────────────────────────────────────────────────────────────
 
     @api.depends("holder_history_ids")
     def _compute_holder_history_count(self):
@@ -140,13 +240,15 @@ class Device(models.Model):
         for rec in self:
             rec.repair_count = len(rec.repair_ids)
 
+    @api.depends("usage_ids")
+    def _compute_usage_count(self):
+        for rec in self:
+            rec.usage_count = len(rec.usage_ids)
+
     @api.depends("request_ids", "request_ids.state")
     def _compute_pending_request(self):
         for rec in self:
-            # หา request ที่ยัง pending
             pending = rec.request_ids.filtered(lambda r: r.state in ("pending"))
-
-            # ถ้ามีหลายตัว → เอาตัวล่าสุดจาก create_date
             if pending:
                 rec.pending_request_id = pending.sorted("create_date")[-1]
             else:
@@ -155,12 +257,9 @@ class Device(models.Model):
     @api.depends("repair_ids", "repair_ids.state")
     def _compute_active_repair(self):
         for rec in self:
-            # หา repair ที่ยัง
             current = rec.repair_ids.filtered(
                 lambda r: r.state in ("damaged", "repairing", "not_repairable")
             )
-
-            # ถ้ามีหลายตัว → เอาตัวล่าสุดจาก create_date
             if current:
                 rec.active_repair_id = current.sorted("create_date")[-1]
             else:
@@ -173,6 +272,7 @@ class Device(models.Model):
         for rec in self:
             rec.can_request_as_holder = (
                 rec.state == "in_use"
+                and rec.availability_status not in ["lost", "disposed"]
                 and (rec.is_holder or rec.is_manager)
                 and not rec.pending_request_id
                 and not rec.active_repair_id
@@ -189,8 +289,6 @@ class Device(models.Model):
 
     def action_repair(self):
         self.ensure_one()
-        # เซ็ตสถานะอุปกรณ์ให้เป็น damaged
-
         return {
             "type": "ir.actions.act_window",
             "name": "Report Device Repair",
@@ -199,7 +297,7 @@ class Device(models.Model):
             "view_id": self.env.ref(
                 "ni_device.ni_device_repair_view_form_wizard_create"
             ).id,
-            "target": "new",  # เปิด popup
+            "target": "new",
             "context": {
                 "default_device_id": self.id,
                 "default_damage_date": fields.Datetime.now(),
@@ -240,7 +338,7 @@ class Device(models.Model):
         *,
         request_type,
         action_name,
-        employee_source="current_user",  # current_user | device_holder
+        employee_source="current_user",
         include_new_holder=False,
     ):
         self.ensure_one()
@@ -306,3 +404,31 @@ class Device(models.Model):
     def action_print_device_label(self):
         self.ensure_one()
         return self.env.ref("ni_device.action_report_device_label").report_action(self)
+
+    def action_report_lost(self):
+        self.ensure_one()
+        return {
+            "name": "Report Lost",
+            "type": "ir.actions.act_window",
+            "res_model": "ni.device.report.lost.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_device_id": self.id,
+                "default_action_type": "lost",
+            },
+        }
+
+    def action_report_found(self):
+        self.ensure_one()
+        return {
+            "name": "Report Found",
+            "type": "ir.actions.act_window",
+            "res_model": "ni.device.report.lost.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_device_id": self.id,
+                "default_action_type": "found",
+            },
+        }

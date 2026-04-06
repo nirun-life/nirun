@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ni_patient_smartcard_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.smartcard.view.form.inherit</field>
+        <field name="model">ni.patient.smartcard</field>
+        <field name="inherit_id" ref="l10n_th_ni_patient.ni_person_smartcard_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_create_device_log"
+                    type="object"
+                    string="Create Device Usage"
+                    icon="fa-bug"
+                    groups="base.group_no_one"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
