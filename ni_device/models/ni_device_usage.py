@@ -1,5 +1,5 @@
 #  Copyright (c) 2025 NSTDA
-from odoo import fields, models
+from odoo import fields, models, tools
 
 
 class DeviceUsage(models.Model):
@@ -43,23 +43,24 @@ class DeviceUsage(models.Model):
         required=True, default=lambda _: fields.Datetime.now(), index=True
     )
 
-    res_model = fields.Selection(
-        [
-            ("ni.observation.sheet", "Observation Sheet"),
-            ("ni.patient.smartcard", "Smartcard"),
-        ],
-        "Reference Model",
-        required=True,
-        index=True,
+    res_model = fields.Char("Related Document Model", index=True, copy=False)
+    res_id = fields.Many2oneReference(
+        "Related Document ID", model_field="res_model", copy=False
     )
-
-    res_id = fields.Integer(index=True)
 
     res_name = fields.Char(
         string="Reference Name",
         compute="_compute_res_name",
         store=False,
     )
+
+    def init(self):
+        tools.create_index(
+            self._cr,
+            f"{self._table}_res_model_id_idx",
+            self._table,
+            ["res_model", "res_id"],
+        )
 
     def _compute_res_name(self):
         for rec in self:
