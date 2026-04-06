@@ -229,13 +229,13 @@ class ObservationAbstract(models.AbstractModel):
                         ]
 
     @api.model
-    def _value_code_mapping(self, type, value):
+    def _value_code_mapping(self, type_id, value):
         if value.isnumeric():
             code = self.env["ni.observation.value.code"].browse(int(value))
         else:
             code = self.env["ni.observation.value.code"].search(
                 [
-                    ("type_ids", "=", type.id),
+                    ("type_ids", "=", type_id.id),
                     "|",
                     ("name", "ilike", value),
                     ("code", "=", value),
