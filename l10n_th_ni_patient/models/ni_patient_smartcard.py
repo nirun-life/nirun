@@ -1,4 +1,5 @@
 #  Copyright (c) 2024. NSTDA
+from datetime import date
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -53,8 +54,16 @@ class PatientSmartcard(models.Model):
 
     @api.model_create_multi
     def create(self, vals):
+        for val in vals:
+            data = self.parse_card_data(val.get("card_data"))
+            val.update(data)
+            if val.get("identifier"):
+                patient = self.env["ni.patient"].search(
+                    [("identification_id", "=", val.get("identifier"))], limit=1
+                )
+                if patient:
+                    val["patient_id"] = patient.id
         res = super().create(vals)
-        res.link_patient()
         return res
 
     def link_patient(self):
@@ -81,39 +90,44 @@ class PatientSmartcard(models.Model):
         for rec in self:
             rec.read_date = rec.create_date.date()
 
-    @api.constrains("card_data")
     def extract_card_data(self):
         for rec in self:
             if not rec.card_data:
                 raise ValidationError(_("Must have card data"))
-            rec._extract_card_info()
-
-    def _extract_card_info(self):
-        rec = self
-        names = rec.card_data.split("#")
-        rec.identifier = names[0]
-        rec.title_id = self.env["res.partner.title"].search(
-            [("name", "=", names[1])], limit=1
-        )
-        rec.firstname = names[2]
-        rec.middle_name = names[3]
-        rec.lastname = names[4]
-
-        rec.firstname_en = names[6]
-        rec.middle_name_en = names[7]
-        rec.lastname_en = names[8]
-
-        rec.street = " ".join([names[i] for i in range(9, 14) if names[i]])
-        rec.address = " ".join([names[i] for i in range(9, 17) if names[i]])
-
-        rec.birthdate = self._parse_th_date(names[18])
-        rec.card_issue = names[19]
-        rec.card_issue_date = self._parse_th_date(names[20])
-        rec.card_expire_date = self._parse_th_date(names[21])
-        rec.card_ref = names[22]
+            val = self.parse_card_data(rec.card_data)
+            rec.update(val)
 
     @api.model
-    def _parse_th_date(self, date_str):
+    def parse_card_data(self, card_data: object) -> dict:
+        """Parse card_data string into a dict of values."""
+        datas = card_data.split("#")
+        values = {
+            "identifier": datas[0],
+            "title_id": self.env["res.partner.title"]
+            .search([("name", "=", datas[1])], limit=1)
+            .id,
+            "firstname": datas[2],
+            "middle_name": datas[3],
+            "lastname": datas[4],
+            "firstname_en": datas[6],
+            "middle_name_en": datas[7],
+            "lastname_en": datas[8],
+            "street": " ".join(
+                [datas[i] for i in range(9, 14) if i < len(datas) and datas[i]]
+            ),
+            "address": " ".join(
+                [datas[i] for i in range(9, 17) if i < len(datas) and datas[i]]
+            ),
+            "birthdate": self._parse_th_date(datas[18]),
+            "card_issue": datas[19],
+            "card_issue_date": self._parse_th_date(datas[20]),
+            "card_expire_date": self._parse_th_date(datas[21]),
+            "card_ref": datas[22],
+        }
+        return values
+
+    @api.model
+    def _parse_th_date(self, date_str) -> date:
         year = int(date_str[0:4]) - 543
         month = int(date_str[4:6])
         day = int(date_str[6:8])
