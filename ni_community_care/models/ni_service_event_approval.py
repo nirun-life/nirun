@@ -2,8 +2,9 @@ import base64
 import io
 import logging
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, time
 
+import pytz
 from dateutil.relativedelta import relativedelta
 from PyPDF2 import PdfMerger
 
@@ -62,6 +63,49 @@ class ServiceEventApproval(models.Model):
 
     start = fields.Date(default=fields.Date.context_today)
     stop = fields.Date(default=fields.Date.context_today)
+
+    def _get_utc_range(self, start, stop):
+        """
+        Accept:
+            - fields.Date
+            - fields.Datetime
+        Return:
+            - UTC naive datetime (for domain)
+        """
+        if not start and not stop:
+            return None, None
+
+        tz = self.env.context.get("tz") or self.env.user.tz or "UTC"
+        local_tz = pytz.timezone(tz)
+
+        def to_utc(dt, is_end=False):
+            if not dt:
+                return None
+
+            # ถ้าเป็น date → convert เป็น datetime
+            if isinstance(dt, datetime):
+                local_dt = dt
+                if dt.tzinfo is None:
+                    local_dt = local_tz.localize(dt)
+            else:
+                # Date → datetime
+                base_time = time.max.replace(microsecond=0) if is_end else time.min
+                local_dt = local_tz.localize(datetime.combine(dt, base_time))
+
+            return local_dt.astimezone(pytz.utc).replace(tzinfo=None)
+
+        return to_utc(start), to_utc(stop, is_end=True)
+
+    def _date_domain(self, field, start, stop):
+        start_utc, stop_utc = self._get_utc_range(start, stop)
+
+        domain = []
+        if start_utc:
+            domain.append((field, ">=", start_utc))
+        if stop_utc:
+            domain.append((field, "<=", stop_utc))
+
+        return domain
 
     user_id = fields.Many2one("res.users", string="ผู้บริบาล (User)")
     employee_id = fields.Many2one(
@@ -372,44 +416,33 @@ class ServiceEventApproval(models.Model):
                 rec.event_count = 0
                 continue
 
-            # แปลง Date → datetime ที่ปลาย boundary ของ local day แล้ว normalize เป็น UTC
-            # เพื่อป้องกัน event วันที่ 1 เมษา 00:00 UTC (= 31 มีนา 17:00 local) หลุดเข้ามา
-            tz = self.env.context.get("tz") or self.env.user.tz or "UTC"
-            import pytz
+            start_utc, stop_utc = self._get_utc_range(rec.start, rec.stop)
 
-            local_tz = pytz.timezone(tz)
+            domain = [
+                ("user_id", "=", rec.user_id.id),
+                ("stop", ">=", start_utc),  # overlap logic
+                ("start", "<=", stop_utc),
+            ]
 
-            # start of day local → UTC
-            start_local = local_tz.localize(
-                datetime.combine(rec.start, datetime.min.time())
-            )
-            start_utc = start_local.astimezone(pytz.utc).replace(tzinfo=None)
-
-            # end of day local → UTC  (23:59:59 ของ stop)
-            stop_local = local_tz.localize(
-                datetime.combine(rec.stop, datetime.max.time().replace(microsecond=0))
-            )
-            stop_utc = stop_local.astimezone(pytz.utc).replace(tzinfo=None)
-
-            event = self.env["ni.service.event"].search(
-                [
-                    ("user_id", "=", rec.user_id.id),
-                    ("stop", ">=", start_utc),  # event ยังไม่จบก่อน start ของ record
-                    ("start", "<=", stop_utc),  # event เริ่มไม่หลัง stop ของ record
-                ],
+            events = self.env["ni.service.event"].search(
+                domain,
                 order="start desc",
             )
-            rec.event_ids = event
-            rec.event_count = len(event)
+
+            rec.event_ids = events
+            rec.event_count = len(events)
 
     @api.depends("user_id", "start", "stop")
     def _compute_patient_ids(self):
         for record in self:
+            if not record.user_id:
+                record.patient_ids = False
+                record.patient_count = 0
+                continue
+
             domain = [
                 ("create_uid", "=", record.user_id.id),
-                ("create_date", ">=", record.start),
-                ("create_date", "<=", record.stop),
-            ]
+            ] + self._date_domain("create_date", record.start, record.stop)
 
             patients = (
                 self.env["ni.patient"].with_context(active_test=False).search(domain)
@@ -488,29 +521,35 @@ class ServiceEventApproval(models.Model):
 
     @api.depends("user_id", "start", "stop")
     def _compute_careplan_ids(self):
-        CarePlan = self.env["ni.careplan"]
-        for rec in self:
+        for record in self:
+            if not record.user_id:
+                record.careplan_ids = False
+                record.careplan_count = 0
+                continue
+
             domain = [
-                ("create_uid", "=", rec.user_id.id),
-                ("create_date", ">=", rec.start),
-                ("create_date", "<=", rec.stop),
-            ]
-            rec.careplan_ids = CarePlan.search(domain)
-            rec.careplan_count = len(rec.careplan_ids)
+                ("create_uid", "=", record.user_id.id),
+            ] + self._date_domain("create_date", record.start, record.stop)
+
+            careplans = self.env["ni.careplan"].search(domain)
+
+            record.careplan_ids = careplans
+            record.careplan_count = len(careplans)
 
     @api.depends("user_id", "start", "stop")
     def _compute_service_ids(self):
         for record in self:
-            domain = []
+            if not record.user_id:
+                record.service_ids = False
+                record.service_count = 0
+                continue
 
-            if record.user_id:
-                domain.append(("create_uid", "=", record.user_id.id))
-            if record.start:
-                domain.append(("create_date", ">=", record.start))
-            if record.stop:
-                domain.append(("create_date", "<=", record.stop))
+            domain = [
+                ("create_uid", "=", record.user_id.id),
+            ] + self._date_domain("create_date", record.start, record.stop)
 
             services = self.env["ni.service"].search(domain)
+
             record.service_ids = services
             record.service_count = len(services)
 
