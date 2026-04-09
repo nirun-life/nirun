@@ -3,7 +3,7 @@
         <field name="name">Create Monthly Approval</field>
         <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
         <field name="state">code</field>
-        <field name="code">model._cron_create_approvals()</field>
+        <field name="code">model._cron_create_approvals(job_ids=[])</field>
         <field name="active" eval="True" />
         <field name="interval_number">1</field>
         <field name="interval_type">months</field>
@@ -13,10 +13,20 @@
         <field name="name">Create Backfill Approvals</field>
         <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
         <field name="state">code</field>
-        <field name="code">model._cron_backfill_approvals(batch_limit=500,stale_months=6)</field>
-        <field name="active" eval="True" />
-        <field name="interval_number">1</field>
-        <field name="interval_type">months</field>
+        <field name="code">model._cron_backfill_approvals(batch_limit=500, job_ids=[])</field>
+        <field name="active" eval="False" />
+        <field name="interval_number">0</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+    </record>
+    <record id="ir_cron_cleanup_backfill_approvals" model="ir.cron">
+        <field name="name">Clean Up Backfilled Approvals</field>
+        <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
+        <field name="state">code</field>
+        <field name="code">model._cron_cleanup_backfilled_approvals(batch_limit=500, stale_months=6)</field>
+        <field name="active" eval="False" />
+        <field name="interval_number">0</field>
+        <field name="interval_type">hours</field>
         <field name="numbercall">-1</field>
     </record>
     <record id="ir_cron_refresh_all_approvals" model="ir.cron">
@@ -33,7 +43,7 @@
         <field name="name">Generate Approval Reports (PDF)</field>
         <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
         <field name="state">code</field>
-        <field name="code">model._cron_generate_reports_batch(retention_months=3, batch_limit=50,cooldown=1440)</field>
+        <field name="code">model._cron_generate_reports_batch(retention_months=3, batch_limit=50, cooldown=1440)</field>
         <field name="interval_number">1</field>
         <field name="interval_type">months</field>
         <field name="active">True</field>

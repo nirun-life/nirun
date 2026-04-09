@@ -52,6 +52,13 @@ class ServiceEventApproval(models.Model):
 
     state_date = fields.Datetime(string="วันที่เปลี่ยนสถานะ", readonly=1)
     state_by = fields.Many2one("res.users", string="ผู้อนุมัติ", readonly=1)
+    state_by_employee_id = fields.Many2one(
+        "hr.employee",
+        string="ผู้อนุมัติ (พนักงาน)",
+        related="state_by.employee_id",
+        store=True,
+        readonly=True,
+    )
 
     start = fields.Date(default=fields.Date.context_today)
     stop = fields.Date(default=fields.Date.context_today)
@@ -360,13 +367,35 @@ class ServiceEventApproval(models.Model):
     @api.depends("user_id", "start", "stop")
     def _compute_service_event(self):
         for rec in self:
-            # ค้นหา event ที่ user_id ตรงกับ record นี้
-            # และมีช่วงเวลา start-stop ซ้อนทับกับช่วงของ record นี้
+            if not rec.start or not rec.stop:
+                rec.event_ids = False
+                rec.event_count = 0
+                continue
+
+            # แปลง Date → datetime ที่ปลาย boundary ของ local day แล้ว normalize เป็น UTC
+            # เพื่อป้องกัน event วันที่ 1 เมษา 00:00 UTC (= 31 มีนา 17:00 local) หลุดเข้ามา
+            tz = self.env.context.get("tz") or self.env.user.tz or "UTC"
+            import pytz
+
+            local_tz = pytz.timezone(tz)
+
+            # start of day local → UTC
+            start_local = local_tz.localize(
+                datetime.combine(rec.start, datetime.min.time())
+            )
+            start_utc = start_local.astimezone(pytz.utc).replace(tzinfo=None)
+
+            # end of day local → UTC  (23:59:59 ของ stop)
+            stop_local = local_tz.localize(
+                datetime.combine(rec.stop, datetime.max.time().replace(microsecond=0))
+            )
+            stop_utc = stop_local.astimezone(pytz.utc).replace(tzinfo=None)
+
             event = self.env["ni.service.event"].search(
                 [
                     ("user_id", "=", rec.user_id.id),
-                    ("stop", ">=", rec.start),  # event ยังไม่จบก่อน start ของ record
-                    ("start", "<=", rec.stop),  # event เริ่มไม่หลัง stop ของ record
+                    ("stop", ">=", start_utc),  # event ยังไม่จบก่อน start ของ record
+                    ("start", "<=", stop_utc),  # event เริ่มไม่หลัง stop ของ record
                 ],
                 order="start desc",
             )
@@ -714,21 +743,34 @@ class ServiceEventApproval(models.Model):
         _logger.info("✅ Recomputed stored fields for %d record(s)", len(self))
 
     @api.model
-    def _cron_create_approvals(self):
+    def _cron_create_approvals(self, **kwargs):
+        """
+        สร้าง approval ของเดือนก่อนหน้า
+        :param job_ids: list of hr.job IDs เพื่อกรองเฉพาะ employee ตำแหน่งนั้น
+                        ถ้าไม่ระบุจะใช้ group_user / ไม่ใช่ manager/admin
+        """
         today = fields.Date.today()
         prev_month = today - relativedelta(months=1)
         month_start = prev_month.replace(day=1)
+
+        job_ids = kwargs.get("job_ids", False)
+        if job_ids and not isinstance(job_ids, list):
+            job_ids = [job_ids]
 
         self._create_approvals_by_month_range(
             start_month=month_start,
             end_month=month_start,
             batch_limit=0,  # ไม่ต้อง limit
+            job_ids=job_ids or False,
         )
 
     @api.model
     def _cron_backfill_approvals(self, **kwargs):
+
         batch_limit = int(kwargs.get("batch_limit", 500))
-        stale_months = int(kwargs.get("stale_months", 6))
+        job_ids = kwargs.get("job_ids", False)
+        if job_ids and not isinstance(job_ids, list):
+            job_ids = [job_ids]
 
         company = self.env.company
         if not company.system_start_date:
@@ -743,19 +785,23 @@ class ServiceEventApproval(models.Model):
             start_month=start_month,
             end_month=end_month,
             batch_limit=batch_limit,
+            job_ids=job_ids or False,
         )
-        self._cleanup_backfilled_approvals(stale_months=stale_months)
 
-    def _cleanup_backfilled_approvals(self, stale_months=6):
-        """
-        - ลบ record ที่ field สำคัญว่างหมด
-        - เปลี่ยนสถานะเป็น stale ถ้าเก่าเกิน X เดือน
-        """
+    @api.model
+    def _cron_cleanup_backfilled_approvals(self, **kwargs):
+        stale_months = int(kwargs.get("stale_months", 6))
+        batch_limit = int(kwargs.get("batch_limit", 0))
 
+        self._cleanup_backfilled_approvals(
+            stale_months=stale_months,
+            batch_limit=batch_limit,
+        )
+
+    def _cleanup_backfilled_approvals(self, stale_months=6, batch_limit=500):
         today = fields.Date.today()
         stale_date = today - relativedelta(months=stale_months)
 
-        # 🔹 1. ลบ record ที่ field ว่างหมด
         fields_to_check = [
             "patient_ids",
             "event_ids",
@@ -764,23 +810,19 @@ class ServiceEventApproval(models.Model):
             "service_ids",
         ]
 
-        domain_empty = []
-        for f in fields_to_check:
-            domain_empty.append((f, "=", False))
+        domain_empty = [(f, "=", False) for f in fields_to_check]
 
-        # AND ทั้งหมด
-        empty_records = self.search(domain_empty)
-
+        # 🔹 ลบแค่ batch เดียว
+        empty_records = self.search(domain_empty, limit=batch_limit)
         empty_records.unlink()
 
-        # 🔹 2. เปลี่ยนสถานะเป็น stale
-        old_records = self.search(
-            [
-                ("start", "<", stale_date),
-                ("state", "=", "pending"),
-            ]
-        )
+        # 🔹 update แค่ batch เดียว
+        domain_old = [
+            ("start", "<", stale_date),
+            ("state", "=", "pending"),
+        ]
 
+        old_records = self.search(domain_old, limit=batch_limit)
         old_records.write({"state": "archived"})
 
     @api.model
@@ -807,7 +849,7 @@ class ServiceEventApproval(models.Model):
             ("employee_id.active", "=", True),
         ]
         if job_ids:
-            domain += [("employee_id.job_id", "in", "job_ids")]
+            domain += [("employee_id.job_id", "in", job_ids)]
         else:
             domain += [
                 ("groups_id", "in", [group_user.id]),

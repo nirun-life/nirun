@@ -9,6 +9,12 @@
                     name="identifier"
                     filter_domain="['|', ('identifier', 'ilike', self), ('user_id', 'ilike', self)]"
                 />
+                <field name="employee_id" string="ผู้บริบาล" />
+                <field
+                    name="employee_id"
+                    string="แท็กผู้บริบาล"
+                    filter_domain="[('employee_id.category_ids.name', 'ilike', self)]"
+                />
                 <filter name="pending" string="รอการอนุมัติ" domain="[('state', '=', 'pending')]" />
                 <filter name="approved" string="อนุมัติแล้ว" domain="[('state', '=', 'approved')]" />
                 <filter name="rejected" string="ไม่ผ่านการอนุมัติ" domain="[('state', '=', 'rejected')]" />
@@ -220,12 +226,24 @@
                                 widget="badge"
                             />
                             <label
-                                for="state_by"
+                                for="state_by_employee_id"
                                 string="โดย"
                                 attrs="{'invisible':[('state','in',['pending','archived'])]}"
                             />
+                            <field name="state_by_employee_id" invisible="1" />
                             <div class="o_row" attrs="{'invisible':[('state','in',['pending','archived'])]}">
-                                <field name="state_by" />
+                                <!-- มี employee → แสดงชื่อ-นามสกุลจาก employee record -->
+                                <field
+                                    name="state_by_employee_id"
+                                    widget="many2one_avatar_employee"
+                                    attrs="{'invisible':[('state_by_employee_id','=',False)]}"
+                                />
+                                <!-- ไม่มี employee → fallback แสดง user -->
+                                <field
+                                    name="state_by"
+                                    widget="many2one_avatar_user"
+                                    attrs="{'invisible':[('state_by_employee_id','!=',False)]}"
+                                />
                                 <label for="state_date" string="เมื่อ" />
                                 <field name="state_date" />
                             </div>
