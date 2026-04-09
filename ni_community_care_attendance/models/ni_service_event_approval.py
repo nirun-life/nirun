@@ -90,10 +90,8 @@ class ServiceEventApprovalAttendance(models.Model):
 
     def action_view_attendance(self):
         self.ensure_one()
-        employee = self.env["hr.employee"].search(
-            [("user_id", "=", self.user_id.id)], limit=1
-        )
-        if not employee:
+
+        if not self.employee_id:
             return {
                 "type": "ir.actions.act_window_close",
             }
@@ -102,10 +100,10 @@ class ServiceEventApprovalAttendance(models.Model):
             "name": "Attendances",
             "type": "ir.actions.act_window",
             "res_model": "hr.attendance",
-            "view_mode": "tree,form",
+            "view_mode": "pivot,tree,form",
             "target": "current",
             "domain": [
-                ("employee_id", "=", employee.id),
+                ("employee_id", "=", self.employee_id.id),
                 ("check_in", ">=", self.start),
                 ("check_in", "<=", self.stop),
             ],

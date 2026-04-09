@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hr_attendance_view_kanban_inherit" model="ir.ui.view">
+        <field name="name">hr.attendance.view.kanban.single.card</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_hr_attendance_kanban" />
+        <field name="mode">primary</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="employee_id" />
+                <field name="check_in" />
+                <field name="check_out" />
+                <field name="worked_hours" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <!-- ใช้ card ของ Odoo ตัวเดียว -->
+                        <div class="oe_kanban_global_click">
+                            <!-- content ทั้งหมดอยู่ตรงนี้เลย -->
+                            <div class="p-2 d-flex flex-column gap-1 small">
+                                <!-- employee -->
+                                <div class="d-flex align-items-center gap-2 text-muted mb-1">
+                                    <img
+                                        t-att-src="kanban_image('hr.employee', 'avatar_128', record.employee_id.raw_value)"
+                                        class="rounded-circle"
+                                        style="width:26px; height:26px; object-fit:cover;"
+                                    />
+                                    <span class="text-truncate">
+                                        <field name="employee_id" />
+                                    </span>
+                                </div>
+                                <!-- check-in -->
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">
+                                        <i class="fa fa-sign-in text-success me-1" />
+                                        เข้า
+                                    </span>
+                                    <span class="fw-semibold">
+                                        <field name="check_in" />
+                                    </span>
+                                </div>
+                                <!-- check-out -->
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">
+                                        <i class="fa fa-sign-out text-danger me-1" />
+                                        ออก
+                                    </span>
+                                    <span class="fw-semibold">
+                                        <t t-if="record.check_out.raw_value">
+                                            <field name="check_out" />
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge text-bg-warning">กำลังทำงาน</span>
+                                        </t>
+                                    </span>
+                                </div>
+                                <!-- worked_hours -->
+                                <t t-if="record.check_out.raw_value">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-muted">
+                                            <i class="fa fa-clock-o me-1" />
+                                            ชั่วโมง
+                                        </span>
+                                        <span class="fw-semibold">
+                                            <field name="worked_hours" widget="float_time" />
+                                        </span>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>
