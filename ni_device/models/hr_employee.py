@@ -2,6 +2,35 @@
 from odoo import fields, models
 
 
+class HrEmployeePublic(models.Model):
+    _inherit = "hr.employee.public"
+
+    device_search = fields.Char(
+        string="Device",
+        search="_search_device",
+    )
+
+    def _search_device(self, operator, value):
+        if not value:
+            return []
+
+        domain = [
+            "|",
+            "|",
+            ("name", "ilike", value),
+            ("serial_number", "ilike", value),
+            ("identifier", "ilike", value),
+        ]
+
+        devices = self.env["ni.device"].search(domain)
+        employee_ids = devices.mapped("holder_employee_id").ids
+
+        if not employee_ids:
+            return [("id", "=", 0)]
+
+        return [("id", "in", employee_ids)]
+
+
 class Employee(models.Model):
     _inherit = "hr.employee"
 

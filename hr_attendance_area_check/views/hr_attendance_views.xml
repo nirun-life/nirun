@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_attendance_view_form_area" model="ir.ui.view">
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance_geolocation.hr_attendance_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='locations']" position="after">
+                <group
+                    name="area_check"
+                    col="2"
+                    string="ข้อมูลพื้นที่รับผิดชอบ"
+                    groups="hr_attendance.group_hr_attendance_manager"
+                >
+                    <field name="check_in_area_name" string="พื้นที่เช็คอิน" readonly="1" />
+                    <field
+                        name="check_in_area_status"
+                        string="สถานะพื้นที่เช็คอิน"
+                        readonly="1"
+                        widget="badge"
+                        decoration-success="check_in_area_status == 'in_area'"
+                        decoration-warning="check_in_area_status == 'out_of_area'"
+                        decoration-secondary="check_in_area_status == 'unknown'"
+                    />
+                    <field name="check_out_area_name" string="พื้นที่เช็คเอาท์" readonly="1" />
+                    <field
+                        name="check_out_area_status"
+                        string="สถานะพื้นที่เช็คเอาท์"
+                        readonly="1"
+                        widget="badge"
+                        decoration-success="check_out_area_status == 'in_area'"
+                        decoration-warning="check_out_area_status == 'out_of_area'"
+                        decoration-secondary="check_out_area_status == 'unknown'"
+                    />
+                    <!-- Dev-only raw fields (base.group_no_one) -->
+                    <field
+                        name="check_in_area_raw"
+                        string="[Dev] Raw Check-in"
+                        readonly="1"
+                        groups="base.group_no_one"
+                    />
+                    <field
+                        name="check_out_area_raw"
+                        string="[Dev] Raw Check-out"
+                        readonly="1"
+                        groups="base.group_no_one"
+                    />
+                    <field
+                        name="check_in_district"
+                        string="[Dev] District In"
+                        readonly="1"
+                        groups="base.group_no_one"
+                    />
+                    <field name="check_in_state_name" string="[Dev] State In" readonly="1" groups="base.group_no_one" />
+                    <field
+                        name="check_out_district"
+                        string="[Dev] District Out"
+                        readonly="1"
+                        groups="base.group_no_one"
+                    />
+                    <field
+                        name="check_out_state_name"
+                        string="[Dev] State Out"
+                        readonly="1"
+                        groups="base.group_no_one"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_attendance_tree_area" model="ir.ui.view">
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree" />
+        <field name="priority" eval="20" />
+        <field name="arch" type="xml">
+            <field name="worked_hours" position="after">
+                <field
+                    name="check_in_area_name"
+                    string="พื้นที่เช็คอิน"
+                    groups="hr_attendance.group_hr_attendance_manager"
+                    optional="show"
+                />
+                <field
+                    name="check_in_area_status"
+                    string="สถานะเช็คอิน"
+                    groups="hr_attendance.group_hr_attendance_manager"
+                    optional="show"
+                    widget="badge"
+                    decoration-success="check_in_area_status == 'in_area'"
+                    decoration-warning="check_in_area_status == 'out_of_area'"
+                />
+                <field
+                    name="check_out_area_name"
+                    string="พื้นที่เช็คเอาท์"
+                    groups="hr_attendance.group_hr_attendance_manager"
+                    optional="hide"
+                />
+                <field
+                    name="check_out_area_status"
+                    string="สถานะเช็คเอาท์"
+                    groups="hr_attendance.group_hr_attendance_manager"
+                    optional="hide"
+                    widget="badge"
+                    decoration-success="check_out_area_status == 'in_area'"
+                    decoration-warning="check_out_area_status == 'out_of_area'"
+                />
+                <button
+                    name="action_refresh_area"
+                    type="object"
+                    icon="fa-map-marker"
+                    string="รีเฟรชพื้นที่"
+                    groups="hr_attendance.group_hr_attendance_manager"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
