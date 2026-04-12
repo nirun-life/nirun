@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class DeviceRequest(models.Model):
@@ -208,7 +208,7 @@ class DeviceRequest(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Approve Request",
+            "name": _("Approve Request"),
             "res_model": "ni.device.request",
             "res_id": self.id,  # <<< record เดิม
             "view_mode": "form",
@@ -225,7 +225,7 @@ class DeviceRequest(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Reject Request",
+            "name": _("Reject Request"),
             "res_model": "ni.device.request",
             "res_id": self.id,  # <<< record เดิม
             "view_mode": "form",
