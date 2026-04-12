@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import _, fields, models
 
 
 class DeviceRepairHistory(models.Model):
@@ -117,7 +117,7 @@ class DeviceRepairHistory(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Repair Result",  # <<< ยืนยันผลการซ่อม
+            "name": _("Repair Result"),  # <<< ยืนยันผลการซ่อม
             "res_model": "ni.device.repair",
             "res_id": self.id,  # <<< record เดิม
             "view_mode": "form",
@@ -134,7 +134,7 @@ class DeviceRepairHistory(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Begin Repair",  # <<< ดำเนินการซ่อม
+            "name": _("Begin Repair"),  # <<< ดำเนินการซ่อม
             "res_model": "ni.device.repair",
             "res_id": self.id,  # <<< record เดิม
             "view_mode": "form",

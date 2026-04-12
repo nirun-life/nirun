@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-05 11:29+0000\n"
-"PO-Revision-Date: 2026-04-05 11:29+0000\n"
+"POT-Creation-Date: 2026-04-19 10:43+0000\n"
+"PO-Revision-Date: 2026-04-19 10:43+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -68,10 +68,13 @@ msgid "<i class=\"fa fa-calendar\" aria-label=\"Period\" role=\"img\" title=\"Pe
 msgstr ""
 
 #. module: ni_device
-#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_kanban
-msgid ""
-"<i class=\"fa fa-exclamation-triangle text-primary\" aria-label=\"Period\" "
-"role=\"img\" title=\"Period\"/>"
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_kanban
+msgid "<i class=\"fa fa-cubes text-info me-1\" title=\"Devices\"/>"
+msgstr ""
+
+#. module: ni_device
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_kanban
+msgid "<i class=\"fa fa-history text-primary me-1\" title=\"History\"/>"
 msgstr ""
 
 #. module: ni_device
@@ -83,36 +86,40 @@ msgid ""
 "                                template.\n"
 "                            </small>"
 msgstr ""
+"<small class=\"text-warning fst-italic\" attrs=\"{'invisible': [('id', '=', False)]}\" groups=\"ni_device.access_ni_device_admin,base.group_no_one\">\n"
+"                                <i class=\"fa fa-exclamation-triangle me-1\"/>\n"
+"                                การเปลี่ยนแม่แบบจะดึงข้อมูลจากแม่แบบมาทับข้อมูลปัจจุบัน\n"
+"                            </small>"
 
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.view_employee_form_inherit_device
 msgid "<span class=\"o_stat_text\">Holding History</span>"
-msgstr ""
+msgstr "<span class=\"o_stat_text\">ประวัติการถือครอง</span>"
 
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_usage_view_kanban
 msgid "<span class=\"text-muted fst-italic d-block\">Device not specified</span>"
-msgstr ""
+msgstr "<span class=\"text-muted fst-italic d-block\">ไม่ระบุอุปกรณ์</span>"
 
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_usage_view_kanban
 msgid "<span class=\"text-muted fst-italic d-block\">Patient not specified</span>"
-msgstr ""
-
-#. module: ni_device
-#: model_terms:ir.ui.view,arch_db:ni_device.ni_observation_sheet_view_kanban
-msgid "<span class=\"text-muted fst-italic d-block\">ไม่ระบุผู้ป่วย</span>"
-msgstr ""
+msgstr "<span class=\"text-muted fst-italic d-block\">ไม่ระบุผู้สูงอายุ</span>"
 
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_kanban
-msgid "<span class=\"text-muted\">Manufacturer:</span>"
-msgstr ""
+msgid "<span class=\"text-muted ms-1\">Devices</span>"
+msgstr "<span class=\"text-muted ms-1\">อุปกรณ์</span>"
 
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_kanban
-msgid "<span class=\"text-muted\">Model:</span>"
-msgstr ""
+msgid "<span class=\"text-muted ms-1\">Usages</span>"
+msgstr "<span class=\"text-muted ms-1\">การใช้งาน</span>"
+
+#. module: ni_device
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_kanban
+msgid "<span class=\"text-muted ms-1\">day(s)</span>"
+msgstr "<span class=\"text-muted ms-1\">วัน</span>"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_dispose_type__abbr
@@ -256,11 +263,18 @@ msgid "Approval Request List"
 msgstr "รายการคำขออนุมัติ"
 
 #. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device_request.py:0
+#, python-format
+msgid "Approve Request"
+msgstr "อนุมัติคำขอ"
+
+#. module: ni_device
 #: model:ir.model.fields.selection,name:ni_device.selection__ni_device_request__state__approved
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_request_view_form
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_request_view_tree
 msgid "Approved"
-msgstr "อนุมัติแล้ว"
+msgstr "อนุมัติ"
 
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_dispose_type_view_form
@@ -293,7 +307,7 @@ msgstr "สถานะความพร้อมใช้งาน"
 #: model:ir.model.fields.selection,name:ni_device.selection__ni_device__state__available
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_search
 msgid "Available"
-msgstr "ว่าง"
+msgstr "พร้อมใช้งาน"
 
 #. module: ni_device
 #: model:ir.actions.act_window,name:ni_device.ni_device_available_action
@@ -316,9 +330,16 @@ msgid "Basic information"
 msgstr "ข้อมูลทั่วไป"
 
 #. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device_repair.py:0
+#, python-format
+msgid "Begin Repair"
+msgstr "ดำเนินการซ่อม"
+
+#. module: ni_device
 #: model:ni.device.type,name:ni_device.device_type_bp_cuff
 msgid "Blood Pressure Cuff"
-msgstr "สายรัดแขนวัดความดัน"
+msgstr "เครื่องวัดความดันโลหิต"
 
 #. module: ni_device
 #: model:ni.device.type,name:ni_device.device_type_body_composition
@@ -427,7 +448,6 @@ msgstr "เครื่องตรวจวัดระดับน้ำตา
 
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_observation_sheet_view_form_inherit
-#: model_terms:ir.ui.view,arch_db:ni_device.ni_patient_smartcard_view_form_inherit
 msgid "Create Device Usage"
 msgstr "สร้างการใช้งานอุปกรณ์"
 
@@ -435,8 +455,7 @@ msgstr "สร้างการใช้งานอุปกรณ์"
 #: model_terms:ir.actions.act_window,help:ni_device.ni_device_definition_action
 msgid ""
 "Create a definition to specify the device model/type before adding a device"
-msgstr ""
-"สร้างคำจำกัดความของอุปกรณ์ เพื่อกำหนดรุ่น/แบบของอุปกรณ์ก่อนเพิ่มอุปกรณ์"
+msgstr "สร้างแม่แบบอุปกรณ์ เพื่อกำหนดรุ่น/แบบของอุปกรณ์ก่อนเพิ่มอุปกรณ์"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__create_uid
@@ -491,6 +510,11 @@ msgid "Damaged"
 msgstr "ชำรุด"
 
 #. module: ni_device
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_kanban
+msgid "Damaged:"
+msgstr "วันที่ชำรุด:"
+
+#. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_request_view_tree
 msgid "Date Updated"
 msgstr "วันที่แก้ไข"
@@ -533,7 +557,7 @@ msgstr "คำอธิบาย"
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_form
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_tree
 msgid "Definition Name"
-msgstr "ชื่อคำจำกัดความ"
+msgstr "ชื่อแม่แบบ"
 
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_dispose_type_view_form
@@ -571,9 +595,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_device.field_ni_observation_report__device_id
 #: model:ir.model.fields,field_description:ni_device.field_ni_observation_sheet__device_id
 #: model:ir.model.fields,field_description:ni_device.field_ni_patient_observation__device_id
-#: model:ir.model.fields,field_description:ni_device.field_ni_patient_smartcard__device_id
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_form
-#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_kanban
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_holder_view_search
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_request_view_search
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_usage_view_search
@@ -590,20 +612,25 @@ msgstr "จำนวนอุปกรณ์"
 #. module: ni_device
 #: model:ir.model,name:ni_device.model_ni_device_definition
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__definition_id
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_usage__definition_id
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_form
-#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_kanban
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_usage_view_search
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_search
 msgid "Device Definition"
-msgstr "คำจำกัดความของอุปกรณ์"
+msgstr "แม่แบบอุปกรณ์"
 
 #. module: ni_device
 #: model:ir.actions.act_window,name:ni_device.ni_device_definition_action
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_kanban
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_tree
 msgid "Device Definitions"
-msgstr "คำจำกัดความของอุปกรณ์"
+msgstr "แม่แบบอุปกรณ์"
 
 #. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device.py:0
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_form
+#, python-format
 msgid "Device Disposal"
 msgstr "ขอจำหน่ายอุปกรณ์"
 
@@ -924,6 +951,11 @@ msgstr "ระยะเวลาซ่อมโดยประเมิน (ว�
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__estimated_cost
 msgid "Estimated Repair Cost"
 msgstr "ค่าใช้จ่ายโดยประเมิน"
+
+#. module: ni_device
+#: model:ir.actions.act_window,name:ni_device.ni_device_usage_action_patient_by_device
+msgid "Examined Patients"
+msgstr ""
 
 #. module: ni_device
 #: model:ir.model.fields,help:ni_device.field_ni_device__type_ids
@@ -1360,6 +1392,16 @@ msgid "No devices assigned to this employee."
 msgstr "ไม่มีอุปกรณ์ใด ๆ ถูกจัดสรรให้กับพนักงานคนนี้"
 
 #. module: ni_device
+#: model_terms:ir.actions.act_window,help:ni_device.ni_device_usage_action_patient_by_device
+msgid "No elderly patients have been examined with this device yet"
+msgstr "ยังไม่มีการตรวจผู้สูงอายุด้วยอุปกรณ์นี้"
+
+#. module: ni_device
+#: model_terms:ir.actions.act_window,help:ni_device.ni_device_usage_action_patient_by_device
+msgid "No patient records available"
+msgstr "ไม่พบข้อมูลผู้สูงอายุ"
+
+#. module: ni_device
 #: model_terms:ir.actions.act_window,help:ni_device.ni_device_usage_action_by_device
 #: model_terms:ir.actions.act_window,help:ni_device.ni_device_usage_action_by_patient
 msgid "No usage records available"
@@ -1375,6 +1417,7 @@ msgstr "ไม่สามารถซ่อมได้"
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__note
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_report_lost_wizard__note
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_form
 msgid "Note"
 msgstr "หมายเหตุ"
 
@@ -1429,7 +1472,6 @@ msgstr "สรุปรายงานการตรวจร่างกาย
 
 #. module: ni_device
 #: model:ir.model,name:ni_device.model_ni_observation_sheet
-#: model:ir.model.fields.selection,name:ni_device.selection__ni_device_usage__res_model__ni_observation_sheet
 msgid "Observation Sheet"
 msgstr "บันทึกผลการตรวจร่างกาย"
 
@@ -1459,6 +1501,11 @@ msgstr "พักการดำเนินการ"
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_usage_view_search
 msgid "Patient"
 msgstr "ผู้รับบริการ"
+
+#. module: ni_device
+#: model:ir.model.fields,field_description:ni_device.field_ni_device__patient_count
+msgid "Patient Count"
+msgstr "จำนวนผู้สูงอายุ"
 
 #. module: ni_device
 #: model:ir.model.fields.selection,name:ni_device.selection__ni_device__state__pending
@@ -1529,20 +1576,32 @@ msgid "Recycling"
 msgstr "แปรรูป"
 
 #. module: ni_device
-#: model:ir.model.fields,field_description:ni_device.field_ni_device_usage__res_model
-msgid "Reference Model"
-msgstr "รุ่นอ้างอิง"
-
-#. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_usage__res_name
 msgid "Reference Name"
 msgstr "ชื่อที่ใช้อ้างอิง"
+
+#. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device_request.py:0
+#, python-format
+msgid "Reject Request"
+msgstr "ไม่อนุมัติคำขอ"
 
 #. module: ni_device
 #: model:ir.model.fields.selection,name:ni_device.selection__ni_device_request__state__rejected
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_request_view_form
 msgid "Rejected"
 msgstr "ไม่อนุมัติ"
+
+#. module: ni_device
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_usage__res_id
+msgid "Related Document ID"
+msgstr ""
+
+#. module: ni_device
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_usage__res_model
+msgid "Related Document Model"
+msgstr "รุ่นอ้างอิง"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_holder__request_id
@@ -1608,7 +1667,10 @@ msgid "Repair Requester"
 msgstr "ผู้แจ้งซ่อม"
 
 #. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device_repair.py:0
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__repair_result
+#, python-format
 msgid "Repair Result"
 msgstr "ผลการซ่อม"
 
@@ -1636,6 +1698,13 @@ msgstr "หมายเหตุการซ่อม"
 #: model:ir.model,name:ni_device.model_ni_device_report_lost_wizard
 msgid "Report Device Lost"
 msgstr "แจ้งอุปกรณ์สูญหาย"
+
+#. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device.py:0
+#, python-format
+msgid "Report Device Repair"
+msgstr "แจ้งซ่อมอุปกรณ์"
 
 #. module: ni_device
 #: model:ir.model.fields.selection,name:ni_device.selection__ni_device_report_lost_wizard__action_type__found
@@ -1669,6 +1738,13 @@ msgid "Request Date"
 msgstr "วันที่ส่งคำขอ"
 
 #. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device.py:0
+#, python-format
+msgid "Request Device Holding"
+msgstr "ขอถือครองอุปกรณ์"
+
+#. module: ni_device
 #: model:ir.model.fields.selection,name:ni_device.selection__ni_device_request__request_type__request_hold
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_form
 msgid "Request Holding"
@@ -1685,13 +1761,11 @@ msgid "Request Type"
 msgstr "ประเภทคำขอ"
 
 #. module: ni_device
-#: model:ir.model.fields,field_description:ni_device.field_ni_device_usage__res_id
-msgid "Res"
-msgstr ""
-
-#. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device.py:0
 #: model:ir.model.fields.selection,name:ni_device.selection__ni_device_request__request_type__request_return
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_form
+#, python-format
 msgid "Return Device"
 msgstr "ขอคืนอุปกรณ์"
 
@@ -1704,7 +1778,7 @@ msgstr "SMS ส่งไม่สำเร็จ"
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_search
 msgid "Search device definitions"
-msgstr "ค้นหาคำจำกัดความของอุปกรณ์"
+msgstr "ค้นหาแม่แบบอุปกรณ์"
 
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_usage_view_search
@@ -1731,16 +1805,6 @@ msgstr "ลำดับ"
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__serial_number
 msgid "Serial Number"
 msgstr "เลขประจำเครื่อง"
-
-#. module: ni_device
-#: model:ir.model,name:ni_device.model_ni_patient_smartcard
-msgid "Smart Card Reading Log"
-msgstr "ประวัติการอ่านข้อมูลบัตรประชาชน"
-
-#. module: ni_device
-#: model:ir.model.fields.selection,name:ni_device.selection__ni_device_usage__res_model__ni_patient_smartcard
-msgid "Smartcard"
-msgstr "ข้อมูลบัตรประชาชน"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_holder__start_date
@@ -1810,9 +1874,23 @@ msgid "The date the device was received and registered in the system."
 msgstr "วันที่ได้รับและลงทะเบียนอุปกรณ์ในระบบ"
 
 #. module: ni_device
+#: model:ir.model.fields,help:ni_device.field_ni_device_definition__name
+msgid ""
+"The name/model of the device, e.g., portable blood pressure monitor, arm-"
+"type blood pressure monitor"
+msgstr ""
+"ชื่อรุ่น/แบบของอุปกรณ์ เช่น "
+"เครื่องวัดความดันแบบพกพา,เครื่องวัดความดันแบบสอดแขน"
+
+#. module: ni_device
+#: model:ir.model.fields,help:ni_device.field_ni_device_definition__type_ids
+msgid "The type of device, e.g., blood pressure monitor, weighing scale"
+msgstr "ประเภทของอุปกรณ์ เช่น เครื่องวัดความดัน, เครื่องชั่งน้ำหนัก"
+
+#. module: ni_device
 #: model_terms:ir.actions.act_window,help:ni_device.ni_device_definition_action
 msgid "There are no device definitions yet"
-msgstr "ยังไม่มีคำจำกัดความของอุปกรณ์"
+msgstr "ยังไม่มีแม่แบบอุปกรณ์"
 
 #. module: ni_device
 #: model:ni.device.type,name:ni_device.device_type_thermometer
@@ -1821,6 +1899,7 @@ msgstr "เครื่องวัดอุณหภูมิ"
 
 #. module: ni_device
 #: model:ir.model.fields,help:ni_device.field_ni_device__definition_id
+#: model:ir.model.fields,help:ni_device.field_ni_device_usage__definition_id
 msgid ""
 "This model/type of device includes, for example, a portable blood pressure "
 "monitor."
@@ -1837,8 +1916,11 @@ msgid "Today"
 msgstr "วันนี้"
 
 #. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device.py:0
 #: model:ir.model.fields.selection,name:ni_device.selection__ni_device_request__request_type__request_transfer
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_form
+#, python-format
 msgid "Transfer Holder"
 msgstr "ขอเปลี่ยนผู้ถือครอง"
 
@@ -1858,6 +1940,11 @@ msgstr "โอนให้หน่วยงานอื่น"
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_tree
 msgid "Type"
 msgstr "ประเภท"
+
+#. module: ni_device
+#: model:ir.model.fields,help:ni_device.field_ni_device_definition__observation_type_ids
+msgid "Types of measurements supported by this device model"
+msgstr "ประเภทการวัดที่อุปกรณ์รุ่นนี้รองรับ"
 
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_usage_view_form
@@ -1916,16 +2003,14 @@ msgid "abbr."
 msgstr "ตัวย่อ"
 
 #. module: ni_device
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_usage_view_kanban
+msgid "avatar"
+msgstr ""
+
+#. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_form
 msgid "e.g., portable blood pressure monitor"
 msgstr "เช่น เครื่องวัดความดันแบบพกพา"
-
-#. module: ni_device
-#: model:ir.model.fields,help:ni_device.field_ni_device_definition__name
-msgid ""
-"ชื่อรุ่น/แบบของอุปกรณ์ เช่น เครื่องวัดความดันแบบพกพา, "
-"เครื่องวัดความดันแบบสอดแขน"
-msgstr ""
 
 #. module: ni_device
 #: model:ir.actions.act_window,name:ni_device.ni_device_usage_action_by_patient
@@ -1933,16 +2018,6 @@ msgid "ประวัติการใช้งานอุปกรณ์"
 msgstr ""
 
 #. module: ni_device
-#: model:ir.model.fields,help:ni_device.field_ni_device_definition__observation_type_ids
-msgid "ประเภทการวัดที่อุปกรณ์รุ่นนี้รองรับ"
-msgstr ""
-
-#. module: ni_device
-#: model:ir.model.fields,help:ni_device.field_ni_device_definition__type_ids
-msgid "ประเภทของอุปกรณ์ เช่น เครื่องวัดความดัน, เครื่องชั่งน้ำหนัก"
-msgstr ""
-
-#. module: ni_device
-#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_definition_view_form
-msgid "หมายเหตุ"
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_form
+msgid "ผู้สูงอายุ"
 msgstr ""

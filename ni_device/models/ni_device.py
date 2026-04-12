@@ -1,6 +1,6 @@
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -299,7 +299,7 @@ class Device(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Report Device Repair",
+            "name": _("Report Device Repair"),
             "res_model": "ni.device.repair",
             "view_mode": "form",
             "view_id": self.env.ref(
@@ -315,7 +315,7 @@ class Device(models.Model):
     def action_request_hold(self):
         return self._action_open_request_wizard(
             request_type="request_hold",
-            action_name="Request Device Holding",
+            action_name=_("Request Device Holding"),
             employee_source="current_user",
             include_new_holder=True,
         )
@@ -323,21 +323,21 @@ class Device(models.Model):
     def action_request_return(self):
         return self._action_open_request_wizard(
             request_type="request_return",
-            action_name="Return Device",
+            action_name=_("Return Device"),
             employee_source="device_holder",
         )
 
     def action_request_transfer(self):
         return self._action_open_request_wizard(
             request_type="request_transfer",
-            action_name="Transfer Holder",
+            action_name=_("Transfer Holder"),
             employee_source="device_holder",
         )
 
     def action_request_dispose(self):
         return self._action_open_request_wizard(
             request_type="request_dispose",
-            action_name="Device Disposal",
+            action_name=_("Device Disposal"),
             employee_source="device_holder",
         )
 
