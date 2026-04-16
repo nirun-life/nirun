@@ -30,7 +30,23 @@
             <p>Start recording measurement results from this device</p>
         </field>
     </record>
-    <!-- ACTION เปิดจากหน้า Patient — group by month, filter patient นั้น -->
+    <!-- ACTION เปิดจากหน้า Device — group by patient, filter device นั้น -->
+    <record id="ni_device_usage_action_patient_by_device" model="ir.actions.act_window">
+        <field name="name">Examined Patients</field>
+        <field name="res_model">ni.device.usage</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('device_id', '=', active_id), ('patient_id', '!=', False)]</field>
+        <field name="context">
+            {
+                'search_default_group_patient': 1,
+                'default_device_id': active_id
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No patient records available</p>
+            <p>No elderly patients have been examined with this device yet</p>
+        </field>
+    </record>
     <record id="ni_device_usage_action_by_patient" model="ir.actions.act_window">
         <field name="name">ประวัติการใช้งานอุปกรณ์</field>
         <field name="res_model">ni.device.usage</field>

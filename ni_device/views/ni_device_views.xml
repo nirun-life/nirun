@@ -184,6 +184,15 @@
                         groups="ni_patient.group_user"
                     >
                         <button
+                            name="ni_device.ni_device_usage_action_patient_by_device"
+                            attrs="{'invisible': [('patient_count', '=', 0)]}"
+                            class="oe_stat_button"
+                            icon="fa-user"
+                            type="action"
+                        >
+                            <field name="patient_count" string="ผู้สูงอายุ" widget="statinfo" />
+                        </button>
+                        <button
                             name="ni_device.ni_device_usage_action_by_device"
                             attrs="{'invisible': [('usage_count', '=', 0)]}"
                             class="oe_stat_button"

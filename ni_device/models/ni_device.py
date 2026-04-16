@@ -187,6 +187,7 @@ class Device(models.Model):
     request_count = fields.Integer(compute="_compute_request_count")
     repair_count = fields.Integer(compute="_compute_repair_count")
     usage_count = fields.Integer(compute="_compute_usage_count")
+    patient_count = fields.Integer(compute="_compute_patient_count")
 
     can_request_as_holder = fields.Boolean(
         compute="_compute_can_request_as_holder",
@@ -244,6 +245,13 @@ class Device(models.Model):
     def _compute_usage_count(self):
         for rec in self:
             rec.usage_count = len(rec.usage_ids)
+
+    @api.depends("usage_ids.patient_id")
+    def _compute_patient_count(self):
+        for rec in self:
+            rec.patient_count = len(
+                rec.usage_ids.filtered(lambda u: u.patient_id).mapped("patient_id")
+            )
 
     @api.depends("request_ids", "request_ids.state")
     def _compute_pending_request(self):
