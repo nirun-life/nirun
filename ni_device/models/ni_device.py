@@ -70,7 +70,7 @@ class Device(models.Model):
         compute="_compute_from_definition",
         store=True,
         readonly=False,
-        required=True,
+        required=False,
         tracking=True,
     )
 

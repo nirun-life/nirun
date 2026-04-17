@@ -104,6 +104,7 @@
         <field name="model">ni.device.usage</field>
         <field name="arch" type="xml">
             <tree
+                create="0"
                 string="Device usage history"
                 default_order="occurrence desc"
                 decoration-muted="patient_id == False"
@@ -121,6 +122,7 @@
         <field name="model">ni.device.usage</field>
         <field name="arch" type="xml">
             <kanban
+                create="0"
                 string="Device usage history"
                 default_group_by="occurrence:month"
                 default_order="occurrence desc"
@@ -203,7 +205,7 @@
         <field name="name">ni.device.usage.view.form</field>
         <field name="model">ni.device.usage</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="0">
                 <header>
                     <button
                         name="action_open_source"
