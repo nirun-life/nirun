@@ -23,7 +23,7 @@ class DeviceDefinition(models.Model):
     type_ids = fields.Many2many(
         "ni.device.type",
         string="Device Types",
-        required=True,
+        required=False,
         help="The type of device, e.g., blood pressure monitor, weighing scale",
     )
 
