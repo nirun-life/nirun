@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ================================================================
+         Form view
+    ================================================================ -->
+    <record id="hr_attendance_view_form_area" model="ir.ui.view">
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance_geolocation.hr_attendance_view_form" />
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field name="employee_city_ids" string="พื้นที่รับผิดชอบ" readonly="1" widget="many2many_tags" />
+            </field>
+            <xpath expr="//group[@name='locations']" position="before">
+                <group string="พื้นที่เช็คอิน">
+                    <field name="check_in_area_name" string="พื้นที่เช็คอิน" readonly="1" />
+                    <field
+                        name="check_in_area_status"
+                        string="สถานะพื้นที่เช็คอิน"
+                        readonly="1"
+                        widget="badge"
+                        decoration-success="check_in_area_status == 'in_area'"
+                        decoration-warning="check_in_area_status == 'out_of_area'"
+                        decoration-secondary="check_in_area_status == 'unknown'"
+                    />
+                    <field
+                        name="check_in_note"
+                        string="หมายเหตุเช็คอิน"
+                        colspan="2"
+                        attrs="{'invisible': [('check_in_area_status', '!=', 'out_of_area')]}"
+                    />
+                </group>
+                <group string="พื้นที่เช็คเอาท์">
+                    <field name="check_out_area_name" string="พื้นที่เช็คเอาท์" readonly="1" />
+                    <field
+                        name="check_out_area_status"
+                        string="สถานะพื้นที่เช็คเอาท์"
+                        readonly="1"
+                        widget="badge"
+                        decoration-success="check_out_area_status == 'in_area'"
+                        decoration-warning="check_out_area_status == 'out_of_area'"
+                        decoration-secondary="check_out_area_status == 'unknown'"
+                    />
+                    <field
+                        name="check_out_note"
+                        string="หมายเหตุเช็คเอาท์"
+                        colspan="2"
+                        attrs="{'invisible': [('check_out_area_status', '!=', 'out_of_area')]}"
+                    />
+                </group>
+            </xpath>
+            <xpath expr="//group[@name='locations']" position="after">
+                <group string="Developer" groups="base.group_no_one">
+                    <field
+                        name="check_in_area_raw"
+                        string="[Dev] Raw Check-in"
+                        readonly="1"
+                        groups="base.group_no_one"
+                    />
+                    <field
+                        name="check_out_area_raw"
+                        string="[Dev] Raw Check-out"
+                        readonly="1"
+                        groups="base.group_no_one"
+                    />
+                    <field
+                        name="check_in_district"
+                        string="[Dev] District In"
+                        readonly="1"
+                        groups="base.group_no_one"
+                    />
+                    <field name="check_in_state_name" string="[Dev] State In" readonly="1" groups="base.group_no_one" />
+                    <field
+                        name="check_out_district"
+                        string="[Dev] District Out"
+                        readonly="1"
+                        groups="base.group_no_one"
+                    />
+                    <field
+                        name="check_out_state_name"
+                        string="[Dev] State Out"
+                        readonly="1"
+                        groups="base.group_no_one"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <!-- ================================================================
+         Tree (List) view
+    ================================================================ -->
+    <record id="view_attendance_tree_area" model="ir.ui.view">
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree" />
+        <field name="priority" eval="20" />
+        <field name="arch" type="xml">
+            <field name="worked_hours" position="after">
+                <field name="check_in_area_name" string="พื้นที่เช็คอิน" optional="hide" />
+                <field
+                    name="check_in_area_status"
+                    string="สถานะเช็คอิน"
+                    optional="show"
+                    widget="badge"
+                    decoration-success="check_in_area_status == 'in_area'"
+                    decoration-warning="check_in_area_status == 'out_of_area'"
+                />
+                <field name="check_out_area_name" string="พื้นที่เช็คเอาท์" optional="hide" />
+                <field
+                    name="check_out_area_status"
+                    string="สถานะเช็คเอาท์"
+                    optional="hide"
+                    widget="badge"
+                    decoration-success="check_out_area_status == 'in_area'"
+                    decoration-warning="check_out_area_status == 'out_of_area'"
+                />
+                <field name="check_in_note" string="หมายเหตุเช็คอิน" optional="hide" />
+                <field name="check_out_note" string="หมายเหตุเช็คเอาท์" optional="hide" />
+                <button
+                    name="action_refresh_area"
+                    type="object"
+                    icon="fa-refresh"
+                    title="รีเฟรชพื้นที่"
+                    groups="base.group_no_one"
+                />
+                <button name="action_open_form" type="object" icon="fa-search" title="ดูรายละเอียด" />
+            </field>
+        </field>
+    </record>
+    <!-- ================================================================
+         Kanban view
+    ================================================================ -->
+    <record id="hr_attendance_kanban_area_check" model="ir.ui.view">
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="ni_community_care_attendance.hr_attendance_view_kanban_inherit" />
+        <field name="priority" eval="99" />
+        <field name="arch" type="xml">
+            <!-- declare fields -->
+            <field name="worked_hours" position="after">
+                <field name="check_in_area_name" />
+                <field name="check_in_area_status" />
+                <field name="check_out_area_name" />
+                <field name="check_out_area_status" />
+                <field name="check_in_note" />
+                <field name="check_out_note" />
+            </field>
+            <!-- แทนที่ทั้ง block check-out + worked_hours ด้วย xpath ครอบ div content ทั้งหมด
+                 เพื่อให้ t-if/t-else เป็น sibling ภายใน template เดียวกัน -->
+            <xpath expr="//div[contains(@class,'p-2')]" position="replace">
+                <div class="p-2 d-flex flex-column gap-1 small">
+                    <!-- employee -->
+                    <div class="d-flex align-items-center gap-2 text-muted mb-1">
+                        <img
+                            t-att-src="kanban_image('hr.employee', 'avatar_128', record.employee_id.raw_value)"
+                            class="rounded-circle"
+                            style="width:26px; height:26px; object-fit:cover;"
+                        />
+                        <span class="text-truncate">
+                            <field name="employee_id" />
+                        </span>
+                    </div>
+                    <!-- check-in -->
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">
+                            <i class="fa fa-sign-in text-success me-1" />
+                            เข้า
+                        </span>
+                        <span class="fw-semibold">
+                            <field name="check_in" />
+                        </span>
+                    </div>
+                    <!-- check-out -->
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">
+                            <i class="fa fa-sign-out text-danger me-1" />
+                            ออก
+                        </span>
+                        <span class="fw-semibold">
+                            <t t-if="record.check_out.raw_value">
+                                <field name="check_out" />
+                            </t>
+                            <t t-else="">
+                                <span class="text-muted">–</span>
+                            </t>
+                        </span>
+                    </div>
+                    <!-- worked_hours แถวถัดไป เหมือนเดิม -->
+                    <t t-if="record.check_out.raw_value">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">
+                                <i class="fa fa-clock-o me-1" />
+                                ชั่วโมง
+                            </span>
+                            <span class="fw-semibold">
+                                <field name="worked_hours" widget="float_time" />
+                            </span>
+                        </div>
+                    </t>
+                    <!-- นอกพื้นที่ -->
+                    <t
+                        t-if="record.check_in_area_status.raw_value == 'out_of_area' or record.check_out_area_status.raw_value == 'out_of_area'"
+                    >
+                        <div class="border-top mt-1 pt-2 d-flex flex-column gap-1">
+                            <t t-if="record.check_in_area_status.raw_value == 'out_of_area'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-warning text-nowrap me-2">
+                                        <i class="fa fa-exclamation-triangle me-1" />
+                                        เช็คอินนอกสถานที่
+                                    </span>
+                                    <span class="text-muted text-end">
+                                        <t t-esc="record.check_in_area_name.value" />
+                                    </span>
+                                </div>
+                            </t>
+                            <t t-if="record.check_out_area_status.raw_value == 'out_of_area'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-warning text-nowrap me-2">
+                                        <i class="fa fa-exclamation-triangle me-1" />
+                                        เช็คเอาท์นอกสถานที่
+                                    </span>
+                                    <span class="text-muted text-end">
+                                        <t t-esc="record.check_out_area_name.value" />
+                                    </span>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
