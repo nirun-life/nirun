@@ -147,13 +147,24 @@ class ServiceEvent(models.Model):
 
         if self.patient_type_id:
             domain = [
+                "&",
+                "&",
                 ("category_id", "=", self.service_category_id.id),
                 "|",
                 ("target_type_ids", "=", False),
                 ("target_type_ids", "=", self.patient_type_id.id),
+                "|",
+                ("user_id", "=", self.env.user.id),
+                ("user_id", "=", False),
             ]
         else:
-            domain = [("category_id", "=", self.service_category_id.id)]
+            domain = [
+                "&",
+                ("category_id", "=", self.service_category_id.id),
+                "|",
+                ("user_id", "=", self.env.user.id),
+                ("user_id", "=", False),
+            ]
         return {"domain": {"service_ids": domain}}
 
     @api.constrains("start")

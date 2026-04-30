@@ -14,6 +14,26 @@
             <p class="o_view_nocontent_smiling_face">My Service not found. Let's create one!</p>
         </field>
     </record>
+    <record id="ni_service_action_all" model="ir.actions.act_window">
+        <field name="name">กิจกรรมทั้งหมด</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ไม่พบกิจกรรม</p>
+        </field>
+    </record>
+    <record id="ni_service_action_community" model="ir.actions.act_window">
+        <field name="name">กิจกรรมส่วนกลาง</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ni.service</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_service': 1, 'no_create_event': 0}</field>
+        <field name="domain">[('user_id', '=', False)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ไม่พบกิจกรรมส่วนรวม</p>
+        </field>
+    </record>
     <record id="ni_service_view_form_inherit" model="ir.ui.view">
         <field name="name">ni.service.view.form.inherit</field>
         <field name="model">ni.service</field>
@@ -23,7 +43,7 @@
                 <field name="timing_id" />
             </field>
             <xpath position="inside" expr="//sheet/group/group[2]">
-                <field name="user_id" widget="many2one_avatar_user" />
+                <field name="user_id" widget="many2one_avatar_user" invisible="context.get('default_user_id')" />
                 <field
                     name="target_type_ids"
                     widget="many2many_tags"
