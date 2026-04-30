@@ -118,6 +118,14 @@
                                 >
                                     <field name="repair_duration" readonly="1" />
                                     <field name="repair_cost" readonly="1" />
+                                    <field
+                                        name="repair_result"
+                                        widget="badge"
+                                        decoration-success="repair_result == 'repaired'"
+                                        decoration-warning="repair_result == 'repaired_limited'"
+                                        decoration-danger="repair_result == 'not_repairable'"
+                                        readonly="1"
+                                    />
                                 </group>
                             </group>
                             <br />
@@ -132,6 +140,7 @@
                         <field name="state" />
                         <field name="repair_duration" />
                         <field name="repair_cost" />
+                        <field name="repair_result" />
                     </group>
                 </sheet>
             </form>
