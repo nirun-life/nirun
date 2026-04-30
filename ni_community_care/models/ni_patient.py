@@ -143,7 +143,6 @@ class Patient(models.Model):
         for rec in self:
             if rec.birthdate:
                 rec.partner_id.birthdate = rec.birthdate
-                rec.age = rec.partner_id.age  # trigger -> 2️⃣ _onchange_age_warn
 
     # ---------------------------------------------------
     #  Onchange age (ถ้าแก้ไขอายุโดยตรง)
@@ -193,6 +192,10 @@ class Patient(models.Model):
     def write(self, vals):
         if "need_ids" in vals:
             vals["need_line_ids"] = self._need_line_values(vals["need_ids"])
+        # age is computed from birthdate; strip it when birthdate is being written
+        # to prevent age_mixin.write from clearing birthdate in a separate partner write
+        if vals.get("birthdate") and "age" in vals:
+            vals = {k: v for k, v in vals.items() if k != "age"}
         return super(Patient, self).write(vals)
 
     def _need_line_values(self, need_commands):
