@@ -197,7 +197,10 @@ class ObservationAbstract(models.AbstractModel):
                     rec.value_char = rec.value
                 case "int":
                     rec.update(
-                        {"value_int": int(rec.value), "value_float": float(rec.value)}
+                        {
+                            "value_int": int(float(rec.value)),
+                            "value_float": float(rec.value),
+                        }
                     )
                     # also write to value_float for use on pivot view
                 case "float":
