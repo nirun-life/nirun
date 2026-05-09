@@ -18,7 +18,12 @@
         <field name="name">ni.workflow.request.view.tree</field>
         <field name="model">ni.workflow.request</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree
+                decoration-success="state == 'completed'"
+                decoration-muted="state == 'revoked'"
+                decoration-warning="state == 'on-hold'"
+                decoration-info="state == 'active'"
+            >
                 <field
                     name="company_id"
                     invisible="context.get('default_patient_id')"
@@ -29,6 +34,7 @@
                 <field name="encounter_id" invisible="context.get('default_encounter_id')" optional="show" />
                 <field name="name" />
                 <field name="summary" />
+                <field name="state" />
                 <field name="write_date" optional="hide" />
                 <field name="write_uid" optional="hide" />
                 <button
