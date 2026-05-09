@@ -43,11 +43,14 @@ oca_init_test_database
 oca_run_tests
 ```
 
-To run tests for a specific module locally with Odoo:
+To run tests for a specific module locally:
 
 ```
-python odoo-bin -c odoo.conf --test-enable --test-tags /module_name -d <database>
+python C:/Users/Piruin/Repository/odoo/odoo16/odoo-bin -c odoo.conf -i module_name --test-enable
 ```
+
+Use `-i` (install/update), not `--test-tags` alone — the latter skips the module update step that initialises ORM defaults and
+causes schema errors on this setup.
 
 The CI matrix runs against both stock Odoo 16.0 and OCB 16.0 containers. `l10n_th_icd9cm` and `l10n_th_icd10tm` are excluded
 from CI because they contain large data files.

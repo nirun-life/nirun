@@ -208,8 +208,11 @@ class Patient(models.Model):
         removed_need_ids = []
         added_need_ids = []
 
+        if not need_commands:
+            return need_line_commands
+
         # if commands are just integers, assume they are ids with the intent to `Command.set`
-        if need_commands and isinstance(need_commands[0], int):
+        if isinstance(need_commands[0], int):
             need_commands = [Command.set(need_commands)]
 
         for command in need_commands:
