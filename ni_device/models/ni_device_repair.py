@@ -53,6 +53,18 @@ class DeviceRepairHistory(models.Model):
         string="Estimated Duration (days)",
     )
 
+    estimated_note = fields.Html(
+        string="Estimated Note",
+    )
+
+    estimated_attachment_ids = fields.Many2many(
+        "ir.attachment",
+        "ni_device_repair_est_attachment_rel",
+        auto_join=True,
+        ondelete="cascade",
+        string="Estimated Attachments",
+    )
+
     # Estimated Repair Cost (optional)
     estimated_cost = fields.Monetary(
         string="Estimated Repair Cost",
@@ -67,6 +79,20 @@ class DeviceRepairHistory(models.Model):
     # Additional Details
     repairing_note = fields.Html(
         string="Repairing Note",
+    )
+
+    repair_attachment_ids = fields.Many2many(
+        "ir.attachment",
+        "ni_device_repair_repair_attachment_rel",
+        auto_join=True,
+        ondelete="cascade",
+        string="Attachments",
+    )
+
+    repair_technician_id = fields.Many2one(
+        "res.partner",
+        string="Repair Technician",
+        domain=[("is_company", "=", False)],
     )
 
     # Repair Process Status
@@ -139,7 +165,7 @@ class DeviceRepairHistory(models.Model):
             "res_id": self.id,  # <<< record เดิม
             "view_mode": "form",
             "view_id": self.env.ref(
-                "ni_device.ni_device_repair_view_form_wizard_confirm"
+                "ni_device.ni_device_repair_view_form_wizard_begin_repair"
             ).id,
             "target": "new",
             "context": {

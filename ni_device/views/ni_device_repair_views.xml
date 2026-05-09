@@ -107,30 +107,45 @@
                         <page string="Duration and Cost" icon="fa-clock-o">
                             <group>
                                 <group string="Repair Estimation">
-                                    <field name="estimated_duration" readonly="1" />
-                                    <field name="estimated_cost" readonly="1" />
                                     <field name="technician_id" readonly="1" />
+                                    <field name="estimated_cost" readonly="1" />
+                                    <field name="estimated_duration" readonly="1" />
+                                    <field name="estimated_note" readonly="1" />
+                                    <field
+                                        name="estimated_attachment_ids"
+                                        widget="many2many_binary"
+                                        string="Attachments"
+                                        readonly="1"
+                                    />
                                 </group>
                                 <group
                                     string="Repair Confirmation"
                                     readonly="1"
                                     attrs="{'invisible': [('state', 'not in', ['completed','not_repairable'])]}"
                                 >
-                                    <field name="repair_duration" readonly="1" />
+                                    <field name="repair_technician_id" readonly="1" />
                                     <field name="repair_cost" readonly="1" />
+                                    <label for="repair_duration" />
+                                    <div class="o_row">
+                                        <field name="repair_duration" readonly="1" />
+                                        <label for="repair_result" />
+                                        <field
+                                            name="repair_result"
+                                            widget="badge"
+                                            decoration-success="repair_result == 'repaired'"
+                                            decoration-warning="repair_result == 'repaired_limited'"
+                                            decoration-danger="repair_result == 'not_repairable'"
+                                            readonly="1"
+                                        />
+                                    </div>
+                                    <field name="repairing_note" readonly="1" />
                                     <field
-                                        name="repair_result"
-                                        widget="badge"
-                                        decoration-success="repair_result == 'repaired'"
-                                        decoration-warning="repair_result == 'repaired_limited'"
-                                        decoration-danger="repair_result == 'not_repairable'"
+                                        name="repair_attachment_ids"
+                                        widget="many2many_binary"
+                                        string="Attachments"
                                         readonly="1"
                                     />
                                 </group>
-                            </group>
-                            <br />
-                            <group attrs="{'invisible': [('state', 'not in', ['completed','not_repairable'])]}">
-                                <field name="repairing_note" readonly="1" />
                             </group>
                         </page>
                     </notebook>
@@ -184,6 +199,27 @@
             </form>
         </field>
     </record>
+    <record id="ni_device_repair_view_form_wizard_begin_repair" model="ir.ui.view">
+        <field name="name">ni.device.repair.view.form.wizard.begin.repair</field>
+        <field name="model">ni.device.repair</field>
+        <field name="arch" type="xml">
+            <form string="Begin Repair" edit="1" create="0" delete="0">
+                <sheet>
+                    <group string="Repair Estimation">
+                        <field name="technician_id" />
+                        <field name="estimated_cost" />
+                        <field name="estimated_duration" />
+                        <field name="estimated_note" />
+                        <field name="estimated_attachment_ids" widget="many2many_binary" string="Attachments" />
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="action_confirm" class="btn-primary" />
+                    <button string="Cancel" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
     <record id="ni_device_repair_view_form_wizard_confirm" model="ir.ui.view">
         <field name="name">ni.device.repair.view.form.wizard.confirm</field>
         <field name="model">ni.device.repair</field>
@@ -191,11 +227,19 @@
             <form string="Confirm Repair Result" edit="1" create="0" delete="0">
                 <sheet>
                     <group string="Repair Estimation">
-                        <field name="technician_id" />
-                        <field name="estimated_cost" />
-                        <field name="estimated_duration" />
+                        <field name="technician_id" readonly="1" />
+                        <field name="estimated_cost" readonly="1" />
+                        <field name="estimated_duration" readonly="1" />
+                        <field name="estimated_note" readonly="1" />
+                        <field
+                            name="estimated_attachment_ids"
+                            widget="many2many_binary"
+                            string="Attachments"
+                            readonly="1"
+                        />
                     </group>
-                    <group invisible="context.get('state_action') != 'repair_result'" string="Repair Confirmation">
+                    <group string="Repair Confirmation">
+                        <field name="repair_technician_id" />
                         <field name="repair_cost" />
                         <field name="repair_duration" />
                         <field name="repair_result" widget="radio" />
@@ -203,6 +247,7 @@
                             name="repairing_note"
                             attrs="{'required': [('repair_result', 'not in', ['repaired'])]}"
                         />
+                        <field name="repair_attachment_ids" widget="many2many_binary" string="Attachments" />
                     </group>
                 </sheet>
                 <footer>
