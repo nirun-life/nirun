@@ -1,0 +1,320 @@
+from odoo import fields
+
+from .common import TestDeviceCommon
+
+
+class TestDeviceFieldsFromDefinition(TestDeviceCommon):
+    def test_manufacturer_copied_from_definition(self):
+        self.assertEqual(self.device.manufacturer_id, self.manufacturer)
+
+    def test_model_number_copied_from_definition(self):
+        self.assertEqual(self.device.model_number, "BP-100")
+
+    def test_definition_change_updates_model_number(self):
+        new_def = self.env["ni.device.definition"].create(
+            {"name": "Thermometer", "model_number": "TH-200"}
+        )
+        self.device.definition_id = new_def
+        self.device._compute_from_definition()
+        self.assertEqual(self.device.model_number, "TH-200")
+
+
+class TestDeviceDefaults(TestDeviceCommon):
+    def test_default_availability_status_is_available(self):
+        self.assertEqual(self.device.availability_status, "available")
+
+    def test_default_holding_state_is_available(self):
+        self.assertEqual(self.device.state, "available")
+
+
+class TestDeviceCounts(TestDeviceCommon):
+    def test_initial_counts_are_zero(self):
+        self.assertEqual(self.device.holder_history_count, 0)
+        self.assertEqual(self.device.request_count, 0)
+        self.assertEqual(self.device.repair_count, 0)
+        self.assertEqual(self.device.usage_count, 0)
+        self.assertEqual(self.device.patient_count, 0)
+
+    def test_request_count_increments(self):
+        self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_hold",
+                "holder_employee_id": self.employee.id,
+            }
+        )
+        self.assertEqual(self.device.request_count, 1)
+
+    def test_repair_count_increments(self):
+        self.env["ni.device.repair"].create(
+            {
+                "device_id": self.device.id,
+                "damage_date": fields.Datetime.now(),
+            }
+        )
+        self.assertEqual(self.device.repair_count, 1)
+
+
+class TestDevicePendingRequest(TestDeviceCommon):
+    def _make_request(self, request_type="request_hold", state="draft"):
+        req = self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": request_type,
+                "holder_employee_id": self.employee.id,
+                "holder_partner_id": self.partner.id,
+            }
+        )
+        if state == "pending":
+            req.state = "pending"
+        return req
+
+    def test_no_pending_request_initially(self):
+        self.assertFalse(self.device.pending_request_id)
+
+    def test_draft_request_not_counted_as_pending(self):
+        self._make_request(state="draft")
+        self.device._compute_pending_request()
+        self.assertFalse(self.device.pending_request_id)
+
+    def test_pending_request_detected(self):
+        req = self._make_request(state="pending")
+        self.device._compute_pending_request()
+        self.assertEqual(self.device.pending_request_id, req)
+
+
+class TestDeviceActiveRepair(TestDeviceCommon):
+    def test_no_active_repair_initially(self):
+        self.assertFalse(self.device.active_repair_id)
+
+    def test_draft_repair_not_active(self):
+        self.env["ni.device.repair"].create(
+            {"device_id": self.device.id, "damage_date": fields.Datetime.now()}
+        )
+        self.device._compute_active_repair()
+        self.assertFalse(self.device.active_repair_id)
+
+    def test_damaged_state_repair_is_active(self):
+        repair = self.env["ni.device.repair"].create(
+            {"device_id": self.device.id, "damage_date": fields.Datetime.now()}
+        )
+        repair.state = "damaged"
+        self.device._compute_active_repair()
+        self.assertEqual(self.device.active_repair_id, repair)
+
+    def test_completed_repair_not_active(self):
+        repair = self.env["ni.device.repair"].create(
+            {"device_id": self.device.id, "damage_date": fields.Datetime.now()}
+        )
+        repair.state = "completed"
+        self.device._compute_active_repair()
+        self.assertFalse(self.device.active_repair_id)
+
+
+class TestDeviceNotRepairable(TestDeviceCommon):
+    def test_not_repairable_false_when_no_repair(self):
+        self.assertFalse(self.device.not_repairable)
+
+    def test_not_repairable_true_when_repair_result_not_repairable(self):
+        repair = self.env["ni.device.repair"].create(
+            {"device_id": self.device.id, "damage_date": fields.Datetime.now()}
+        )
+        repair.write({"state": "not_repairable", "repair_result": "not_repairable"})
+        self.device._compute_active_repair()
+        self.device._compute_is_not_repairable()
+        self.assertTrue(self.device.not_repairable)
+
+    def test_not_repairable_false_when_repaired(self):
+        repair = self.env["ni.device.repair"].create(
+            {"device_id": self.device.id, "damage_date": fields.Datetime.now()}
+        )
+        repair.write({"state": "completed", "repair_result": "repaired"})
+        self.device._compute_active_repair()
+        self.device._compute_is_not_repairable()
+        self.assertFalse(self.device.not_repairable)
+
+
+class TestDeviceRepairWorkflow(TestDeviceCommon):
+    def setUp(self):
+        super().setUp()
+        self.repair = self.env["ni.device.repair"].create(
+            {"device_id": self.device.id, "damage_date": fields.Datetime.now()}
+        )
+
+    def test_action_submit_sets_state_damaged(self):
+        self.repair.action_submit()
+        self.assertEqual(self.repair.state, "damaged")
+
+    def test_action_submit_marks_device_damaged(self):
+        self.repair.action_submit()
+        self.assertEqual(self.device.availability_status, "damaged")
+
+    def test_action_confirm_repairing(self):
+        self.repair.state = "damaged"
+        self.repair.with_context(state_action="repairing").action_confirm()
+        self.assertEqual(self.repair.state, "repairing")
+
+    def test_action_confirm_repair_result_repaired(self):
+        self.repair.state = "repairing"
+        self.repair.repair_result = "repaired"
+        self.repair.with_context(state_action="repair_result").action_confirm()
+        self.assertEqual(self.repair.state, "completed")
+        self.assertEqual(self.device.availability_status, "available")
+
+    def test_action_confirm_repair_result_not_repairable(self):
+        self.repair.state = "repairing"
+        self.repair.repair_result = "not_repairable"
+        self.repair.with_context(state_action="repair_result").action_confirm()
+        self.assertEqual(self.repair.state, "not_repairable")
+        self.assertEqual(self.device.availability_status, "damaged")
+
+
+class TestDeviceRequestWorkflow(TestDeviceCommon):
+    def _make_hold_request(self):
+        req = self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_hold",
+                "new_holder_employee_id": self.employee.id,
+                "new_holder_partner_id": self.partner.id,
+                "holder_employee_id": self.employee.id,
+                "holder_partner_id": self.partner.id,
+            }
+        )
+        return req
+
+    def test_submit_sets_state_pending(self):
+        req = self._make_hold_request()
+        req.action_submit()
+        self.assertEqual(req.state, "pending")
+
+    def test_submit_hold_sets_device_pending(self):
+        req = self._make_hold_request()
+        req.action_submit()
+        self.assertEqual(self.device.state, "pending")
+
+    def test_approve_hold_sets_device_in_use(self):
+        req = self._make_hold_request()
+        req.action_submit()
+        req.with_context(approval_action="approve").action_confirm_approval()
+        self.assertEqual(self.device.state, "in_use")
+
+    def test_approve_hold_creates_holder_history(self):
+        req = self._make_hold_request()
+        req.action_submit()
+        req.with_context(approval_action="approve").action_confirm_approval()
+        history = self.env["ni.device.holder"].search(
+            [("device_id", "=", self.device.id)]
+        )
+        self.assertEqual(len(history), 1)
+
+    def test_reject_hold_sets_request_rejected(self):
+        req = self._make_hold_request()
+        req.action_submit()
+        req.with_context(approval_action="reject").action_confirm_approval()
+        self.assertEqual(req.state, "rejected")
+
+    def test_reject_hold_restores_device_available(self):
+        req = self._make_hold_request()
+        req.action_submit()
+        req.with_context(approval_action="reject").action_confirm_approval()
+        self.assertEqual(self.device.state, "available")
+
+    def test_approve_return_sets_device_available(self):
+        hold_req = self._make_hold_request()
+        hold_req.action_submit()
+        hold_req.with_context(approval_action="approve").action_confirm_approval()
+
+        return_req = self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_return",
+                "holder_employee_id": self.employee.id,
+                "holder_partner_id": self.partner.id,
+            }
+        )
+        return_req.state = "pending"
+        return_req.with_context(approval_action="approve").action_confirm_approval()
+        self.assertEqual(self.device.state, "available")
+
+    def test_approve_dispose_sets_device_disposed(self):
+        hold_req = self._make_hold_request()
+        hold_req.action_submit()
+        hold_req.with_context(approval_action="approve").action_confirm_approval()
+
+        dispose_req = self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_dispose",
+                "holder_employee_id": self.employee.id,
+                "holder_partner_id": self.partner.id,
+            }
+        )
+        dispose_req.state = "pending"
+        dispose_req.with_context(approval_action="approve").action_confirm_approval()
+        self.assertEqual(self.device.state, "disposed")
+
+    def test_approve_transfer_changes_holder(self):
+        hold_req = self._make_hold_request()
+        hold_req.action_submit()
+        hold_req.with_context(approval_action="approve").action_confirm_approval()
+
+        new_employee = self.env["hr.employee"].create({"name": "New Holder"})
+        new_partner = self.env["res.partner"].create({"name": "New Partner"})
+
+        transfer_req = self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_transfer",
+                "holder_employee_id": self.employee.id,
+                "holder_partner_id": self.partner.id,
+                "new_holder_employee_id": new_employee.id,
+                "new_holder_partner_id": new_partner.id,
+            }
+        )
+        transfer_req.state = "pending"
+        transfer_req.with_context(approval_action="approve").action_confirm_approval()
+        self.assertEqual(self.device.holder_employee_id, new_employee)
+        self.assertEqual(self.device.state, "in_use")
+
+
+class TestDeviceRepairCost(TestDeviceCommon):
+    def test_repair_cost_sums_all_repairs(self):
+        self.env["ni.device.repair"].create(
+            [
+                {
+                    "device_id": self.device.id,
+                    "damage_date": fields.Datetime.now(),
+                    "repair_cost": 500,
+                },
+                {
+                    "device_id": self.device.id,
+                    "damage_date": fields.Datetime.now(),
+                    "repair_cost": 300,
+                },
+            ]
+        )
+        self.device._compute_repair_cost()
+        self.assertEqual(self.device.repair_cost, 800)
+
+    def test_repair_cost_zero_with_no_repairs(self):
+        self.device._compute_repair_cost()
+        self.assertEqual(self.device.repair_cost, 0)
+
+
+class TestDeviceDefinitionCounts(TestDeviceCommon):
+    def test_definition_device_count(self):
+        self.definition._compute_device_count()
+        self.assertEqual(self.definition.device_count, 1)
+
+    def test_definition_device_count_increases_with_new_device(self):
+        self.env["ni.device"].create(
+            {
+                "name": "BP Monitor #2",
+                "definition_id": self.definition.id,
+                "serial_number": "SN-002",
+                "received_date": fields.Date.today(),
+            }
+        )
+        self.definition._compute_device_count()
+        self.assertEqual(self.definition.device_count, 2)
