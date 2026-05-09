@@ -299,6 +299,7 @@ class DeviceRequest(models.Model):
 
                 if rec.request_type in ["request_dispose"]:
                     device.disposed_date = approve_date
+                    device.availability_status = "disposed"
 
                 # อัปเดต device
                 device.holder_employee_id = False
