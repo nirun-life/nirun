@@ -1,3 +1,3 @@
 #  Copyright (c) 2023 NSTDA
 
-from . import test_ni_patient
+from . import test_ni_patient, test_ni_workflow
