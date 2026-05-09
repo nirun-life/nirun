@@ -54,13 +54,13 @@
         "views/res_partner_views.xml",
         "views/res_company_views.xml",
         "views/ni_patient_views.xml",
-        "views/ni_patient_menu.xml",
         "views/ni_workflow_event_views.xml",
         "views/ni_workflow_request_views.xml",
         "views/ni_patient_portal.xml",
         "views/ni_patient_portal_templates.xml",
         "report/summary_report_templates.xml",
         "report/summary_report.xml",
+        "views/ni_patient_menu.xml",
     ],
     "assets": {
         "web.assets_backend": [
