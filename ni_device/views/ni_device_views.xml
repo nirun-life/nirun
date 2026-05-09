@@ -389,9 +389,12 @@
             <kanban>
                 <field name="image_128" />
                 <field name="holder_name" />
+                <field name="availability_status" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click o_kanban_card">
+                        <div
+                            t-attf-class="oe_kanban_global_click o_kanban_card #{record.availability_status.raw_value === 'lost' ? 'opacity-50' : ''}"
+                        >
                             <div class="o_kanban_image me-1">
                                 <field
                                     name="image_128"
@@ -426,6 +429,11 @@
                                 </div>
                                 <div class="o_kanban_tags_section mt-1">
                                     <field name="type_ids" widget="many2many_tags" />
+                                </div>
+                                <div
+                                    t-attf-class="small mt-1 #{record.availability_status.raw_value === 'damaged' ? 'fw-bold text-danger' : 'text-muted'}"
+                                >
+                                    <field name="availability_status" />
                                 </div>
                                 <t t-if="record.holder_name.raw_value">
                                     <div class="d-flex align-items-center mt-2 pt-1 border-top">
