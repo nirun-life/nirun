@@ -16,7 +16,12 @@
         <field name="name">ni.workflow.event.view.tree</field>
         <field name="model">ni.workflow.event</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree
+                decoration-success="state == 'completed'"
+                decoration-muted="state in ('not-done', 'abort')"
+                decoration-warning="state == 'suspended'"
+                decoration-info="state == 'in-progress'"
+            >
                 <field
                     name="company_id"
                     invisible="context.get('default_patient_id')"
@@ -27,6 +32,7 @@
                 <field name="encounter_id" invisible="context.get('default_encounter_id')" optional="show" />
                 <field name="name" />
                 <field name="summary" />
+                <field name="state" />
                 <field name="write_date" optional="hide" />
                 <field name="write_uid" optional="hide" />
                 <button

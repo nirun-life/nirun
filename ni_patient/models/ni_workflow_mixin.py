@@ -99,7 +99,7 @@ class WorkflowMixin(models.AbstractModel):
 
     def _safe_get_parent(self):
         if "parent_id" in self._fields and self.parent_id:
-            return self.partner_id
+            return self.parent_id
         else:
             return None
 
@@ -170,7 +170,7 @@ class EventMixin(models.AbstractModel):
         )
 
     def action_abort(self):
-        self.filtered_domain([("state", "in", "in-progress")]).write({"state": "abort"})
+        self.filtered_domain([("state", "=", "in-progress")]).write({"state": "abort"})
 
 
 class RequestMixin(models.AbstractModel):
@@ -222,6 +222,6 @@ class RequestMixin(models.AbstractModel):
         )
 
     def action_revoked(self):
-        self.filtered_domain([("state", "in", "in-progress")]).write(
+        self.filtered_domain([("state", "in", ["draft", "active"])]).write(
             {"state": "revoked"}
         )
