@@ -22,3 +22,4 @@ from . import res_company
 from . import ni_patient_res
 from . import ni_workflow
 from . import ni_workflow_mixin
+from . import ni_workflow_line
