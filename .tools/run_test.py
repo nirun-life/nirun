@@ -3,8 +3,8 @@
 import subprocess
 import sys
 
-ODOO_PATH = r"/"
-CONFIG_PATH = r"/odoo.conf"
+ODOO_PATH = r"C:\Users\nutcha\odoo"
+CONFIG_PATH = r"C:\Users\nutcha\Documents\nirun\odoo.conf"
 
 # ANSI color codes
 GREEN = "\033[92m"

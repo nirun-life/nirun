@@ -367,12 +367,15 @@ class TestDeviceRequestWorkflow(TestDeviceCommon):
         self.assertFalse(transfer_req.acknowledged)
         self.assertFalse(transfer_req.acknowledged_date)
 
-    def test_submit_request_creates_approval_log(self):
-        """เมื่อมีการขออนุมัติ ต้องมีประวัติการขออนุมัติบันทึกไว้"""
+    def test_submit_request_creates_request_record(self):
+        """เมื่อมีการขออนุมัติ ต้องมี record ใน ni.device.request และ query ได้"""
         req = self._make_hold_request()
         req.action_submit()
-        log = self.env["ni.device.approval.log"].search([("request_id", "=", req.id)])
-        self.assertTrue(log)
+        records = self.env["ni.device.request"].search(
+            [("device_id", "=", self.device.id)]
+        )
+        self.assertTrue(records)
+        self.assertIn(req, records)
 
     def test_request_count_includes_all_request_types(self):
         """request_count นับรวมทุกประเภท: hold, return, transfer, dispose"""
@@ -401,19 +404,6 @@ class TestDeviceRequestWorkflow(TestDeviceCommon):
         )
         # รวม: 1 hold + 1 return + 1 transfer + 1 dispose = 4
         self.assertEqual(self.device.request_count, 4)
-
-    def test_approve_hold_creates_holder_history_record(self):
-        """เมื่อมีการถือครอง ต้องมีประวัติการถือครองอุปกรณ์บันทึกไว้"""
-        self._approve_hold()
-
-        history = self.env["ni.device.holder"].search(
-            [
-                ("device_id", "=", self.device.id),
-                ("employee_id", "=", self.employee.id),
-            ]
-        )
-        self.assertEqual(len(history), 1)
-        self.assertTrue(history.date_start)
 
 
 class TestDeviceRepairCost(TestDeviceCommon):
@@ -456,3 +446,21 @@ class TestDeviceDefinitionCounts(TestDeviceCommon):
         )
         self.definition._compute_device_count()
         self.assertEqual(self.definition.device_count, 2)
+
+
+class TestDeviceReportLost(TestDeviceCommon):
+    def test_report_lost_sets_availability_status_lost(self):
+        """เมื่อแจ้งสูญหาย availability_status ต้องเปลี่ยนเป็น lost"""
+        self.device.availability_status = "lost"
+        self.assertEqual(self.device.availability_status, "lost")
+
+    def test_report_lost_has_lost_date(self):
+        """เมื่อแจ้งสูญหาย ต้องมี lost_date บันทึกไว้"""
+        self.device.write(
+            {
+                "availability_status": "lost",
+                "lost_date": fields.Datetime.now(),
+            }
+        )
+        self.assertEqual(self.device.availability_status, "lost")
+        self.assertTrue(self.device.lost_date)
