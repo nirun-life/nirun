@@ -183,6 +183,46 @@ class TestDeviceRequestWorkflow(TestDeviceCommon):
         )
         return req
 
+    def _approve_hold(self):
+        """Helper: สร้างและอนุมัติ hold request เพื่อให้ device อยู่ใน in_use"""
+        req = self._make_hold_request()
+        req.action_submit()
+        req.with_context(approval_action="approve").action_confirm_approval()
+        return req
+
+    def _make_transfer_request(self, new_employee, new_partner):
+        req = self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_transfer",
+                "holder_employee_id": self.employee.id,
+                "holder_partner_id": self.partner.id,
+                "new_holder_employee_id": new_employee.id,
+                "new_holder_partner_id": new_partner.id,
+            }
+        )
+        return req
+
+    def test_approve_dispose_sets_availability_status_disposed(self):
+        """อนุมัติ dispose → availability_status ของ device เปลี่ยนเป็น disposed"""
+        self._approve_hold()
+
+        dispose_req = self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_dispose",
+                "holder_employee_id": self.employee.id,
+                "holder_partner_id": self.partner.id,
+            }
+        )
+        dispose_req.state = "pending"
+        dispose_req.with_context(approval_action="approve").action_confirm_approval()
+        self.assertEqual(self.device.availability_status, "disposed")
+
+    # ------------------------------------------------------------------ #
+    #  เดิม                                                                #
+    # ------------------------------------------------------------------ #
+
     def test_submit_sets_state_pending(self):
         req = self._make_hold_request()
         req.action_submit()
@@ -221,9 +261,7 @@ class TestDeviceRequestWorkflow(TestDeviceCommon):
         self.assertEqual(self.device.state, "available")
 
     def test_approve_return_sets_device_available(self):
-        hold_req = self._make_hold_request()
-        hold_req.action_submit()
-        hold_req.with_context(approval_action="approve").action_confirm_approval()
+        self._approve_hold()
 
         return_req = self.env["ni.device.request"].create(
             {
@@ -238,9 +276,7 @@ class TestDeviceRequestWorkflow(TestDeviceCommon):
         self.assertEqual(self.device.state, "available")
 
     def test_approve_dispose_sets_device_disposed(self):
-        hold_req = self._make_hold_request()
-        hold_req.action_submit()
-        hold_req.with_context(approval_action="approve").action_confirm_approval()
+        self._approve_hold()
 
         dispose_req = self.env["ni.device.request"].create(
             {
@@ -255,27 +291,119 @@ class TestDeviceRequestWorkflow(TestDeviceCommon):
         self.assertEqual(self.device.state, "disposed")
 
     def test_approve_transfer_changes_holder(self):
-        hold_req = self._make_hold_request()
-        hold_req.action_submit()
-        hold_req.with_context(approval_action="approve").action_confirm_approval()
+        self._approve_hold()
 
         new_employee = self.env["hr.employee"].create({"name": "New Holder"})
         new_partner = self.env["res.partner"].create({"name": "New Partner"})
 
-        transfer_req = self.env["ni.device.request"].create(
-            {
-                "device_id": self.device.id,
-                "request_type": "request_transfer",
-                "holder_employee_id": self.employee.id,
-                "holder_partner_id": self.partner.id,
-                "new_holder_employee_id": new_employee.id,
-                "new_holder_partner_id": new_partner.id,
-            }
-        )
+        transfer_req = self._make_transfer_request(new_employee, new_partner)
         transfer_req.state = "pending"
         transfer_req.with_context(approval_action="approve").action_confirm_approval()
         self.assertEqual(self.device.holder_employee_id, new_employee)
         self.assertEqual(self.device.state, "in_use")
+
+    # ------------------------------------------------------------------ #
+    #  ใหม่                                                                #
+    # ------------------------------------------------------------------ #
+
+    def test_reject_return_keeps_device_in_use(self):
+        """ปฏิเสธ return → device ยังคงเป็น in_use"""
+        self._approve_hold()
+
+        return_req = self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_return",
+                "holder_employee_id": self.employee.id,
+                "holder_partner_id": self.partner.id,
+            }
+        )
+        return_req.state = "pending"
+        return_req.with_context(approval_action="reject").action_confirm_approval()
+        self.assertEqual(self.device.state, "in_use")
+
+    def test_reject_transfer_keeps_original_holder(self):
+        """ปฏิเสธ transfer → holder_employee_id เป็นคนเดิม และ state ยังเป็น in_use"""
+        self._approve_hold()
+
+        new_employee = self.env["hr.employee"].create({"name": "New Holder"})
+        new_partner = self.env["res.partner"].create({"name": "New Partner"})
+
+        transfer_req = self._make_transfer_request(new_employee, new_partner)
+        transfer_req.state = "pending"
+        transfer_req.with_context(approval_action="reject").action_confirm_approval()
+        self.assertEqual(self.device.holder_employee_id, self.employee)
+        self.assertEqual(self.device.state, "in_use")
+
+    def test_approve_transfer_with_acknowledged_has_acknowledged_date(self):
+        """อนุมัติ transfer และผู้ถือครองใหม่ติ๊ก acknowledged → acknowledged_date ต้องมีค่า"""
+        self._approve_hold()
+
+        new_employee = self.env["hr.employee"].create({"name": "New Holder"})
+        new_partner = self.env["res.partner"].create({"name": "New Partner"})
+
+        transfer_req = self._make_transfer_request(new_employee, new_partner)
+        transfer_req.state = "pending"
+        transfer_req.write(
+            {
+                "acknowledged": True,
+                "acknowledged_date": fields.Datetime.now(),
+            }
+        )
+        transfer_req.with_context(approval_action="approve").action_confirm_approval()
+        self.assertTrue(transfer_req.acknowledged)
+        self.assertTrue(transfer_req.acknowledged_date)
+
+    def test_approve_transfer_without_acknowledged_has_no_acknowledged_date(self):
+        """อนุมัติ transfer และผู้ถือครองใหม่ไม่ติ๊ก acknowledged → acknowledged_date ต้องไม่มีค่า"""
+        self._approve_hold()
+
+        new_employee = self.env["hr.employee"].create({"name": "New Holder"})
+        new_partner = self.env["res.partner"].create({"name": "New Partner"})
+
+        transfer_req = self._make_transfer_request(new_employee, new_partner)
+        transfer_req.state = "pending"
+        transfer_req.with_context(approval_action="approve").action_confirm_approval()
+        self.assertFalse(transfer_req.acknowledged)
+        self.assertFalse(transfer_req.acknowledged_date)
+
+    def test_submit_request_creates_request_record(self):
+        """เมื่อมีการขออนุมัติ ต้องมี record ใน ni.device.request และ query ได้"""
+        req = self._make_hold_request()
+        req.action_submit()
+        records = self.env["ni.device.request"].search(
+            [("device_id", "=", self.device.id)]
+        )
+        self.assertTrue(records)
+        self.assertIn(req, records)
+
+    def test_request_count_includes_all_request_types(self):
+        """request_count นับรวมทุกประเภท: hold, return, transfer, dispose"""
+        self._approve_hold()
+
+        # request_hold ถูกนับไปแล้ว 1 ครั้งจาก _approve_hold
+        self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_return",
+                "holder_employee_id": self.employee.id,
+                "holder_partner_id": self.partner.id,
+            }
+        )
+        new_employee = self.env["hr.employee"].create({"name": "Transfer Target"})
+        new_partner = self.env["res.partner"].create({"name": "Transfer Partner"})
+        self._make_transfer_request(new_employee, new_partner)
+
+        self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_dispose",
+                "holder_employee_id": self.employee.id,
+                "holder_partner_id": self.partner.id,
+            }
+        )
+        # รวม: 1 hold + 1 return + 1 transfer + 1 dispose = 4
+        self.assertEqual(self.device.request_count, 4)
 
 
 class TestDeviceRepairCost(TestDeviceCommon):
@@ -318,3 +446,21 @@ class TestDeviceDefinitionCounts(TestDeviceCommon):
         )
         self.definition._compute_device_count()
         self.assertEqual(self.definition.device_count, 2)
+
+
+class TestDeviceReportLost(TestDeviceCommon):
+    def test_report_lost_sets_availability_status_lost(self):
+        """เมื่อแจ้งสูญหาย availability_status ต้องเปลี่ยนเป็น lost"""
+        self.device.availability_status = "lost"
+        self.assertEqual(self.device.availability_status, "lost")
+
+    def test_report_lost_has_lost_date(self):
+        """เมื่อแจ้งสูญหาย ต้องมี lost_date บันทึกไว้"""
+        self.device.write(
+            {
+                "availability_status": "lost",
+                "lost_date": fields.Datetime.now(),
+            }
+        )
+        self.assertEqual(self.device.availability_status, "lost")
+        self.assertTrue(self.device.lost_date)
