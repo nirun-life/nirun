@@ -7,19 +7,23 @@
             <search>
                 <field
                     name="identifier"
-                    filter_domain="['|', ('identifier', 'ilike', self), ('user_id', 'ilike', self)]"
+                    string="ชื่อ-นามสกุลผู้บริบาล"
+                    filter_domain="['|','|', ('identifier', 'ilike', self), ('user_id', 'ilike', self), ('employee_id', 'ilike', self)]"
                 />
-                <field name="employee_id" string="ผู้บริบาล" />
                 <field
                     name="employee_id"
                     string="แท็กผู้บริบาล"
                     filter_domain="[('employee_id.category_ids.name', 'ilike', self)]"
                 />
+                <filter name="start" date="start" string="วันที่รายงาน" />
+                <separator />
                 <filter name="pending" string="รอการอนุมัติ" domain="[('state', '=', 'pending')]" />
                 <filter name="approved" string="อนุมัติแล้ว" domain="[('state', '=', 'approved')]" />
                 <filter name="rejected" string="ไม่ผ่านการอนุมัติ" domain="[('state', '=', 'rejected')]" />
-                <filter name="group_employee" string="ผู้บริบาล" context="{'group_by':'employee_id'}" />
-                <filter name="group_month" string="ช่วง" context="{'group_by':'start', 'order': 'start desc'}" />
+                <group>
+                    <filter name="group_employee" string="ผู้บริบาล" context="{'group_by':'employee_id'}" />
+                    <filter name="group_month" string="ช่วง" context="{'group_by':'start', 'order': 'start desc'}" />
+                </group>
                 <searchpanel>
                     <field name="state" string="สถานะ" enable_counters="1" icon="fa-circle" />
                     <field name="state_id" string="" enable_counters="1" />

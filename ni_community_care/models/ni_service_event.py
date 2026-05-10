@@ -82,9 +82,13 @@ class ServiceEvent(models.Model):
         group_operator="count_distinct",
         store=True,
         readonly=False,
+        default=lambda self: self.env.uid,
     )
     employee_id = fields.Many2one(
-        related="user_id.employee_id", store=True, group_operator="count_distinct"
+        related="user_id.employee_id",
+        store=True,
+        index=True,
+        group_operator="count_distinct",
     )
     my_service_event = fields.Boolean(
         compute="_compute_my_service_event", search="_search_my_service_event"
