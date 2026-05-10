@@ -56,6 +56,7 @@
         "views/ni_patient_views.xml",
         "views/ni_workflow_event_views.xml",
         "views/ni_workflow_request_views.xml",
+        "views/ni_workflow_line_views.xml",
         "views/ni_patient_portal.xml",
         "views/ni_patient_portal_templates.xml",
         "report/summary_report_templates.xml",
