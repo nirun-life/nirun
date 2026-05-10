@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_immunization_vaccine_action" model="ir.actions.act_window">
+        <field name="name">Vaccines</field>
+        <field name="res_model">ni.immunization.vaccine</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="ni_immunization_vaccine_view_tree" model="ir.ui.view">
+        <field name="name">ni.immunization.vaccine.view.tree</field>
+        <field name="model">ni.immunization.vaccine</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="code" optional="show" />
+                <field name="name" />
+                <field name="abbr" optional="hide" />
+                <field name="active" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_immunization_vaccine_view_form" model="ir.ui.view">
+        <field name="name">ni.immunization.vaccine.view.form</field>
+        <field name="model">ni.immunization.vaccine</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="abbr" />
+                            <field name="code" />
+                        </group>
+                        <group>
+                            <field name="system_id" options="{'no_open': True}" />
+                            <field name="active" />
+                        </group>
+                    </group>
+                    <field name="definition" placeholder="Description..." />
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit.immunization</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='show_procedure']" position="after">
+                <field name="show_immunization" invisible="1" />
+            </xpath>
+            <xpath expr="//page[@name='procedure']" position="after">
+                <page
+                    name="immunization"
+                    string="Immunization"
+                    icon="fa-shield"
+                    attrs="{'invisible': [('show_immunization', '=', False)]}"
+                >
+                    <field name="immunization_count" invisible="1" />
+                    <field
+                        name="immunization_ids"
+                        context="{
+                            'default_encounter_id': id,
+                            'default_patient_id': patient_id,
+                            'default_state': 'completed'
+                        }"
+                    />
+                    <button name="action_immunization" type="object" string="See More" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

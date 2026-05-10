@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.view.form.inherit.immunization</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_immunization"
+                    attrs="{'invisible': [('immunization_count', '=', 0)]}"
+                    class="oe_stat_button"
+                    icon="fa-shield"
+                    type="object"
+                >
+                    <field name="immunization_count" string="Immunization(s)" widget="statinfo" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
