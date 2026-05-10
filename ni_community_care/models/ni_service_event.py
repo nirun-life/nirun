@@ -133,12 +133,20 @@ class ServiceEvent(models.Model):
     @api.depends("user_id")
     def _compute_my_service_event(self):
         for rec in self:
-            rec.my_service_event = rec.user_id == self.env.user.id
+            rec.my_service_event = rec.user_id == self.env.user
 
     def _search_my_service_event(self, operator, operand):
         if operator == "=":
             return [("user_id", "=" if bool(operand) else "!=", self.env.user.id)]
         raise ValidationError(_("my_service support only '=', 'True' or 'False'"))
+
+    @api.onchange("service_id")
+    def _onchange_service_id(self):
+        saved_user = {rec: rec.user_id for rec in self}
+        result = super()._onchange_service_id()
+        for rec in self:
+            rec.user_id = saved_user[rec]
+        return result
 
     @api.onchange("patient_type_id", "service_category_id")
     def _onchange_patient_type_id(self):
@@ -215,6 +223,19 @@ class ServiceEvent(models.Model):
                             )
                         )
                     )
+
+    @api.constrains("user_id", "partner_ids")
+    def _check_user_partner(self):
+        # The base implementation writes partner_ids inside a @api.constrains that
+        # also watches partner_ids, causing infinite recursion.  The context flag
+        # prevents re-entry so the write is idempotent and safe.
+        if self.env.context.get("_in_check_user_partner"):
+            return
+        for rec in self.with_context(_in_check_user_partner=True):
+            if not rec.user_id:
+                continue
+            if rec.user_id.partner_id and rec.user_id.partner_id not in rec.partner_ids:
+                rec.partner_ids = [fields.Command.link(rec.user_id.partner_id.id)]
 
     @api.constrains("user_id", "employee_id")
     def _check_employee_id(self):
