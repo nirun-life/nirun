@@ -8,6 +8,7 @@ from odoo.exceptions import ValidationError
 
 class ServiceEventReport(models.Model):
     _name = "ni.service.event.report"
+    _inherit = ["ni.my.area.mixin"]
     _description = "Service Event Report"
     _order = "start desc"
     _auto = False
@@ -54,7 +55,6 @@ class ServiceEventReport(models.Model):
     my_service = fields.Boolean(
         compute="_compute_my_service", search="_search_my_service"
     )
-    my_area = fields.Boolean(compute="_compute_my_area", search="_search_my_area")
 
     def action_service_event(self):
         self.ensure_one()
@@ -79,33 +79,6 @@ class ServiceEventReport(models.Model):
         if operator == "=":
             return [("user_id", "=" if bool(operand) else "!=", self.env.user.id)]
         raise ValidationError(_("my_service support only '=', 'True' or 'False'"))
-
-    @api.depends("city_id")
-    def _compute_my_area(self):
-        for rec in self:
-            if self.user_has_groups("ni_patient.group_manager"):
-                rec.my_area = rec.state_id.id in self.env.user.state_ids.ids
-            else:
-                rec.my_area = rec.city_id.id in self.env.user.city_ids.ids
-
-    def _search_my_area(self, operator, operand):
-        if operator == "=":
-            if self.user_has_groups("ni_patient.group_manager"):
-                return [
-                    (
-                        "state_id",
-                        "in" if bool(operand) else "not in",
-                        self.env.user.state_ids.ids,
-                    )
-                ]
-            return [
-                (
-                    "city_id",
-                    "in" if bool(operand) else "not in",
-                    self.env.user.city_ids.ids,
-                )
-            ]
-        raise ValidationError(_("my_area support only '=', 'True' or 'False'"))
 
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)

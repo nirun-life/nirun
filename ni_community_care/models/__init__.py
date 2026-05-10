@@ -1,6 +1,7 @@
 #  Copyright (c) 2023 NSTDA
-from . import hr_employee
+from . import ni_my_area_mixin
 from . import hr_employee_base
+from . import hr_employee
 from . import ir_rule
 from . import ni_careplan
 from . import ni_cc_report_monthly

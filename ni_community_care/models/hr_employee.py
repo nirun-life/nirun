@@ -3,21 +3,8 @@ from odoo import api, fields, models
 
 
 class Employee(models.Model):
-    _inherit = "hr.employee"
-
-    my_area = fields.Boolean(compute="_compute_my_area", search="_search_my_area")
-
-    @api.depends("city_ids")
-    def _compute_my_area(self):
-        my_cities = self.env.user.city_ids.ids
-        for rec in self:
-            rec.my_area = bool(set(rec.city_ids.ids) & set(my_cities))
-
-    def _search_my_area(self, operator, value):
-        my_city_ids = self.env.user.city_ids.ids
-        if not my_city_ids:
-            return [("id", "=", 0)]
-        return [("city_ids", "in", my_city_ids)]
+    _inherit = ["hr.employee", "ni.my.area.mixin"]
+    _name = "hr.employee"
 
     def _sync_user(self, user, employee_has_image=False):
         vals = super()._sync_user(user, employee_has_image)
