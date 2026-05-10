@@ -55,6 +55,19 @@ causes schema errors on this setup.
 The CI matrix runs against both stock Odoo 16.0 and OCB 16.0 containers. `l10n_th_icd9cm` and `l10n_th_icd10tm` are excluded
 from CI because they contain large data files.
 
+## Translations
+
+Thai translations live in `<module>/i18n/th.po`. **Always regenerate the `.po` file before editing translations** whenever new
+strings are added to a module (new fields, view labels, filter strings, etc.). Use the export script in `.tools/`:
+
+```bash
+ODOO_MODULE=<module_name> python <odoo-bin> shell -c odoo.conf -d <database> --no-http < .tools/export_po.py
+```
+
+- `ODOO_MODULE` defaults to `ni_patient`; `ODOO_LANG` defaults to `th_TH`
+- The script resolves the output path via Odoo's addon registry — no hardcoded paths, works on any machine
+- After export, open the `.po` file and fill in the empty `msgstr ""` entries
+
 ## Code Style
 
 All formatting is enforced via pre-commit. Run manually with `pre-commit run --all-files`.
@@ -107,7 +120,8 @@ Two abstract mixins drive state-machine behavior across clinical models:
   `draft → active → completed / on-hold / revoked`.
 
 Both write a mirror record into `ni.workflow.event` / `ni.workflow.request` on every create/write, creating a unified patient
-timeline.
+timeline. **`ni.workflow.line`** is a read-only `_auto=False` SQL UNION view over both tables, used to display events and
+requests together in a single timeline list/kanban.
 
 ### Key Supporting Modules
 
