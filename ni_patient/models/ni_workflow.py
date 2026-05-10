@@ -1,6 +1,7 @@
 #  Copyright (c) 2022-2023 NSTDA
 
 from odoo import api, fields, models, tools
+from odoo.tools.date_utils import get_timedelta
 
 
 class Workflow(models.AbstractModel):
@@ -67,10 +68,7 @@ class Workflow(models.AbstractModel):
 
     @api.model
     def garbage_collect(self):
-        from odoo.tools.date_utils import get_timedelta
-
-        limit_date = fields.datetime.utcnow() - get_timedelta(1, "day")
-
+        limit_date = fields.datetime.now() - get_timedelta(1, "day")
         return self.search(
             [
                 ("res_model", "=", False),
@@ -81,12 +79,15 @@ class Workflow(models.AbstractModel):
         ).unlink()
 
     def action_resource(self):
+        self.ensure_one()
+        ctx = dict(self.env.context)
         return {
             "type": "ir.actions.act_window",
             "res_model": self.res_model,
             "res_id": self.res_id,
             "views": [[False, "form"]],
-            "target": "new",
+            "target": "current",
+            "context": ctx,
         }
 
 
