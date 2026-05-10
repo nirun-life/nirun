@@ -73,4 +73,25 @@
             </kanban>
         </field>
     </record>
+    <record id="hr_attendance.hr_attendance_action" model="ir.actions.act_window">
+        <field name="domain">[('employee_id.my_area', '=', True)]</field>
+    </record>
+    <record id="hr_attendance.hr_attendance_action_overview" model="ir.actions.act_window">
+        <field name="domain">[('employee_id.my_area', '=', True)]</field>
+        <field name="view_mode">tree,kanban,form</field>
+    </record>
+    <record id="hr_attendance_view_filter_inherit" model="ir.ui.view">
+        <field name="name">hr.attendance.view.filter.my.area</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_filter" />
+        <field name="arch" type="xml">
+            <search>
+                <filter
+                    name="my_area_employees"
+                    string="ผู้บริบาลในพื้นที่รับผิดชอบ"
+                    domain="[('employee_id.my_area', '=', True)]"
+                />
+            </search>
+        </field>
+    </record>
 </odoo>
