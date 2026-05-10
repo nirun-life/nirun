@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-  ~ Copyright (c) 2022-2023 NSTDA
+  ~ Copyright (c) 2026 NSTDA
   -->
 <odoo>
-    <record id="ni_workflow_event_action" model="ir.actions.act_window">
-        <field name="name">Timeline - Event</field>
-        <field name="res_model">ni.workflow.event</field>
-        <field name="view_mode">tree,kanban,form</field>
+    <record id="ni_workflow_line_action" model="ir.actions.act_window">
+        <field name="name">Timeline</field>
+        <field name="res_model">ni.workflow.line</field>
+        <field name="view_mode">tree,kanban</field>
         <field name="help" type="html">
-            <p class="oe_view_nocontent_create">No Event</p>
+            <p class="oe_view_nocontent_create">No Timeline</p>
             <p>You may try to remove some filter</p>
         </field>
     </record>
-    <record id="ni_workflow_event_view_search" model="ir.ui.view">
-        <field name="name">ni.workflow.event.view.search</field>
-        <field name="model">ni.workflow.event</field>
+    <record id="ni_workflow_line_view_search" model="ir.ui.view">
+        <field name="name">ni.workflow.line.view.search</field>
+        <field name="model">ni.workflow.line</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" />
@@ -26,11 +26,19 @@
                 <filter
                     name="ongoing"
                     string="Ongoing"
-                    domain="[('state', 'in', ['preparation', 'in-progress', 'suspended'])]"
+                    domain="[('state', 'in', ['preparation', 'draft', 'in-progress', 'active', 'on-hold', 'suspended'])]"
                 />
                 <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
-                <filter name="cancelled" string="Cancelled" domain="[('state', 'in', ['not-done', 'abort'])]" />
+                <filter
+                    name="cancelled"
+                    string="Cancelled"
+                    domain="[('state', 'in', ['not-done', 'abort', 'revoked'])]"
+                />
+                <separator />
+                <filter name="event" string="Event" domain="[('type', '=', 'event')]" />
+                <filter name="request" string="Request" domain="[('type', '=', 'request')]" />
                 <group name="Group by">
+                    <filter name="group_by_type" string="Type" context="{'group_by': 'type'}" />
                     <filter name="group_by_state" string="State" context="{'group_by': 'state'}" />
                     <separator />
                     <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
@@ -39,16 +47,18 @@
                     <filter name="group_by_occurrence" string="Date" context="{'group_by': 'occurrence'}" />
                 </group>
                 <searchpanel>
+                    <field name="type" icon="fa-tag" enable_counters="1" />
                     <field name="state" icon="fa-circle" enable_counters="1" />
                 </searchpanel>
             </search>
         </field>
     </record>
-    <record id="ni_workflow_event_view_kanban" model="ir.ui.view">
-        <field name="name">ni.workflow.event.view.kanban</field>
-        <field name="model">ni.workflow.event</field>
+    <record id="ni_workflow_line_view_kanban" model="ir.ui.view">
+        <field name="name">ni.workflow.line.view.kanban</field>
+        <field name="model">ni.workflow.line</field>
         <field name="arch" type="xml">
             <kanban create="0" edit="0" delete="0" records_draggable="0" quick_create="0" group_create="0">
+                <field name="type" />
                 <field name="state" />
                 <field name="occurrence" />
                 <field name="patient_id" />
@@ -57,10 +67,10 @@
                 <field name="summary" />
                 <field name="res_model" />
                 <field name="res_id" />
-                <field name="write_uid" />
+                <field name="create_uid" />
                 <progressbar
                     field="state"
-                    colors='{"completed": "success", "in-progress": "info", "not-done": "danger", "abort": "danger"}'
+                    colors='{"completed": "success", "in-progress": "info", "active": "info", "not-done": "danger", "abort": "danger", "revoked": "danger"}'
                 />
                 <templates>
                     <t t-name="kanban-box">
@@ -78,6 +88,13 @@
                                         <field name="occurrence" widget="datetime" />
                                     </span>
                                 </div>
+                                <div>
+                                    <span
+                                        t-attf-class="badge rounded-pill {{ record.type.raw_value == 'event' ? 'text-bg-primary' : 'text-bg-info' }}"
+                                    >
+                                        <field name="type" />
+                                    </span>
+                                </div>
                             </div>
                             <div class="oe_kanban_details mt-2">
                                 <span
@@ -86,33 +103,30 @@
                                     t-esc="record.summary.raw_value"
                                 />
                                 <div t-if="!context['default_patient_id']" class="mt-1 small">
-                                    <i class="fa fa-user me-1 text-muted" />
                                     <field name="patient_id" />
-                                </div>
-                                <div
-                                    t-if="!context['default_encounter_id'] and record.encounter_id.raw_value"
-                                    class="small"
-                                >
-                                    <i class="fa fa-stethoscope me-1 text-muted" />
-                                    <field name="encounter_id" />
+                                    <field
+                                        class="ms-4"
+                                        name="encounter_id"
+                                        invisible="context.get('default_encounter_id')"
+                                    />
                                 </div>
                             </div>
                             <div class="o_kanban_record_bottom mt-2">
                                 <div class="oe_kanban_bottom_left">
                                     <span
-                                        t-attf-class="badge {{ record.state.raw_value === 'completed' ? 'text-bg-success' : (record.state.raw_value === 'not-done' || record.state.raw_value === 'abort') ? 'text-bg-secondary' : record.state.raw_value === 'suspended' ? 'text-bg-warning' : record.state.raw_value === 'in-progress' ? 'text-bg-info' : 'text-bg-light' }}"
+                                        t-attf-class="badge {{ record.state.raw_value == 'completed' ? 'text-bg-success' : record.state.raw_value in ['not-done','abort','revoked'] ? 'text-bg-secondary' : record.state.raw_value in ['suspended','on-hold'] ? 'text-bg-warning' : record.state.raw_value in ['in-progress','active'] ? 'text-bg-info' : 'text-bg-light' }}"
                                     >
                                         <field name="state" />
                                     </span>
                                 </div>
                                 <div class="oe_kanban_bottom_right">
-                                    <field name="write_uid" widget="many2one_avatar_user" />
+                                    <field name="create_uid" widget="many2one_avatar_user" />
                                     <button
                                         name="action_resource"
                                         type="object"
                                         class="btn btn-sm btn-link p-0 ms-1"
                                         icon="fa-external-link"
-                                        title="Open source"
+                                        title="Open"
                                     />
                                 </div>
                             </div>
@@ -122,9 +136,9 @@
             </kanban>
         </field>
     </record>
-    <record id="ni_workflow_event_view_tree" model="ir.ui.view">
-        <field name="name">ni.workflow.event.view.tree</field>
-        <field name="model">ni.workflow.event</field>
+    <record id="ni_workflow_line_view_tree" model="ir.ui.view">
+        <field name="name">ni.workflow.line.view.tree</field>
+        <field name="model">ni.workflow.line</field>
         <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false">
                 <field
@@ -141,64 +155,26 @@
                     optional="show"
                 />
                 <field name="encounter_id" invisible="context.get('default_encounter_id')" optional="show" />
+                <field
+                    name="type"
+                    widget="badge"
+                    decoration-info="type == 'request'"
+                    decoration-primary="type == 'event'"
+                />
                 <field name="name" optional="show" />
                 <field name="summary" optional="show" />
                 <field
                     name="state"
                     widget="badge"
                     decoration-success="state == 'completed'"
-                    decoration-muted="state in ('not-done', 'abort')"
-                    decoration-warning="state == 'suspended'"
-                    decoration-info="state == 'in-progress'"
+                    decoration-muted="state in ('not-done', 'abort', 'revoked')"
+                    decoration-warning="state in ('suspended', 'on-hold')"
+                    decoration-info="state in ('in-progress', 'active')"
                 />
                 <field name="create_uid" widget="many2one_avatar_user" optional="hide" />
                 <field name="create_date" optional="hide" />
                 <button name="action_resource" class="text-primary" type="object" icon="fa-external-link" />
             </tree>
-        </field>
-    </record>
-    <record id="ni_workflow_event_view_form" model="ir.ui.view">
-        <field name="name">ni.workflow.event.view.form</field>
-        <field name="model">ni.workflow.event</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <div class="oe_button_box" name="btn_box">
-                        <button
-                            name="action_resource"
-                            type="object"
-                            string="Link"
-                            class="oe_stat_button"
-                            icon="fa-external-link"
-                        >
-
-                        </button>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="name" />
-                            <field name="summary" />
-                            <field name="occurrence" readonly="1" />
-                        </group>
-                        <group>
-                            <field
-                                name="company_id"
-                                groups="base.group_multi_company"
-                                invisible="context.get('default_patient_id')"
-                                readonly="1"
-                            />
-                            <field name="patient_id" invisible="context.get('default_patient_id')" readonly="1" />
-                            <field name="encounter_id" invisible="context.get('default_encounter_id')" readonly="1" />
-                        </group>
-                        <group>
-                            <field name="request_id" readonly="1" />
-                        </group>
-                        <group>
-                            <field name="parent_id" readonly="1" />
-                        </group>
-                    </group>
-                </sheet>
-            </form>
         </field>
     </record>
 </odoo>

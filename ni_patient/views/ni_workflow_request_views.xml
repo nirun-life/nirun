@@ -4,46 +4,169 @@
   -->
 <odoo>
     <record id="ni_workflow_request_action" model="ir.actions.act_window">
-        <field name="name">Request</field>
+        <field name="name">Timeline - Request</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.workflow.request</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('is_replaced','=',False)]</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('is_replaced', '=', False)]</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">No Request</p>
             <p>You may try to remove some filter</p>
+        </field>
+    </record>
+    <record id="ni_workflow_request_view_search" model="ir.ui.view">
+        <field name="name">ni.workflow.request.view.search</field>
+        <field name="model">ni.workflow.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <separator />
+                <filter name="occurrence" string="Date" date="occurrence" />
+                <separator />
+                <filter name="ongoing" string="Ongoing" domain="[('state', 'in', ['draft', 'active', 'on-hold'])]" />
+                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
+                <filter name="revoked" string="Revoked" domain="[('state', '=', 'revoked')]" />
+                <separator />
+                <filter name="stat" string="Priority: STAT" domain="[('priority', '=', 'stat')]" />
+                <filter name="asap" string="Priority: ASAP" domain="[('priority', '=', 'asap')]" />
+                <filter name="urgent" string="Priority: Urgent" domain="[('priority', '=', 'urgent')]" />
+                <group name="Group by">
+                    <filter name="group_by_intent" string="Intent" context="{'group_by': 'intent'}" />
+                    <filter name="group_by_priority" string="Priority" context="{'group_by': 'priority'}" />
+                    <filter name="group_by_state" string="State" context="{'group_by': 'state'}" />
+                    <separator />
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="group_by_encounter" string="Encounter" context="{'group_by': 'encounter_id'}" />
+                    <separator />
+                    <filter name="group_by_occurrence" string="Date" context="{'group_by': 'occurrence'}" />
+                </group>
+                <searchpanel>
+                    <field name="priority" icon="fa-flag" enable_counters="1" />
+                    <field name="state" icon="fa-circle" enable_counters="1" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_workflow_request_view_kanban" model="ir.ui.view">
+        <field name="name">ni.workflow.request.view.kanban</field>
+        <field name="model">ni.workflow.request</field>
+        <field name="arch" type="xml">
+            <kanban create="0" edit="0" delete="0" records_draggable="0" quick_create="0" group_create="0">
+                <field name="state" />
+                <field name="priority" />
+                <field name="occurrence" />
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <field name="name" />
+                <field name="summary" />
+                <field name="res_model" />
+                <field name="res_id" />
+                <field name="write_uid" />
+                <progressbar
+                    field="state"
+                    colors='{"completed": "success", "active": "info", "revoked": "danger", "on-hold": "warning"}'
+                />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name" />
+                                    </strong>
+                                    <span class="o_kanban_record_subtitle small">
+                                        <field class='text-danger' name="res_model" groups="base.group_no_one" />
+                                    </span>
+                                    <span class="o_kanban_record_subtitle text-muted small">
+                                        <i class="fa fa-clock-o me-1" />
+                                        <field name="occurrence" widget="datetime" />
+                                    </span>
+                                </div>
+                                <div>
+                                    <i
+                                        t-attf-class="fa fa-flag {{ record.priority.raw_value === 'stat' ? 'text-danger' : record.priority.raw_value === 'asap' ? 'text-warning' : record.priority.raw_value === 'urgent' ? 'text-primary' : 'text-muted' }}"
+                                        t-attf-title="{{ record.priority.value }}"
+                                    />
+                                </div>
+                            </div>
+                            <div class="oe_kanban_details mt-2">
+                                <span
+                                    t-if="record.summary.raw_value"
+                                    class="text-muted small"
+                                    t-esc="record.summary.raw_value"
+                                />
+                                <div t-if="!context['default_patient_id']" class="mt-1 small">
+                                    <i class="fa fa-user me-1 text-muted" />
+                                    <field name="patient_id" />
+                                </div>
+                                <div
+                                    t-if="!context['default_encounter_id'] and record.encounter_id.raw_value"
+                                    class="small"
+                                >
+                                    <i class="fa fa-stethoscope me-1 text-muted" />
+                                    <field name="encounter_id" />
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom mt-2">
+                                <div class="oe_kanban_bottom_left">
+                                    <span
+                                        t-attf-class="badge {{ record.state.raw_value === 'completed' ? 'text-bg-success' : record.state.raw_value === 'revoked' ? 'text-bg-secondary' : record.state.raw_value === 'on-hold' ? 'text-bg-warning' : record.state.raw_value === 'active' ? 'text-bg-info' : 'text-bg-light' }}"
+                                    >
+                                        <field name="state" />
+                                    </span>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="write_uid" widget="many2one_avatar_user" />
+                                    <button
+                                        name="action_resource"
+                                        type="object"
+                                        class="btn btn-sm btn-link p-0 ms-1"
+                                        icon="fa-external-link"
+                                        title="Open source"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
     <record id="ni_workflow_request_view_tree" model="ir.ui.view">
         <field name="name">ni.workflow.request.view.tree</field>
         <field name="model">ni.workflow.request</field>
         <field name="arch" type="xml">
-            <tree
-                decoration-success="state == 'completed'"
-                decoration-muted="state == 'revoked'"
-                decoration-warning="state == 'on-hold'"
-                decoration-info="state == 'active'"
-            >
+            <tree create="false" edit="false" delete="false">
                 <field
                     name="company_id"
                     invisible="context.get('default_patient_id')"
                     groups="base.group_multi_company"
+                    optional="show"
                 />
                 <field name="occurrence" />
-                <field name="patient_id" invisible="context.get('default_patient_id')" />
-                <field name="encounter_id" invisible="context.get('default_encounter_id')" optional="show" />
-                <field name="name" />
-                <field name="summary" />
-                <field name="state" />
-                <field name="write_date" optional="hide" />
-                <field name="write_uid" optional="hide" />
-                <button
-                    name="action_resource"
-                    class="text-primary"
-                    type="object"
-                    string="External Link"
-                    icon="fa-external-link"
+                <field
+                    name="patient_id"
+                    invisible="context.get('default_patient_id')"
+                    widget="many2one_avatar"
+                    optional="show"
                 />
+                <field name="encounter_id" invisible="context.get('default_encounter_id')" optional="show" />
+                <field name="name" optional="show" />
+                <field name="summary" optional="show" />
+                <field name="priority" optional="show" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-success="state == 'completed'"
+                    decoration-muted="state == 'revoked'"
+                    decoration-warning="state == 'on-hold'"
+                    decoration-info="state == 'active'"
+                />
+                <field name="create_uid" widget="many2one_avatar_user" optional="hide" />
+                <field name="create_date" optional="hide" />
+                <button name="action_resource" class="text-primary" type="object" icon="fa-external-link" />
             </tree>
         </field>
     </record>

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-27 11:10+0000\n"
-"PO-Revision-Date: 2025-08-27 11:10+0000\n"
+"POT-Creation-Date: 2026-05-10 00:57+0000\n"
+"PO-Revision-Date: 2026-05-10 00:57+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -203,13 +203,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ni_patient.encounter_summary_report_template
 #: model_terms:ir.ui.view,arch_db:ni_patient.portal_my_patient_encounter
 msgid "<span class=\"mx-1\">-</span>"
-msgstr ""
-
-#. module: ni_patient
-#: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_archive_wizard_view_form
-msgid ""
-"<span class=\"o_form_label o_hr_form_label cursor-default\">Close "
-"Activities</span>"
 msgstr ""
 
 #. module: ni_patient
@@ -520,6 +513,11 @@ msgid "Abbreviation"
 msgstr "คำย่อ"
 
 #. module: ni_patient
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__state__abort
+msgid "Aborted"
+msgstr "ยกเลิก"
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__message_needaction
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__message_needaction
 msgid "Action Needed"
@@ -540,6 +538,7 @@ msgstr "ต้องดำเนินการ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_participant_type__active
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__active
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_state_reason__active
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__state__active
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_request__state__active
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_search
 msgid "Active"
@@ -962,6 +961,8 @@ msgstr "ยกเลิก"
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter__state__cancelled
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
 msgid "Cancelled"
 msgstr "ถูกยกเลิก"
 
@@ -1123,11 +1124,6 @@ msgid "Commercial Entity"
 msgstr ""
 
 #. module: ni_patient
-#: model:ir.model,name:ni_patient.model_res_company
-msgid "Companies"
-msgstr "บริษัท"
-
-#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_location__company_id
@@ -1138,6 +1134,7 @@ msgstr "บริษัท"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event_mixin__company_id
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_mixin__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__company_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request_mixin__company_id
@@ -1194,7 +1191,11 @@ msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_event__state__completed
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__state__completed
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_request__state__completed
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 msgid "Completed"
 msgstr "เสร็จสิ้น"
 
@@ -1279,6 +1280,7 @@ msgstr "สร้างเวชระเบียนใหม่"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_archive_wizard__create_uid
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_state_reason__create_uid
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__create_uid
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__create_uid
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__create_uid
 msgid "Created by"
 msgstr "สร้างโดย"
@@ -1303,6 +1305,7 @@ msgstr "สร้างโดย"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_archive_wizard__create_date
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_state_reason__create_date
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__create_date
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__create_date
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__create_date
 msgid "Created on"
 msgstr "สร้างเมื่อ"
@@ -1326,6 +1329,9 @@ msgstr ""
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__date
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__date
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 msgid "Date"
 msgstr "วันที่"
 
@@ -1540,6 +1546,7 @@ msgstr "หมายเหตุการจำหน่าย..."
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_archive_wizard__display_name
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_state_reason__display_name
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__display_name
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__display_name
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__display_name
 msgid "Display Name"
 msgstr "ชื่อที่ใช้แสดง"
@@ -1580,6 +1587,7 @@ msgstr ""
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter__state__draft
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_patient__presence_state__draft
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__state__draft
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_request__state__draft
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_search
@@ -1709,9 +1717,13 @@ msgstr "จำนวนบุคลากร"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_location__encounter_active_count
 #: model:ir.model.fields,field_description:ni_patient.field_ni_location__encounter_active_ids
 #: model:ir.model.fields,field_description:ni_patient.field_ni_location__encounter_ids
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__encounter_id
 #: model:ir.ui.menu,name:ni_patient.encounter_menu_root
 #: model:ir.ui.menu,name:ni_patient.ni_encounter_menu_section
 #: model_terms:ir.ui.view,arch_db:ni_patient.location_view_form
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.res_company_view_form_inherit
 msgid "Encounter"
 msgstr "ข้อมูลรับบริการ"
@@ -1826,12 +1838,13 @@ msgid "Escape"
 msgstr ""
 
 #. module: ni_patient
-#: model:ir.actions.act_window,name:ni_patient.ni_workflow_event_action
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event_mixin__event_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__event_ids
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow__type__event
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_event__type__event
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__type__event
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_request__type__event
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_form
 msgid "Event"
 msgstr "เหตุการณ์"
@@ -1844,6 +1857,11 @@ msgstr "จำนวนเหตุการณ์"
 #. module: ni_patient
 #: model:ir.model,name:ni_patient.model_ni_workflow_event_mixin
 msgid "Event Mixin"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.ui.menu,name:ni_patient.ni_workflow_event_menu
+msgid "Events"
 msgstr ""
 
 #. module: ni_patient
@@ -1867,9 +1885,7 @@ msgid "Export Data Logger Mixin"
 msgstr ""
 
 #. module: ni_patient
-#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_tree
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_form
-#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_tree
 msgid "External Link"
 msgstr ""
 
@@ -1929,6 +1945,12 @@ msgstr "สิ้นสุด"
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Finished"
 msgstr "สิ้นสุดแล้ว"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__firstname
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__firstname
+msgid "First name"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__message_follower_ids
@@ -2137,6 +2159,7 @@ msgstr "บ้าน"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_archive_wizard__id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_state_reason__id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__id
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__id
 msgid "ID"
 msgstr "รหัส"
@@ -2179,7 +2202,7 @@ msgstr "รหัสประจำตัวประชาชน"
 #: model:ir.model.fields,field_description:ni_patient.field_res_company__identifier
 #: model_terms:ir.ui.view,arch_db:ni_patient.res_company_view_form_inherit
 msgid "Identifier"
-msgstr ""
+msgstr "เลขที่หน่วยบริการ"
 
 #. module: ni_patient
 #. odoo-python
@@ -2202,6 +2225,14 @@ msgstr "ถ้าเลือก ข้อความใหม่จะต้�
 #: model:ir.model.fields,help:ni_patient.field_ni_patient__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "หากเลือกข้อความบางข้อความมีข้อผิดพลาดในการจัดส่ง"
+
+#. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__team_id
+#: model:ir.model.fields,help:ni_patient.field_ni_patient__team_id
+msgid ""
+"If set, this Sales Team will be used for sales and assignments related to "
+"this partner"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__is_blacklisted
@@ -2261,6 +2292,7 @@ msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_event__state__in-progress
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__state__in-progress
 msgid "In Progress"
 msgstr "กำลังดำเนินการ"
 
@@ -2341,6 +2373,7 @@ msgstr "ผู้ป่วยใน"
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__intent
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request_mixin__intent
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 msgid "Intent"
 msgstr "เจตนา"
 
@@ -2441,6 +2474,12 @@ msgid "Kosher"
 msgstr "อาหารโคเชอร์"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__line
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__line
+msgid "LINE ID"
+msgstr ""
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_laboratory
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__laboratory
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
@@ -2473,6 +2512,7 @@ msgstr "ภาษา"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_archive_wizard____last_update
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_state_reason____last_update
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event____last_update
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line____last_update
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request____last_update
 msgid "Last Modified on"
 msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
@@ -2497,6 +2537,7 @@ msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_archive_wizard__write_uid
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_state_reason__write_uid
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__write_uid
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__write_uid
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__write_uid
 msgid "Last Updated by"
 msgstr "อัพเดทครั้งสุดท้ายโดย"
@@ -2521,9 +2562,16 @@ msgstr "อัพเดทครั้งสุดท้ายโดย"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_archive_wizard__write_date
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_state_reason__write_date
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__write_date
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__write_date
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__write_date
 msgid "Last Updated on"
 msgstr "อัพเดทครั้งสุดท้ายเมื่อ"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__lastname
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__lastname
+msgid "Last name"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__calendar_last_notif_ack
@@ -2735,6 +2783,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_state_reason__name
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow__name
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__name
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__name
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__name
 #: model_terms:ir.ui.view,arch_db:ni_patient.location_view_search
 msgid "Name"
@@ -2791,6 +2840,11 @@ msgid "No Request"
 msgstr ""
 
 #. module: ni_patient
+#: model_terms:ir.actions.act_window,help:ni_patient.ni_workflow_line_action
+msgid "No Timeline"
+msgstr "ไม่มีไทม์ไลน์"
+
+#. module: ni_patient
 #: model_terms:ir.actions.act_window,help:ni_patient.patient_action_deceased
 msgid "No deceased patients found"
 msgstr "ไม่พบผู้เสียชีวิต"
@@ -2833,6 +2887,7 @@ msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_event__state__not-done
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__state__not-done
 msgid "Not done"
 msgstr "ไม่เสร็จ"
 
@@ -2919,6 +2974,7 @@ msgstr "การตรวจร่างกาย"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow__occurrence
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__occurrence
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event_mixin__occurrence
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__occurrence
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__occurrence
 msgid "Occurrence"
 msgstr "เกิดขึ้นเมื่อ"
@@ -2937,9 +2993,28 @@ msgid "Offset Unit"
 msgstr ""
 
 #. module: ni_patient
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__state__on-hold
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_request__state__on-hold
 msgid "On-Hold"
 msgstr "รอ"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
+msgid "Ongoing"
+msgstr "กำลังดำเนินการ"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_kanban
+msgid "Open"
+msgstr ""
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_kanban
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_kanban
+msgid "Open source"
+msgstr "เปิดต้นฉบับ"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_order
@@ -2948,6 +3023,11 @@ msgstr "รอ"
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Order"
 msgstr "ลำดับ"
+
+#. module: ni_patient
+#: model:ir.model,name:ni_patient.model_res_company
+msgid "Organization"
+msgstr "หลายบริษัท"
 
 #. module: ni_patient
 #: model:ni.encounter.admit,name:ni_patient.admit_other
@@ -3115,11 +3195,15 @@ msgstr "ผู้บันทึกสภาวะสุขภาพ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event_mixin__patient_id
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_mixin__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request_mixin__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_res_partner__patient
 #: model:ir.model.fields,field_description:ni_patient.field_res_users__patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.res_partner_view_search_inherit
 msgid "Patient"
 msgstr "ผู้รับบริการ"
@@ -3191,7 +3275,7 @@ msgstr "สถานะผู้รับบริการ"
 
 #. module: ni_patient
 #: model:ir.model,name:ni_patient.model_ni_patient_state_reason
-msgid "สาเหตุการเปลี่ยนสถานะผู้รับบริการ"
+msgid "Patient State Reason"
 msgstr ""
 
 #. module: ni_patient
@@ -3321,6 +3405,7 @@ msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_event__state__preparation
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__state__preparation
 msgid "Preparation"
 msgstr "เตรียมการ"
 
@@ -3330,6 +3415,12 @@ msgstr "เตรียมการ"
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_search
 msgid "Presence State"
 msgstr "สถานะปัจจุบัน"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__property_product_pricelist
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__property_product_pricelist
+msgid "Pricelist"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter_class__decoration__primary
@@ -3345,6 +3436,7 @@ msgstr "ผู้ดูแลหลัก"
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__priority
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request_mixin__priority
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 msgid "Priority"
 msgstr "ระดับความสำคัญ"
 
@@ -3355,6 +3447,7 @@ msgstr ""
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 msgid "Priority: ASAP"
 msgstr "ระดับความสำคัญ : สูง"
 
@@ -3365,11 +3458,13 @@ msgstr "ระดับความสำคัญ : ปกติ"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 msgid "Priority: STAT"
 msgstr "ระดับความสำคัญ : สูงสุด"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 msgid "Priority: Urgent"
 msgstr "ระดับความสำคัญ : เฝ้าระวัง"
 
@@ -3525,17 +3620,33 @@ msgid "Report Title"
 msgstr "ชื่อรายงาน"
 
 #. module: ni_patient
-#: model:ir.actions.act_window,name:ni_patient.ni_workflow_request_action
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request_mixin__request_id
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow__type__request
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_event__type__request
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__type__request
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_request__type__request
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
 msgid "Request"
 msgstr "คำร้อง"
 
 #. module: ni_patient
 #: model:ir.model,name:ni_patient.model_ni_workflow_request_mixin
 msgid "Request Mixin"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.ui.menu,name:ni_patient.ni_workflow_request_menu
+msgid "Requests"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__res_id
+msgid "Res"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__res_model
+msgid "Res Model"
 msgstr ""
 
 #. module: ni_patient
@@ -3572,7 +3683,9 @@ msgid "Review of Systems"
 msgstr "ทบทวนอาการตามระบบ"
 
 #. module: ni_patient
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__state__revoked
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_request__state__revoked
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 msgid "Revoked"
 msgstr "ยกเลิก"
 
@@ -3603,6 +3716,12 @@ msgstr "ข้อผิดพลาดในการส่ง SMS"
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_request__priority__stat
 msgid "STAT"
 msgstr "ฉุกเฉิกวิกฤติ"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__team_id
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__team_id
+msgid "Sales Team"
+msgstr ""
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__user_id
@@ -3892,11 +4011,15 @@ msgstr "เริ่มรับบริการ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__state_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__state
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event_mixin__state
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__state
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__state
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request_mixin__state
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
 msgid "State"
-msgstr "สถานะ"
+msgstr "จังหวัด"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__state_date
@@ -3987,6 +4110,7 @@ msgstr ""
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow__summary
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__summary
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__summary
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__summary
 msgid "Summary"
 msgstr "สรุป"
@@ -3998,6 +4122,7 @@ msgstr "ใบสรุปการให้บริการ"
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_event__state__suspended
+#: model:ir.model.fields.selection,name:ni_patient.selection__ni_workflow_line__state__suspended
 msgid "Suspend"
 msgstr "ระงับ"
 
@@ -4194,6 +4319,31 @@ msgid ""
 msgstr ""
 
 #. module: ni_patient
+#: model:ir.model.fields,help:ni_patient.field_ni_encounter__property_product_pricelist
+#: model:ir.model.fields,help:ni_patient.field_ni_patient__property_product_pricelist
+msgid ""
+"This pricelist will be used, instead of the default one, for sales to the "
+"current partner"
+msgstr ""
+
+#. module: ni_patient
+#: model:ir.actions.act_window,name:ni_patient.ni_workflow_line_action
+#: model:ir.ui.menu,name:ni_patient.ni_workflow_line_menu
+#: model:ir.ui.menu,name:ni_patient.ni_workflow_menu_section
+msgid "Timeline"
+msgstr "ไทม์ไลน์"
+
+#. module: ni_patient
+#: model:ir.actions.act_window,name:ni_patient.ni_workflow_event_action
+msgid "Timeline - Event"
+msgstr "เหตุการณ์"
+
+#. module: ni_patient
+#: model:ir.actions.act_window,name:ni_patient.ni_workflow_request_action
+msgid "Timeline - Request"
+msgstr "คำร้อง"
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__tz
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__tz
 msgid "Timezone"
@@ -4262,10 +4412,12 @@ msgstr "การคัดแยกผู้รับบริการ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_location__physical_type_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow__type
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__type
+#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__type
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__type
 #: model:ir.ui.menu,name:ni_patient.location_type_menu
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_location_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_participant_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
 msgid "Type"
 msgstr "ประเภท"
 
@@ -4511,6 +4663,11 @@ msgid "Workflow Request"
 msgstr "กระบวนการ - คำขอ"
 
 #. module: ni_patient
+#: model:ir.model,name:ni_patient.model_ni_workflow_line
+msgid "Workflow Timeline"
+msgstr "ไทม์ไลน์กระบวนการ"
+
+#. module: ni_patient
 #: model:ir.model,name:ni_patient.model_ni_workflow_event
 msgid "Workflow: Event"
 msgstr "กระบวนการ: เหตุการณ์"
@@ -4522,6 +4679,7 @@ msgstr "กระบวนการ: คำขอ"
 
 #. module: ni_patient
 #: model_terms:ir.actions.act_window,help:ni_patient.ni_workflow_event_action
+#: model_terms:ir.actions.act_window,help:ni_patient.ni_workflow_line_action
 #: model_terms:ir.actions.act_window,help:ni_patient.ni_workflow_request_action
 msgid "You may try to remove some filter"
 msgstr "ลองเอาตัวกรองออก คุณอาจจะข้อมูลที่ต้องการ"
@@ -4661,6 +4819,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ni_patient.portal_my_patients
 msgid "years old"
 msgstr "ปี"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_kanban
+msgid "{{ record.priority.value }}"
+msgstr ""
 
 #. module: ni_patient
 #. odoo-python
