@@ -45,8 +45,17 @@ oca_run_tests
 
 To run tests for a specific module locally:
 
+```bash
+$ODOO_BIN -c odoo.conf -i module_name --test-enable
 ```
-python C:/Users/Piruin/Repository/odoo/odoo16/odoo-bin -c odoo.conf -i module_name --test-enable
+
+Set `ODOO_BIN` to the path of your local `odoo-bin` script, e.g.:
+
+```bash
+# .env or shell profile
+export ODOO_BIN=/path/to/odoo-bin          # macOS/Linux
+# or on Windows (PowerShell)
+$env:ODOO_BIN = "C:\path\to\odoo-bin"
 ```
 
 Use `-i` (install/update), not `--test-tags` alone — the latter skips the module update step that initialises ORM defaults and
@@ -61,7 +70,7 @@ Thai translations live in `<module>/i18n/th.po`. **Always regenerate the `.po` f
 strings are added to a module (new fields, view labels, filter strings, etc.). Use the export script in `.tools/`:
 
 ```bash
-ODOO_MODULE=<module_name> python <odoo-bin> shell -c odoo.conf -d <database> --no-http < .tools/export_po.py
+ODOO_MODULE=<module_name> $ODOO_BIN shell -c odoo.conf -d <database> --no-http < .tools/export_po.py
 ```
 
 - `ODOO_MODULE` defaults to `ni_patient`; `ODOO_LANG` defaults to `th_TH`
