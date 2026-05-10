@@ -152,33 +152,6 @@ class ServiceEvent(models.Model):
             rec.user_id = saved_user[rec]
         return result
 
-    @api.onchange("patient_type_id", "service_category_id")
-    def _onchange_patient_type_id(self):
-        for rec in self:
-            rec.service_ids = None
-
-        if self.patient_type_id:
-            domain = [
-                "&",
-                "&",
-                ("category_id", "=", self.service_category_id.id),
-                "|",
-                ("target_type_ids", "=", False),
-                ("target_type_ids", "=", self.patient_type_id.id),
-                "|",
-                ("user_id", "=", self.env.user.id),
-                ("user_id", "=", False),
-            ]
-        else:
-            domain = [
-                "&",
-                ("category_id", "=", self.service_category_id.id),
-                "|",
-                ("user_id", "=", self.env.user.id),
-                ("user_id", "=", False),
-            ]
-        return {"domain": {"service_ids": domain}}
-
     @api.constrains("start")
     def _check_start_date(self):
         now = fields.Datetime.now()

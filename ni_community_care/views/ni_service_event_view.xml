@@ -117,7 +117,7 @@
                             name="service_ids"
                             widget="many2many_checkboxes"
                             string=""
-                            domain="[('category_id', '=', service_category_id)]"
+                            domain="[('category_id', '=', service_category_id), '|', ('target_type_ids', '=', False), ('target_type_ids', '=', patient_type_id), '|', ('my_service', '=', True), ('user_id', '=', False)]"
                         />
                         <field name="user_id" invisible="1" />
                         <field name="employee_id" invisible="1" />
