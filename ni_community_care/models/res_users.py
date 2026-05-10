@@ -1,10 +1,11 @@
 #  Copyright (c) 2025 NSTDA
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class Users(models.Model):
-    _inherit = "res.users"
+    _inherit = ["res.users", "ni.my.area.mixin"]
+    _name = "res.users"
 
     state_ids = fields.Many2many(
         "res.country.state",
@@ -22,20 +23,6 @@ class Users(models.Model):
         "พื้นที่รับผิดชอบ",
         domain="[('state_id', 'in', state_ids)]",
     )
-
-    my_area = fields.Boolean(compute="_compute_my_area", search="_search_my_area")
-
-    @api.depends("city_ids")
-    def _compute_my_area(self):
-        my_cities = self.env.user.city_ids.ids
-        for rec in self:
-            rec.my_area = bool(set(rec.city_ids.ids) & set(my_cities))
-
-    def _search_my_area(self, operator, value):
-        my_city_ids = self.env.user.city_ids.ids
-        if not my_city_ids:
-            return [("id", "=", 0)]
-        return [("city_ids", "in", my_city_ids)]
 
     def action_add_response_state_cities(self):
         city = self.env["res.city"].search([("state_id", "in", self.state_ids.ids)])
