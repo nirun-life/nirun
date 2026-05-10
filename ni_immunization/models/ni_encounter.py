@@ -12,6 +12,9 @@ class Encounter(models.Model):
         "ni.immunization", "encounter_id", states=LOCK_STATE_DICT
     )
     immunization_count = fields.Integer(compute="_compute_immunization_count")
+    evaluation_ids = fields.One2many(
+        "ni.immunization.evaluation", "encounter_id", states=LOCK_STATE_DICT
+    )
 
     def _compute_immunization_count(self):
         immunization = self.env["ni.immunization"].sudo()

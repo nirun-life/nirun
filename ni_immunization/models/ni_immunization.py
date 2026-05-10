@@ -8,7 +8,6 @@ class Immunization(models.Model):
     _inherit = [
         "ni.workflow.event.mixin",
         "ni.identifier.mixin",
-        "mail.thread",
     ]
     _order = "occurrence DESC, id DESC"
     _identifier_ts_field = "occurrence"
@@ -30,7 +29,15 @@ class Immunization(models.Model):
         default=lambda self: self.env.user.employee_id,
         tracking=True,
     )
+    state = fields.Selection(default="completed")
     note = fields.Text()
+
+    evaluation_ids = fields.One2many("ni.immunization.evaluation", "immunization_id")
+    evaluation_count = fields.Integer(compute="_compute_evaluation_count")
+
+    def _compute_evaluation_count(self):
+        for rec in self:
+            rec.evaluation_count = len(rec.evaluation_ids)
 
     def _name_search(
         self, name="", args=None, operator="ilike", limit=100, name_get_uid=None

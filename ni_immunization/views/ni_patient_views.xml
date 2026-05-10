@@ -9,14 +9,8 @@
         <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button
-                    name="action_immunization"
-                    attrs="{'invisible': [('immunization_count', '=', 0)]}"
-                    class="oe_stat_button"
-                    icon="fa-shield"
-                    type="object"
-                >
-                    <field name="immunization_count" string="Immunization(s)" widget="statinfo" />
+                <button name="action_immunization_evaluation" class="oe_stat_button" icon="fa-shield" type="object">
+                    <field name="protected_disease_count" string="Protected" widget="statinfo" />
                 </button>
             </xpath>
         </field>
