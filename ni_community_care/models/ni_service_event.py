@@ -253,3 +253,24 @@ class ServiceEvent(models.Model):
             if hr:
                 rec.employee_id = hr
                 continue
+
+    @api.constrains("service_id", "service_ids", "mode")
+    def _check_service_name(self):
+        super()._check_service_name()
+        # Truncate the auto-generated name so kanban cards and calendar chips stay
+        # readable when many services are selected.  More than two names are
+        # summarised as "A, B (+N)".
+        for rec in self:
+            if rec.service_count > 2:
+                first_two = rec.service_ids[:2].mapped("name")
+                rec.name = ", ".join(first_two) + f" (+{rec.service_count - 2})"
+
+    @api.depends("image_1", "image_2")
+    def _compute_attachment_ids(self):
+        # fields.Image() stores data inline (no ir.attachment), so the base
+        # implementation never sets has_image when only image_1/image_2 are used.
+        # Extend it so the kanban card correctly shows the uploaded image.
+        super()._compute_attachment_ids()
+        for rec in self:
+            if not rec.has_image and (rec.image_1 or rec.image_2):
+                rec.has_image = True

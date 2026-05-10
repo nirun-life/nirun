@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from odoo import fields
 from odoo.exceptions import UserError, ValidationError
+from odoo.fields import Command
 
 from .common import TestServiceEventCommon
 
@@ -122,3 +123,33 @@ class TestComputeStateCity(TestServiceEventCommon):
         self.event._compute_state_city()
         self.assertFalse(self.event.state_id)
         self.assertFalse(self.event.city_id)
+
+
+class TestCheckServiceName(TestServiceEventCommon):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.service2 = cls.env["ni.service"].create(
+            {"name": "Second Service", "category_id": cls.category.id, "dayofweek": "0"}
+        )
+        cls.service3 = cls.env["ni.service"].create(
+            {"name": "Third Service", "category_id": cls.category.id, "dayofweek": "0"}
+        )
+
+    def test_single_service_uses_service_name(self):
+        event = self._make_event()
+        self.assertEqual(event.name, self.service.name)
+
+    def test_two_services_not_truncated(self):
+        event = self._make_event(
+            service_ids=[Command.set([self.service.id, self.service2.id])]
+        )
+        self.assertNotIn("(+", event.name)
+
+    def test_three_services_truncated_to_two_plus_count(self):
+        event = self._make_event(
+            service_ids=[
+                Command.set([self.service.id, self.service2.id, self.service3.id])
+            ]
+        )
+        self.assertTrue(event.name.endswith("(+1)"))
