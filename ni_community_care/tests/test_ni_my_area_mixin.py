@@ -1,6 +1,10 @@
 #  Copyright (c) 2025 NSTDA
 
+from datetime import timedelta
+
+from odoo import fields
 from odoo.exceptions import ValidationError
+from odoo.fields import Command
 from odoo.tests import TransactionCase
 
 
@@ -189,3 +193,95 @@ class TestSearchMyAreaReport(MyAreaMixinCommon):
             self.env["ni.service.event.report"].with_user(
                 self.regular_user
             )._search_my_area("!=", True)
+
+
+class TestComputeMyAreaReport(MyAreaMixinCommon):
+    """_compute_my_area on ni.service.event.report / ni.service.event.daily.report
+    (city_id / state_id singular path).
+
+    Creates a complete service event stack so the SQL views have records.
+    Note: _compute_state_city on ni.service.event has a bugged @api.depends
+    (lists state_id/city_id instead of plan_patient_ids), so we call it manually
+    after event creation to populate the stored city/state from the patient.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        cls.patient_type = cls.env["ni.patient.type"].create(
+            {"name": "Test Report Type"}
+        )
+        cls.category = cls.env["ni.service.category"].create(
+            {"name": "Test Report Category"}
+        )
+        cls.service = cls.env["ni.service"].create(
+            {
+                "name": "Test Report Service",
+                "category_id": cls.category.id,
+                "dayofweek": "0",
+            }
+        )
+
+        def make_patient(name, city, state):
+            patient = cls.env["ni.patient"].create({"name": name})
+            patient.partner_id.write({"city_id": city.id, "state_id": state.id})
+            return patient
+
+        cls.patient_in = make_patient("Patient In Area", cls.city, cls.state)
+        cls.patient_out = make_patient(
+            "Patient Out Area", cls.other_city, cls.other_state
+        )
+
+        def make_event(patient):
+            now = fields.Datetime.now()
+            event = cls.env["ni.service.event"].create(
+                {
+                    "name": "Test Report Event",
+                    "start": now,
+                    "stop": now + timedelta(hours=1),
+                    "service_id": cls.service.id,
+                    "service_ids": [Command.set([cls.service.id])],
+                    "patient_type_id": cls.patient_type.id,
+                    "service_category_id": cls.category.id,
+                    "plan_patient_ids": [Command.link(patient.id)],
+                }
+            )
+            event._compute_state_city()
+            return event
+
+        cls.event_in = make_event(cls.patient_in)
+        cls.event_out = make_event(cls.patient_out)
+
+        cls.report_in = cls.env["ni.service.event.report"].search(
+            [("event_id", "=", cls.event_in.id)], limit=1
+        )
+        cls.report_out = cls.env["ni.service.event.report"].search(
+            [("event_id", "=", cls.event_out.id)], limit=1
+        )
+        cls.daily_in = cls.env["ni.service.event.daily.report"].search(
+            [("employee_id", "=", cls.event_in.employee_id.id)], limit=1
+        )
+
+    def test_report_records_exist(self):
+        self.assertTrue(
+            self.report_in, "report_in record missing — check SQL view setup"
+        )
+        self.assertTrue(
+            self.report_out, "report_out record missing — check SQL view setup"
+        )
+
+    def test_admin_always_true(self):
+        self.assertTrue(self.report_in.with_user(self.admin_user).my_area)
+
+    def test_manager_true_when_state_matches(self):
+        self.assertTrue(self.report_in.with_user(self.manager_user).my_area)
+
+    def test_manager_false_when_state_no_match(self):
+        self.assertFalse(self.report_out.with_user(self.manager_user).my_area)
+
+    def test_user_true_when_city_matches(self):
+        self.assertTrue(self.report_in.with_user(self.regular_user).my_area)
+
+    def test_user_false_when_city_no_match(self):
+        self.assertFalse(self.report_out.with_user(self.regular_user).my_area)
