@@ -35,24 +35,35 @@
         <field name="arch" type="xml">
             <form create="false" edit="false" delete="false">
                 <header>
-                    <button name="action_add_evaluation" type="object" string="Add Dose" class="btn-primary" />
+
                 </header>
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="target_disease_id" />
-                        </h1>
-                        <field
-                            name="protection_status"
-                            widget="badge"
-                            decoration-success="protection_status == 'protected'"
-                            decoration-warning="protection_status == 'partial'"
-                            decoration-danger="protection_status == 'not-protected'"
-                        />
+                    <div class="oe_title mb-4">
+                        <span>
+                            <field class="h2 oe_inline" name="target_disease_id" />
+                            <field
+                                name="protection_status"
+                                class="mx-3"
+                                widget="badge"
+                                decoration-success="protection_status == 'protected'"
+                                decoration-warning="protection_status == 'partial'"
+                                decoration-danger="protection_status == 'not-protected'"
+                            />
+                        </span>
                     </div>
                     <group>
                         <field name="dose_progress" string="Doses" />
-                        <field name="last_occurrence" />
+                        <label for="last_occurrence" />
+                        <div class="o_row">
+                            <field name="last_occurrence" />
+                            <button
+                                name="action_add_evaluation"
+                                type="object"
+                                string="Add Dose"
+                                class="text-primary"
+                                icon="fa-plus"
+                            />
+                        </div>
                     </group>
                     <notebook>
                         <page name="history" string="History" icon="fa-history">
@@ -68,13 +79,14 @@
                                     <field name="occurrence" string="Date" />
                                     <field name="dose_number" string="Dose #" />
                                     <field name="series_doses" string="Required" />
-                                    <field name="dose_status" />
+                                    <field name="dose_status" optional="show" />
                                     <field
                                         name="protection_status"
                                         widget="badge"
                                         decoration-success="protection_status == 'protected'"
                                         decoration-warning="protection_status == 'partial'"
                                         decoration-danger="protection_status == 'not-protected'"
+                                        optional="show"
                                     />
                                 </tree>
                             </field>

@@ -28,7 +28,7 @@ class Encounter(models.Model):
         for enc in self:
             enc.immunization_count = data.get(enc.id, 0)
 
-    def action_evaluation_wizard(self):
+    def action_immunization_evaluation_wizard(self):
         return {
             "type": "ir.actions.act_window",
             "name": _("Immunization Evaluation Wizard"),
@@ -38,12 +38,12 @@ class Encounter(models.Model):
             "context": {"default_encounter_id": self.id},
         }
 
-    def action_evaluation(self):
+    def action_immunization_evaluation(self):
         return {
             "name": _("Immunization Evaluation"),
             "type": "ir.actions.act_window",
             "res_model": "ni.immunization.evaluation",
-            "view_mode": "kanban,tree,form",
+            "view_mode": "tree,kanban,form",
             "domain": [("patient_id", "=", self[0].patient_id.id)],
             "context": {
                 "default_patient_id": self[0].patient_id.id,

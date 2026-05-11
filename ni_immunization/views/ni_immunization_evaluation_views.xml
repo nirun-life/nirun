@@ -188,17 +188,6 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <div class="oe_button_box" name="button_box" attrs="{'invisible': [('id', '=', False)]}">
-                        <div
-                            class="oe_stat_button o_not_clickable"
-                            attrs="{'invisible': [('protection_status', '!=', 'protected')]}"
-                        >
-                            <i class="fa fa-fw fa-shield o_button_icon" />
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value text-success">Protected</span>
-                            </div>
-                        </div>
-                    </div>
                     <group>
                         <field
                             name="patient_id"
@@ -227,12 +216,6 @@
                                     attrs="{'invisible': [('target_disease_definition', '=', False)]}"
                                 />
                             </div>
-                            <field
-                                name="immunization_id"
-                                options="{'no_open': True}"
-                                context="{'show_identifier': True, 'default_patient_id': patient_id, 'default_encounter_id': encounter_id}"
-                                placeholder="Select immunization dose..."
-                            />
                             <field name="occurrence" />
                         </group>
                         <group>
@@ -242,7 +225,6 @@
                                 placeholder="Reason for invalid dose..."
                                 attrs="{'invisible': [('dose_status', '!=', 'not-valid')]}"
                             />
-                            <field name="series" placeholder="e.g. Primary Series" />
                             <label for="dose_number" />
                             <div>
                                 <field name="dose_number" class="oe_inline" />
@@ -259,18 +241,29 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Notes">
+                        <page string="Notes" icon="fa-pencil-square">
                             <field name="description" placeholder="Notes..." nolabel="1" />
                             <group>
                                 <group>
                                     <field name="date" />
+                                    <field name="series" placeholder="e.g. Primary Series" />
                                 </group>
-                                <group attrs="{'invisible': [('id', '=', False)]}">
-                                    <field name="create_uid" widget="many2one_avatar_user" />
+                                <group>
+                                    <field
+                                        name="immunization_id"
+                                        options="{'no_open': True}"
+                                        context="{'show_identifier': True, 'default_patient_id': patient_id, 'default_encounter_id': encounter_id}"
+                                        placeholder="Select immunization dose..."
+                                    />
+                                    <field
+                                        name="create_uid"
+                                        widget="many2one_avatar_user"
+                                        attrs="{'invisible': [('id', '=', False)]}"
+                                    />
                                 </group>
                             </group>
                         </page>
-                        <page string="History" attrs="{'invisible': [('history_ids', '=', [])]}">
+                        <page string="History" icon="fa-history" attrs="{'invisible': [('history_ids', '=', [])]}">
                             <field name="history_ids" readonly="1" nolabel="1">
                                 <tree
                                     decoration-success="protection_status == 'protected'"
@@ -278,7 +271,6 @@
                                     decoration-muted="protection_status == 'not-protected'"
                                 >
                                     <field name="date" />
-                                    <field name="immunization_id" optional="show" />
                                     <field name="dose_number" string="Dose" />
                                     <field name="series_doses" string="Required" />
                                     <field
