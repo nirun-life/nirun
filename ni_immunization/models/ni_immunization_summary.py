@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 
 
 class ImmunizationSummary(models.Model):
@@ -26,6 +26,23 @@ class ImmunizationSummary(models.Model):
     dose_count = fields.Integer("Doses", readonly=True, group_operator="max")
     series_doses = fields.Integer("Required", readonly=True, group_operator="max")
     dose_progress = fields.Char("Doses", readonly=True)
+    evaluation_ids = fields.Many2many(
+        "ni.immunization.evaluation",
+        compute="_compute_evaluation_ids",
+        string="History",
+    )
+
+    @api.depends("patient_id", "target_disease_id")
+    def _compute_evaluation_ids(self):
+        Evaluation = self.env["ni.immunization.evaluation"]
+        for rec in self:
+            rec.evaluation_ids = Evaluation.search(
+                [
+                    ("patient_id", "=", rec.patient_id.id),
+                    ("target_disease_id", "=", rec.target_disease_id.id),
+                ],
+                order="dose_number desc",
+            )
 
     def init(self):
         self.env.cr.execute(
