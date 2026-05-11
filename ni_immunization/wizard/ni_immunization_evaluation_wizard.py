@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -12,10 +12,60 @@ class ImmunizationEvaluationWizard(models.TransientModel):
     state = fields.Selection(
         [("1", "Disease"), ("2", "Dose")], default="1", required=True
     )
-    disease_ids = fields.Many2many("ni.immunization.target.disease", string="Diseases")
+    filter_status = fields.Selection(
+        [
+            ("all", "All"),
+            ("not-protected", "Not Protected"),
+            ("protected", "Protected"),
+        ],
+        default="all",
+        required=True,
+        string="Show",
+    )
+    available_disease_ids = fields.Many2many(
+        "ni.immunization.target.disease",
+        compute="_compute_available_disease_ids",
+    )
+    disease_ids = fields.Many2many(
+        "ni.immunization.target.disease",
+        "ni_immunization_evaluation_wizard_disease",
+        "wizard_id",
+        "disease_id",
+        string="Diseases",
+    )
     line_ids = fields.One2many(
         "ni.immunization.evaluation.wizard.line", "wizard_id", string="Doses"
     )
+
+    @api.depends("patient_id", "filter_status")
+    def _compute_available_disease_ids(self):
+        Disease = self.env["ni.immunization.target.disease"]
+        Summary = self.env["ni.immunization.summary"]
+        all_diseases = Disease.search([])
+        for wiz in self:
+            if wiz.filter_status == "all" or not wiz.patient_id:
+                wiz.available_disease_ids = all_diseases
+                continue
+            protected_ids = set(
+                Summary.search(
+                    [
+                        ("patient_id", "=", wiz.patient_id.id),
+                        ("protection_status", "=", "protected"),
+                    ]
+                )
+                .mapped("target_disease_id")
+                .ids
+            )
+            if wiz.filter_status == "protected":
+                wiz.available_disease_ids = Disease.browse(protected_ids)
+            else:
+                wiz.available_disease_ids = all_diseases.filtered(
+                    lambda d: d.id not in protected_ids
+                )
+
+    @api.onchange("filter_status")
+    def _onchange_filter_status(self):
+        self.disease_ids = False
 
     def action_next(self):
         self.ensure_one()
@@ -30,13 +80,14 @@ class ImmunizationEvaluationWizard(models.TransientModel):
                     ("target_disease_id", "=", disease.id),
                 ]
             )
+            dose_number = prior_count + 1 if prior_count else disease.series_doses
             lines.append(
                 fields.Command.create(
                     {
                         "target_disease_id": disease.id,
-                        "dose_number": prior_count + 1,
+                        "dose_number": dose_number,
                         "series_doses": disease.series_doses,
-                        "occurrence": fields.Date.today(),
+                        "occurrence": False,
                     }
                 )
             )
@@ -87,4 +138,6 @@ class ImmunizationEvaluationWizardLine(models.TransientModel):
     )
     dose_number = fields.Integer("Dose #", required=True, default=1)
     series_doses = fields.Integer("Required", required=True, default=1)
-    occurrence = fields.Date("Last Occurred", required=True, default=fields.Date.today)
+    occurrence = fields.Date(
+        "Last Occurred",
+    )

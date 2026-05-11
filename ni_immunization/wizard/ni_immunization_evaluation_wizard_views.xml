@@ -11,9 +11,16 @@
                 <field name="encounter_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="state" invisible="1" />
+                <field name="available_disease_ids" invisible="1" />
                 <group states="1" string="Select diseases to record dose">
-                    <field name="disease_ids" widget="many2many_checkboxes" nolabel="1" />
+                    <field name="filter_status" widget="radio" options="{'horizontal': True}" nolabel="1" />
+                    <field
+                        name="disease_ids"
+                        widget="many2many_checkboxes"
+                        domain="[('id', 'in', available_disease_ids)]"
+                    />
                 </group>
+                <separator states="2" string="Fill-in dose information" />
                 <field name="line_ids" states="2" nolabel="1">
                     <tree editable="bottom" create="false" delete="false">
                         <field name="target_disease_id" readonly="1" />
