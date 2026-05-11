@@ -13,21 +13,69 @@
                 <field name="state" invisible="1" />
                 <field name="available_disease_ids" invisible="1" />
                 <group states="1" string="Select diseases to record dose">
-                    <field name="filter_status" widget="radio" options="{'horizontal': True}" nolabel="1" />
-                    <field
-                        name="disease_ids"
-                        widget="many2many_checkboxes"
-                        domain="[('id', 'in', available_disease_ids)]"
-                    />
+                    <label for="disease_ids" />
+                    <div>
+                        <field name="filter_status" widget="radio" options="{'horizontal': True}" />
+                        <field
+                            name="disease_ids"
+                            widget="many2many_checkboxes"
+                            domain="[('id', 'in', available_disease_ids)]"
+                        />
+                    </div>
                 </group>
                 <separator states="2" string="Fill-in dose information" />
-                <field name="line_ids" states="2" nolabel="1">
+                <field name="line_ids" states="2">
                     <tree editable="bottom" create="false" delete="false">
                         <field name="target_disease_id" readonly="1" />
-                        <field name="dose_number" />
                         <field name="series_doses" readonly="1" />
-                        <field name="occurrence" />
+                        <field name="dose_number" />
+                        <field name="occurrence" placeholder="optional" />
                     </tree>
+                    <form>
+                        <group>
+                            <field name="target_disease_id" readonly="1" />
+                            <label for="dose_number" />
+                            <div class="o_row">
+                                <field name="dose_number" class="o_narrow_field" />
+                                <span class="small">
+                                    /
+                                    <field name="series_doses" readonly="1" />
+                                </span>
+                            </div>
+                            <field name="occurrence" placeholder="optional" />
+                        </group>
+                    </form>
+                    <kanban create="false" delete="false">
+                        <field name="target_disease_id" />
+                        <field name="dose_number" />
+                        <field name="series_doses" />
+                        <field name="occurrence" />
+                        <templates>
+                            <t t-name="kanban-box">
+                                <div class="oe_kanban_card oe_kanban_global_click">
+                                    <div class="oe_kanban_details">
+                                        <strong>
+                                            <field name="target_disease_id" />
+                                        </strong>
+                                        <div class="mt-1">
+                                            <i class="fa fa-syringe me-1" />
+                                            <field name="dose_number" />
+                                            <span>/</span>
+                                            <field name="series_doses" />
+                                        </div>
+                                        <div t-if="record.occurrence.value" class="mt-1 text-muted">
+                                            <i class="fa fa-calendar me-1" />
+                                            <field name="occurrence" />
+                                        </div>
+                                        <div t-else="" class="mt-1 text-danger">
+                                            <i class="fa fa-exclamation-circle me-1" />
+                                            <span>Date not set</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </templates>
+                    </kanban>
                 </field>
                 <footer>
                     <button name="action_next" type="object" string="Next" class="btn-primary" states="1" />
