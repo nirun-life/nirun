@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_immunization_evaluation_wizard_view_form" model="ir.ui.view">
+        <field name="name">ni.immunization.evaluation.wizard.view.form</field>
+        <field name="model">ni.immunization.evaluation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Add Immunization Doses">
+                <field name="encounter_id" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field name="state" invisible="1" />
+                <group states="1" string="Select diseases to record dose">
+                    <field name="disease_ids" widget="many2many_checkboxes" nolabel="1" />
+                </group>
+                <field name="line_ids" states="2" nolabel="1">
+                    <tree editable="bottom" create="false" delete="false">
+                        <field name="target_disease_id" readonly="1" />
+                        <field name="dose_number" />
+                        <field name="series_doses" readonly="1" />
+                        <field name="occurrence" />
+                    </tree>
+                </field>
+                <footer>
+                    <button name="action_next" type="object" string="Next" class="btn-primary" states="1" />
+                    <button name="action_apply" type="object" string="Save" class="btn-primary" states="2" />
+                    <button name="action_back" type="object" string="Back" states="2" />
+                    <button special="cancel" string="Cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

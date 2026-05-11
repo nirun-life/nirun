@@ -28,6 +28,16 @@ class Encounter(models.Model):
         for enc in self:
             enc.immunization_count = data.get(enc.id, 0)
 
+    def action_evaluation_wizard(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Add Doses"),
+            "res_model": "ni.immunization.evaluation.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_encounter_id": self.id},
+        }
+
     def action_immunization(self):
         action = {
             "name": _("Immunization History"),
