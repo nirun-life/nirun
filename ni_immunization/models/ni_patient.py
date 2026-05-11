@@ -11,6 +11,9 @@ class Patient(models.Model):
     evaluation_ids = fields.One2many(
         "ni.immunization.evaluation", "patient_id", readonly=True
     )
+    immunization_summary_ids = fields.One2many(
+        "ni.immunization.summary", "patient_id", readonly=True
+    )
     protected_disease_count = fields.Integer(compute="_compute_protected_disease_count")
 
     def _compute_immunization_count(self):

@@ -18,16 +18,13 @@
                     icon="fa-shield"
                     attrs="{'invisible': [('show_immunization', '=', False)]}"
                 >
-                    <field name="immunization_count" invisible="1" />
                     <field
-                        name="immunization_ids"
+                        name="immunization_summary_ids"
                         context="{
                             'default_encounter_id': id,
-                            'default_patient_id': patient_id,
-                            'default_state': 'completed'
+                            'default_patient_id': patient_id
                         }"
                     />
-                    <button name="action_immunization" type="object" string="See More" />
                 </page>
             </xpath>
         </field>

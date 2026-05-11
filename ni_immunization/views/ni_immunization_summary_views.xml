@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_immunization_summary_view_tree" model="ir.ui.view">
+        <field name="name">ni.immunization.summary.view.tree</field>
+        <field name="model">ni.immunization.summary</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-success="protection_status == 'protected'"
+                decoration-warning="protection_status == 'partial'"
+                decoration-danger="protection_status == 'not-protected'"
+                create="false"
+                edit="false"
+                delete="false"
+            >
+                <field name="target_disease_id" string="Disease" />
+                <field
+                    name="protection_status"
+                    widget="badge"
+                    decoration-success="protection_status == 'protected'"
+                    decoration-warning="protection_status == 'partial'"
+                    decoration-danger="protection_status == 'not-protected'"
+                />
+                <field name="last_occurrence" string="Last Dose" />
+                <field name="dose_progress" string="Doses" />
+                <button name="action_add_evaluation" type="object" string="Add Dose" icon="fa-plus" class="btn-sm" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_immunization_summary_view_search" model="ir.ui.view">
+        <field name="name">ni.immunization.summary.view.search</field>
+        <field name="model">ni.immunization.summary</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter name="protected" string="Protected" domain="[('protection_status', '=', 'protected')]" />
+                <filter name="partial" string="Partial" domain="[('protection_status', '=', 'partial')]" />
+                <filter
+                    name="not_protected"
+                    string="Not Protected"
+                    domain="[('protection_status', '=', 'not-protected')]"
+                />
+            </search>
+        </field>
+    </record>
+</odoo>

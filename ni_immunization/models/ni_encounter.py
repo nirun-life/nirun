@@ -15,6 +15,9 @@ class Encounter(models.Model):
     evaluation_ids = fields.One2many(
         "ni.immunization.evaluation", "encounter_id", states=LOCK_STATE_DICT
     )
+    immunization_summary_ids = fields.One2many(
+        related="patient_id.immunization_summary_ids", readonly=True
+    )
 
     def _compute_immunization_count(self):
         immunization = self.env["ni.immunization"].sudo()

@@ -22,6 +22,7 @@
         "views/ni_immunization_target_disease_views.xml",
         "views/ni_immunization_views.xml",
         "views/ni_immunization_evaluation_views.xml",
+        "views/ni_immunization_summary_views.xml",
         "views/ni_encounter_class_views.xml",
         "views/ni_encounter_views.xml",
         "views/ni_patient_views.xml",

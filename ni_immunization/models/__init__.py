@@ -4,6 +4,7 @@ from . import ni_immunization_route
 from . import ni_immunization_target_disease
 from . import ni_immunization
 from . import ni_immunization_evaluation
+from . import ni_immunization_summary
 from . import ni_encounter_class
 from . import ni_encounter
 from . import ni_patient
