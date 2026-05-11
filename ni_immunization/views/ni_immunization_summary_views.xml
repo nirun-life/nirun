@@ -34,13 +34,14 @@
         <field name="model">ni.immunization.summary</field>
         <field name="arch" type="xml">
             <form create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_add_evaluation" type="object" string="Add Dose" class="btn-primary" />
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
                             <field name="target_disease_id" />
                         </h1>
-                    </div>
-                    <group>
                         <field
                             name="protection_status"
                             widget="badge"
@@ -48,6 +49,8 @@
                             decoration-warning="protection_status == 'partial'"
                             decoration-danger="protection_status == 'not-protected'"
                         />
+                    </div>
+                    <group>
                         <field name="dose_progress" string="Doses" />
                         <field name="last_occurrence" />
                     </group>
@@ -142,6 +145,8 @@
         <field name="model">ni.immunization.summary</field>
         <field name="arch" type="xml">
             <search>
+                <field name="patient_id" />
+                <field name="target_disease_id" />
                 <filter name="protected" string="Protected" domain="[('protection_status', '=', 'protected')]" />
                 <filter name="partial" string="Partial" domain="[('protection_status', '=', 'partial')]" />
                 <filter
