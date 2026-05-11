@@ -17,8 +17,9 @@
                     string="Immunization"
                     icon="fa-shield"
                     attrs="{'invisible': [('show_immunization', '=', False)]}"
+                    badge="protected_disease_count"
                 >
-                    <button name="action_evaluation_wizard" type="object" string="Add Doses" class="btn-primary mb-3" />
+                    <field name="protected_disease_count" invisible="1" />
                     <field
                         name="immunization_summary_ids"
                         context="{
@@ -26,6 +27,14 @@
                             'default_patient_id': patient_id
                         }"
                     />
+                    <button
+                        name="action_evaluation_wizard"
+                        type="object"
+                        string="Evaluate"
+                        icon="fa-shield"
+                        class="btn-primary mb-3"
+                    />
+                    <button name="action_evaluation" type="object" string="See More" class="mb-3" />
                 </page>
             </xpath>
         </field>

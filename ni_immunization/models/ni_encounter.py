@@ -31,11 +31,25 @@ class Encounter(models.Model):
     def action_evaluation_wizard(self):
         return {
             "type": "ir.actions.act_window",
-            "name": _("Add Doses"),
+            "name": _("Immunization Evaluation Wizard"),
             "res_model": "ni.immunization.evaluation.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_encounter_id": self.id},
+        }
+
+    def action_evaluation(self):
+        return {
+            "name": _("Immunization Evaluation"),
+            "type": "ir.actions.act_window",
+            "res_model": "ni.immunization.evaluation",
+            "view_mode": "kanban,tree,form",
+            "domain": [("patient_id", "=", self[0].patient_id.id)],
+            "context": {
+                "default_patient_id": self[0].patient_id.id,
+                "default_encounter_id": self.ids[0],
+                "search_default_group_by_disease": 1,
+            },
         }
 
     def action_immunization(self):
