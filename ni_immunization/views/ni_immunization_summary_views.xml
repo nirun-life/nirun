@@ -49,36 +49,32 @@
                             <div class="oe_kanban_details">
                                 <strong class="o_kanban_record_title">
                                     <field name="target_disease_id" />
-                                </strong>
-                                <div class="mt-1">
-                                    <field
-                                        name="protection_status"
-                                        widget="badge"
-                                        decoration-success="protection_status == 'protected'"
-                                        decoration-warning="protection_status == 'partial'"
-                                        decoration-danger="protection_status == 'not-protected'"
+                                    <i
+                                        t-attf-class="fa fa-shield ms-1
+                                            #{record.protection_status.raw_value == 'protected' ? 'text-success' : ''}
+                                            #{record.protection_status.raw_value == 'partial' ? 'text-warning' : ''}
+                                            #{record.protection_status.raw_value == 'not-protected' ? 'text-danger' : ''}"
                                     />
-                                </div>
+                                </strong>
                                 <div class="o_kanban_record_bottom mt-2">
                                     <div class="oe_kanban_bottom_left text-muted">
-                                        <span t-if="record.last_occurrence.value">
-                                            <i class="fa fa-calendar me-1" />
-                                            <field name="last_occurrence" />
-                                        </span>
                                         <span class="ms-2">
                                             <i class="fa fa-eyedropper me-1" />
                                             <field name="dose_progress" />
+                                        </span>
+                                        <span t-if="record.last_occurrence.value">
+                                            <i class="fa fa-calendar me-1" />
+                                            <field name="last_occurrence" />
                                         </span>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <button
                                             name="action_add_evaluation"
                                             type="object"
+                                            icon="fa-plus"
                                             class="btn btn-sm btn-primary"
                                             title="Add Dose"
-                                        >
-                                            <i class="fa fa-plus" />
-                                        </button>
+                                        />
                                     </div>
                                 </div>
                             </div>
