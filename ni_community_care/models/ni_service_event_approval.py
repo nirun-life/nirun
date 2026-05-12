@@ -792,6 +792,7 @@ class ServiceEventApproval(models.Model):
         prev_month = today - relativedelta(months=1)
         month_start = prev_month.replace(day=1)
 
+        batch_limit = int(kwargs.get("batch_limit", 0))
         job_ids = kwargs.get("job_ids", False)
         if job_ids and not isinstance(job_ids, list):
             job_ids = [job_ids]
@@ -799,7 +800,7 @@ class ServiceEventApproval(models.Model):
         self._create_approvals_by_month_range(
             start_month=month_start,
             end_month=month_start,
-            batch_limit=0,  # ไม่ต้อง limit
+            batch_limit=batch_limit,
             job_ids=job_ids or False,
         )
 
