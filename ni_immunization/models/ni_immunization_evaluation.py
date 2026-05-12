@@ -29,6 +29,9 @@ class ImmunizationEvaluation(models.Model):
         index=True,
         group_expand="_read_group_target_disease_ids",
     )
+    target_disease_vaccine_ids = fields.Many2many(
+        related="target_disease_id.vaccine_ids"
+    )
     target_disease_definition = fields.Text(related="target_disease_id.definition")
     dose_status = fields.Selection(
         [("valid", "Valid"), ("not-valid", "Not Valid")],

@@ -17,6 +17,7 @@
                 <field name="code" optional="show" />
                 <field name="name" />
                 <field name="abbr" optional="show" />
+                <field name="vaccine_ids" widget="many2many_tags" />
                 <field name="active" optional="hide" />
             </tree>
         </field>
@@ -36,10 +37,14 @@
                         <group>
                             <field name="series_doses" />
                             <field name="system_id" options="{'no_open': True}" />
-                            <field name="active" />
                         </group>
                     </group>
                     <field name="definition" placeholder="Description..." />
+                    <notebook>
+                        <page name="vaccine" string="Vaccine">
+                            <field name="vaccine_ids" />
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

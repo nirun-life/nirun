@@ -8,6 +8,12 @@ class ImmunizationTargetDisease(models.Model):
     _inherit = ["ni.coding"]
 
     series_doses = fields.Integer("Doses Required", default=1)
+    vaccine_ids = fields.Many2many(
+        "ni.immunization.vaccine",
+        "ni_immunization_vaccine_disease",
+        "disease_id",
+        "vaccine_id",
+    )
 
     def action_evaluation(self):
         self.ensure_one()
