@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class Immunization(models.Model):
@@ -16,12 +16,17 @@ class Immunization(models.Model):
     vaccine_id = fields.Many2one(
         "ni.immunization.vaccine", "Vaccine", required=True, tracking=True
     )
+    vaccine_route_id = fields.Many2one(related="vaccine_id.route_id")
     lot_number = fields.Char(tracking=True)
     expiration_date = fields.Date(tracking=True)
     dose_quantity = fields.Float(digits=(6, 2))
 
     location_id = fields.Many2one("ni.location", tracking=True)
-    route_id = fields.Many2one("ni.immunization.route", tracking=True)
+    route_id = fields.Many2one(
+        "ni.immunization.route",
+        tracking=True,
+        domain="[('id', '=', vaccine_route_id)] if vaccine_route_id else []",
+    )
     route_site_ids = fields.Many2many(related="route_id.site_ids")
     site_id = fields.Many2one(
         "ni.body.site",
@@ -40,10 +45,40 @@ class Immunization(models.Model):
 
     evaluation_ids = fields.One2many("ni.immunization.evaluation", "immunization_id")
     evaluation_count = fields.Integer(compute="_compute_evaluation_count")
+    pending_disease_ids = fields.Many2many(
+        "ni.immunization.target.disease",
+        compute="_compute_pending",
+    )
+    pending_disease_count = fields.Integer(compute="_compute_pending")
 
     def _compute_evaluation_count(self):
         for rec in self:
             rec.evaluation_count = len(rec.evaluation_ids)
+
+    @api.depends("vaccine_id.target_disease_ids", "evaluation_ids.target_disease_id")
+    def _compute_pending(self):
+        for rec in self:
+            evaluated = rec.evaluation_ids.mapped("target_disease_id")
+            rec.pending_disease_ids = rec.vaccine_id.target_disease_ids - evaluated
+            rec.pending_disease_count = len(rec.pending_disease_ids)
+
+    def action_evaluate(self):
+        self.ensure_one()
+        ctx = {
+            "default_patient_id": self.patient_id.id,
+            "default_encounter_id": self.encounter_id.id,
+            "default_immunization_id": self.id,
+        }
+        if len(self.pending_disease_ids) == 1:
+            ctx["default_target_disease_id"] = self.pending_disease_ids.id
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Add Evaluation"),
+            "res_model": "ni.immunization.evaluation",
+            "view_mode": "form",
+            "target": "new",
+            "context": ctx,
+        }
 
     def _name_search(
         self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
