@@ -25,20 +25,14 @@
          ============================================================ -->
     <template id="service_event_approval_service_report_template">
         <t t-call="web.html_container">
+            <t t-set="lang_id" t-value="env['res.lang'].search([('code', '=', env.user.lang)], limit=1)" />
             <t t-foreach="docs" t-as="d">
-                <t t-set="lang_id" t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1)" />
                 <t t-set="services" t-value="d.service_ids" />
                 <t t-if="d.service_count > 0">
                     <!-- หน้า 1: ตารางสรุปกิจกรรมทั้งหมด -->
                     <t t-call="web.external_layout">
                         <div class="page">
-                            <t t-call="ni_community_care.service_event_approval_title_template">
-                                <t
-                                    t-set="report_title"
-                                    t-value="'กิจกรรมพัฒนาคุณภาพชีวิตผู้สูงอายุ (รายกิจกรรม/โครงการ)'"
-                                />
-                                <t t-set="report_form_code" t-value="'แบบ ศผ.03'" />
-                            </t>
+                            <t t-call="ni_community_care.service_event_approval_title_03_template" />
                             <t t-call="ni_community_care.service_event_approval_service_summary_table_template">
                                 <t t-set="service_list" t-value="services" />
                             </t>
@@ -49,13 +43,7 @@
                     <t t-foreach="services" t-as="s">
                         <t t-call="web.external_layout">
                             <div class="page">
-                                <t t-call="ni_community_care.service_event_approval_title_template">
-                                    <t
-                                        t-set="report_title"
-                                        t-value="'กิจกรรมพัฒนาคุณภาพชีวิตผู้สูงอายุ (รายกิจกรรม/โครงการ)'"
-                                    />
-                                    <t t-set="report_form_code" t-value="'แบบ ศผ.03'" />
-                                </t>
+                                <t t-call="ni_community_care.service_event_approval_title_03_template" />
                                 <t t-call="ni_community_care.service_event_approval_service_summary_table_template">
                                     <t t-set="service_list" t-value="s" />
                                 </t>
@@ -112,17 +100,20 @@
                 <t t-else="">
                     <!-- ไม่มีข้อมูลกิจกรรม -->
                     <t t-call="web.external_layout">
-                        <t t-call="ni_community_care.service_event_approval_title_template">
-                            <t
-                                t-set="report_title"
-                                t-value="'กิจกรรมพัฒนาคุณภาพชีวิตผู้สูงอายุ (รายกิจกรรม/โครงการ)'"
-                            />
-                            <t t-set="report_form_code" t-value="'แบบ ศผ.03'" />
-                        </t>
+                        <t t-call="ni_community_care.service_event_approval_title_03_template" />
                         <t t-call="ni_community_care.service_event_approval_no_data_template" />
                     </t>
                 </t>
             </t>
+        </t>
+    </template>
+    <!-- ============================================================
+         Title Template (ศผ.03) — wrapper สำหรับ shared title template
+         ============================================================ -->
+    <template id="service_event_approval_title_03_template">
+        <t t-call="ni_community_care.service_event_approval_title_template">
+            <t t-set="report_title" t-value="'กิจกรรมพัฒนาคุณภาพชีวิตผู้สูงอายุ (รายกิจกรรม/โครงการ)'" />
+            <t t-set="report_form_code" t-value="'แบบ ศผ.03'" />
         </t>
     </template>
     <!-- ============================================================
