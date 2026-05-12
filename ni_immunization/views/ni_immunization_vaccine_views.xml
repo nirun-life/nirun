@@ -17,6 +17,7 @@
                 <field name="code" optional="show" />
                 <field name="name" />
                 <field name="abbr" optional="hide" />
+                <field name="target_disease_ids" widget="many2many_tags" optional="show" />
                 <field name="active" optional="hide" />
             </tree>
         </field>
@@ -38,6 +39,12 @@
                             <field name="active" />
                         </group>
                     </group>
+                    <field
+                        name="target_disease_ids"
+                        widget="many2many_tags"
+                        options="{'no_create': True}"
+                        placeholder="Select target diseases..."
+                    />
                     <field name="definition" placeholder="Description..." />
                 </sheet>
             </form>

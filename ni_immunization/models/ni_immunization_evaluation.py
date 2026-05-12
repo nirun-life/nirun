@@ -51,11 +51,22 @@ class ImmunizationEvaluation(models.Model):
         store=True,
     )
     description = fields.Text()
+    vaccine_target_disease_ids = fields.Many2many(
+        "ni.immunization.target.disease",
+        compute="_compute_vaccine_target_disease_ids",
+    )
     history_ids = fields.Many2many(
         "ni.immunization.evaluation",
         compute="_compute_history_ids",
         string="History",
     )
+
+    @api.depends("immunization_id.vaccine_id.target_disease_ids")
+    def _compute_vaccine_target_disease_ids(self):
+        for rec in self:
+            rec.vaccine_target_disease_ids = (
+                rec.immunization_id.vaccine_id.target_disease_ids
+            )
 
     @api.model
     def _read_group_target_disease_ids(self, diseases, domain, order):
@@ -136,3 +147,6 @@ class ImmunizationEvaluation(models.Model):
                     if rec.immunization_id.occurrence
                     else False
                 )
+                diseases = rec.immunization_id.vaccine_id.target_disease_ids
+                if len(diseases) == 1:
+                    rec.target_disease_id = diseases

@@ -199,6 +199,7 @@
                         />
                         <field name="encounter_id" invisible="1" />
                     </group>
+                    <field name="vaccine_target_disease_ids" invisible="1" />
                     <group>
                         <group>
                             <label for="target_disease_id" />
@@ -207,6 +208,7 @@
                                     name="target_disease_id"
                                     placeholder="Select disease..."
                                     readonly="context.get('default_target_disease_id')"
+                                    domain="vaccine_target_disease_ids and [('id', 'in', vaccine_target_disease_ids)] or []"
                                 />
                                 <field
                                     name="target_disease_definition"

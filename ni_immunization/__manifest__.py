@@ -17,6 +17,7 @@
         "data/ir_sequence_data.xml",
         "data/ni_immunization_route_data.xml",
         "data/ni_immunization_target_disease_data.xml",
+        "data/ni_immunization_vaccine_data.xml",
         "views/ni_immunization_vaccine_views.xml",
         "views/ni_immunization_route_views.xml",
         "views/ni_immunization_target_disease_views.xml",
