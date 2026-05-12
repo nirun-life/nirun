@@ -12,6 +12,7 @@
             <field name="abbr">BCG</field>
             <field name="code">19</field>
             <field name="definition">Bacillus Calmette-Guérin; single dose at birth for tuberculosis prevention.</field>
+            <field name="route_id" ref="route_id" />
             <field name="target_disease_ids" eval="[(4, ref('disease_tb'))]" />
         </record>
         <!-- Hepatitis B -->
@@ -22,6 +23,7 @@
             <field name="definition">
                 Recombinant hepatitis B vaccine; birth dose followed by a 3-dose primary series.
             </field>
+            <field name="route_id" ref="route_im" />
             <field name="target_disease_ids" eval="[(4, ref('disease_hbv'))]" />
         </record>
         <!-- Hepatitis A -->
@@ -30,6 +32,7 @@
             <field name="abbr">HAV</field>
             <field name="code">83</field>
             <field name="definition">Inactivated hepatitis A vaccine; 2-dose series at 0 and 6 months.</field>
+            <field name="route_id" ref="route_im" />
             <field name="target_disease_ids" eval="[(4, ref('disease_hav'))]" />
         </record>
         <!-- Diphtheria + Tetanus + Pertussis (whole-cell) -->
@@ -41,6 +44,7 @@
                 Diphtheria-tetanus-pertussis (whole-cell); primary series at 2, 4, 6 months with boosters at 18 months
                 and school age.
             </field>
+            <field name="route_id" ref="route_im" />
             <field
                 name="target_disease_ids"
                 eval="[(4, ref('disease_diphtheria')), (4, ref('disease_tetanus')), (4, ref('disease_pertussis'))]"
@@ -54,6 +58,7 @@
                 Pentavalent DTwP-HB-Hib combination; covers diphtheria, tetanus, pertussis, hepatitis B, and Haemophilus
                 influenzae type b.
             </field>
+            <field name="route_id" ref="route_im" />
             <field
                 name="target_disease_ids"
                 eval="[(4, ref('disease_diphtheria')), (4, ref('disease_tetanus')), (4, ref('disease_pertussis')), (4, ref('disease_hbv'))]"
@@ -68,6 +73,7 @@
                 Tetanus and diphtheria toxoids (adult formulation); given as booster doses at school age and every 10
                 years thereafter.
             </field>
+            <field name="route_id" ref="route_im" />
             <field name="target_disease_ids" eval="[(4, ref('disease_tetanus')), (4, ref('disease_diphtheria'))]" />
         </record>
         <!-- Poliomyelitis -->
@@ -78,6 +84,7 @@
             <field name="definition">
                 Oral poliovirus vaccine (bivalent/trivalent); given at 2, 4, 6 months and 18-month booster.
             </field>
+            <field name="route_id" ref="route_po" />
             <field name="target_disease_ids" eval="[(4, ref('disease_polio'))]" />
         </record>
         <record id="vaccine_ipv" model="ni.immunization.vaccine">
@@ -87,6 +94,7 @@
             <field name="definition">
                 Inactivated poliovirus vaccine; used alongside OPV in Thailand's combination polio schedule.
             </field>
+            <field name="route_id" ref="route_im" />
             <field name="target_disease_ids" eval="[(4, ref('disease_polio'))]" />
         </record>
         <!-- Measles + Mumps + Rubella -->
@@ -97,6 +105,7 @@
             <field name="definition">
                 Measles-mumps-rubella live attenuated combination; 2 doses at 9 and 18 months.
             </field>
+            <field name="route_id" ref="route_sc" />
             <field
                 name="target_disease_ids"
                 eval="[(4, ref('disease_measles')), (4, ref('disease_mumps')), (4, ref('disease_rubella'))]"
@@ -110,6 +119,7 @@
             <field name="definition">
                 Live attenuated varicella (chickenpox) vaccine; 1–2 doses depending on age and schedule.
             </field>
+            <field name="route_id" ref="route_sc" />
             <field name="target_disease_ids" eval="[(4, ref('disease_varicella'))]" />
         </record>
         <!-- Influenza -->
@@ -121,6 +131,7 @@
                 Inactivated quadrivalent influenza vaccine; annual single dose; 2 doses for first-time recipients under
                 age 9.
             </field>
+            <field name="route_id" ref="route_im" />
             <field name="target_disease_ids" eval="[(4, ref('disease_influenza'))]" />
         </record>
         <!-- HPV -->
@@ -132,6 +143,7 @@
                 9-valent HPV vaccine covering types 6, 11, 16, 18, 31, 33, 45, 52, 58; 2 doses for ages 9–14, 3 doses
                 for ages 15+.
             </field>
+            <field name="route_id" ref="route_im" />
             <field name="target_disease_ids" eval="[(4, ref('disease_hpv'))]" />
         </record>
         <!-- COVID-19 -->
@@ -142,6 +154,7 @@
             <field name="definition">
                 Adenoviral vector COVID-19 vaccine (Vaxzevria); 2-dose primary series 4–12 weeks apart.
             </field>
+            <field name="route_id" ref="route_im" />
             <field name="target_disease_ids" eval="[(4, ref('disease_covid19'))]" />
         </record>
         <record id="vaccine_covid19_sinovac" model="ni.immunization.vaccine">
@@ -150,6 +163,7 @@
             <field name="definition">
                 Inactivated whole-virus COVID-19 vaccine (CoronaVac); 2-dose primary series 2–4 weeks apart.
             </field>
+            <field name="route_id" ref="route_im" />
             <field name="target_disease_ids" eval="[(4, ref('disease_covid19'))]" />
         </record>
         <!-- Japanese Encephalitis -->
@@ -161,6 +175,7 @@
                 Live attenuated Japanese encephalitis vaccine (SA14-14-2 strain); single primary dose; booster at 12–24
                 months if continued exposure risk.
             </field>
+            <field name="route_id" ref="route_sc" />
             <field name="target_disease_ids" eval="[(4, ref('disease_japanese_encephalitis'))]" />
         </record>
         <!-- Rabies -->
@@ -172,6 +187,7 @@
                 Human diploid cell rabies vaccine; pre-exposure: 3 doses at days 0, 7, 21/28; post-exposure: 4–5 doses
                 depending on protocol.
             </field>
+            <field name="route_id" ref="route_im" />
             <field name="target_disease_ids" eval="[(4, ref('disease_rabies'))]" />
         </record>
     </data>

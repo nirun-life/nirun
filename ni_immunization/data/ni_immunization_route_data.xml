@@ -31,4 +31,24 @@
             <field name="code">IN</field>
         </record>
     </data>
+    <data>
+        <record id="route_im" model="ni.immunization.route">
+            <field
+                name="site_ids"
+                eval="[(4, ref('ni_body_site.368208006')), (4, ref('ni_body_site.368209003')), (4, ref('ni_body_site.61396006')), (4, ref('ni_body_site.11207009'))]"
+            />
+        </record>
+        <record id="route_sc" model="ni.immunization.route">
+            <field
+                name="site_ids"
+                eval="[(4, ref('ni_body_site.368208006')), (4, ref('ni_body_site.368209003')), (4, ref('ni_body_site.818983003')), (4, ref('ni_body_site.61396006')), (4, ref('ni_body_site.11207009'))]"
+            />
+        </record>
+        <record id="route_id" model="ni.immunization.route">
+            <field name="site_ids" eval="[(4, ref('ni_body_site.368208006')), (4, ref('ni_body_site.368209003'))]" />
+        </record>
+        <record id="route_in" model="ni.immunization.route">
+            <field name="site_ids" eval="[(4, ref('ni_body_site.45206002'))]" />
+        </record>
+    </data>
 </odoo>

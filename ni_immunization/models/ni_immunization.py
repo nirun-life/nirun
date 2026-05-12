@@ -21,8 +21,12 @@ class Immunization(models.Model):
     dose_quantity = fields.Float(digits=(6, 2))
 
     location_id = fields.Many2one("ni.location", tracking=True)
-    site_id = fields.Many2one("ni.body.site", "Injection Site", tracking=True)
     route_id = fields.Many2one("ni.immunization.route", tracking=True)
+    route_site_ids = fields.Many2many(
+        "ni.body.site",
+        compute="_compute_route_site_ids",
+    )
+    site_id = fields.Many2one("ni.body.site", "Injection Site", tracking=True)
     performer_id = fields.Many2one(
         "hr.employee",
         required=True,
@@ -65,8 +69,23 @@ class Immunization(models.Model):
     def _workflow_name(self):
         return self.vaccine_id.name
 
+    @api.depends("route_id.site_ids")
+    def _compute_route_site_ids(self):
+        for rec in self:
+            rec.route_site_ids = rec.route_id.site_ids
+
     @api.onchange("vaccine_id")
     def _onchange_vaccine_id(self):
         for rec in self:
-            if rec.vaccine_id and rec.vaccine_id.definition:
-                rec.note = rec.vaccine_id.definition
+            if rec.vaccine_id:
+                if rec.vaccine_id.definition:
+                    rec.note = rec.vaccine_id.definition
+                if rec.vaccine_id.route_id:
+                    rec.route_id = rec.vaccine_id.route_id
+                    rec.site_id = False
+
+    @api.onchange("route_id")
+    def _onchange_route_id(self):
+        for rec in self:
+            if rec.site_id and rec.site_id not in rec.route_id.site_ids:
+                rec.site_id = False

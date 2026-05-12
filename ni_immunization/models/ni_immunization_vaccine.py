@@ -7,6 +7,11 @@ class ImmunizationVaccine(models.Model):
     _description = "Vaccine"
     _inherit = ["ni.coding"]
 
+    route_id = fields.Many2one(
+        "ni.immunization.route",
+        "Default Route",
+        ondelete="set null",
+    )
     target_disease_ids = fields.Many2many(
         "ni.immunization.target.disease",
         "ni_immunization_vaccine_disease",
