@@ -26,7 +26,12 @@ class Immunization(models.Model):
         "ni.body.site",
         compute="_compute_route_site_ids",
     )
-    site_id = fields.Many2one("ni.body.site", "Injection Site", tracking=True)
+    site_id = fields.Many2one(
+        "ni.body.site",
+        "Injection Site",
+        tracking=True,
+        domain="[('id', 'in', route_site_ids)] if route_site_ids else []",
+    )
     performer_id = fields.Many2one(
         "hr.employee",
         required=True,
