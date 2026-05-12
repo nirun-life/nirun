@@ -9,4 +9,9 @@
         <field name="global" eval="True" />
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
+    <record id="ni_immunization_evaluation_company_rule" model="ir.rule">
+        <field name="name">Immunization: multi-company</field>
+        <field ref="model_ni_immunization_evaluation" name="model_id" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
 </odoo>
