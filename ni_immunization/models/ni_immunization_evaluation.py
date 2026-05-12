@@ -153,3 +153,11 @@ class ImmunizationEvaluation(models.Model):
                 diseases = rec.immunization_id.vaccine_id.target_disease_ids
                 if len(diseases) == 1:
                     rec.target_disease_id = diseases
+
+    def init(self):
+        self.env.cr.execute(
+            """
+            CREATE INDEX IF NOT EXISTS ni_immunization_evaluation_company_disease_idx
+            ON ni_immunization_evaluation (company_id, patient_id, target_disease_id, date DESC)
+            """
+        )
