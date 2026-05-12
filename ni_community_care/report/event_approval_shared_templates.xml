@@ -69,6 +69,10 @@
                 <strong>พื้นที่:</strong>
                 <p class="m-0" t-esc="', '.join(docs.user_id.city_ids.mapped('display_name'))" />
             </div>
+            <div class="col-3">
+                <strong>จังหวัด:</strong>
+                <p class="m-0" t-esc="', '.join(docs.user_id.state_ids.mapped('name'))" />
+            </div>
         </div>
         <div class="row" id="period_info">
             <div class="col-5">
