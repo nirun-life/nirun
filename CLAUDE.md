@@ -15,6 +15,8 @@ Value sets (selections, codelists) should use FHIR-defined codes when a standard
 
 ## Development Setup
 
+**Runtime:** Odoo 16.0, Python 3.10.
+
 **Local (Windows):** Odoo runs at `http://localhost:16669`. Config is in `odoo.conf`. The `addons_path` includes both this repo
 and a `nirun-3rd-party` sibling repo.
 
@@ -70,9 +72,10 @@ Thai translations live in `<module>/i18n/th.po`. **Always regenerate the `.po` f
 strings are added to a module (new fields, view labels, filter strings, etc.). Use the export script in `.tools/`:
 
 ```bash
-ODOO_MODULE=<module_name> $ODOO_BIN shell -c odoo.conf -d <database> --no-http < .tools/export_po.py
+ODOO_MODULE=<module_name> $ODOO_BIN shell -c odoo.conf --no-http < .tools/export_po.py
 ```
 
+- (Windows) Run via the Bash tool (not PowerShell) — `VAR=value cmd` inline env var syntax requires bash
 - `ODOO_MODULE` defaults to `ni_patient`; `ODOO_LANG` defaults to `th_TH`
 - The script resolves the output path via Odoo's addon registry — no hardcoded paths, works on any machine
 - After export, open the `.po` file and fill in the empty `msgstr ""` entries
