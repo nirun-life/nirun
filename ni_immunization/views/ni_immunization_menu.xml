@@ -3,14 +3,14 @@
   ~ Copyright (c) 2026 NSTDA
   -->
 <odoo>
+    <menuitem id="ni_immunization_menu_section" name="Immunization" parent="ni_patient.configuration_menu" />
     <menuitem
         id="ni_immunization_main_menu"
         name="Immunization"
         action="ni_immunization_action"
-        parent="ni_patient.encounter_menu_root"
-        sequence="30"
+        parent="ni_immunization_menu_section"
+        groups="ni_immunization.group_admin"
     />
-    <menuitem id="ni_immunization_menu_section" name="Immunization" parent="ni_patient.configuration_menu" />
     <menuitem
         id="ni_immunization_vaccine_menu"
         name="Vaccines"

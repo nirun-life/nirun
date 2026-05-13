@@ -23,7 +23,8 @@
                     decoration-warning="protection_status == 'partial'"
                     decoration-danger="protection_status == 'not-protected'"
                 />
-                <field name="last_occurrence" string="Last Dose" />
+                <field name="last_immunization" string="Last Dose" />
+                <field name="last_evaluation" string="Last Evaluation" optional="hide" />
                 <field name="dose_progress" string="Doses" />
                 <button name="action_add_evaluation" type="object" string="Add Dose" icon="fa-plus" class="btn-sm" />
             </tree>
@@ -53,14 +54,15 @@
                     </div>
                     <group>
                         <field name="dose_progress" string="Doses" />
-                        <label for="last_occurrence" />
+                        <field name="last_immunization" />
+                        <label for="last_evaluation" />
                         <div class="o_row">
-                            <field name="last_occurrence" />
+                            <field name="last_evaluation" />
                             <button
                                 name="action_add_evaluation"
                                 type="object"
                                 string="Add Dose"
-                                class="text-primary"
+                                class="btn-primary"
                                 icon="fa-plus"
                             />
                         </div>
@@ -76,7 +78,8 @@
                                     edit="false"
                                     delete="false"
                                 >
-                                    <field name="occurrence" string="Date" />
+                                    <field name="immunization_date" string="Immunization Date" />
+                                    <field name="occurrence" string="Evaluated" optional="hide" />
                                     <field name="dose_number" string="Dose #" />
                                     <field name="series_doses" string="Required" />
                                     <field name="dose_status" optional="show" />
@@ -103,7 +106,7 @@
             <kanban create="false" edit="false" delete="false">
                 <field name="target_disease_id" />
                 <field name="protection_status" />
-                <field name="last_occurrence" />
+                <field name="last_immunization" />
                 <field name="dose_progress" />
                 <field name="patient_id" />
                 <templates>
@@ -130,9 +133,9 @@
                                             <i class="fa fa-eyedropper me-1" />
                                             <field name="dose_progress" />
                                         </span>
-                                        <span class="me-3" t-if="record.last_occurrence.value">
+                                        <span class="me-3" t-if="record.last_immunization.value">
                                             <i class="fa fa-calendar me-1" />
-                                            <field name="last_occurrence" />
+                                            <field name="last_immunization" />
                                         </span>
                                     </div>
                                     <div class="oe_kanban_bottom_right">

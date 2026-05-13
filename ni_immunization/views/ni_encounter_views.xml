@@ -20,26 +20,41 @@
                     badge="protected_disease_count"
                 >
                     <field name="protected_disease_count" invisible="1" />
-                    <field
-                        name="immunization_summary_ids"
-                        context="{
-                            'default_encounter_id': id,
-                            'default_patient_id': patient_id
-                        }"
-                    />
-                    <button
-                        name="action_immunization_evaluation"
-                        type="object"
-                        string="See More"
-                        class="btn-secondary"
-                    />
-                    <button
-                        name="action_immunization_evaluation_wizard"
-                        type="object"
-                        string="Evaluate"
-                        icon="fa-shield"
-                        class="btn-primary mb-3"
-                    />
+                    <notebook orientation="original" class="no_controller">
+                        <page name="immunization_summary" string="Summary" icon="fa-shield">
+                            <field
+                                name="immunization_summary_ids"
+                                context="{
+                                    'default_encounter_id': id,
+                                    'default_patient_id': patient_id
+                                }"
+                            />
+                            <button
+                                name="action_immunization_evaluation"
+                                type="object"
+                                string="See More"
+                                class="btn-secondary"
+                            />
+                            <button
+                                name="action_immunization_evaluation_wizard"
+                                type="object"
+                                string="Evaluate"
+                                icon="fa-shield"
+                                class="btn-primary mb-3"
+                            />
+                        </page>
+                        <page name="immunization_records" string="Records" icon="fa-list">
+                            <field
+                                name="immunization_ids"
+                                context="{
+                                    'default_encounter_id': id,
+                                    'default_patient_id': patient_id,
+                                    'no_header': True
+                                }"
+                            />
+                            <button name="action_immunization" type="object" string="See More" class="btn-secondary" />
+                        </page>
+                    </notebook>
                 </page>
             </xpath>
         </field>

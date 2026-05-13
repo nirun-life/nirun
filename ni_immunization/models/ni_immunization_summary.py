@@ -7,7 +7,7 @@ class ImmunizationSummary(models.Model):
     _description = "Immunization Disease Summary"
     _auto = False
     _rec_name = "target_disease_id"
-    _order = "protection_status, target_disease_id"
+    _order = "target_disease_id"
 
     patient_id = fields.Many2one("ni.patient", readonly=True)
     target_disease_id = fields.Many2one(
@@ -22,7 +22,8 @@ class ImmunizationSummary(models.Model):
         string="Status",
         readonly=True,
     )
-    last_occurrence = fields.Date("Last Dose", readonly=True)
+    last_evaluation = fields.Datetime("Last Evaluation", readonly=True)
+    last_immunization = fields.Date("Last Immunization", readonly=True)
     dose_count = fields.Integer("Doses", readonly=True, group_operator="max")
     series_doses = fields.Integer("Required", readonly=True, group_operator="max")
     dose_progress = fields.Char("Doses", readonly=True)
@@ -49,7 +50,7 @@ class ImmunizationSummary(models.Model):
             """
             CREATE INDEX IF NOT EXISTS ni_immunization_evaluation_summary_idx
             ON ni_immunization_evaluation (patient_id, target_disease_id, dose_number DESC, id DESC)
-            INCLUDE (dose_status, series_doses, occurrence)
+            INCLUDE (dose_status, series_doses, occurrence, immunization_date)
             """
         )
         self.env.cr.execute(
@@ -64,7 +65,8 @@ class ImmunizationSummary(models.Model):
                         WHEN dose_number >= series_doses THEN 'protected'
                         ELSE 'partial'
                     END AS protection_status,
-                    occurrence AS last_occurrence,
+                    occurrence AS last_evaluation,
+                    immunization_date AS last_immunization,
                     dose_number AS dose_count,
                     series_doses,
                     CONCAT(dose_number::text, ' / ', series_doses::text) AS dose_progress

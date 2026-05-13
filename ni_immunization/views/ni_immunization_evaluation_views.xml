@@ -16,6 +16,7 @@
             <search>
                 <field name="patient_id" />
                 <field name="target_disease_id" />
+                <filter name="immunization_date" date="immunization_date" />
                 <filter name="occurrence" date="occurrence" />
                 <filter name="valid" string="Valid" domain="[('dose_status', '=', 'valid')]" />
                 <filter name="not_valid" string="Not Valid" domain="[('dose_status', '=', 'not-valid')]" />
@@ -46,8 +47,8 @@
                     placeholder="Select disease..."
                     options="{'no_create': True, 'no_open':True}"
                 />
-                <label for="occurrence" />
-                <field name="occurrence" placeholder="Immunization Date" />
+                <label for="immunization_date" />
+                <field name="immunization_date" placeholder="Immunization Date" />
                 <label for="dose_number" />
                 <div class="o_row">
                     <field name="dose_number" />
@@ -71,7 +72,7 @@
                 <field name="series_doses" />
                 <field name="dose_status" />
                 <field name="protection_status" />
-                <field name="occurrence" />
+                <field name="immunization_date" />
                 <field name="immunization_id" />
                 <field name="patient_id" />
                 <progressbar field="dose_status" colors='{"valid": "success", "not-valid": "danger"}' />
@@ -104,9 +105,9 @@
                                     </div>
                                 </div>
                                 <div class="o_kanban_record_body">
-                                    <t t-if="record.occurrence.raw_value">
+                                    <t t-if="record.immunization_date.raw_value">
                                         <span class="text-muted">
-                                            <field name="occurrence" />
+                                            <field name="immunization_date" />
                                         </span>
                                     </t>
                                     <div>
@@ -153,7 +154,7 @@
             >
                 <field name="patient_id" invisible="1" />
                 <field name="target_disease_id" />
-                <field name="date" />
+                <field name="occurrence" optional="show" />
                 <field name="immunization_id" optional="show" />
                 <field name="series" optional="hide" />
                 <field name="dose_number" string="Dose" />
@@ -218,7 +219,7 @@
                                     attrs="{'invisible': [('target_disease_definition', '=', False)]}"
                                 />
                             </div>
-                            <field name="occurrence" />
+                            <field name="immunization_date" />
                         </group>
                         <group>
                             <field name="dose_status" widget="radio" options="{'horizontal': True}" />
@@ -247,7 +248,7 @@
                             <field name="description" placeholder="Notes..." nolabel="1" />
                             <group>
                                 <group>
-                                    <field name="date" />
+                                    <field name="occurrence" />
                                     <field name="series" placeholder="e.g. Primary Series" />
                                 </group>
                                 <group>
@@ -273,7 +274,7 @@
                                     decoration-warning="protection_status == 'partial'"
                                     decoration-muted="protection_status == 'not-protected'"
                                 >
-                                    <field name="date" />
+                                    <field name="occurrence" />
                                     <field name="dose_number" string="Dose" />
                                     <field name="series_doses" string="Required" />
                                     <field

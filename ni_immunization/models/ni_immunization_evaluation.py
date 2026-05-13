@@ -1,21 +1,42 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import SUPERUSER_ID, api, fields, models
+from odoo import SUPERUSER_ID, _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
 class ImmunizationEvaluation(models.Model):
     _name = "ni.immunization.evaluation"
     _description = "Immunization Evaluation"
-    _inherit = ["ni.patient.res"]
+    _inherit = ["ni.workflow.event.mixin", "ni.identifier.mixin"]
     _check_period_start = False
-    _order = "target_disease_id, date DESC"
+    _order = "occurrence DESC"
     _rec_name = "name"
+    _identifier_ts_field = "occurrence"
 
     name = fields.Char(compute="_compute_name", store=True)
-    date = fields.Datetime(
-        "Assessment Date", default=fields.Datetime.now, required=True
-    )
-    occurrence = fields.Date("Immunization Date", default=fields.Date.today)
+    state = fields.Selection(default="completed")
+    occurrence = fields.Datetime("Assessed On")
+    occurrence_date = fields.Datetime("Assessment Date")
+
+    immunization_date = fields.Date("Immunization Date")
+
+    @property
+    def _workflow_name(self):
+        return self.target_disease_id.display_name or self._description
+
+    @property
+    def _workflow_summary(self):
+        parts = []
+        if self.immunization_id:
+            parts.append(self.immunization_id.name)
+        if self.dose_number and self.series_doses:
+            parts.append(f"Dose {self.dose_number}/{self.series_doses}")
+        if self.protection_status:
+            label = self.fields_get(["protection_status"])["protection_status"][
+                "selection"
+            ]
+            parts.append(dict(label).get(self.protection_status, ""))
+        return " · ".join(filter(None, parts))
+
     immunization_id = fields.Many2one(
         "ni.immunization",
         "Immunization Dose",
@@ -104,6 +125,40 @@ class ImmunizationEvaluation(models.Model):
             else:
                 rec.protection_status = "partial"
 
+    @api.constrains("immunization_id", "patient_id", "target_disease_id")
+    def _check_immunization_id(self):
+        for rec in self.filtered("immunization_id"):
+            if rec.immunization_id.patient_id != rec.patient_id:
+                raise ValidationError(
+                    _(
+                        "The referenced immunization dose belongs to a different patient."
+                    )
+                )
+            vaccine_diseases = rec.immunization_id.vaccine_id.target_disease_ids
+            if vaccine_diseases and rec.target_disease_id not in vaccine_diseases:
+                raise ValidationError(
+                    _(
+                        "The vaccine '%(vaccine)s' does not target '%(disease)s'.",
+                        vaccine=rec.immunization_id.vaccine_id.display_name,
+                        disease=rec.target_disease_id.display_name,
+                    )
+                )
+            duplicate = self.search(
+                [
+                    ("immunization_id", "=", rec.immunization_id.id),
+                    ("target_disease_id", "=", rec.target_disease_id.id),
+                    ("id", "!=", rec.id),
+                ],
+                limit=1,
+            )
+            if duplicate:
+                raise ValidationError(
+                    _(
+                        "An evaluation for '%(disease)s' already references this immunization dose.",
+                        disease=rec.target_disease_id.display_name,
+                    )
+                )
+
     @api.constrains("patient_id", "target_disease_id", "dose_number", "dose_status")
     def _check_unique_valid_dose(self):
         for rec in self:
@@ -145,7 +200,7 @@ class ImmunizationEvaluation(models.Model):
             if rec.immunization_id:
                 rec.patient_id = rec.immunization_id.patient_id
                 rec.encounter_id = rec.immunization_id.encounter_id
-                rec.occurrence = (
+                rec.immunization_date = (
                     rec.immunization_id.occurrence.date()
                     if rec.immunization_id.occurrence
                     else False
@@ -158,6 +213,6 @@ class ImmunizationEvaluation(models.Model):
         self.env.cr.execute(
             """
             CREATE INDEX IF NOT EXISTS ni_immunization_evaluation_company_disease_idx
-            ON ni_immunization_evaluation (company_id, patient_id, target_disease_id, date DESC)
+            ON ni_immunization_evaluation (company_id, patient_id, target_disease_id, occurrence DESC)
             """
         )
