@@ -1026,13 +1026,14 @@ class ServiceEventApproval(models.Model):
 
         if retention_months > 0:
             today = datetime.today()
-            start_month = today.replace(day=1) - relativedelta(months=retention_months)
+            # retention_months=1 → current month only, =2 → current + prev, etc.
+            start_month = today.replace(day=1) - relativedelta(
+                months=retention_months - 1
+            )
             domain.append(("start", ">=", start_month))
             _logger.info(f"[CRON] Filtering records from {start_month.date()}")
         else:
-            _logger.info(
-                "[CRON] months_ago=0, processing all records with has_pdf=False"
-            )
+            _logger.info("[CRON] retention_months=0, processing all records")
 
         records = self.search(domain, limit=batch_limit)
         _logger.info(
@@ -1052,19 +1053,26 @@ class ServiceEventApproval(models.Model):
         retention_months = int(kwargs.get("retention_months", 3))
         batch_limit = int(kwargs.get("batch_limit", 50))
 
-        today = fields.Datetime.now()
-        cutoff_date = today.replace(day=1) - relativedelta(months=retention_months)
+        domain = [("has_pdf", "=", True)]
 
-        _logger.info(
-            f"[CRON] Cleaning up reports older than {cutoff_date.date()} "
-            f"(retention_months={retention_months}, batch_limit={batch_limit})"
-        )
+        if retention_months > 0:
+            today = fields.Datetime.now()
+            # retention_months=1 → keep current month only, =2 → keep current + prev, etc.
+            cutoff_date = today.replace(day=1) - relativedelta(
+                months=retention_months - 1
+            )
+            domain.append(("start", "<", cutoff_date))
+            _logger.info(
+                f"[CRON] Cleaning up reports older than {cutoff_date.date()} "
+                f"(retention_months={retention_months}, batch_limit={batch_limit})"
+            )
+        else:
+            _logger.info(
+                f"[CRON] retention_months=0, clearing all PDFs (batch_limit={batch_limit})"
+            )
 
         # หา record ที่มีไฟล์และเก่ากว่าระยะเวลาที่กำหนด
-        old_records = self.search(
-            [("has_pdf", "=", True), ("start", "<", cutoff_date)],
-            limit=batch_limit,
-        )
+        old_records = self.search(domain, limit=batch_limit)
 
         _logger.info(f"[CRON] Found {len(old_records)} old record(s) to clean up.")
 
