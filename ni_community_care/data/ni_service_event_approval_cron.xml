@@ -43,7 +43,7 @@
         <field name="name">Re-Compute Approvals</field>
         <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
         <field name="state">code</field>
-        <field name="code">model._cron_refresh_approvals(batch_limit=100, days_threshold=7)</field>
+        <field name="code">model._cron_refresh_approvals(batch_limit=100, cooldown_days=7)</field>
         <field name="interval_number">1</field>
         <field name="interval_type">weeks</field>
         <field name="active">True</field>
@@ -54,7 +54,7 @@
         <field name="model_id" ref="ni_community_care.model_ni_service_event_approval" />
         <field name="state">code</field>
         <field name="code">
-            model._cron_generate_reports_batch(retention_months=3, batch_limit=50, cooldown=10080)
+            model._cron_generate_reports_batch(retention_months=3, batch_limit=50, cooldown_days=7)
         </field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>

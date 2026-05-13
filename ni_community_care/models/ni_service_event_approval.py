@@ -287,6 +287,12 @@ class ServiceEventApproval(models.Model):
 
     due_date = fields.Date("กำหนดจ่ายเงิน", help="วันที่คาดว่าจะจ่ายเงิน")
 
+    last_refresh_date = fields.Datetime(
+        string="อัปเดตข้อมูลเมื่อ",
+        readonly=True,
+        help="วันที่อัปเดตข้อมูลบันทึกงานล่าสุด",
+    )
+
     @api.depends("patient_ids", "event_patient_ids")
     def _compute_all_patient_ids(self):
         for rec in self:
@@ -780,6 +786,7 @@ class ServiceEventApproval(models.Model):
             rec._compute_careplan_ids()
             rec._compute_service_ids()
 
+        self.write({"last_refresh_date": fields.Datetime.now()})
         _logger.info("✅ Recomputed stored fields for %d record(s)", len(self))
 
     @api.model
@@ -966,9 +973,9 @@ class ServiceEventApproval(models.Model):
         Refresh approvals ตาม limit ที่กำหนด
         """
         batch_limit = int(kwargs.get("batch_limit", 100))
-        days_threshold = int(kwargs.get("days_threshold", 7))
+        cooldown_days = int(kwargs.get("cooldown_days", 7))
 
-        cutoff_date = fields.Datetime.now() - relativedelta(days=days_threshold)
+        cutoff_date = fields.Datetime.now() - relativedelta(days=cooldown_days)
 
         _logger.info(
             f"[CRON] Refreshing up to {batch_limit} approvals older than {cutoff_date}"
@@ -977,7 +984,9 @@ class ServiceEventApproval(models.Model):
         # search record ตาม limit (เฉพาะที่ยังไม่ approved)
         records = self.search(
             [
-                ("write_date", "<", cutoff_date),
+                "|",
+                ("last_refresh_date", "=", False),
+                ("last_refresh_date", "<", cutoff_date),
                 ("state", "!=", "approved"),
             ],
             limit=batch_limit,
@@ -997,15 +1006,15 @@ class ServiceEventApproval(models.Model):
         """
         retention_months = int(kwargs.get("retention_months", 0))
         batch_limit = int(kwargs.get("batch_limit", 50))
-        cooldown = int(kwargs.get("cooldown", 1440))
+        cooldown_days = int(kwargs.get("cooldown_days", 7))
 
         now = fields.Datetime.now()
-        cutoff_date = now - relativedelta(minutes=cooldown)
+        cutoff_date = now - relativedelta(days=cooldown_days)
 
         _logger.info(
-            "[CRON][TIME] now=%s | regenerate_after_days=%s | cutoff_date=%s",
+            "[CRON][TIME] now=%s | cooldown_days=%s | cutoff_date=%s",
             now,
-            cooldown,
+            cooldown_days,
             cutoff_date,
         )
 
