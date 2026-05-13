@@ -810,12 +810,14 @@ class ServiceEventApproval(models.Model):
         """
         เปลี่ยนสถานะ 'preparing' → 'pending' เมื่อสิ้นเดือนผ่านไปแล้ว
         """
+        batch_limit = int(kwargs.get("batch_limit", 0))
         today = fields.Date.today()
         records = self.search(
             [
                 ("state", "=", "preparing"),
                 ("stop", "<", today),
-            ]
+            ],
+            limit=batch_limit or 0,
         )
         if records:
             records.write({"state": "pending"})
