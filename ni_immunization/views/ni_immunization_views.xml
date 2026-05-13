@@ -208,8 +208,7 @@
                             <field name="site_id" options="{'no_open': True}" />
                         </group>
                     </group>
-                    <field name="note" placeholder="Notes..." />
-                    <notebook attrs="{'invisible': [('id', '=', False)]}">
+                    <notebook>
                         <page name="evaluation" string="Evaluations" icon="fa-shield" badge="evaluation_count">
                             <div
                                 class="alert alert-warning mb-2 d-flex align-items-center"
@@ -251,6 +250,9 @@
                                     />
                                 </tree>
                             </field>
+                        </page>
+                        <page string="Notes" icon="fa-pencil-square">
+                            <field name="note" placeholder="Notes..." nolabel="1" />
                         </page>
                     </notebook>
                 </sheet>

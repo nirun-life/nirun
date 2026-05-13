@@ -51,6 +51,15 @@ class Immunization(models.Model):
     )
     pending_disease_count = fields.Integer(compute="_compute_pending")
 
+    def init(self):
+        self.env.cr.execute(
+            """
+            CREATE INDEX IF NOT EXISTS ni_immunization_encounter_idx
+            ON ni_immunization (company_id, encounter_id)
+            WHERE encounter_id IS NOT NULL
+            """
+        )
+
     def _compute_evaluation_count(self):
         for rec in self:
             rec.evaluation_count = len(rec.evaluation_ids)
@@ -64,12 +73,14 @@ class Immunization(models.Model):
 
     def action_evaluate(self):
         self.ensure_one()
+        if len(self.pending_disease_ids) > 1:
+            return self._action_evaluate_wizard()
         ctx = {
             "default_patient_id": self.patient_id.id,
             "default_encounter_id": self.encounter_id.id,
             "default_immunization_id": self.id,
         }
-        if len(self.pending_disease_ids) == 1:
+        if self.pending_disease_ids:
             ctx["default_target_disease_id"] = self.pending_disease_ids.id
         return {
             "type": "ir.actions.act_window",
@@ -79,6 +90,39 @@ class Immunization(models.Model):
             "target": "new",
             "context": ctx,
         }
+
+    def _action_evaluate_wizard(self):
+        self.ensure_one()
+        Evaluation = self.env["ni.immunization.evaluation"]
+        imm_date = self.occurrence.date() if self.occurrence else False
+        lines = []
+        for disease in self.pending_disease_ids:
+            prior_count = Evaluation.search_count(
+                [
+                    ("patient_id", "=", self.patient_id.id),
+                    ("target_disease_id", "=", disease.id),
+                ]
+            )
+            lines.append(
+                fields.Command.create(
+                    {
+                        "target_disease_id": disease.id,
+                        "dose_number": prior_count + 1,
+                        "series_doses": disease.series_doses,
+                        "occurrence": imm_date,
+                    }
+                )
+            )
+        wizard = self.env["ni.immunization.evaluation.wizard"].create(
+            {
+                "encounter_id": self.encounter_id.id,
+                "immunization_id": self.id,
+                "disease_ids": [fields.Command.set(self.pending_disease_ids.ids)],
+                "state": "2",
+                "line_ids": lines,
+            }
+        )
+        return wizard._reopen()
 
     def _name_search(
         self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
@@ -105,6 +149,18 @@ class Immunization(models.Model):
     @property
     def _workflow_name(self):
         return self.vaccine_id.name
+
+    @property
+    def _workflow_summary(self):
+        parts = []
+        if self.route_id:
+            route = self.route_id.abbr or self.route_id.name
+            parts.append(f"{route} · {self.site_id.name}" if self.site_id else route)
+        if self.lot_number:
+            parts.append(self.lot_number)
+        if self.performer_id:
+            parts.append(self.performer_id.name)
+        return " · ".join(parts)
 
     @api.onchange("vaccine_id")
     def _onchange_vaccine_id(self):

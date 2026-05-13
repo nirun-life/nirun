@@ -10,6 +10,7 @@
             <form string="Add Immunization Doses">
                 <field name="encounter_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
+                <field name="immunization_id" invisible="1" />
                 <field name="state" invisible="1" />
                 <field name="available_disease_ids" invisible="1" />
                 <group states="1" string="Select diseases to record dose">
@@ -29,7 +30,11 @@
                         <field name="target_disease_id" readonly="1" />
                         <field name="series_doses" readonly="1" />
                         <field name="dose_number" />
-                        <field name="occurrence" placeholder="optional" />
+                        <field
+                            name="occurrence"
+                            placeholder="optional"
+                            attrs="{'invisible': [('parent.immunization_id', '!=', False)]}"
+                        />
                     </tree>
                     <form>
                         <group>

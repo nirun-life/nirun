@@ -18,25 +18,6 @@ class ImmunizationEvaluation(models.Model):
     occurrence_date = fields.Datetime("Assessment Date")
 
     immunization_date = fields.Date("Immunization Date")
-
-    @property
-    def _workflow_name(self):
-        return self.target_disease_id.display_name or self._description
-
-    @property
-    def _workflow_summary(self):
-        parts = []
-        if self.immunization_id:
-            parts.append(self.immunization_id.name)
-        if self.dose_number and self.series_doses:
-            parts.append(f"Dose {self.dose_number}/{self.series_doses}")
-        if self.protection_status:
-            label = self.fields_get(["protection_status"])["protection_status"][
-                "selection"
-            ]
-            parts.append(dict(label).get(self.protection_status, ""))
-        return " · ".join(filter(None, parts))
-
     immunization_id = fields.Many2one(
         "ni.immunization",
         "Immunization Dose",
@@ -74,7 +55,7 @@ class ImmunizationEvaluation(models.Model):
         compute="_compute_protection_status",
         store=True,
     )
-    description = fields.Text()
+    note = fields.Text()
     vaccine_target_disease_ids = fields.Many2many(
         "ni.immunization.target.disease",
         compute="_compute_vaccine_target_disease_ids",
@@ -84,6 +65,39 @@ class ImmunizationEvaluation(models.Model):
         compute="_compute_history_ids",
         string="History",
     )
+
+    def init(self):
+        self.env.cr.execute(
+            """
+            CREATE INDEX IF NOT EXISTS ni_immunization_evaluation_company_disease_idx
+            ON ni_immunization_evaluation (company_id, patient_id, target_disease_id, occurrence DESC)
+            """
+        )
+        self.env.cr.execute(
+            """
+            CREATE INDEX IF NOT EXISTS ni_immunization_evaluation_encounter_idx
+            ON ni_immunization_evaluation (company_id, encounter_id)
+            WHERE encounter_id IS NOT NULL
+            """
+        )
+
+    @property
+    def _workflow_name(self):
+        return self.target_disease_id.display_name or self._description
+
+    @property
+    def _workflow_summary(self):
+        parts = []
+        if self.immunization_id:
+            parts.append(self.immunization_id.name)
+        if self.dose_number and self.series_doses:
+            parts.append(f"Dose {self.dose_number}/{self.series_doses}")
+        if self.protection_status:
+            label = self.fields_get(["protection_status"])["protection_status"][
+                "selection"
+            ]
+            parts.append(dict(label).get(self.protection_status, ""))
+        return " · ".join(filter(None, parts))
 
     @api.depends("immunization_id.vaccine_id.target_disease_ids")
     def _compute_vaccine_target_disease_ids(self):
@@ -208,11 +222,3 @@ class ImmunizationEvaluation(models.Model):
                 diseases = rec.immunization_id.vaccine_id.target_disease_ids
                 if len(diseases) == 1:
                     rec.target_disease_id = diseases
-
-    def init(self):
-        self.env.cr.execute(
-            """
-            CREATE INDEX IF NOT EXISTS ni_immunization_evaluation_company_disease_idx
-            ON ni_immunization_evaluation (company_id, patient_id, target_disease_id, occurrence DESC)
-            """
-        )

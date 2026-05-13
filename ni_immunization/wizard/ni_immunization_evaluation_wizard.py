@@ -9,6 +9,7 @@ class ImmunizationEvaluationWizard(models.TransientModel):
 
     encounter_id = fields.Many2one("ni.encounter", required=True)
     patient_id = fields.Many2one(related="encounter_id.patient_id")
+    immunization_id = fields.Many2one("ni.immunization", ondelete="cascade")
     state = fields.Selection(
         [("1", "Disease"), ("2", "Dose")], default="1", required=True
     )
@@ -104,16 +105,17 @@ class ImmunizationEvaluationWizard(models.TransientModel):
         self.ensure_one()
         Evaluation = self.env["ni.immunization.evaluation"]
         for line in self.line_ids:
-            Evaluation.create(
-                {
-                    "encounter_id": self.encounter_id.id,
-                    "patient_id": self.patient_id.id,
-                    "target_disease_id": line.target_disease_id.id,
-                    "dose_number": line.dose_number,
-                    "series_doses": line.series_doses,
-                    "occurrence": line.occurrence,
-                }
-            )
+            vals = {
+                "encounter_id": self.encounter_id.id,
+                "patient_id": self.patient_id.id,
+                "target_disease_id": line.target_disease_id.id,
+                "dose_number": line.dose_number,
+                "series_doses": line.series_doses,
+                "immunization_date": line.occurrence,
+            }
+            if self.immunization_id:
+                vals["immunization_id"] = self.immunization_id.id
+            Evaluation.create(vals)
 
     def _reopen(self):
         return {
