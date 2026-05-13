@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  ~ Vaccines used in Thailand's national immunization program.
+  ~ Codes: CVX (http://hl7.org/fhir/sid/cvx)
+  -->
+<odoo noupdate="1">
+    <data>
+        <!-- TB -->
+        <record id="vaccine_bcg" model="ni.immunization.vaccine">
+            <field name="name">BCG</field>
+            <field name="abbr">BCG</field>
+            <field name="code">19</field>
+            <field name="definition">Bacillus Calmette-Guérin; single dose at birth for tuberculosis prevention.</field>
+            <field name="route_id" ref="route_id" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_tb'))]" />
+        </record>
+        <!-- Hepatitis B -->
+        <record id="vaccine_hbv" model="ni.immunization.vaccine">
+            <field name="name">Hepatitis B</field>
+            <field name="abbr">HBV</field>
+            <field name="code">08</field>
+            <field name="definition">
+                Recombinant hepatitis B vaccine; birth dose followed by a 3-dose primary series.
+            </field>
+            <field name="route_id" ref="route_im" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_hbv'))]" />
+        </record>
+        <!-- Hepatitis A -->
+        <record id="vaccine_hav" model="ni.immunization.vaccine">
+            <field name="name">Hepatitis A</field>
+            <field name="abbr">HAV</field>
+            <field name="code">83</field>
+            <field name="definition">Inactivated hepatitis A vaccine; 2-dose series at 0 and 6 months.</field>
+            <field name="route_id" ref="route_im" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_hav'))]" />
+        </record>
+        <!-- Diphtheria + Tetanus + Pertussis (whole-cell) -->
+        <record id="vaccine_dtp" model="ni.immunization.vaccine">
+            <field name="name">DTP</field>
+            <field name="abbr">DTwP</field>
+            <field name="code">01</field>
+            <field name="definition">
+                Diphtheria-tetanus-pertussis (whole-cell); primary series at 2, 4, 6 months with boosters at 18 months
+                and school age.
+            </field>
+            <field name="route_id" ref="route_im" />
+            <field
+                name="target_disease_ids"
+                eval="[(4, ref('disease_diphtheria')), (4, ref('disease_tetanus')), (4, ref('disease_pertussis'))]"
+            />
+        </record>
+        <!-- DTP + HBV + Hib pentavalent — covers Diphtheria, Tetanus, Pertussis, HBV -->
+        <record id="vaccine_dtp_hb_hib" model="ni.immunization.vaccine">
+            <field name="name">DTP-HB-Hib</field>
+            <field name="abbr">Pentavalent</field>
+            <field name="definition">
+                Pentavalent DTwP-HB-Hib combination; covers diphtheria, tetanus, pertussis, hepatitis B, and Haemophilus
+                influenzae type b.
+            </field>
+            <field name="route_id" ref="route_im" />
+            <field
+                name="target_disease_ids"
+                eval="[(4, ref('disease_diphtheria')), (4, ref('disease_tetanus')), (4, ref('disease_pertussis')), (4, ref('disease_hbv'))]"
+            />
+        </record>
+        <!-- Td booster — covers Tetanus + Diphtheria -->
+        <record id="vaccine_td" model="ni.immunization.vaccine">
+            <field name="name">Td</field>
+            <field name="abbr">Td</field>
+            <field name="code">09</field>
+            <field name="definition">
+                Tetanus and diphtheria toxoids (adult formulation); given as booster doses at school age and every 10
+                years thereafter.
+            </field>
+            <field name="route_id" ref="route_im" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_tetanus')), (4, ref('disease_diphtheria'))]" />
+        </record>
+        <!-- Poliomyelitis -->
+        <record id="vaccine_opv" model="ni.immunization.vaccine">
+            <field name="name">OPV</field>
+            <field name="abbr">OPV</field>
+            <field name="code">02</field>
+            <field name="definition">
+                Oral poliovirus vaccine (bivalent/trivalent); given at 2, 4, 6 months and 18-month booster.
+            </field>
+            <field name="route_id" ref="route_po" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_polio'))]" />
+        </record>
+        <record id="vaccine_ipv" model="ni.immunization.vaccine">
+            <field name="name">IPV</field>
+            <field name="abbr">IPV</field>
+            <field name="code">10</field>
+            <field name="definition">
+                Inactivated poliovirus vaccine; used alongside OPV in Thailand's combination polio schedule.
+            </field>
+            <field name="route_id" ref="route_im" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_polio'))]" />
+        </record>
+        <!-- Measles + Mumps + Rubella -->
+        <record id="vaccine_mmr" model="ni.immunization.vaccine">
+            <field name="name">MMR</field>
+            <field name="abbr">MMR</field>
+            <field name="code">03</field>
+            <field name="definition">
+                Measles-mumps-rubella live attenuated combination; 2 doses at 9 and 18 months.
+            </field>
+            <field name="route_id" ref="route_sc" />
+            <field
+                name="target_disease_ids"
+                eval="[(4, ref('disease_measles')), (4, ref('disease_mumps')), (4, ref('disease_rubella'))]"
+            />
+        </record>
+        <!-- Varicella -->
+        <record id="vaccine_varicella" model="ni.immunization.vaccine">
+            <field name="name">Varicella</field>
+            <field name="abbr">VZV</field>
+            <field name="code">21</field>
+            <field name="definition">
+                Live attenuated varicella (chickenpox) vaccine; 1–2 doses depending on age and schedule.
+            </field>
+            <field name="route_id" ref="route_sc" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_varicella'))]" />
+        </record>
+        <!-- Influenza -->
+        <record id="vaccine_influenza" model="ni.immunization.vaccine">
+            <field name="name">Influenza, Seasonal</field>
+            <field name="abbr">Flu</field>
+            <field name="code">141</field>
+            <field name="definition">
+                Inactivated quadrivalent influenza vaccine; annual single dose; 2 doses for first-time recipients under
+                age 9.
+            </field>
+            <field name="route_id" ref="route_im" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_influenza'))]" />
+        </record>
+        <!-- HPV -->
+        <record id="vaccine_hpv9" model="ni.immunization.vaccine">
+            <field name="name">HPV9 (Gardasil 9)</field>
+            <field name="abbr">Gardasil9</field>
+            <field name="code">165</field>
+            <field name="definition">
+                9-valent HPV vaccine covering types 6, 11, 16, 18, 31, 33, 45, 52, 58; 2 doses for ages 9–14, 3 doses
+                for ages 15+.
+            </field>
+            <field name="route_id" ref="route_im" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_hpv'))]" />
+        </record>
+        <!-- COVID-19 -->
+        <record id="vaccine_covid19_astrazeneca" model="ni.immunization.vaccine">
+            <field name="name">COVID-19 ChAdOx1 (AstraZeneca)</field>
+            <field name="abbr">AZ</field>
+            <field name="code">210</field>
+            <field name="definition">
+                Adenoviral vector COVID-19 vaccine (Vaxzevria); 2-dose primary series 4–12 weeks apart.
+            </field>
+            <field name="route_id" ref="route_im" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_covid19'))]" />
+        </record>
+        <record id="vaccine_covid19_sinovac" model="ni.immunization.vaccine">
+            <field name="name">COVID-19 Inactivated (Sinovac)</field>
+            <field name="abbr">CoronaVac</field>
+            <field name="definition">
+                Inactivated whole-virus COVID-19 vaccine (CoronaVac); 2-dose primary series 2–4 weeks apart.
+            </field>
+            <field name="route_id" ref="route_im" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_covid19'))]" />
+        </record>
+        <!-- Japanese Encephalitis -->
+        <record id="vaccine_je_imojev" model="ni.immunization.vaccine">
+            <field name="name">JE Live Attenuated (IMOJEV)</field>
+            <field name="abbr">IMOJEV</field>
+            <field name="code">134</field>
+            <field name="definition">
+                Live attenuated Japanese encephalitis vaccine (SA14-14-2 strain); single primary dose; booster at 12–24
+                months if continued exposure risk.
+            </field>
+            <field name="route_id" ref="route_sc" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_japanese_encephalitis'))]" />
+        </record>
+        <!-- Rabies -->
+        <record id="vaccine_rabies_hdcv" model="ni.immunization.vaccine">
+            <field name="name">Rabies HDCV</field>
+            <field name="abbr">HDCV</field>
+            <field name="code">18</field>
+            <field name="definition">
+                Human diploid cell rabies vaccine; pre-exposure: 3 doses at days 0, 7, 21/28; post-exposure: 4–5 doses
+                depending on protocol.
+            </field>
+            <field name="route_id" ref="route_im" />
+            <field name="target_disease_ids" eval="[(4, ref('disease_rabies'))]" />
+        </record>
+    </data>
+</odoo>

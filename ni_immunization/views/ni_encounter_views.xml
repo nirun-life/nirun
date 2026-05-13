@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit.immunization</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='show_procedure']" position="after">
+                <field name="show_immunization" invisible="1" />
+            </xpath>
+            <xpath expr="//page[@name='procedure']" position="after">
+                <page
+                    name="immunization"
+                    string="Immunization"
+                    icon="fa-shield"
+                    attrs="{'invisible': [('show_immunization', '=', False)]}"
+                    badge="protected_disease_count"
+                >
+                    <field name="protected_disease_count" invisible="1" />
+                    <notebook orientation="original" class="no_controller">
+                        <page name="immunization_summary" string="Summary" icon="fa-shield">
+                            <field
+                                name="immunization_summary_ids"
+                                context="{
+                                    'default_encounter_id': id,
+                                    'default_patient_id': patient_id
+                                }"
+                            />
+                            <button
+                                name="action_immunization_evaluation"
+                                type="object"
+                                string="See More"
+                                class="btn-secondary"
+                            />
+                            <button
+                                name="action_immunization_evaluation_wizard"
+                                type="object"
+                                string="Evaluate"
+                                icon="fa-shield"
+                                class="btn-primary mb-3"
+                            />
+                        </page>
+                        <page name="immunization_records" string="Records" icon="fa-list">
+                            <field
+                                name="immunization_ids"
+                                context="{
+                                    'default_encounter_id': id,
+                                    'default_patient_id': patient_id,
+                                    'no_header': True
+                                }"
+                            />
+                            <button name="action_immunization" type="object" string="See More" class="btn-secondary" />
+                        </page>
+                    </notebook>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
