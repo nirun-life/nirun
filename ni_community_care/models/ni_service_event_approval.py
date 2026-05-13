@@ -41,6 +41,7 @@ class ServiceEventApproval(models.Model):
     identifier = fields.Char("หมายเลขอ้างอิง", readonly=True)
     state = fields.Selection(
         [
+            ("preparing", "กำลังดำเนินการ"),
             ("pending", "รอการอนุมัติ"),
             ("approved", "อนุมัติแล้ว"),
             ("rejected", "ไม่ผ่านการอนุมัติ"),
@@ -784,13 +785,12 @@ class ServiceEventApproval(models.Model):
     @api.model
     def _cron_create_approvals(self, **kwargs):
         """
-        สร้าง approval ของเดือนก่อนหน้า
+        สร้าง approval ของเดือนปัจจุบันในสถานะ 'preparing'
         :param job_ids: list of hr.job IDs เพื่อกรองเฉพาะ employee ตำแหน่งนั้น
                         ถ้าไม่ระบุจะใช้ group_user / ไม่ใช่ manager/admin
         """
         today = fields.Date.today()
-        prev_month = today - relativedelta(months=1)
-        month_start = prev_month.replace(day=1)
+        month_start = today.replace(day=1)
 
         batch_limit = int(kwargs.get("batch_limit", 0))
         job_ids = kwargs.get("job_ids", False)
@@ -802,7 +802,27 @@ class ServiceEventApproval(models.Model):
             end_month=month_start,
             batch_limit=batch_limit,
             job_ids=job_ids or False,
+            initial_state="preparing",
         )
+
+    @api.model
+    def _cron_preparing_to_pending(self, **kwargs):
+        """
+        เปลี่ยนสถานะ 'preparing' → 'pending' เมื่อสิ้นเดือนผ่านไปแล้ว
+        """
+        today = fields.Date.today()
+        records = self.search(
+            [
+                ("state", "=", "preparing"),
+                ("stop", "<", today),
+            ]
+        )
+        if records:
+            records.write({"state": "pending"})
+            _logger.info(
+                "[CRON] Transitioned %d approval(s) from preparing → pending",
+                len(records),
+            )
 
     @api.model
     def _cron_backfill_approvals(self, **kwargs):
@@ -872,6 +892,7 @@ class ServiceEventApproval(models.Model):
         end_month,
         batch_limit=0,
         job_ids=False,
+        initial_state="pending",
     ):
         """
         สร้าง approvals ตามช่วงเดือน
@@ -922,6 +943,7 @@ class ServiceEventApproval(models.Model):
                             "start": month_start,
                             "stop": month_end,
                             "user_id": user.id,
+                            "state": initial_state,
                         }
                     )
 

@@ -17,6 +17,7 @@
                 />
                 <filter name="start" date="start" string="วันที่รายงาน" />
                 <separator />
+                <filter name="preparing" string="กำลังดำเนินการ" domain="[('state', '=', 'preparing')]" />
                 <filter name="pending" string="รอการอนุมัติ" domain="[('state', '=', 'pending')]" />
                 <filter name="approved" string="อนุมัติแล้ว" domain="[('state', '=', 'approved')]" />
                 <filter name="rejected" string="ไม่ผ่านการอนุมัติ" domain="[('state', '=', 'rejected')]" />
@@ -84,6 +85,7 @@
                     name="state"
                     string="สถานะ"
                     widget="badge"
+                    decoration-info="state == 'preparing'"
                     decoration-warning="state == 'pending'"
                     decoration-success="state == 'approved'"
                     decoration-danger="state == 'rejected'"
@@ -142,6 +144,7 @@
                                     <field
                                         name="state"
                                         widget="badge"
+                                        decoration-info="state == 'preparing'"
                                         decoration-warning="state == 'pending'"
                                         decoration-success="state == 'approved'"
                                         decoration-danger="state == 'rejected'"
@@ -152,7 +155,7 @@
                                         string="อนุมัติ"
                                         icon="fa-check-circle"
                                         class="btn-info btn-sm"
-                                        attrs="{'invisible': [('state', 'in', ['approved'])]}"
+                                        attrs="{'invisible': [('state', 'in', ['preparing', 'approved'])]}"
                                         groups="ni_patient.group_manager"
                                     />
                                 </div>
@@ -198,8 +201,7 @@
                         </h1>
                         <div class="mb-4">
                             <span class="text-muted">
-                                ในวันที่ 1 ของทุกเดือน
-                                ระบบจะสร้างบันทึกงานผู้บริบาลของเดือนก่อนหน้าโดยอัตโนมัติ
+                                ระบบสร้างบันทึกงานในวันที่ 1 ของทุกเดือน และจะสามารถทำการอนุมัติได้เมื่อสิ้นสุดเดือน
                             </span>
                             <br />
                         </div>
@@ -224,6 +226,7 @@
                                 name="state"
                                 string="สถานะ"
                                 readonly="1"
+                                decoration-info="state == 'preparing'"
                                 decoration-warning="state == 'pending'"
                                 decoration-success="state == 'approved'"
                                 decoration-danger="state == 'rejected'"
@@ -232,10 +235,13 @@
                             <label
                                 for="state_by_employee_id"
                                 string="โดย"
-                                attrs="{'invisible':[('state','in',['pending','archived'])]}"
+                                attrs="{'invisible':[('state','in',['preparing','pending','archived'])]}"
                             />
                             <field name="state_by_employee_id" invisible="1" />
-                            <div class="o_row" attrs="{'invisible':[('state','in',['pending','archived'])]}">
+                            <div
+                                class="o_row"
+                                attrs="{'invisible':[('state','in',['preparing','pending','archived'])]}"
+                            >
                                 <!-- มี employee → แสดงชื่อ-นามสกุลจาก employee record -->
                                 <field
                                     name="state_by_employee_id"
@@ -538,7 +544,7 @@
                         />
                     </div>
                 </sheet>
-                <div name="chatter" class="oe_chatter">
+                <div name="chatter" class="oe_chatter" attrs="{'invisible': [('state', '=', 'preparing')]}">
                     <field
                         name="message_follower_ids"
                         groups="base.group_user"
