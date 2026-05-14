@@ -4,7 +4,14 @@
   -->
 <odoo>
     <menuitem id="careplan_menu_root" name="Careplan" web_icon="ni_careplan,static/description/careplan.png" />
-    <menuitem id="careplan_menu" name="Careplan" sequence="0" action="ni_careplan_action" parent="careplan_menu_root" />
+    <menuitem
+        id="careplan_menu"
+        name="Careplan"
+        sequence="0"
+        action="ni_careplan_action"
+        parent="careplan_menu_root"
+        groups="ni_patient.group_user"
+    />
     <menuitem
         id="category_template_menu"
         name="Template"

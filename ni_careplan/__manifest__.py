@@ -21,6 +21,7 @@
         "security/ir.model.access.csv",
         "security/ir_rule_data.xml",
         "data/ir_sequence_data.xml",
+        "report/careplan_report.xml",
         "views/ni_careplan_views.xml",
         "views/ni_careplan_category_views.xml",
         "views/ni_encounter_views.xml",

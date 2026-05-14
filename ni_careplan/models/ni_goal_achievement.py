@@ -6,5 +6,5 @@ class GoalAchievement(models.Model):
     _inherit = "ni.goal.achievement"
 
     careplan = fields.Boolean(
-        help="Weather this state will appear on careplan achievement"
+        help="this state will appears on careplan achievement or not"
     )

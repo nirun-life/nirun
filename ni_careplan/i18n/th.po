@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-04 11:35+0000\n"
-"PO-Revision-Date: 2025-06-04 11:35+0000\n"
+"POT-Creation-Date: 2026-05-15 01:21+0000\n"
+"PO-Revision-Date: 2026-05-15 01:21+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -22,6 +22,18 @@ msgstr ""
 #, python-format
 msgid "%(name)s's Careplan"
 msgstr "แผนการดูแล%(name)s"
+
+#. module: ni_careplan
+#: model:ir.actions.report,print_report_name:ni_careplan.careplan_action_report
+msgid "(\"%s_careplan\" % (object.identifier))"
+msgstr ""
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_kanban
+msgid ""
+"<br/>\n"
+"                                        <i class=\"fa fa-clock-o me-2\" aria-hidden=\"true\" title=\"period_end\"/>"
+msgstr ""
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_kanban
@@ -43,25 +55,101 @@ msgstr ""
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_kanban
-msgid "<i class=\"fa fa-clock-o me-2\" aria-hidden=\"true\" title=\"period_end\"/>"
+msgid ""
+"<i class=\"fa fa-inbox text-primary\" aria-hidden=\"true\" title=\"service\"/>\n"
+"                                        <span class=\"small mx-2\">Intervention :</span>"
 msgstr ""
+"<i class=\"fa fa-inbox text-primary\" aria-hidden=\"true\" title=\"service\"/>\n"
+"                                        <span class=\"small mx-2\">การดูแล :</span>"
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_kanban
-msgid ""
-"<i class=\"fa fa-inbox text-primary\" aria-hidden=\"true\" title=\"service\"/>\n"
-"                                        <span class=\"small mx-2\">Activity :</span>"
+msgid "<i class=\"fa fa-th-large me-2\" aria-hidden=\"true\" title=\"category\"/>"
 msgstr ""
-"<i class=\"fa fa-inbox text-primary\" aria-hidden=\"true\" title=\"service\"/>\n"
-"                                        <span class=\"small mx-2\">แผนการดูแล :</span>"
 
 #. module: ni_careplan
-#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_service_request_view_form
-msgid ""
-"<span class=\"oe_edit_only\" attrs=\"{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}\">\n"
-"                                or\n"
-"                            </span>"
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<span class=\"fw-bold\">Assessment Date:</span>"
+msgstr "<span class=\"fw-bold\">วันที่ประเมิน:</span>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<span class=\"fw-bold\">Total Goals:</span>"
+msgstr "<span class=\"fw-bold\">เป้าหมายทั้งหมด:</span>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_kanban
+msgid "<span class=\"mx-1\">-</span>"
 msgstr ""
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid ""
+"<span class=\"mx-1\">|</span>\n"
+"                                <span class=\"fw-bold\">Achieved:</span>"
+msgstr ""
+"<span class=\"mx-1\">|</span>\n"
+"                                <span class=\"fw-bold\">บรรลุผลแล้ว:</span>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<span class=\"text-muted fst-italic\">In progress</span>"
+msgstr "<span class=\"text-muted fst-italic\">ระหว่างตรวจสอบ</span>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<span class=\"text-muted fst-italic\">Not specified</span>"
+msgstr "<span class=\"text-muted fst-italic\">ไม่ระบุ</span>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid ""
+"<span>Care Plan</span>\n"
+"                                <span class=\"mx-1\">·</span>"
+msgstr ""
+"<span>แผนการดูแล</span>\n"
+"                                <span class=\"mx-1\">·</span>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<strong>Age:</strong>"
+msgstr "<strong>อายุ:</strong>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<strong>Author:</strong>"
+msgstr "<strong>ผู้จัดทำ:</strong>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<strong>Birthdate:</strong>"
+msgstr "<strong>วัน/เดือน/ปี เกิด:</strong>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<strong>Date:</strong>"
+msgstr "<strong>วันที่:</strong>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<strong>Gender:</strong>"
+msgstr "<strong>เพศ:</strong>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<strong>Patient:</strong>"
+msgstr "<strong>ผู้รับบริการ:</strong>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<strong>Provider:</strong>"
+msgstr "<strong>หน่วยบริการ:</strong>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "<strong>Status:</strong>"
+msgstr "<strong>สถานะ:</strong>"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__abbr
@@ -96,11 +184,6 @@ msgid "Achievement Uid"
 msgstr "ผู้ประเมินผล"
 
 #. module: ni_careplan
-#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
-msgid "Action"
-msgstr "กิจกรรม"
-
-#. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__action_count
 msgid "Action Count"
 msgstr "จำนวนกิจกรรม"
@@ -111,10 +194,17 @@ msgid "Action Display"
 msgstr "ชื่อกิจกรรม"
 
 #. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__active
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__active
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template__active
 msgid "Active"
 msgstr "เปิดใช้งาน"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_patient_view_form_inherit
+msgid "Add Careplan"
+msgstr "เพิ่มแผนการดูแล"
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_tree
@@ -140,11 +230,20 @@ msgid "Are you sure to revoke this careplan?"
 msgstr "คุณต้องการ ยกเลิก แผนการดูแลนี้?"
 
 #. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_kanban
+msgid "Are you sure you want to delete this record?"
+msgstr ""
+
+#. module: ni_careplan
+#: model:ir.actions.report,name:ni_careplan.careplan_action_report
 #: model:ir.model,name:ni_careplan.model_ni_careplan
 msgid "Care Plan"
 msgstr "แผนการดูแล"
 
 #. module: ni_careplan
+#. odoo-python
+#: code:addons/ni_careplan/models/ni_encounter.py:0
+#: code:addons/ni_careplan/models/ni_patient.py:0
 #: model:ir.actions.act_window,name:ni_careplan.ni_careplan_action
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_condition__careplan_ids
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_condition_latest__careplan_ids
@@ -157,11 +256,12 @@ msgstr "แผนการดูแล"
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_patient__careplan_ids
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_service_request__careplan_id
 #: model:ir.ui.menu,name:ni_careplan.careplan_menu
-#: model:ir.ui.menu,name:ni_careplan.configuration_menu
+#: model:ir.ui.menu,name:ni_careplan.careplan_menu_root
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_condition_view_form_inherit
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_encounter_diagnosis_view_form_inherit
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_encounter_diagnosis_view_tree_inherit
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_patient_view_form_inherit
+#, python-format
 msgid "Careplan"
 msgstr "แผนการดูแล"
 
@@ -239,10 +339,11 @@ msgid "Condition Count"
 msgstr "จำนวนโรค/ปัญหา"
 
 #. module: ni_careplan
+#: model:ir.ui.menu,name:ni_careplan.configuration_menu
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_category_view_form
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_view_form
 msgid "Configuration"
-msgstr "การตั้งค่า"
+msgstr "แผนการดูแล"
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
@@ -271,8 +372,8 @@ msgid "Created on"
 msgstr "สร้างเมื่อ"
 
 #. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_dow
-msgid "Day Of Week"
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__achievement_decoration
+msgid "Decoration"
 msgstr ""
 
 #. module: ni_careplan
@@ -302,7 +403,13 @@ msgid "Definition..."
 msgstr "คำนิยาม..."
 
 #. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_kanban
+msgid "Delete"
+msgstr "ลบ"
+
+#. module: ni_careplan
 #: model:ir.model,name:ni_careplan.model_ni_encounter_diagnosis
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
 msgid "Diagnosis"
 msgstr "วินิจฉัย"
@@ -342,15 +449,14 @@ msgid "Document associated to"
 msgstr "เอกสารเกี่ยวข้องกับ"
 
 #. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__duration
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_duration
-msgid "Duration"
-msgstr "ระยะเวลา"
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_kanban
+msgid "Dropdown menu"
+msgstr ""
 
 #. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_bound_duration_days
-msgid "Duration (Days)"
-msgstr "ระยะเวลา (วัน)"
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__duration
+msgid "Duration"
+msgstr "ระยะเวลา"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__duration_hours
@@ -373,14 +479,9 @@ msgid "Duration (years)"
 msgstr "ระยะเวลา (ปี)"
 
 #. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_duration_max
-msgid "Duration Max"
-msgstr "ระยะเวลาสูงสุด"
-
-#. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_duration_unit
-msgid "Duration Unit"
-msgstr "หน่วยระยะเวลา"
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_kanban
+msgid "Edit"
+msgstr "แก้ไข"
 
 #. module: ni_careplan
 #: model:ir.model,name:ni_careplan.model_ni_encounter
@@ -405,25 +506,22 @@ msgid "Error! You cannot create recursive data."
 msgstr ""
 
 #. module: ni_careplan
-#: model:ir.model.fields,help:ni_careplan.field_ni_careplan_template_service_request__timing_frequency
-msgid "Event occurs frequency times per period"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "Evaluation"
+msgstr "ประเมิน"
+
+#. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__observation_ids
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
+msgid "Evident"
+msgstr "หลักฐาน"
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_category_view_form
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_view_form
 msgid "Extra Info"
 msgstr "ข้อมูลเพิ่มเติม"
-
-#. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_frequency
-msgid "Frequency"
-msgstr "ความถี่"
-
-#. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_frequency_max
-msgid "Frequency Max"
-msgstr "ความถี่สูงสุด"
 
 #. module: ni_careplan
 #: model:ir.model,name:ni_careplan.model_ni_goal
@@ -485,15 +583,15 @@ msgid "Goal Text"
 msgstr "เป้าหมาย"
 
 #. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "Goals &amp; Outcomes"
+msgstr "เป้าหมาย"
+
+#. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_category_view_search
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_view_search
 msgid "Group By"
 msgstr "จัดกลุ่มโดย"
-
-#. module: ni_careplan
-#: model:ir.model.fields,help:ni_careplan.field_ni_careplan_template_service_request__timing_duration
-msgid "How long when it happens"
-msgstr ""
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__id
@@ -509,9 +607,21 @@ msgid "Identifier"
 msgstr "รหัสอ้างอิง"
 
 #. module: ni_careplan
+#: model:ir.model.fields,help:ni_careplan.field_ni_careplan__observation_category_ids
+#: model:ir.model.fields,help:ni_careplan.field_ni_careplan_category__observation_category_ids
+msgid "If this empty it mean careplan not address observation"
+msgstr ""
+
+#. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__intent
 msgid "Intent"
 msgstr "เจตนา"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
+msgid "Interventions"
+msgstr "การดูแล"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__is_future
@@ -553,6 +663,11 @@ msgid "Last Updated on"
 msgstr "แก้ไขล่าสุดเมื่อ"
 
 #. module: ni_careplan
+#: model:ir.model.fields,help:ni_careplan.field_ni_careplan_category__observation_code_ids
+msgid "Leave this empty if apply to all type of selected categories"
+msgstr ""
+
+#. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
 msgid "Mark as Completed"
 msgstr "เสร็จสิ้น"
@@ -575,14 +690,14 @@ msgid "Medication Request Count"
 msgstr "จำนวนการสั่งยา"
 
 #. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "Medications"
+msgstr "ยา"
+
+#. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_category_view_form
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_view_form
 msgid "Metadata"
-msgstr ""
-
-#. module: ni_careplan
-#: model:ir.model.fields,help:ni_careplan.field_ni_careplan_template_service_request__timing_offset
-msgid "Minutes from event (before of after)"
 msgstr ""
 
 #. module: ni_careplan
@@ -620,8 +735,25 @@ msgid "Not specify"
 msgstr "ไม่ระบุ"
 
 #. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_offset
-msgid "Offset"
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_category_view_form
+msgid "Observation"
+msgstr ""
+
+#. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__observation_category_ids
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__observation_category_ids
+msgid "Observation Category"
+msgstr ""
+
+#. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__observation_category_count
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__observation_category_count
+msgid "Observation Category Count"
+msgstr ""
+
+#. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__observation_code_ids
+msgid "Observation Code"
 msgstr ""
 
 #. module: ni_careplan
@@ -646,8 +778,12 @@ msgid "Patient"
 msgstr "ผู้รับบริการ"
 
 #. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__patient_observation_ids
+msgid "Patient Observation"
+msgstr "ผลตรวจ"
+
+#. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__period_mode
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_period
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
 msgid "Period"
 msgstr "ช่วงเวลา"
@@ -658,21 +794,16 @@ msgid "Period End Date Calendar"
 msgstr ""
 
 #. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_period_max
-msgid "Period Max"
-msgstr ""
-
-#. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_period_unit
-msgid "Period Unit"
-msgstr ""
-
-#. module: ni_careplan
 #. odoo-python
 #: code:addons/ni_careplan/models/ni_careplan.py:0
 #, python-format
 msgid "Please select template"
 msgstr "กรุณาระบุแม่แบบ"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_kanban
+msgid "Print"
+msgstr "พิมพ์"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__priority
@@ -716,8 +847,15 @@ msgstr "ยกเลิก"
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_encounter_diagnosis_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_patient_view_form_inherit
 msgid "See More"
 msgstr "ดูเพิ่มเติม"
+
+#. module: ni_careplan
+#: model:ir.model.fields,help:ni_careplan.field_ni_careplan__patient_observation_ids
+msgid "Selectable latest patient's observations filtered by category"
+msgstr ""
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__sequence
@@ -759,6 +897,11 @@ msgid "Service Request Count"
 msgstr "จำนวนแผนกิจกรรม"
 
 #. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
+msgid "Services"
+msgstr "กิจกรรม"
+
+#. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_service_request_view_form
 msgid "Services..."
 msgstr "กิจกรรม..."
@@ -770,7 +913,6 @@ msgstr "แบบง่าย"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__period_start
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_bound_start
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
 msgid "Since"
 msgstr "ตั้งแต่"
@@ -791,6 +933,11 @@ msgid "State"
 msgstr "สถานะ"
 
 #. module: ni_careplan
+#: model:ir.model.fields,help:ni_careplan.field_ni_careplan__observation_ids
+msgid "Support evident for this careplan"
+msgstr ""
+
+#. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__system_id
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template__system_id
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_category_view_search
@@ -800,6 +947,7 @@ msgstr "ระบบ"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__template_id
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__template_ids
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__template_id
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_condition__template_id
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_condition_latest__template_id
@@ -814,23 +962,12 @@ msgid "Tense"
 msgstr "ช่วงเวลา"
 
 #. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_tod
-msgid "Time Of Day"
-msgstr ""
-
-#. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_id
-msgid "Timing"
-msgstr ""
-
-#. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_tmpl_id
 msgid "Timing Tmpl"
 msgstr "แม่แบบช่วงเวลา"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__period_end
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_bound_end
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
 msgid "Until"
 msgstr "สิ้นสุด"
@@ -859,11 +996,6 @@ msgid "Warning!"
 msgstr "คำเตือน!"
 
 #. module: ni_careplan
-#: model:ir.model.fields,help:ni_careplan.field_ni_goal_achievement__careplan
-msgid "Weather this state will appear on careplan achievement"
-msgstr ""
-
-#. module: ni_careplan
 #: model:ir.model.fields,help:ni_careplan.field_ni_goal__careplan_id
 msgid "What goal fulfills"
 msgstr "เป้าหมายเพื่อสิ่งใด"
@@ -872,11 +1004,6 @@ msgstr "เป้าหมายเพื่อสิ่งใด"
 #: model:ir.model.fields,help:ni_careplan.field_ni_service_request__careplan_id
 msgid "What request fulfills"
 msgstr ""
-
-#. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__timing_when
-msgid "When"
-msgstr "เมื่อ"
 
 #. module: ni_careplan
 #: model:ir.model.fields,help:ni_careplan.field_ni_careplan__achievement_date
@@ -900,11 +1027,6 @@ msgid "choose from..."
 msgstr "เลือกจาก..."
 
 #. module: ni_careplan
-#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_service_request_view_form
-msgid "create new..."
-msgstr "สร้างใหม่..."
-
-#. module: ni_careplan
 #: model:ir.model,name:ni_careplan.model_ni_careplan_template_service_request
 msgid "ni.careplan.template.service.request"
 msgstr ""
@@ -917,6 +1039,6 @@ msgid "the Selected template not properly setting the patient's conditions."
 msgstr ""
 
 #. module: ni_careplan
-#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_encounter_view_form_inherit
-msgid "เพิ่ม Careplan"
-msgstr "เพิ่มแผนการดูแล"
+#: model:ir.model.fields,help:ni_careplan.field_ni_goal_achievement__careplan
+msgid "this state will appears on careplan achievement or not"
+msgstr "แสดงสถานะนี้บนแผนการดูแลหรือไม่"

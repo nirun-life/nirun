@@ -1,5 +1,5 @@
 #  Copyright (c) 2025 NSTDA
-from odoo import models
+from odoo import _, models
 
 
 class Encounter(models.Model):
@@ -10,3 +10,24 @@ class Encounter(models.Model):
         context = dict(self.env.context)
         context.update({"default_encounter_id": self.id})
         return self.with_context(context).patient_id.action_new_careplan()
+
+    def action_careplan(self):
+        self.ensure_one()
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "default_encounter_id": self.id,
+                "default_patient_id": self.patient_id.id,
+                "search_default_group_category_id": True,
+            }
+        )
+        view = {
+            "name": _("Careplan"),
+            "res_model": "ni.careplan",
+            "type": "ir.actions.act_window",
+            "target": ctx.pop("target", "current"),
+            "view_mode": "kanban,tree,form",
+            "domain": [("patient_id", "=", self.patient_id.id)],
+            "context": ctx,
+        }
+        return view

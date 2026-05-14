@@ -105,7 +105,7 @@
                             class="o_row"
                             attrs="{'invisible': [('state', '!=', 'draft'), ('template_id', '=', False)]}"
                         >
-                            <field name="template_id" />
+                            <field name="template_id" options="{'no_create': True}" />
                             <button
                                 name="apply_template"
                                 type="object"
@@ -132,6 +132,11 @@
                                 domain="[('patient_id', '=', patient_id), ('clinical_state', 'not in', ['inactive', 'resolved']), '|', ('code_id.specialty_ids', '=', False), ('code_id.specialty_ids', '=', user_specialty)]"
                             />
                             <field name="condition_count" invisible="1" />
+                            <separator string="Evident" />
+                            <field name="observation_ids" />
+                            <field name="patient_observation_ids" invisible="1" />
+                            <field name="observation_category_ids" invisible="1" />
+                            <field name="observation_category_count" invisible="1" />
                         </page>
                         <page name="goal" string="Goal" badge="goal_count" icon="fa-bullseye">
                             <field name="goal_count" invisible="1" />
@@ -145,7 +150,7 @@
                                 />
                             </div>
                         </page>
-                        <page name="action" string="Action" badge="action_count" icon="fa-inbox">
+                        <page name="intervention" string="Interventions" badge="action_count" icon="fa-inbox">
                             <field name="action_count" invisible="1" />
                             <notebook class="no_controller" orientation="original">
                                 <page name="service" string="Service" badge="service_request_count">
@@ -306,6 +311,12 @@
                                     </a>
                                     <div class="dropdown-menu" role="menu">
                                         <button
+                                            class="dropdown-item"
+                                            name="action_print_report"
+                                            type="object"
+                                            string="Print"
+                                        />
+                                        <button
                                             t-if="widget.editable"
                                             class="dropdown-item"
                                             name="action_edit"
@@ -347,7 +358,7 @@
                                     </li>
                                     <li>
                                         <i class="fa fa-inbox text-primary" aria-hidden="true" title="service" />
-                                        <span class="small mx-2">Activity :</span>
+                                        <span class="small mx-2">Intervention :</span>
                                         <span t-if="record.action_count.raw_value == 0" class="text-muted small">
                                             Not specify
                                         </span>

@@ -62,6 +62,16 @@
                     </group>
                     <field name="definition" placeholder="Definition..." />
                     <notebook groups="base.group_no_one">
+                        <page name="Observation" string="Observation">
+                            <group>
+                                <field
+                                    name="observation_category_ids"
+                                    widget="many2many_tags"
+                                    options="{'color_field': 'color'}"
+                                />
+                            </group>
+                            <field name="observation_code_ids" />
+                        </page>
                         <page name="goal" string="Goal">
                             <group>
                                 <field name="goal_category_id" />

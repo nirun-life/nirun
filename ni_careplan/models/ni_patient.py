@@ -1,5 +1,5 @@
 #  Copyright (c) 2024 NSTDA
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class Patient(models.Model):
@@ -28,5 +28,27 @@ class Patient(models.Model):
             "view_type": "form",
             "views": [[False, "form"]],
             "context": context,
+        }
+        return view
+
+    def action_careplan(self):
+        self.ensure_one()
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "default_patient_id": self.id,
+                "search_default_group_category_id": True,
+            }
+        )
+        if self.deceased:
+            ctx.update({"create": False})
+        view = {
+            "name": _("Careplan"),
+            "res_model": "ni.careplan",
+            "type": "ir.actions.act_window",
+            "target": ctx.pop("target", "current"),
+            "view_mode": "kanban,tree,form",
+            "domain": [("patient_id", "=", self.id)],
+            "context": ctx,
         }
         return view

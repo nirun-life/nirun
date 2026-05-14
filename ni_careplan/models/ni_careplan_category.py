@@ -18,6 +18,24 @@ class CareplanCategory(models.Model):
     )
     template_ids = fields.One2many("ni.careplan.template", "category_id")
 
+    observation_category_ids = fields.Many2many(
+        "ni.observation.category",
+        help="If this empty it mean careplan not address observation",
+    )
+    observation_category_count = fields.Integer(
+        compute="_compute_observation_category_count"
+    )
+    observation_code_ids = fields.Many2many(
+        "ni.observation.type",
+        domain="[('category_id', 'in', observation_category_ids)]",
+        help="Leave this empty if apply to all type of selected categories",
+    )
+
+    @api.depends("observation_category_ids")
+    def _compute_observation_category_count(self):
+        for rec in self:
+            rec.observation_category_count = len(rec.observation_category_ids)
+
     @api.constrains("parent_id")
     def _check_parent_id(self):
         if not self._check_recursion():

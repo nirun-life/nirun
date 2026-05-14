@@ -1,7 +1,8 @@
 #  Copyright (c) 2023 NSTDA
 
 {
-    "name": "Care Plan : Related Problem Observation",
+    "name": "Care Plan : Related Problem Observation (!Obsoleted)",
+    "summary": "this module was merged into",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Medical",
@@ -19,5 +20,5 @@
     ],
     "application": False,
     "auto_install": False,
-    "installable": True,
+    "installable": False,
 }

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="report_paperformat_a4_landscape" model="report.paperformat">
+        <field name="name">Care Plan A4 Landscape</field>
+        <field name="default" eval="False" />
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">20</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_spacing">20</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="careplan_action_report" model="ir.actions.report">
+        <field name="name">Care Plan</field>
+        <field name="model">ni.careplan</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ni_careplan.careplan_report_template</field>
+        <field name="report_file">ni_careplan.careplan_report_template</field>
+        <field name="print_report_name">("%s_careplan" % (object.identifier))</field>
+        <field name="binding_model_id" ref="model_ni_careplan" />
+        <field name="binding_type">report</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="paperformat_id" ref="ni_careplan.report_paperformat_a4_landscape" />
+    </record>
+    <template id="careplan_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <t t-foreach="docs" t-as="o">
+                        <p class="pt-4" />
+                        <p class="pt-2" />
+                        <div>
+                            <h2 name="title">
+                                <span>Care Plan</span>
+                                <span class="mx-1">·</span>
+                                <span class="me-2" t-field="o.category_id" />
+                                <small class="text-muted mx-2 flex-fill text-end" t-field="o.identifier" />
+                            </h2>
+                        </div>
+                        <div name="provider">
+                            <strong>Provider:</strong>
+                            <span class="me-3" t-field="o.company_id.name" />
+                            <strong>Author:</strong>
+                            <span class="me-3" t-esc="o.create_uid.name" />
+                            <strong>Date:</strong>
+                            <span t-field="o.period_start" />
+                            <t t-if="o.period_end">
+                                <span class="mx-1">-</span>
+                                <span class="me-3" t-field="o.period_end" />
+                            </t>
+                            <strong>Status:</strong>
+                            <span class="me-3" t-field="o.state" />
+                        </div>
+                        <div class="mt-2" name="person">
+                            <strong>Patient:</strong>
+                            <span class="me-3" t-field="o.patient_id.display_name" />
+                            <strong>Gender:</strong>
+                            <span class="me-3" t-field="o.patient_id.gender" />
+                            <t t-if="o.patient_id.birthdate">
+                                <strong>Birthdate:</strong>
+                                <span class="me-3" t-field="o.patient_id.birthdate" />
+                            </t>
+                            <strong>Age:</strong>
+                            <span class="me-3" t-field="o.patient_id.display_age" />
+                        </div>
+                        <p class="pt-2" />
+                        <!-- Care Plan Table -->
+                        <table class="table table-bordered">
+                            <colgroup>
+                                <col style="width: 22%;" />
+                                <col style="width: 26%;" />
+                                <col style="width: 32%;" />
+                                <col style="width: 20%;" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class="bg-primary text-white text-center">
+                                        <div>Diagnosis</div>
+                                    </th>
+                                    <th class="bg-primary text-white text-center">
+                                        <div>Goals &amp; Outcomes</div>
+                                    </th>
+                                    <th class="bg-primary text-white text-center">
+                                        <div>Interventions</div>
+                                    </th>
+                                    <th class="bg-primary text-white text-center">
+                                        <div>Evaluation</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <!-- Conditions / Diagnosis -->
+                                    <td class="align-top">
+                                        <t t-if="o.condition_ids">
+                                            <ul class="mb-0">
+                                                <t t-foreach="o.condition_ids" t-as="c">
+                                                    <li class="mb-2">
+                                                        <t t-if="c.code">
+                                                            <span class="badge bg-primary">
+                                                                <t t-esc="c.code" />
+                                                            </span>
+                                                            <br />
+                                                        </t>
+                                                        <span t-esc="c.name" />
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted fst-italic">Not specified</span>
+                                        </t>
+                                        <t t-if="o.observation_ids">
+                                            <div class="fw-bold mt-2 mb-1">Evident</div>
+                                            <ul class="mb-0">
+                                                <t t-foreach="o.observation_ids" t-as="ob">
+                                                    <li class="mb-1">
+                                                        <span class="fw-semibold" t-esc="ob.type_id.name" />
+                                                        <t t-if="ob.name">
+                                                            <span class="text-muted small ms-1">
+                                                                <t t-esc="ob.name" />
+                                                            </span>
+                                                        </t>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                    </td>
+                                    <!-- Goals -->
+                                    <td class="align-top">
+                                        <t t-if="o.goal_ids">
+                                            <ul class="mb-0">
+                                                <t t-foreach="o.goal_ids" t-as="g">
+                                                    <li class="mb-2">
+                                                        <t t-if="g.category_id">
+                                                            <div class="fw-bold text-muted small">
+                                                                <t t-esc="g.category_id.name" />
+                                                            </div>
+                                                        </t>
+                                                        <span t-esc="g.name" />
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-elif="o.goal_text">
+                                            <div t-field="o.goal_text" />
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted fst-italic">Not specified</span>
+                                        </t>
+                                    </td>
+                                    <!-- Interventions -->
+                                    <td class="align-top">
+                                        <t t-if="o.service_request_ids">
+                                            <div class="fw-bold mb-1">Services</div>
+                                            <ul class="mb-2">
+                                                <t t-foreach="o.service_request_ids" t-as="sr">
+                                                    <li class="mb-1">
+                                                        <span t-esc="sr.name" />
+                                                        <div class="text-muted small ms-2" t-if="sr.category_id">
+                                                            <t t-esc="sr.category_id.name" />
+                                                        </div>
+                                                        <div class="text-muted small ms-2" t-if="sr.timing_id.name">
+                                                            <t t-esc="sr.timing_id.name" />
+                                                        </div>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-if="o.medication_request_ids">
+                                            <div class="fw-bold mb-1">Medications</div>
+                                            <ul class="mb-0">
+                                                <t t-foreach="o.medication_request_ids" t-as="mr">
+                                                    <li class="mb-1">
+                                                        <span t-esc="mr.name" />
+                                                        <div class="text-muted small ms-2" t-if="mr.dosage_display">
+                                                            <t t-esc="mr.dosage_display" />
+                                                        </div>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-if="not o.service_request_ids and not o.medication_request_ids">
+                                            <span class="text-muted fst-italic">Not specified</span>
+                                        </t>
+                                    </td>
+                                    <!-- Evaluation -->
+                                    <td class="align-top">
+                                        <t t-if="o.achievement_id">
+                                            <span class="badge bg-info text-dark mb-2">
+                                                <t t-esc="o.achievement_id.name" />
+                                            </span>
+                                        </t>
+                                        <t t-if="o.achievement_reason">
+                                            <div t-field="o.achievement_reason" />
+                                        </t>
+                                        <t t-if="o.achievement_date">
+                                            <div class="text-muted small mt-1">
+                                                <span class="fw-bold">Assessment Date:</span>
+                                                <span
+                                                    t-field="o.achievement_date"
+                                                    t-options='{"format": "dd/MM/yyyy"}'
+                                                />
+                                            </div>
+                                        </t>
+                                        <t t-if="not o.achievement_id and not o.achievement_reason">
+                                            <span class="text-muted fst-italic">In progress</span>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- Goal Progress Summary -->
+                        <t t-if="o.goal_ids">
+                            <div class="text-muted small mt-2">
+                                <span class="fw-bold">Total Goals:</span>
+                                <span t-esc="o.goal_count" />
+                                <span class="mx-1">|</span>
+                                <span class="fw-bold">Achieved:</span>
+                                <span t-esc="o.goal_achieved_count" />
+                                <t t-if="o.goal_count">
+                                    <span>
+                                        (
+                                        <t t-esc="'%.0f' % o.goal_ratio" />
+                                        %)
+                                    </span>
+                                </t>
+                            </div>
+                        </t>
+                        <p style="page-break-after: always;" />
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
