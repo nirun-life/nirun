@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2025 NSTDA
+  -->
+<odoo>
+    <record id="ni_goal_state_wizard_view_form" model="ir.ui.view">
+        <field name="name">ni.goal.state.wizard.view.form</field>
+        <field name="model">ni.goal.state.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="state_achievement_ids" invisible="1" />
+                <field name="goal_ids" widget="many2many_tags" readonly="1" invisible="1" />
+                <group>
+                    <group>
+                        <field name="state_id" options="{'no_open': True}" />
+                    </group>
+                    <group>
+                        <field
+                            name="achievement_id"
+                            options="{'no_open': True}"
+                            attrs="{'readonly': [('state_achievement_ids', '=', [])], 'required': [('state_achievement_ids', '!=', [])]}"
+                        />
+                    </group>
+                </group>
+                <label for="note" />
+                <field name="note" placeholder="Add a note..." />
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary" close="1" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

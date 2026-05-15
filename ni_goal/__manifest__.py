@@ -12,6 +12,7 @@
     "depends": ["ni_patient", "ni_observation", "ni_condition"],
     "data": [
         "security/ir.model.access.csv",
+        "wizards/ni_goal_state_wizard_views.xml",
         "datas/ni_goal_achievement_data.xml",
         "datas/ni_goal_state_data.xml",
         "views/ni_goal_views.xml",
@@ -20,6 +21,7 @@
         "views/ni_goal_achievement_views.xml",
         "views/ni_goal_code_views.xml",
         "views/ni_goal_menus.xml",
+        "views/ni_encounter_views.xml",
         "views/ni_condition_code_views.xml",
     ],
     "application": False,

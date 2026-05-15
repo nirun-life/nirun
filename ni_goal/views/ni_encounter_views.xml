@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='careplan']" position="after">
+                <page name="goal" string="Goal" icon="fa-flag-o" badge="ongoing_goal_count">
+                    <field name="ongoing_goal_count" invisible="1" />
+                    <p class="text-muted small ms-1 mb-0">
+                        Showing only ongoing goals.
+                        Click
+                        <strong>See More</strong>
+                        to view all goals.
+                    </p>
+                    <field
+                        name="ongoing_goal_ids"
+                        mode="kanban"
+                        readonly="1"
+                        context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
+                    />
+                    <button name="action_goal" type="object" string="See More" class="btn-secondary" />
+                    <button
+                        name="action_new_goal"
+                        type="object"
+                        class="btn-outline-primary"
+                        string="Add Patient Goal"
+                        states="in-progress"
+                    />
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
