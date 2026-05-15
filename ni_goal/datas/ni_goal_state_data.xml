@@ -8,6 +8,7 @@
         <field name="name">Proposed</field>
         <field name="definition">A goal is proposed for this patient.</field>
         <field name="abbr">~proposed</field>
+        <field name="icon">fa-question-circle</field>
     </record>
 
     <record id="goal_state_planned" model="ni.goal.state">
@@ -16,6 +17,7 @@
         <field name="name">Planned</field>
         <field name="definition">A goal is planned for this patient.</field>
         <field name="abbr">~planned</field>
+        <field name="icon">fa-calendar</field>
     </record>
 
     <record id="goal_state_accepted" model="ni.goal.state">
@@ -24,6 +26,7 @@
         <field name="name">Accepted</field>
         <field name="definition">A proposed goal was accepted or acknowledged.</field>
         <field name="abbr">~accepted</field>
+        <field name="icon">fa-thumbs-up</field>
     </record>
 
     <record id="goal_state_active" model="ni.goal.state">
@@ -36,6 +39,7 @@
         <field name="parent_id" ref="ni_goal.goal_state_accepted" />
         <field name="achievement_id" ref="ni_goal.goal_in_progress" />
         <field name="achievement_ids" eval="[( 6, 0, [ref('ni_goal.goal_in_progress')])]" />
+        <field name="icon">fa-play-circle</field>
     </record>
 
     <record id="goal_state_on_hold" model="ni.goal.state">
@@ -47,6 +51,8 @@
         </field>
         <field name="abbr">~suspended</field>
         <field name="parent_id" ref="ni_goal.goal_state_accepted" />
+        <field name="fold" eval="1" />
+        <field name="icon">fa-pause-circle</field>
     </record>
 
     <record id="goal_state_completed" model="ni.goal.state">
@@ -58,6 +64,8 @@
         <field name="parent_id" ref="ni_goal.goal_state_accepted" />
         <field name="achievement_id" ref="goal_achieved" />
         <field name="achievement_ids" eval="[(6, 0, [ref('goal_achieved'), ref('goal_not_achieved')])]" />
+        <field name="fold" eval="0" />
+        <field name="icon">fa-check-circle</field>
     </record>
 
     <record id="goal_state_cancelled" model="ni.goal.state">
@@ -68,6 +76,8 @@
         <field name="abbr">~abandoned</field>
         <field name="achievement_id" ref="goal_not_attainable" />
         <field name="achievement_ids" eval="[(6, 0, [ref('goal_not_attainable')])]" />
+        <field name="fold" eval="1" />
+        <field name="icon">fa-ban</field>
     </record>
 
     <record id="goal_state_entered_in_error" model="ni.goal.state">
@@ -76,6 +86,8 @@
         <field name="name">Entered in Error</field>
         <field name="definition">The goal was entered in error and voided.</field>
         <field name="abbr">~error</field>
+        <field name="fold" eval="1" />
+        <field name="icon">fa-exclamation-circle</field>
     </record>
 
     <record id="goal_state_rejected" model="ni.goal.state">
@@ -84,6 +96,8 @@
         <field name="name">Rejected</field>
         <field name="definition">A proposed goal was rejected.</field>
         <field name="abbr">~declined</field>
+        <field name="fold" eval="1" />
+        <field name="icon">fa-times-circle</field>
     </record>
 
     <!-- prettier-ignore-end -->

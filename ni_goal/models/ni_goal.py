@@ -1,7 +1,7 @@
 #  Copyright (c) 2024 NSTDA
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -9,9 +9,16 @@ _logger = logging.getLogger(__name__)
 class Goal(models.Model):
     _name = "ni.goal"
     _description = "Goal"
-    _inherit = ["ni.patient.res", "ni.period.mixin"]
+    _inherit = [
+        "ni.patient.res",
+        "ni.period.mixin",
+        "mail.thread",
+        "mail.activity.mixin",
+    ]
 
-    name = fields.Char("Goal Name", required=True, help="Text describing goal")
+    name = fields.Char(
+        "Goal Name", required=True, help="Text describing goal", tracking=True
+    )
     code_id = fields.Many2one(
         "ni.goal.code",
         "Goal Code",
@@ -29,17 +36,32 @@ class Goal(models.Model):
         ondelete="restrict",
         required=False,
         domain="[('id', 'child_of', state_achievement_ids)]",
+        tracking=True,
     )
+    achievement_code = fields.Char(related="achievement_id.code", store=True)
     achievement_decoration = fields.Selection(related="achievement_id.decoration")
     achievement_color = fields.Integer(related="achievement_id.color")
-    is_achieved = fields.Boolean(default=False, compute="_compute_is_achieved")
+    is_achieved = fields.Boolean(
+        default=False, compute="_compute_is_achieved", search="_search_is_achieved"
+    )
 
     state_id = fields.Many2one(
-        "ni.goal.state", index=True, ondelete="restrict", required=True
+        "ni.goal.state",
+        index=True,
+        ondelete="restrict",
+        required=True,
+        tracking=True,
+        group_expand="_expand_state_ids",
     )
     state_achievable = fields.Boolean(related="state_id.achievable")
     state_achievement_ids = fields.Many2many(related="state_id.achievement_ids")
     state_decoration = fields.Selection(related="state_id.decoration")
+    state_icon = fields.Char(related="state_id.icon")
+    last_comment = fields.Html(compute="_compute_last_comment")
+    last_comment_author_id = fields.Many2one(
+        "res.partner", compute="_compute_last_comment"
+    )
+    last_comment_date = fields.Datetime(compute="_compute_last_comment")
 
     observation_type_id = fields.Many2one(
         "ni.observation.type",
@@ -104,6 +126,10 @@ class Goal(models.Model):
                     }
                 )
 
+    @api.model
+    def _expand_state_ids(self, states, domain, order):
+        return states.search([], order=order)
+
     @api.depends("achievement_id")
     def _compute_is_achieved(self):
         achieved = self.filtered_domain(
@@ -114,6 +140,34 @@ class Goal(models.Model):
         not_achieved = self - achieved
         if not_achieved:
             not_achieved.is_achieved = False
+
+    @api.depends("message_ids")
+    def _compute_last_comment(self):
+        for rec in self:
+            msg = self.env["mail.message"].search(
+                [
+                    ("res_id", "=", rec.id),
+                    ("model", "=", self._name),
+                    ("body", "!=", False),
+                    ("subtype_id", "=", self.env.ref("mail.mt_comment").id),
+                ],
+                order="id desc",
+                limit=1,
+            )
+            rec.last_comment = msg.body if msg else False
+            rec.last_comment_author_id = msg.author_id if msg else False
+            rec.last_comment_date = msg.date if msg else False
+
+    def _search_is_achieved(self, operator, value):
+        achieved_id = self.env.ref("ni_goal.goal_achieved").id
+        if (operator == "=" and value) or (operator == "!=" and not value):
+            return [("achievement_id", "child_of", achieved_id)]
+        achieved_ids = (
+            self.env["ni.goal.achievement"]
+            .search([("id", "child_of", achieved_id)])
+            .ids
+        )
+        return [("achievement_id", "not in", achieved_ids)]
 
     @api.onchange("code_id")
     def _onchange_code_id(self):
@@ -165,18 +219,49 @@ class Goal(models.Model):
                     else None
                 )
 
+    def _open_state_wizard(self, default_state, default_achievement):
+        return {
+            "name": _("Update Goal"),
+            "res_model": "ni.goal.state.wizard",
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_goal_ids": self.ids,
+                "default_state_id": self.env.ref(default_state).id,
+                "default_achievement_id": self.env.ref(default_achievement).id,
+            },
+        }
+
     def action_mark_achieved(self):
-        self.write(
-            {
-                "state_id": self.env.ref("ni_goal.goal_state_completed"),
-                "achievement_id": self.env.ref("ni_goal.goal_achieved"),
-            }
+        return self._open_state_wizard(
+            "ni_goal.goal_state_completed", "ni_goal.goal_achieved"
         )
 
     def action_mark_not_achieved(self):
-        self.write(
-            {
-                "state_id": self.env.ref("ni_goal.goal_state_completed"),
-                "achievement_id": self.env.ref("ni_goal.goal_not_achieved"),
-            }
+        return self._open_state_wizard(
+            "ni_goal.goal_state_completed", "ni_goal.goal_not_achieved"
         )
+
+    def action_state_wizard(self):
+        return {
+            "name": _("Update Goal"),
+            "res_model": "ni.goal.state.wizard",
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_goal_ids": self.ids},
+        }
+
+    def action_edit(self):
+        self.ensure_one()
+        view = {
+            "name": _("Edit"),
+            "res_model": self._name,
+            "type": "ir.actions.act_window",
+            "target": self.env.context.get("target", "current"),
+            "res_id": self.id,
+            "view_mode": "form",
+            "context": self.env.context,
+        }
+        return view
