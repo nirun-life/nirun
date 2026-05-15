@@ -33,6 +33,8 @@ class GoalState(models.Model):
         required=True,
     )
     achievable = fields.Boolean()
+    fold = fields.Boolean(default=False)
+    icon = fields.Char(default="fa-circle")
 
 
 @api.constrains("parent_id")
