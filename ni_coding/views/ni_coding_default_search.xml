@@ -1,0 +1,13 @@
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<search>
+    <field
+        name="name"
+        filter_domain="['|', '|', ('name', 'ilike', self), ('code', 'ilike', self), ('abbr', 'ilike', self)]"
+    />
+    <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+    <group name="group_by" string="Group By">
+        <filter name="system" string="System" context="{'group_by': 'system_id'}" />
+    </group>
+</search>

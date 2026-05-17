@@ -1,5 +1,8 @@
 #  Copyright (c) 2021-2023 NSTDA
 import random
+from pathlib import Path
+
+from lxml import etree
 
 from odoo import api, fields, models
 
@@ -10,6 +13,29 @@ class Coding(models.AbstractModel):
     _order = "sequence, id"
 
     _display_name_separator = ", "
+    _default_coding_form = (
+        Path(__file__).parent.parent / "views" / "ni_coding_default_form.xml"
+    )
+    _default_coding_tree = (
+        Path(__file__).parent.parent / "views" / "ni_coding_default_tree.xml"
+    )
+    _default_coding_search = (
+        Path(__file__).parent.parent / "views" / "ni_coding_default_search.xml"
+    )
+    _default_coding_kanban = (
+        Path(__file__).parent.parent / "views" / "ni_coding_default_kanban.xml"
+    )
+
+    @api.model
+    def _get_view(self, view_id=None, view_type="form", **options):
+        arch, view = super()._get_view(view_id, view_type, **options)
+        can_write = self.check_access_rights("write", raise_exception=False)
+        use_default = not view or (view_type == "form" and not can_write)
+        if use_default:
+            default_path = getattr(self, f"_default_coding_{view_type}", None)
+            if default_path:
+                arch = etree.parse(str(default_path)).getroot()
+        return arch, view
 
     def _get_default_sequence(self):
         last_sequence = self.env[self._name].search([], order="sequence desc", limit=1)
