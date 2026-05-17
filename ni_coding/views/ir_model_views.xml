@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="coding_model_view_tree" model="ir.ui.view">
+        <field name="name">ni.coding.model.view.tree</field>
+        <field name="model">ir.model</field>
+        <field name="arch" type="xml">
+            <tree create="0" delete="0" edit="0">
+                <field name="name" />
+                <field name="model" />
+                <button name="action_open_records" type="object" string="View Records" icon="fa-list" />
+            </tree>
+        </field>
+    </record>
+    <record id="action_coding_model_server" model="ir.actions.server">
+        <field name="name">Coding Models</field>
+        <field name="model_id" ref="base.model_ir_model" />
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_coding_models()</field>
+    </record>
+</odoo>
