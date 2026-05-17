@@ -14,8 +14,8 @@ class ImmunizationEvaluation(models.Model):
 
     name = fields.Char(compute="_compute_name", store=True)
     state = fields.Selection(default="completed")
-    occurrence = fields.Datetime("Assessed On")
-    occurrence_date = fields.Datetime("Assessment Date")
+    occurrence = fields.Datetime("Asserted On")
+    occurrence_date = fields.Datetime("Assert Date")
 
     immunization_date = fields.Date("Immunization Date")
     immunization_id = fields.Many2one(
