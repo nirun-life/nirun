@@ -39,6 +39,7 @@ class Goal(models.Model):
         tracking=True,
     )
     achievement_code = fields.Char(related="achievement_id.code", store=True)
+    achievement_icon = fields.Char(related="achievement_id.icon")
     achievement_decoration = fields.Selection(related="achievement_id.decoration")
     achievement_color = fields.Integer(related="achievement_id.color")
     is_achieved = fields.Boolean(
