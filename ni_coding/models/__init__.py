@@ -2,3 +2,4 @@
 
 from . import ni_coding
 from . import ni_coding_system
+from . import ir_model
