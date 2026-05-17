@@ -232,6 +232,7 @@
                 <field name="state_decoration" invisible="1" />
                 <field name="state_icon" invisible="1" />
                 <field name="achievement_id" />
+                <field name="achievement_icon" invisible="1" />
                 <field name="achievement_decoration" invisible="1" />
                 <field name="observation_type_id" />
                 <field name="observation_id" />
@@ -248,10 +249,12 @@
                                 <button
                                     name="action_state_wizard"
                                     type="object"
-                                    t-attf-class="btn btn-sm p-1 lh-1 text-{{record.state_decoration.raw_value}}"
-                                    t-att-title="record.state_id.value"
+                                    t-attf-class="btn btn-sm p-1 lh-1 text-{{record.achievement_id.raw_value ? record.achievement_decoration.raw_value : record.state_decoration.raw_value}}"
+                                    t-attf-title="สถานะ : {{record.state_id.value}} | {{record.achievement_id.value}}"
                                 >
-                                    <i t-attf-class="fa {{record.state_icon.value}} fa-lg" />
+                                    <i
+                                        t-attf-class="fa {{record.achievement_id.raw_value ? record.achievement_icon.value : record.state_icon.value}} fa-lg"
+                                    />
                                 </button>
                                 <div>
                                     <div t-if="record.category_id.raw_value" class="text-muted small">
@@ -278,19 +281,6 @@
                                         <t t-else="">
                                             <span class="text-muted">N/A</span>
                                         </t>
-                                    </li>
-                                    <li>
-                                        <label for="achievement_id" class="small text-muted me-2">Achievement :</label>
-                                        <field
-                                            name="achievement_id"
-                                            widget="badge"
-                                            decoration-primary="achievement_decoration == 'primary'"
-                                            decoration-success="achievement_decoration == 'success'"
-                                            decoration-info="achievement_decoration == 'info'"
-                                            decoration-warning="achievement_decoration == 'warning'"
-                                            decoration-danger="achievement_decoration == 'danger'"
-                                            decoration-muted="achievement_decoration == 'muted'"
-                                        />
                                     </li>
                                 </ul>
                             </div>

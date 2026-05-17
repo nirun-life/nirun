@@ -8,6 +8,8 @@
        <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
        <field name="definition">The goal is being sought but has not yet been reached. (Also applies if the goal was reached in the past but there has been regression and the goal is again being sought).</field>
        <field name="abbr">active</field>
+       <field name="icon">fa-circle-o</field>
+       <field name="decoration">info</field>
     </record>
 
    <record id="goal_improving" model="ni.goal.achievement">
@@ -17,6 +19,8 @@
        <field name="definition">The goal is being sought, and is progressing.</field>
        <field name="abbr">active</field>
        <field name="parent_id" ref="ni_goal.goal_in_progress"/>
+       <field name="icon">fa-arrow-up</field>
+       <field name="decoration">success</field>
     </record>
 
    <record id="goal_worsening" model="ni.goal.achievement">
@@ -26,6 +30,8 @@
        <field name="definition">The goal is being sought, but is regressing.</field>
        <field name="abbr">active</field>
        <field name="parent_id" ref="ni_goal.goal_in_progress"/>
+       <field name="icon">fa-arrow-down</field>
+       <field name="decoration">danger</field>
     </record>
 
    <record id="goal_no_change" model="ni.goal.achievement">
@@ -35,6 +41,8 @@
        <field name="definition">The goal is being sought, but the trend is flat.</field>
        <field name="abbr">active</field>
        <field name="parent_id" ref="ni_goal.goal_in_progress"/>
+       <field name="icon">fa-minus</field>
+       <field name="decoration">warning</field>
     </record>
 
    <record id="goal_achieved" model="ni.goal.achievement">
@@ -43,6 +51,8 @@
        <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
        <field name="definition">The goal has been met.</field>
        <field name="abbr">complete</field>
+       <field name="icon">fa-check-circle</field>
+       <field name="decoration">success</field>
     </record>
 
    <record id="goal_sustaining" model="ni.goal.achievement">
@@ -52,6 +62,8 @@
        <field name="definition">The goal has been met, but ongoing activity is needed to sustain the goal objective.</field>
        <field name="abbr">active</field>
        <field name="parent_id" ref="ni_goal.goal_achieved"/>
+       <field name="icon">fa-refresh</field>
+       <field name="decoration">success</field>
     </record>
 
    <record id="goal_not_achieved" model="ni.goal.achievement">
@@ -60,6 +72,8 @@
        <field name="system_id" ref="ni_coding.system_hl7_fhir"/>
        <field name="definition">The goal has not been met and there might or might not have been progress towards target.</field>
        <field name="abbr">not-done</field>
+       <field name="icon">fa-times-circle</field>
+       <field name="decoration">warning</field>
     </record>
 
    <record id="goal_no_progress" model="ni.goal.achievement">
@@ -69,6 +83,8 @@
        <field name="definition">The goal has not been met and little to no progress towards target.</field>
        <field name="abbr">not-done</field>
        <field name="parent_id" ref="ni_goal.goal_not_achieved"/>
+       <field name="icon">fa-minus-circle</field>
+       <field name="decoration">danger</field>
     </record>
 
    <record id="goal_not_attainable" model="ni.goal.achievement">
@@ -78,6 +94,8 @@
        <field name="definition">The goal is not possible to be met.</field>
        <field name="abbr">abandoned</field>
        <field name="parent_id" ref="ni_goal.goal_not_achieved"/>
+       <field name="icon">fa-ban</field>
+       <field name="decoration">danger</field>
     </record>
 
     <!-- prettier-ignore-end -->
