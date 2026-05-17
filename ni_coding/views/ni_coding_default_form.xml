@@ -1,0 +1,46 @@
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<form>
+    <field name="active" invisible="True" />
+    <sheet>
+        <widget
+            name="web_ribbon"
+            attrs="{'invisible': [('active', '=', True)]}"
+            bg_color="bg-danger"
+            title="Archived"
+        />
+        <label class="oe_edit_only" for="name" />
+        <field name="name" class="h4" />
+        <label class="oe_edit_only" for="definition" />
+        <field name="definition" placeholder="Definition..." />
+        <group>
+            <group>
+                <field name="abbr" />
+            </group>
+            <group>
+                <label for="code" String="Coding" />
+                <div class="o_row">
+                    <field name="system_id" placeholder="System" options="{'no_open': True}" class="text-muted" />
+                    <field name="code" placeholder="Code" />
+                </div>
+            </group>
+            <notebook groups="base.group_no_one">
+                <page string="Extra Info">
+                    <group>
+                        <group name="decoration" string="UI Decoration">
+                            <field name="color" widget="color_picker" />
+                            <field name="sequence" />
+                        </group>
+                        <group name="metadata" string="Metadata">
+                            <field name="create_date" />
+                            <field name="create_uid" widget="many2one_avatar_user" />
+                            <field name="write_date" />
+                            <field name="write_uid" widget="many2one_avatar_user" />
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </group>
+    </sheet>
+</form>
