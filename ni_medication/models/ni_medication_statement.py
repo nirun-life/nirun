@@ -14,6 +14,9 @@ class MedicationStatement(models.Model):
     ]
     _check_period_start = True
 
+    occurrence = fields.Datetime("Asserted On")
+    occurrence_date = fields.Datetime("Assert Date")
+
     category_id = fields.Many2one(
         default=lambda self: self.env.ref(
             "ni_medication.admin_location_patient_specified"

@@ -21,7 +21,7 @@ class MedicationAbstract(models.AbstractModel):
     medication_image_1024 = fields.Image(related="medication_id.image_1024")
     medication_image_512 = fields.Image(related="medication_id.image_512")
     medication_image_256 = fields.Image(related="medication_id.image_256")
-    medication_image_128 = fields.Image(related="medication_id.image_128", store=True)
+    medication_image_128 = fields.Image(related="medication_id.image_128")
 
     custom_checkbox_medication = fields.Boolean(
         string="Custom Medication", default=False
