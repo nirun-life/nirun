@@ -62,6 +62,13 @@ class EncounterServiceAttendance(models.Model):
         check_company=True,
         ondelete="restrict",
     )
+    request_id = fields.Many2one(
+        "ni.service.request",
+        "Based On Request",
+        ondelete="set null",
+        index=True,
+        help="Request of this attendance",
+    )
     service_event_id = fields.Many2one(
         "ni.service.event", index=True, domain="[('service_id', '=', service_id)]"
     )
@@ -85,6 +92,45 @@ class EncounterServiceAttendance(models.Model):
             rec.dayofweek = str(
                 rec.encounter_date.astimezone(timezone(self.env.user.tz)).weekday()
             )
+
+    def _find_matching_request(self):
+        self.ensure_one()
+        if not self.patient_id:
+            return None
+        service_ids = self.service_ids.ids or (
+            [self.service_id.id] if self.service_id else []
+        )
+        if not service_ids:
+            return None
+        encounter_date = self.encounter_date
+        domain = [
+            ("patient_id", "=", self.patient_id.id),
+            ("service_ids", "in", service_ids),
+        ]
+        if encounter_date:
+            domain += [
+                "|",
+                ("period_start", "=", False),
+                ("period_start", "<=", encounter_date),
+                "|",
+                ("period_end", "=", False),
+                ("period_end", ">=", encounter_date),
+            ]
+        return self.env["ni.service.request"].search(domain, limit=1)
+
+    @api.onchange("service_id", "service_ids", "encounter_id")
+    def _onchange_auto_request(self):
+        for rec in self:
+            if not rec.request_id:
+                rec.request_id = rec._find_matching_request()
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for rec in records:
+            if not rec.request_id:
+                rec.request_id = rec._find_matching_request()
+        return records
 
     @api.depends("service_id", "service_ids")
     def _compute_name(self):

@@ -9,6 +9,8 @@ class Service(models.Model):
     _inherit = "ni.coding"
     _order = "sequence"
 
+    _rec_name = "name"
+
     @api.model
     def default_get(self, fields):
         res = super(Service, self).default_get(fields)
