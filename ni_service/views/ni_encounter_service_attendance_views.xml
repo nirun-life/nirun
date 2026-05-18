@@ -35,6 +35,7 @@
         <field name="arch" type="xml">
             <form string="">
                 <field name="encounter_id" invisible="1" required="False" />
+                <field name="patient_id" invisible="1" />
                 <sheet>
                     <group>
                         <field name="name" invisible="1" />
@@ -58,6 +59,12 @@
                             widget="many2many_tags"
                             options="{'color_field': 'color', 'no_create': True, 'no_open':True}"
                             attrs="{'readonly': [('editable', '=', False)]}"
+                        />
+                        <field
+                            name="request_id"
+                            options="{'no_create': True}"
+                            domain="[('patient_id', '=', patient_id)]"
+                            context="{'show_identifier': True, 'show_period': True, 'show_state': True}"
                         />
                     </group>
                     <field name="note" placeholder="Additional note..." />
