@@ -16,6 +16,17 @@
                 <field name="service_count" invisible="1" />
                 <field name="company_id" invisible="1" />
                 <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button
+                            name="action_view_events"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-calendar"
+                            attrs="{'invisible': [('event_count', '=', 0)]}"
+                        >
+                            <field name="event_count" widget="statinfo" string="Events" />
+                        </button>
+                    </div>
                     <div>
                         <div>
                             <label for="name" class="flex-fill" />
@@ -26,10 +37,15 @@
                                 readonly="1"
                             />
                         </div>
-                        <field name="category_id" class="w-100" options="{'no_open': True}" placeholder="Category" />
+                        <field
+                            name="category_id"
+                            class="w-100 oe_edit_only"
+                            options="{'no_open': True}"
+                            placeholder="Category"
+                        />
                         <field
                             name="service_ids"
-                            class="w-100"
+                            class="w-100 oe_edit_only"
                             widget="many2many_tags"
                             options="{'color_field': 'color'}"
                             placeholder="Services..."
@@ -67,6 +83,20 @@
                         </div>
                     </group>
                     <field name="note" placeholder="Additional note..." />
+                    <notebook>
+                        <page string="Events" icon="fa-history" attrs="{'invisible': [('id', '=', False)]}">
+                            <field name="attendance_ids" readonly="1" context="{'default_request_id': id}">
+                                <tree decoration-muted="not start">
+                                    <field name="encounter_id" optional="hide" />
+                                    <field name="start" string="Event Start" optional="show" />
+                                    <field name="duration" widget="float_time" />
+                                    <field name="service_ids" widget="many2many_tags" optional="show" />
+                                    <field name="service_event_id" optional="hide" />
+                                    <field name="note" widget="char" optional="show" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -93,14 +123,18 @@
         <field name="model">ni.service.request</field>
         <field name="arch" type="xml">
             <kanban>
+                <field name="color" />
                 <field name="category_id" />
                 <field name="name" />
                 <field name="service_count" />
                 <field name="service_ids" />
                 <field name="timing_id" />
+                <field name="event_count" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click">
+                        <div
+                            t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_card oe_kanban_global_click"
+                        >
                             <div class="oe_kanban_details">
                                 <ul>
                                     <li>
@@ -125,6 +159,11 @@
                                         <i class="fa fa-clock-o me-2 text-primary" title="Occurrence" />
                                         <label for="timing_id" class="small text-muted me-2">Occurrence :</label>
                                         <field name="timing_id" />
+                                    </li>
+                                    <li t-if="record.event_count.raw_value > 0">
+                                        <i class="fa fa-calendar-check-o me-2 text-success" title="Events" />
+                                        <field name="event_count" />
+                                        <span class="small text-muted ms-1">events</span>
                                     </li>
                                 </ul>
                             </div>
