@@ -49,6 +49,18 @@ class ObservationType(models.Model):
     compute = fields.Boolean(
         default=False, help="Type value by compute from other ob type not by user input"
     )
+    compute_code = fields.Text(
+        "Compute Code",
+        help=(
+            "Python code to compute this observation's value from its inputs.\n"
+            "Each input type's value is available as a variable named by its code "
+            "(dashes replaced with underscores).\n"
+            "Assign the result to 'result'.\n\n"
+            "Examples:\n"
+            "  result = '{} / {}'.format(int(bp_s), int(bp_d))\n"
+            "  result = round(body_weight / (body_height * 0.01) ** 2, 1)"
+        ),
+    )
     graph_type = fields.Selection(
         [
             ("line", "Line Chart"),
