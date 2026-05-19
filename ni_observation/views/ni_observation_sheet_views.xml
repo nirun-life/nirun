@@ -126,21 +126,43 @@
                                 widget="ob_section_and_note_one2many"
                             >
                                 <tree editable="bottom">
+                                    <field name="compute" invisible="1" />
                                     <field name="display_type" invisible="1" />
                                     <field name="display_class" invisible="1" />
                                     <field name="value_type" invisible="1" />
                                     <field name="sequence" widget="handle" />
                                     <field name="type_id" />
                                     <field name="title" widget="ob_section_and_note_text" optional="show" nolabel="1" />
-                                    <field name="value_char" />
-                                    <field name="value_int" nolabel="1" />
-                                    <field name="value_float" nolabel="1" />
-                                    <field name="value_code_id" nolabel="1" />
+                                    <field
+                                        name="value_char"
+                                        class="text-end"
+                                        attrs="{'readonly': [('compute', '=', True)]}"
+                                    />
+                                    <field
+                                        name="value_int"
+                                        nolabel="1"
+                                        attrs="{'readonly': [('compute', '=', True)]}"
+                                    />
+                                    <field
+                                        name="value_float"
+                                        nolabel="1"
+                                        attrs="{'readonly': [('compute', '=', True)]}"
+                                    />
+                                    <field
+                                        name="value_code_id"
+                                        class="text-end"
+                                        nolabel="1"
+                                        attrs="{'readonly': [('compute', '=', True)]}"
+                                        options="{'no_open': True}"
+                                        context="{'default_type_ids': [type_id]}"
+                                    />
                                     <field
                                         name="value_code_ids"
+                                        class="text-end"
                                         nolabel="1"
                                         widget="many2many_tags"
                                         options="{'color_field': 'color'}"
+                                        context="{'default_type_ids': [type_id]}"
                                     />
                                     <field
                                         name="unit_id"
@@ -159,7 +181,7 @@
                                         decoration-warning="display_class == 'warning'"
                                         optional="show"
                                     />
-                                    <field name="value" />
+                                    <field name="value" invisible="1" />
                                     <control>
                                         <create string="Add Observation" context="{}" />
                                     </control>
