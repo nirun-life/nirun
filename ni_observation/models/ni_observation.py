@@ -2,6 +2,8 @@
 from odoo import api, fields, models, tools
 from odoo.tools.date_utils import get_timedelta
 
+_VALUE_FIELDS = frozenset({"value", "value_float", "value_int", "value_char"})
+
 
 class Observation(models.Model):
     _name = "ni.observation"
@@ -26,6 +28,23 @@ class Observation(models.Model):
             )
             rec.history_count = len(rec.history_ids)
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        if not self.env.context.get("skip_compute_eval"):
+            records.mapped("sheet_id").filtered("id")._eval_compute_types()
+        return records
+
+    def write(self, vals):
+        result = super().write(vals)
+        if (
+            result
+            and not self.env.context.get("skip_compute_eval")
+            and _VALUE_FIELDS.intersection(vals)
+        ):
+            self.mapped("sheet_id").filtered("id")._eval_compute_types()
+        return result
+
     @api.model
     def default_get(self, fields):
         res = super(Observation, self).default_get(fields)
@@ -47,6 +66,8 @@ class Observation(models.Model):
     )
     compare = fields.Selection(compute="_compute_compare")
     compare_interpret = fields.Selection(compute="_compute_compare")
+
+    compute = fields.Boolean(related="type_id.compute")
 
     _sql_constraints = [
         (

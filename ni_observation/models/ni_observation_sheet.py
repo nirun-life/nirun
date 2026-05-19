@@ -1,6 +1,11 @@
 #  Copyright (c) 2021 NSTDA
 
+import textwrap
+
 from odoo import fields, models
+from odoo.tools.safe_eval import safe_eval
+
+_VALUE_FIELDS = frozenset({"value", "value_float", "value_int", "value_char"})
 
 
 class ObservationSheet(models.Model):
@@ -81,7 +86,74 @@ class ObservationSheet(models.Model):
         if result and vals.get("occurrence"):
             for rec in self:
                 rec.observation_ids.write({"occurrence": rec.occurrence})
+        if result and "observation_ids" in vals:
+            self._eval_compute_types()
         return result
+
+    def _eval_compute_types(self):
+        for sheet in self:
+            obs_map = {
+                ob.type_id.id: ob for ob in sheet.observation_ids.filtered("type_id")
+            }
+            present_types = sheet.observation_ids.mapped("type_id")
+            computed_types = (
+                present_types | present_types.mapped("parent_id")
+            ).filtered(lambda t: t.compute and t.compute_code)
+            for ctype in computed_types:
+                ctx = {}
+                has_any_value = False
+                for child in ctype.child_ids:
+                    var = child.code.replace("-", "_")
+                    ob = obs_map.get(child.id)
+                    if ob and ob.value:
+                        has_any_value = True
+                        if child.value_type == "int":
+                            ctx[var] = ob.value_int
+                        elif child.value_type == "float":
+                            ctx[var] = ob.value_float
+                        else:
+                            ctx[var] = ob.value_char or ""
+                    else:
+                        ctx[var] = (
+                            0
+                            if child.value_type == "int"
+                            else (0.0 if child.value_type == "float" else "")
+                        )
+                if not has_any_value:
+                    continue
+                try:
+                    code = textwrap.dedent(ctype.compute_code).strip()
+                    safe_eval(code, ctx, mode="exec", nocopy=True)
+                    computed_result = ctx.get("result")
+                except Exception:
+                    continue
+                if computed_result is None:
+                    continue
+                if ctype.value_type == "float":
+                    value_write = {"value_float": float(computed_result)}
+                elif ctype.value_type == "int":
+                    value_write = {"value_int": int(computed_result)}
+                else:
+                    value_write = {"value_char": str(computed_result)}
+                computed_ob = obs_map.get(ctype.id)
+                if computed_ob:
+                    computed_ob.with_context(skip_compute_eval=True).write(value_write)
+                else:
+                    self.env["ni.observation"].with_context(
+                        skip_compute_eval=True
+                    ).create(
+                        {
+                            "sheet_id": sheet.id,
+                            "type_id": ctype.id,
+                            "patient_id": sheet.patient_id.id,
+                            "encounter_id": sheet.encounter_id.id
+                            if sheet.encounter_id
+                            else False,
+                            "occurrence": sheet.occurrence,
+                            "value_type": ctype.value_type,
+                            **value_write,
+                        }
+                    )
 
     def action_patient_observation_graph(self):
         action_rec = self.env.ref("ni_observation.ni_observation_action").sudo()
@@ -99,7 +171,7 @@ class ObservationSheet(models.Model):
     def action_line_by_category_ids(self):
         if self.category_ids:
             types = self.env["ni.observation.type"].search(
-                [("category_id", "in", self.category_ids.ids), ("compute", "=", False)],
+                [("category_id", "in", self.category_ids.ids)],
                 order="category_id, sequence, id",
             )
             line_types = self.observation_ids.mapped("type_id")

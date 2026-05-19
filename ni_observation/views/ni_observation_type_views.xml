@@ -59,48 +59,60 @@
                         bg_color="bg-danger"
                         title="Archived"
                     />
+                    <label for="name" class="oe_edit_only" />
+                    <field name="name" />
+                    <label for="definition" class="oe_edit_only" />
+                    <field name="definition" />
                     <group>
                         <group>
-                            <field name="name" />
-                            <field name="code" />
-                            <field name="category_id" />
-                            <field name="compute" />
-                            <field name="parent_id" />
-                        </group>
-                        <group>
-                            <field name="unit_id" />
-                            <field name="value_type" />
-                            <label
-                                for="min"
-                                string="Value Range"
-                                attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}"
-                            />
-                            <div class="o_row" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}">
-                                <field name="min" />
-                                <span class="mx-1">-</span>
-                                <field name="max" />
-                            </div>
-                            <field name="compare" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}" />
-                            <field
-                                name="graph_type"
-                                widget="radio"
-                                options="{'horizontal': True}"
-                                attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
-                            />
-                            <field
-                                name="keep_falsy"
-                                attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
-                            />
-                        </group>
-                        <group>
-                            <field name="icon" />
-                            <field name="icon_color" widget="color" />
                             <field name="abbr" />
                         </group>
+                        <group>
+                            <field name="code" />
+                        </group>
+                    </group>
+                    <group string="Details">
+                        <field name="parent_id" />
+                        <field name="category_id" />
+                        <field name="unit_id" />
+                        <field name="value_type" />
+                        <field name="compute" />
+                        <label
+                            for="min"
+                            string="Value Range"
+                            attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}"
+                        />
+                        <div class="o_row" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}">
+                            <field name="min" />
+                            <span class="mx-1">-</span>
+                            <field name="max" />
+                        </div>
+                        <field name="compare" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}" />
+                        <field
+                            name="graph_type"
+                            widget="radio"
+                            options="{'horizontal': True}"
+                            attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                        />
+                        <field name="keep_falsy" attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}" />
                     </group>
                     <notebook>
                         <page name="component" string="Component">
                             <field name="child_ids" />
+                        </page>
+                        <page
+                            name="compute_code"
+                            string="Compute Code"
+                            attrs="{'invisible': [('compute', '=', False)]}"
+                        >
+                            <p class="text-muted small mb-2">
+                                Python code evaluated when component observations change. Each
+                                child type's value is available as a variable (code with dashes
+                                replaced by underscores). Assign the final value to
+                                <code>result</code>
+                                .
+                            </p>
+                            <field name="compute_code" widget="ace" options="{'mode': 'python'}" nolabel="1" />
                         </page>
                         <page
                             name="concept"
@@ -144,14 +156,15 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Definition">
-                            <field name="definition" />
-                        </page>
                         <page string="Extra Info" groups="base.group_no_one">
                             <group>
                                 <group>
                                     <field name="color" widget="color_picker" />
                                     <field name="sequence" />
+                                </group>
+                                <group string="Kanban">
+                                    <field name="icon" />
+                                    <field name="icon_color" widget="color" />
                                 </group>
                                 <group>
                                     <field name="create_date" />
