@@ -212,4 +212,261 @@
         <field name="name">Pain Score</field>
         <field name="value_type">int</field>
     </record>
+    <!-- Lipid Panel -->
+    <record id="type_cholesterol" model="ni.observation.type">
+        <field name="code">cholesterol</field>
+        <field name="name">Total Cholesterol</field>
+        <field name="abbr">CHOL</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="600" />
+        <field name="unit_id" ref="uom_mg_dl" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="compute" eval="1" />
+        <field name="compare">low</field>
+    </record>
+    <record id="type_ldl" model="ni.observation.type">
+        <field name="code">ldl</field>
+        <field name="name">LDL Cholesterol</field>
+        <field name="abbr">LDL</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="400" />
+        <field name="parent_id" ref="type_cholesterol" />
+        <field name="unit_id" ref="uom_mg_dl" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="compare">low</field>
+    </record>
+    <record id="type_hdl" model="ni.observation.type">
+        <field name="code">hdl</field>
+        <field name="name">HDL Cholesterol</field>
+        <field name="abbr">HDL</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="200" />
+        <field name="unit_id" ref="uom_mg_dl" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="parent_id" ref="type_cholesterol" />
+        <field name="compare">high</field>
+    </record>
+    <record id="type_triglyceride" model="ni.observation.type">
+        <field name="code">triglyceride</field>
+        <field name="name">Triglycerides</field>
+        <field name="abbr">TG</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="2000" />
+        <field name="unit_id" ref="uom_mg_dl" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="parent_id" ref="type_cholesterol" />
+        <field name="compare">low</field>
+    </record>
+    <!-- Complete Blood Count (CBC) -->
+    <record id="type_wbc" model="ni.observation.type">
+        <field name="code">wbc</field>
+        <field name="name">White Blood Cell Count</field>
+        <field name="abbr">WBC</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="100" />
+        <field name="unit_id" ref="uom_k_ul" />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
+    <record id="type_rbc" model="ni.observation.type">
+        <field name="code">rbc</field>
+        <field name="name">Red Blood Cell Count</field>
+        <field name="abbr">RBC</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="10" />
+        <field name="unit_id" ref="uom_m_ul" />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
+    <record id="type_hemoglobin" model="ni.observation.type">
+        <field name="code">hemoglobin</field>
+        <field name="name">Hemoglobin</field>
+        <field name="abbr">Hb</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="25" />
+        <field name="unit_id" ref="uom_g_dl" />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
+    <record id="type_hematocrit" model="ni.observation.type">
+        <field name="code">hematocrit</field>
+        <field name="name">Hematocrit</field>
+        <field name="abbr">Hct</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="100" />
+        <field name="unit_id" ref="uom_%" />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
+    <record id="type_platelet" model="ni.observation.type">
+        <field name="code">platelet</field>
+        <field name="name">Platelet</field>
+        <field name="abbr">PLT</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="1000" />
+        <field name="unit_id" ref="uom_k_ul" />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
+    <!-- Kidney Function -->
+    <record id="type_creatinine" model="ni.observation.type">
+        <field name="code">creatinine</field>
+        <field name="name">Creatinine</field>
+        <field name="abbr">Cr</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="20" />
+        <field name="unit_id" ref="uom_mg_dl" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="compare">low</field>
+    </record>
+    <record id="type_bun" model="ni.observation.type">
+        <field name="code">bun</field>
+        <field name="name">Blood Urea Nitrogen</field>
+        <field name="abbr">BUN</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="200" />
+        <field name="unit_id" ref="uom_mg_dl" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="compare">low</field>
+    </record>
+    <record id="type_egfr" model="ni.observation.type">
+        <field name="code">egfr</field>
+        <field name="name">Estimated GFR</field>
+        <field name="abbr">eGFR</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="150" />
+        <field name="unit_id" ref="uom_ml_min_bsa" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="compare">high</field>
+    </record>
+    <record id="type_uric_acid" model="ni.observation.type">
+        <field name="code">uric-acid</field>
+        <field name="name">Uric Acid</field>
+        <field name="abbr">UA</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="20" />
+        <field name="unit_id" ref="uom_mg_dl" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="compare">low</field>
+    </record>
+    <!-- Liver Function Tests -->
+    <record id="type_alt" model="ni.observation.type">
+        <field name="code">alt</field>
+        <field name="name">Alanine Aminotransferase</field>
+        <field name="abbr">ALT</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="2000" />
+        <field name="unit_id" ref="uom_u_l" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="compare">low</field>
+    </record>
+    <record id="type_ast" model="ni.observation.type">
+        <field name="code">ast</field>
+        <field name="name">Aspartate Aminotransferase</field>
+        <field name="abbr">AST</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="2000" />
+        <field name="unit_id" ref="uom_u_l" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="compare">low</field>
+    </record>
+    <record id="type_alp" model="ni.observation.type">
+        <field name="code">alp</field>
+        <field name="name">Alkaline Phosphatase</field>
+        <field name="abbr">ALP</field>
+        <field name="min" eval="0" />
+        <field name="max" eval="2000" />
+        <field name="unit_id" ref="uom_u_l" />
+        <field name="category_id" ref="category_laboratory" />
+        <field name="compare">low</field>
+    </record>
+    <!-- Electrolytes -->
+    <record id="type_sodium" model="ni.observation.type">
+        <field name="code">sodium</field>
+        <field name="name">Sodium</field>
+        <field name="abbr">Na</field>
+        <field name="min" eval="100" />
+        <field name="max" eval="180" />
+        <field name="unit_id" ref="uom_meq_l" />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
+    <record id="type_potassium" model="ni.observation.type">
+        <field name="code">potassium</field>
+        <field name="name">Potassium</field>
+        <field name="abbr">K</field>
+        <field name="min" eval="1" />
+        <field name="max" eval="10" />
+        <field name="unit_id" ref="uom_meq_l" />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
+    <record id="type_chloride" model="ni.observation.type">
+        <field name="code">chloride</field>
+        <field name="name">Chloride</field>
+        <field name="abbr">Cl</field>
+        <field name="min" eval="70" />
+        <field name="max" eval="140" />
+        <field name="unit_id" ref="uom_meq_l" />
+        <field name="category_id" ref="category_laboratory" />
+    </record>
+    <!-- Glasgow Coma Scale (Exam) -->
+    <record id="type_gcs" model="ni.observation.type">
+        <field name="code">gcs</field>
+        <field name="name">Glasgow Coma Scale</field>
+        <field name="abbr">GCS</field>
+        <field name="value_type">int</field>
+        <field name="min" eval="3" />
+        <field name="max" eval="15" />
+        <field name="category_id" ref="category_exam" />
+    </record>
+    <!-- Smoking Status (Social History) -->
+    <record model="ni.observation.value.code" id="code_never_smoker">
+        <field name="name">Never Smoker</field>
+        <field name="code">never-smoker</field>
+    </record>
+    <record model="ni.observation.value.code" id="code_ex_smoker">
+        <field name="name">Ex-Smoker</field>
+        <field name="code">ex-smoker</field>
+    </record>
+    <record model="ni.observation.value.code" id="code_current_smoker">
+        <field name="name">Current Smoker</field>
+        <field name="code">current-smoker</field>
+    </record>
+    <record model="ni.observation.value.code" id="code_passive_smoker">
+        <field name="name">Passive Smoker</field>
+        <field name="code">passive-smoker</field>
+    </record>
+    <record model="ni.observation.type" id="type_smoking_status">
+        <field name="code">smoking-status</field>
+        <field name="name">Smoking Status</field>
+        <field name="value_type">code_id</field>
+        <field
+            name="value_code_ids"
+            eval="[(4, ref('code_never_smoker')), (4, ref('code_ex_smoker')),
+                   (4, ref('code_current_smoker')), (4, ref('code_passive_smoker'))]"
+        />
+        <field name="category_id" ref="category_social_history" />
+    </record>
+    <!-- Alcohol Use (Social History) -->
+    <record model="ni.observation.value.code" id="code_never_drinker">
+        <field name="name">Never Drinker</field>
+        <field name="code">never-drinker</field>
+    </record>
+    <record model="ni.observation.value.code" id="code_ex_drinker">
+        <field name="name">Ex-Drinker</field>
+        <field name="code">ex-drinker</field>
+    </record>
+    <record model="ni.observation.value.code" id="code_occasional_drinker">
+        <field name="name">Occasional Drinker</field>
+        <field name="code">occasional-drinker</field>
+    </record>
+    <record model="ni.observation.value.code" id="code_regular_drinker">
+        <field name="name">Regular Drinker</field>
+        <field name="code">regular-drinker</field>
+    </record>
+    <record model="ni.observation.type" id="type_alcohol_use">
+        <field name="code">alcohol-use</field>
+        <field name="name">Alcohol Use</field>
+        <field name="value_type">code_id</field>
+        <field
+            name="value_code_ids"
+            eval="[(4, ref('code_never_drinker')), (4, ref('code_ex_drinker')),
+                   (4, ref('code_occasional_drinker')), (4, ref('code_regular_drinker'))]"
+        />
+        <field name="category_id" ref="category_social_history" />
+    </record>
 </odoo>
