@@ -77,4 +77,61 @@
         <field name="factor_inv" eval="60" />
         <field name="uom_type">bigger</field>
     </record>
+    <record id="uom_categ_mass_concentration" model="uom.category">
+        <field name="name">Mass Concentration</field>
+    </record>
+    <record id="uom_g_dl" model="uom.uom">
+        <field name="name">g/dL</field>
+        <field name="alias">Gram per deciliter</field>
+        <field name="category_id" ref="uom_categ_mass_concentration" />
+        <field name="factor">1</field>
+        <field name="uom_type">reference</field>
+    </record>
+    <record id="uom_categ_cell_count" model="uom.category">
+        <field name="name">Cell Count</field>
+    </record>
+    <record id="uom_k_ul" model="uom.uom">
+        <field name="name">×10³/µL</field>
+        <field name="alias">Thousand per microliter</field>
+        <field name="category_id" ref="uom_categ_cell_count" />
+        <field name="factor">1</field>
+        <field name="uom_type">reference</field>
+    </record>
+    <record id="uom_m_ul" model="uom.uom">
+        <field name="name">×10⁶/µL</field>
+        <field name="alias">Million per microliter</field>
+        <field name="category_id" ref="uom_categ_cell_count" />
+        <field name="factor_inv" eval="1000" />
+        <field name="uom_type">bigger</field>
+    </record>
+    <record id="uom_categ_enzymatic_activity" model="uom.category">
+        <field name="name">Enzymatic Activity</field>
+    </record>
+    <record id="uom_u_l" model="uom.uom">
+        <field name="name">U/L</field>
+        <field name="alias">Units per liter</field>
+        <field name="category_id" ref="uom_categ_enzymatic_activity" />
+        <field name="factor">1</field>
+        <field name="uom_type">reference</field>
+    </record>
+    <record id="uom_categ_electrolyte" model="uom.category">
+        <field name="name">Electrolyte</field>
+    </record>
+    <record id="uom_meq_l" model="uom.uom">
+        <field name="name">mEq/L</field>
+        <field name="alias">Milliequivalent per liter</field>
+        <field name="category_id" ref="uom_categ_electrolyte" />
+        <field name="factor">1</field>
+        <field name="uom_type">reference</field>
+    </record>
+    <record id="uom_categ_filtration_rate" model="uom.category">
+        <field name="name">Filtration Rate</field>
+    </record>
+    <record id="uom_ml_min_bsa" model="uom.uom">
+        <field name="name">mL/min/1.73m²</field>
+        <field name="alias">Milliliter per minute per BSA</field>
+        <field name="category_id" ref="uom_categ_filtration_rate" />
+        <field name="factor">1</field>
+        <field name="uom_type">reference</field>
+    </record>
 </odoo>
