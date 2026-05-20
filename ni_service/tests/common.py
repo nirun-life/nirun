@@ -49,10 +49,12 @@ class TestServiceCommon(common.TransactionCase):
             }
         )
 
+        self.category = self.env.ref("ni_service.categ_individual")
         self.service = self.env["ni.service"].create(
             {
                 "name": "Physiotherapy",
                 "company_id": self.env.company.id,
+                "category_id": self.category.id,
             }
         )
 
