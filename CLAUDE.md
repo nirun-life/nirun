@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git
+
+**Never run `git commit` unless the user explicitly says "commit".** Writing code, fixing bugs, and adding tests do not imply
+permission to commit. Always wait for an explicit instruction.
+
 ## What This Is
 
 **Nirun** is a collection of Odoo 16.0 add-on modules for healthcare providers. It implements clinical data models following the
