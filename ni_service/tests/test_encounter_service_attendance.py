@@ -32,6 +32,7 @@ class TestFindMatchingRequest(TestServiceCommon):
             {
                 "name": "Occupational Therapy",
                 "company_id": self.env.company.id,
+                "category_id": self.category.id,
             }
         )
         attendance = self._new_attendance(
@@ -83,6 +84,7 @@ class TestFindMatchingRequest(TestServiceCommon):
             {
                 "name": "Hydrotherapy",
                 "company_id": self.env.company.id,
+                "category_id": self.category.id,
             }
         )
         self.service_request.service_ids = [(4, second_service.id)]
@@ -134,12 +136,14 @@ class TestFindMatchingRequest(TestServiceCommon):
             {
                 "name": "Hydrotherapy",
                 "company_id": self.env.company.id,
+                "category_id": self.category.id,
             }
         )
         occupational = self.env["ni.service"].create(
             {
                 "name": "Occupational Therapy",
                 "company_id": self.env.company.id,
+                "category_id": self.category.id,
             }
         )
         self.service_request.service_ids = [(4, hydro.id)]  # now [physio, hydro]
@@ -156,18 +160,21 @@ class TestFindMatchingRequest(TestServiceCommon):
             {
                 "name": "Hydrotherapy",
                 "company_id": self.env.company.id,
+                "category_id": self.category.id,
             }
         )
         occupational = self.env["ni.service"].create(
             {
                 "name": "Occupational Therapy",
                 "company_id": self.env.company.id,
+                "category_id": self.category.id,
             }
         )
         speech = self.env["ni.service"].create(
             {
                 "name": "Speech Therapy",
                 "company_id": self.env.company.id,
+                "category_id": self.category.id,
             }
         )
         self.service_request.service_ids = [(4, hydro.id)]  # now [physio, hydro]
@@ -182,6 +189,7 @@ class TestFindMatchingRequest(TestServiceCommon):
             {
                 "name": "No Request Service",
                 "company_id": self.env.company.id,
+                "category_id": self.category.id,
             }
         )
         attendance = self.env["ni.encounter.service.attendance"].create(
