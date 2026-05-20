@@ -32,7 +32,7 @@ class TestComputeCode(common.TransactionCase):
             }
         )
 
-        # Computed float via child_ids
+        # Computed float — components linked via child_ids
         cls.type_sum = cls.env["ni.observation.type"].create(
             {
                 "name": "Sum AB",
@@ -40,12 +40,11 @@ class TestComputeCode(common.TransactionCase):
                 "value_type": "float",
                 "compute": True,
                 "compute_code": "result = test_input_a + test_input_b",
+                "child_ids": [(4, cls.type_a.id), (4, cls.type_b.id)],
                 "min": 0,
                 "max": 99999,
             }
         )
-        cls.type_a.write({"parent_id": cls.type_sum.id})
-        cls.type_b.write({"parent_id": cls.type_sum.id})
 
         # ── int input types for char output ────────────────────────────────────
         cls.type_x = cls.env["ni.observation.type"].create(
@@ -67,7 +66,7 @@ class TestComputeCode(common.TransactionCase):
             }
         )
 
-        # Computed char via child_ids (same pattern as Blood Pressure)
+        # Computed char — same pattern as Blood Pressure
         cls.type_pair = cls.env["ni.observation.type"].create(
             {
                 "name": "Pair XY",
@@ -75,10 +74,9 @@ class TestComputeCode(common.TransactionCase):
                 "value_type": "char",
                 "compute": True,
                 "compute_code": "result = '{} / {}'.format(test_input_x, test_input_y) if test_input_x and test_input_y else None",
+                "child_ids": [(4, cls.type_x.id), (4, cls.type_y.id)],
             }
         )
-        cls.type_x.write({"parent_id": cls.type_pair.id})
-        cls.type_y.write({"parent_id": cls.type_pair.id})
 
     # ── helpers ────────────────────────────────────────────────────────────────
 
@@ -162,7 +160,6 @@ class TestComputeCode(common.TransactionCase):
 
     def test_no_computed_obs_when_inputs_are_empty(self):
         sheet = self._make_sheet()
-        # Create rows with no value
         for t in (self.type_a, self.type_b):
             self.env["ni.observation"].create(
                 {
@@ -179,6 +176,15 @@ class TestComputeCode(common.TransactionCase):
         )
 
     def test_code_returning_none_does_not_create_obs(self):
+        inp = self.env["ni.observation.type"].create(
+            {
+                "name": "None Input",
+                "code": "test-none-inp",
+                "value_type": "float",
+                "min": 0,
+                "max": 9999,
+            }
+        )
         none_type = self.env["ni.observation.type"].create(
             {
                 "name": "None Result",
@@ -186,44 +192,57 @@ class TestComputeCode(common.TransactionCase):
                 "value_type": "float",
                 "compute": True,
                 "compute_code": "result = None",
+                "child_ids": [(4, inp.id)],
                 "min": 0,
                 "max": 9999,
             }
         )
-        self.type_a.write({"parent_id": none_type.id})
         sheet = self._make_sheet()
-        self._add_obs(sheet, self.type_a, 5)
+        self._add_obs(sheet, inp, 5)
 
         ob = self._get_computed(sheet, none_type)
         self.assertFalse(ob)
 
-        # Cleanup so other tests are not affected
-        self.type_a.write({"parent_id": self.type_sum.id})
-
     def test_code_not_assigning_result_does_not_create_obs(self):
+        inp = self.env["ni.observation.type"].create(
+            {
+                "name": "No-Assign Input",
+                "code": "test-noassign-inp",
+                "value_type": "float",
+                "min": 0,
+                "max": 9999,
+            }
+        )
         no_assign_type = self.env["ni.observation.type"].create(
             {
                 "name": "No Assign",
                 "code": "test-no-assign",
                 "value_type": "float",
                 "compute": True,
-                "compute_code": "x = test_input_a * 2",  # never sets result
+                "compute_code": "x = test_noassign_inp * 2",  # never sets result
+                "child_ids": [(4, inp.id)],
                 "min": 0,
                 "max": 9999,
             }
         )
-        no_assign_type.write({"child_ids": [(4, self.type_a.id)]})
         sheet = self._make_sheet()
-        self._add_obs(sheet, self.type_a, 5)
+        self._add_obs(sheet, inp, 5)
 
         ob = self._get_computed(sheet, no_assign_type)
         self.assertFalse(ob)
 
-        no_assign_type.write({"child_ids": [(3, self.type_a.id)]})
-
     # ── error safety ───────────────────────────────────────────────────────────
 
     def test_code_exception_does_not_crash_write(self):
+        inp = self.env["ni.observation.type"].create(
+            {
+                "name": "Bad Input",
+                "code": "test-bad-inp",
+                "value_type": "float",
+                "min": 0,
+                "max": 9999,
+            }
+        )
         bad_type = self.env["ni.observation.type"].create(
             {
                 "name": "Bad Code",
@@ -231,18 +250,47 @@ class TestComputeCode(common.TransactionCase):
                 "value_type": "float",
                 "compute": True,
                 "compute_code": "result = 1 / 0",
+                "child_ids": [(4, inp.id)],
                 "min": 0,
                 "max": 9999,
             }
         )
-        bad_type.write({"child_ids": [(4, self.type_a.id)]})
         sheet = self._make_sheet()
-        self._add_obs(sheet, self.type_a, 5)  # must not raise
+        self._add_obs(sheet, inp, 5)  # must not raise
 
         ob = self._get_computed(sheet, bad_type)
         self.assertFalse(ob, "failed compute should not create any observation")
 
-        bad_type.write({"child_ids": [(3, self.type_a.id)]})
+    # ── input linkage ─────────────────────────────────────────────────────────
+
+    def test_computed_obs_links_input_observations_as_children(self):
+        sheet = self._make_sheet()
+        ob_a = self._add_obs(sheet, self.type_a, 10)
+        ob_b = self._add_obs(sheet, self.type_b, 20)
+
+        computed = self._get_computed(sheet, self.type_sum)
+        self.assertIn(ob_a, computed.child_ids)
+        self.assertIn(ob_b, computed.child_ids)
+
+    def test_input_obs_parent_points_to_computed_obs(self):
+        sheet = self._make_sheet()
+        ob_a = self._add_obs(sheet, self.type_a, 10)
+        ob_b = self._add_obs(sheet, self.type_b, 20)
+
+        computed = self._get_computed(sheet, self.type_sum)
+        self.assertEqual(ob_a.parent_id, computed)
+        self.assertEqual(ob_b.parent_id, computed)
+
+    def test_child_ids_updated_when_input_value_changes(self):
+        sheet = self._make_sheet()
+        ob_a = self._add_obs(sheet, self.type_a, 10)
+        ob_b = self._add_obs(sheet, self.type_b, 20)
+        ob_a.value = "15"
+
+        computed = self._get_computed(sheet, self.type_sum)
+        self.assertIn(ob_a, computed.child_ids)
+        self.assertIn(ob_b, computed.child_ids)
+        self.assertEqual(len(computed.child_ids), 2)
 
     # ── seeded types ───────────────────────────────────────────────────────────
 

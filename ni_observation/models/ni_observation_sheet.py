@@ -135,6 +135,12 @@ class ObservationSheet(models.Model):
                     value_write = {"value_int": int(computed_result)}
                 else:
                     value_write = {"value_char": str(computed_result)}
+                input_obs_ids = [
+                    obs_map[child.id].id
+                    for child in ctype.child_ids
+                    if child.id in obs_map and obs_map[child.id].value
+                ]
+                value_write["child_ids"] = [(6, 0, input_obs_ids)]
                 computed_ob = obs_map.get(ctype.id)
                 if computed_ob:
                     computed_ob.with_context(skip_compute_eval=True).write(value_write)
