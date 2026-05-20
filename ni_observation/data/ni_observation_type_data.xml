@@ -60,6 +60,19 @@
         <field name="unit_id" ref="uom_degree_cel" />
         <field name="category_id" ref="category_vital_signs" />
     </record>
+    <record id="type_bmi" model="ni.observation.type">
+        <field name="code">bmi</field>
+        <field name="name">Body Mass Index</field>
+        <field name="abbr">BMI</field>
+        <field name="min" eval="1" />
+        <field name="max" eval="100" />
+        <field name="unit_id" ref="ni_observation.uom_kg_m2" />
+        <field name="category_id" ref="category_vital_signs" />
+        <field name="compute" eval="1" />
+        <field name="compute_code">
+            result = round(body_weight / (body_height * 0.01) ** 2, 1) if body_weight and body_height else None
+        </field>
+    </record>
     <record id="type_body_weight" model="ni.observation.type">
         <field name="code">body-weight</field>
         <field name="name">Body Weight</field>
@@ -95,19 +108,6 @@
         <field name="max" eval="300" />
         <field name="unit_id" ref="uom.product_uom_inch" />
         <field name="category_id" ref="category_vital_signs" />
-    </record>
-    <record id="type_bmi" model="ni.observation.type">
-        <field name="code">bmi</field>
-        <field name="name">Body Mass Index</field>
-        <field name="abbr">BMI</field>
-        <field name="min" eval="1" />
-        <field name="max" eval="100" />
-        <field name="unit_id" ref="ni_observation.uom_kg_m2" />
-        <field name="category_id" ref="category_vital_signs" />
-        <field name="compute" eval="1" />
-        <field name="compute_code">
-            result = round(body_weight / (body_height * 0.01) ** 2, 1) if body_weight and body_height else None
-        </field>
     </record>
     <record id="type_oxygen_sat" model="ni.observation.type">
         <field name="code">oxygen-sat</field>
