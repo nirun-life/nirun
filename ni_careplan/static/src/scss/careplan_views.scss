@@ -1,0 +1,9 @@
+// Hide the default "New" button when the careplan wizard button precedes it.
+// The adjacent-sibling selector scopes this to careplan views only —
+// .o_careplan_new_btn only exists in our custom button template.
+.o_careplan_new_btn {
+    + .o_list_button_add,
+    + .o-kanban-button-new {
+        display: none;
+    }
+}

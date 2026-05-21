@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="ni_careplan.wizard_button" owl="1">
+        <button type="button" class="btn btn-primary o_careplan_new_btn" t-on-click="onClickNewCareplan">
+            <i class="fa fa-magic me-1" />
+            New
+        </button>
+    </t>
+    <t t-name="ni_careplan.ListView.buttons" t-inherit="web.ListView.Buttons" t-inherit-mode="primary" owl="1">
+        <xpath expr="//button[contains(@class,'o_list_button_add')]" position="before">
+            <t t-call="ni_careplan.wizard_button" />
+        </xpath>
+    </t>
+    <t t-name="ni_careplan.KanbanView.buttons" t-inherit="web.KanbanView.Buttons" t-inherit-mode="primary" owl="1">
+        <xpath expr="//button[contains(@class,'o-kanban-button-new')]" position="before">
+            <t t-call="ni_careplan.wizard_button" />
+        </xpath>
+    </t>
+</templates>
