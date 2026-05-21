@@ -19,17 +19,15 @@ class Patient(models.Model):
         self.ensure_one()
         context = dict(self.env.context)
         context.update({"default_patient_id": self.id})
-        view = {
-            "name": self.env["ni.careplan"]._description,
-            "res_model": "ni.careplan",
+        return {
+            "name": self.env["ni.careplan.wizard"]._description,
+            "res_model": "ni.careplan.wizard",
             "type": "ir.actions.act_window",
-            "target": context.pop("target", "current"),
-            "res_id": context.get("careplan_id", 0),
+            "target": "new",
             "view_type": "form",
             "views": [[False, "form"]],
             "context": context,
         }
-        return view
 
     def action_careplan(self):
         self.ensure_one()

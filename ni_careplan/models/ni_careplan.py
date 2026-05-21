@@ -21,6 +21,9 @@ class Careplan(models.Model):
     _inherit = ["ni.workflow.request.mixin", "ni.period.mixin", "ni.identifier.mixin"]
     _check_period_start = False
 
+    patient_age = fields.Integer(related="patient_id.age")
+    patient_gender = fields.Selection(related="patient_id.gender")
+
     @api.model
     def default_get(self, fields):
         res = super(Careplan, self).default_get(fields)
@@ -49,6 +52,7 @@ class Careplan(models.Model):
         "ni_careplan_condition",
         "plan_id",
         "condition_id",
+        "Diagnosis",
         domain="[('patient_id', '=', patient_id), ('clinical_state', '=', 'active')]",
         context={"default_patient_id": "patient_id"},
         states=LOCK_STATE_DICT,
@@ -147,11 +151,7 @@ class Careplan(models.Model):
                 )
                 observation = self.env["ni.patient.observation"].search(domain)
                 rec.patient_observation_ids = observation
-                rec.observation_ids = [
-                    fields.Command.set(
-                        observation.filtered_domain([("is_problem", "=", True)]).ids
-                    )
-                ]
+                rec.observation_ids = [fields.Command.set(observation.ids)]
             else:
                 rec.patient_observation_ids = None
                 rec.observation_ids = [fields.Command.clear()]
@@ -382,6 +382,18 @@ class Careplan(models.Model):
                     "the Selected template not properly setting the patient's conditions."
                 )
             )
+
+    @api.model
+    def action_new_careplan(self):
+        return {
+            "name": self.env["ni.careplan.wizard"]._description,
+            "res_model": "ni.careplan.wizard",
+            "type": "ir.actions.act_window",
+            "target": "new",
+            "view_type": "form",
+            "views": [[False, "form"]],
+            "context": dict(self.env.context),
+        }
 
     def action_edit(self):
         self.ensure_one()

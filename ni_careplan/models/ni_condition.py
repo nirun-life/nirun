@@ -46,22 +46,21 @@ class Condition(models.Model):
         ctx = dict(self.env.context)
         ctx.update(
             {
-                "default_encounter_id": self.encounter_id.id,
                 "default_patient_id": self.patient_id.id,
+                "default_encounter_id": self.encounter_id.id,
                 "default_template_id": self.template_id.id,
                 "default_condition_ids": [fields.Command.link(self.id)],
             }
         )
-        view = {
-            "name": self.env["ni.careplan"]._description,
-            "res_model": "ni.careplan",
+        return {
+            "name": self.env["ni.careplan.wizard"]._description,
+            "res_model": "ni.careplan.wizard",
             "type": "ir.actions.act_window",
-            "target": self.env.context.get("target", "current"),
+            "target": "new",
             "view_type": "form",
             "views": [[False, "form"]],
             "context": ctx,
         }
-        return view
 
     @api.depends("careplan_ids")
     def _compute_careplan_count(self):
@@ -98,35 +97,21 @@ class Diagnosis(models.Model):
         ctx = dict(self.env.context)
         ctx.update(
             {
-                "default_encounter_id": self.encounter_id.id,
                 "default_patient_id": self.patient_id.id,
+                "default_encounter_id": self.encounter_id.id,
                 "default_template_id": self.template_id.id,
                 "default_condition_ids": [fields.Command.link(self.condition_id.id)],
             }
         )
-        plan = self.env["ni.careplan"].create(
-            {
-                "encounter_id": self.encounter_id.id,
-                "patient_id": self.patient_id.id,
-                "template_id": self.template_id.id,
-                "category_id": self.template_id.category_id.id or None,
-                "condition_ids": [fields.Command.link(self.condition_id.id)],
-            }
-        )
-        plan.apply_template()
-
-        view = {
-            "name": self.env["ni.careplan"]._description,
-            "res_model": "ni.careplan",
-            "res_id": plan.id,
+        return {
+            "name": self.env["ni.careplan.wizard"]._description,
+            "res_model": "ni.careplan.wizard",
             "type": "ir.actions.act_window",
-            "target": self.env.context.get("target", "current"),
+            "target": "new",
             "view_type": "form",
             "views": [[False, "form"]],
             "context": ctx,
         }
-        self.template_id = None
-        return view
 
     @api.onchange("template_id")
     def _onchange_template_id(self):

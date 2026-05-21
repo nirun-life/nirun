@@ -8,8 +8,21 @@ class Encounter(models.Model):
     def action_new_careplan(self):
         self.ensure_one()
         context = dict(self.env.context)
-        context.update({"default_encounter_id": self.id})
-        return self.with_context(context).patient_id.action_new_careplan()
+        context.update(
+            {
+                "default_patient_id": self.patient_id.id,
+                "default_encounter_id": self.id,
+            }
+        )
+        return {
+            "name": self.env["ni.careplan.wizard"]._description,
+            "res_model": "ni.careplan.wizard",
+            "type": "ir.actions.act_window",
+            "target": "new",
+            "view_type": "form",
+            "views": [[False, "form"]],
+            "context": context,
+        }
 
     def action_careplan(self):
         self.ensure_one()

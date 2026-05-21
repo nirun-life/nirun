@@ -24,9 +24,19 @@ class CareplanTemplate(models.Model):
     goal_code_ids = fields.Many2many(
         "ni.goal.code", "ni_careplan_template_goal_code", "template_id", "code_id"
     )
+    observation_type_ids = fields.Many2many(
+        "ni.observation.type",
+        "ni_careplan_template_observation_type_rel",
+        "template_id",
+        "type_id",
+        string="Observation Types",
+    )
     service_category_id = fields.Many2one(related="category_id.service_category_id")
     service_request_ids = fields.One2many(
         "ni.careplan.template.service.request", "template_id"
+    )
+    medication_request_ids = fields.One2many(
+        "ni.careplan.template.medication.request", "template_id"
     )
 
 
@@ -73,3 +83,49 @@ class ServiceRequestTemplate(models.Model):
         # if not "timing_id" in default and not self.timing_id:
         # default["timing_id"] = self.timing_tmpl_id.id
         return super().copy_data(default)
+
+
+class MedicationRequestTemplate(models.Model):
+    _name = "ni.careplan.template.medication.request"
+    _description = "Careplan Template Medication Request"
+    _inherit = "ni.medication.abstract"
+
+    company_id = fields.Many2one(
+        related="template_id.company_id", copy=False, store=True
+    )
+    template_id = fields.Many2one(
+        "ni.careplan.template", required=True, copy=False, ondelete="cascade"
+    )
+    quantity = fields.Float("Qty", default=1.0, required=True)
+    note = fields.Char()
+
+    def copy_data(self, default=None):
+        default = dict(default or {})
+        copied_vals = super().copy_data(default)[0]
+        if self.timing_id:
+            copied_vals.update(
+                {
+                    "timing_frequency": self.timing_frequency,
+                    "timing_frequency_max": self.timing_frequency_max,
+                    "timing_duration": self.timing_duration,
+                    "timing_duration_max": self.timing_duration_max,
+                    "timing_duration_unit": self.timing_duration_unit,
+                    "timing_period": self.timing_period,
+                    "timing_period_max": self.timing_period_max,
+                    "timing_period_unit": self.timing_period_unit,
+                    "timing_offset": self.timing_offset,
+                    "timing_tmpl_id": self.timing_tmpl_id.id
+                    if self.timing_tmpl_id
+                    else False,
+                    "timing_when": [(6, 0, self.timing_when.ids)]
+                    if self.timing_when
+                    else [(5, 0, 0)],
+                    "timing_dow": [(6, 0, self.timing_dow.ids)]
+                    if self.timing_dow
+                    else [(5, 0, 0)],
+                    "timing_tod": [(6, 0, self.timing_tod.ids)]
+                    if self.timing_tod
+                    else [(5, 0, 0)],
+                }
+            )
+        return [copied_vals]

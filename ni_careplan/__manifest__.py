@@ -12,6 +12,7 @@
     "depends": [
         "ni_patient",
         "ni_condition",
+        "ni_observation",
         "ni_service",
         "ni_goal",
         "ni_document_ref",
@@ -28,9 +29,18 @@
         "views/ni_patient_views.xml",
         "views/ni_goal_achievement_views.xml",
         "views/ni_careplan_template_views.xml",
+        "views/ni_careplan_wizard_views.xml",
         "views/ni_condition_views.xml",
         "views/ni_careplan_menu.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "/ni_careplan/static/src/scss/careplan.scss",
+            "ni_careplan/static/src/views/careplan_views.xml",
+            "ni_careplan/static/src/views/careplan_views.esm.js",
+            "ni_careplan/static/src/scss/careplan_views.scss",
+        ],
+    },
     "application": False,
     "auto_install": False,
     "installable": True,

@@ -8,14 +8,13 @@
             <xpath expr="//notebook" position="inside">
                 <page name="careplan" string="Careplan" icon="fa-bullseye" badge="careplan_count">
                     <field name="careplan_count" invisible="1" />
-                    <field name="careplan_ids" mode="kanban" readonly="1" />
+                    <field name="careplan_ids" mode="kanban" class="no_create" context="{'default_patient_id': id}" />
                     <button name="action_careplan" type="object" string="See More" class="btn-secondary" />
                     <button
                         name="action_new_careplan"
                         type="object"
                         class="btn-primary"
                         string="Add Careplan"
-                        context="{'target': 'new'}"
                         attrs="{'invisible': [('deceased', '=', True)]}"
                     />
                 </page>

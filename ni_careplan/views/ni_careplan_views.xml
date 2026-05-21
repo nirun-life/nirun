@@ -33,7 +33,7 @@
         <field name="name">ni.careplan.view.tree</field>
         <field name="model">ni.careplan</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree js_class="ni_careplan_tree">
                 <field name="encounter_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="category_id" widget="badge" />
@@ -44,7 +44,7 @@
                 <field name="write_uid" widget="many2one_avatar_user" optional="hide" />
                 <field name="state" widget="badge" />
                 <control>
-                    <create string="Add care plan" context="{'default_intent': 'plan'}" />
+                    <button name="action_new_careplan" type="object" string="Add care plan" />
                 </control>
             </tree>
         </field>
@@ -56,6 +56,7 @@
             <form>
                 <field name="id" invisible="1" />
                 <field name="intent" invisible="1" />
+                <field name="user_specialty" invisible="1" />
                 <header>
                     <button
                         name="action_confirm"
@@ -82,48 +83,47 @@
                 </header>
                 <sheet>
                     <group>
-                        <field
-                            name="patient_id"
-                            invisible="context.get('default_patient_id')"
-                            attrs="{'readonly': [('id', '!=', False)]}"
-                        />
-                        <field
-                            name="encounter_id"
-                            invisible="context.get('default_encounter_id')"
-                            attrs="{'readonly': [('id', '!=', False)]}"
-                        />
+                        <group>
+                            <label for="patient_id" />
+                            <div class="o_row">
+                                <field
+                                    name="patient_id"
+                                    readonly="context.get('default_patient_id')"
+                                    attrs="{'readonly': [('id', '!=', False)]}"
+                                />
+                            </div>
+                            <label for="patient_gender" />
+                            <div class="o_row">
+                                <field name="patient_gender" />
+                                <label for="patient_age" />
+                                <field name="patient_age" />
+                            </div>
+                        </group>
+                        <group>
+                            <label for="encounter_id" attrs="{'invisible': [('encounter_id', '=', False)]}" />
+                            <div class="o_row">
+                                <field
+                                    name="encounter_id"
+                                    readonly="1"
+                                    attrs="{'invisible': [('encounter_id', '=', False)]}"
+                                />
+                            </div>
+                        </group>
+                    </group>
+                    <group>
                         <field
                             name="category_id"
                             attrs="{'readonly': [('state', '!=', 'draft')]}"
                             options="{'no_create': True, 'no_open':True}"
                         />
-                        <label
-                            for="template_id"
-                            attrs="{'invisible': [('state', '!=', 'draft'), ('template_id', '=', False)]}"
-                        />
-                        <div
-                            class="o_row"
-                            attrs="{'invisible': [('state', '!=', 'draft'), ('template_id', '=', False)]}"
-                        >
-                            <field name="template_id" options="{'no_create': True}" />
-                            <button
-                                name="apply_template"
-                                type="object"
-                                string="apply"
-                                class="oe_edit_only text-primary"
-                                states="draft"
-                                attrs="{'readonly': [('template_id', '=', False)]}"
-                            />
-                        </div>
                         <label for="period_start" string="Period" />
-                        <div class="o_row">
-                            <field name="period_start" placeholder="Since" />
-                            <field name="period_end" placeholder="Until" />
+                        <div class="o_row compact">
+                            <field name="period_start" />
+                            <i class="fa fa-long-arrow-right mx-2 mt-2" title="Period End" />
+                            <field name="period_end" />
                         </div>
-                        <field name="user_specialty" invisible="1" />
-                        <field name="user_specialty" groups="base.group_no_one" />
                     </group>
-                    <notebook>
+                    <notebook class="no_controller">
                         <page name="dx" string="Diagnosis" icon="fa-list-ul" badge="condition_count">
                             <field
                                 name="condition_ids"
@@ -175,10 +175,17 @@
                                 </page>
                             </notebook>
                         </page>
-                        <page name="progress-note" string="Progress Note" icon="fa-clipboard" badg="document_count">
+                        <page
+                            name="progress-note"
+                            string="Progress Note"
+                            icon="fa-clipboard"
+                            badge="document_count"
+                            attrs="{'invisible': [('state', '=', 'draft')]}"
+                        >
                             <field
                                 name="document_ids"
                                 context="{'default_careplan_id': id, 'default_patient_id': patient_id}"
+                                attrs="{'readonly': [('state', 'in', ['completed', 'revoked'])]}"
                             />
                             <field name="document_count" invisible="1" />
                         </page>
@@ -255,6 +262,29 @@
                                 </div>
                             </div>
                         </page>
+                        <page string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <label
+                                    for="template_id"
+                                    attrs="{'invisible': [('state', '!=', 'draft'), ('template_id', '=', False)]}"
+                                />
+                                <div
+                                    class="o_row"
+                                    attrs="{'invisible': [('state', '!=', 'draft'), ('template_id', '=', False)]}"
+                                >
+                                    <field name="template_id" options="{'no_create': True}" />
+                                    <button
+                                        name="apply_template"
+                                        type="object"
+                                        string="apply"
+                                        class="oe_edit_only text-primary"
+                                        states="draft"
+                                        attrs="{'readonly': [('template_id', '=', False)]}"
+                                    />
+                                </div>
+                                <field name="user_specialty" groups="base.group_no_one" />
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
@@ -264,7 +294,14 @@
         <field name="name">ni.careplan.view.kanban</field>
         <field name="model">ni.careplan</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="patient_id" records_draggable="0" limit="10" quick_create="0" group_create="0">
+            <kanban
+                default_group_by="patient_id"
+                records_draggable="0"
+                limit="10"
+                quick_create="0"
+                group_create="0"
+                js_class="ni_careplan_kanban"
+            >
                 <field name="period_end" />
                 <field name="period_start_date" />
                 <field name="condition_ids" />
