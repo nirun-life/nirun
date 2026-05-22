@@ -1,6 +1,7 @@
 #  Copyright (c) 2025 NSTDA
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools.date_utils import relativedelta
 
 
@@ -233,7 +234,7 @@ class CareplanWizard(models.TransientModel):
         if lines:
             self.env["ni.careplan.wizard.obs.line"].create(lines)
         self.state = "2"
-        return self._reopen_wizard()
+        return self.with_context(default_patient_id=self.patient_id.id)._reopen_wizard()
 
     def action_next_step2_to_3(self):
         self.ensure_one()
@@ -421,3 +422,32 @@ class CareplanWizard(models.TransientModel):
             "views": [(False, "form")],
             "target": "new",
         }
+
+    @api.onchange("template_id")
+    def apply_diagnosis(self):
+        for rec in self.filtered("template_id"):
+            if rec.template_id.condition_code_ids:
+                condition = self.env["ni.condition"].search(
+                    [
+                        ("patient_id", "=", self.patient_id.id),
+                        (
+                            "code_id",
+                            "child_of",
+                            self.template_id.condition_code_ids.ids,
+                        ),
+                        ("clinical_state", "=", "active"),
+                    ]
+                )
+                if not condition:
+                    condition = "\n\t".join(
+                        "[{}] {}".format(c.code, c.name) if c.code else c.name
+                        for c in self.template_id.mapped("condition_code_ids")
+                    )
+
+                    raise UserError(
+                        _(
+                            "Not finding patient's conditions related to selected template, "
+                            "Patient should have a least one of following conditions\n\n\t{}"
+                        ).format(condition)
+                    )
+                rec.condition_ids = [fields.Command.set(condition.ids)]

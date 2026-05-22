@@ -51,7 +51,7 @@
                     <field name="condition_ids" mode="kanban" options="{'no_create': True}" />
                 </div>
                 <div attrs="{'invisible': [('state', '!=', '2')]}">
-                    <separator string="Evident Observations" />
+                    <separator string="Evident" />
                     <p class="text-muted">
                         Select patient observations to link as supporting evidence. Rows without recorded
                         data cannot be selected.
@@ -145,7 +145,12 @@
         <field name="arch" type="xml">
             <tree decoration-muted="not selected">
                 <field name="patient_id" invisible="1" />
-                <field name="selected" widget="boolean_toggle" attrs="{'readonly': [('observation_id', '=', False)]}" />
+                <field
+                    name="selected"
+                    widget="boolean_toggle"
+                    nolabel="1"
+                    attrs="{'readonly': [('observation_id', '=', False)]}"
+                />
                 <field name="observation_type_id" string="Observation Type" />
                 <field name="observation_id" string="Observation" options="{'no_create': True}" />
                 <field name="occurrence" optional="show" />
