@@ -2,6 +2,8 @@
 
 import logging
 
+from markupsafe import Markup, escape
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.fields import Command
@@ -417,3 +419,146 @@ class Careplan(models.Model):
             "active_model": self._name,
         }
         return action
+
+    @api.model
+    def _render_diagnosis_html(self, conditions, observations=()):
+        """Render diagnosis + evidence column as safe HTML.
+
+        conditions  – ni.condition records (fields: code, name)
+        observations – ni.observation records (fields: type_id.name, name)
+        """
+        parts = []
+        if conditions:
+            parts.append(Markup("<ul class='mb-0'>"))
+            for c in conditions:
+                parts.append(Markup("<li class='mb-1'>"))
+                if c.code:
+                    parts.append(
+                        Markup("<span class='text-primary me-1'>{}</span>").format(
+                            escape(c.code)
+                        )
+                    )
+                parts.append(Markup("<span>{}</span></li>").format(escape(c.name)))
+            parts.append(Markup("</ul>"))
+        else:
+            parts.append(
+                Markup("<span class='text-muted fst-italic'>Not specified</span>")
+            )
+        if observations:
+            parts.append(
+                Markup("<div class='fw-bold mt-2 mb-1 small text-muted'>Evidence</div>")
+                + Markup("<ul class='mb-0'>")
+            )
+            for ob in observations:
+                parts.append(
+                    Markup(
+                        "<li class='mb-1'><span class='fw-semibold'>{}</span>"
+                    ).format(escape(ob.type_id.name))
+                )
+                if ob.name:
+                    parts.append(
+                        Markup(" <span class='text-muted small'>{}</span>").format(
+                            escape(ob.name)
+                        )
+                    )
+                parts.append(Markup("</li>"))
+            parts.append(Markup("</ul>"))
+        return Markup("").join(parts)
+
+    @api.model
+    def _render_goals_html(self, goals):
+        """Render goals column as safe HTML.
+
+        goals – ni.goal records or wizard goal lines; expected fields:
+                name, observation_type_id, target_min, target_max.
+                category_id is used when present (ni.goal only).
+        """
+        if not goals:
+            return Markup("<span class='text-muted fst-italic'>Not specified</span>")
+        parts = [Markup("<ul class='mb-0'>")]
+        for g in goals:
+            parts.append(Markup("<li class='mb-2'>"))
+            category = getattr(g, "category_id", False)
+            if category and category.name:
+                parts.append(
+                    Markup("<div class='fw-bold text-muted small'>{}</div>").format(
+                        escape(category.name)
+                    )
+                )
+            name = g.name or (
+                g.goal_code_id.name if getattr(g, "goal_code_id", False) else ""
+            )
+            parts.append(Markup("<span>{}</span>").format(escape(name)))
+            if g.observation_type_id:
+                parts.append(
+                    Markup("<div class='text-muted small'>{}: {} – {}</div>").format(
+                        escape(g.observation_type_id.name), g.target_min, g.target_max
+                    )
+                )
+            parts.append(Markup("</li>"))
+        parts.append(Markup("</ul>"))
+        return Markup("").join(parts)
+
+    @api.model
+    def _render_interventions_html(self, services, medications=()):
+        """Render interventions column as safe HTML.
+
+        services    – ni.service.request records or wizard service lines.
+                      Timing resolved from timing_id then timing_tmpl_id.
+        medications – ni.medication.request records or wizard medication lines.
+                      Name from medication_id.name or name; dosage from
+                      dosage_display or quantity/note.
+        """
+        parts = []
+        if services:
+            parts.append(
+                Markup("<div class='fw-bold mb-1 small text-muted'>Services</div>")
+                + Markup("<ul class='mb-2'>")
+            )
+            for sr in services:
+                parts.append(
+                    Markup("<li class='mb-1'><span>{}</span>").format(
+                        escape(sr.name or "")
+                    )
+                )
+                timing = getattr(sr, "timing_id", None) or getattr(
+                    sr, "timing_tmpl_id", None
+                )
+                if timing and timing.name:
+                    parts.append(
+                        Markup("<div class='text-muted small ms-1'>{}</div>").format(
+                            escape(timing.name)
+                        )
+                    )
+                parts.append(Markup("</li>"))
+            parts.append(Markup("</ul>"))
+        if medications:
+            parts.append(
+                Markup("<div class='fw-bold mb-1 small text-muted'>Medications</div>")
+                + Markup("<ul class='mb-0'>")
+            )
+            for med in medications:
+                med_ref = getattr(med, "medication_id", None)
+                med_name = med_ref.name if med_ref else med.name
+                parts.append(
+                    Markup("<li class='mb-1'><span>{}</span>").format(
+                        escape(med_name or "")
+                    )
+                )
+                dosage = getattr(med, "dosage_display", None)
+                if not dosage:
+                    qty = getattr(med, "quantity", None)
+                    note = getattr(med, "note", None)
+                    if qty:
+                        dosage = "Qty: {}{}".format(qty, " — " + note if note else "")
+                if dosage:
+                    parts.append(
+                        Markup("<div class='text-muted small ms-1'>{}</div>").format(
+                            escape(str(dosage))
+                        )
+                    )
+                parts.append(Markup("</li>"))
+            parts.append(Markup("</ul>"))
+        if not services and not medications:
+            return Markup("<span class='text-muted fst-italic'>Not specified</span>")
+        return Markup("").join(parts)

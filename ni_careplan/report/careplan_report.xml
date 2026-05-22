@@ -97,55 +97,12 @@
                                 <tr>
                                     <!-- Conditions / Diagnosis -->
                                     <td class="align-top">
-                                        <t t-if="o.condition_ids">
-                                            <ul class="mb-0">
-                                                <t t-foreach="o.condition_ids" t-as="c">
-                                                    <li class="mb-2">
-                                                        <t t-if="c.code">
-                                                            <span class="badge bg-primary">
-                                                                <t t-esc="c.code" />
-                                                            </span>
-                                                            <br />
-                                                        </t>
-                                                        <span t-esc="c.name" />
-                                                    </li>
-                                                </t>
-                                            </ul>
-                                        </t>
-                                        <t t-else="">
-                                            <span class="text-muted fst-italic">Not specified</span>
-                                        </t>
-                                        <t t-if="o.observation_ids">
-                                            <div class="fw-bold mt-2 mb-1">Evident</div>
-                                            <ul class="mb-0">
-                                                <t t-foreach="o.observation_ids" t-as="ob">
-                                                    <li class="mb-1">
-                                                        <span class="fw-semibold" t-esc="ob.type_id.name" />
-                                                        <t t-if="ob.name">
-                                                            <span class="text-muted small ms-1">
-                                                                <t t-esc="ob.name" />
-                                                            </span>
-                                                        </t>
-                                                    </li>
-                                                </t>
-                                            </ul>
-                                        </t>
+                                        <t t-out="o._render_diagnosis_html(o.condition_ids, o.observation_ids)" />
                                     </td>
                                     <!-- Goals -->
                                     <td class="align-top">
                                         <t t-if="o.goal_ids">
-                                            <ul class="mb-0">
-                                                <t t-foreach="o.goal_ids" t-as="g">
-                                                    <li class="mb-2">
-                                                        <t t-if="g.category_id">
-                                                            <div class="fw-bold text-muted small">
-                                                                <t t-esc="g.category_id.name" />
-                                                            </div>
-                                                        </t>
-                                                        <span t-esc="g.name" />
-                                                    </li>
-                                                </t>
-                                            </ul>
+                                            <t t-out="o._render_goals_html(o.goal_ids)" />
                                         </t>
                                         <t t-elif="o.goal_text">
                                             <div t-field="o.goal_text" />
@@ -156,38 +113,9 @@
                                     </td>
                                     <!-- Interventions -->
                                     <td class="align-top">
-                                        <t t-if="o.service_request_ids">
-                                            <div class="fw-bold mb-1">Services</div>
-                                            <ul class="mb-2">
-                                                <t t-foreach="o.service_request_ids" t-as="sr">
-                                                    <li class="mb-1">
-                                                        <span t-esc="sr.name" />
-                                                        <div class="text-muted small ms-2" t-if="sr.category_id">
-                                                            <t t-esc="sr.category_id.name" />
-                                                        </div>
-                                                        <div class="text-muted small ms-2" t-if="sr.timing_id.name">
-                                                            <t t-esc="sr.timing_id.name" />
-                                                        </div>
-                                                    </li>
-                                                </t>
-                                            </ul>
-                                        </t>
-                                        <t t-if="o.medication_request_ids">
-                                            <div class="fw-bold mb-1">Medications</div>
-                                            <ul class="mb-0">
-                                                <t t-foreach="o.medication_request_ids" t-as="mr">
-                                                    <li class="mb-1">
-                                                        <span t-esc="mr.name" />
-                                                        <div class="text-muted small ms-2" t-if="mr.dosage_display">
-                                                            <t t-esc="mr.dosage_display" />
-                                                        </div>
-                                                    </li>
-                                                </t>
-                                            </ul>
-                                        </t>
-                                        <t t-if="not o.service_request_ids and not o.medication_request_ids">
-                                            <span class="text-muted fst-italic">Not specified</span>
-                                        </t>
+                                        <t
+                                            t-out="o._render_interventions_html(o.service_request_ids, o.medication_request_ids)"
+                                        />
                                     </td>
                                     <!-- Evaluation -->
                                     <td class="align-top">

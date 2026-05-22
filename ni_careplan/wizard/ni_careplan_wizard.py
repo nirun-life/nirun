@@ -117,7 +117,7 @@ class CareplanWizard(models.TransientModel):
             ("2", "2. Observations"),
             ("3", "3. Goals"),
             ("4", "4. Interventions"),
-            ("5", "5. Confirm"),
+            ("5", "5. Review"),
         ],
         default="1",
         required=True,
@@ -176,6 +176,11 @@ class CareplanWizard(models.TransientModel):
         string="Save as Draft",
         help="Save the careplan in draft state instead of confirming immediately.",
     )
+
+    # Step 5 - Review summary (populated on entry to review state)
+    review_diagnosis_html = fields.Html(sanitize=False)
+    review_goals_html = fields.Html(sanitize=False)
+    review_interventions_html = fields.Html(sanitize=False)
 
     @api.onchange("condition_ids")
     def _onchange_condition_ids(self):
@@ -316,7 +321,25 @@ class CareplanWizard(models.TransientModel):
 
     def action_next_step4_to_5(self):
         self.ensure_one()
-        self.state = "5"
+        CP = self.env["ni.careplan"]
+        selected_obs = self.obs_line_ids.filtered(
+            lambda l: l.selected and l.observation_id
+        ).mapped("observation_id")
+        self.write(
+            {
+                "review_diagnosis_html": CP._render_diagnosis_html(
+                    self.condition_ids, selected_obs
+                ),
+                "review_goals_html": CP._render_goals_html(
+                    self.goal_line_ids.filtered("selected")
+                ),
+                "review_interventions_html": CP._render_interventions_html(
+                    self.service_line_ids.filtered("selected"),
+                    self.medication_line_ids.filtered("selected"),
+                ),
+                "state": "5",
+            }
+        )
         return self._reopen_wizard()
 
     def action_prev(self):

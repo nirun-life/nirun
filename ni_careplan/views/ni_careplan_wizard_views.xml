@@ -74,8 +74,8 @@
                     </notebook>
                 </div>
                 <div attrs="{'invisible': [('state', '!=', '5')]}">
-                    <separator string="Confirm" />
-                    <group>
+                    <separator string="Review" />
+                    <group class="mt-2">
                         <label for="period_start" string="Period" />
                         <div class="o_row">
                             <field name="period_start" />
@@ -83,6 +83,32 @@
                             <field name="period_end" />
                         </div>
                     </group>
+                    <table class="table table-bordered mt-2">
+                        <thead>
+                            <tr>
+                                <th class="bg-primary text-white text-center" style="width: 33%;">
+                                    Diagnosis &amp; Evidence
+                                </th>
+                                <th class="bg-primary text-white text-center" style="width: 33%;">
+                                    Goals &amp; Outcomes
+                                </th>
+                                <th class="bg-primary text-white text-center" style="width: 34%;">Interventions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="align-top p-2">
+                                    <field name="review_diagnosis_html" readonly="1" nolabel="1" />
+                                </td>
+                                <td class="align-top p-2">
+                                    <field name="review_goals_html" readonly="1" nolabel="1" />
+                                </td>
+                                <td class="align-top p-2">
+                                    <field name="review_interventions_html" readonly="1" nolabel="1" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <footer>
                     <button
