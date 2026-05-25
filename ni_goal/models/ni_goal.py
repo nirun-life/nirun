@@ -79,6 +79,20 @@ class Goal(models.Model):
         "ni.observation", "Latest", compute="_compute_observation"
     )
     observation_ids = fields.Many2many("ni.observation", compute="_compute_observation")
+    address_observation_id = fields.Many2one(
+        "ni.observation",
+        "Baseline",
+        store=True,
+        tracking=True,
+        ondelete="set null",
+    )
+    outcome_observation_id = fields.Many2one(
+        "ni.observation",
+        "Outcome",
+        store=True,
+        tracking=True,
+        ondelete="set null",
+    )
     condition_ids = fields.Many2many(
         "ni.condition",
         "ni_goal_addresses_condition",
@@ -96,6 +110,28 @@ class Goal(models.Model):
                     "target_max": rec.observation_type_id.max,
                 }
             )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for rec in records.filtered("observation_id"):
+            rec.address_observation_id = rec.observation_id
+        return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        if {"state_id", "achievement_id"} & vals.keys():
+            for rec in self.filtered("observation_id"):
+                updates = {}
+                if "state_id" in vals:
+                    new_state = self.env["ni.goal.state"].browse(vals["state_id"])
+                    if new_state.code == "active" and not rec.address_observation_id:
+                        updates["address_observation_id"] = rec.observation_id.id
+                if rec.outcome_observation_id != rec.observation_id:
+                    updates["outcome_observation_id"] = rec.observation_id.id
+                if updates:
+                    rec.write(updates)
+        return res
 
     @api.depends("observation_type_id")
     def _compute_observation(self):
@@ -221,6 +257,7 @@ class Goal(models.Model):
                 )
 
     def _open_state_wizard(self, default_state, default_achievement):
+        self.ensure_one()
         return {
             "name": _("Update Goal"),
             "res_model": "ni.goal.state.wizard",
@@ -228,7 +265,7 @@ class Goal(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {
-                "default_goal_ids": self.ids,
+                "default_goal_id": self.id,
                 "default_state_id": self.env.ref(default_state).id,
                 "default_achievement_id": self.env.ref(default_achievement).id,
             },
@@ -245,13 +282,14 @@ class Goal(models.Model):
         )
 
     def action_state_wizard(self):
+        self.ensure_one()
         return {
             "name": _("Update Goal"),
             "res_model": "ni.goal.state.wizard",
             "type": "ir.actions.act_window",
             "view_mode": "form",
             "target": "new",
-            "context": {"default_goal_ids": self.ids},
+            "context": {"default_goal_id": self.id},
         }
 
     def action_edit(self):
