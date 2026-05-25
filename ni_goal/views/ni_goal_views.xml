@@ -93,10 +93,26 @@
                             <field name="state_achievement_ids" invisible="1" />
                             <field name="state_decoration" invisible="1" />
                             <field name="state_achievable" invisible="1" />
-                        </group>
-                        <group attrs="{'invisible': [('state_achievement_ids', '=', False)]}">
-                            <field name="achievement_id" options="{'no_open': True}" />
+                            <field
+                                name="achievement_id"
+                                options="{'no_open': True}"
+                                attrs="{'invisible': [('state_achievement_ids', '=', False)]}"
+                            />
                             <field name="achievement_decoration" invisible="1" />
+                        </group>
+                        <group>
+                            <field
+                                name="outcome_observation_id"
+                                options="{'no_open': True}"
+                                readonly="1"
+                                attrs="{'invisible': [('outcome_observation_id', '=', False)]}"
+                            />
+                            <field
+                                name="address_observation_id"
+                                options="{'no_open': True}"
+                                readonly="1"
+                                attrs="{'invisible': [('address_observation_id', '=', False)]}"
+                            />
                         </group>
                     </group>
                     <div attrs="{'invisible': [('last_comment', '=', False)]}">
@@ -250,7 +266,7 @@
                                     name="action_state_wizard"
                                     type="object"
                                     t-attf-class="btn btn-sm p-1 lh-1 text-{{record.achievement_id.raw_value ? record.achievement_decoration.raw_value : record.state_decoration.raw_value}}"
-                                    t-attf-title="สถานะ : {{record.state_id.value}} | {{record.achievement_id.value}}"
+                                    t-attf-title="State : {{record.state_id.value}} | {{record.achievement_id.value}}"
                                 >
                                     <i
                                         t-attf-class="fa {{record.achievement_id.raw_value ? record.achievement_icon.value : record.state_icon.value}} fa-lg"

@@ -9,8 +9,49 @@
         <field name="arch" type="xml">
             <form>
                 <field name="state_achievement_ids" invisible="1" />
-                <field name="goal_ids" widget="many2many_tags" readonly="1" invisible="1" />
+                <field name="target_value_type" invisible="1" />
+                <field name="goal_id" readonly="1" options="{'no_open': True}" />
+                <group string="Measure" attrs="{'invisible': [('observation_type_id', '=', False)]}" class="mt-2">
+                    <group>
+                        <field name="observation_type_id" readonly="1" options="{'no_open': True}" />
+                    </group>
+                    <group>
+                        <label for="target_min" string="Target" />
+                        <div class="o_row" attrs="{'invisible': [('target_value_type', 'not in', ['int', 'float'])]}">
+                            <field class="o_narrow_field " name="target_min" readonly="1" nolabel="1" />
+                            <span class="mx-1">–</span>
+                            <field class="o_narrow_field " name="target_max" readonly="1" nolabel="1" />
+                            <field name="target_unit" />
+                        </div>
+                        <div
+                            class="o_row"
+                            attrs="{'invisible': [('target_value_type', 'not in', ['code_id', 'code_ids'])]}"
+                        >
+                            <field
+                                name="target_code_ids"
+                                widget="many2many_tags"
+                                options="{'no_open': True, 'color_field': 'color'}"
+                                readonly="1"
+                            />
+                        </div>
+                    </group>
+                </group>
                 <group>
+                    <group attrs="{'invisible': [('address_observation_id', '=', False)]}">
+                        <field
+                            name="address_observation_id"
+                            string="Baseline"
+                            readonly="1"
+                            options="{'no_open': True}"
+                        />
+                        <field name="address_occurrence" string="Date" readonly="1" />
+                    </group>
+                    <group attrs="{'invisible': [('observation_id', '=', False)]}">
+                        <field name="observation_id" string="Latest" readonly="1" options="{'no_open': True}" />
+                        <field name="observation_occurrence" string="Date" readonly="1" />
+                    </group>
+                </group>
+                <group class="mt-4" string="State &amp; Achievement">
                     <group>
                         <field name="state_id" options="{'no_open': True}" />
                     </group>
