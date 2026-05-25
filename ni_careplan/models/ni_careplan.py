@@ -500,6 +500,44 @@ class Careplan(models.Model):
         return Markup("").join(parts)
 
     @api.model
+    def _render_outcome_html(self, goals):
+        """Render per-goal outcome observations for the Evaluation column.
+
+        Uses outcome_observation_id when set (recorded at state change),
+        falls back to observation_id (current latest) for in-progress goals.
+        """
+        goals_with_obs = goals.filtered(
+            lambda g: g.outcome_observation_id or g.observation_id
+        )
+        if not goals_with_obs:
+            return Markup("")
+        parts = [
+            Markup("<div class='fw-bold mt-2 mb-1 small text-muted'>Outcome</div>"),
+            Markup("<ul class='mb-0'>"),
+        ]
+        for g in goals_with_obs:
+            obs = g.outcome_observation_id or g.observation_id
+            parts.append(Markup("<li class='mb-1'>"))
+            parts.append(
+                Markup("<span class='fw-semibold'>{}</span>").format(escape(g.name))
+            )
+            if obs.value:
+                parts.append(
+                    Markup(" <span class='text-muted small'>{}</span>").format(
+                        escape(obs.value)
+                    )
+                )
+            if obs.occurrence:
+                parts.append(
+                    Markup(" <span class='text-muted small'>({})</span>").format(
+                        obs.occurrence.strftime("%d/%m/%Y")
+                    )
+                )
+            parts.append(Markup("</li>"))
+        parts.append(Markup("</ul>"))
+        return Markup("").join(parts)
+
+    @api.model
     def _render_interventions_html(self, services, medications=()):
         """Render interventions column as safe HTML.
 
