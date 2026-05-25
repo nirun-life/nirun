@@ -445,8 +445,11 @@ class Careplan(models.Model):
                 Markup("<span class='text-muted fst-italic'>Not specified</span>")
             )
         if observations:
+            _evidence = _("Evidence")
             parts.append(
-                Markup("<div class='fw-bold mt-2 mb-1 small text-muted'>Evidence</div>")
+                Markup(
+                    f"<div class='fw-bold mt-2 mb-1 small text-muted'>{_evidence}</div>"
+                )
                 + Markup("<ul class='mb-0'>")
             )
             for ob in observations:
@@ -511,8 +514,9 @@ class Careplan(models.Model):
         )
         if not goals_with_obs:
             return Markup("")
+        _outcome = _("Outcome")
         parts = [
-            Markup("<div class='fw-bold mt-2 mb-1 small text-muted'>Outcome</div>"),
+            Markup(f"<div class='fw-bold mt-2 mb-1 small text-muted'>{_outcome}</div>"),
             Markup("<ul class='mb-0'>"),
         ]
         for g in goals_with_obs:
@@ -549,8 +553,9 @@ class Careplan(models.Model):
         """
         parts = []
         if services:
+            _service = _("Service")
             parts.append(
-                Markup("<div class='fw-bold mb-1 small text-muted'>Services</div>")
+                Markup(f"<div class='fw-bold mb-1 small text-muted'>{_service}</div>")
                 + Markup("<ul class='mb-2'>")
             )
             for sr in services:
@@ -571,8 +576,11 @@ class Careplan(models.Model):
                 parts.append(Markup("</li>"))
             parts.append(Markup("</ul>"))
         if medications:
+            _medication = _("Medication")
             parts.append(
-                Markup("<div class='fw-bold mb-1 small text-muted'>Medications</div>")
+                Markup(
+                    f"<div class='fw-bold mb-1 small text-muted'>{_medication}</div>"
+                )
                 + Markup("<ul class='mb-0'>")
             )
             for med in medications:

@@ -29,7 +29,7 @@
         "views/ni_patient_views.xml",
         "views/ni_goal_achievement_views.xml",
         "views/ni_careplan_template_views.xml",
-        "views/ni_careplan_wizard_views.xml",
+        "wizard/ni_careplan_wizard_views.xml",
         "views/ni_condition_views.xml",
         "views/ni_careplan_menu.xml",
     ],

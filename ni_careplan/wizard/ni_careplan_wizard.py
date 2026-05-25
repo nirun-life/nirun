@@ -114,7 +114,7 @@ class CareplanWizard(models.TransientModel):
     state = fields.Selection(
         [
             ("1", "1. Diagnosis & Template"),
-            ("2", "2. Observations"),
+            ("2", "2. Evidence"),
             ("3", "3. Goals"),
             ("4", "4. Interventions"),
             ("5", "5. Review"),
@@ -170,11 +170,6 @@ class CareplanWizard(models.TransientModel):
     period_end = fields.Datetime(
         string="End",
         default=lambda self: fields.Datetime.now() + relativedelta(months=3),
-    )
-    save_as_draft = fields.Boolean(
-        default=False,
-        string="Save as Draft",
-        help="Save the careplan in draft state instead of confirming immediately.",
     )
 
     # Step 5 - Review summary (populated on entry to review state)
