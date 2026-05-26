@@ -2,6 +2,7 @@
 
 {
     "name": "Patients - Firstname and Lastname",
+    "summary": "Extended name fields for patient first and last names",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Medical",

@@ -2,6 +2,7 @@
 
 {
     "name": "Partner - Title Order",
+    "summary": "Order management for partner titles",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Tools",

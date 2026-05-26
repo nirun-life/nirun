@@ -2,6 +2,7 @@
 
 {
     "name": "Patients Location (Thai Localization)",
+    "summary": "Thai localization for patient addresses and locations",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Healthcare",

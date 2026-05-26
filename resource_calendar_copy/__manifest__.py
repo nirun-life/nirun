@@ -2,6 +2,7 @@
 
 {
     "name": "Resource Calendar Copy",
+    "summary": "Bulk copy resource calendars with ease",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Tools",

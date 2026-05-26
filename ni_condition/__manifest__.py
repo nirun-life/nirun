@@ -2,6 +2,7 @@
 
 {
     "name": "Condition (Problem)",
+    "summary": "Medical conditions and diagnoses for patients",
     "version": "16.0.0.3.1",
     "development_status": "Alpha",
     "category": "Medical",

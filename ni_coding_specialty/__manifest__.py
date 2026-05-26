@@ -3,6 +3,7 @@
 
 {
     "name": "Nirun - Coding Specialty",
+    "summary": "Medical specialty coding and classification",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Medical",

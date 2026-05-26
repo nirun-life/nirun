@@ -2,6 +2,7 @@
 
 {
     "name": "Patients Thai Localization",
+    "summary": "Thai localization for core patient module",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Healthcare",

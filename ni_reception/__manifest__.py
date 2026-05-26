@@ -2,6 +2,7 @@
 
 {
     "name": "Reception",
+    "summary": "Patient check-in and registration at reception",
     "version": "16.0.0.2.0",
     "development_status": "Alpha",
     "category": "Medical",

@@ -2,6 +2,7 @@
 
 {
     "name": "Patients Thai Localization - Firstname and Lastname",
+    "summary": "Thai localization for patient first and last names",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Healthcare",

@@ -2,6 +2,7 @@
 
 {
     "name": "Document Reference",
+    "summary": "Clinical document attachment and reference management",
     "version": "16.0.0.2.1",
     "development_status": "Alpha",
     "category": "Healthcare",

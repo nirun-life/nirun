@@ -1,7 +1,8 @@
 #  Copyright (c) 2024 NSTDA
 
 {
-    "name": "Nirun - Benefit",
+    "name": "Patient Benefit",
+    "summary": "Healthcare benefit and entitlement management",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Medical",

@@ -2,6 +2,7 @@
 
 {
     "name": "Care Plan",
+    "summary": "Care planning including goals, services, and outcomes tracking",
     "version": "16.0.0.1.3",
     "development_status": "Alpha",
     "category": "Medical",

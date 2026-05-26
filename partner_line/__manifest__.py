@@ -2,6 +2,7 @@
 
 {
     "name": "Partner Line ID",
+    "summary": "Add line ID field for partner records",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Human Resources/Employees",

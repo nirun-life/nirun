@@ -2,6 +2,7 @@
 
 {
     "name": "Community Care",
+    "summary": "Community-based healthcare services and care management",
     "version": "16.0.0.3.0",
     "development_status": "Alpha",
     "category": "Medical",

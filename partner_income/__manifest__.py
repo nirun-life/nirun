@@ -2,6 +2,7 @@
 
 {
     "name": "Partner - Income",
+    "summary": "Add income and salary fields for partner records",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Tools",

@@ -2,6 +2,7 @@
 
 {
     "name": "Patients - Summary Report",
+    "summary": "Comprehensive patient summary and medical certificate reports",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Medical",

@@ -2,6 +2,7 @@
 
 {
     "name": "Questionnaire",
+    "summary": "Patient questionnaires and survey administration",
     "version": "16.0.0.4.0",
     "development_status": "Alpha",
     "category": "Healthcare",

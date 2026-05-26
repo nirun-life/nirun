@@ -2,6 +2,7 @@
 
 {
     "name": "HR Employee Motto",
+    "summary": "Add motto and personal quote field for employees",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Human Resources/Employees",

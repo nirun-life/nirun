@@ -2,7 +2,7 @@
 
 {
     "name": "Care Plan : Related Problem Observation (!Obsoleted)",
-    "summary": "this module was merged into",
+    "summary": "Obsoleted module: merged into care plan",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Medical",

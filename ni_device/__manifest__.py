@@ -2,6 +2,7 @@
 
 {
     "name": "Device",
+    "summary": "Medical device management including tracking, requests, and maintenance",
     "version": "16.0.0.3.0",
     "development_status": "Alpha",
     "category": "Medical",

@@ -2,6 +2,7 @@
 
 {
     "name": "Medication - TMT ",
+    "summary": "Thai medication coding system (TMT) integration",
     "version": "16.0.0.1.1",
     "development_status": "Alpha",
     "category": "Medical",

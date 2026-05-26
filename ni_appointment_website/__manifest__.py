@@ -2,6 +2,7 @@
 
 {
     "name": "Appointment - Website",
+    "summary": "Website portal for patients to book appointments",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Medical",

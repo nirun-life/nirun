@@ -2,6 +2,7 @@
 
 {
     "name": "Patients - Disability (Thai Localization)",
+    "summary": "Thai localization for patient disability classification",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Healthcare",

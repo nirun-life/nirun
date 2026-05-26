@@ -2,6 +2,7 @@
 
 {
     "name": "Thai Coverage",
+    "summary": "Thai localization for insurance coverage and benefits",
     "version": "16.0.0.1.1",
     "development_status": "Alpha",
     "category": "Medical",

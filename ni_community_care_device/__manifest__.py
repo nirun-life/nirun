@@ -2,6 +2,7 @@
 
 {
     "name": "Device",
+    "summary": "Medical devices used in community care",
     "version": "16.0.0.3.0",
     "development_status": "Alpha",
     "category": "Medical",
