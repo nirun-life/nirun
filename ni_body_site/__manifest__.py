@@ -2,6 +2,7 @@
 
 {
     "name": "Nirun - Body Site",
+    "summary": "Anatomical body site and location coding",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Medical",
