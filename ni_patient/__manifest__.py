@@ -2,6 +2,7 @@
 
 {
     "name": "Patient",
+    "summary": "Core patient data model, encounters, and encounter management",
     "version": "16.0.0.4.0",
     "development_status": "Alpha",
     "category": "Medical",
