@@ -2,6 +2,7 @@
 
 {
     "name": "Nirun - Identifier",
+    "summary": "Auto-generated identifiers for clinical resources",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
     "category": "Medical",
