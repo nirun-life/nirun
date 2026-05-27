@@ -45,7 +45,7 @@ paste errors log here
 
 - [ ] Blocking
 - [ ] Data issue
-- [ ]Performance
+- [ ] Performance
 - [ ] UI only
 - [ ] Deployment/config
 - [ ] Unknown impact
