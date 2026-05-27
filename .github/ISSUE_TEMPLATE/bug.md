@@ -34,5 +34,25 @@ assignees: ""
 <!-- paste log, traceback, screenshot, API response, etc. -->
 
 ```text
-paste log here
+paste errors log here
 ```
+
+## Suspected Cause
+
+<!-- optional -->
+
+## Scope / Impact
+
+- [ ] Blocking
+- [ ] Data issue
+- [ ]Performance
+- [ ] UI only
+- [ ] Deployment/config
+- [ ] Unknown impact
+
+## Notes for Developer
+
+- Reproduce before fixing
+- Prefer root cause fix over workaround
+- Keep changes minimal
+- Check related repos if needed
