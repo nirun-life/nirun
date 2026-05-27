@@ -8,11 +8,11 @@ assignees: ""
 
 ## Problem
 
-<!-- เกิดอะไรขึ้น -->
+<!-- What have happened -->
 
 ## Expected Behavior
 
-<!-- ที่ควรจะเป็น -->
+<!-- What was expected -->
 
 ## Steps to Reproduce
 
@@ -22,7 +22,7 @@ assignees: ""
 
 ## Context
 
-<!-- ลูกค้าไหน / environment ไหน / version ไหน / branch ไหน -->
+<!-- Customer / Environment / Version / branch -->
 
 - Environment:
 - Version/Commit:
@@ -34,5 +34,5 @@ assignees: ""
 <!-- paste log, traceback, screenshot, API response, etc. -->
 
 ```text
-paste here
+paste log here
 ```
