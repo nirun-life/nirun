@@ -1,62 +1,58 @@
-#  Copyright (c) 2021-2023. NSTDA
+#  Copyright (c) 2026 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class Patient(models.Model):
     _inherit = "ni.patient"
 
-    disability_card = fields.Boolean(
-        help="Indicate patient have disability card or not",
-        tracking=True,
-    )
-    disability_card_reason = fields.Text(
-        help="Reason why patient not have disability card",
-        tracking=True,
-    )
-    disability_ids = fields.Many2many(
-        "ni.disability",
-        "ni_patient_disability_rel",
+    disability_observation_ids = fields.One2many(
+        "ni.observation",
         "patient_id",
-        "disability_id",
-        ondelete="restrict",
+        domain=[("category_id.code", "=", "disability")],
+        string="Disability Observations",
     )
-    disability_count = fields.Integer(
-        compute="_compute_disability_count", sudo_compute=True, store=True
+    has_disability = fields.Boolean(
+        compute="_compute_disability",
+        store=True,
+        index=True,
     )
-    disability_display = fields.Char(
-        compute="_compute_disability_display",
-        sudo_compute=True,
-        string="With Disability",
+    disability_type_ids = fields.Many2many(
+        "ni.observation.value.code",
+        "ni_patient_disability_type_rel",
+        "patient_id",
+        "value_code_id",
+        string="Disability Types",
+        compute="_compute_disability",
+        store=True,
     )
 
-    @api.model
-    def create(self, vals):
-        self._prepare_disability_value(vals)
-        return super(Patient, self).create(vals)
+    @api.depends(
+        "disability_observation_ids.value_code_id",
+        "disability_observation_ids.value_code_ids",
+        "disability_observation_ids.state",
+        "disability_observation_ids.occurrence",
+    )
+    def _compute_disability(self):
+        IrModel = self.env["ir.model.data"]
+        status_type_id = IrModel._xmlid_to_res_id(
+            "l10n_th_ni_patient_disability.type_disability_status"
+        )
+        type_type_id = IrModel._xmlid_to_res_id(
+            "l10n_th_ni_patient_disability.type_disability_type_th"
+        )
+        disabled_id = IrModel._xmlid_to_res_id("l10n_th_ni_patient_disability.disabled")
+        active_states = ("preparation", "in-progress", "completed")
 
-    def write(self, vals):
-        self._prepare_disability_value(vals)
-        return super(Patient, self).write(vals)
-
-    def _prepare_disability_value(self, vals):
-        if "disability_ids" in vals and vals["disability_ids"] == [(6, 0, [])]:
-            vals["disability_card"] = False
-            vals["disability_card_reason"] = False
-        elif "disability_card" in vals and vals["disability_card"] is True:
-            vals["disability_card_reason"] = False
-
-    @api.depends("disability_ids")
-    def _compute_disability_count(self):
         for rec in self:
-            rec.disability_count = len(rec.disability_ids)
+            status_obs = rec.disability_observation_ids.filtered(
+                lambda o: o.type_id.id == status_type_id and o.state in active_states
+            ).sorted("occurrence", reverse=True)
+            rec.has_disability = bool(status_obs) and (
+                status_obs[0].value_code_id.id == disabled_id
+            )
 
-    @api.depends("disability_ids")
-    def _compute_disability_display(self):
-        for rec in self:
-            if len(rec.disability_ids) > 1:
-                rec.disability_display = _("Multiple Disabilities")
-            elif len(rec.disability_ids) == 1:
-                rec.disability_display = rec.disability_ids[0].name
-            else:
-                rec.disability_display = None
+            type_obs = rec.disability_observation_ids.filtered(
+                lambda o: o.type_id.id == type_type_id and o.state in active_states
+            ).sorted("occurrence", reverse=True)
+            rec.disability_type_ids = type_obs[0].value_code_ids if type_obs else []

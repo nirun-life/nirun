@@ -1,2 +1,1 @@
-from . import ni_disability
-from . import ni_patient
+from . import ni_patient, ni_encounter, res_company

@@ -1,43 +1,79 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (c) 2021-2023. NSTDA
+  ~ Copyright (c) 2026 NSTDA
   -->
 <odoo>
-    <record id="ni_patient_view_form_inherit" model="ir.ui.view">
-        <field name="name">ni.patient.view.form.inherit</field>
-        <field name="model">ni.patient</field>
-        <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
-        <field name="arch" type="xml">
-            <xpath expr="//page[@name='history']" position="inside">
-                <group string="Disability">
-                    <field name="disability_ids" widget="many2many_checkboxes" />
-                    <field name="disability_count" />
-                    <label for="disability_card" attrs="{'invisible': [('disability_ids', '&lt;=', 0)]}" />
-                    <div attrs="{'invisible': [('disability_ids', '&lt;=', 0)]}">
-                        <div>
-                            <field name="disability_card" widget="boolean_toggle" class="oe_edit_only" />
-                            <span attrs="{'invisible': [('disability_card', '=', False)]}">Have</span>
-                            <span attrs="{'invisible': [('disability_card', '=', True)]}">Not Have</span>
-                        </div>
-                        <field
-                            name="disability_card_reason"
-                            placeholder="Reason why patient not have disability card"
-                            attrs="{'invisible': [('disability_card', '=', True)],
-                             'required': [('disability_count', '>', 0), ('disability_card', '=', False)]}"
-                        />
-                    </div>
-                </group>
-            </xpath>
-        </field>
+    <record id="disability_patient_action" model="ir.actions.act_window">
+        <field name="name">Patients with Disability</field>
+        <field name="res_model">ni.patient</field>
+        <field name="domain">[("has_disability", "=", True)]</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_has_disability": 1}</field>
     </record>
-    <record id="ni_patient_view_tree_inherit" model="ir.ui.view">
-        <field name="name">ni.patient.view.tree.inherit</field>
+    <!-- Patient list: add has_disability column -->
+    <record id="ni_patient_view_tree_disability" model="ir.ui.view">
+        <field name="name">ni.patient.view.tree.disability</field>
         <field name="model">ni.patient</field>
         <field name="inherit_id" ref="ni_patient.ni_patient_view_tree" />
         <field name="arch" type="xml">
-            <field name="mobile" position="after">
-                <field name="disability_display" optional="show" />
+            <field name="presence_state" position="before">
+                <field name="has_disability" optional="show" string="Disability" />
             </field>
+        </field>
+    </record>
+    <!-- Patient form: add disability fields in encounter group -->
+    <record id="ni_patient_view_form_disability" model="ir.ui.view">
+        <field name="name">ni.patient.view.form.disability</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
+        <field name="arch" type="xml">
+            <field name="encounter_id" position="after">
+                <field name="has_disability" readonly="1" attrs="{'invisible': [('has_disability', '=', False)]}" />
+                <field
+                    name="disability_type_ids"
+                    widget="many2many_tags"
+                    readonly="1"
+                    attrs="{'invisible': [('has_disability', '=', False)]}"
+                    options="{'color_field': 'color', 'no_edit_color': 1}"
+                />
+            </field>
+        </field>
+    </record>
+    <!-- Patient search: add disability filters and search panel -->
+    <record id="ni_patient_view_search_disability" model="ir.ui.view">
+        <field name="name">ni.patient.view.search.disability</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_search" />
+        <field name="arch" type="xml">
+            <filter name="alive" position="before">
+                <separator />
+                <filter name="has_disability" string="Has Disability" domain="[('has_disability', '=', True)]" />
+                <separator />
+                <filter name="dis_vision" string="Visual" domain="[('disability_type_ids.code', '=', 'TH-DIS-01')]" />
+                <filter name="dis_hearing" string="Hearing" domain="[('disability_type_ids.code', '=', 'TH-DIS-02')]" />
+                <filter
+                    name="dis_mobility"
+                    string="Mobility"
+                    domain="[('disability_type_ids.code', '=', 'TH-DIS-03')]"
+                />
+                <filter name="dis_mental" string="Mental" domain="[('disability_type_ids.code', '=', 'TH-DIS-04')]" />
+                <filter
+                    name="dis_intellectual"
+                    string="Intellectual"
+                    domain="[('disability_type_ids.code', '=', 'TH-DIS-05')]"
+                />
+                <filter
+                    name="dis_learning"
+                    string="Learning"
+                    domain="[('disability_type_ids.code', '=', 'TH-DIS-06')]"
+                />
+                <filter
+                    name="dis_autistic"
+                    string="Autistic"
+                    domain="[('disability_type_ids.code', '=', 'TH-DIS-07')]"
+                />
+                <separator />
+            </filter>
         </field>
     </record>
 </odoo>
