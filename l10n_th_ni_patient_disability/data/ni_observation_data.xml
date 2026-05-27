@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="category_disability" model="ni.observation.category">
+        <field name="code">disability</field>
+        <field name="name">Disability</field>
+        <field name="parent_id" ref="ni_observation.category_exam" />
+        <field name="definition">Disability status and Thai 7-category disability type observations.</field>
+    </record>
+    <record id="disabled" model="ni.observation.value.code">
+        <field name="name">Disabled</field>
+        <field name="code">disabled</field>
+    </record>
+    <record id="not_disabled" model="ni.observation.value.code">
+        <field name="name">Not Disabled</field>
+        <field name="code">not-disabled</field>
+    </record>
+    <record id="type_disability_status" model="ni.observation.type">
+        <field name="sequence">1</field>
+        <field name="category_id" ref="category_disability" />
+        <field name="name">Disability Status</field>
+        <field name="abbr">Disability</field>
+        <field name="code">dis-status</field>
+        <field name="value_type">code_id</field>
+        <field
+            name="value_code_ids"
+            eval="[
+            (4, ref('disabled')),
+            (4, ref('not_disabled')),
+        ]"
+        />
+    </record>
+    <record id="th_dis_vision" model="ni.observation.value.code">
+        <field name="sequence">1</field>
+        <field name="name">1. Visual Disability</field>
+        <field name="code">TH-DIS-01</field>
+    </record>
+    <record id="th_dis_hearing_communication" model="ni.observation.value.code">
+        <field name="sequence">2</field>
+        <field name="name">2. Hearing or Communication Disability</field>
+        <field name="code">TH-DIS-02</field>
+    </record>
+    <record id="th_dis_mobility" model="ni.observation.value.code">
+        <field name="sequence">3</field>
+        <field name="name">3. Mobility or Physical Disability</field>
+        <field name="code">TH-DIS-03</field>
+    </record>
+    <record id="th_dis_mental_behavioral" model="ni.observation.value.code">
+        <field name="sequence">4</field>
+        <field name="name">4. Mental or Behavioral Disability</field>
+        <field name="code">TH-DIS-04</field>
+    </record>
+    <record id="th_dis_intellectual" model="ni.observation.value.code">
+        <field name="sequence">5</field>
+        <field name="name">5. Intellectual Disability</field>
+        <field name="code">TH-DIS-05</field>
+    </record>
+    <record id="th_dis_learning" model="ni.observation.value.code">
+        <field name="sequence">6</field>
+        <field name="name">6. Learning Disability</field>
+        <field name="code">TH-DIS-06</field>
+    </record>
+    <record id="th_dis_autistic" model="ni.observation.value.code">
+        <field name="sequence">7</field>
+        <field name="name">7. Autistic Disability</field>
+        <field name="code">TH-DIS-07</field>
+    </record>
+    <record id="type_disability_type_th" model="ni.observation.type">
+        <field name="sequence">2</field>
+        <field name="category_id" ref="category_disability" />
+        <field name="name">Thai Disability Type</field>
+        <field name="abbr">Disability Type</field>
+        <field name="code">TH-DIS-TYPE</field>
+        <field name="value_type">code_ids</field>
+        <field
+            name="value_code_ids"
+            eval="[
+            (4, ref('th_dis_vision')),
+            (4, ref('th_dis_hearing_communication')),
+            (4, ref('th_dis_mobility')),
+            (4, ref('th_dis_mental_behavioral')),
+            (4, ref('th_dis_intellectual')),
+            (4, ref('th_dis_learning')),
+            (4, ref('th_dis_autistic')),
+        ]"
+        />
+    </record>
+</odoo>
