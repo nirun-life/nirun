@@ -28,8 +28,8 @@ class ObservationType(models.Model):
             ("char", "Char"),
             ("float", "Float"),
             ("int", "Integer"),
-            ("code_id", "Code"),
-            ("code_ids", "Multi-Code"),
+            ("code_id", "Single Choice"),
+            ("code_ids", "Multi-Choice"),
         ],
         default="float",
     )
