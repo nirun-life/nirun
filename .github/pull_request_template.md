@@ -1,24 +1,24 @@
 ## What changed
 
-<!-- เปลี่ยนอะไรบ้าง แบบสั้น ๆ -->
+<!-- brief summary of changes -->
 
 ## Why
 
-<!-- ทำไปเพื่ออะไร / อ้างอิง issue หรือ requirement -->
+<!-- why / link issue or requirement -->
 
 Closes #
 
 ## Scope
 
-## <!-- repo/feature/area ที่กระทบ -->
+<!-- repo / feature / area affected -->
 
 ## Risk / Impact
 
-## <!-- migration, config, deployment, backward compatibility, data risk -->
+<!-- migration, config, deployment, backward-compat, data risk -->
 
 ## How tested
 
-<!-- test command หรือ manual check -->
+<!-- test command or manual steps -->
 
 - [ ] Unit/integration tests
 - [ ] Manual check

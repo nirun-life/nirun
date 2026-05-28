@@ -2,7 +2,7 @@
 name: Task
 about: Feature, requirement, research note, or improvement
 title: "[Task] "
-labels: ""
+labels: task
 assignees: ""
 ---
 
@@ -30,7 +30,7 @@ assignees: ""
 
 ## Related Repos
 
-## <!-- When affected more that this repo, ex. backend, frontend, infra -->
+<!-- When task affects more than one repo -->
 
 ## Notes for Developer
 

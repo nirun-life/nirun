@@ -56,3 +56,10 @@ paste errors log here
 - Prefer root cause fix over workaround
 - Keep changes minimal
 - Check related repos if needed
+
+## Acceptance Check
+
+- [ ] Root cause confirmed
+- [ ] Fix verified on affected environment
+- [ ] No regression introduced
+- [ ] Tests/manual check done
