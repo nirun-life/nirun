@@ -1,4 +1,4 @@
-#  Copyright (c) 2022 Piruin P.
+#  Copyright (c) 2024 Piruin P.
 
 
 from odoo import _, api, fields, models, tools

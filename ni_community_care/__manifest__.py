@@ -1,10 +1,10 @@
-#  Copyright (c) 2021-2023 NSTDA
+#  Copyright (c) 2024 NSTDA
 
 {
     "name": "Community Care",
     "summary": "Community-based healthcare services and care management",
     "version": "16.0.0.3.0",
-    "development_status": "Alpha",
+    "development_status": "Beta",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
     "website": "https://nirun.life/",
