@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_flag_code_view_tree" model="ir.ui.view">
+        <field name="name">ni.flag.code.view.tree</field>
+        <field name="model">ni.flag.code</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="code" />
+                <field name="abbr" optional="hide" />
+                <field name="system_id" optional="hide" />
+                <field name="patient_count" string="Active Patients" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_flag_code_view_form" model="ir.ui.view">
+        <field name="name">ni.flag.code.view.form</field>
+        <field name="model">ni.flag.code</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div name="button_box" class="oe_button_box" attrs="{'invisible': [('id', '=', False)]}">
+                        <button name="action_view_patients" class="oe_stat_button" icon="fa-users" type="object">
+                            <field name="patient_count" string="Patients" widget="statinfo" />
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="code" />
+                            <field name="abbr" />
+                            <field name="color" widget="color_picker" />
+                        </group>
+                        <group>
+                            <field name="system_id" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="definition" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_flag_code_action" model="ir.actions.act_window">
+        <field name="name">Flag Codes</field>
+        <field name="res_model">ni.flag.code</field>
+        <field name="view_mode">tree,form</field>
+        <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+                   (0, 0, {'view_mode': 'tree', 'view_id': ref('ni_flag_code_view_tree')}),
+                   (0, 0, {'view_mode': 'form', 'view_id': ref('ni_flag_code_view_form')})]"
+        />
+    </record>
+</odoo>

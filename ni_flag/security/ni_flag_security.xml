@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="ni_flag_company_rule" model="ir.rule">
+        <field name="name">Flag: multi-company</field>
+        <field name="model_id" ref="ni_flag.model_ni_flag" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="ni_flag_own_write_rule" model="ir.rule">
+        <field name="name">Flag: write or delete own</field>
+        <field name="model_id" ref="ni_flag.model_ni_flag" />
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_user'))]" />
+    </record>
+    <record id="ni_flag_manager_rule" model="ir.rule">
+        <field name="name">Flag: manager write all</field>
+        <field name="model_id" ref="ni_flag.model_ni_flag" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
+    </record>
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.flag</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="attributes">
+                <attribute name="class">oe_button_box</attribute>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_flag"
+                    attrs="{'invisible': [('flag_count', '=', 0)]}"
+                    class="oe_stat_button"
+                    icon="fa-flag"
+                    type="object"
+                    groups="ni_patient.group_user"
+                >
+                    <field name="flag_count" string="Flags" widget="statinfo" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
