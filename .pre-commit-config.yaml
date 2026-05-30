@@ -14,7 +14,8 @@ repos:
     hooks:
       - id: detect-secrets
         args: ["--baseline", ".secrets.baseline"]
-        exclude: \.pre-commit-config\.yaml$
+        exclude: >-
+          (?x) \.pre-commit-config\.yaml$| web_notebook_collapse/.*\.xml$| l10n_th_web_buddhist_calendar/.*\.js$
   - repo: https://github.com/myint/autoflake
     rev: v1.6.1
     hooks:
