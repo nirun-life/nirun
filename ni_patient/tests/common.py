@@ -16,7 +16,7 @@ class TestPatientCommon(common.TransactionCase):
                 ],
                 "name": "Patient Admin",
                 "email": "p.admin@example.com",
-                "password": "admin",
+                "password": "admin",  # pragma: allowlist secret
             }
         )
         self.patient_admin = self.env["ni.patient"].with_user(patient_admin)
