@@ -9,6 +9,19 @@ permission to commit. Always wait for an explicit instruction.
 
 **Do not** add `Co-Authored-By: Claude *` in commit message
 
+## Secrets
+
+**Never hardcode credentials, passwords, tokens, or API keys in any file.** This applies to all files including scripts, skill
+files, config, and documentation. Use environment variables instead:
+
+```python
+import os
+VALUE = os.environ.get("ENV_VAR_NAME", "")
+```
+
+`detect-secrets` runs in pre-commit and will block commits containing secrets. If a false positive is flagged, update
+`.secrets.baseline` via `detect-secrets scan > .secrets.baseline` — do NOT disable the hook.
+
 ## What This Is
 
 **Nirun** is a collection of Odoo 16.0 add-on modules for healthcare providers. It implements clinical data models following the
