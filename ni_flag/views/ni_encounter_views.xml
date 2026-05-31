@@ -9,22 +9,24 @@
         <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('oe_title')]" position="after">
-                <div class="mb-1" attrs="{'invisible': [('id', '=', False)]}">
-                    <field
-                        name="patient_flag_code_ids"
-                        widget="many2many_tags"
-                        options="{'color_field': 'color', 'no_create': False, 'no_open': True}"
-                        placeholder="Patient flags..."
-                    />
-                </div>
-                <div class="mb-2" attrs="{'invisible': [('id', '=', False)]}">
-                    <field
-                        name="encounter_flag_code_ids"
-                        widget="many2many_tags"
-                        options="{'color_field': 'color', 'no_create': False, 'no_open': True}"
-                        placeholder="Encounter flags..."
-                    />
-                </div>
+                <group attrs="{'invisible': [('id', '=', False)]}">
+                    <group string="Patient Flags">
+                        <field
+                            name="patient_flag_code_ids"
+                            widget="many2many_tags"
+                            options="{'color_field': 'color', 'no_create': False, 'no_open': True}"
+                            nolabel="1"
+                        />
+                    </group>
+                    <group string="Encounter Flags">
+                        <field
+                            name="encounter_flag_code_ids"
+                            widget="many2many_tags"
+                            options="{'color_field': 'color', 'no_create': False, 'no_open': True}"
+                            nolabel="1"
+                        />
+                    </group>
+                </group>
             </xpath>
         </field>
     </record>
