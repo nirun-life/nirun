@@ -22,10 +22,12 @@ class Patient(models.Model):
         string="Flags",
     )
 
-    @api.depends("flag_ids.status", "flag_ids.code_id")
+    @api.depends("flag_ids.status", "flag_ids.code_id", "flag_ids.encounter_id")
     def _compute_flag_code_ids(self):
         for rec in self:
-            active = rec.flag_ids.filtered(lambda f: f.status == "active")
+            active = rec.flag_ids.filtered(
+                lambda f: f.status == "active" and not f.encounter_id
+            )
             rec.flag_code_ids = active.mapped("code_id")
 
     def _inverse_flag_code_ids(self):
