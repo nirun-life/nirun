@@ -8,20 +8,14 @@
         <field name="model">ni.encounter</field>
         <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='button_box']" position="attributes">
-                <attribute name="class">oe_button_box</attribute>
-            </xpath>
-            <xpath expr="//div[@name='button_box']" position="inside">
-                <button
-                    name="action_flag"
-                    attrs="{'invisible': [('flag_count', '=', 0)]}"
-                    class="oe_stat_button"
-                    icon="fa-flag"
-                    type="object"
-                    groups="ni_patient.group_user"
-                >
-                    <field name="flag_count" string="Flags" widget="statinfo" />
-                </button>
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <field
+                    name="encounter_flag_code_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color', 'no_create': False, 'no_open': True}"
+                    attrs="{'invisible': [('id', '=', False)]}"
+                    class="mb-2"
+                />
             </xpath>
         </field>
     </record>

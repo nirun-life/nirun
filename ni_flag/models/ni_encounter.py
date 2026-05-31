@@ -7,32 +7,36 @@ class Encounter(models.Model):
     _inherit = "ni.encounter"
 
     flag_ids = fields.One2many(
-        "ni.flag", "encounter_id", string="Flags", check_company=True
+        "ni.flag", "encounter_id", string="Flag Records", check_company=True
     )
-    flag_count = fields.Integer(compute="_compute_flag_count")
+    encounter_flag_code_ids = fields.Many2many(
+        "ni.flag.code",
+        compute="_compute_encounter_flag_code_ids",
+        inverse="_inverse_encounter_flag_code_ids",
+        string="Encounter Flags",
+    )
 
-    @api.depends("flag_ids.status")
-    def _compute_flag_count(self):
-        data = self.env["ni.flag"].read_group(
-            [("encounter_id", "in", self.ids), ("status", "=", "active")],
-            ["encounter_id"],
-            ["encounter_id"],
-        )
-        mapped = {d["encounter_id"][0]: d["encounter_id_count"] for d in data}
+    @api.depends("flag_ids.status", "flag_ids.code_id")
+    def _compute_encounter_flag_code_ids(self):
         for rec in self:
-            rec.flag_count = mapped.get(rec.id, 0)
+            active = rec.flag_ids.filtered(lambda f: f.status == "active")
+            rec.encounter_flag_code_ids = active.mapped("code_id")
 
-    def action_flag(self):
-        self.ensure_one()
-        return {
-            "name": "Flags",
-            "type": "ir.actions.act_window",
-            "res_model": "ni.flag",
-            "view_mode": "tree,form",
-            "domain": [("encounter_id", "=", self.id)],
-            "context": {
-                "default_patient_id": self.patient_id.id,
-                "default_encounter_id": self.id,
-                "search_default_active": True,
-            },
-        }
+    def _inverse_encounter_flag_code_ids(self):
+        Flag = self.env["ni.flag"]
+        for rec in self:
+            active = rec.flag_ids.filtered(lambda f: f.status == "active")
+            current_codes = active.mapped("code_id")
+            to_add = rec.encounter_flag_code_ids - current_codes
+            to_remove = active.filtered(
+                lambda f: f.code_id not in rec.encounter_flag_code_ids
+            )
+            for code in to_add:
+                Flag.create(
+                    {
+                        "patient_id": rec.patient_id.id,
+                        "encounter_id": rec.id,
+                        "code_id": code.id,
+                    }
+                )
+            to_remove.action_inactive()
