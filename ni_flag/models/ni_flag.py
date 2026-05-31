@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class Flag(models.Model):
@@ -50,10 +50,22 @@ class Flag(models.Model):
         return self.code_id.name if self.code_id else self.identifier
 
     def action_active(self):
-        self.write({"status": "active"})
+        self.write({"status": "active", "period_end": False})
 
     def action_inactive(self):
-        self.write({"status": "inactive"})
+        self.write({"status": "inactive", "period_end": fields.Datetime.now()})
 
     def action_entered_in_error(self):
-        self.write({"status": "entered-in-error"})
+        self.write({"status": "entered-in-error", "period_end": fields.Datetime.now()})
+
+    @api.model
+    def garbage_collect(self, max_age_seconds=60):
+        """Remove accidental flags: inactive with duration under max_age_seconds."""
+        candidates = self.search(
+            [("status", "=", "inactive"), ("period_end", "!=", False)]
+        )
+        to_unlink = candidates.filtered(
+            lambda r: r.period_start
+            and (r.period_end - r.period_start).total_seconds() < max_age_seconds
+        )
+        to_unlink.unlink()

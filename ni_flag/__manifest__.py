@@ -16,6 +16,7 @@
         "security/ir.model.access.csv",
         "security/ni_flag_security.xml",
         "data/ir_sequence_data.xml",
+        "data/ir_cron_data.xml",
         "views/ni_flag_category_views.xml",
         "views/ni_flag_code_views.xml",
         "views/ni_flag_views.xml",
