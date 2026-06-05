@@ -12,7 +12,7 @@ class Patient(models.Model):
     active_flag_ids = fields.One2many(
         "ni.flag",
         "patient_id",
-        domain=[("status", "=", "active")],
+        domain=[("status", "=", "active"), ("encounter_id", "=", False)],
         string="Active Flags",
     )
     flag_code_ids = fields.Many2many(
@@ -33,7 +33,9 @@ class Patient(models.Model):
     def _inverse_flag_code_ids(self):
         Flag = self.env["ni.flag"]
         for rec in self:
-            active = rec.flag_ids.filtered(lambda f: f.status == "active")
+            active = rec.flag_ids.filtered(
+                lambda f: f.status == "active" and not f.encounter_id
+            )
             current_codes = active.mapped("code_id")
             to_add = rec.flag_code_ids - current_codes
             to_remove = active.filtered(lambda f: f.code_id not in rec.flag_code_ids)

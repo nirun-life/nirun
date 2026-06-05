@@ -62,10 +62,14 @@ class Flag(models.Model):
     def garbage_collect(self, max_age_seconds=60):
         """Remove accidental flags: inactive with duration under max_age_seconds."""
         candidates = self.search(
-            [("status", "=", "inactive"), ("period_end", "!=", False)]
+            [
+                ("status", "=", "inactive"),
+                ("period_end", "!=", False),
+                ("company_id", "in", self.env.companies.ids),
+            ]
         )
         to_unlink = candidates.filtered(
-            lambda r: r.period_start
-            and (r.period_end - r.period_start).total_seconds() < max_age_seconds
+            lambda r: not r.period_start
+            or (r.period_end - r.period_start).total_seconds() < max_age_seconds
         )
         to_unlink.unlink()
