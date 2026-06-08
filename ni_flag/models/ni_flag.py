@@ -42,12 +42,53 @@ class Flag(models.Model):
         default=lambda self: self.env.user,
     )
     note = fields.Text()
+    origin = fields.Selection(
+        [
+            ("manual", "Manual"),
+            ("recommendation", "Recommendation"),
+            ("auto_rule", "Auto Rule"),
+        ],
+        required=True,
+        default="manual",
+        index=True,
+    )
+    source_observation_id = fields.Many2one(
+        "ni.observation",
+        "Source Observation",
+        ondelete="set null",
+        index=True,
+        help="Observation that caused this flag to be recommended or created.",
+    )
+    recommendation_id = fields.Many2one(
+        "ni.flag.recommendation",
+        "Source Recommendation",
+        ondelete="set null",
+        index=True,
+    )
+    evidence_summary = fields.Char(compute="_compute_evidence_summary")
 
-    def name_get(self):
-        return [(rec.id, rec._name_get()) for rec in self]
-
-    def _name_get(self):
-        return self.code_id.name if self.code_id else self.identifier
+    @api.depends(
+        "origin",
+        "source_observation_id",
+        "source_observation_id.type_id",
+        "source_observation_id.value",
+        "source_observation_id.interpretation_id",
+    )
+    def _compute_evidence_summary(self):
+        selection = dict(self._fields["origin"].selection)
+        for rec in self:
+            observation = rec.source_observation_id
+            if not observation:
+                rec.evidence_summary = selection.get(rec.origin, rec.origin)
+                continue
+            parts = [
+                observation.type_id.display_name or observation.type_id.name,
+                observation.value or "",
+                observation.interpretation_id.display_name
+                or observation.interpretation_id.name
+                or "",
+            ]
+            rec.evidence_summary = " / ".join(part for part in parts if part)
 
     def action_active(self):
         self.write({"status": "active", "period_end": False})
@@ -57,6 +98,12 @@ class Flag(models.Model):
 
     def action_entered_in_error(self):
         self.write({"status": "entered-in-error", "period_end": fields.Datetime.now()})
+
+    def name_get(self):
+        return [(rec.id, rec._name_get()) for rec in self]
+
+    def _name_get(self):
+        return self.code_id.name if self.code_id else self.identifier
 
     @api.model
     def garbage_collect(self, max_age_seconds=60):

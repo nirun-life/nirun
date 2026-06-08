@@ -1,88 +1,45 @@
 # Flag (`ni_flag`)
 
-Odoo 16.0 module implementing the **HL7 FHIR R4 Flag resource** for the Nirun healthcare platform. Records prospective warnings
-and safety notes about a patient — visible at a glance on both the patient and encounter forms without any extra navigation.
+Odoo 16.0 module implementing the HL7 FHIR R4 Flag resource for the Nirun healthcare platform. It records prospective warnings
+and safety notes about a patient and now supports observation-driven flag recommendations with evidence and conflict handling.
 
 ## After Install
 
 ### Patient form
 
-A row of colored tag badges appears directly below the patient name, one badge per active flag.
-
-- **Click `+`** — opens a dropdown to pick a Flag Code; saving creates a new active `ni.flag` record
-- **Click `×`** on a badge — deactivates the flag and sets its end date; the badge disappears immediately
-- No page navigation required
+A row of colored tag badges appears directly below the patient name, one badge per active patient-level flag.
 
 ### Encounter form
 
-The same editable flag tag area appears below the encounter title. Flags added here are scoped to the specific encounter
-(`encounter_id` is set on the `ni.flag` record). Patient-level flags (no `encounter_id`) are visible on the patient form.
+Patient flags and encounter flags appear near the title for quick scanning, and a smart button links staff to pending flag
+recommendations for the encounter.
 
-### Patient kanban
+### Patient kanban and encounter lists
 
-Active flag tags are rendered inline on each patient card, visible without opening the patient.
-
-### Patient search / filters
-
-| Filter              | Behaviour                                        |
-| ------------------- | ------------------------------------------------ |
-| Has Active Flag     | Filters patients with at least one `active` flag |
-| Flag (search field) | Free-text search matched against flag code name  |
-
-### Flag Codes config
-
-Under **Configuration → Flags → Flag Codes**, each code shows an **Active Patients** stat button. Clicking it opens a filtered
-patient list — all patients currently carrying that flag.
+Active flags are visible directly on patient cards and encounter list or kanban views so triage staff can scan records without
+opening each form.
 
 ### Flags report
 
-A **Flags** entry under the Patient root menu opens the flag list with tree, pivot, and graph views. The pivot view groups by
-flag code (rows), useful for reviewing flag distribution across patients.
+The Flags menu includes list, pivot, and graph reporting with origin and evidence fields. A separate Flag Recommendations menu
+defaults to pending recommendations.
 
-## Flag Lifecycle
+## Observation-driven flag recommendations
 
-```
-active ──────────────────────────► inactive
-  ▲     (action_inactive / remove tag)    │
-  └─── (action_active / re-add tag)  ─────┘
-       (period_end set on deactivation,
-        cleared on re-activation)
+Flag recommendation rules map observation types and optional interpretation or value-code matches to flag codes. Rules recommend
+by default. Admins may mark selected rules as auto-apply.
 
-active / inactive ──► entered-in-error
-```
+Recommended and auto-created flags keep the source observation on the flag detail form so staff can see why the flag exists.
 
-- `period_start` — set to creation time automatically
-- `period_end` — set to the moment the flag is deactivated
-- An hourly cron removes accidental flags: any `inactive` flag where `period_end − period_start < 60 s` is deleted
+## Conflicting flags
 
-## Flag Codes and Categories
-
-Seeded on install:
-
-| Code  | Name                  | Category            |
-| ----- | --------------------- | ------------------- |
-| DNR   | Do Not Resuscitate    | Clinical (CL)       |
-| LATEX | Latex Allergy         | Clinical (CL)       |
-| FALL  | Fall Risk             | Behavioral (BH)     |
-| INTRP | Interpreter Required  | Administrative (AD) |
-| ISOL  | Isolation Precautions | Clinical (CL)       |
-
-Categories follow the [FHIR Flag category value set](http://hl7.org/fhir/ValueSet/flag-category): `CL` Clinical · `AD`
-Administrative · `BH` Behavioral · `RS` Research.
-
-Add custom codes under **Configuration → Flags → Flag Codes**. Choose a color; the color is used for the badge on the patient
-form and kanban card.
-
-## Configuration
-
-No required configuration. Optional:
-
-- **Flag Codes** — add organization-specific codes (group `ni_patient.group_admin`)
-- **Flag Categories** — extend the four FHIR defaults (group `ni_patient.group_admin`)
+Flag codes can define conflicting flag codes. When a user accepts a recommendation that conflicts with active flags, a
+confirmation wizard shows the flags that will be deactivated. Auto-apply rules deactivate conflicting flags automatically and
+close the old flags with `period_end`.
 
 ## Dependencies
 
-- `ni_patient` — patient, encounter, and security groups
-- `ni_period` — `period_start` / `period_end` fields
-- `ni_identifier` — auto-generated `FLG-YYYY-NNNNN` identifier
-- `ni_coding` — base coding system for Flag Code and Category models
+- `ni_patient`
+- `ni_period`
+- `ni_identifier`
+- `ni_observation`

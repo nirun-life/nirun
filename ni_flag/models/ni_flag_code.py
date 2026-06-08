@@ -8,6 +8,14 @@ class FlagCode(models.Model):
     _inherit = ["ni.coding"]
 
     patient_count = fields.Integer(compute="_compute_patient_count")
+    conflict_code_ids = fields.Many2many(
+        "ni.flag.code",
+        "ni_flag_code_conflict_rel",
+        "code_id",
+        "conflict_code_id",
+        string="Conflicting Flag Codes",
+        help="Active flags with these codes should be replaced when this flag is applied.",
+    )
 
     @api.depends_context("company")
     def _compute_patient_count(self):

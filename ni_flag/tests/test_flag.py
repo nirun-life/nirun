@@ -104,3 +104,60 @@ class TestFlag(common.TransactionCase):
         self.encounter.encounter_flag_code_ids = [(3, self.code_fall.id)]
         self.assertEqual(flag.status, "inactive")
         self.assertTrue(flag.period_end)
+
+    def test_flag_can_store_source_observation(self):
+        obs_type = self.env["ni.observation.type"].create(
+            {
+                "name": "Flag Evidence Test",
+                "code": "FLAG-EVIDENCE",
+                "value_type": "float",
+            }
+        )
+        observation = self.env["ni.observation"].create(
+            {
+                "patient_id": self.patient.id,
+                "encounter_id": self.encounter.id,
+                "type_id": obs_type.id,
+                "value_float": 9.0,
+            }
+        )
+        flag = self.env["ni.flag"].create(
+            {
+                "patient_id": self.patient.id,
+                "encounter_id": self.encounter.id,
+                "code_id": self.code_fall.id,
+                "source_observation_id": observation.id,
+                "origin": "recommendation",
+            }
+        )
+        self.assertEqual(flag.source_observation_id, observation)
+        self.assertEqual(flag.origin, "recommendation")
+
+    def test_manual_flag_origin_defaults_to_manual(self):
+        flag = self._make_flag(self.code_dnr)
+        self.assertEqual(flag.origin, "manual")
+
+    def test_patient_action_manage_flags_opens_patient_manager(self):
+        action = self.patient.action_manage_flags()
+        expected_action = self.env.ref("ni_flag.ni_patient_flag_action")
+
+        self.assertEqual(action["res_model"], "ni.flag")
+        self.assertEqual(action["view_mode"], "kanban,tree,form")
+        self.assertEqual(action["id"], expected_action.id)
+        self.assertEqual(action["domain"], [("patient_id", "=", self.patient.id)])
+        self.assertEqual(action["context"]["default_patient_id"], self.patient.id)
+        self.assertEqual(action["context"]["search_default_group_state"], 1)
+        self.assertNotIn("search_default_active", action["context"])
+
+    def test_encounter_action_manage_flags_opens_encounter_manager(self):
+        action = self.encounter.action_manage_flags()
+        expected_action = self.env.ref("ni_flag.ni_encounter_flag_action")
+
+        self.assertEqual(action["res_model"], "ni.flag")
+        self.assertEqual(action["view_mode"], "kanban,tree,form")
+        self.assertEqual(action["id"], expected_action.id)
+        self.assertEqual(action["domain"], [("encounter_id", "=", self.encounter.id)])
+        self.assertEqual(action["context"]["default_patient_id"], self.patient.id)
+        self.assertEqual(action["context"]["default_encounter_id"], self.encounter.id)
+        self.assertEqual(action["context"]["search_default_group_encounter"], 1)
+        self.assertNotIn("search_default_active", action["context"])

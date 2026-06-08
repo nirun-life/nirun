@@ -3,18 +3,19 @@
   ~ Copyright (c) 2026 NSTDA
   -->
 <odoo>
+    <menuitem id="flag_menu_root" name="Flags" parent="ni_patient.encounter_menu_root" sequence="60" />
     <menuitem
         id="ni_flag_report_menu"
-        name="Flags"
-        parent="ni_patient.patient_menu_root"
+        name="Flags Report"
+        parent="flag_menu_root"
         action="ni_flag_action"
         sequence="15"
         groups="ni_patient.group_user"
     />
     <menuitem
         id="ni_flag_config_menu"
-        name="Flags"
-        parent="ni_patient.configuration_menu"
+        name="Configuration"
+        parent="flag_menu_root"
         sequence="30"
         groups="ni_patient.group_admin"
     />
@@ -30,6 +31,22 @@
         name="Flag Categories"
         parent="ni_flag_config_menu"
         action="ni_flag_category_action"
+        groups="ni_patient.group_admin"
+    />
+    <menuitem
+        id="ni_flag_recommendation_menu"
+        name="Flag Recommendations"
+        parent="flag_menu_root"
+        action="ni_flag_recommendation_action"
+        sequence="16"
+        groups="ni_patient.group_user"
+    />
+    <menuitem
+        id="ni_flag_recommendation_rule_menu"
+        name="Recommendation Rules"
+        parent="ni_flag_config_menu"
+        action="ni_flag_recommendation_rule_action"
+        sequence="40"
         groups="ni_patient.group_admin"
     />
 </odoo>

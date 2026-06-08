@@ -1,5 +1,6 @@
 #  Copyright (c) 2026 NSTDA
 from odoo import api, fields, models
+from odoo.tools.safe_eval import safe_eval
 
 
 class Patient(models.Model):
@@ -42,3 +43,22 @@ class Patient(models.Model):
             for code in to_add:
                 Flag.create({"patient_id": rec.id, "code_id": code.id})
             to_remove.action_inactive()
+
+    def action_manage_flags(self):
+        self.ensure_one()
+        action = self.env.ref("ni_flag.ni_patient_flag_action").read()[0]
+        action["domain"] = [("patient_id", "=", self.id)]
+        action_context = action.get("context")
+        context = (
+            safe_eval(action_context)
+            if isinstance(action_context, str)
+            else dict(action_context or {})
+        )
+        context.update(self.env.context)
+        context.update(
+            {
+                "default_patient_id": self.id,
+            }
+        )
+        action["context"] = context
+        return action

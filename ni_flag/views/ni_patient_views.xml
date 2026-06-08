@@ -3,13 +3,22 @@
   ~ Copyright (c) 2026 NSTDA
   -->
 <odoo>
+    <record id="ni_patient_action_manage_flags" model="ir.actions.server">
+        <field name="name">Manage Flags</field>
+        <field name="sequence" eval="1" />
+        <field name="model_id" ref="ni_patient.model_ni_patient" />
+        <field name="binding_model_id" ref="ni_patient.model_ni_patient" />
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_manage_flags()</field>
+    </record>
     <!-- Patient form: inline editable flag tags below patient name -->
     <record id="ni_patient_view_form_inherit" model="ir.ui.view">
         <field name="name">ni.patient.view.form.flag</field>
         <field name="model">ni.patient</field>
         <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[hasclass('oe_title')]" position="after">
+            <xpath expr="//group[@name='encounter']/field[@name='encounter_id']" position="after">
                 <field
                     name="flag_code_ids"
                     widget="many2many_tags"

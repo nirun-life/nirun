@@ -19,4 +19,10 @@
         <field name="perm_unlink" eval="True" />
         <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
     </record>
+    <record id="ni_flag_recommendation_company_rule" model="ir.rule">
+        <field name="name">Flag Recommendation: multi-company</field>
+        <field name="model_id" ref="ni_flag.model_ni_flag_recommendation" />
+        <field name="global" eval="True" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
 </odoo>
