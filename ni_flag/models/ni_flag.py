@@ -1,0 +1,122 @@
+#  Copyright (c) 2026 NSTDA
+from odoo import api, fields, models
+
+
+class Flag(models.Model):
+    _name = "ni.flag"
+    _description = "Flag"
+    _inherit = ["ni.period.mixin", "ni.patient.res", "ni.identifier.mixin"]
+    _order = "period_start DESC, id DESC"
+    _check_period_start = False
+    _identifier_ts_field = "period_start"
+
+    status = fields.Selection(
+        [
+            ("active", "Active"),
+            ("inactive", "Inactive"),
+            ("entered-in-error", "Entered in Error"),
+        ],
+        required=True,
+        default="active",
+        index=True,
+        copy=False,
+    )
+    category_ids = fields.Many2many(
+        "ni.flag.category",
+        "ni_flag_category_rel",
+        "flag_id",
+        "category_id",
+    )
+    code_id = fields.Many2one(
+        "ni.flag.code",
+        "Flag",
+        required=True,
+        ondelete="restrict",
+        index=True,
+    )
+    code = fields.Char(related="code_id.code", store=True)
+    color = fields.Integer(related="code_id.color", store=True)
+    author_id = fields.Many2one(
+        "res.users",
+        "Author",
+        default=lambda self: self.env.user,
+    )
+    note = fields.Text()
+    origin = fields.Selection(
+        [
+            ("manual", "Manual"),
+            ("recommendation", "Recommendation"),
+            ("auto_rule", "Auto Rule"),
+        ],
+        required=True,
+        default="manual",
+        index=True,
+    )
+    source_observation_id = fields.Many2one(
+        "ni.observation",
+        "Source Observation",
+        ondelete="set null",
+        index=True,
+        help="Observation that caused this flag to be recommended or created.",
+    )
+    recommendation_id = fields.Many2one(
+        "ni.flag.recommendation",
+        "Source Recommendation",
+        ondelete="set null",
+        index=True,
+    )
+    evidence_summary = fields.Char(compute="_compute_evidence_summary")
+
+    @api.depends(
+        "origin",
+        "source_observation_id",
+        "source_observation_id.type_id",
+        "source_observation_id.value",
+        "source_observation_id.interpretation_id",
+    )
+    def _compute_evidence_summary(self):
+        selection = dict(self._fields["origin"].selection)
+        for rec in self:
+            observation = rec.source_observation_id
+            if not observation:
+                rec.evidence_summary = selection.get(rec.origin, rec.origin)
+                continue
+            parts = [
+                observation.type_id.display_name or observation.type_id.name,
+                observation.value or "",
+                observation.interpretation_id.display_name
+                or observation.interpretation_id.name
+                or "",
+            ]
+            rec.evidence_summary = " / ".join(part for part in parts if part)
+
+    def action_active(self):
+        self.write({"status": "active", "period_end": False})
+
+    def action_inactive(self):
+        self.write({"status": "inactive", "period_end": fields.Datetime.now()})
+
+    def action_entered_in_error(self):
+        self.write({"status": "entered-in-error", "period_end": fields.Datetime.now()})
+
+    def name_get(self):
+        return [(rec.id, rec._name_get()) for rec in self]
+
+    def _name_get(self):
+        return self.code_id.name if self.code_id else self.identifier
+
+    @api.model
+    def garbage_collect(self, max_age_seconds=60):
+        """Remove accidental flags: inactive with duration under max_age_seconds."""
+        candidates = self.search(
+            [
+                ("status", "=", "inactive"),
+                ("period_end", "!=", False),
+                ("company_id", "in", self.env.companies.ids),
+            ]
+        )
+        to_unlink = candidates.filtered(
+            lambda r: not r.period_start
+            or (r.period_end - r.period_start).total_seconds() < max_age_seconds
+        )
+        to_unlink.unlink()

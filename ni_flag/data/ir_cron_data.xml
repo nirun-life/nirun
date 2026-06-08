@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="ir_cron_flag_garbage_collect" model="ir.cron">
+        <field name="name">Flag: garbage collect accidental flags</field>
+        <field name="model_id" ref="ni_flag.model_ni_flag" />
+        <field name="state">code</field>
+        <field name="code">model.garbage_collect()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True" />
+    </record>
+</odoo>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_patient_action_manage_flags" model="ir.actions.server">
+        <field name="name">Manage Flags</field>
+        <field name="sequence" eval="1" />
+        <field name="model_id" ref="ni_patient.model_ni_patient" />
+        <field name="binding_model_id" ref="ni_patient.model_ni_patient" />
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_manage_flags()</field>
+    </record>
+    <!-- Patient form: inline editable flag tags below patient name -->
+    <record id="ni_patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.view.form.flag</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='encounter']/field[@name='encounter_id']" position="after">
+                <field
+                    name="flag_code_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color', 'no_create': False, 'no_open': True}"
+                    attrs="{'invisible': [('id', '=', False)]}"
+                    class="mb-2"
+                />
+            </xpath>
+        </field>
+    </record>
+    <!-- Patient kanban: show active flag tags inline on card -->
+    <record id="ni_patient_view_kanban_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.view.kanban.flag</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_kanban" />
+        <field name="arch" type="xml">
+            <xpath expr="//kanban/templates" position="before">
+                <field name="active_flag_ids" />
+            </xpath>
+            <xpath expr="//ul" position="after">
+                <field
+                    name="active_flag_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color', 'no_open': True}"
+                    class="mt-1"
+                />
+            </xpath>
+        </field>
+    </record>
+    <!-- Patient list/kanban: search and filter by flag -->
+    <record id="ni_patient_view_search_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.view.search.flag</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[last()]" position="after">
+                <field name="flag_code_ids" string="Flag" />
+            </xpath>
+            <xpath expr="//search/separator[last()]" position="after">
+                <separator />
+                <filter name="has_active_flag" string="Has Active Flag" domain="[('flag_ids.status', '=', 'active')]" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

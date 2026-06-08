@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_action_manage_flags" model="ir.actions.server">
+        <field name="name">Manage Flags</field>
+        <field name="sequence" eval="2" />
+        <field name="model_id" ref="ni_patient.model_ni_encounter" />
+        <field name="binding_model_id" ref="ni_patient.model_ni_encounter" />
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_manage_flags()</field>
+    </record>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.flag</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='priority']" position="after">
+                <label
+                    for="flag_ids"
+                    string="Flag"
+                    help="Prospective warnings of potential issues when providing care to the patient."
+                />
+                <div>
+                    <field name="flag_ids" invisible="1" />
+                    <field
+                        name="patient_flag_code_ids"
+                        widget="many2many_tags"
+                        options="{'color_field': 'color', 'no_create': False, 'no_open': True}"
+                        placeholder="Applies to all encounters"
+                        nolabel="1"
+                    />
+                    <div class="text-muted small oe_edit_only">
+                        Shared patient-level flags that remain relevant across visits.
+                    </div>
+                    <field
+                        name="encounter_flag_code_ids"
+                        widget="many2many_tags"
+                        options="{'color_field': 'color', 'no_create': False, 'no_open': True}"
+                        placeholder="Applies to this encounter"
+                        nolabel="1"
+                    />
+                    <div class="text-muted small oe_edit_only">
+                        Visit-specific flags used only for the current encounter.
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_flag_recommendations"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-lightbulb-o"
+                    attrs="{'invisible': [('pending_flag_recommendation_count', '=', 0)]}"
+                >
+                    <field name="pending_flag_recommendation_count" widget="statinfo" string="Flag Suggestions" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_encounter_view_tree_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.tree.flag</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='patient_id']" position="after">
+                <field
+                    name="active_flag_code_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color', 'no_open': True}"
+                    optional="show"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_encounter_view_kanban_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.kanban.flag</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_kanban" />
+        <field name="arch" type="xml">
+            <xpath expr="//kanban/templates" position="before">
+                <field name="active_flag_code_ids" />
+            </xpath>
+            <xpath expr="//field[@name='reason_ids']/ancestor::div[1]" position="after">
+                <div class="my-1">
+                    <field
+                        name="active_flag_code_ids"
+                        widget="many2many_tags"
+                        options="{'color_field': 'color', 'no_open': True}"
+                    />
+                </div>
+            </xpath>
+        </field>
+    </record>
+    <record id="ni_encounter_view_search_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.search.flag</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='patient_id']" position="after">
+                <field name="active_flag_code_ids" string="Flag" />
+            </xpath>
+            <xpath expr="//filter[@name='encounter']" position="after">
+                <filter
+                    name="has_active_flag"
+                    string="Has Active Flag"
+                    domain="[('active_flag_code_ids', '!=', False)]"
+                />
+                <filter
+                    name="has_pending_flag_recommendation"
+                    string="Has Flag Suggestion"
+                    domain="[('pending_flag_recommendation_count', '&gt;', 0)]"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
