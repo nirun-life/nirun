@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_flag_recommendation_rule_view_tree" model="ir.ui.view">
+        <field name="name">ni.flag.recommendation.rule.view.tree</field>
+        <field name="model">ni.flag.recommendation.rule</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="observation_type_id" />
+                <field name="interpretation_id" optional="show" />
+                <field name="value_code_id" optional="hide" />
+                <field name="flag_code_id" />
+                <field name="scope" widget="badge" />
+                <field name="mode" widget="badge" decoration-warning="mode == 'auto_apply'" />
+                <field name="active" widget="boolean_toggle" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_flag_recommendation_rule_view_form" model="ir.ui.view">
+        <field name="name">ni.flag.recommendation.rule.view.form</field>
+        <field name="model">ni.flag.recommendation.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="active" />
+                            <field name="sequence" />
+                            <field name="observation_type_id" />
+                        </group>
+                        <group>
+                            <field name="flag_code_id" />
+                            <field name="scope" />
+                            <field name="mode" />
+                        </group>
+                    </group>
+                    <group string="Match Conditions">
+                        <field name="interpretation_id" />
+                        <field name="value_code_id" />
+                        <field name="value_code_ids" widget="many2many_tags" />
+                    </group>
+                    <field name="note" placeholder="Clinical rationale for this rule..." />
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_flag_recommendation_rule_action" model="ir.actions.act_window">
+        <field name="name">Flag Recommendation Rules</field>
+        <field name="res_model">ni.flag.recommendation.rule</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
