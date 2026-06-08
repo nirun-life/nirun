@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <record id="ni_flag_conflict_wizard_view_form" model="ir.ui.view">
+        <field name="name">ni.flag.conflict.wizard.view.form</field>
+        <field name="model">ni.flag.conflict.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="recommendation_id" readonly="1" />
+                    <field name="conflict_flag_ids" readonly="1">
+                        <tree>
+                            <field name="code_id" />
+                            <field name="patient_id" />
+                            <field name="encounter_id" />
+                            <field name="period_start" />
+                        </tree>
+                    </field>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Replace Flags" class="btn-primary" />
+                    <button special="cancel" string="Cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
