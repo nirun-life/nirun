@@ -68,6 +68,10 @@ State-machine behavior is provided by two abstract mixins:
 
 Modules are licensed under **LGPL-3** or **OPL-1** — see each module's `__manifest__.py` for the specific license.
 
+## Security
+
+Security issues in Nirun code should be reported privately as described in [SECURITY.md](SECURITY.md).
+
 ## Maintainers
 
 - [Piruin Panichphol](https://github.com/piruin)
