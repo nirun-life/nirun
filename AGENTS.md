@@ -238,6 +238,20 @@ structure changes. Update a module `AGENTS.md` only when agent-specific local in
   agent-only detail into an optional module `AGENTS.md`.
 - If a module cannot stay understandable near that threshold, treat it as a signal that the module boundary or documentation
   structure needs reconsideration.
+- Prefer a compact maintainer-reference layout for module READMEs but not limit to:
+  - module overview and owned scope
+  - core models
+  - a short architecture or integration map
+  - menu map, when the module exposes its own menu
+  - main view types plus the views the module modifies and why
+  - security summary and permission matrix
+  - dependency and extension map only when it adds information not already covered above
+  - common pitfalls or invariants that are easy to break
+- If two sections repeat the same relationship or workflow, merge them into one integration-oriented section instead of keeping
+  both.
+- If a module has no standalone menu, say so explicitly rather than inventing a menu tree.
+- Document only the inherited views and model extensions that the module actually changes; do not restate generic Odoo
+  conventions that already apply everywhere.
 
 ## Optional Module AGENTS.md Rules
 
