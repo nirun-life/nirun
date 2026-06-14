@@ -69,7 +69,7 @@ class ServiceEvent(models.Model):
         ondelete="restrict",
         check_company=True,
         domain=lambda self: [
-            ("category_id", "!=", self.env.ref("ni_service.categ_routine").id),
+            ("category_ids", "not in", [self.env.ref("ni_service.categ_routine").id]),
         ],
     )
     service_ids = fields.Many2many(
@@ -80,7 +80,7 @@ class ServiceEvent(models.Model):
         ondelete="restrict",
         check_company=True,
         domain=lambda self: [
-            ("category_id", "!=", self.env.ref("ni_service.categ_routine").id),
+            ("category_ids", "not in", [self.env.ref("ni_service.categ_routine").id]),
         ],
     )
     service_count = fields.Integer(compute="_compute_service_count")
@@ -214,13 +214,13 @@ class ServiceEvent(models.Model):
             if rec.attendance_id and rec.attendance_id not in rec.attendance_ids:
                 rec.attendance_ids = [(fields.Command.link(rec.attendance_id.id))]
 
-    @api.depends("service_ids")
+    @api.depends("service_id.category_ids", "service_ids.category_ids")
     def _compute_service_category_ids(self):
         for rec in self:
             rec.service_category_ids = (
-                [fields.Command.set(rec.service_ids.mapped("category_id").ids)]
+                [fields.Command.set(rec.service_ids.mapped("category_ids").ids)]
                 if rec.service_ids
-                else [fields.Command.set(rec.service_id.mapped("category_id").ids)]
+                else [fields.Command.set(rec.service_id.mapped("category_ids").ids)]
             )
 
     @api.constrains("service_category_id", "service_id", "color")

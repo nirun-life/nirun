@@ -11,17 +11,19 @@ to patients, encounters, and requests.
 - Calendar-backed service events.
 - Encounter attendance records that can be matched back to the originating request.
 - Small extensions to related Odoo models such as `calendar.event`, `res.company`, `hr.job`, and `resource.calendar.attendance`.
+- Company-level control over whether services can belong to multiple categories.
+- Service categories and service types that can be either company-private or shared across companies.
 
 ## Core Models
 
-| Model                             | Role                                                                            |
-| --------------------------------- | ------------------------------------------------------------------------------- |
-| `ni.service`                      | Service catalog record with calendar, attendance, employee, and encounter links |
-| `ni.service.category`             | Service category vocabulary                                                     |
-| `ni.service.type`                 | Service type vocabulary                                                         |
-| `ni.service.request`              | Requested service workflow                                                      |
-| `ni.service.event`                | Service delivery event backed by `calendar.event`                               |
-| `ni.encounter.service.attendance` | Encounter attendance linked to a service event or request                       |
+| Model                             | Role                                                                                            |
+| --------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `ni.service`                      | Service catalog record with calendar, attendance, employee, encounter, and multi-category links |
+| `ni.service.category`             | Service category vocabulary with optional company ownership and membership across services      |
+| `ni.service.type`                 | Service type vocabulary with optional company ownership                                         |
+| `ni.service.request`              | Requested service workflow                                                                      |
+| `ni.service.event`                | Service delivery event backed by `calendar.event`                                               |
+| `ni.encounter.service.attendance` | Encounter attendance linked to a service event or request                                       |
 
 ## Maintainer Quick Reference
 
@@ -85,14 +87,19 @@ Encounter timeline / reporting
 | `resource.view_resource_calendar_attendance_tree` | `views/resource_calendar_attendance_views.xml` | Adds quick edit access from the attendance list                            |
 | `ni_patient.portal_my_patient_encounter`          | `views/ni_patient_portal_templates.xml`        | Shows service attendance details in the patient portal encounter view      |
 
-| Key behavior                                                                  | Why it matters                                                                    |
-| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `ni.service.request` inherits workflow, timing, identifier, and period mixins | Request changes can affect shared clinical workflow logic                         |
-| `ni.service.event` uses `_inherits = {"calendar.event": "event_id"}`          | Calendar behavior is shared, so service changes must respect Odoo event semantics |
-| `ni.service.event` keeps `service_id`, `service_ids`, and mode aligned        | Dual service selectors can drift if constraints are changed carelessly            |
-| `ni.service.event` constrains calendar/attendance combinations                | Invalid combinations can clear data or raise user errors                          |
-| `ni.encounter.service.attendance` auto-matches a request                      | Matching depends on patient, service, and period alignment                        |
-| `ni.service` and `ni.service.event` are multi-company scoped                  | Visibility depends on company context, not global access                          |
+| Key behavior                                                                  | Why it matters                                                                                |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `ni.service.request` inherits workflow, timing, identifier, and period mixins | Request changes can affect shared clinical workflow logic                                     |
+| `ni.service.event` uses `_inherits = {"calendar.event": "event_id"}`          | Calendar behavior is shared, so service changes must respect Odoo event semantics             |
+| `ni.service` keeps `category_id` and `category_ids` aligned                   | `category_ids` is the membership field; `category_id` remains the primary compatibility field |
+| `ni.service.category` / `ni.service.type` use optional `company_id`           | Blank means shared; a set company means private to that company                               |
+| Shared `ni.service.category` / `ni.service.type` records are admin-managed    | Non-admin users may manage only company-private vocabulary records                            |
+| `ni.service.event` keeps `service_id`, `service_ids`, and mode aligned        | Dual service selectors can drift if constraints are changed carelessly                        |
+| `ni.service.event` constrains calendar/attendance combinations                | Invalid combinations can clear data or raise user errors                                      |
+| `ni.encounter.service.attendance` auto-matches a request                      | Matching depends on patient, service, and period alignment                                    |
+| `ni.service` and `ni.service.event` are multi-company scoped                  | Visibility depends on company context, not global access                                      |
+| `res.company.service_multi_category` defaults to enabled                      | Disable only for legacy single-category workflows                                             |
+| `ir.cron` backfill job is scheduled for install time + 3 minutes              | It can be run once and deactivates itself after populating legacy membership                  |
 
 ## Security And Dependencies
 
@@ -102,14 +109,14 @@ Encounter timeline / reporting
 
 ## Permission Matrix
 
-| Model                             | ACL access                                                                              | Rule / visibility                          | Notes                         |
-| --------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------ | ----------------------------- |
-| `ni.service`                      | read for everyone; full access for `ni_patient.group_user` and `ni_patient.group_admin` | multi-company: `company_id in company_ids` | Core service catalog          |
-| `ni.service.category`             | read for everyone; full access for `ni_patient.group_admin`                             | none in this module                        | Coding vocabulary             |
-| `ni.service.type`                 | read for everyone; full access for `ni_patient.group_admin`                             | none in this module                        | Coding vocabulary             |
-| `ni.service.request`              | full access for `ni_patient.group_user`                                                 | no module-specific record rule             | Request workflow              |
-| `ni.service.event`                | full access for `ni_patient.group_user`                                                 | multi-company: `company_id in company_ids` | Calendar-backed service event |
-| `ni.encounter.service.attendance` | full access for everyone                                                                | no module-specific record rule             | Encounter attendance bridge   |
+| Model                             | ACL access                                                                                 | Rule / visibility                                         | Notes                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------- | ----------------------------- |
+| `ni.service`                      | read for everyone; full access for `ni_patient.group_user` and `ni_patient.group_admin`    | multi-company: `company_id in company_ids`                | Core service catalog          |
+| `ni.service.category`             | read for everyone; full access for `ni_patient.group_manager` and `ni_patient.group_admin` | shared records admin-only; private records company-scoped | Coding vocabulary             |
+| `ni.service.type`                 | read for everyone; full access for `ni_patient.group_manager` and `ni_patient.group_admin` | shared records admin-only; private records company-scoped | Coding vocabulary             |
+| `ni.service.request`              | full access for `ni_patient.group_user`                                                    | no module-specific record rule                            | Request workflow              |
+| `ni.service.event`                | full access for `ni_patient.group_user`                                                    | multi-company: `company_id in company_ids`                | Calendar-backed service event |
+| `ni.encounter.service.attendance` | full access for everyone                                                                   | no module-specific record rule                            | Encounter attendance bridge   |
 
 ## Dependency And Extension Map
 
