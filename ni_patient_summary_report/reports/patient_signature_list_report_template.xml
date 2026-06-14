@@ -20,6 +20,7 @@
                         <thead style="display: table-row-group">
                             <tr class="py-4">
                                 <th name="th_date" class="text-start">วันที่</th>
+                                <th name="th_index" class="text-start">ลำดับที่</th>
                                 <th name="th_time" class="text-start">เวลา</th>
                                 <th name="th_name" class="text-start">ชื่อ-นามสกุล</th>
                                 <th name="th_sig" class="text-start">ลงชื่อ</th>
@@ -28,11 +29,18 @@
                         </thead>
                         <tbody>
                             <t t-set="date" t-value="" />
+                            <t t-set="index" t-value="1" />
                             <tr t-foreach="docs" t-as="line" style="height: 3rem" class="py-2">
                                 <td name="td_date">
                                     <t t-if="line.period_start_date != date">
                                         <span t-field="line.period_start_date" />
+                                        <t t-set="index" t-value="1" />
                                     </t>
+                                </td>
+                                <td name="td_index">
+                                    <span>
+                                        <t t-out="index" />
+                                    </span>
                                 </td>
                                 <td name="td_time">
                                     <span>08:30 - 16:00</span>
@@ -47,6 +55,7 @@
                                     <span />
                                 </td>
                                 <t t-set="date" t-value="line.period_start_date" />
+                                <t t-set="index" t-value="index + 1" />
                             </tr>
                         </tbody>
                     </table>
