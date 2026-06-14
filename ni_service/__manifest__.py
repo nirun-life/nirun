@@ -3,7 +3,7 @@
 {
     "name": "Service",
     "summary": "Healthcare services, scheduling, and service requests",
-    "version": "16.0.0.4.0",
+    "version": "16.0.0.4.2",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
@@ -22,6 +22,7 @@
         "datas/ir_sequence_data.xml",
         "datas/ni_service_category_data.xml",
         "datas/ni_service_type_data.xml",
+        "datas/ir_cron.xml",
         "views/ni_service_views.xml",
         "views/ni_service_event_views.xml",
         "views/ni_encounter_views.xml",
