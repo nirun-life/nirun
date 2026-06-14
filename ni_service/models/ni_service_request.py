@@ -21,6 +21,9 @@ class ServiceRequest(models.Model):
         domain=lambda self: [
             ("id", "!=", self.env.ref("ni_service.categ_routine").id),
             "|",
+            ("company_id", "=", False),
+            ("company_id", "=", self.company_id.id or self.env.company.id),
+            "|",
             ("specialty_ids", "=", False),
             ("specialty_ids", "=", self.user_specialty.id),
         ],
@@ -77,7 +80,7 @@ class ServiceRequest(models.Model):
 
     def _default_service_domain(self):
         return [
-            ("category_id", "!=", self.env.ref("ni_service.categ_routine").id),
+            ("category_ids", "not in", [self.env.ref("ni_service.categ_routine").id]),
             "|",
             ("specialty_ids", "=", False),
             ("specialty_ids", "=", self.user_specialty.id),
@@ -86,8 +89,13 @@ class ServiceRequest(models.Model):
     @api.onchange("category_id")
     def _onchange_category_id(self):
         if self.category_id:
+            category_ids = (
+                self.env["ni.service.category"]
+                .search([("id", "child_of", self.category_id.id)])
+                .ids
+            )
             domain = [
-                ("category_id", "child_of", self.category_id.id),
+                ("category_ids", "in", category_ids),
                 "|",
                 ("specialty_ids", "=", False),
                 ("specialty_ids", "=", self.user_specialty.id),
