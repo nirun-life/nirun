@@ -81,7 +81,7 @@
                                 class="w-100"
                                 placeholder="Service Name..."
                                 options="{'no_create': True, 'no_open': True}"
-                                domain="[('category_id', '!=', %(ni_service.categ_routine)d), '|', ('specialty_ids', '=', False), ('specialty_ids', '=', user_specialty)]"
+                                domain="[('category_ids', 'not in', [%(ni_service.categ_routine)d]), '|', ('specialty_ids', '=', False), ('specialty_ids', '=', user_specialty)]"
                                 attrs="{'invisible': [('mode', '!=', 'single')], 'required': [('mode', '=', 'single')]}"
                             />
                             <field
@@ -292,7 +292,7 @@
                     <field
                         name="service_ids"
                         widget="many2many_checkboxes"
-                        domain="[('category_id', '=', service_category_id)]"
+                        domain="[('category_ids', 'in', service_category_id)]"
                     />
                     <label for="start" string="เวลาที่ปฎิบัติงาน" />
                     <div>

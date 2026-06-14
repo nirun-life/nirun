@@ -26,10 +26,18 @@ class Service(models.Model):
     company_id = fields.Many2one(
         "res.company", required=True, default=lambda self: self.env.company
     )
+    company_multi_category = fields.Boolean(related="company_id.service_multi_category")
     name = fields.Char("Service", required=True)
     description = fields.Html()
     category_id = fields.Many2one("ni.service.category", index=True)
-    category = fields.Char(related="category_id.name", store=True)
+    category_ids = fields.Many2many(
+        "ni.service.category",
+        "ni_service_category_rel",
+        "service_id",
+        "category_id",
+        string="Categories",
+    )
+    category = fields.Char(compute="_compute_category", store=True)
     category_decoration = fields.Selection(related="category_id.decoration")
     type_id = fields.Many2one("ni.service.type", index=True)
     type_decoration = fields.Selection(related="type_id.decoration")
@@ -100,6 +108,50 @@ class Service(models.Model):
             "This name already exists!",
         )
     ]
+
+    @api.depends("category_id", "category_ids")
+    def _compute_category(self):
+        for rec in self:
+            categories = rec.category_ids or rec.category_id
+            rec.category = ", ".join(categories.mapped("name")) if categories else False
+
+    def _sync_category_relations(self):
+        for rec in self:
+            if rec.category_ids and not rec.category_id:
+                rec.with_context(skip_category_sync=True).write(
+                    {"category_id": rec.category_ids[0].id}
+                )
+            elif rec.category_id and not rec.category_ids:
+                rec.with_context(skip_category_sync=True).write(
+                    {"category_ids": [fields.Command.set([rec.category_id.id])]}
+                )
+            elif rec.category_id and rec.category_id not in rec.category_ids:
+                rec.with_context(skip_category_sync=True).write(
+                    {"category_ids": [fields.Command.link(rec.category_id.id)]}
+                )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        if not self.env.context.get("skip_category_sync"):
+            records._sync_category_relations()
+        return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        if not self.env.context.get("skip_category_sync"):
+            self._sync_category_relations()
+        return res
+
+    @api.constrains("company_id", "category_ids")
+    def _check_category_mode(self):
+        for rec in self:
+            if rec.company_id.service_multi_category:
+                continue
+            if len(rec.category_ids) > 1:
+                raise ValidationError(
+                    _("Multiple service categories are not allowed for this company.")
+                )
 
     def get_default_calendar(self, raise_err=False):
         self.ensure_one()
@@ -208,3 +260,12 @@ class Service(models.Model):
             "context": ctx,
         }
         return view
+
+    @api.model
+    def _cron_backfill_category_ids(self):
+        self.search([("category_id", "!=", False)])._sync_category_relations()
+        cron = self.env.ref(
+            "ni_service.ir_cron_backfill_category_ids", raise_if_not_found=False
+        )
+        if cron:
+            cron.sudo().write({"active": False})

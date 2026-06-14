@@ -7,6 +7,12 @@ class ServiceType(models.Model):
     _description = "Service Type"
     _inherit = "ni.coding"
 
+    company_id = fields.Many2one(
+        "res.company",
+        required=False,
+        index=True,
+        default=lambda self: self.env.user.company_id,
+    )
     service_ids = fields.One2many("ni.service", "type_id")
     decoration = fields.Selection(
         [
