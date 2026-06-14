@@ -17,7 +17,9 @@ class RiskAssessment(models.Model):
             categ = self.env["ni.service.category"].search([])
             predicts = []
             for cat in categ:
-                service = self.env["ni.service"].search([("category_id", "=", cat.id)])
+                service = self.env["ni.service"].search(
+                    [("category_ids", "in", cat.id)]
+                )
                 if not service:
                     continue
                 predicts += [
@@ -75,7 +77,7 @@ class RiskAssessment(models.Model):
     def _compute_planned_actual(self):
         for rec in self:
             backlog = rec.prediction_ids.filtered_domain([("planned", "=", True)])
-            rec.planned_all = len(backlog.mapped("service_id.category_id")) == 5
+            rec.planned_all = len(backlog.mapped("service_id.category_ids")) == 5
             rec.patient_count = 1 if rec.planned_all else 0
             todo = backlog.filtered_domain([("actual", "=", False)])
             rec.actual_all = not todo and rec.planned_all

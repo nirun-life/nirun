@@ -13,6 +13,48 @@ class TestServiceCommon(common.TransactionCase):
     def setUp(self):
         super().setUp()
         self.env.user.tz = "Asia/Bangkok"
+        self.service_user = self.env["res.users"].create(
+            {
+                "name": "Service User",
+                "login": "service.user@example.com",
+                "email": "service.user@example.com",
+                "password": "service-user",  # pragma: allowlist secret
+                "company_id": self.env.company.id,
+                "company_ids": [(6, 0, [self.env.company.id])],
+                "groups_id": [
+                    (4, self.ref("base.group_user")),
+                    (4, self.ref("ni_patient.group_user")),
+                ],
+            }
+        )
+        self.service_manager = self.env["res.users"].create(
+            {
+                "name": "Service Manager",
+                "login": "service.manager@example.com",
+                "email": "service.manager@example.com",
+                "password": "service-manager",  # pragma: allowlist secret
+                "company_id": self.env.company.id,
+                "company_ids": [(6, 0, [self.env.company.id])],
+                "groups_id": [
+                    (4, self.ref("base.group_user")),
+                    (4, self.ref("ni_patient.group_manager")),
+                ],
+            }
+        )
+        self.service_admin = self.env["res.users"].create(
+            {
+                "name": "Service Admin",
+                "login": "service.admin@example.com",
+                "email": "service.admin@example.com",
+                "password": "service-admin",  # pragma: allowlist secret
+                "company_id": self.env.company.id,
+                "company_ids": [(6, 0, [self.env.company.id])],
+                "groups_id": [
+                    (4, self.ref("base.group_user")),
+                    (4, self.ref("ni_patient.group_admin")),
+                ],
+            }
+        )
 
         partner = self.env["res.partner"].create({"name": "Test Patient"})
         self.patient = self.env["ni.patient"].create(

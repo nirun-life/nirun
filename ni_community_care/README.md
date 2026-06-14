@@ -11,27 +11,29 @@ community care programs.
 
 ## Main Models
 
-| Model                                          | Role                                                                |
-| ---------------------------------------------- | ------------------------------------------------------------------- |
-| `ni.patient`                                   | Community-care patient profile with needs, risks, and careplan data |
-| `ni.service`                                   | Community-care service definition with category and targeting       |
-| `ni.service.event`                             | Service execution record used for visits and care delivery          |
-| `ni.service.event.approval`                    | Monthly or period-based approval and payout support                 |
-| `ni.careplan`                                  | Request-style care plan with community service linkage              |
-| `ni.risk.assessment`                           | Patient risk and planning records                                   |
-| `ni.cc.report.monthly`                         | Monthly community-care report and line items                        |
-| `ni.service.event.report`                      | Read-only service-event analysis view                               |
-| `ni.service.event.daily.report`                | Read-only daily service summary view                                |
-| `ni.my.area.mixin`                             | Reusable geographic “my area” filtering                             |
-| `ni.need`, `ni.patient.need.line`              | Need catalog and patient need history                               |
-| `ni.patient.type` and related reference models | Community-care classification vocabularies                          |
+| Model                                          | Role                                                                     |
+| ---------------------------------------------- | ------------------------------------------------------------------------ |
+| `ni.patient`                                   | Community-care patient profile with needs, risks, and careplan data      |
+| `ni.service`                                   | Community-care service definition with category membership and targeting |
+| `ni.service.event`                             | Service execution record used for visits and care delivery               |
+| `ni.service.event.approval`                    | Monthly or period-based approval and payout support                      |
+| `ni.careplan`                                  | Request-style care plan with community service linkage                   |
+| `ni.risk.assessment`                           | Patient risk and planning records                                        |
+| `ni.cc.report.monthly`                         | Monthly community-care report and line items                             |
+| `ni.service.event.report`                      | Read-only service-event analysis view                                    |
+| `ni.service.event.daily.report`                | Read-only daily service summary view                                     |
+| `ni.my.area.mixin`                             | Reusable geographic “my area” filtering                                  |
+| `ni.need`, `ni.patient.need.line`              | Need catalog and patient need history                                    |
+| `ni.patient.type` and related reference models | Community-care classification vocabularies                               |
 
 ## Workflow and Structure
 
 - `models/ni_patient.py` adds community registration fields, needs tracking, risk assessment, care plans, service-event links,
   location helpers, and warning or validation logic around age, registration date, and related community-care fields.
 - `models/ni_service.py`, `models/ni_service_event.py`, and related report models adapt the generic service layer for
-  community-care categories, outcomes, dashboards, and operational reporting.
+  community-care categories, outcomes, dashboards, and operational reporting. Service lookups in this module follow service
+  category membership, not only the primary category, so multi-category services are included wherever a category match is
+  expected.
 - `models/ni_service_event_approval.py` provides a large approval workflow with computed aggregates, report generation, and cron
   jobs for creating, refreshing, and cleaning approval batches.
 - `models/ni_my_area_mixin.py`, `models/hr_employee.py`, and `models/res_users.py` apply staff-area filtering and geographic
@@ -66,3 +68,5 @@ community care programs.
 - Review the cron-driven approval flow carefully after changes to `ni.service.event.approval`.
 - The module has automated coverage in `tests/test_ni_my_area_mixin.py` and `tests/test_ni_service_event.py`; keep those flows
   in mind after changes to area filtering or service-event logic.
+- Re-check risk-assessment seeding after category membership changes, because `ni.risk.assessment` now pulls services by
+  category membership rather than a single primary category.
