@@ -40,6 +40,14 @@ Value sets (selections, codelists) should use FHIR-defined codes when a standard
 **Local (Windows):** Odoo runs at `http://localhost:16669`. Config is in `odoo.conf`. The `addons_path` includes both this repo
 and a `nirun-3rd-party` sibling repo.
 
+## Local Venv
+
+- Keep the shared venv activation script path in a repo-local file at `.tools/local-venv.txt`.
+- Prefer a repo-relative path when possible, for example (Windows) `.venv\Scripts\activate.bat`.
+- Before running Odoo tests or any verification command, **activate** that venv and use its `python` to launch `ODOO_BIN`.
+- If the repo-local venv path file is missing or empty, ask the user for the exact venv path instead of searching the machine or
+  sibling repos.
+
 **Docker:** Uses `odoo-docker.conf`. Build with `Dockerfile` (based on `nirun/odoo:latest`).
 
 Install Python dependencies:
@@ -70,6 +78,8 @@ To run tests for a specific module locally:
 ```bash
 $ODOO_BIN -c odoo.conf -i module_name --test-enable
 ```
+
+Before running the command, activate the documented venv and use its `python` interpreter. Do not use the system Python.
 
 Set `ODOO_BIN` to the path of your local `odoo-bin` script, e.g.:
 
@@ -172,6 +182,8 @@ Tests use `odoo.tests.TransactionCase` with a `common.py` that creates users wit
 
 - ODOX is a self-documenting documentation contract for Odoo repositories.
 - Agents must follow this file before editing code or durable documentation.
+- Keep `AGENTS.md` and `CLAUDE.md` in sync for repo-wide agent instructions. When one changes, update the other in the same edit
+  unless the user explicitly asks for a one-sided change.
 
 ## Purpose
 
@@ -199,8 +211,6 @@ Tests use `odoo.tests.TransactionCase` with a `common.py` that creates users wit
 6. If multiple modules are affected, repeat the read path for each affected module.
 7. Use the nearest applicable module README as the local shared contract and the nearest applicable `AGENTS.md` as the local
    agent supplement.
-
-Do not rely on memory. Re-read the applicable ODOX chain in the current session before editing.
 
 ## Update After Editing
 
