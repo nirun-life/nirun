@@ -24,6 +24,7 @@ class TestServiceCategories(TestServiceCommon):
                     (4, self.category.id),
                     (4, second_category.id),
                 ],
+                "category_id": self.category.id,
             }
         )
 
@@ -52,6 +53,7 @@ class TestServiceCategories(TestServiceCommon):
                         (4, self.category.id),
                         (4, second_category.id),
                     ],
+                    "category_id": self.category.id,
                 }
             )
 
