@@ -29,6 +29,47 @@
             </tree>
         </field>
     </record>
+    <record id="ni_encounter_service_attendance_view_kanban" model="ir.ui.view">
+        <field name="name">ni.encounter.service.attendance.view.kanban</field>
+        <field name="model">ni.encounter.service.attendance</field>
+        <field name="arch" type="xml">
+            <kanban default_order="sequence">
+                <field name="attendance_id" />
+                <field name="hour_from" />
+                <field name="hour_to" />
+                <field name="name" />
+                <field name="editable" />
+                <field name="note" />
+                <field name="sequence" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="fw-bold">
+                                        <field name="hour_from" widget="float_time" />
+                                        <span class="mx-1">-</span>
+                                        <field name="hour_to" widget="float_time" />
+                                    </div>
+                                    <div class="text-muted">
+                                        <span t-if="record.editable.raw_value" class="me-2" title="Editable">
+                                            <i class="fa fa-pencil text-info" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="name" />
+                                    <span class="mx-3" t-if="record.note.raw_value" title="Has note">
+                                        <i class="fa fa-sticky-note text-warning" />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
     <record id="ni_encounter_service_attendance_view_form" model="ir.ui.view">
         <field name="name">ni.encounter.service.attendance.view.form</field>
         <field name="model">ni.encounter.service.attendance</field>
