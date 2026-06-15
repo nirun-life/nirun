@@ -74,7 +74,7 @@ Encounter timeline / reporting
 | `ni.service`                      | tree, form, search                                       | Catalog browsing, calendar assignment, attendance templates, practitioner assignment |
 | `ni.service.request`              | tree, kanban, form                                       | Request entry and event follow-up                                                    |
 | `ni.service.event`                | calendar, tree, kanban, pivot, graph, form, quick-create | Scheduling, planning, analytics, and fast creation                                   |
-| `ni.encounter.service.attendance` | tree, form                                               | Encounter-service bridge and request matching                                        |
+| `ni.encounter.service.attendance` | tree, kanban, form                                       | Encounter-service bridge and request matching                                        |
 | `ni.service.category`             | tree, form, search                                       | Category vocabulary maintenance                                                      |
 | `ni.service.type`                 | tree, form, search                                       | Type vocabulary maintenance                                                          |
 
