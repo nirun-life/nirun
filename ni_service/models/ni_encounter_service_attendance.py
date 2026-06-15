@@ -41,6 +41,8 @@ class EncounterServiceAttendance(models.Model):
         required=True,
         domain="[('calendar_id','=?', resource_calendar_id)]",
     )
+    hour_from = fields.Float(related="attendance_id.hour_from", store=True)
+    hour_to = fields.Float(related="attendance_id.hour_to", store=True)
     category_id = fields.Many2one(
         related="service_id.category_id",
         store=True,
