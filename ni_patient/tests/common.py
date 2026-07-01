@@ -71,3 +71,6 @@ class TestEncounterAutoCloseCommon(common.TransactionCase):
     def _run_cron(self, now):
         with patch("odoo.fields.Datetime.now", return_value=now):
             self.env["ni.encounter.class"].cron_auto_close()
+
+    def _set_company_tz(self, tz_name):
+        self.patient.company_id.resource_calendar_id.tz = tz_name

@@ -6,15 +6,18 @@ from .common import TestEncounterAutoCloseCommon
 
 
 class TestEncounterClassAutoCloseCutoffBoundary(TestEncounterAutoCloseCommon):
-    """Minute-precision checks of the "<=" cutoff comparison itself,
-    independent of the timezone bug covered below."""
+    """Minute-precision checks of the "<=" cutoff comparison itself, with
+    the company timezone pinned to UTC so results don't depend on the
+    local-midnight logic covered below."""
+
+    def setUp(self):
+        super().setUp()
+        self._set_company_tz("UTC")
 
     def test_midnight_offset_cutoff_boundary_minute_precision(self):
-        # rev = now.date() - 1 day = 2026-01-09, but a bare `date` compared
-        # with "<=" is end-of-day inclusive in Odoo (osv/expression.py
-        # turns it into `datetime.combine(rev, time.max)`), so the real
-        # boundary is the rollover from 2026-01-09 23:59 to 2026-01-10
-        # 00:00 - not "midnight" of 2026-01-09 itself.
+        # rev is now built from an explicit end-of-day instant in the
+        # company timezone (here UTC), so the boundary is the rollover
+        # from 2026-01-09 23:59:59.999999 to 2026-01-10 00:00:00.
         now = datetime(2026, 1, 10, 6, 0, 0)
 
         one_minute_before_rollover = self._make_encounter(
@@ -58,55 +61,49 @@ class TestEncounterClassAutoCloseCutoffBoundary(TestEncounterAutoCloseCommon):
         )
 
 
-class TestEncounterClassAutoCloseTimezoneBug(TestEncounterAutoCloseCommon):
+class TestEncounterClassAutoCloseLocalMidnight(TestEncounterAutoCloseCommon):
     """
-    cron_auto_close() reasons entirely in UTC: fields.Datetime.now() is
-    UTC-naive, and the midnight branch keys off now.date(). No company or
-    user timezone is applied anywhere, so the code's day boundary is always
-    UTC midnight - never local midnight. For UTC+7 (Thailand), local
-    midnight happens 7 hours before UTC midnight, so an encounter that has
-    genuinely been open for a full local day can still be treated as
-    "today" by the code for up to 7 more hours, then close abruptly the
-    moment the UTC date rolls over - a boundary with no local meaning.
+    Regression coverage for nirun-life/nirun#102: cron_auto_close()'s
+    midnight-offset mode used to key off UTC midnight unconditionally
+    (via now.date()), so a company running ahead of UTC (e.g. Thailand,
+    UTC+7) could keep an encounter open for up to 7 extra hours past its
+    real local due time, then close it abruptly whenever the UTC date
+    happened to roll over - a boundary with no local meaning.
 
-    These tests pin the exact instants where that shows up, down to the
-    minute, since the cron's flakiness is a pure wall-clock artifact of
-    when it happens to fire - not something tied to any particular
-    encounter. See nirun-life/nirun#102.
+    _get_auto_close_reference_time() now derives the day boundary from
+    the encounter company's timezone (res.company.resource_calendar_id.tz,
+    falling back to UTC). These tests pin a company on Asia/Bangkok and
+    check the cutoff to the minute.
     """
 
-    def test_encounter_still_open_one_minute_after_it_should_have_closed_locally(self):
+    def setUp(self):
+        super().setUp()
+        self._set_company_tz("Asia/Bangkok")
+
+    def test_flips_at_local_midnight_not_utc_midnight(self):
         # Encounter created 2026-01-01 12:00 Bangkok (UTC+7) = 05:00 UTC.
-        # Local business rule (1 day offset): eligible to close starting
-        # local midnight of 2026-01-02, i.e. 2026-01-01 17:00 UTC.
+        # 1-day offset: eligible to close starting local midnight of
+        # 2026-01-02, i.e. 2026-01-01 17:00 UTC.
         create_date = datetime(2026, 1, 1, 5, 0, 0)
         encounter = self._make_encounter(self.class_midnight, create_date=create_date)
 
-        # One minute before the local boundary: correctly still open.
+        # One minute before local midnight: still open.
         self._run_cron(datetime(2026, 1, 1, 16, 59, 0))
         self.assertEqual(encounter.state, "in-progress")
 
-        # One minute after the local boundary - a full local day has now
-        # elapsed since creation, so this should close. But the UTC
-        # calendar date is still "2026-01-01" (UTC midnight is still 7
-        # hours away), so the code's cutoff hasn't moved and it stays
-        # open. This documents the bug; flip to "finished" once a
-        # timezone-aware cutoff is implemented.
+        # One minute after local midnight: closes immediately - unlike
+        # the pre-fix behaviour, which ignored the company timezone and
+        # would only close 7 hours later, at UTC midnight.
         self._run_cron(datetime(2026, 1, 1, 17, 1, 0))
-        self.assertEqual(encounter.state, "in-progress")
+        self.assertEqual(encounter.state, "finished")
 
-    def test_close_decision_flips_on_a_utc_rollover_one_minute_apart(self):
-        # Same encounter as above, followed forward: nothing about it, or
-        # about elapsed local time, changes meaningfully between these two
-        # cron runs - only the UTC calendar date ticks over, 1 minute
-        # apart. That alone flips the outcome, a full 7 hours after the
-        # true local boundary (2026-01-01 17:00 UTC, see test above) had
-        # already passed.
+    def test_no_longer_waits_for_the_old_utc_rollover(self):
+        # Same scenario: before the fix, this encounter only closed once
+        # the UTC calendar date rolled over at 2026-01-02 00:00 UTC. It
+        # now closes hours earlier, right after local midnight
+        # (2026-01-01 17:00 UTC) - well before that old instant.
         create_date = datetime(2026, 1, 1, 5, 0, 0)
         encounter = self._make_encounter(self.class_midnight, create_date=create_date)
 
-        self._run_cron(datetime(2026, 1, 1, 23, 59, 0))
-        self.assertEqual(encounter.state, "in-progress")
-
-        self._run_cron(datetime(2026, 1, 2, 0, 0, 0))
+        self._run_cron(datetime(2026, 1, 1, 20, 0, 0))
         self.assertEqual(encounter.state, "finished")

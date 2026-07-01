@@ -6,8 +6,14 @@ from .common import TestEncounterAutoCloseCommon
 
 
 class TestEncounterClassAutoClose(TestEncounterAutoCloseCommon):
-    """Baseline behaviour of cron_auto_close(). Timezone-sensitive edge
-    cases live in test_ni_encounter_class_auto_close_edge_cases.py."""
+    """Baseline behaviour of cron_auto_close(), with the company timezone
+    pinned to UTC so results don't depend on local-midnight logic.
+    Timezone-sensitive edge cases live in
+    test_ni_encounter_class_auto_close_edge_cases.py."""
+
+    def setUp(self):
+        super().setUp()
+        self._set_company_tz("UTC")
 
     def test_closes_encounter_past_offset(self):
         now = datetime(2026, 1, 10, 6, 0, 0)
@@ -18,8 +24,8 @@ class TestEncounterClassAutoClose(TestEncounterAutoCloseCommon):
         self.assertEqual(encounter.state, "finished")
 
     def test_keeps_encounter_within_offset(self):
-        # A bare `date` value compared with "<=" is end-of-day inclusive in
-        # Odoo (see osv/expression.py), so the whole UTC calendar day the
+        # The offset day boundary is end-of-day inclusive (see
+        # _get_auto_close_reference_time), so the whole calendar day the
         # encounter was created on is protected - only strictly earlier
         # days are eligible to close.
         now = datetime(2026, 1, 10, 6, 0, 0)
