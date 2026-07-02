@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-25 08:39+0000\n"
-"PO-Revision-Date: 2026-05-25 08:39+0000\n"
+"POT-Creation-Date: 2026-07-02 04:54+0000\n"
+"PO-Revision-Date: 2026-07-02 04:54+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -446,6 +446,11 @@ msgid "Condition Count"
 msgstr "จำนวนโรค/ปัญหา"
 
 #. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard__condition_warning
+msgid "Condition Warning"
+msgstr "คำเตือนเกี่ยวกับโรค/ปัญหา"
+
+#. module: ni_careplan
 #: model:ir.ui.menu,name:ni_careplan.configuration_menu
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_category_view_form
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_view_form
@@ -501,9 +506,9 @@ msgid "Custom Medication"
 msgstr ""
 
 #. module: ni_careplan
-#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard_obs_line__occurrence
-msgid "Date"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_view_form
+msgid "Data entered on this page will be discarded. Continue?"
+msgstr "ข้อมูลที่กรอกในหน้านี้จะถูกยกเลิก ต้องการดำเนินการต่อหรือไม่?"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_medication_request__timing_dow
@@ -1153,8 +1158,20 @@ msgstr "ไม่ถูกเก็บ"
 
 #. module: ni_careplan
 #. odoo-python
-#: code:addons/ni_careplan/models/ni_careplan.py:0
 #: code:addons/ni_careplan/wizard/ni_careplan_wizard.py:0
+#, python-format
+msgid ""
+"Not finding patient's conditions related to selected template, Patient should have a least one of following conditions\n"
+"\n"
+"\t - {}"
+msgstr ""
+"ไม่พบโรค/ปัญหาที่เกี่ยวข้องกับแผนการดูแลที่ท่านเลือก, ผู้รับบริการควรถูกระบุว่ามีปัญหา/โรคในรายการต่อไปนี้\n"
+"\n"
+"\t - {}"
+
+#. module: ni_careplan
+#. odoo-python
+#: code:addons/ni_careplan/models/ni_careplan.py:0
 #, python-format
 msgid ""
 "Not finding patient's conditions related to selected template, Patient should have a least one of following conditions\n"
@@ -1219,9 +1236,19 @@ msgid "Observations"
 msgstr "ผลตรวจ"
 
 #. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard_obs_line__occurrence
+msgid "Occurrence"
+msgstr "เมื่อ"
+
+#. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_medication_request__timing_offset
 msgid "Offset"
 msgstr ""
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_view_form
+msgid "Optional, filtered by category"
+msgstr "ไม่บังคับ, กรองตามหมวดหมู่"
 
 #. module: ni_careplan
 #. odoo-python
@@ -1257,6 +1284,14 @@ msgstr "ผู้รับบริการ"
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__patient_observation_ids
 msgid "Patient Observation"
 msgstr "ผลตรวจ"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_view_form
+msgid ""
+"Patient's active diagnoses this care plan addresses. Selecting a condition\n"
+"                        related to a template auto-fills the matching goals and interventions."
+msgstr ""
+"โรค/ปัญหาของผู้รับบริการที่แผนการดูแลนี้ครอบคลุม การเลือกโรค/ปัญหาที่เกี่ยวข้องกับเทมเพลตจะเติมเป้าหมายและกิจกรรมที่เกี่ยวข้องให้อัตโนมัติ"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__period_mode
@@ -1380,6 +1415,16 @@ msgstr "บันทึกฉบับร่าง"
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_patient_view_form_inherit
 msgid "See More"
 msgstr "ดูเพิ่มเติม"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_view_form
+msgid "Select category"
+msgstr "เลือกหมวดหมู่"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_view_form
+msgid "Select patient"
+msgstr "เลือกผู้รับบริการ"
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_view_form
@@ -1580,6 +1625,8 @@ msgstr ""
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_medication_request__timing_id
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_service_line_view_form
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_service_line_view_tree
 msgid "Timing"
 msgstr "เวลา"
 
@@ -1593,7 +1640,7 @@ msgstr "แม่แบบช่วงเวลา"
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_medication_request__timing_type
 msgid "Timing Type"
-msgstr ""
+msgstr "ประเภทเวลา"
 
 #. module: ni_careplan
 #: model:ir.model.fields,help:ni_careplan.field_ni_careplan_template_medication_request__dose_unit_id
@@ -1642,7 +1689,7 @@ msgstr "เป้าหมายเพื่อสิ่งใด"
 #. module: ni_careplan
 #: model:ir.model.fields,help:ni_careplan.field_ni_service_request__careplan_id
 msgid "What request fulfills"
-msgstr ""
+msgstr "คำสั่งนี้เพื่อตอบสิ่งใด"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_medication_request__dosage_when

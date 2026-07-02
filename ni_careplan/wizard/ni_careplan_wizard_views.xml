@@ -22,7 +22,11 @@
                     <group>
                         <label for="patient_id" />
                         <div class="o_row">
-                            <field name="patient_id" readonly="context.get('default_patient_id')" />
+                            <field
+                                name="patient_id"
+                                readonly="context.get('default_patient_id')"
+                                placeholder="Select patient"
+                            />
                         </div>
                         <label for="patient_gender" attrs="{'invisible': [('patient_id', '=', False)]}" />
                         <div class="o_row" attrs="{'invisible': [('patient_id', '=', False)]}">
@@ -44,8 +48,17 @@
                 </group>
                 <div attrs="{'invisible': [('state', '!=', '1')]}">
                     <group string="Diagnosis &amp; Template">
-                        <field name="category_id" options="{'no_create': True}" />
-                        <field name="template_id" options="{'no_create': True}" />
+                        <field
+                            name="category_id"
+                            options="{'no_create': True}"
+                            attrs="{'required': [('template_id', '=', False)]}"
+                            placeholder="Select category"
+                        />
+                        <field
+                            name="template_id"
+                            options="{'no_create': True}"
+                            placeholder="Optional, filtered by category"
+                        />
                     </group>
                     <div
                         class="alert alert-warning mb-2"
@@ -55,6 +68,10 @@
                         <field name="condition_warning" nolabel="1" readonly="1" />
                     </div>
                     <label for="condition_ids" />
+                    <p class="text-muted mb-1">
+                        Patient's active diagnoses this care plan addresses. Selecting a condition
+                        related to a template auto-fills the matching goals and interventions.
+                    </p>
                     <field
                         name="condition_ids"
                         mode="kanban"

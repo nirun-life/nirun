@@ -13,6 +13,7 @@ const WIZARD_ACTION = {
     res_model: "ni.careplan.wizard",
     target: "new",
     views: [[false, "form"]],
+    context: {careplan_form_target: "current"},
 };
 
 export class CareplanListController extends ListController {

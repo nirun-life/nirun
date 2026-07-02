@@ -485,5 +485,5 @@ class CareplanWizard(models.TransientModel):
             "view_mode": "form",
             "res_id": careplan.id,
             "views": [(False, "form")],
-            "target": "new",
+            "target": self.env.context.get("careplan_form_target", "new"),
         }
