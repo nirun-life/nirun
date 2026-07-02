@@ -47,6 +47,13 @@
                         <field name="category_id" options="{'no_create': True}" />
                         <field name="template_id" options="{'no_create': True}" />
                     </group>
+                    <div
+                        class="alert alert-warning mb-2"
+                        role="alert"
+                        attrs="{'invisible': [('condition_warning', '=', False)]}"
+                    >
+                        <field name="condition_warning" nolabel="1" readonly="1" />
+                    </div>
                     <label for="condition_ids" />
                     <field
                         name="condition_ids"
@@ -122,6 +129,7 @@
                         string="Back"
                         class="btn-secondary"
                         attrs="{'invisible': [('state', '=', '1')]}"
+                        confirm="Data entered on this page will be discarded. Continue?"
                     />
                     <button
                         name="action_next_step1_to_2"
@@ -317,7 +325,7 @@
                 <field name="selected" widget="boolean_toggle" nolabel="1" />
                 <field name="name" string="Service Name" />
                 <field name="service_ids" widget="many2many_tags" optional="hide" />
-                <field name="timing_tmpl_id" optional="show" />
+                <field name="timing_tmpl_id" string="Timing" optional="show" />
             </tree>
         </field>
     </record>

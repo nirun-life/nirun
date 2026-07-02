@@ -1,7 +1,6 @@
 #  Copyright (c) 2025 NSTDA
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
 from odoo.tools.date_utils import relativedelta
 
 
@@ -170,6 +169,7 @@ class CareplanWizard(models.TransientModel):
         domain="[('category_id', '=?', category_id)]",
     )
     category_id = fields.Many2one("ni.careplan.category")
+    condition_warning = fields.Text(readonly=True)
 
     # Step 2
     obs_line_ids = fields.One2many(
@@ -201,24 +201,57 @@ class CareplanWizard(models.TransientModel):
     review_goals_html = fields.Html(sanitize=False)
     review_interventions_html = fields.Html(sanitize=False)
 
-    @api.onchange("condition_ids")
-    def _onchange_condition_ids(self):
-        if not self.condition_ids:
-            return
-        condition_codes = self.condition_ids.mapped("code_id")
-        if not condition_codes:
-            return
-        template = self.env["ni.careplan.template"].search(
-            [("condition_code_ids", "parent_of", condition_codes.ids)],
-            limit=1,
-        )
-        if template:
-            self.template_id = template
+    @api.onchange("patient_id")
+    def _onchange_patient_id(self):
+        for rec in self:
+            rec.encounter_id = False
+            rec.condition_ids = [fields.Command.clear()]
 
     @api.onchange("template_id")
     def _onchange_template_id(self):
-        if self.template_id and self.template_id.category_id:
-            self.category_id = self.template_id.category_id
+        for rec in self.filtered("template_id"):
+            if rec.template_id.condition_code_ids:
+                condition = self.env["ni.condition"].search(
+                    [
+                        ("patient_id", "=", rec.patient_id.id),
+                        (
+                            "code_id",
+                            "child_of",
+                            rec.template_id.condition_code_ids.ids,
+                        ),
+                        ("clinical_state", "=", "active"),
+                    ]
+                )
+                rec.condition_ids = [fields.Command.set(condition.ids)]
+            rec._check_template_conditions()
+
+    @api.onchange("condition_ids")
+    def _onchange_condition_ids(self):
+        if self.condition_ids:
+            condition_codes = self.condition_ids.mapped("code_id")
+            if condition_codes:
+                template = self.env["ni.careplan.template"].search(
+                    [("condition_code_ids", "parent_of", condition_codes.ids)],
+                    limit=1,
+                )
+                if template:
+                    self.template_id = template
+        self._check_template_conditions()
+
+    def _check_template_conditions(self):
+        self.ensure_one()
+        self.condition_warning = False
+        if not self.template_id or not self.template_id.condition_code_ids:
+            return
+        if not self.condition_ids:
+            conditions = "\n\t - ".join(
+                "[{}] {}".format(c.code, c.name) if c.code else c.name
+                for c in self.template_id.condition_code_ids
+            )
+            self.condition_warning = _(
+                "Not finding patient's conditions related to selected template, "
+                "Patient should have a least one of following conditions\n\n\t - {}"
+            ).format(conditions)
 
     def _reopen_wizard(self):
         context = dict(self.env.context)
@@ -235,6 +268,8 @@ class CareplanWizard(models.TransientModel):
 
     def action_next_step1_to_2(self):
         self.ensure_one()
+        if not self.category_id and self.template_id:
+            self.category_id = self.template_id.category_id
         self.obs_line_ids.unlink()
         type_ids = self.condition_ids.mapped("code_id.observation_code_ids")
         if self.template_id:
@@ -452,32 +487,3 @@ class CareplanWizard(models.TransientModel):
             "views": [(False, "form")],
             "target": "new",
         }
-
-    @api.onchange("template_id")
-    def apply_diagnosis(self):
-        for rec in self.filtered("template_id"):
-            if rec.template_id.condition_code_ids:
-                condition = self.env["ni.condition"].search(
-                    [
-                        ("patient_id", "=", self.patient_id.id),
-                        (
-                            "code_id",
-                            "child_of",
-                            self.template_id.condition_code_ids.ids,
-                        ),
-                        ("clinical_state", "=", "active"),
-                    ]
-                )
-                if not condition:
-                    condition = "\n\t".join(
-                        "[{}] {}".format(c.code, c.name) if c.code else c.name
-                        for c in self.template_id.mapped("condition_code_ids")
-                    )
-
-                    raise UserError(
-                        _(
-                            "Not finding patient's conditions related to selected template, "
-                            "Patient should have a least one of following conditions\n\n\t{}"
-                        ).format(condition)
-                    )
-                rec.condition_ids = [fields.Command.set(condition.ids)]
