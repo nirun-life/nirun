@@ -66,8 +66,11 @@
                         <page name="measure" string="Measure">
                             <group>
                                 <field name="observation_type_id" />
+                                <field name="target_value_type" invisible="1" />
                             </group>
-                            <group attrs="{'invisible': [('observation_type_id', '=', False)]}">
+                            <group
+                                attrs="{'invisible': ['|', ('observation_type_id', '=', False), ('target_value_type', 'not in', ['int', 'float'])]}"
+                            >
                                 <group string="Type">
                                     <field name="target_type" widget="radio" />
                                 </group>
@@ -79,6 +82,17 @@
                                     <field name="target_ratio_min" />
                                     <field name="target_ratio_max" />
                                 </group>
+                            </group>
+                            <group
+                                string="Target Codes"
+                                attrs="{'invisible': [('target_value_type', 'not in', ['code_id', 'code_ids'])]}"
+                            >
+                                <field name="target_code_operator" />
+                                <field
+                                    name="target_code_ids"
+                                    widget="many2many_tags"
+                                    options="{'color_field': 'color'}"
+                                />
                             </group>
                         </page>
                         <page name="Condition" string="Condition" icon="fa-list-ul">

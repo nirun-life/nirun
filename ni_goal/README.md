@@ -29,6 +29,10 @@ observation measures, and provides a guided state-change workflow that can recor
   category views provide the goal management UI.
 - `views/ni_encounter_views.xml` links goals into encounter workflows, and `views/ni_condition_code_views.xml` exposes the
   condition-to-goal coding relationship.
+- A goal's measure is an `ni.observation.type` (`observation_type_id`), restricted to `int`/`float`/`code_id`/`code_ids` value
+  types. Numeric measures use `target_min`/`target_max`; Single Choice (`code_id`) and Multi Choice (`code_ids`) measures use
+  `target_code_ids` (a set of acceptable `ni.observation.value.code` values) with `target_code_operator` describing how they
+  should be matched. `ni.goal.code` carries the same target shape as a reusable template, copied onto `ni.goal` on selection.
 
 ## Security and Dependencies
 

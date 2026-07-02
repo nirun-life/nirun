@@ -137,11 +137,12 @@
                                         <field name="target_min" />
                                         <span class="mx-2">-</span>
                                         <field name="target_max" />
+                                        <field name="target_unit_id" options="{'no_open': True}" />
                                     </div>
                                     <div
-                                        class="o_row"
                                         attrs="{'invisible': [('target_value_type', 'not in', ['code_id', 'code_ids'])]}"
                                     >
+                                        <field name="target_code_operator" />
                                         <field
                                             name="target_code_ids"
                                             widget="many2many_tags"
