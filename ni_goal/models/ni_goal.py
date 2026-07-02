@@ -69,9 +69,21 @@ class Goal(models.Model):
         "Measure",
         domain=[("value_type", "in", ["int", "float", "code_id", "code_ids"])],
     )
+    target_unit_id = fields.Many2one(related="observation_type_id.unit_id")
     target_value_type = fields.Selection(related="observation_type_id.value_type")
     target_min = fields.Float(default=0.0)
     target_max = fields.Float(default=100.0)
+    target_code_operator = fields.Selection(
+        [
+            ("=", "Match"),
+            ("!=", "Not Match"),
+            ("child_of", "Child of"),
+            ("parent_of", "Parent of"),
+            ("in", "Contain"),
+            ("not in", "Not Contain"),
+        ],
+        "Operator",
+    )
     target_code_ids = fields.Many2many(
         "ni.observation.value.code", domain="[('type_ids', '=', observation_type_id)]"
     )
@@ -104,10 +116,19 @@ class Goal(models.Model):
     @api.onchange("observation_type_id")
     def _onchange_observation_type_id(self):
         for rec in self:
+            if (
+                rec.code_id
+                and rec.code_id.observation_type_id == rec.observation_type_id
+            ):
+                # This change is a cascade from _onchange_code_id, which already
+                # applied the code's own target values; don't clobber them.
+                continue
             rec.update(
                 {
                     "target_min": rec.observation_type_id.min,
                     "target_max": rec.observation_type_id.max,
+                    "target_code_operator": False,
+                    "target_code_ids": [fields.Command.clear()],
                 }
             )
 
@@ -223,6 +244,12 @@ class Goal(models.Model):
                     last_value = float(rec.observation_id.value)
                     rec.target_min = last_value * code_id.target_ratio_min
                     rec.target_max = last_value * code_id.target_ratio_max
+                if rec.target_value_type in ("code_id", "code_ids"):
+                    _logger.debug("Apply coded target")
+                    rec.target_code_operator = code_id.target_code_operator
+                    rec.target_code_ids = [
+                        fields.Command.set(code_id.target_code_ids.ids)
+                    ]
             rec._mapping_condition()
 
     def _mapping_condition(self):

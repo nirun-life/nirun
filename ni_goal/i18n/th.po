@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-25 07:18+0000\n"
-"PO-Revision-Date: 2026-05-25 07:18+0000\n"
+"POT-Creation-Date: 2026-07-02 10:05+0000\n"
+"PO-Revision-Date: 2026-07-02 10:05+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -195,6 +195,12 @@ msgid "Category Name"
 msgstr "ชื่อหมวดหมู่"
 
 #. module: ni_goal
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal__target_code_operator__child_of
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal_code__target_code_operator__child_of
+msgid "Child of"
+msgstr "เป็นรายการย่อยของ"
+
+#. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal__achievement_code
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_achievement__code
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_category__code
@@ -245,9 +251,20 @@ msgid "Condition Code"
 msgstr "รหัสโรค/ปัญหา"
 
 #. module: ni_goal
+#: model:ir.model.fields,help:ni_goal.field_ni_goal_code__condition_code_ids
+msgid "Condition addressed by this goal"
+msgstr "โรค/ปัญหาที่เป้าหมายนี้มุ่งแก้ไข"
+
+#. module: ni_goal
 #: model_terms:ir.ui.view,arch_db:ni_goal.ni_goal_state_wizard_view_form
 msgid "Confirm"
 msgstr "ยืนยัน"
+
+#. module: ni_goal
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal__target_code_operator__in
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal_code__target_code_operator__in
+msgid "Contain"
+msgstr "ประกอบด้วย"
 
 #. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal__create_uid
@@ -667,6 +684,12 @@ msgid "Mark not achieved"
 msgstr "ไม่บรรลุเป้าหมาย"
 
 #. module: ni_goal
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal__target_code_operator__=
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal_code__target_code_operator__=
+msgid "Match"
+msgstr "ตรงกับ"
+
+#. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_code__target_fix_max
 msgid "Max"
 msgstr "สูงสุด"
@@ -762,6 +785,18 @@ msgid "Not Attainable"
 msgstr "ไม่ประสบความสําเร็จ"
 
 #. module: ni_goal
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal__target_code_operator__not_in
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal_code__target_code_operator__not_in
+msgid "Not Contain"
+msgstr "ไม่ประกอบด้วย"
+
+#. module: ni_goal
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal__target_code_operator__!=
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal_code__target_code_operator__!=
+msgid "Not Match"
+msgstr "ไม่ตรงกับ"
+
+#. module: ni_goal
 #: model_terms:ir.ui.view,arch_db:ni_goal.ni_goal_view_form
 msgid "Not achieve"
 msgstr "ไม่สำเร็จ"
@@ -828,6 +863,13 @@ msgid "Ongoing Goals"
 msgstr "เป้าหมายระหว่างดำเนินการ"
 
 #. module: ni_goal
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal__target_code_operator
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal_code__target_code_operator
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state_wizard__target_code_operator
+msgid "Operator"
+msgstr "ตัวดำเนินการ"
+
+#. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal__outcome_observation_id
 msgid "Outcome"
 msgstr "ผลลัพธ์"
@@ -843,6 +885,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state__parent_path
 msgid "Parent Path"
 msgstr ""
+
+#. module: ni_goal
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal__target_code_operator__parent_of
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal_code__target_code_operator__parent_of
+msgid "Parent of"
+msgstr "เป็นรายการหลักของ"
 
 #. module: ni_goal
 #: model:ir.model.fields,help:ni_goal.field_ni_goal__partner_id
@@ -951,7 +999,6 @@ msgstr ""
 "                        <strong>ดูเพิ่มเติม</strong>\n"
 "                        เพื่อดูเป้าหมายทั้งหมด."
 
-
 #. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal__period_start
 msgid "Since"
@@ -983,6 +1030,11 @@ msgstr "สถานะ"
 #: model_terms:ir.ui.view,arch_db:ni_goal.ni_goal_state_wizard_view_form
 msgid "State & Achievement"
 msgstr "สถานะและการบรรลุผล"
+
+#. module: ni_goal
+#: model_terms:ir.ui.view,arch_db:ni_goal.ni_goal_view_kanban
+msgid "State : {{record.state_id.value}} | {{record.achievement_id.value}}"
+msgstr "สถานะ : {{record.state_id.value}} | {{record.achievement_id.value}}"
 
 #. module: ni_goal
 #: model:ir.model.fields,help:ni_goal.field_ni_goal__activity_state
@@ -1024,8 +1076,14 @@ msgstr "เป้าหมาย"
 
 #. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal__target_code_ids
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal_code__target_code_ids
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state_wizard__target_code_ids
 msgid "Target Code"
+msgstr "รหัสเป้าหมาย"
+
+#. module: ni_goal
+#: model_terms:ir.ui.view,arch_db:ni_goal.ni_goal_code_view_form
+msgid "Target Codes"
 msgstr "รหัสเป้าหมาย"
 
 #. module: ni_goal
@@ -1188,6 +1246,7 @@ msgstr ""
 
 #. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal__target_value_type
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal_code__target_value_type
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state_wizard__target_value_type
 msgid "Value Type"
 msgstr "รูปแบบค่า"
@@ -1212,8 +1271,3 @@ msgstr ""
 #: model:ni.goal.achievement,name:ni_goal.goal_worsening
 msgid "Worsening"
 msgstr "แย่ลง"
-
-#. module: ni_goal
-#: model_terms:ir.ui.view,arch_db:ni_goal.ni_goal_view_kanban
-msgid "State : {{record.state_id.value}} | {{record.achievement_id.value}}"
-msgstr "สถานะ : {{record.state_id.value}} | {{record.achievement_id.value}}"

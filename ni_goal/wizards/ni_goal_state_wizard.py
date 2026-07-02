@@ -24,7 +24,8 @@ class GoalStateWizard(models.TransientModel):
     target_value_type = fields.Selection(related="goal_id.target_value_type")
     target_min = fields.Float(related="goal_id.target_min")
     target_max = fields.Float(related="goal_id.target_max")
-    target_unit = fields.Many2one(related="goal_id.observation_type_id.unit_id")
+    target_unit_id = fields.Many2one(related="goal_id.observation_type_id.unit_id")
+    target_code_operator = fields.Selection(related="goal_id.target_code_operator")
     target_code_ids = fields.Many2many(related="goal_id.target_code_ids")
     address_observation_id = fields.Many2one(related="goal_id.address_observation_id")
     address_occurrence = fields.Datetime(

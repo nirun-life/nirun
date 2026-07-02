@@ -21,12 +21,10 @@
                             <field class="o_narrow_field " name="target_min" readonly="1" nolabel="1" />
                             <span class="mx-1">–</span>
                             <field class="o_narrow_field " name="target_max" readonly="1" nolabel="1" />
-                            <field name="target_unit" />
+                            <field name="target_unit_id" />
                         </div>
-                        <div
-                            class="o_row"
-                            attrs="{'invisible': [('target_value_type', 'not in', ['code_id', 'code_ids'])]}"
-                        >
+                        <div attrs="{'invisible': [('target_value_type', 'not in', ['code_id', 'code_ids'])]}">
+                            <field name="target_code_operator" readonly="1" />
                             <field
                                 name="target_code_ids"
                                 widget="many2many_tags"
