@@ -1,7 +1,9 @@
 #  Copyright (c) 2021-2023 NSTDA
 
 import logging
+from datetime import datetime, time
 
+import pytz
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
@@ -39,7 +41,11 @@ class EncounterClassification(models.Model):
     report_title = fields.Char(default="Summary Report")
 
     auto_close = fields.Boolean(default=False)
-    auto_close_midnight = fields.Boolean(default=True)
+    auto_close_midnight = fields.Boolean(
+        default=True,
+        help="Use local midnight (encounter company's timezone, falling back to "
+        "UTC) as the day boundary, instead of a fixed elapsed duration",
+    )
     auto_close_offset_number = fields.Integer(default=1, readonly=False)
     auto_close_offset_type = fields.Selection(
         [
@@ -89,32 +95,49 @@ class EncounterClassification(models.Model):
         if not self._check_recursion():
             raise models.ValidationError(_("Error! You cannot create recursive data."))
 
+    def _get_auto_close_reference_time(self, now, company):
+        """Reference instant (UTC-naive, comparable to create_date) before
+        which an in-progress encounter of this class is eligible to close.
+
+        For the midnight-offset mode, the day boundary is computed in the
+        encounter company's timezone (falling back to UTC), not in raw
+        UTC - otherwise the cutoff drifts by the company's UTC offset,
+        closing encounters early or late around local midnight.
+        """
+        self.ensure_one()
+        if self.auto_close_midnight:
+            tz_name = company.resource_calendar_id.tz or "UTC"
+            tz = pytz.timezone(tz_name)
+            today_local = pytz.utc.localize(now).astimezone(tz).date()
+            rev_date = today_local - relativedelta(days=self.auto_close_offset_number)
+            rev_local_eod = tz.localize(datetime.combine(rev_date, time.max))
+            return rev_local_eod.astimezone(pytz.utc).replace(tzinfo=None)
+        offset = {self.auto_close_offset_type: self.auto_close_offset_number}
+        return now - relativedelta(**offset)
+
     @api.model
     def cron_auto_close(self):
         now = fields.Datetime.now()
         classes = self.search([("auto_close", "=", True)])
         enc_model = self.env["ni.encounter"]
         for cls in classes:
-            if cls.auto_close_midnight:
-                offset = {"days": cls.auto_close_offset_number}
-                rev = now.date() - relativedelta(**offset)
-            else:
-                offset = {cls.auto_close_offset_type: cls.auto_close_offset_number}
-                rev = now - relativedelta(**offset)
-            logging.debug(
-                "%s encounter: auto-close reference time = %s" % (cls.name, rev)
-            )
-            enc = enc_model.search(
-                [
-                    ("class_id", "=", cls.id),
-                    ("state", "=", "in-progress"),
-                    ("create_date", "<=", rev),
-                ],
+            candidates = enc_model.search(
+                [("class_id", "=", cls.id), ("state", "=", "in-progress")],
                 order="id",
             )
-            if enc:
-                enc.action_close()
-                _logger.info("%s encounter: Closed  ids=%s" % (cls.name, enc.ids))
+            to_close = enc_model
+            for company in candidates.mapped("company_id"):
+                rev = cls._get_auto_close_reference_time(now, company)
+                logging.debug(
+                    "%s encounter: auto-close reference time (company=%s) = %s"
+                    % (cls.name, company.name, rev)
+                )
+                to_close |= candidates.filtered(
+                    lambda e, rev=rev: e.company_id == company and e.create_date <= rev
+                )
+            if to_close:
+                to_close.action_close()
+                _logger.info("%s encounter: Closed  ids=%s" % (cls.name, to_close.ids))
             else:
                 _logger.info(
                     "%s encounter: Not found any encounter to close" % cls.name
