@@ -387,6 +387,7 @@ class Careplan(models.Model):
 
     @api.model
     def action_new_careplan(self):
+        context = dict(self.env.context)
         return {
             "name": self.env["ni.careplan.wizard"]._description,
             "res_model": "ni.careplan.wizard",
@@ -394,7 +395,7 @@ class Careplan(models.Model):
             "target": "new",
             "view_type": "form",
             "views": [[False, "form"]],
-            "context": dict(self.env.context),
+            "context": context,
         }
 
     def action_edit(self):
