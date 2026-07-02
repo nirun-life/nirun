@@ -19,9 +19,7 @@ class CareplanWizardObsLine(models.TransientModel):
         string="Observation",
         domain="[('patient_id', '=', patient_id), ('type_id', '=', observation_type_id)]",
     )
-    occurrence = fields.Datetime(
-        related="observation_id.occurrence", readonly=True, string="Date"
-    )
+    occurrence = fields.Datetime(related="observation_id.occurrence", readonly=True)
     selected = fields.Boolean(default=False)
 
     @api.onchange("observation_type_id")
@@ -50,6 +48,7 @@ class CareplanWizardGoalLine(models.TransientModel):
     goal_code_id = fields.Many2one("ni.goal.code")
     name = fields.Char("Goal Name")
     observation_type_id = fields.Many2one("ni.observation.type", string="Measure")
+
     target_min = fields.Float("Min", default=0.0)
     target_max = fields.Float("Max", default=100.0)
     selected = fields.Boolean(default=True)
@@ -62,10 +61,35 @@ class CareplanWizardGoalLine(models.TransientModel):
             g = rec.goal_code_id
             rec.name = g.name
             rec.observation_type_id = g.observation_type_id
-            if g.observation_type_id:
-                if g.target_type == "fix":
-                    rec.target_min = g.target_fix_min
-                    rec.target_max = g.target_fix_max
+            rec.update(rec._prepare_goal_target(g, rec.wizard_id.obs_line_ids))
+
+    @api.model
+    def _prepare_goal_target(self, goal_code, obs_line_ids):
+        if not goal_code.observation_type_id:
+            return {}
+        if goal_code.target_type == "fix":
+            return {
+                "target_min": goal_code.target_fix_min
+                or goal_code.observation_type_id.min,
+                "target_max": goal_code.target_fix_max
+                or goal_code.observation_type_id.max,
+            }
+        if goal_code.target_type == "ratio":
+            obs_line = obs_line_ids.filtered(
+                lambda l: l.observation_type_id == goal_code.observation_type_id
+                and l.observation_id
+            )
+            if obs_line:
+                last_value = float(obs_line[0].observation_id.value or 0)
+                return {
+                    "target_min": last_value * goal_code.target_ratio_min,
+                    "target_max": last_value * goal_code.target_ratio_max,
+                }
+            return {
+                "target_min": goal_code.observation_type_id.min,
+                "target_max": goal_code.observation_type_id.max,
+            }
+        return {}
 
 
 class CareplanWizardServiceLine(models.TransientModel):
@@ -248,6 +272,7 @@ class CareplanWizard(models.TransientModel):
                     ("condition_code_ids", "child_of", condition_codes.ids),
                 ]
             )
+            goal_line = self.env["ni.careplan.wizard.goal.line"]
             lines = []
             for g in relevant:
                 line_val = {
@@ -257,20 +282,7 @@ class CareplanWizard(models.TransientModel):
                     "observation_type_id": g.observation_type_id.id or False,
                     "selected": True,
                 }
-                if g.observation_type_id:
-                    if g.target_type == "fix":
-                        line_val["target_min"] = g.target_fix_min
-                        line_val["target_max"] = g.target_fix_max
-                    elif g.target_type == "ratio":
-                        obs_line = self.obs_line_ids.filtered(
-                            lambda l, g=g: l.observation_type_id
-                            == g.observation_type_id
-                            and l.observation_id
-                        )
-                        if obs_line:
-                            last_value = float(obs_line[0].observation_id.value or 0)
-                            line_val["target_min"] = last_value * g.target_ratio_min
-                            line_val["target_max"] = last_value * g.target_ratio_max
+                line_val.update(goal_line._prepare_goal_target(g, self.obs_line_ids))
                 lines.append(line_val)
             if lines:
                 self.env["ni.careplan.wizard.goal.line"].create(lines)
