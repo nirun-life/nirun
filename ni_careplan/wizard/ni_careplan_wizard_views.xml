@@ -279,8 +279,7 @@
                 <field name="goal_code_id" string="Goal" optional="hide" />
                 <field name="name" string="Goal Name" />
                 <field name="observation_type_id" string="Measure" optional="show" />
-                <field name="target_min" string="Min" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
-                <field name="target_max" string="Max" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
+                <field name="target_display" string="Target" />
             </tree>
         </field>
     </record>
@@ -292,8 +291,7 @@
                 <field name="goal_code_id" />
                 <field name="name" />
                 <field name="observation_type_id" />
-                <field name="target_min" />
-                <field name="target_max" />
+                <field name="target_display" />
                 <field name="selected" />
                 <templates>
                     <t t-name="kanban-box">
@@ -304,9 +302,7 @@
                             <div t-if="record.observation_type_id.raw_value" class="text-muted small mt-1">
                                 <t t-esc="record.observation_type_id.value" />
                                 :
-                                <t t-esc="record.target_min.value" />
-                                –
-                                <t t-esc="record.target_max.value" />
+                                <t t-esc="record.target_display.value" />
                             </div>
                             <div class="mt-2">
                                 <field name="selected" widget="boolean_toggle" />
@@ -328,9 +324,19 @@
                         <field name="goal_code_id" options="{'no_create': True}" />
                         <field name="name" attrs="{'required': [('goal_code_id', '=', False)]}" />
                         <field name="observation_type_id" options="{'no_create': True}" />
-                        <field name="target_min" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
-                        <field name="target_max" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
+                        <field name="target_value_type" invisible="1" />
+                        <label for="target_min" string="Target Value" />
+                        <div class="o_row" attrs="{'invisible': [('target_value_type', 'not in', ['int', 'float'])]}">
+                            <field name="target_min" />
+                            <span class="mx-2">-</span>
+                            <field name="target_max" />
+                        </div>
+                        <div attrs="{'invisible': [('target_value_type', 'not in', ['code_id', 'code_ids'])]}">
+                            <field name="target_code_operator" />
+                            <field name="target_code_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                        </div>
                         <field name="selected" invisible="1" />
+                        <field name="target_display" invisible="1" />
                     </group>
                 </sheet>
             </form>

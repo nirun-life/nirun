@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 06:50+0000\n"
-"PO-Revision-Date: 2026-07-02 06:50+0000\n"
+"POT-Creation-Date: 2026-07-02 11:20+0000\n"
+"PO-Revision-Date: 2026-07-02 11:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -121,6 +121,11 @@ msgid ""
 msgstr ""
 "<span class=\"mx-1\">|</span>\n"
 "                                <span class=\"fw-bold\">บรรลุผลแล้ว:</span>"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_goal_line_view_form
+msgid "<span class=\"mx-2\">-</span>"
+msgstr "<span class=\"mx-2\">-</span>"
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.careplan_report_template
@@ -409,6 +414,11 @@ msgid "Category"
 msgstr "หมวดหมู่"
 
 #. module: ni_careplan
+#: model:ir.model.fields.selection,name:ni_careplan.selection__ni_careplan_wizard_goal_line__target_code_operator__child_of
+msgid "Child of"
+msgstr "เป็นรายการย่อยของ"
+
+#. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__code
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template__code
 msgid "Code"
@@ -478,6 +488,11 @@ msgstr "ยืนยัน"
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_view_form
 msgid "Confirm & Create"
 msgstr ""
+
+#. module: ni_careplan
+#: model:ir.model.fields.selection,name:ni_careplan.selection__ni_careplan_wizard_goal_line__target_code_operator__in
+msgid "Contain"
+msgstr "ประกอบด้วย"
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_encounter_diagnosis_view_form_inherit
@@ -1043,8 +1058,12 @@ msgid "Mark as Completed"
 msgstr "เสร็จสิ้น"
 
 #. module: ni_careplan
+#: model:ir.model.fields.selection,name:ni_careplan.selection__ni_careplan_wizard_goal_line__target_code_operator__=
+msgid "Match"
+msgstr "ตรงกับ"
+
+#. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard_goal_line__target_max
-#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_goal_line_view_tree
 msgid "Max"
 msgstr "สูงสุด"
 
@@ -1123,7 +1142,6 @@ msgstr "วิธีการ"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard_goal_line__target_min
-#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_goal_line_view_tree
 msgid "Min"
 msgstr "ต่ำสุด"
 
@@ -1167,6 +1185,16 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
 msgid "Not Achieved"
 msgstr "ไม่ถูกเก็บ"
+
+#. module: ni_careplan
+#: model:ir.model.fields.selection,name:ni_careplan.selection__ni_careplan_wizard_goal_line__target_code_operator__not_in
+msgid "Not Contain"
+msgstr "ไม่ประกอบด้วย"
+
+#. module: ni_careplan
+#: model:ir.model.fields.selection,name:ni_careplan.selection__ni_careplan_wizard_goal_line__target_code_operator__!=
+msgid "Not Match"
+msgstr "ไม่ตรงกับ"
 
 #. module: ni_careplan
 #. odoo-python
@@ -1258,6 +1286,11 @@ msgid "Offset"
 msgstr ""
 
 #. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard_goal_line__target_code_operator
+msgid "Operator"
+msgstr "ตัวดำเนินการ"
+
+#. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__opted_company_ids
 msgid "Opted-in Companies"
 msgstr "หน่วยบริการที่เข้าร่วมใช้งาน"
@@ -1283,6 +1316,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__parent_path
 msgid "Parent Path"
 msgstr ""
+
+#. module: ni_careplan
+#: model:ir.model.fields.selection,name:ni_careplan.selection__ni_careplan_wizard_goal_line__target_code_operator__parent_of
+msgid "Parent of"
+msgstr "เป็นรายการหลักของ"
 
 #. module: ni_careplan
 #: model:ir.model.fields,help:ni_careplan.field_ni_careplan__partner_id
@@ -1631,6 +1669,26 @@ msgid "Take \"as needed\""
 msgstr ""
 
 #. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_goal_line_view_tree
+msgid "Target"
+msgstr "เป้าหมาย"
+
+#. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard_goal_line__target_code_ids
+msgid "Target Code"
+msgstr "รหัสเป้าหมาย"
+
+#. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard_goal_line__target_display
+msgid "Target Display"
+msgstr "แสดงเป้าหมาย"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_goal_line_view_form
+msgid "Target Value"
+msgstr "ค่าเป้าหมาย"
+
+#. module: ni_careplan
 #: model:ir.model.fields,help:ni_careplan.field_ni_careplan_template_medication_request__method_id
 msgid "Technique for administering medication"
 msgstr ""
@@ -1723,6 +1781,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__user_specialty
 msgid "User Specialty"
 msgstr "บทบาทของผู้ใช้"
+
+#. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard_goal_line__target_value_type
+msgid "Value Type"
+msgstr "ประเภทค่า"
 
 #. module: ni_careplan
 #. odoo-python

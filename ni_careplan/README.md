@@ -29,13 +29,13 @@ plans linked to patient diagnoses, with guided creation, template-based defaults
 
 ### Wizard (TransientModels)
 
-| Model                                | Description                                        |
-| ------------------------------------ | -------------------------------------------------- |
-| `ni.careplan.wizard`                 | Main 5-step wizard                                 |
-| `ni.careplan.wizard.obs.line`        | Observation evidence selection line                |
-| `ni.careplan.wizard.goal.line`       | Goal configuration line with editable target range |
-| `ni.careplan.wizard.service.line`    | Service request line                               |
-| `ni.careplan.wizard.medication.line` | Medication request line                            |
+| Model                                | Description                                                   |
+| ------------------------------------ | ------------------------------------------------------------- |
+| `ni.careplan.wizard`                 | Main 5-step wizard                                            |
+| `ni.careplan.wizard.obs.line`        | Observation evidence selection line                           |
+| `ni.careplan.wizard.goal.line`       | Goal configuration line with editable numeric or coded target |
+| `ni.careplan.wizard.service.line`    | Service request line                                          |
+| `ni.careplan.wizard.medication.line` | Medication request line                                       |
 
 ## Wizard Steps
 

@@ -48,9 +48,47 @@ class CareplanWizardGoalLine(models.TransientModel):
     name = fields.Char("Goal Name")
     observation_type_id = fields.Many2one("ni.observation.type", string="Measure")
 
+    target_value_type = fields.Selection(related="observation_type_id.value_type")
     target_min = fields.Float("Min", default=0.0)
     target_max = fields.Float("Max", default=100.0)
+    target_code_operator = fields.Selection(
+        [
+            ("=", "Match"),
+            ("!=", "Not Match"),
+            ("child_of", "Child of"),
+            ("parent_of", "Parent of"),
+            ("in", "Contain"),
+            ("not in", "Not Contain"),
+        ],
+        "Operator",
+    )
+    target_code_ids = fields.Many2many(
+        "ni.observation.value.code",
+        domain="[('type_ids', '=', observation_type_id)]",
+    )
+    target_display = fields.Char(compute="_compute_target_display")
     selected = fields.Boolean(default=True)
+
+    @api.depends(
+        "target_value_type",
+        "target_min",
+        "target_max",
+        "target_code_operator",
+        "target_code_ids",
+    )
+    def _compute_target_display(self):
+        operator_labels = dict(
+            self._fields["target_code_operator"]._description_selection(self.env)
+        )
+        for rec in self:
+            if rec.target_value_type in ("int", "float"):
+                rec.target_display = f"{rec.target_min} - {rec.target_max}"
+            elif rec.target_value_type in ("code_id", "code_ids"):
+                codes = ", ".join(rec.target_code_ids.mapped("name"))
+                operator = operator_labels.get(rec.target_code_operator)
+                rec.target_display = f"{operator}: {codes}" if operator else codes
+            else:
+                rec.target_display = False
 
     @api.onchange("goal_code_id")
     def _onchange_goal_code_id(self):
@@ -62,10 +100,30 @@ class CareplanWizardGoalLine(models.TransientModel):
             rec.observation_type_id = g.observation_type_id
             rec.update(rec._prepare_goal_target(g, rec.wizard_id.obs_line_ids))
 
+    @api.onchange("observation_type_id")
+    def _onchange_observation_type_id(self):
+        for rec in self:
+            if (
+                rec.goal_code_id
+                and rec.goal_code_id.observation_type_id == rec.observation_type_id
+            ):
+                # Cascade from _onchange_goal_code_id, which already applied the
+                # code's own target values; don't clobber them.
+                continue
+            rec.target_min = rec.observation_type_id.min
+            rec.target_max = rec.observation_type_id.max
+            rec.target_code_operator = False
+            rec.target_code_ids = [fields.Command.clear()]
+
     @api.model
     def _prepare_goal_target(self, goal_code, obs_line_ids):
         if not goal_code.observation_type_id:
             return {}
+        if goal_code.observation_type_id.value_type in ("code_id", "code_ids"):
+            return {
+                "target_code_operator": goal_code.target_code_operator,
+                "target_code_ids": [fields.Command.set(goal_code.target_code_ids.ids)],
+            }
         if goal_code.target_type == "fix":
             return {
                 "target_min": goal_code.target_fix_min
@@ -432,6 +490,8 @@ class CareplanWizard(models.TransientModel):
             val["observation_type_id"] = line.observation_type_id.id or False
             val["target_min"] = line.target_min
             val["target_max"] = line.target_max
+            val["target_code_operator"] = line.target_code_operator
+            val["target_code_ids"] = [fields.Command.set(line.target_code_ids.ids)]
             goal_vals.append(fields.Command.create(val))
         if goal_vals:
             careplan.write({"goal_ids": goal_vals})

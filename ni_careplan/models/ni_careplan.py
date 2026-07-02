@@ -500,8 +500,8 @@ class Careplan(models.Model):
             parts.append(Markup("<span>{}</span>").format(escape(name)))
             if g.observation_type_id:
                 parts.append(
-                    Markup("<div class='text-muted small'>{}: {} – {}</div>").format(
-                        escape(g.observation_type_id.name), g.target_min, g.target_max
+                    Markup("<div class='text-muted small'>{}: {}</div>").format(
+                        escape(g.observation_type_id.name), g.target_display
                     )
                 )
             parts.append(Markup("</li>"))
