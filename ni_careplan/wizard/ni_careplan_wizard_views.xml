@@ -48,7 +48,12 @@
                         <field name="template_id" options="{'no_create': True}" />
                     </group>
                     <label for="condition_ids" />
-                    <field name="condition_ids" mode="kanban" options="{'no_create': True}" />
+                    <field
+                        name="condition_ids"
+                        mode="kanban"
+                        options="{'no_create': True}"
+                        context="{'default_encounter_id': encounter_id, 'default_patient_id': patient_id}"
+                    />
                 </div>
                 <div attrs="{'invisible': [('state', '!=', '2')]}">
                     <separator string="Evident" />
@@ -216,44 +221,6 @@
             </kanban>
         </field>
     </record>
-    <record id="ni_careplan_wizard_goal_line_view_tree" model="ir.ui.view">
-        <field name="name">ni.careplan.wizard.goal.line.view.tree</field>
-        <field name="model">ni.careplan.wizard.goal.line</field>
-        <field name="arch" type="xml">
-            <tree editable="bottom" decoration-muted="not selected">
-                <field name="selected" widget="boolean_toggle" nolabel="1" />
-                <field name="goal_code_id" string="Goal" optional="show" />
-                <field name="name" string="Goal Name" />
-                <field name="observation_type_id" string="Measure" optional="show" />
-                <field name="target_min" string="Min" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
-                <field name="target_max" string="Max" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
-            </tree>
-        </field>
-    </record>
-    <record id="ni_careplan_wizard_service_line_view_tree" model="ir.ui.view">
-        <field name="name">ni.careplan.wizard.service.line.view.tree</field>
-        <field name="model">ni.careplan.wizard.service.line</field>
-        <field name="arch" type="xml">
-            <tree editable="bottom" decoration-muted="not selected">
-                <field name="selected" widget="boolean_toggle" nolabel="1" />
-                <field name="name" string="Service Name" />
-                <field name="service_ids" widget="many2many_tags" optional="show" />
-                <field name="timing_tmpl_id" optional="show" />
-            </tree>
-        </field>
-    </record>
-    <record id="ni_careplan_wizard_medication_line_view_tree" model="ir.ui.view">
-        <field name="name">ni.careplan.wizard.medication.line.view.tree</field>
-        <field name="model">ni.careplan.wizard.medication.line</field>
-        <field name="arch" type="xml">
-            <tree editable="bottom" decoration-muted="not selected">
-                <field name="selected" widget="boolean_toggle" nolabel="1" />
-                <field name="medication_id" />
-                <field name="quantity" />
-                <field name="note" />
-            </tree>
-        </field>
-    </record>
     <record id="ni_careplan_wizard_obs_line_view_form" model="ir.ui.view">
         <field name="name">ni.careplan.wizard.obs.line.view.form</field>
         <field name="model">ni.careplan.wizard.obs.line</field>
@@ -261,6 +228,7 @@
             <form string="Observation">
                 <field name="wizard_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
+                <field name="selected" invisible="1" />
                 <sheet>
                     <group>
                         <field name="observation_type_id" options="{'no_create': True}" />
@@ -270,10 +238,23 @@
                             domain="[('patient_id', '=', patient_id), ('type_id', '=', observation_type_id)]"
                         />
                         <field name="occurrence" />
-                        <field name="selected" attrs="{'readonly': [('observation_id', '=', False)]}" />
                     </group>
                 </sheet>
             </form>
+        </field>
+    </record>
+    <record id="ni_careplan_wizard_goal_line_view_tree" model="ir.ui.view">
+        <field name="name">ni.careplan.wizard.goal.line.view.tree</field>
+        <field name="model">ni.careplan.wizard.goal.line</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="not selected">
+                <field name="selected" widget="boolean_toggle" nolabel="1" />
+                <field name="goal_code_id" string="Goal" optional="hide" />
+                <field name="name" string="Goal Name" />
+                <field name="observation_type_id" string="Measure" optional="show" />
+                <field name="target_min" string="Min" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
+                <field name="target_max" string="Max" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
+            </tree>
         </field>
     </record>
     <record id="ni_careplan_wizard_goal_line_view_kanban" model="ir.ui.view">
@@ -309,6 +290,37 @@
             </kanban>
         </field>
     </record>
+    <record id="ni_careplan_wizard_goal_line_view_form" model="ir.ui.view">
+        <field name="name">ni.careplan.wizard.goal.line.view.form</field>
+        <field name="model">ni.careplan.wizard.goal.line</field>
+        <field name="arch" type="xml">
+            <form string="Goal">
+                <field name="wizard_id" invisible="1" />
+                <sheet>
+                    <group>
+                        <field name="goal_code_id" options="{'no_create': True}" />
+                        <field name="name" attrs="{'required': [('goal_code_id', '=', False)]}" />
+                        <field name="observation_type_id" options="{'no_create': True}" />
+                        <field name="target_min" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
+                        <field name="target_max" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
+                        <field name="selected" invisible="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_careplan_wizard_service_line_view_tree" model="ir.ui.view">
+        <field name="name">ni.careplan.wizard.service.line.view.tree</field>
+        <field name="model">ni.careplan.wizard.service.line</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="not selected">
+                <field name="selected" widget="boolean_toggle" nolabel="1" />
+                <field name="name" string="Service Name" />
+                <field name="service_ids" widget="many2many_tags" optional="hide" />
+                <field name="timing_tmpl_id" optional="show" />
+            </tree>
+        </field>
+    </record>
     <record id="ni_careplan_wizard_service_line_view_kanban" model="ir.ui.view">
         <field name="name">ni.careplan.wizard.service.line.view.kanban</field>
         <field name="model">ni.careplan.wizard.service.line</field>
@@ -338,6 +350,42 @@
                     </t>
                 </templates>
             </kanban>
+        </field>
+    </record>
+    <record id="ni_careplan_wizard_service_line_view_form" model="ir.ui.view">
+        <field name="name">ni.careplan.wizard.service.line.view.form</field>
+        <field name="model">ni.careplan.wizard.service.line</field>
+        <field name="arch" type="xml">
+            <form string="Service Request">
+                <field name="wizard_id" invisible="1" />
+                <field name="selected" invisible="1" />
+                <sheet>
+                    <group>
+                        <field name="category_id" options="{'no_open': True}" placeholder="Category" />
+                        <field
+                            name="service_ids"
+                            class="ms-1 flex-fill"
+                            widget="many2many_tags"
+                            options="{'color_field': 'color'}"
+                            placeholder="Services..."
+                        />
+                        <field name="name" placeholder="Service name" />
+                        <field name="timing_tmpl_id" options="{'no_create': True}" string="Timing" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_careplan_wizard_medication_line_view_tree" model="ir.ui.view">
+        <field name="name">ni.careplan.wizard.medication.line.view.tree</field>
+        <field name="model">ni.careplan.wizard.medication.line</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="not selected">
+                <field name="selected" widget="boolean_toggle" nolabel="1" />
+                <field name="medication_id" />
+                <field name="quantity" />
+                <field name="note" />
+            </tree>
         </field>
     </record>
     <record id="ni_careplan_wizard_medication_line_view_kanban" model="ir.ui.view">
@@ -372,67 +420,18 @@
             </kanban>
         </field>
     </record>
-    <record id="ni_careplan_wizard_goal_line_view_form" model="ir.ui.view">
-        <field name="name">ni.careplan.wizard.goal.line.view.form</field>
-        <field name="model">ni.careplan.wizard.goal.line</field>
-        <field name="arch" type="xml">
-            <form string="Goal">
-                <field name="wizard_id" invisible="1" />
-                <sheet>
-                    <group>
-                        <field name="goal_code_id" options="{'no_create': True}" />
-                        <field name="name" attrs="{'required': [('goal_code_id', '=', False)]}" />
-                        <field name="observation_type_id" options="{'no_create': True}" />
-                        <field name="target_min" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
-                        <field name="target_max" attrs="{'invisible': [('observation_type_id', '=', False)]}" />
-                        <field name="selected" />
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-    <record id="ni_careplan_wizard_service_line_view_form" model="ir.ui.view">
-        <field name="name">ni.careplan.wizard.service.line.view.form</field>
-        <field name="model">ni.careplan.wizard.service.line</field>
-        <field name="arch" type="xml">
-            <form string="Service Request">
-                <field name="wizard_id" invisible="1" />
-                <sheet>
-                    <div class="oe_title">
-                        <div class="d-flex">
-                            <field name="category_id" options="{'no_open': True}" placeholder="Category" />
-                            <field
-                                name="service_ids"
-                                class="ms-1 flex-fill"
-                                widget="many2many_tags"
-                                options="{'color_field': 'color'}"
-                                placeholder="Services..."
-                            />
-                        </div>
-                        <div>
-                            <field name="name" placeholder="Service name" />
-                        </div>
-                    </div>
-                    <group class="mt-3">
-                        <field name="timing_tmpl_id" options="{'no_create': True}" />
-                        <field name="selected" />
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
     <record id="ni_careplan_wizard_medication_line_view_form" model="ir.ui.view">
         <field name="name">ni.careplan.wizard.medication.line.view.form</field>
         <field name="model">ni.careplan.wizard.medication.line</field>
         <field name="arch" type="xml">
             <form string="Medication">
                 <field name="wizard_id" invisible="1" />
+                <field name="selected" invisible="1" />
                 <sheet>
                     <group>
                         <field name="medication_id" options="{'no_create': True}" />
                         <field name="quantity" />
                         <field name="note" />
-                        <field name="selected" />
                     </group>
                 </sheet>
             </form>
