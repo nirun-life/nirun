@@ -41,12 +41,17 @@ class Careplan(models.Model):
         states={"draft": [("readonly", False)]},
         default=lambda _: fields.Datetime.now() + relativedelta(months=3),
     )
+    shared_category_ids = fields.Many2many(
+        related="company_id.careplan_category_ids",
+    )
     category_id = fields.Many2one(
         "ni.careplan.category",
         required=False,
         index=True,
         readonly=True,
         states={"draft": [("readonly", False)]},
+        domain="['|', ('company_id', '=', company_id), '&', ('company_id', '=', False), "
+        "('id', 'in', shared_category_ids)]",
     )
 
     condition_ids = fields.Many2many(

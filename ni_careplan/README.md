@@ -14,6 +14,8 @@ plans linked to patient diagnoses, with guided creation, template-based defaults
 - **Evident observations** — attach relevant patient observations as clinical evidence
 - **Custom kanban/list views** — magic-wand "New" button always routes through the wizard; default Odoo "New" button is
   suppressed
+- **Calendar view** — plotted by `period_start`/`period_end`, colored by category; sidebar filters on patient (with avatar) and
+  category
 
 ## Models
 
@@ -44,6 +46,11 @@ plans linked to patient diagnoses, with guided creation, template-based defaults
 3. **Goals** — review template goals with pre-computed target ranges; add or remove goals; edit targets
 4. **Interventions** — review template service requests and medication orders; add custom lines; deselect unwanted items
 5. **Confirm** — set care plan period; choose to confirm immediately (active state) or save as draft
+
+The wizard always opens itself as a dialog. Where the resulting care plan record opens depends on how the wizard was launched:
+the careplan action's own "Add care plan" button passes `careplan_form_target=current` in the context so the created record
+opens full page; the encounter/patient/condition "New care plan" buttons don't set it, so the record opens in a dialog (the
+default).
 
 ## Templates
 
@@ -82,7 +89,22 @@ Setting an **achievement** on a care plan automatically transitions it to `compl
 Careplan **Categories** control which observation categories, goal categories, and service categories are relevant to a plan.
 Set these on the category record before creating templates.
 
+A category can be scoped to one company (`company_id` set) or left shared (`company_id` unset, visible to every company). Each
+company opts into which shared categories it actually wants via `res.company.careplan_category_ids` (Settings > Companies,
+Encounter tab). The `category_id` field on care plans, templates, and the wizard is then restricted to: the current company's
+own categories, plus whichever shared categories that company has opted into. A shared category's own form shows the reverse
+side — `opted_company_ids` — listing which companies have opted into it. `company_id` defaults to the current company for
+non-admins and to unset (shared) for `ni_patient.group_admin`.
+
 ## Security
 
 Access follows `ni_patient.group_user` — all clinical staff with patient access can create and manage care plans and use the
 wizard.
+
+`ni.careplan.template` (and its service/medication request lines) and `ni.careplan.category` are both read-only (use only) for
+plain `ni_patient.group_user`. `ni_patient.group_admin` has unrestricted create/write/unlink, including shared
+templates/categories. `ni_patient.group_manager` can create/write/unlink templates and categories scoped to their own company
+(`company_id` set to one of their companies) but cannot touch shared records (`company_id` unset) or another company's records.
+The same own-company, non-shared restriction applies to a manager's edits on a template's service/medication request lines
+(checked via the line's `template_id`). The Category menu (under Configuration) is visible to `ni_patient.group_manager` and
+above.

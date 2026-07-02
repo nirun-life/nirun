@@ -9,6 +9,22 @@ class CareplanCategory(models.Model):
 
     _parent_store = True
 
+    def _default_company_id(self):
+        if self.env.user.has_group("ni_patient.group_admin"):
+            return False
+        return self.env.company.id
+
+    company_id = fields.Many2one(
+        "res.company", required=False, index=True, default=_default_company_id
+    )
+    opted_company_ids = fields.Many2many(
+        "res.company",
+        "res_company_careplan_category",
+        "category_id",
+        "company_id",
+        string="Opted-in Companies",
+        help="Companies that enabled this shared category via their own careplan configuration.",
+    )
     parent_id = fields.Many2one("ni.careplan.category", index=True, ondelete="set null")
     parent_path = fields.Char(index=True, unaccent=False)
 

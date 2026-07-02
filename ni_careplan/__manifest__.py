@@ -33,6 +33,7 @@
         "wizard/ni_careplan_wizard_views.xml",
         "views/ni_condition_views.xml",
         "views/ni_careplan_menu.xml",
+        "views/res_company_views.xml",
     ],
     "assets": {
         "web.assets_backend": [
