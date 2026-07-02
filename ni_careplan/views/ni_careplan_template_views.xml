@@ -18,9 +18,23 @@
                     filter_domain="['|', '|',('name', 'ilike', self), ('code', 'ilike', self), ('abbr', 'ilike', self)]"
                 />
                 <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <separator />
+                <filter name="shared" string="Shared" domain="[('company_id', '=', False)]" />
+                <filter
+                    name="private"
+                    string="Private"
+                    domain="[('company_id', '!=', False)]"
+                    groups="base.group_multi_company"
+                />
                 <group name="group_by" string="Group By">
                     <filter name="group_category_id" context="{'group_by': 'category_id'}" />
                     <filter name="system" string="System" context="{'group_by': 'system_id'}" />
+                    <filter
+                        name="group_company_id"
+                        string="Company"
+                        context="{'group_by': 'company_id'}"
+                        groups="base.group_multi_company"
+                    />
                 </group>
             </search>
         </field>
@@ -71,6 +85,8 @@
                     <label for="definition" class="oe_edit_only" />
                     <field name="definition" placeholder="Definition..." />
                     <group>
+                        <field name="shared_category_ids" invisible="1" />
+                        <field name="company_id" />
                         <field name="category_id" />
                     </group>
                     <group>

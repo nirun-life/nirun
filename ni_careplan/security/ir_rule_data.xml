@@ -5,9 +5,103 @@
 <odoo>
     <record id="careplan_template_company_rule" model="ir.rule">
         <field name="name">Careplan Template:  multi-company Sharable</field>
-        <field name="model_id" ref="model_ni_patient" />
+        <field name="model_id" ref="model_ni_careplan_template" />
         <field name="global" eval="True" />
         <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="careplan_template_manager_write_rule" model="ir.rule">
+        <field name="name">Careplan Template: manager can only manage their own company's template</field>
+        <field name="model_id" ref="model_ni_careplan_template" />
+        <field name="domain_force">
+            ['&amp;', ('company_id', '!=', False), ('company_id', 'in', company_ids)]
+        </field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_manager'))]" />
+    </record>
+    <record id="careplan_template_admin_write_rule" model="ir.rule">
+        <field name="name">Careplan Template: admin can manage shared template</field>
+        <field name="model_id" ref="model_ni_careplan_template" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
+    </record>
+    <record id="careplan_template_service_manager_write_rule" model="ir.rule">
+        <field name="name">Careplan Template Service: manager can only manage own company template's lines</field>
+        <field name="model_id" ref="model_ni_careplan_template_service_request" />
+        <field name="domain_force">
+            ['&amp;', ('template_id.company_id', '!=', False), ('template_id.company_id', 'in', company_ids)]
+        </field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_manager'))]" />
+    </record>
+    <record id="careplan_template_service_admin_write_rule" model="ir.rule">
+        <field name="name">Careplan Template Service: admin can manage shared template's lines</field>
+        <field name="model_id" ref="model_ni_careplan_template_service_request" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
+    </record>
+    <record id="careplan_template_medication_manager_write_rule" model="ir.rule">
+        <field name="name">Careplan Template Medication: manager can only manage own company template's lines</field>
+        <field name="model_id" ref="model_ni_careplan_template_medication_request" />
+        <field name="domain_force">
+            ['&amp;', ('template_id.company_id', '!=', False), ('template_id.company_id', 'in', company_ids)]
+        </field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_manager'))]" />
+    </record>
+    <record id="careplan_template_medication_admin_write_rule" model="ir.rule">
+        <field name="name">Careplan Template Medication: admin can manage shared template's lines</field>
+        <field name="model_id" ref="model_ni_careplan_template_medication_request" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
+    </record>
+    <record id="careplan_category_company_rule" model="ir.rule">
+        <field name="name">Careplan Category: multi-company Sharable</field>
+        <field name="model_id" ref="model_ni_careplan_category" />
+        <field name="global" eval="True" />
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="careplan_category_manager_write_rule" model="ir.rule">
+        <field name="name">Careplan Category: manager can only manage their own company's category</field>
+        <field name="model_id" ref="model_ni_careplan_category" />
+        <field name="domain_force">
+            ['&amp;', ('company_id', '!=', False), ('company_id', 'in', company_ids)]
+        </field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_manager'))]" />
+    </record>
+    <record id="careplan_category_admin_write_rule" model="ir.rule">
+        <field name="name">Careplan Category: admin can manage shared category</field>
+        <field name="model_id" ref="model_ni_careplan_category" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="groups" eval="[(4, ref('ni_patient.group_admin'))]" />
     </record>
     <record id="careplan_company_rule" model="ir.rule">
         <field name="name">Careplan: multi-company</field>

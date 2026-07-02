@@ -11,3 +11,4 @@ from . import ni_goal_achievement
 from . import ni_medication_request
 from . import ni_patient
 from . import ni_service_request
+from . import res_company

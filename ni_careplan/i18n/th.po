@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 04:54+0000\n"
-"PO-Revision-Date: 2026-07-02 04:54+0000\n"
+"POT-Creation-Date: 2026-07-02 06:50+0000\n"
+"PO-Revision-Date: 2026-07-02 06:50+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -422,10 +422,22 @@ msgid "Color"
 msgstr "สี"
 
 #. module: ni_careplan
+#: model:ir.model.fields,help:ni_careplan.field_ni_careplan_category__opted_company_ids
+msgid ""
+"Companies that enabled this shared category via their own careplan "
+"configuration."
+msgstr "หน่วยบริการที่เปิดใช้งานหมวดหมู่ที่ใช้ร่วมกันนี้ผ่านการตั้งค่าแผนการดูแลของตนเอง"
+
+#. module: ni_careplan
+#: model:ir.model,name:ni_careplan.model_res_company
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__company_id
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__company_id
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template__company_id
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_medication_request__company_id
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template_service_request__company_id
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard__company_id
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_category_view_search
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_view_search
 msgid "Company"
 msgstr "หน่วยบริการ"
 
@@ -1246,6 +1258,11 @@ msgid "Offset"
 msgstr ""
 
 #. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_category__opted_company_ids
+msgid "Opted-in Companies"
+msgstr "หน่วยบริการที่เข้าร่วมใช้งาน"
+
+#. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_view_form
 msgid "Optional, filtered by category"
 msgstr "ไม่บังคับ, กรองตามหมวดหมู่"
@@ -1291,7 +1308,8 @@ msgid ""
 "Patient's active diagnoses this care plan addresses. Selecting a condition\n"
 "                        related to a template auto-fills the matching goals and interventions."
 msgstr ""
-"โรค/ปัญหาของผู้รับบริการที่แผนการดูแลนี้ครอบคลุม การเลือกโรค/ปัญหาที่เกี่ยวข้องกับเทมเพลตจะเติมเป้าหมายและกิจกรรมที่เกี่ยวข้องให้อัตโนมัติ"
+"โรค/ปัญหาที่กำลังดำเนินอยู่ของผู้รับบริการที่แผนการดูแลนี้ครอบคลุม "
+"การเลือกโรค/ปัญหาที่เกี่ยวข้องกับเทมเพลตจะเติมเป้าหมายและกิจกรรมที่เกี่ยวข้องให้อัตโนมัติ"
 
 #. module: ni_careplan
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__period_mode
@@ -1332,6 +1350,12 @@ msgstr "พิมพ์"
 #: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__priority
 msgid "Priority"
 msgstr "ความสำคัญ"
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_category_view_search
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_view_search
+msgid "Private"
+msgstr "เฉพาะหน่วยบริการ"
 
 #. module: ni_careplan
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_view_form
@@ -1522,6 +1546,32 @@ msgstr "ชื่อกิจกรรม"
 #: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_wizard_service_line_view_form
 msgid "Services..."
 msgstr "กิจกรรม..."
+
+#. module: ni_careplan
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_category_view_search
+#: model_terms:ir.ui.view,arch_db:ni_careplan.ni_careplan_template_view_search
+msgid "Shared"
+msgstr "ใช้ร่วมกัน"
+
+#. module: ni_careplan
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan__shared_category_ids
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_template__shared_category_ids
+#: model:ir.model.fields,field_description:ni_careplan.field_ni_careplan_wizard__shared_category_ids
+#: model:ir.model.fields,field_description:ni_careplan.field_res_company__careplan_category_ids
+msgid "Shared Careplan Categories"
+msgstr "หมวดหมู่แผนการดูแลที่ใช้ร่วมกัน"
+
+#. module: ni_careplan
+#: model:ir.model.fields,help:ni_careplan.field_ni_careplan__shared_category_ids
+#: model:ir.model.fields,help:ni_careplan.field_ni_careplan_template__shared_category_ids
+#: model:ir.model.fields,help:ni_careplan.field_ni_careplan_wizard__shared_category_ids
+#: model:ir.model.fields,help:ni_careplan.field_res_company__careplan_category_ids
+msgid ""
+"Shared careplan categories this company wants to use, in addition to its "
+"own."
+msgstr ""
+"หมวดหมู่แผนการดูแลที่ใช้ร่วมกันซึ่งหน่วยบริการนี้ต้องการใช้ "
+"นอกเหนือจากหมวดหมู่ของตนเอง"
 
 #. module: ni_careplan
 #: model:ir.model.fields.selection,name:ni_careplan.selection__ni_careplan__goal_mode__simple

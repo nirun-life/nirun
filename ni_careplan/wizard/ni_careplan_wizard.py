@@ -152,6 +152,8 @@ class CareplanWizard(models.TransientModel):
     )
     patient_age = fields.Integer(related="patient_id.age")
     patient_gender = fields.Selection(related="patient_id.gender")
+    company_id = fields.Many2one(related="patient_id.company_id")
+    shared_category_ids = fields.Many2many(related="company_id.careplan_category_ids")
     encounter_id = fields.Many2one(
         "ni.encounter",
         domain="[('patient_id', '=', patient_id)]",
@@ -168,7 +170,11 @@ class CareplanWizard(models.TransientModel):
         "ni.careplan.template",
         domain="[('category_id', '=?', category_id)]",
     )
-    category_id = fields.Many2one("ni.careplan.category")
+    category_id = fields.Many2one(
+        "ni.careplan.category",
+        domain="['|', ('company_id', '=', company_id), '&', ('company_id', '=', False), "
+        "('id', 'in', shared_category_ids)]",
+    )
     condition_warning = fields.Text(readonly=True)
 
     # Step 2

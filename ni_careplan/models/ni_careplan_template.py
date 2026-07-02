@@ -7,11 +7,23 @@ class CareplanTemplate(models.Model):
     _description = "Careplan Template"
     _inherit = "ni.coding"
 
-    company_id = fields.Many2one("res.company", required=False, index=True)
+    def _default_company_id(self):
+        if self.env.user.has_group("ni_patient.group_admin"):
+            return False
+        return self.env.company.id
+
+    company_id = fields.Many2one(
+        "res.company", required=False, index=True, default=_default_company_id
+    )
+    shared_category_ids = fields.Many2many(
+        related="company_id.careplan_category_ids",
+    )
     category_id = fields.Many2one(
         "ni.careplan.category",
         required=False,
         index=True,
+        domain="['|', ('company_id', '=', company_id), '&', ('company_id', '=', False), "
+        "('id', 'in', shared_category_ids)]",
     )
     condition_code_ids = fields.Many2many(
         "ni.condition.code",
