@@ -83,6 +83,11 @@ class Goal(models.Model):
             ("not in", "Not Contain"),
         ],
         "Operator",
+        help="How the observed value(s) must relate to the target codes: "
+        "'Match'/'Not Match' compare the observed values against the target set exactly (order doesn't matter); "
+        "'Contain'/'Not Contain' require every observed value to be (not be) a member of the target set; "
+        "'Child of'/'Parent of' require every observed value to be a descendant/ancestor (or itself) of some target "
+        "value, walking the target codes' parent hierarchy.",
     )
     target_code_ids = fields.Many2many(
         "ni.observation.value.code", domain="[('type_ids', '=', observation_type_id)]"
@@ -105,6 +110,11 @@ class Goal(models.Model):
         tracking=True,
         ondelete="set null",
     )
+    target_status = fields.Selection(
+        [("in_range", "In Target"), ("out_of_range", "Out of Target")],
+        compute="_compute_target_status",
+    )
+    target_alert_message = fields.Char(compute="_compute_target_status")
     condition_ids = fields.Many2many(
         "ni.condition",
         "ni_goal_addresses_condition",
@@ -183,6 +193,69 @@ class Goal(models.Model):
                         "observation_ids": [fields.Command.set(obs.ids)],
                     }
                 )
+
+    @api.depends(
+        "observation_id",
+        "address_observation_id",
+        "target_value_type",
+        "target_min",
+        "target_max",
+        "target_code_operator",
+        "target_code_ids",
+    )
+    def _compute_target_status(self):
+        for rec in self:
+            rec.target_status = False
+            rec.target_alert_message = False
+            if not rec.observation_type_id:
+                continue
+            obs = rec.observation_id
+            if obs:
+                rec.target_status = rec._match_target(obs)
+            if not rec.address_observation_id:
+                rec.target_alert_message = _(
+                    "No baseline measurement has been recorded for this target yet."
+                )
+            elif obs and obs == rec.address_observation_id:
+                rec.target_alert_message = _(
+                    "No measurement has been recorded since the baseline value yet."
+                )
+
+    def _match_target(self, obs):
+        self.ensure_one()
+        if self.target_value_type == "float":
+            in_range = self.target_min <= obs.value_float <= self.target_max
+        elif self.target_value_type == "int":
+            in_range = self.target_min <= obs.value_int <= self.target_max
+        elif self.target_value_type == "code_id":
+            in_range = self._match_target_code(obs.value_code_id)
+        elif self.target_value_type == "code_ids":
+            in_range = self._match_target_code(obs.value_code_ids)
+        else:
+            return False
+        return "in_range" if in_range else "out_of_range"
+
+    def _match_target_code(self, value_codes):
+        self.ensure_one()
+        operator = self.target_code_operator
+        targets = self.target_code_ids
+        if not operator or not targets or not value_codes:
+            return False
+        if operator == "=":
+            return value_codes == targets
+        if operator == "!=":
+            return value_codes != targets
+        if operator == "in":
+            return value_codes <= targets
+        if operator == "not in":
+            return not bool(value_codes & targets)
+        if operator == "child_of":
+            matched = value_codes.filtered_domain([("id", "child_of", targets.ids)])
+            return matched == value_codes
+        if operator == "parent_of":
+            matched = value_codes.filtered_domain([("id", "parent_of", targets.ids)])
+            return matched == value_codes
+        return False
 
     @api.model
     def _expand_state_ids(self, states, domain, order):

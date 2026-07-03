@@ -47,8 +47,22 @@
                     <group attrs="{'invisible': [('observation_id', '=', False)]}">
                         <field name="observation_id" string="Latest" readonly="1" options="{'no_open': True}" />
                         <field name="observation_occurrence" string="Date" readonly="1" />
+                        <field
+                            name="target_status"
+                            widget="badge"
+                            decoration-success="target_status == 'in_range'"
+                            decoration-danger="target_status == 'out_of_range'"
+                        />
                     </group>
                 </group>
+                <div
+                    class="alert alert-warning mb-2 d-flex align-items-center"
+                    role="alert"
+                    attrs="{'invisible': [('target_alert_message', '=', False)]}"
+                >
+                    <i class="fa fa-exclamation-triangle text-danger me-2" />
+                    <field name="target_alert_message" nolabel="1" readonly="1" />
+                </div>
                 <group class="mt-4" string="State &amp; Achievement">
                     <group>
                         <field name="state_id" options="{'no_open': True}" />
