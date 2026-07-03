@@ -20,6 +20,8 @@ class Observation(models.Model):
     child_ids = fields.One2many("ni.observation", "parent_id", "Components")
     child_count = fields.Integer("Number of Components", compute="_compute_child_count")
 
+    state = fields.Selection(default="completed")
+
     @api.depends("child_ids")
     def _compute_child_count(self):
         for rec in self:
