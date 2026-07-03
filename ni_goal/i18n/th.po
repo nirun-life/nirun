@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 10:05+0000\n"
-"PO-Revision-Date: 2026-07-02 10:05+0000\n"
+"POT-Creation-Date: 2026-07-03 05:58+0000\n"
+"PO-Revision-Date: 2026-07-03 05:58+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -421,6 +421,16 @@ msgid "Fix Value"
 msgstr "ค่าคงที่"
 
 #. module: ni_goal
+#: model:ir.model.fields,help:ni_goal.field_ni_goal_code__target_fix_min
+msgid "Fixed lower bound applied when Target Type is 'Fix Value'."
+msgstr "ขอบเขตล่างคงที่ที่ใช้เมื่อประเภทเป้าหมายเป็น 'ค่าคงที่'"
+
+#. module: ni_goal
+#: model:ir.model.fields,help:ni_goal.field_ni_goal_code__target_fix_max
+msgid "Fixed upper bound applied when Target Type is 'Fix Value'."
+msgstr "ขอบเขตบนคงที่ที่ใช้เมื่อประเภทเป้าหมายเป็น 'ค่าคงที่'"
+
+#. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state__fold
 msgid "Fold"
 msgstr ""
@@ -536,6 +546,40 @@ msgid "History"
 msgstr "ประวัติ"
 
 #. module: ni_goal
+#: model:ir.model.fields,help:ni_goal.field_ni_goal_code__target_type
+msgid ""
+"How the numeric target range (target_min/target_max) is derived when this "
+"template is applied to a goal: 'Fix Value' copies "
+"target_fix_min/target_fix_max as-is; 'Ratio' multiplies the patient's "
+"current observation value by target_ratio_min/target_ratio_max (e.g. a ratio"
+" of 0.9-1.1 targets within 90%-110% of the patient's value at the time the "
+"goal is created)."
+msgstr ""
+"ช่วงเป้าหมายตัวเลข (target_min/target_max) ถูกคำนวณอย่างไรเมื่อแม่แบบนี้ถูกนำไปใช้กับเป้าหมาย: "
+"'ค่าคงที่' คัดลอก target_fix_min/target_fix_max มาใช้ตรงๆ; "
+"'อัตราส่วน' คูณค่าที่วัดได้ล่าสุดของผู้รับบริการด้วย target_ratio_min/target_ratio_max "
+"(เช่น อัตราส่วน 0.9-1.1 กำหนดเป้าหมายในช่วง 90%-110% ของค่าผู้รับบริการ ณ เวลาที่สร้างเป้าหมาย)"
+
+#. module: ni_goal
+#: model:ir.model.fields,help:ni_goal.field_ni_goal__target_code_operator
+#: model:ir.model.fields,help:ni_goal.field_ni_goal_code__target_code_operator
+#: model:ir.model.fields,help:ni_goal.field_ni_goal_state_wizard__target_code_operator
+msgid ""
+"How the observed value(s) must relate to the target codes: 'Match'/'Not "
+"Match' compare the observed values against the target set exactly (order "
+"doesn't matter); 'Contain'/'Not Contain' require every observed value to be "
+"(not be) a member of the target set; 'Child of'/'Parent of' require every "
+"observed value to be a descendant/ancestor (or itself) of some target value,"
+" walking the target codes' parent hierarchy."
+msgstr ""
+"ค่าที่วัดได้ต้องสัมพันธ์กับรหัสเป้าหมายอย่างไร: 'ตรงกัน'/'ไม่ตรงกัน' "
+"เปรียบเทียบค่าที่วัดได้กับชุดเป้าหมายแบบทั้งหมด (ไม่สนลำดับ); 'มี'/'ไม่มี' "
+"กำหนดให้ค่าที่วัดได้ทุกค่าต้องเป็น (หรือไม่เป็น) สมาชิกของชุดเป้าหมาย; "
+"'เป็นรายการย่อยของ'/'เป็นรายการหลักของ' "
+"กำหนดให้ค่าที่วัดได้ทุกค่าต้องเป็นรายการย่อย/รายการหลัก (หรือค่าเดียวกัน) "
+"ของรหัสเป้าหมายรายการใดรายการหนึ่ง โดยไล่ตามลำดับชั้นของรหัสเป้าหมาย"
+
+#. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal__id
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_achievement__id
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_category__id
@@ -579,6 +623,11 @@ msgstr "ดีขึ้น"
 #: model:ni.goal.achievement,name:ni_goal.goal_in_progress
 msgid "In Progress"
 msgstr "ระหว่างดำเนินการ"
+
+#. module: ni_goal
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal__target_status__in_range
+msgid "In Target"
+msgstr "อยู่ในเป้าหมาย"
 
 #. module: ni_goal
 #: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal_achievement__decoration__info
@@ -719,6 +768,24 @@ msgid "Min"
 msgstr "ต่ำสุด"
 
 #. module: ni_goal
+#: model:ir.model.fields,help:ni_goal.field_ni_goal_code__target_ratio_min
+msgid ""
+"Multiplier applied to the patient's current observation value to get the "
+"target lower bound when Target Type is 'Ratio'."
+msgstr ""
+"ตัวคูณที่ใช้กับค่าที่วัดได้ล่าสุดของผู้รับบริการเพื่อหาขอบเขตล่างของเป้าหมายเมื่อประเภทเป้าหมายเป็น "
+"'อัตราส่วน'"
+
+#. module: ni_goal
+#: model:ir.model.fields,help:ni_goal.field_ni_goal_code__target_ratio_max
+msgid ""
+"Multiplier applied to the patient's current observation value to get the "
+"target upper bound when Target Type is 'Ratio'."
+msgstr ""
+"ตัวคูณที่ใช้กับค่าที่วัดได้ล่าสุดของผู้รับบริการเพื่อหาขอบเขตบนของเป้าหมายเมื่อประเภทเป้าหมายเป็น "
+"'อัตราส่วน'"
+
+#. module: ni_goal
 #: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal_achievement__decoration__muted
 #: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal_state__decoration__muted
 msgid "Muted"
@@ -773,6 +840,20 @@ msgstr "ไม่เปลี่ยนแปลง"
 #: model:ni.goal.achievement,name:ni_goal.goal_no_progress
 msgid "No Progress"
 msgstr "ไม่มีความคืบหน้า"
+
+#. module: ni_goal
+#. odoo-python
+#: code:addons/ni_goal/models/ni_goal.py:0
+#, python-format
+msgid "No baseline measurement has been recorded for this target yet."
+msgstr "ยังไม่มีการบันทึกค่าเริ่มต้น (Baseline) สำหรับเป้าหมายนี้"
+
+#. module: ni_goal
+#. odoo-python
+#: code:addons/ni_goal/models/ni_goal.py:0
+#, python-format
+msgid "No measurement has been recorded since the baseline value yet."
+msgstr "ยังไม่มีการวัดค่าใหม่นับตั้งแต่ค่าเริ่มต้น (Baseline)"
 
 #. module: ni_goal
 #: model:ni.goal.achievement,name:ni_goal.goal_not_achieved
@@ -868,6 +949,11 @@ msgstr "เป้าหมายระหว่างดำเนินการ
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state_wizard__target_code_operator
 msgid "Operator"
 msgstr "ตัวดำเนินการ"
+
+#. module: ni_goal
+#: model:ir.model.fields.selection,name:ni_goal.selection__ni_goal__target_status__out_of_range
+msgid "Out of Target"
+msgstr "ไม่อยู่ในเป้าหมาย"
 
 #. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal__outcome_observation_id
@@ -1075,6 +1161,12 @@ msgid "Target"
 msgstr "เป้าหมาย"
 
 #. module: ni_goal
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal__target_alert_message
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state_wizard__target_alert_message
+msgid "Target Alert Message"
+msgstr "ข้อความแจ้งเตือนเป้าหมาย"
+
+#. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal__target_code_ids
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_code__target_code_ids
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state_wizard__target_code_ids
@@ -1097,6 +1189,12 @@ msgstr "เป้าหมายสูงสุด"
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state_wizard__target_min
 msgid "Target Min"
 msgstr "เป้าหมายต่ำสุด"
+
+#. module: ni_goal
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal__target_status
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state_wizard__target_status
+msgid "Target Status"
+msgstr "สถานะเป้าหมาย"
 
 #. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal_code__target_type
@@ -1209,9 +1307,10 @@ msgid "Type of the exception activity on record."
 msgstr ""
 
 #. module: ni_goal
-#: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state_wizard__target_unit
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal__target_unit_id
+#: model:ir.model.fields,field_description:ni_goal.field_ni_goal_state_wizard__target_unit_id
 msgid "Unit"
-msgstr ""
+msgstr "หน่วย"
 
 #. module: ni_goal
 #: model:ir.model.fields,field_description:ni_goal.field_ni_goal__period_end

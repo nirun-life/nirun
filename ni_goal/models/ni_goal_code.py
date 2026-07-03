@@ -21,11 +21,31 @@ class GoalCodeableConcept(models.Model):
         domain=[("value_type", "in", ["int", "float", "code_id", "code_ids"])],
     )
     target_value_type = fields.Selection(related="observation_type_id.value_type")
-    target_type = fields.Selection([("fix", "Fix Value"), ("ratio", "Ratio")])
-    target_fix_min = fields.Float("Min")
-    target_fix_max = fields.Float("Max")
-    target_ratio_min = fields.Float("Ratio Min", default=1.0)
-    target_ratio_max = fields.Float("Ratio Max", default=1.0)
+    target_type = fields.Selection(
+        [("fix", "Fix Value"), ("ratio", "Ratio")],
+        help="How the numeric target range (target_min/target_max) is derived when this template is applied to a "
+        "goal: 'Fix Value' copies target_fix_min/target_fix_max as-is; 'Ratio' multiplies the patient's current "
+        "observation value by target_ratio_min/target_ratio_max (e.g. a ratio of 0.9-1.1 targets within 90%-110% "
+        "of the patient's value at the time the goal is created).",
+    )
+    target_fix_min = fields.Float(
+        "Min", help="Fixed lower bound applied when Target Type is 'Fix Value'."
+    )
+    target_fix_max = fields.Float(
+        "Max", help="Fixed upper bound applied when Target Type is 'Fix Value'."
+    )
+    target_ratio_min = fields.Float(
+        "Ratio Min",
+        default=1.0,
+        help="Multiplier applied to the patient's current observation value to get the target lower bound when "
+        "Target Type is 'Ratio'.",
+    )
+    target_ratio_max = fields.Float(
+        "Ratio Max",
+        default=1.0,
+        help="Multiplier applied to the patient's current observation value to get the target upper bound when "
+        "Target Type is 'Ratio'.",
+    )
 
     target_code_operator = fields.Selection(
         [
@@ -37,6 +57,11 @@ class GoalCodeableConcept(models.Model):
             ("not in", "Not Contain"),
         ],
         "Operator",
+        help="How the observed value(s) must relate to the target codes: "
+        "'Match'/'Not Match' compare the observed values against the target set exactly (order doesn't matter); "
+        "'Contain'/'Not Contain' require every observed value to be (not be) a member of the target set; "
+        "'Child of'/'Parent of' require every observed value to be a descendant/ancestor (or itself) of some target "
+        "value, walking the target codes' parent hierarchy.",
     )
     target_code_ids = fields.Many2many(
         "ni.observation.value.code",
