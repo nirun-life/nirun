@@ -198,12 +198,20 @@ class Service(models.Model):
     def _compute_date(self):
         now = fields.Datetime.now()
         today = now.replace(hour=0, minute=0, second=0)
-        event = self.env["ni.service.event"].sudo()
-        for rec in self:
-            event = event.search(
-                [("service_id", "=", rec.id), ("start", ">", today)], limit=1
+        events = (
+            self.env["ni.service.event"]
+            .sudo()
+            .search(
+                [("service_id", "in", self.ids), ("start", ">", today)],
+                order="service_id, start",
             )
-            rec.next_date = event.start.date() if event else None
+        )
+        next_start = {}
+        for event in events:
+            next_start.setdefault(event.service_id.id, event.start)
+        for rec in self:
+            start = next_start.get(rec.id)
+            rec.next_date = start.date() if start else None
 
     @api.onchange("attendance_ids")
     def _onchange_attendance_ids(self):
