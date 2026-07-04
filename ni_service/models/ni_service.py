@@ -1,4 +1,10 @@
 #  Copyright (c) 2024 NSTDA
+import json
+from collections import defaultdict
+from datetime import timedelta
+
+from babel.dates import format_date
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -74,6 +80,7 @@ class Service(models.Model):
         default="0",
     )
     next_date = fields.Date(compute="_compute_date")
+    dashboard_graph_data = fields.Text(compute="_compute_dashboard_graph_data")
     encounter_ids = fields.Many2many(
         "ni.encounter", domain="[('company_id', '=', company_id)]"
     )
@@ -99,6 +106,7 @@ class Service(models.Model):
         default=True, help="Indicate user can edit this service or not when generate"
     )
     event_ids = fields.One2many("ni.service.event", "service_id")
+    event_count = fields.Integer(compute="_compute_event_count")
     active = fields.Boolean(default=True)
 
     _sql_constraints = [
@@ -213,6 +221,84 @@ class Service(models.Model):
             start = next_start.get(rec.id)
             rec.next_date = start.date() if start else None
 
+    def _get_dashboard_graph_color(self):
+        self.ensure_one()
+        return "#7c7bad"
+
+    def _dashboard_graph_week_label(self, week_start, locale):
+        week_end = week_start + timedelta(days=6)
+        if week_end.month == week_start.month:
+            short_name_from = format_date(week_start, "d", locale=locale)
+        else:
+            short_name_from = format_date(week_start, "d MMM", locale=locale)
+        short_name_to = format_date(week_end, "d MMM", locale=locale)
+        return f"{short_name_from}-{short_name_to}"
+
+    def _get_dashboard_graph_patient_counts(self, range_start, range_end):
+        """Return {service_id: {week_start: {patient_id, ...}}} for the given range.
+
+        Override to change the data source (e.g. planned vs. actual attendance).
+        """
+        attendances = (
+            self.env["ni.encounter.service.attendance"]
+            .sudo()
+            .search_read(
+                [
+                    "|",
+                    ("service_id", "in", self.ids),
+                    ("service_ids", "in", self.ids),
+                    ("encounter_date", ">=", range_start),
+                    ("encounter_date", "<=", range_end),
+                ],
+                ["service_id", "service_ids", "encounter_date", "patient_id"],
+            )
+        )
+        counts = defaultdict(lambda: defaultdict(set))
+        for att in attendances:
+            att_date = att["encounter_date"].date()
+            week_start = att_date - timedelta(days=att_date.weekday())
+            service_ids = att["service_ids"] + (
+                [att["service_id"][0]] if att["service_id"] else []
+            )
+            for service_id in service_ids:
+                if service_id in self.ids:
+                    counts[service_id][week_start].add(att["patient_id"][0])
+        return counts
+
+    def _compute_dashboard_graph_data(self):
+        weeks_back = 4
+        today = fields.Date.context_today(self)
+        monday = today - timedelta(days=today.weekday())
+        week_starts = [
+            monday - timedelta(weeks=w) for w in range(weeks_back - 1, -1, -1)
+        ]
+        range_start = week_starts[0]
+        range_end = monday + timedelta(days=6)
+
+        counts = self._get_dashboard_graph_patient_counts(range_start, range_end)
+
+        locale = self._context.get("lang") or "en_US"
+        for rec in self:
+            values = [
+                {
+                    "label": self._dashboard_graph_week_label(week_start, locale),
+                    "value": len(counts[rec.id][week_start]),
+                    "type": "past",
+                }
+                for week_start in week_starts
+            ]
+            rec.dashboard_graph_data = json.dumps(
+                [
+                    {
+                        "values": values,
+                        "area": True,
+                        "title": "",
+                        "key": _("Patients Attended"),
+                        "color": rec._get_dashboard_graph_color(),
+                    }
+                ]
+            )
+
     @api.onchange("attendance_ids")
     def _onchange_attendance_ids(self):
         for rec in self:
@@ -246,6 +332,16 @@ class Service(models.Model):
     def _compute_employee_count(self):
         for rec in self:
             rec.employee_count = len(rec.employee_ids)
+
+    @api.depends("event_ids")
+    def _compute_event_count(self):
+        events = self.env["ni.service.event"].sudo()
+        read = events.read_group(
+            [("service_id", "in", self.ids)], ["service_id"], ["service_id"]
+        )
+        data = {res["service_id"][0]: res["service_id_count"] for res in read}
+        for rec in self:
+            rec.event_count = data.get(rec.id, 0)
 
     def create_event(self):
         ctx = dict(self.env.context)
