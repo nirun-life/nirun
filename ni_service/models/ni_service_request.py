@@ -1,5 +1,7 @@
 #  Copyright (c) 2024 NSTDA
 
+from collections import defaultdict
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -46,10 +48,18 @@ class ServiceRequest(models.Model):
 
     @api.depends("attendance_ids.service_event_id")
     def _compute_event_count(self):
+        attendances = self.env["ni.encounter.service.attendance"].sudo()
+        grp = attendances.read_group(
+            [("request_id", "in", self.ids), ("service_event_id", "!=", False)],
+            ["request_id", "service_event_id"],
+            ["request_id", "service_event_id"],
+            lazy=False,
+        )
+        data = defaultdict(set)
+        for res in grp:
+            data[res["request_id"][0]].add(res["service_event_id"][0])
         for rec in self:
-            rec.event_count = len(
-                rec.attendance_ids.mapped("service_event_id").filtered("id")
-            )
+            rec.event_count = len(data.get(rec.id, ()))
 
     def action_view_events(self):
         self.ensure_one()
