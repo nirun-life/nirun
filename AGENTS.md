@@ -117,21 +117,7 @@ ODOO_MODULE=<module_name> $ODOO_BIN shell -c odoo.conf --no-http < .tools/export
 
 ## Code Style
 
-All formatting is enforced via pre-commit. Run manually with `pre-commit run --all-files`.
-
-- **Python:** black (line length 88), autoflake, isort, flake8 (max line 120), pylint-odoo
-- **XML:** prettier with `--print-width=120`
-- **JavaScript:** eslint
-- isort import order: `FUTURE, STDLIB, THIRDPARTY, ODOO, ODOO_ADDONS, FIRSTPARTY, LOCALFOLDER`
-- All files must have LF line endings and no trailing whitespace
-
-Manifests require: `license` key (LGPL-3 or OPL-1), `author` must include "NSTDA".
-
-All new files must include a copyright header at the top:
-
-```python
-#  Copyright (c) <year> NSTDA
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md) for formatting, linting, manifest, and copyright header requirements.
 
 ## Architecture
 

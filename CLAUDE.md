@@ -33,35 +33,15 @@ ICD-9-CM, NHSO, Buddhist calendar, Thai fonts).
 When adding new models or fields, prefer names and structures that align with their FHIR counterpart resources and data types.
 Value sets (selections, codelists) should use FHIR-defined codes when a standard binding exists.
 
-## Development Setup
-
-**Runtime:** Odoo 16.0, Python 3.10.
-
-**Local (Windows):** Odoo runs at `http://localhost:16669`. Config is in `odoo.conf`. The `addons_path` includes both this repo
-and a `nirun-3rd-party` sibling repo.
-
 ## Local Venv
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full development setup (runtime, install, pre-commit).
 
 - Keep the shared venv activation script path in a repo-local file at `.tools/local-venv.txt`.
 - Prefer a repo-relative path when possible, for example (Windows) `.venv\Scripts\activate.bat`.
 - Before running Odoo tests or any verification command, **activate** that venv and use its `python` to launch `ODOO_BIN`.
 - If the repo-local venv path file is missing or empty, ask the user for the exact venv path instead of searching the machine or
   sibling repos.
-
-**Docker:** Uses `odoo-docker.conf`. Build with `Dockerfile` (based on `nirun/odoo:latest`).
-
-Install Python dependencies:
-
-```
-pip install -r requirements.txt
-pip install -r test-requirements.txt
-```
-
-Install pre-commit hooks:
-
-```
-pre-commit install
-```
 
 ## Running Tests
 
@@ -112,21 +92,7 @@ ODOO_MODULE=<module_name> $ODOO_BIN shell -c odoo.conf --no-http < .tools/export
 
 ## Code Style
 
-All formatting is enforced via pre-commit. Run manually with `pre-commit run --all-files`.
-
-- **Python:** black (line length 88), autoflake, isort, flake8 (max line 120), pylint-odoo
-- **XML:** prettier with `--print-width=120`
-- **JavaScript:** eslint
-- isort import order: `FUTURE, STDLIB, THIRDPARTY, ODOO, ODOO_ADDONS, FIRSTPARTY, LOCALFOLDER`
-- All files must have LF line endings and no trailing whitespace
-
-Manifests require: `license` key (LGPL-3 or OPL-1), `author` must include "NSTDA".
-
-All new files must include a copyright header at the top:
-
-```python
-#  Copyright (c) <year> NSTDA
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md) for formatting, linting, manifest, and copyright header requirements.
 
 ## Architecture
 

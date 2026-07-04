@@ -26,8 +26,7 @@ Closes #
 
 ## Documentation
 
-- [ ] `docs/worklog.md` updated
-- [ ] `docs/decisions.md` updated if decision changed
+- [ ] Module `README.md` updated
 - [ ] Not needed
 
 ## Notes for reviewer
