@@ -2,7 +2,7 @@
 
 from pytz import timezone
 
-from odoo import api, fields, models
+from odoo import api, fields, models, tools
 
 
 class EncounterServiceAttendance(models.Model):
@@ -15,7 +15,9 @@ class EncounterServiceAttendance(models.Model):
     patient_id = fields.Many2one(
         related="encounter_id.patient_id", store=True, index=True
     )
-    encounter_date = fields.Datetime(related="encounter_id.period_start", string="Date")
+    encounter_date = fields.Datetime(
+        related="encounter_id.period_start", string="Date", store=True, index=True
+    )
     dayofweek = fields.Selection(
         [
             ("0", "Monday"),
@@ -87,6 +89,14 @@ class EncounterServiceAttendance(models.Model):
             "The attendance time must be unique!",
         ),
     ]
+
+    def init(self):
+        tools.create_index(
+            self._cr,
+            f"{self._table}_service_id_encounter_date_idx",
+            self._table,
+            ["service_id", "encounter_date"],
+        )
 
     @api.depends("encounter_id", "encounter_date")
     def _compute_dayofweek(self):

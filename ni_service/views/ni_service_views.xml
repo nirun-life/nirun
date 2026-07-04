@@ -68,6 +68,76 @@
             </tree>
         </field>
     </record>
+    <record id="ni_service_view_kanban" model="ir.ui.view">
+        <field name="name">ni.service.view.kanban</field>
+        <field name="model">ni.service</field>
+        <field name="arch" type="xml">
+            <kanban limit="40">
+                <field name="color" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_card oe_kanban_global_click"
+                        >
+                            <div class="oe_kanban_content">
+                                <div class="d-flex align-items-start justify-content-between gap-2">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name" />
+                                    </strong>
+                                    <field
+                                        name="type_id"
+                                        widget="badge"
+                                        decoration-primary="type_decoration == 'primary'"
+                                        decoration-success="type_decoration == 'success'"
+                                        decoration-info="type_decoration == 'info'"
+                                        decoration-warning="type_decoration == 'warning'"
+                                        decoration-danger="type_decoration == 'danger'"
+                                        decoration-muted="type_decoration == 'muted'"
+                                    />
+                                    <field name="type_decoration" invisible="1" />
+                                </div>
+                                <div class="o_kanban_tags_section mt-1">
+                                    <field
+                                        name="category_ids"
+                                        widget="many2many_tags"
+                                        options="{'color_field': 'color'}"
+                                    />
+                                </div>
+                                <div class="text-muted small mt-1">
+                                    <i class="fa fa-clock-o mx-1" aria-hidden="true" title="Duration" />
+                                    <field name="duration" widget="float_time" />
+                                    hours
+                                </div>
+                                <div class="o_kanban_graph_section mt-1" t-if="record.dashboard_graph_data.raw_value">
+                                    <field
+                                        name="dashboard_graph_data"
+                                        widget="dashboard_graph"
+                                        t-att-graph_type="'bar'"
+                                    />
+                                </div>
+                                <div class="o_kanban_record_bottom mt-2 pt-1">
+                                    <div class="oe_kanban_bottom_left">
+                                        <button
+                                            name="create_event"
+                                            icon="fa-calendar"
+                                            type="object"
+                                            class="btn btn-sm btn-link"
+                                            title="Calendar"
+                                            invisible="context.get('no_create_event', True)"
+                                        />
+                                        <field name="next_date" />
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="employee_id" widget="many2one_avatar_employee" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
     <record id="ni_service_view_form" model="ir.ui.view">
         <field name="name">ni.service.view.form</field>
         <field name="model">ni.service</field>
@@ -78,7 +148,15 @@
                 <header />
                 <sheet>
                     <div name="button_box" class="oe_button_box">
-                        <button name="create_event" icon="fa-calendar" type="object" string="calendar" />
+                        <button
+                            name="create_event"
+                            icon="fa-calendar"
+                            type="object"
+                            class="oe_stat_button"
+                            invisible="context.get('no_create_event', True)"
+                        >
+                            <field name="event_count" widget="statinfo" string="Events" />
+                        </button>
                     </div>
                     <div class="oe_title mb24">
                         <label for="name" />
@@ -179,6 +257,9 @@
                                 </tree>
                             </field>
                         </page>
+                        <page name="event" string="History" badge="event_count">
+                            <field name="event_ids" />
+                        </page>
                         <page name="extra" string="Extra Info" groups="base.group_no_one">
                             <group>
                                 <field name="sequence" />
@@ -195,7 +276,7 @@
         <field name="name">Services</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="context">{'search_default_service': 1, 'no_create_event': 0}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">No Service found</p>
@@ -205,7 +286,7 @@
         <field name="name">Routine Service</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,kanban,form</field>
         <field name="context">{'search_default_routine': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">No Routine found</p>
