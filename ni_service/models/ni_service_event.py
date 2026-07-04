@@ -1,4 +1,5 @@
 #  Copyright (c) 2024 NSTDA
+from collections import defaultdict
 from datetime import datetime, timedelta
 
 from pytz import timezone
@@ -184,23 +185,28 @@ class ServiceEvent(models.Model):
             self._table,
             ["event_id", "id"],
         )
-
-    def _get_attachments_search_domain(self):
-        self.ensure_one()
-        return [("res_id", "=", self.id), ("res_model", "=", "ni.service.event")]
+        tools.create_index(
+            self._cr,
+            f"{self._table}_service_id_start_id_idx",
+            self._table,
+            ["service_id", "start", "id"],
+        )
 
     def _compute_attachment_ids(self):
+        attachments = self.env["ir.attachment"].search(
+            [("res_model", "=", "ni.service.event"), ("res_id", "in", self.ids)]
+        )
+        attachment_ids_by_task = defaultdict(set)
+        for attachment in attachments:
+            attachment_ids_by_task[attachment.res_id].add(attachment.id)
+
         for task in self:
-            attachment_ids = (
-                self.env["ir.attachment"]
-                .search(task._get_attachments_search_domain())
-                .ids
-            )
+            attachment_ids = attachment_ids_by_task.get(task.id, set())
             message_attachment_ids = task.mapped(
                 "message_ids.attachment_ids"
             ).ids  # from mail_thread
             task.attachment_ids = [
-                (6, 0, list(set(attachment_ids) - set(message_attachment_ids)))
+                (6, 0, list(attachment_ids - set(message_attachment_ids)))
             ]
             task.has_image = bool(attachment_ids)
 
