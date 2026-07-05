@@ -1,4 +1,7 @@
 #  Copyright (c) 2024 NSTDA
+from collections import defaultdict
+from datetime import timedelta
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -36,6 +39,33 @@ class Service(models.Model):
         if operator == "=":
             return [("user_id", "=" if bool(operand) else "!=", self.env.user.id)]
         raise ValidationError(_("my_service support only '=', 'True' or 'False'"))
+
+    def _get_dashboard_graph_patient_counts(self, range_start, range_end):
+        events = (
+            self.env["ni.service.event"]
+            .sudo()
+            .search_read(
+                [
+                    "|",
+                    ("service_id", "in", self.ids),
+                    ("service_ids", "in", self.ids),
+                    ("start", ">=", range_start),
+                    ("start", "<=", range_end),
+                ],
+                ["service_id", "service_ids", "start", "plan_patient_ids"],
+            )
+        )
+        counts = defaultdict(lambda: defaultdict(set))
+        for event in events:
+            event_date = event["start"].date()
+            week_start = event_date - timedelta(days=event_date.weekday())
+            service_ids = event["service_ids"] + (
+                [event["service_id"][0]] if event["service_id"] else []
+            )
+            for service_id in service_ids:
+                if service_id in self.ids:
+                    counts[service_id][week_start].update(event["plan_patient_ids"])
+        return counts
 
 
 class ServiceCalendar(models.Model):
