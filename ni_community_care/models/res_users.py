@@ -29,6 +29,19 @@ class Users(models.Model):
         if city:
             self.city_ids = [fields.Command.set(city.ids)]
 
+    def name_get(self):
+        is_admin = self.env.user.has_group("ni_patient.group_admin")
+        is_dev = self.env.user.has_group("base.group_no_one")
+        result = []
+        for user in self:
+            name = user.employee_id.name or user.name
+            if is_admin and user.name and user.name.lower() != name.lower():
+                name = f"{name} ({user.name})"
+            if is_dev and user.login and user.login != user.name:
+                name = f"{name} [{user.login}]"
+            result.append((user.id, name))
+        return result
+
     def _get_employee_fields_to_sync(self):
         fields = super()._get_employee_fields_to_sync()
         fields += ["city_ids", "state_ids", "country_id"]
