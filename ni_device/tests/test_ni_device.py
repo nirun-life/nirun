@@ -559,8 +559,10 @@ class TestDeviceCreateObservationSheet(TestDeviceCommon):
         self.assertEqual(sheet.observation_ids.mapped("type_id"), self.obs_type)
 
     def test_requires_supported_observation_type(self):
-        self.definition.observation_type_ids = [(5, 0, 0)]
-        self.device._compute_from_definition()
+        # _compute_from_definition only fills observation_type_ids from a
+        # non-empty definition (see the one-time-fill guard), so clear the
+        # device's own field directly rather than via the definition.
+        self.device.observation_type_ids = [(5, 0, 0)]
         wizard = self.env["ni.device.create.observation.sheet"].create(
             {"device_id": self.device.id, "patient_id": self.patient.id}
         )

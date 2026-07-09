@@ -281,6 +281,20 @@ class TestComputeCode(common.TransactionCase):
         self.assertEqual(ob_a.parent_id, computed)
         self.assertEqual(ob_b.parent_id, computed)
 
+    def test_workflow_event_parent_matches_observation_parent(self):
+        # regression: WorkflowMixin._to_workflow() used to write the parent
+        # ni.observation's own id into ni.workflow.event.parent_id (which
+        # only accepts other ni.workflow.event ids), raising a foreign key
+        # violation once both child values were set and the computed parent
+        # observation got linked via child_ids.
+        sheet = self._make_sheet()
+        ob_a = self._add_obs(sheet, self.type_a, 10)
+        ob_b = self._add_obs(sheet, self.type_b, 20)
+
+        computed = self._get_computed(sheet, self.type_sum)
+        self.assertEqual(ob_a.event_id.parent_id, computed.event_id)
+        self.assertEqual(ob_b.event_id.parent_id, computed.event_id)
+
     def test_child_ids_updated_when_input_value_changes(self):
         sheet = self._make_sheet()
         ob_a = self._add_obs(sheet, self.type_a, 10)
