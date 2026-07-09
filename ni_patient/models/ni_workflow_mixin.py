@@ -56,8 +56,13 @@ class WorkflowMixin(models.AbstractModel):
             "write_date": self.write_date,
             "write_uid": self.write_uid.id,
         }
-        if self._safe_get_parent():
-            data["parent_id"] = self._safe_get_parent().id
+        parent = self._safe_get_parent()
+        if parent:
+            data["parent_id"] = (
+                parent.event_id.id
+                if self._workflow_type == "event"
+                else parent.request_id.id
+            )
         self._workflow_replace_id(data)
         return data
 
