@@ -43,6 +43,9 @@ class DeviceUsage(models.Model):
         required=True, default=lambda _: fields.Datetime.now(), index=True
     )
 
+    latitude = fields.Float(digits=(10, 7))
+    longitude = fields.Float(digits=(10, 7))
+
     res_model = fields.Char("Related Document Model", index=True, copy=False)
     res_id = fields.Many2oneReference(
         "Related Document ID", model_field="res_model", copy=False

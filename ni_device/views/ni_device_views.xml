@@ -112,6 +112,7 @@
         <field name="arch" type="xml">
             <form string="Medical Devices">
                 <field name="company_id" invisible="1" />
+                <field name="request_count" invisible="1" />
                 <field name="repair_count" invisible="1" />
                 <field name="is_holder" invisible="1" />
                 <field name="is_manager" invisible="1" />
@@ -174,6 +175,13 @@
                         type="object"
                         string="Print Device Label"
                         attrs="{'invisible': [('barcode', '=',False )]}"
+                    />
+                    <button
+                        name="action_create_observation_sheet"
+                        type="object"
+                        string="Create Observation"
+                        groups="ni_patient.group_user"
+                        attrs="{'invisible': [('observation_type_ids', '=', [])]}"
                     />
                 </header>
                 <sheet>
@@ -261,15 +269,20 @@
                                 placeholder="Select device template..."
                                 options="{'no_create': True}"
                                 class="w-100"
+                                attrs="{'readonly': [('request_count', '>', 0)]}"
                             />
                             <small
                                 class="text-warning fst-italic"
-                                attrs="{'invisible': [('id', '=', False)]}"
+                                attrs="{'invisible': ['|', ('id', '=', False), ('request_count', '>', 0)]}"
                                 groups="ni_device.access_ni_device_admin,base.group_no_one"
                             >
                                 <i class="fa fa-exclamation-triangle me-1" />
                                 Changing the template will overwrite the current data with information from the
                                 template.
+                            </small>
+                            <small class="text-muted fst-italic" attrs="{'invisible': [('request_count', '=', 0)]}">
+                                <i class="fa fa-lock me-1" />
+                                Device template is locked because a device request already exists for this device.
                             </small>
                         </div>
                     </div>
