@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-19 10:43+0000\n"
-"PO-Revision-Date: 2026-04-19 10:43+0000\n"
+"POT-Creation-Date: 2026-07-09 10:07+0000\n"
+"PO-Revision-Date: 2026-07-09 10:07+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -80,15 +80,23 @@ msgstr ""
 #. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_form
 msgid ""
-"<small class=\"text-warning fst-italic\" attrs=\"{'invisible': [('id', '=', False)]}\" groups=\"ni_device.access_ni_device_admin,base.group_no_one\">\n"
+"<small class=\"text-warning fst-italic\" attrs=\"{'invisible': ['|', ('id', '=', False), ('request_count', '&gt;', 0)]}\" groups=\"ni_device.access_ni_device_admin,base.group_no_one\">\n"
 "                                <i class=\"fa fa-exclamation-triangle me-1\"/>\n"
 "                                Changing the template will overwrite the current data with information from the\n"
 "                                template.\n"
+"                            </small>\n"
+"                            <small class=\"text-muted fst-italic\" attrs=\"{'invisible': [('request_count', '=', 0)]}\">\n"
+"                                <i class=\"fa fa-lock me-1\"/>\n"
+"                                Device template is locked because a device request already exists for this device.\n"
 "                            </small>"
 msgstr ""
-"<small class=\"text-warning fst-italic\" attrs=\"{'invisible': [('id', '=', False)]}\" groups=\"ni_device.access_ni_device_admin,base.group_no_one\">\n"
+"<small class=\"text-warning fst-italic\" attrs=\"{'invisible': ['|', ('id', '=', False), ('request_count', '&gt;', 0)]}\" groups=\"ni_device.access_ni_device_admin,base.group_no_one\">\n"
 "                                <i class=\"fa fa-exclamation-triangle me-1\"/>\n"
 "                                การเปลี่ยนแม่แบบจะดึงข้อมูลจากแม่แบบมาทับข้อมูลปัจจุบัน\n"
+"                            </small>\n"
+"                            <small class=\"text-muted fst-italic\" attrs=\"{'invisible': [('request_count', '=', 0)]}\">\n"
+"                                <i class=\"fa fa-lock me-1\"/>\n"
+"                                ไม่สามารถเปลี่ยนแม่แบบอุปกรณ์ได้ เนื่องจากมีคำขอเกี่ยวกับอุปกรณ์นี้อยู่แล้ว\n"
 "                            </small>"
 
 #. module: ni_device
@@ -237,6 +245,12 @@ msgid "All device templates"
 msgstr "แม่แบบอุปกรณ์ทั้งหมด"
 
 #. module: ni_device
+#: model:ir.model.fields,help:ni_device.field_ni_device_definition__price
+msgid ""
+"Applied to a new device only when the device's own price is not yet set."
+msgstr "นำไปใช้กับอุปกรณ์ใหม่เฉพาะเมื่อยังไม่ได้กำหนดราคาของอุปกรณ์นั้นเอง"
+
+#. module: ni_device
 #: model:ir.ui.menu,name:ni_device.menu_device_approval_root
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_request_view_form
 msgid "Approval"
@@ -296,6 +310,14 @@ msgid "Attachment Count"
 msgstr "จำนวนเอกสารแนบ"
 
 #. module: ni_device
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__repair_attachment_ids
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form_wizard_begin_repair
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form_wizard_confirm
+msgid "Attachments"
+msgstr "ไฟล์แนบ"
+
+#. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__availability_status
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_form
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_tree
@@ -332,6 +354,7 @@ msgstr "ข้อมูลทั่วไป"
 #. module: ni_device
 #. odoo-python
 #: code:addons/ni_device/models/ni_device_repair.py:0
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form_wizard_begin_repair
 #, python-format
 msgid "Begin Repair"
 msgstr "ดำเนินการซ่อม"
@@ -363,14 +386,37 @@ msgid "Can Request As Holder"
 msgstr "สามารถขอเป็นผู้ถือครองได้"
 
 #. module: ni_device
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form_wizard_begin_repair
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form_wizard_confirm
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form_wizard_create
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_request_view_form_wizard
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_request_view_form_wizard_approval
+#: model_terms:ir.ui.view,arch_db:ni_device.view_device_create_observation_sheet_wizard
 #: model_terms:ir.ui.view,arch_db:ni_device.view_device_label_layout_form
 #: model_terms:ir.ui.view,arch_db:ni_device.view_device_report_lost_wizard
 msgid "Cancel"
 msgstr "ยกเลิก"
+
+#. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device.py:0
+#, python-format
+msgid ""
+"Cannot change the device definition of %s: a device request already exists "
+"for this device."
+msgstr ""
+"ไม่สามารถเปลี่ยนแม่แบบอุปกรณ์ของ %s ได้: มีคำขอเกี่ยวกับอุปกรณ์นี้อยู่แล้ว"
+
+#. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/wizard/ni_device_create_observation_sheet.py:0
+#, python-format
+msgid ""
+"Cannot create an observation sheet because this device does not support any "
+"observation types."
+msgstr ""
+"ไม่สามารถสร้างใบบันทึกการตรวจวัดได้ "
+"เนื่องจากอุปกรณ์นี้ไม่รองรับประเภทการตรวจวัดใดๆ"
 
 #. module: ni_device
 #: model:ni.device.type,name:ni_device.device_type_cv_device
@@ -419,6 +465,7 @@ msgid "Configuration"
 msgstr "การกำหนดค่า"
 
 #. module: ni_device
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form_wizard_begin_repair
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form_wizard_confirm
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_request_view_form_wizard_approval
 #: model_terms:ir.ui.view,arch_db:ni_device.view_device_report_lost_wizard
@@ -447,9 +494,32 @@ msgid "Continuous Glucose Monitor"
 msgstr "เครื่องตรวจวัดระดับน้ำตาลในเลือดแบบต่อเนื่อง"
 
 #. module: ni_device
+#: model_terms:ir.ui.view,arch_db:ni_device.view_device_create_observation_sheet_wizard
+msgid "Create"
+msgstr "สร้าง"
+
+#. module: ni_device
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_observation_sheet_view_form_inherit
 msgid "Create Device Usage"
 msgstr "สร้างการใช้งานอุปกรณ์"
+
+#. module: ni_device
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_view_form
+msgid "Create Observation"
+msgstr "สร้างการตรวจวัด"
+
+#. module: ni_device
+#. odoo-python
+#: code:addons/ni_device/models/ni_device.py:0
+#: model_terms:ir.ui.view,arch_db:ni_device.view_device_create_observation_sheet_wizard
+#, python-format
+msgid "Create Observation Sheet"
+msgstr "สร้างใบบันทึกการตรวจวัด"
+
+#. module: ni_device
+#: model:ir.model,name:ni_device.model_ni_device_create_observation_sheet
+msgid "Create Observation Sheet from Device"
+msgstr "สร้างใบบันทึกการตรวจวัดจากอุปกรณ์"
 
 #. module: ni_device
 #: model_terms:ir.actions.act_window,help:ni_device.ni_device_definition_action
@@ -459,6 +529,7 @@ msgstr "สร้างแม่แบบอุปกรณ์ เพื่อ�
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__create_uid
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_create_observation_sheet__create_uid
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_definition__create_uid
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_dispose_type__create_uid
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_holder__create_uid
@@ -473,6 +544,7 @@ msgstr "สร้างโดย"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__create_date
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_create_observation_sheet__create_date
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_definition__create_date
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_dispose_type__create_date
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_holder__create_date
@@ -487,6 +559,7 @@ msgstr "สร้างเมื่อ"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__currency_id
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_definition__currency_id
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__currency_id
 msgid "Currency"
 msgstr "สกุลเงิน"
@@ -547,6 +620,11 @@ msgid "Deceased Date"
 msgstr "วันที่เสียชีวิต"
 
 #. module: ni_device
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_definition__price
+msgid "Default Price"
+msgstr "ราคาเริ่มต้น"
+
+#. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_dispose_type__definition
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_type__definition
 msgid "Definition"
@@ -583,6 +661,7 @@ msgstr ""
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_hr_employee__device_search
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_create_observation_sheet__device_id
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_holder__device_id
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_label_layout__device_id
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__device_id
@@ -853,6 +932,7 @@ msgstr "แสดง"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__display_name
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_create_observation_sheet__display_name
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_definition__display_name
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_dispose_type__display_name
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_holder__display_name
@@ -943,14 +1023,14 @@ msgid "End Date"
 msgstr "วันที่สิ้นสุด"
 
 #. module: ni_device
-#: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__estimated_duration
-msgid "Estimated Duration (days)"
-msgstr "ระยะเวลาซ่อมโดยประเมิน (วัน)"
-
-#. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__estimated_attachment_ids
 msgid "Estimated Attachments"
 msgstr "ไฟล์แนบโดยประเมิน"
+
+#. module: ni_device
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__estimated_duration
+msgid "Estimated Duration (days)"
+msgstr "ระยะเวลาซ่อมโดยประเมิน (วัน)"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__estimated_note
@@ -1074,6 +1154,7 @@ msgstr "สถานะการถือครอง"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__id
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_create_observation_sheet__id
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_definition__id
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_dispose_type__id
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_holder__id
@@ -1201,6 +1282,7 @@ msgstr "ผู้ถือครองใหม่รับทราบ"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device____last_update
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_create_observation_sheet____last_update
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_definition____last_update
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_dispose_type____last_update
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_holder____last_update
@@ -1215,6 +1297,7 @@ msgstr "แก้ไขครั้งล่าสุดเมื่อ"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__write_uid
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_create_observation_sheet__write_uid
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_definition__write_uid
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_dispose_type__write_uid
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_holder__write_uid
@@ -1229,6 +1312,7 @@ msgstr "อัปเดตล่าสุดโดย"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__write_date
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_create_observation_sheet__write_date
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_definition__write_date
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_dispose_type__write_date
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_holder__write_date
@@ -1240,6 +1324,21 @@ msgstr "อัปเดตล่าสุดโดย"
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_usage__write_date
 msgid "Last Updated on"
 msgstr "วันที่อัปเดตล่าสุด"
+
+#. module: ni_device
+#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_usage_view_form
+msgid "Lat,Lng"
+msgstr "ละติจูด,ลองจิจูด"
+
+#. module: ni_device
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_usage__latitude
+msgid "Latitude"
+msgstr "ละติจูด"
+
+#. module: ni_device
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_usage__longitude
+msgid "Longitude"
+msgstr "ลองจิจูด"
 
 #. module: ni_device
 #: model:ir.model.fields.selection,name:ni_device.selection__ni_device__availability_status__lost
@@ -1507,6 +1606,7 @@ msgstr "พักการดำเนินการ"
 
 #. module: ni_device
 #: model:ir.model,name:ni_device.model_ni_patient
+#: model:ir.model.fields,field_description:ni_device.field_ni_device_create_observation_sheet__patient_id
 #: model:ir.model.fields,field_description:ni_device.field_ni_device_usage__patient_id
 #: model_terms:ir.ui.view,arch_db:ni_device.ni_device_usage_view_search
 msgid "Patient"
@@ -1684,14 +1784,6 @@ msgstr "ผู้แจ้งซ่อม"
 #, python-format
 msgid "Repair Result"
 msgstr "ผลการซ่อม"
-
-#. module: ni_device
-#: model:ir.model.fields,field_description:ni_device.field_ni_device_repair__repair_attachment_ids
-#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form
-#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form_wizard_begin_repair
-#: model_terms:ir.ui.view,arch_db:ni_device.ni_device_repair_view_form_wizard_confirm
-msgid "Attachments"
-msgstr "ไฟล์แนบ"
 
 #. module: ni_device
 #: model:ir.model.fields,field_description:ni_device.field_ni_device__active_repair_state

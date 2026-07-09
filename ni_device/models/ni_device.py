@@ -1,6 +1,7 @@
 import logging
 
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -60,6 +61,9 @@ class Device(models.Model):
         "Price",
         currency_field="currency_id",
         tracking=True,
+        compute="_compute_from_definition",
+        store=True,
+        readonly=False,
     )
     barcode = fields.Char(string="Barcode", related="identifier")
 
@@ -199,6 +203,22 @@ class Device(models.Model):
         store=False,
     )
 
+    def write(self, vals):
+        if "definition_id" in vals:
+            locked = self.filtered(
+                lambda rec: rec.request_ids
+                and rec.definition_id.id != vals["definition_id"]
+            )
+            if locked:
+                raise UserError(
+                    _(
+                        "Cannot change the device definition of %s: a device request "
+                        "already exists for this device."
+                    )
+                    % ", ".join(locked.mapped("name"))
+                )
+        return super().write(vals)
+
     @api.depends("repair_ids.repair_cost")
     def _compute_repair_cost(self):
         for rec in self:
@@ -223,6 +243,9 @@ class Device(models.Model):
             # ดึงรูปจาก definition เฉพาะเมื่อยังไม่มีรูปของตัวเอง
             if dfn.image_1920 and not rec.image_1920:
                 rec.image_1920 = dfn.image_1920
+            # ดึงราคาจาก definition เฉพาะเมื่อยังไม่มีราคาของตัวเอง (ไม่ sync ซ้ำ)
+            if dfn.price and not rec.price:
+                rec.price = dfn.price
 
     # ── Counts ─────────────────────────────────────────────────────────────────
 
@@ -425,6 +448,17 @@ class Device(models.Model):
                 "default_device_id": self.id,
                 "default_action_type": "lost",
             },
+        }
+
+    def action_create_observation_sheet(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Create Observation Sheet"),
+            "res_model": "ni.device.create.observation.sheet",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_device_id": self.id},
         }
 
     def action_report_found(self):

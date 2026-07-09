@@ -1,4 +1,4 @@
-#  Copyright (c) 2021-2023 NSTDA
+#  Copyright (c) 2026 NSTDA
 
 {
     "name": "Device",
@@ -31,6 +31,7 @@
         "views/ni_device_menu.xml",
         "report/device_label_layout_template.xml",
         "wizard/ni_device_report_lost_wizard.xml",
+        "wizard/ni_device_create_observation_sheet_wizard.xml",
         "views/hr_employee_views.xml",
     ],
     "demo": [

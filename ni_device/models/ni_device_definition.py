@@ -36,6 +36,16 @@ class DeviceDefinition(models.Model):
 
     model_number = fields.Char("Model Number", tracking=True)
 
+    currency_id = fields.Many2one(
+        "res.currency", required=True, default=lambda self: self.env.company.currency_id
+    )
+    price = fields.Monetary(
+        "Default Price",
+        currency_field="currency_id",
+        tracking=True,
+        help="Applied to a new device only when the device's own price is not yet set.",
+    )
+
     observation_type_ids = fields.Many2many(
         "ni.observation.type",
         string="Supported Observation Types",
@@ -65,11 +75,14 @@ class DeviceDefinition(models.Model):
         for rec in self:
             rec.device_count = len(rec.device_ids)
 
+    @api.depends("device_ids.usage_ids")
     def _compute_usage_count(self):
+        data = self.env["ni.device.usage"].read_group(
+            [("definition_id", "in", self.ids)], ["definition_id"], ["definition_id"]
+        )
+        counts = {d["definition_id"][0]: d["definition_id_count"] for d in data}
         for rec in self:
-            rec.usage_count = self.env["ni.device.usage"].search_count(
-                [("device_id", "in", rec.device_ids.ids)]
-            )
+            rec.usage_count = counts.get(rec.id, 0)
 
     def action_view_devices(self):
         self.ensure_one()

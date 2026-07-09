@@ -1,4 +1,5 @@
 from odoo import fields
+from odoo.exceptions import UserError
 
 from .common import TestDeviceCommon
 
@@ -17,6 +18,77 @@ class TestDeviceFieldsFromDefinition(TestDeviceCommon):
         self.device.definition_id = new_def
         self.device._compute_from_definition()
         self.assertEqual(self.device.model_number, "TH-200")
+
+    def test_price_copied_from_definition_when_unset(self):
+        self.definition.price = 1000
+        device = self.env["ni.device"].create(
+            {
+                "name": "BP Monitor #3",
+                "definition_id": self.definition.id,
+                "serial_number": "SN-003",
+                "received_date": fields.Date.today(),
+            }
+        )
+        self.assertEqual(device.price, 1000)
+
+    def test_price_not_overwritten_when_already_set(self):
+        self.definition.price = 1000
+        self.device.price = 250
+        self.device._compute_from_definition()
+        self.assertEqual(self.device.price, 250)
+
+    def test_price_not_resynced_on_definition_change(self):
+        self.device.price = 250
+        new_def = self.env["ni.device.definition"].create(
+            {"name": "Thermometer", "price": 999}
+        )
+        self.device.definition_id = new_def
+        self.device._compute_from_definition()
+        self.assertEqual(self.device.price, 250)
+
+
+class TestDeviceDefinitionLock(TestDeviceCommon):
+    def test_definition_id_changeable_before_any_request(self):
+        new_def = self.env["ni.device.definition"].create({"name": "Thermometer"})
+        self.device.write({"definition_id": new_def.id})
+        self.assertEqual(self.device.definition_id, new_def)
+
+    def test_definition_id_locked_after_draft_request(self):
+        self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_hold",
+                "holder_employee_id": self.employee.id,
+            }
+        )
+        new_def = self.env["ni.device.definition"].create({"name": "Thermometer"})
+        with self.assertRaises(UserError):
+            self.device.write({"definition_id": new_def.id})
+
+    def test_definition_id_same_value_still_writeable_after_request(self):
+        self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_hold",
+                "holder_employee_id": self.employee.id,
+            }
+        )
+        self.device.write({"definition_id": self.device.definition_id.id})
+        self.assertEqual(self.device.definition_id, self.definition)
+
+    def test_definition_id_locked_after_rejected_request(self):
+        req = self.env["ni.device.request"].create(
+            {
+                "device_id": self.device.id,
+                "request_type": "request_hold",
+                "holder_employee_id": self.employee.id,
+            }
+        )
+        req.action_submit()
+        req.with_context(approval_action="reject").action_confirm_approval()
+        new_def = self.env["ni.device.definition"].create({"name": "Thermometer"})
+        with self.assertRaises(UserError):
+            self.device.write({"definition_id": new_def.id})
 
 
 class TestDeviceDefaults(TestDeviceCommon):
@@ -446,6 +518,72 @@ class TestDeviceDefinitionCounts(TestDeviceCommon):
         )
         self.definition._compute_device_count()
         self.assertEqual(self.definition.device_count, 2)
+
+
+class TestDeviceDefinitionUsageCount(TestDeviceCommon):
+    def test_usage_count_zero_initially(self):
+        self.definition._compute_usage_count()
+        self.assertEqual(self.definition.usage_count, 0)
+
+    def test_usage_count_reflects_usage_across_devices(self):
+        other_device = self.env["ni.device"].create(
+            {
+                "name": "BP Monitor #2",
+                "definition_id": self.definition.id,
+                "serial_number": "SN-002",
+                "received_date": fields.Date.today(),
+            }
+        )
+        self.env["ni.device.usage"].create({"device_id": self.device.id})
+        self.env["ni.device.usage"].create({"device_id": other_device.id})
+        self.definition._compute_usage_count()
+        self.assertEqual(self.definition.usage_count, 2)
+
+
+class TestDeviceCreateObservationSheet(TestDeviceCommon):
+    def setUp(self):
+        super().setUp()
+        self.obs_type = self.env["ni.observation.type"].create({"name": "Weight"})
+        self.definition.observation_type_ids = [(6, 0, [self.obs_type.id])]
+        self.device._compute_from_definition()
+        self.patient = self.env["ni.patient"].create({"name": "Test Patient"})
+
+    def test_creates_sheet_with_device_and_lines(self):
+        wizard = self.env["ni.device.create.observation.sheet"].create(
+            {"device_id": self.device.id, "patient_id": self.patient.id}
+        )
+        action = wizard.action_confirm()
+        sheet = self.env["ni.observation.sheet"].browse(action["res_id"])
+        self.assertEqual(sheet.device_id, self.device)
+        self.assertEqual(sheet.patient_id, self.patient)
+        self.assertEqual(sheet.observation_ids.mapped("type_id"), self.obs_type)
+
+    def test_requires_supported_observation_type(self):
+        self.definition.observation_type_ids = [(5, 0, 0)]
+        self.device._compute_from_definition()
+        wizard = self.env["ni.device.create.observation.sheet"].create(
+            {"device_id": self.device.id, "patient_id": self.patient.id}
+        )
+        with self.assertRaises(UserError):
+            wizard.action_confirm()
+
+
+class TestDeviceUsageGeolocation(TestDeviceCommon):
+    def test_latitude_longitude_optional(self):
+        usage = self.env["ni.device.usage"].create({"device_id": self.device.id})
+        self.assertEqual(usage.latitude, 0.0)
+        self.assertEqual(usage.longitude, 0.0)
+
+    def test_latitude_longitude_stored(self):
+        usage = self.env["ni.device.usage"].create(
+            {
+                "device_id": self.device.id,
+                "latitude": 13.7563,
+                "longitude": 100.5018,
+            }
+        )
+        self.assertAlmostEqual(usage.latitude, 13.7563)
+        self.assertAlmostEqual(usage.longitude, 100.5018)
 
 
 class TestDeviceReportLost(TestDeviceCommon):

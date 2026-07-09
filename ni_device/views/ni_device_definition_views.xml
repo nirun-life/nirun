@@ -41,6 +41,8 @@
                 <field name="type_ids" string="Type" widget="many2many_tags" />
                 <field name="manufacturer_id" string="Manufacturer" optional="show" />
                 <field name="model_number" string="Model" optional="show" />
+                <field name="price" optional="hide" />
+                <field name="currency_id" invisible="1" />
                 <field name="device_count" string="Device count" />
             </tree>
         </field>
@@ -152,6 +154,8 @@
                         <group string="Basic information">
                             <field name="manufacturer_id" />
                             <field name="model_number" />
+                            <field name="price" />
+                            <field name="currency_id" invisible="1" />
                         </group>
                         <group string="Measurement">
                             <field name="observation_type_ids" widget="many2many_tags" />

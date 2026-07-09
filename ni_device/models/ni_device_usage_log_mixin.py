@@ -24,7 +24,7 @@ class DeviceUsageLogMixin(models.AbstractModel):
             "device_id": self.device_id.id,
             "patient_id": getattr(self, "patient_id", False) and self.patient_id.id,
             "company_id": getattr(self, "company_id", False) and self.company_id.id,
-            "user_id": self.user_id.id,
+            "user_id": getattr(self, "user_id", False) and self.user_id.id,
             "res_model": self._name,
             "res_id": self.id,
             "occurrence": occurrence,
