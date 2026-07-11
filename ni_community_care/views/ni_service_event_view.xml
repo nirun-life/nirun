@@ -70,6 +70,12 @@
             <xpath expr="//group/div[2]" position="after">
                 <field name="outcome" />
             </xpath>
+            <field name="service_ids" position="attributes">
+                <attribute name="domain">
+                    [('category_id', '=', service_category_id), '|',('target_type_ids', '=', False), ('target_type_ids',
+                    '=', patient_type_id),'|', ('my_service', '=', True), ('user_id', '=', False)]
+                </attribute>
+            </field>
         </field>
     </record>
     <record id="ni_service_event_view_form_inherit" model="ir.ui.view">
