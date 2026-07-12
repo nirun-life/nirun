@@ -43,7 +43,7 @@ class Service(models.Model):
         "category_id",
         string="Categories",
     )
-    category = fields.Char(compute="_compute_category", store=True, translate=True)
+    category = fields.Char(compute="_compute_category", store=True)
     category_decoration = fields.Selection(related="category_id.decoration")
     type_id = fields.Many2one("ni.service.type", index=True)
     type_decoration = fields.Selection(related="type_id.decoration")
