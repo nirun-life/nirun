@@ -1,0 +1,32 @@
+// Overlay the mic trigger bottom-right of the html field, clear of the
+// wysiwyg toolbar (which is anchored top) without needing to measure it.
+.o_speech_dictation_html {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+}
+
+// Same idea for the plain text field: the translate button (o_field_translate)
+// overlays the textarea's top-right corner, so anchor the mic trigger to the
+// bottom-right instead to avoid overlapping/blocking it.
+.o_speech_dictation_text {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+}
+
+body:not(.o_touch_device) .o_speech_dictation_wrapper {
+    &:not(:hover):not(:focus-within) {
+        & .o_speech_dictation_text {
+            display: none !important;
+        }
+    }
+}
+
+body:not(.o_touch_device) .o_field_html {
+    &:not(:hover):not(:focus-within) {
+        & .o_speech_dictation_html {
+            display: none !important;
+        }
+    }
+}

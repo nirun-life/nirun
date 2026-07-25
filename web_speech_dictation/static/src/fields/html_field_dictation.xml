@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-inherit="web_editor.HtmlField" t-inherit-mode="extension" owl="1">
+        <xpath expr="//t[@t-if='props.isTranslatable']" position="before">
+            <button
+                type="button"
+                class="btn btn-sm btn-light o_speech_dictation_button o_speech_dictation_html"
+                t-att-disabled="!dictationSupported || !dictationReady || dictationState.languageError || !dictationState.selectedLanguage"
+                t-att-title="dictationTooltip"
+                t-on-click="onDictationClick"
+            >
+                <i class="fa fa-microphone" aria-hidden="true" />
+                <span class="visually-hidden">Dictate</span>
+            </button>
+        </xpath>
+    </t>
+</templates>
