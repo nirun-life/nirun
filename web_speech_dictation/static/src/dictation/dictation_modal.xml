@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="web_speech_dictation.DictationModal" owl="1">
+        <Dialog title="'Dictation'" size="'md'">
+            <div class="d-flex flex-column align-items-center gap-3 py-2">
+                <div class="o_speech_dictation_input mb-2">
+                    <select
+                        id="dictation_lang"
+                        class="form-select form-select-sm"
+                        t-att-disabled="state.listening || state.languageError || !state.languages.length"
+                        t-on-change="onLanguageChange"
+                    >
+                        <option
+                            t-foreach="state.languages"
+                            t-as="language"
+                            t-key="language.code"
+                            t-att-value="language.code"
+                            t-att-selected="language.code === state.selectedLanguage"
+                        >
+                            <t t-esc="language.name" />
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <button
+                        type="button"
+                        class="btn btn-lg rounded-circle d-flex align-items-center justify-content-center o_speech_dictation_toggle"
+                        t-att-class="{'btn-primary': state.listening, 'btn-outline-secondary': !state.listening, 'o_speech_dictation_button_listening': state.listening}"
+                        t-att-disabled="toggleDisabled"
+                        t-on-click="onToggle"
+                    >
+                        <i class="fa fa-2x" t-att-class="toggleIcon" aria-hidden="true" />
+                        <span class="visually-hidden">Start or stop dictation</span>
+                    </button>
+                    <p class="text-muted mt-4 mb-0" t-esc="statusLabel" />
+                </div>
+                <div class="alert alert-success" role="blockquote" t-if="transcriptPreview">
+                    <p class="text-body text-center mb-0 o_speech_dictation_preview" t-esc="transcriptPreview" />
+                </div>
+            </div>
+            <t t-set-slot="footer" owl="1">
+                <div class="btn-group">
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        t-att-disabled="!hasTranscript"
+                        t-on-click="() => this.confirm('cursor')"
+                    >
+                        Confirm
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        t-att-disabled="!hasTranscript"
+                    >
+                        <span class="visually-hidden">More insert options</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <a href="#" class="dropdown-item" t-on-click.prevent="() => this.confirm('tail')">
+                            Insert at end
+                        </a>
+                        <a href="#" class="dropdown-item" t-on-click.prevent="() => this.confirm('replace')">
+                            Replace field
+                        </a>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary" t-on-click="discard">Discard</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>

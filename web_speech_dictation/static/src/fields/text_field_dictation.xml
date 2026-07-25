@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-inherit="web.TextField" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[@t-ref='div']" position="attributes">
+            <attribute name="class" add="position-relative o_speech_dictation_wrapper" separator=" " />
+        </xpath>
+        <xpath expr="//textarea" position="after">
+            <button
+                type="button"
+                class="btn btn-link pe-2 d-inline-flex align-items-center o_speech_dictation_button o_speech_dictation_text"
+                t-att-disabled="!dictationSupported || dictationState.languageError || !dictationState.selectedLanguage"
+                t-att-title="dictationTooltip"
+                t-on-click="onDictationClick"
+            >
+                <i class="fa fa-microphone" aria-hidden="true" />
+                <span class="visually-hidden">Dictate</span>
+            </button>
+        </xpath>
+    </t>
+</templates>

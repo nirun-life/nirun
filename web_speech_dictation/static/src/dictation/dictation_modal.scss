@@ -1,0 +1,25 @@
+.o_speech_dictation_toggle {
+    width: 6rem;
+    height: 6rem;
+}
+
+.o_speech_dictation_button_listening {
+    animation: o_speech_dictation_pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes o_speech_dictation_pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.12);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_speech_dictation_button_listening {
+        animation: none;
+    }
+}
