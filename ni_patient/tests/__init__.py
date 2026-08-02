@@ -3,6 +3,7 @@
 from . import (
     test_ni_encounter_class_auto_close,
     test_ni_encounter_class_auto_close_edge_cases,
+    test_ni_location_name_search,
     test_ni_patient,
     test_ni_workflow,
 )
