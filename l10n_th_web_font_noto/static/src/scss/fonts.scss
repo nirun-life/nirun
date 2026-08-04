@@ -1,41 +1,40 @@
-@mixin module-font($family, $type, $weight, $style) {
+// Keep these ranges synchronized with tools/generate_web_fonts.py.
+$noto-basic-latin-range: U+0000-007F, U+2000-206F, U+20A0-20CF, U+2190-21FF, U+2212, U+25CC, U+FEFF, U+FFFD;
+$noto-thai-range: U+0E00-0E7F, U+200C-200D, U+25CC;
+
+@mixin noto-latin-face($type, $weight, $style: normal) {
     @font-face {
-        font-family: $family;
-        src: url("../fonts/google/#{$family}/#{$family}-#{$type}.ttf") format("truetype");
+        font-family: "NotoSans";
+        src: url("../fonts/web/latin/NotoSans-#{$type}-latin.woff2") format("woff2");
         font-weight: $weight;
         font-style: $style;
+        font-display: swap;
+        unicode-range: $noto-basic-latin-range;
     }
 }
 
-@mixin module-font-Thai($family, $type, $weight, $style) {
+@mixin noto-thai-face($type, $weight) {
     @font-face {
-        font-family: $family;
-        src: url("../fonts/google/#{$family}Thai/#{$family}Thai-#{$type}.ttf") format("truetype");
+        font-family: "NotoSans";
+        src: url("../fonts/web/thai/NotoSansThai-#{$type}-thai.woff2") format("woff2");
         font-weight: $weight;
-        font-style: $style;
-        unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC;
+        font-style: normal;
+        font-display: swap;
+        unicode-range: $noto-thai-range;
     }
 }
 
-@mixin module-font-pair($family, $type, $weight) {
-    @include module-font("#{$family}", $type, $weight, normal);
-    @include module-font("#{$family}", $type, $weight, italic);
-    @include module-font-Thai("#{$family}", $type, $weight, normal);
+@mixin noto-upright-pair($type, $weight) {
+    @include noto-latin-face($type, $weight);
+    @include noto-thai-face($type, $weight);
 }
 
-@mixin module-font-set($family) {
-    @include module-font-pair($family, "Thin", 100);
-    @include module-font-pair($family, "ExtraLight", 200);
-    @include module-font-pair($family, "Light", 300);
-    @include module-font($family, "Regular", 400, normal);
-    @include module-font($family, "Italic", 400, italic);
-    @include module-font-Thai($family, "Regular", 400, normal);
-    @include module-font-pair($family, "Medium", 500);
-    @include module-font-pair($family, "SemiBold", 600);
-    @include module-font-pair($family, "Bold", 700);
-    @include module-font-pair($family, "ExtraBold", 800);
-    @include module-font-pair($family, "Black", 900);
-}
+@include noto-upright-pair("Light", 300);
+@include noto-upright-pair("Regular", 400);
+@include noto-upright-pair("Medium", 500);
+@include noto-upright-pair("SemiBold", 600);
+@include noto-upright-pair("Bold", 700);
 
-@include module-font-set("NotoSans");
-@include module-font-set("NotoSerif");
+@include noto-latin-face("Italic", 400, italic);
+@include noto-latin-face("MediumItalic", 500, italic);
+@include noto-latin-face("BoldItalic", 700, italic);

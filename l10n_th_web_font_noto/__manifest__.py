@@ -3,7 +3,7 @@
 {
     "name": "Noto Sans/Serif Thai Font",
     "summary": "Noto Sans/Serif Thai Font for Odoo",
-    "version": "16.0.0.3.0",
+    "version": "16.0.0.4.0",
     "development_status": "Alpha",
     "category": "Website",
     "author": "NSTDA, Piruin P.",
