@@ -8,11 +8,19 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <h1>
-                            <field name="patient_id" readonly="1" options="{'no_open': True}" />
+                        <field name="patient_count" invisible="1" />
+                        <h1 attrs="{'invisible': [('patient_count', '&gt;', 1)]}">
+                            <field name="patient_name" nolabel="1" />
                         </h1>
                         <group>
                             <group id="info">
+                                <field
+                                    name="patient_ids"
+                                    readonly="1"
+                                    widget="many2many_tags"
+                                    options="{'no_open': True}"
+                                    attrs="{'invisible': [('patient_count', '&lt;', 2)]}"
+                                />
                                 <field
                                     name="state_reason_id"
                                     options="{'no_edit': True, 'no_create': True, 'no_open': True}"

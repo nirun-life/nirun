@@ -19,7 +19,7 @@ export class PatientFormController extends FormController {
         }
         const archiveAction = menuItems.other.find((item) => item.key === "archive");
         if (archiveAction) {
-            archiveAction.callback = this.archivePatient.bind(this, this.model.root.resId);
+            archiveAction.callback = () => this.archivePatient([this.model.root.resId]);
         }
         return menuItems;
     }
