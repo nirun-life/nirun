@@ -88,7 +88,7 @@
         <field name="name">ni.patient.view.tree</field>
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
-            <tree default_order="encounter_id, name">
+            <tree default_order="encounter_id, name" js_class="ni_patient_list">
                 <field name="identifier" optional="show" />
                 <field name="name" />
                 <field name="gender" optional="show" />
@@ -105,7 +105,7 @@
         <field name="name">ni.patient.view.form</field>
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
-            <form duplicate="0">
+            <form duplicate="0" js_class="ni_patient_form">
                 <field name="id" invisible="1" />
                 <field name="is_encountering" invisible="1" />
                 <field name="active" invisible="1" />
