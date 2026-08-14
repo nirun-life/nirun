@@ -8,7 +8,7 @@ export function useArchivePatient() {
     const env = useEnv();
     const action = useService("action");
 
-    return (id) => {
+    return (resIds) => {
         action.doAction(
             {
                 type: "ir.actions.act_window",
@@ -18,8 +18,7 @@ export function useArchivePatient() {
                 views: [[false, "form"]],
                 target: "new",
                 context: {
-                    default_patient_id: id,
-                    toggle_active: true,
+                    default_patient_ids: resIds,
                 },
             },
             {
