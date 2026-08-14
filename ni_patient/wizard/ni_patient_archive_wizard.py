@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class PatientArchiveWizard(models.TransientModel):
@@ -30,6 +31,11 @@ class PatientArchiveWizard(models.TransientModel):
             rec.patient_name = rec.patient_ids[:1].display_name
 
     def action_register_departure(self):
+        # patient_ids เป็น readonly ฝั่ง client จึงมาจาก default_patient_ids ทางเดียว
+        # required=True บน m2m ไม่ถูกบังคับที่ DB — ถ้า context หลุด ต้องดังกว่าเงียบ
+        if not self.patient_ids:
+            raise UserError(_("No patient selected."))
+
         # เหตุผล/วันที่/รายละเอียด ชุดเดียว ใช้กับทุกคนที่เลือกมา
         vals = {
             "state_reason_id": self.state_reason_id.id,

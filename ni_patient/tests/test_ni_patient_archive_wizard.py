@@ -1,6 +1,7 @@
 #  Copyright (c) 2025 NSTDA
 
 from odoo import fields
+from odoo.exceptions import UserError
 
 from .common import TestPatientCommon
 
@@ -43,3 +44,16 @@ class TestPatientArchiveWizard(TestPatientCommon):
         )
         self.assertEqual(wizard.patient_count, 1, "คนเดียว -> โชว์ชื่อใหญ่")
         self.assertEqual(wizard.patient_name, patient.display_name)
+
+        wizard.action_register_departure()
+
+        self.assertFalse(patient.active)
+        self.assertEqual(wizard.state_reason_id, patient.state_reason_id)
+
+    def test_archive_without_patient_raises(self):
+        # patient_ids มาจาก context ทางเดียว — context หลุดต้อง error ไม่ใช่ปิดเงียบ
+        wizard = self.env["ni.patient.archive.wizard"].create(
+            {"state_reason_id": self.env.ref("ni_patient.reason_moved").id}
+        )
+        with self.assertRaises(UserError):
+            wizard.action_register_departure()

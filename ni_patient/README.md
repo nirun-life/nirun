@@ -31,6 +31,17 @@ read-only workflow timeline that combines events and requests into a single pati
 - Portal templates in `views/ni_patient_portal.xml` and `views/ni_patient_portal_templates.xml` expose patient-facing entry
   points.
 
+## Frontend View Registrations
+
+- `static/src/views/form_view.js` and `static/src/views/list_view.js` register the `ni_patient_form` and `ni_patient_list` view
+  types; the base patient form and tree in `views/ni_patient_views.xml` carry the matching `js_class`.
+- Both controllers replace the standard Archive action menu item through the shared `static/src/views/archive_patient_hook.js`,
+  which opens `ni.patient.archive.wizard` with `default_patient_ids` (one id from the form, the whole selection from the list).
+- Invariant: archiving a patient must go through that wizard — it is the only path that records state reason, date, and note. A
+  plain `write({"active": False})` bypasses it and loses that data.
+- `PatientListController` is an extension seam imported by downstream repositories; renaming it is a breaking change outside
+  this module.
+
 ## Security and Support Files
 
 - `security/ni_patient_group.xml` defines the patient access group.
