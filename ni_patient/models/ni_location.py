@@ -1,7 +1,6 @@
 #  Copyright (c) 2021-2023 NSTDA
 
 from odoo import _, api, fields, models
-from odoo.osv import expression
 
 
 class Location(models.Model):
@@ -10,6 +9,7 @@ class Location(models.Model):
     _check_company_auto = True
     _order = "parent_path"
     _parent_store = True
+    _rec_names_search = ["name", "alias"]
 
     company_id = fields.Many2one(
         "res.company",
@@ -145,28 +145,3 @@ class Location(models.Model):
         if self._context.get("show_alias", True) and self.alias:
             name = "{} ({})".format(name, self.alias)
         return name
-
-    @api.model
-    def _name_search(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        args = args or []
-        if name:
-            # display_name matched every location instead of none: it is neither stored nor given
-            # a search method, so the ORM logs "Non-stored field ... cannot be searched" and turns
-            # the leaf into TRUE - any name typed into a location autocomplete, or any
-            # ('<m2o to a location>', 'ilike', ...) leaf, returned the whole table.
-            # _rec_names_search is what name_get is composed from anyway, and reading it here means
-            # models extending this one are searched on their own fields too (ni.location.commu
-            # adds "code").
-            names = list(self._rec_names_search or [self._rec_name]) + ["alias"]
-            # A negated leaf has to be joined with AND, or "not ilike" matches on one field what
-            # the other excludes and the whole table comes back again - expression.py hands us
-            # the raw operator for a m2o leaf, negatives included.
-            aggregator = (
-                expression.AND
-                if operator in expression.NEGATIVE_TERM_OPERATORS
-                else expression.OR
-            )
-            args = aggregator([[(field, operator, name)] for field in names]) + args
-        return self._search(args, limit=limit, access_rights_uid=name_get_uid)

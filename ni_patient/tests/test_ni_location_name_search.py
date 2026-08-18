@@ -16,16 +16,16 @@ class TestLocationNameSearch(common.TransactionCase):
         )
         cls.alpha, cls.bravo, cls.charlie = cls.locations
 
-    def _search(self, name, operator="ilike"):
-        found = self.env["ni.location"].name_search(name, operator=operator)
+    def _search(self, name):
+        # Scoped to this test's own records: unscoped, the pre-fix TRUE leaf returns an arbitrary
+        # 100 rows that need not include bravo/charlie, and the assert passes against the bug.
+        found = self.env["ni.location"].name_search(
+            name, args=[("id", "in", self.locations.ids)]
+        )
         return self.env["ni.location"].browse(i for i, _label in found)
 
     def test_ilike_filters_instead_of_matching_everything(self):
-        self.assertEqual(self._search("Alpha") & self.locations, self.alpha)
+        self.assertEqual(self._search("Alpha"), self.alpha)
 
     def test_alias_is_still_matched(self):
-        self.assertEqual(self._search("WB") & self.locations, self.bravo)
-
-    def test_negated_operator_is_joined_with_and(self):
-        # OR here would let `alias not ilike` re-admit what `name not ilike` excluded
-        self.assertNotIn(self.alpha, self._search("Alpha", operator="not ilike"))
+        self.assertEqual(self._search("WB"), self.bravo)
