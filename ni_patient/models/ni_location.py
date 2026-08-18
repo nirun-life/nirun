@@ -9,6 +9,7 @@ class Location(models.Model):
     _check_company_auto = True
     _order = "parent_path"
     _parent_store = True
+    _rec_names_search = ["name", "alias"]
 
     company_id = fields.Many2one(
         "res.company",
@@ -144,16 +145,3 @@ class Location(models.Model):
         if self._context.get("show_alias", True) and self.alias:
             name = "{} ({})".format(name, self.alias)
         return name
-
-    @api.model
-    def _name_search(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        args = args or []
-        if name:
-            args = [
-                "|",
-                ("display_name", operator, name),
-                ("alias", operator, name),
-            ] + args
-        return self._search(args, limit=limit, access_rights_uid=name_get_uid)
