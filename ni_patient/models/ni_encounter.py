@@ -765,6 +765,20 @@ class Encounter(models.Model):
         action["context"] = ctx
         return action
 
+    def action_encounter_workflow_timeline(self):
+        self.ensure_one()
+        action_rec = self.env.ref("ni_patient.ni_workflow_line_action").sudo()
+        action = action_rec.read()[0]
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "default_encounter_id": self.id,
+            }
+        )
+        action["context"] = ctx
+        action["domain"] = [("encounter_id", "=", self.id)]
+        return action
+
     def action_participate(self, type_id=None, start=None):
         period_start = start or fields.Datetime.now()
         user = self.env["res.users"].browse(self.env.uid)
