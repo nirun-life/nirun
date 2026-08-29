@@ -31,6 +31,15 @@
         <field name="state">code</field>
         <field name="code">action = records.action_encounter_participant()</field>
     </record>
+    <record id="ni_encounter_action_server_workflow_timeline" model="ir.actions.server">
+        <field name="name">Workflow Timeline</field>
+        <field name="sequence" eval="2" />
+        <field name="model_id" ref="model_ni_encounter" />
+        <field name="binding_model_id" ref="model_ni_encounter" />
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_encounter_workflow_timeline()</field>
+    </record>
     <record id="ni_encounter_action" model="ir.actions.act_window">
         <field name="name">Encounter</field>
         <field name="res_model">ni.encounter</field>

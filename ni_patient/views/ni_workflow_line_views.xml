@@ -6,7 +6,8 @@
     <record id="ni_workflow_line_action" model="ir.actions.act_window">
         <field name="name">Timeline</field>
         <field name="res_model">ni.workflow.line</field>
-        <field name="view_mode">tree,kanban</field>
+        <field name="view_mode">kanban,tree</field>
+        <field name="context">{'search_default_group_by_occurrence': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">No Timeline</p>
             <p>You may try to remove some filter</p>
@@ -47,6 +48,7 @@
                     <filter name="group_by_occurrence" string="Date" context="{'group_by': 'occurrence'}" />
                 </group>
                 <searchpanel>
+                    <field name="company_id" icon="fa-building" enable_counters="1" groups="base.group_multi_company" />
                     <field name="type" icon="fa-tag" enable_counters="1" />
                     <field name="state" icon="fa-circle" enable_counters="1" />
                 </searchpanel>
