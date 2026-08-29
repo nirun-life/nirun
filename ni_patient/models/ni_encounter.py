@@ -10,6 +10,16 @@ LOCK_STATE_DICT = {
     "finished": [("readonly", True)],
 }
 
+# Maps ni.encounter.state to ni.workflow.event.state; "draft" is omitted
+# because nothing has occurred yet.
+ENCOUNTER_EVENT_STATE = {
+    "planned": "preparation",
+    "in-progress": "in-progress",
+    "finished": "completed",
+    "cancelled": "not-done",
+    "entered-in-error": "abort",
+}
+
 
 class Encounter(models.Model):
     _name = "ni.encounter"
@@ -613,7 +623,37 @@ class Encounter(models.Model):
         if "state" in vals:
             for enc in self:
                 enc.patient_id._compute_encounter()
+                enc._log_workflow_event()
         return result
+
+    def _log_workflow_event(self):
+        self.ensure_one()
+        event_state = ENCOUNTER_EVENT_STATE.get(self.state)
+        if not event_state:
+            return
+        self.env["ni.workflow.event"].create(
+            {
+                "company_id": self.company_id.id,
+                "patient_id": self.patient_id.id,
+                "encounter_id": self.id,
+                "res_model": self._name,
+                "res_id": self.id,
+                "name": self._get_name(),
+                "summary": self._get_workflow_summary(),
+                "occurrence": self.period_end
+                or self.period_start
+                or fields.Datetime.now(),
+                "state": event_state,
+            }
+        )
+
+    def _get_workflow_summary(self):
+        self.ensure_one()
+        summary = self.class_id.name
+        if self.priority != "routine":
+            priority_label = dict(self._fields["priority"].selection).get(self.priority)
+            summary = "{} ({})".format(summary, priority_label)
+        return summary
 
     @api.model
     def _prepare_sign_field_vals(self, vals):

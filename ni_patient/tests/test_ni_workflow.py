@@ -84,3 +84,34 @@ class TestWorkflow(common.TransactionCase):
         )
         self.env["ni.workflow.event"].garbage_collect()
         self.assertTrue(self.env["ni.workflow.event"].browse(event_id).exists())
+
+    def test_encounter_logs_workflow_event_on_transitions(self):
+        enc_class = self.env["ni.encounter.class"].search([], limit=1)
+        encounter = self.env["ni.encounter"].create(
+            {
+                "patient_id": self.patient.id,
+                "class_id": enc_class.id,
+                "period_start": fields.Datetime.now(),
+                "priority": "urgent",
+            }
+        )
+        events_domain = [
+            ("res_model", "=", "ni.encounter"),
+            ("res_id", "=", encounter.id),
+        ]
+
+        encounter.action_confirm()
+        self.assertEqual(encounter.state, "in-progress")
+        events = self.env["ni.workflow.event"].search(events_domain, order="id")
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events.state, "in-progress")
+        self.assertEqual(events.summary, "{} (Urgent)".format(enc_class.name))
+
+        encounter.action_close()
+        self.assertEqual(encounter.state, "finished")
+        events = self.env["ni.workflow.event"].search(events_domain, order="id")
+        self.assertEqual(len(events), 2)
+        self.assertEqual(events[-1].state, "completed")
+
+        lines = self.env["ni.workflow.line"].search(events_domain)
+        self.assertEqual(len(lines), 2)

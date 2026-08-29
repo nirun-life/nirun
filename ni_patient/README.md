@@ -24,6 +24,10 @@ read-only workflow timeline that combines events and requests into a single pati
 ## Workflow and Views
 
 - `ni.workflow.event.mixin` and `ni.workflow.request.mixin` power the state transitions used by downstream clinical modules.
+- `ni.encounter` does not inherit the event mixin (its own `state` selection is incompatible with the mixin's). Instead,
+  `Encounter._log_workflow_event()` (`models/ni_encounter.py`) creates a new `ni.workflow.event` row on every state transition
+  (`write()` when `state` changes), so encounter start/discharge/cancel/etc. show up in the patient timeline alongside other
+  clinical events.
 - `views/ni_workflow_event_views.xml`, `views/ni_workflow_request_views.xml`, and `views/ni_workflow_line_views.xml` expose the
   timeline and state history.
 - `views/ni_patient_views.xml`, `views/ni_encounter_views.xml`, and the related support views define the core patient and
