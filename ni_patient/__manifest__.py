@@ -67,7 +67,6 @@
     "assets": {
         "web.assets_backend": [
             "ni_patient/static/src/views/*.js",
-            "ni_patient/static/src/views/*.xml",
         ]
     },
     "demo": ["demo/ni_patient_demo.xml", "demo/ni_location_demo.xml"],
