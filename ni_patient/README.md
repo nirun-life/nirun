@@ -30,6 +30,10 @@ read-only workflow timeline that combines events and requests into a single pati
   clinical events.
 - `views/ni_workflow_event_views.xml`, `views/ni_workflow_request_views.xml`, and `views/ni_workflow_line_views.xml` expose the
   timeline and state history.
+- The encounter form's action menu includes "Workflow Timeline" (`Encounter.action_encounter_workflow_timeline()`, bound via
+  `ni_encounter_action_server_workflow_timeline` in `views/ni_encounter_views.xml`), which opens `ni_workflow_line_action`
+  filtered to that encounter's `ni.workflow.line` rows — the same pattern used by the "Location History" and "Participant
+  History" action-menu entries.
 - `views/ni_patient_views.xml`, `views/ni_encounter_views.xml`, and the related support views define the core patient and
   encounter UI.
 - Portal templates in `views/ni_patient_portal.xml` and `views/ni_patient_portal_templates.xml` expose patient-facing entry
