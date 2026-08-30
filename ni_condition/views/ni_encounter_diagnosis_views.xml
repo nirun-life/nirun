@@ -85,8 +85,8 @@
                 <field name="encounter_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="role_decoration" invisible="1" />
-                <field name="is_diagnosis" invisible="1" />
                 <field name="is_problem" invisible="1" />
+                <field name="is_problem_editable" invisible="1" />
                 <field name="sequence" widget="handle" />
                 <field name="code" />
                 <field name="name" />
@@ -107,11 +107,60 @@
                     decoration-danger="role_decoration == 'danger'"
                     decoration-muted="role_decoration == 'muted'"
                 />
+                <field name="is_diagnosis" optional="hide" />
+                <button
+                    name="action_toggle_is_diagnosis"
+                    type="object"
+                    class="btn-info o_btn_text_normal"
+                    icon="fa-stethoscope"
+                    title="Diagnosis (click to unmark)"
+                    string="Marked as Diagnosis"
+                    attrs="{'invisible': [('is_diagnosis', '=', False)]}"
+                />
+                <button
+                    name="action_toggle_is_diagnosis"
+                    type="object"
+                    class="btn-outline-info"
+                    icon="fa-stethoscope"
+                    title="Not a Diagnosis (click to mark)"
+                    string="Mark as Diagnosis"
+                    attrs="{'invisible': [('is_diagnosis', '=', True)]}"
+                />
+                <button
+                    name="action_toggle_is_problem"
+                    type="object"
+                    class="btn-primary o_btn_text_normal"
+                    icon="fa-list-ul "
+                    title="Problem-List Item (click to unmark)"
+                    string="Marked as Problem-List"
+                    attrs="{'invisible': ['|', ('is_problem', '=', False), ('is_problem_editable', '=', False)]}"
+                />
+                <button
+                    name="action_toggle_is_problem"
+                    type="object"
+                    class="btn-outline-primary"
+                    icon="fa-list-ul"
+                    title="Not on Problem-List (click to mark)"
+                    string="Mark as Problem-List"
+                    attrs="{'invisible': ['|', ('is_problem', '=', True), ('is_problem_editable', '=', False)]}"
+                />
+                <button
+                    name="action_toggle_is_problem"
+                    type="object"
+                    class="btn-primary o_btn_text_normal opacity-50"
+                    icon="fa-list-ul opacity-50"
+                    title="Problem-List Item (set in a prior encounter, locked)"
+                    string="Marked as Problem-List"
+                    attrs="{'invisible': ['|', ('is_problem', '=', False), ('is_problem_editable', '=', True)]}"
+                />
                 <field name="create_uid" optional="hide" />
                 <field name="create_date" optional="hide" />
                 <control>
-                    <create string="Add Diagnosis" context="{'default_is_diagnosis': True}" />
-                    <create string="Add Chronic" context="{'default_is_problem': True}" />
+                    <create string="Add Diagnosis" context="{'default_is_diagnosis': True, 'default_sequence': 0}" />
+                    <create
+                        string="Add Problem-List"
+                        context="{'default_is_problem': True, 'default_is_diagnosis': False, 'default_sequence': 99}"
+                    />
                 </control>
             </tree>
         </field>
