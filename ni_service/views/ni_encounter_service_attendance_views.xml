@@ -2,7 +2,7 @@
 <!--
   ~ Copyright (c) 2024 NSTDA
   -->
-<odoo noupdate="1">
+<odoo>
     <record id="ni_encounter_service_attendance_view_tree" model="ir.ui.view">
         <field name="name">ni.encounter.service.attendance.view.tree</field>
         <field name="model">ni.encounter.service.attendance</field>
@@ -77,40 +77,48 @@
             <form string="">
                 <field name="encounter_id" invisible="1" required="False" />
                 <field name="patient_id" invisible="1" />
+                <field name="name" invisible="1" />
+                <field name="editable" invisible="1" />
+                <field name="encounter_date" invisible="1" />
+                <field name="resource_calendar_id" invisible="1" />
+                <field name="dayofweek" invisible="1" />
+                <field name="request_id" invisible="1" />
+                <field name="service_event_id" invisible="1" />
+                <field name="service_id" invisible="1" />
                 <sheet>
                     <group>
-                        <field name="name" invisible="1" />
-                        <field name="editable" invisible="1" />
-                        <field name="encounter_date" invisible="1" />
-                        <field name="resource_calendar_id" invisible="1" />
-                        <field name="dayofweek" invisible="1" />
+                        <field name="display_calendar_id" />
                         <field
                             name="attendance_id"
                             options="{'no_create': True, 'no_open':True}"
                             domain="[('calendar_id', '=', resource_calendar_id),('dayofweek', '=', dayofweek)]"
                             attrs="{'readonly': [('editable', '=', False)]}"
                         />
-                        <field
-                            name="service_id"
-                            options="{'no_create': True, 'no_open':True}"
-                            attrs="{'readonly': [('editable', '=', False)]}"
-                        />
-                        <field
-                            name="service_ids"
-                            widget="many2many_tags"
-                            options="{'color_field': 'color', 'no_create': True, 'no_open':True}"
-                            attrs="{'readonly': [('editable', '=', False)]}"
-                        />
+                        <label for="service_ids" />
+                        <div>
+                            <field
+                                name="service_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color', 'no_create': True, 'no_open':True}"
+                                attrs="{'readonly': [('editable', '=', False)]}"
+                                required="True"
+                            />
+                            <div class="o_row" attrs="{'invisible': [('request_id', '=', False)]}">
+                                <label for="display_request_id" />
+                                <field name="display_request_id" />
+                            </div>
+                        </div>
+                    </group>
+                    <field name="note" placeholder="Additional note..." />
+                    <group string="For Developer" groups="base.group_no_one">
+                        <field name="service_event_id" placeholder="Event..." />
                         <field
                             name="request_id"
-                            options="{'no_create': True}"
-                            domain="[('patient_id', '=', patient_id)]"
+                            placeholder="Request..."
+                            domain="[('patient_id', '=', patient_id), ('service_ids', 'in', service_ids)]"
                             context="{'show_identifier': True, 'show_period': True, 'show_state': True}"
                         />
                     </group>
-                    <field name="note" placeholder="Additional note..." />
-                    <field name="service_event_id" invisible="1" />
-                    <field name="service_event_id" groups="base.group_no_one" />
                 </sheet>
             </form>
         </field>

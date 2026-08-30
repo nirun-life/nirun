@@ -13,7 +13,7 @@ class Encounter(models.Model):
 
     resource_calendar_id = fields.Many2one(
         "resource.calendar",
-        "ตารางเวลา",
+        "Calendar",
         check_company=True,
         states=LOCK_STATE_DICT,
     )

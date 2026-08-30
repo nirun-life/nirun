@@ -152,22 +152,20 @@
                                 <field
                                     name="partner_ids"
                                     widget="many2manyattendee"
-                                    placeholder="ระบุผู้ปฎิบัติงาน..."
-                                    string="ผู้ปฎิบัติงาน"
+                                    placeholder="Add practitioner..."
+                                    string="Practitioner"
                                     domain="[('type','!=','private'), ('is_company', '=', False)]"
                                     options="{'no_create': True}"
                                 />
-                                <p class="text-muted small">ระบุผู้ปฎิบัติงานเพื่อแสดงกำหนดการบนปฎิทินส่วนตัวของเค้า</p>
+                                <p class="text-muted small">
+                                    Assign a practitioner to show this schedule on their personal calendar
+                                </p>
                             </div>
                             <field name="location" />
                         </group>
                     </group>
                     <group>
-                        <field
-                            name="plan_patient_ids"
-                            widget="many2many_tags_avatar"
-                            placeholder="ระบุผู้รับบริการ..."
-                        />
+                        <field name="plan_patient_ids" widget="many2many_tags_avatar" placeholder="Add patients..." />
                     </group>
                     <notebook>
                         <page
@@ -294,23 +292,23 @@
                         widget="many2many_checkboxes"
                         domain="[('category_ids', 'in', service_category_id)]"
                     />
-                    <label for="start" string="เวลาที่ปฎิบัติงาน" />
+                    <label for="start" string="Working Time" />
                     <div>
                         <div class="o_row">
-                            <label for="start" string="เริ่ม" />
+                            <label for="start" string="Start" />
                             <field name="start" force_save="1" />
                         </div>
                         <div class="o_row">
-                            <label for="stop" string="หยุด" />
+                            <label for="stop" string="Stop" />
                             <field name="stop" force_save="1" />
                         </div>
                     </div>
                     <label for="duration" />
                     <div class="o_row">
                         <field name="duration" widget="float_time" force_save="1" class="o_narrow_field" />
-                        <span class="mx-1">ชั่วโมง</span>
+                        <span class="mx-1">hours</span>
                     </div>
-                    <label for="image_1" string="ภาพประกอบ" />
+                    <label for="image_1" string="Image" />
                     <field name="has_image" invisible="1" />
                     <div class="o_row">
                         <field name="image_1" widget="image" class="oe_avatar" options="{'zoom': true}" />

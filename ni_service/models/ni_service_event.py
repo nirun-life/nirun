@@ -42,6 +42,8 @@ class ServiceEvent(models.Model):
         category_ids = category._search([], order=order, access_rights_uid=SUPERUSER_ID)
         return category.browse(category_ids)
 
+    name = fields.Char(related="event_id.name", string="Event Name")
+
     user_specialty = fields.Many2one(
         "hr.job", default=lambda self: self.env.user.employee_id.job_id, store=False
     )
@@ -86,7 +88,7 @@ class ServiceEvent(models.Model):
     )
     service_count = fields.Integer(compute="_compute_service_count")
     user_id = fields.Many2one(
-        related="event_id.user_id", string="ผู้รับผิดชอบหลัก", readonly=False
+        related="event_id.user_id", string="Primary Responsible", readonly=False
     )
     service_type_id = fields.Many2one(related="service_id.type_id")
     service_category_ids = fields.Many2many(
@@ -153,7 +155,7 @@ class ServiceEvent(models.Model):
 
     plan_patient_ids = fields.Many2many(
         "ni.patient",
-        string="ผู้รับบริการ (วางแผน)",
+        string="Planned Patients",
         check_company=True,
         domain="[('presence_state', '!=', 'deceased')]",
     )

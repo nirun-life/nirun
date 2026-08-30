@@ -232,7 +232,7 @@
                             <field name="attendance_count" invisible="1" />
                             <field name="attendance_ids" attrs="{'invisible': [('calendar_id', '=', False)]}">
                                 <tree default_order="calendar_id, dayofweek, hour_from">
-                                    <field name="calendar_id" optional="hide" />
+                                    <field name="calendar_id" optional="show" />
                                     <field name="name" optional="hide" />
                                     <field name="dayofweek" />
                                     <field name="day_period" optional="show" />
@@ -258,7 +258,13 @@
                             </field>
                         </page>
                         <page name="event" string="History" badge="event_count">
-                            <field name="event_ids" />
+                            <field name="event_ids" readonly="1" />
+                            <button
+                                name="create_event"
+                                type="object"
+                                string="See More"
+                                class="btn-secondary oe_edit_only"
+                            />
                         </page>
                         <page name="extra" string="Extra Info" groups="base.group_no_one">
                             <group>

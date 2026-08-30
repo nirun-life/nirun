@@ -34,12 +34,13 @@ class EncounterServiceAttendance(models.Model):
     resource_calendar_id = fields.Many2one(
         related="encounter_id.resource_calendar_id", store=True
     )
+    display_calendar_id = fields.Many2one(related="resource_calendar_id")
 
     name = fields.Char(compute="_compute_name", store=True)
 
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
-        "เวลา",
+        "Time",
         required=True,
         domain="[('calendar_id','=?', resource_calendar_id)]",
     )
@@ -51,7 +52,7 @@ class EncounterServiceAttendance(models.Model):
     )
     service_id = fields.Many2one(
         "ni.service",
-        "กิจกรรม",
+        "Service",
         required=True,
         domain="[('attendance_ids', '=', attendance_id)]",
         check_company=True,
@@ -73,6 +74,7 @@ class EncounterServiceAttendance(models.Model):
         index=True,
         help="Request of this attendance",
     )
+    display_request_id = fields.Many2one(related="request_id")
     service_event_id = fields.Many2one(
         "ni.service.event", index=True, domain="[('service_id', '=', service_id)]"
     )
@@ -130,19 +132,38 @@ class EncounterServiceAttendance(models.Model):
             ]
         return self.env["ni.service.request"].search(domain, limit=1)
 
-    @api.onchange("service_id", "service_ids", "encounter_id")
+    def _sync_service_id(self):
+        for rec in self.filtered("service_ids"):
+            if not rec.service_id or rec.service_id not in rec.service_ids:
+                rec.service_id = rec.service_ids[0].id
+
+    @api.onchange("service_ids", "encounter_id")
     def _onchange_auto_request(self):
-        for rec in self:
+        self._sync_service_id()
+        for rec in self.filtered("service_ids"):
             if not rec.request_id:
                 rec.request_id = rec._find_matching_request()
 
     @api.model_create_multi
     def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("service_id") and vals.get("service_ids"):
+                service_id = (
+                    self.new({"service_ids": vals["service_ids"]}).service_ids[:1].id
+                )
+                if service_id:
+                    vals["service_id"] = service_id
         records = super().create(vals_list)
         for rec in records:
             if not rec.request_id:
                 rec.request_id = rec._find_matching_request()
         return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        if "service_ids" in vals:
+            self._sync_service_id()
+        return res
 
     @api.depends("service_id", "service_ids")
     def _compute_name(self):
