@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_diagnosis_role_wizard_action" model="ir.actions.act_window">
+        <field name="name">Select Role</field>
+        <field name="res_model">ni.encounter.diagnosis.role.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="ni_encounter_diagnosis_role_wizard_view_form" model="ir.ui.view">
+        <field name="name">ni.encounter.diagnosis.role.wizard.view.form</field>
+        <field name="model">ni.encounter.diagnosis.role.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="diagnosis_id" invisible="1" />
+                <field name="system_id" invisible="1" />
+                <group>
+                    <field
+                        name="role_id"
+                        widget="radio"
+                        options="{'no_open': True}"
+                        domain="[('system_id', '=', system_id)]"
+                    />
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Mark as Diagnosis" class="oe_highlight" type="object" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
