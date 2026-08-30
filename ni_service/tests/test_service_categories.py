@@ -9,6 +9,7 @@ from .common import TestServiceCommon
 @tagged("-at_install", "post_install")
 class TestServiceCategories(TestServiceCommon):
     def test_service_can_belong_to_multiple_categories(self):
+        self.env.company.service_multi_category = True
         second_category = self.env["ni.service.category"].create(
             {
                 "name": "Rehabilitation",
