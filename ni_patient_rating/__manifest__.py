@@ -14,6 +14,7 @@
     "data": [
         "views/ni_encounter_rating_template.xml",
         "views/ni_encounter_views.xml",
+        "views/ni_patient_views.xml",
     ],
     "assets": {"web.assets_backend": ["ni_patient_rating/static/src/scss/rating.scss"]},
     "application": False,

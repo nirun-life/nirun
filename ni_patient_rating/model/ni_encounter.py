@@ -37,3 +37,6 @@ class Encounter(models.Model):
     def action_send_rating_mail(self):
         template = self.env.ref("ni_patient_rating.rating_ni_encounter_email_template")
         self.rating_send_request(template)
+
+    def _rating_get_parent_field_name(self):
+        return "patient_id"

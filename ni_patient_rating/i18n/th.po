@@ -6,14 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-10 10:23+0000\n"
-"PO-Revision-Date: 2023-08-10 10:23+0000\n"
+"POT-Creation-Date: 2026-08-31 04:40+0000\n"
+"PO-Revision-Date: 2026-08-31 04:40+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_patient__rating_count
+msgid "# Ratings"
+msgstr "จำนวนคะแนน"
 
 #. module: ni_patient_rating
 #: model:mail.template,body_html:ni_patient_rating.rating_ni_encounter_email_template
@@ -157,8 +162,14 @@ msgstr ""
 
 #. module: ni_patient_rating
 #: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_avg
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_patient__rating_avg
 msgid "Average Rating"
 msgstr "คะแนนเฉลี่ย"
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_patient__rating_avg_percentage
+msgid "Average Rating (%)"
+msgstr "คะแนนเฉลี่ย (%)"
 
 #. module: ni_patient_rating
 #: model:ir.model,name:ni_patient_rating.model_ni_encounter
@@ -181,6 +192,16 @@ msgid "Link"
 msgstr ""
 
 #. module: ni_patient_rating
+#: model:ir.model,name:ni_patient_rating.model_ni_patient
+msgid "Patient"
+msgstr "ผู้รับบริการ"
+
+#. module: ni_patient_rating
+#: model:ir.model.fields,help:ni_patient_rating.field_ni_patient__rating_percentage_satisfaction
+msgid "Percentage of happy ratings"
+msgstr "เปอร์เซ็นต์ความพึงพอใจ"
+
+#. module: ni_patient_rating
 #: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_qrcode
 msgid "QR Code"
 msgstr ""
@@ -191,6 +212,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_ids
 #: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_last_value
 #: model_terms:ir.ui.view,arch_db:ni_patient_rating.ni_encounter_view_form_inherit
+#: model_terms:ir.ui.view,arch_db:ni_patient_rating.ni_patient_view_form_inherit
 #, python-format
 msgid "Rating"
 msgstr "คะแนน"
@@ -212,6 +234,7 @@ msgstr ""
 
 #. module: ni_patient_rating
 #: model:ir.model.fields,field_description:ni_patient_rating.field_ni_encounter__rating_percentage_satisfaction
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_patient__rating_percentage_satisfaction
 msgid "Rating Satisfaction"
 msgstr "ความพึงพอใจ"
 
@@ -227,6 +250,8 @@ msgstr "จำนวนการให้คะแนน"
 
 #. module: ni_patient_rating
 #: model:ir.actions.act_window,name:ni_patient_rating.rating_rating_action_my_model
+#: model:ir.actions.act_window,name:ni_patient_rating.rating_rating_action_ni_patient
+#: model:ir.model.fields,field_description:ni_patient_rating.field_ni_patient__rating_ids
 msgid "Ratings"
 msgstr "คะแนน"
 
