@@ -42,7 +42,7 @@ class ServiceEvent(models.Model):
         category_ids = category._search([], order=order, access_rights_uid=SUPERUSER_ID)
         return category.browse(category_ids)
 
-    name = fields.Char(related="event_id.name", string="Event Name")
+    name = fields.Char(related="event_id.name", inherited=True, string="Event Name")
 
     user_specialty = fields.Many2one(
         "hr.job", default=lambda self: self.env.user.employee_id.job_id, store=False
@@ -193,6 +193,13 @@ class ServiceEvent(models.Model):
             self._table,
             ["service_id", "start", "id"],
         )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("name") and vals.get("service_id"):
+                vals["name"] = self.env["ni.service"].browse(vals["service_id"]).name
+        return super().create(vals_list)
 
     def _compute_attachment_ids(self):
         attachments = self.env["ir.attachment"].search(

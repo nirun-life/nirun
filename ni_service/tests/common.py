@@ -92,6 +92,8 @@ class TestServiceCommon(common.TransactionCase):
         )
 
         self.category = self.env.ref("ni_service.categ_individual")
+        if not self.category.active:
+            self.category.active = True
         self.service = self.env["ni.service"].create(
             {
                 "name": "Physiotherapy",
