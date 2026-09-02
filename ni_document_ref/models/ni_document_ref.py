@@ -31,7 +31,7 @@ class DocumentReference(models.Model):
     category_id = fields.Many2one(
         "ni.document.ref.category", related="type_id.category_id", store=True
     )
-    occurrence = fields.Datetime(default=fields.Datetime.now(), index=True)
+    occurrence = fields.Datetime(default=fields.Datetime.now, index=True)
     author_id = fields.Many2one(
         "hr.employee",
         index=True,
