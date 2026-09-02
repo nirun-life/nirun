@@ -96,7 +96,7 @@ class Reception(models.Model):
     )
 
     period_start = fields.Datetime(
-        "Encounter Start", default=fields.datetime.now(), required=True
+        "Encounter Start", default=fields.Datetime.now, required=True
     )
     class_id = fields.Many2one("ni.encounter.class", required=True)
     chief_complaint = fields.Text()

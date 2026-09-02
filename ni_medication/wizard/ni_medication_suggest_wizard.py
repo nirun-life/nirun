@@ -24,7 +24,7 @@ class MedicationSuggestWizard(models.Model):
     suggest_id = fields.Many2one("ni.medication.suggest", required=True)
     suggest_line_ids = fields.One2many(related="suggest_id.line_ids")
     suggest_line_count = fields.Integer(related="suggest_id.line_count")
-    occurrence = fields.Datetime("Handed Over", default=fields.Datetime.now())
+    occurrence = fields.Datetime("Handed Over", default=fields.Datetime.now)
 
     def action_apply(self):
         self.ensure_one()
