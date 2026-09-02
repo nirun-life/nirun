@@ -133,7 +133,7 @@ class EventMixin(models.AbstractModel):
         related="event_id.occurrence",
         readonly=False,
         store=True,
-        default=fields.Datetime.now(),
+        default=fields.Datetime.now,
     )
     occurrence_date = fields.Date(
         related="event_id.occurrence_date", readonly=False, store=True
