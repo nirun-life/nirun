@@ -80,7 +80,7 @@
                                         <field class='text-danger' name="res_model" groups="base.group_no_one" />
                                     </span>
                                     <span class="o_kanban_record_subtitle text-muted small">
-                                        <i class="fa fa-clock-o me-1" />
+                                        <i class="fa fa-clock-o me-1" title="Occurrence" />
                                         <field name="occurrence" widget="datetime" />
                                     </span>
                                 </div>
@@ -98,14 +98,14 @@
                                     t-esc="record.summary.raw_value"
                                 />
                                 <div t-if="!context['default_patient_id']" class="mt-1 small">
-                                    <i class="fa fa-user me-1 text-muted" />
+                                    <i class="fa fa-user me-1 text-muted" title="Patient" />
                                     <field name="patient_id" />
                                 </div>
                                 <div
                                     t-if="!context['default_encounter_id'] and record.encounter_id.raw_value"
                                     class="small"
                                 >
-                                    <i class="fa fa-stethoscope me-1 text-muted" />
+                                    <i class="fa fa-stethoscope me-1 text-muted" title="Encounter" />
                                     <field name="encounter_id" />
                                 </div>
                             </div>
@@ -166,7 +166,13 @@
                 />
                 <field name="create_uid" widget="many2one_avatar_user" optional="hide" />
                 <field name="create_date" optional="hide" />
-                <button name="action_resource" class="text-primary" type="object" icon="fa-external-link" />
+                <button
+                    name="action_resource"
+                    class="text-primary"
+                    type="object"
+                    icon="fa-external-link"
+                    title="Open source"
+                />
             </tree>
         </field>
     </record>
