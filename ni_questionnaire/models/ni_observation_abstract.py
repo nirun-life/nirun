@@ -1,5 +1,5 @@
 #  Copyright (c) 2024 NSTDA
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -13,6 +13,22 @@ class ObservationAbstract(models.AbstractModel):
         store=True,
         groups="survey.group_survey_user",
     )
+
+    @api.depends("value", "survey_response_id.grade_id")
+    def _compute_interpretation(self):
+        return super()._compute_interpretation()
+
+    def _interpretation_for(self):
+        """A grade may carry its own interpretation.
+
+        A questionnaire whose maximum score varies between responses cannot be read
+        against the observation type's reference ranges, which only scope by age and
+        gender. sudo() because survey_response_id is restricted to survey users.
+        """
+        grade = self.sudo().survey_response_id.grade_id
+        if grade.interpretation_id:
+            return grade.interpretation_id
+        return super()._interpretation_for()
 
     def action_print_survey(self):
         """If response is available then print this response otherwise print
