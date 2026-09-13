@@ -36,13 +36,15 @@ class SurveyUserInput(models.Model):
             where="state = 'done' AND encounter_id IS NOT NULL",
         )
 
-    def write(self, vals):
-        state = vals.get("state")
-        if state and state == "done":
-            self._onchange_state_done()
-        return super().write(vals)
+    def _mark_done(self):
+        # After super(): _mark_done() drops the inactive conditional questions from
+        # predefined_question_ids, which is what shrinks scoring_percentage's maximum.
+        # Reading the score any earlier snapshots the pre-trim value.
+        res = super()._mark_done()
+        self._create_survey_observations()
+        return res
 
-    def _onchange_state_done(self):
+    def _create_survey_observations(self):
         for rec in self:
             vals = []
             if rec.observation_type_id:
@@ -106,7 +108,7 @@ class SurveyUserInput(models.Model):
             return None
         val = _input._base_observation(code)
 
-        if question.observation_answer_type == "score":
+        if question.observation_answer_type != "value":
             if code.value_type == "int":
                 val.update({"value": str(int(line.answer_score))})
             elif code.value_type == "float":
@@ -117,19 +119,24 @@ class SurveyUserInput(models.Model):
                         code.name, code.value_type
                     )
                 )
-        elif question.observation_answer_type == "value":
+        else:
+            # Dispatch on answer_type, not on truthiness: a numerical answer of 0 is
+            # a real answer, and datetime questions have no truthy alias here.
             if line.suggested_answer_id:
-                val.update({"value": line.suggested_answer_id.value})
-            elif line.value_date:
-                val.update({"value": str(line.value_date)})
-            elif line.value_char_box:
-                val.update({"value": line.value_char_box})
-            elif line.value_text_box:
-                val.update({"value": line.value_text_box})
-            elif line.value_numerical_box:
-                val.update({"value": str(line.value_numerical_box)})
+                answer = line.suggested_answer_id.value
+            elif line.answer_type == "date":
+                answer = line.value_date
+            elif line.answer_type == "datetime":
+                answer = line.value_datetime
+            elif line.answer_type == "char_box":
+                answer = line.value_char_box
+            elif line.answer_type == "text_box":
+                answer = line.value_text_box
+            elif line.answer_type == "numerical_box":
+                answer = line.value_numerical_box
             else:
                 raise ValidationError(_("Not support this type of answer"))
+            val.update({"value": str(answer)})
         return val
 
     @staticmethod
@@ -140,6 +147,10 @@ class SurveyUserInput(models.Model):
         lines = _input.user_input_line_ids.filtered_domain(
             [("question_id", "in", group.question_ids.ids), ("skipped", "=", False)]
         )
+        if not lines:
+            # Every question of the group was hidden by a conditional display
+            return None
+
         result = 0
         if group.operator == "sum":
             result = sum(lines.mapped("answer_score"))
@@ -218,18 +229,9 @@ class SurveyUserInput(models.Model):
             "views": [[False, "pivot"]],
         }
 
-    def _quizz_grade(self):
-        # Override survey_grading.survey.user_input._quizz_grade()
-        self.ensure_one()
-        if self.grade_ids == 0:
-            return None
+    def _grade_candidates(self):
+        # Override survey_grading.survey.user_input._grade_candidates()
+        grades = super()._grade_candidates()
         if self.subject_model in ["ni.patient", "ni.encounter"]:
-            grades = self.grade_ids.grade_for(
-                self.patient_id.age, self.patient_id.gender
-            )
-            for grade in grades:
-                if grade.is_cover(self.scoring_percentage):
-                    return grade
-            return None
-        else:
-            return super()._quizz_grade()
+            return grades.grade_for(self.patient_id.age, self.patient_id.gender)
+        return grades
