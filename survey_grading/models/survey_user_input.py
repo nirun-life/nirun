@@ -16,14 +16,38 @@ class SurveyUserInput(models.Model):
     )
     grade = fields.Char(related="grade_id.name")
 
-    @api.depends("scoring_percentage")
+    @api.depends(
+        "scoring_percentage",
+        "scoring_total",
+        "survey_id.grading_basis",
+        "user_input_line_ids.suggested_answer_id",
+    )
     def _compute_grade_id(self):
         for rec in self:
             rec.grade_id = rec._quizz_grade()
 
+    def _grading_value(self):
+        """Value the grade ranges are compared against."""
+        self.ensure_one()
+        if self.survey_id.grading_basis == "score":
+            return self.scoring_total
+        return self.scoring_percentage
+
+    def _grade_candidates(self):
+        """Grades that apply to this response.
+
+        Grades scoped to a selected answer take precedence over unscoped ones, which
+        is how a survey holds several sets of ranges with a different maximum score.
+        """
+        self.ensure_one()
+        answers = self.user_input_line_ids.suggested_answer_id
+        scoped = self.grade_ids.filtered(lambda g: g.triggering_answer_ids & answers)
+        return scoped or self.grade_ids.filtered(lambda g: not g.triggering_answer_ids)
+
     def _quizz_grade(self):
         self.ensure_one()
-        for grade in self.grade_ids:
-            if grade.is_cover(self.scoring_percentage):
+        value = self._grading_value()
+        for grade in self._grade_candidates():
+            if grade.is_cover(value):
                 return grade
         return None
