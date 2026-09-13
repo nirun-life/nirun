@@ -9,21 +9,91 @@
         <field name="arch" type="xml">
             <form>
                 <group>
+                    <field name="survey_id" readonly="1" />
+                </group>
+                <group>
                     <group>
                         <field name="name" />
-                        <label string="Range of Score (%)" for="low" />
+                        <label string="Range of Score" for="low" />
                         <div class="o_row">
                             <field name="low" />
                             <span class="mx-1">-</span>
                             <field name="high" />
                         </div>
+                        <field
+                            name="color_class"
+                            decoration-primary="color_class == 'primary'"
+                            decoration-success="color_class == 'success'"
+                            decoration-danger="color_class == 'danger'"
+                            decoration-warning="color_class == 'warning'"
+                            decoration-muted="color_class == 'muted'"
+                            decoration-info="color_class == 'info'"
+                        />
                     </group>
-                    <group groups="base.group_no_one">
-                        <field name="survey_id" />
-                        <field name="passing_grade" />
+                    <group>
+                        <field name="passing_grade" groups="base.group_no_one" />
                     </group>
                 </group>
+                <notebook>
+                    <page name="Conditional" string="Conditional" icon="fa-code-fork">
+                        <field
+                            name="triggering_answer_ids"
+                            options="{'no_create': True}"
+                            context="{'show_question': 1, 'search_default_group_by_question':1}"
+                        >
+                            <tree>
+                                <field name="question_id" />
+                                <field name="value" />
+                                <field name="answer_score" optional="hide" />
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
             </form>
+        </field>
+    </record>
+    <record id="survey_grade_view_tree" model="ir.ui.view">
+        <field name="name">survey.grade.view.tree</field>
+        <field name="model">survey.grade</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="survey_id" invisible="1" />
+                <field name="name" />
+                <field
+                    name="low"
+                    decoration-primary="color_class == 'primary'"
+                    decoration-success="color_class == 'success'"
+                    decoration-danger="color_class == 'danger'"
+                    decoration-warning="color_class == 'warning'"
+                    decoration-muted="color_class == 'muted'"
+                    decoration-info="color_class == 'info'"
+                />
+                <field
+                    name="high"
+                    decoration-primary="color_class == 'primary'"
+                    decoration-success="color_class == 'success'"
+                    decoration-danger="color_class == 'danger'"
+                    decoration-warning="color_class == 'warning'"
+                    decoration-muted="color_class == 'muted'"
+                    decoration-info="color_class == 'info'"
+                />
+                <field
+                    invisible="1"
+                    name="triggering_answer_ids"
+                    widget="many2many_tags"
+                    options="{'no_create': True}"
+                    context="{'show_question': 1}"
+                />
+                <button
+                    disabled="disabled"
+                    icon="fa-code-fork"
+                    title="This grade only applies when its triggering answers are selected."
+                    class="icon_rotates"
+                    attrs="{'invisible': [('triggering_answer_ids', '=', [])]}"
+                />
+                <field name="color_class" invisible="1" />
+                <field name="passing_grade" invisible="1" />
+            </tree>
         </field>
     </record>
 </odoo>

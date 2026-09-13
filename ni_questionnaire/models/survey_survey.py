@@ -23,7 +23,7 @@ class Survey(models.Model):
     observation_score_type = fields.Selection(
         [("percentage", "Percentage"), ("raw", "Raw Value")],
         default="raw",
-        required=True,
+        # See observation_answer_type: readers treat an empty value as "raw".
     )
 
     question_group_ids = fields.One2many("survey.question.group", "survey_id")
@@ -34,7 +34,19 @@ class Survey(models.Model):
         if not self.observation_type_id.ref_range_ids:
             raise ValidationError(_("Observation not have reference range"))
 
+        # Points grades are compared against scoring_total, so the reference range
+        # bounds are already in the right unit and must not be scaled.
         _max = self.observation_type_id.max
+        if self.grading_basis == "score":
+
+            def _bound(value):
+                return value
+
+        else:
+
+            def _bound(value):
+                return (value / _max) * 100
+
         self.grade_ids = [fields.Command.clear()] + [
             fields.Command.create(
                 {
@@ -42,9 +54,10 @@ class Survey(models.Model):
                     "gender": ref.gender,
                     "age_low": ref.age_low,
                     "age_high": ref.age_high,
-                    "low": (ref.low / _max) * 100,
-                    "high": (ref.high / _max) * 100,
+                    "low": _bound(ref.low),
+                    "high": _bound(ref.high),
                     "color_class": ref.interpretation_id.display_class,
+                    "interpretation_id": ref.interpretation_id.id,
                 }
             )
             for ref in self.observation_type_id.ref_range_ids

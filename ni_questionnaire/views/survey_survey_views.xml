@@ -53,11 +53,20 @@
         <field name="inherit_id" ref="survey_grading.survey_view_form_inherit" />
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='name']" position="after">
-                <field
-                    name="gender"
-                    decoration-danger="gender == 'female'"
-                    decoration-primary="gender == 'male'"
-                    attrs="{'column_invisible': [('parent.subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                <field name="gender" invisible="1" />
+                <button
+                    disabled="disabled"
+                    icon="fa-mars"
+                    title="Male only"
+                    class="o_gender_male"
+                    attrs="{'invisible': [('gender', '!=', 'male')], 'column_invisible': [('parent.subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                />
+                <button
+                    disabled="disabled"
+                    icon="fa-venus"
+                    title="Female only"
+                    class="o_gender_female"
+                    attrs="{'invisible': [('gender', '!=', 'female')], 'column_invisible': [('parent.subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
                 />
                 <field
                     name="age_low"
@@ -65,6 +74,10 @@
                 />
                 <field
                     name="age_high"
+                    attrs="{'column_invisible': [('parent.subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                />
+                <field
+                    name="interpretation_id"
                     attrs="{'column_invisible': [('parent.subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
                 />
             </xpath>
@@ -117,6 +130,38 @@
                         attrs="{'invisible': [('observation_code_id', '=', False)]}"
                     />
                 </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_grade_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.grade.view.form.inherit</field>
+        <field name="model">survey.grade</field>
+        <field name="inherit_id" ref="survey_grading.survey_grade_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group/group[2]" position="inside">
+                <field name="subject_type" invisible="1" />
+                <field
+                    name="gender"
+                    attrs="{'invisible': [('subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                />
+                <label
+                    string="Age"
+                    for="age_low"
+                    attrs="{'invisible': [('subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                />
+                <div class="o_row" attrs="{'invisible': [('subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}">
+                    <field name="age_low" />
+                    <span class="mx-1">-</span>
+                    <field name="age_high" />
+                </div>
+                <field
+                    name="observation_id"
+                    attrs="{'invisible': [('subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                />
+                <field
+                    name="interpretation_id"
+                    attrs="{'invisible': [('subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                />
             </xpath>
         </field>
     </record>

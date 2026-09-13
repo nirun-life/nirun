@@ -6,21 +6,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-31 09:09+0000\n"
-"PO-Revision-Date: 2026-03-31 09:09+0000\n"
+"POT-Creation-Date: 2026-09-06 12:03+0000\n"
+"PO-Revision-Date: 2026-09-06 12:03+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
-
-#. module: ni_questionnaire
-#. odoo-python
-#: code:addons/ni_questionnaire/models/survey_grade.py:0
-#, python-format
-msgid "%s high value must be in between 0.0-100.0"
-msgstr "%s ค่าสูงสุดต้องอยยู่ระหว่าง 0.0-100.0"
 
 #. module: ni_questionnaire
 #. odoo-python
@@ -32,27 +25,6 @@ msgid ""
 msgstr ""
 "%s ถูกบันทึกว่าเสียชีวิตแล้ว "
 "การอ้างอิงถึงอาจทำให้เกิดความไม่สอดคล้องในฐานข้อมูล"
-
-#. module: ni_questionnaire
-#. odoo-python
-#: code:addons/ni_questionnaire/models/survey_grade.py:0
-#, python-format
-msgid "%s is not a valid range (%s >= %s)"
-msgstr "%s ไม่อยู่ในช่วง (%s >= %s)"
-
-#. module: ni_questionnaire
-#. odoo-python
-#: code:addons/ni_questionnaire/models/survey_grade.py:0
-#, python-format
-msgid "%s is overlapping with %s"
-msgstr "ค่า %s ซ้อนกับ %s"
-
-#. module: ni_questionnaire
-#. odoo-python
-#: code:addons/ni_questionnaire/models/survey_grade.py:0
-#, python-format
-msgid "%s low value must be in between 0.0-100.0"
-msgstr "%s ค่าต่ำสุดต้องอยู่ระหว่าง 0.0-100.0"
 
 #. module: ni_questionnaire
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit
@@ -76,11 +48,6 @@ msgid ""
 msgstr ""
 "<span class=\"o_stat_text\">เริ่ม</span>\n"
 "                        <span class=\"o_stat_text\">ประเมิน</span>"
-
-#. module: ni_questionnaire
-#: model:ir.model.constraint,message:ni_questionnaire.constraint_survey_grade_name_uniq
-msgid "A grading name must be unique!"
-msgstr "ชื่อเกณฑ์ต้องไม่ซ้ำกัน"
 
 #. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_survey_grade__age_high
@@ -288,6 +255,18 @@ msgid "ID"
 msgstr "รหัส"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_grade__interpretation_id
+msgid "Interpretation"
+msgstr "การแปลผล"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,help:ni_questionnaire.field_survey_grade__interpretation_id
+msgid ""
+"Interpretation given to the observation derived from this response, instead "
+"of looking the score up in the observation's reference ranges."
+msgstr "การแปลผลที่ใช้กับการตรวจร่างกายที่ได้จากคำตอบนี้ แทนการเทียบคะแนนกับช่วงอ้างอิงของการตรวจร่างกาย"
+
+#. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest____last_update
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_patient_survey_latest____last_update
 #: model:ir.model.fields,field_description:ni_questionnaire.field_survey_question_group____last_update
@@ -379,6 +358,15 @@ msgstr ""
 msgid "Observation"
 msgstr "ผลตรวจ"
 
+#. module: ni_questionnaire
+#: model:ir.model,name:ni_questionnaire.model_ni_observation_abstract
+msgid "Observation Abstract"
+msgstr ""
+
+#. module: ni_questionnaire
+#: model:ir.model,name:ni_questionnaire.model_ni_observation_report
+msgid "Observation Report Abstract"
+msgstr "สรุปรายงานการตรวจร่างกาย"
 
 #. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_survey_survey__observation_score_type
@@ -737,6 +725,11 @@ msgstr "บริการครั้งนี้"
 #, python-format
 msgid "This observation not have survey"
 msgstr "ผลตรวจนี้ไม่ได้อ้างอิงการประเมิน"
+
+#. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_user_input_line_monthly_report__user_input_id
+msgid "User Input"
+msgstr ""
 
 #. module: ni_questionnaire
 #: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_survey__subject_type__res_users
