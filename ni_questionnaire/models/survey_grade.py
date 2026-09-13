@@ -1,7 +1,6 @@
 #  Copyright (c) 2024 NSTDA
 
-from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo import fields, models
 
 
 class SurveyGrade(models.Model):
@@ -11,14 +10,13 @@ class SurveyGrade(models.Model):
     gender = fields.Selection([("male", "Male"), ("female", "Female")], required=False)
     age_low = fields.Integer(default=0)
     age_high = fields.Integer(default=200)
-
-    _sql_constraints = [
-        (
-            "name_uniq",
-            "unique (survey_id, name, gender, age_low)",
-            "A grading name must be unique!",
-        )
-    ]
+    subject_type = fields.Selection(related="survey_id.subject_type")
+    observation_id = fields.Many2one(related="survey_id.observation_type_id")
+    interpretation_id = fields.Many2one(
+        "ni.observation.interpretation",
+        help="Interpretation given to the observation derived from this response, "
+        "instead of looking the score up in the observation's reference ranges.",
+    )
 
     def grade_for(self, age=0, gender=None):
         return self.filtered_domain(
@@ -31,35 +29,5 @@ class SurveyGrade(models.Model):
             ]
         )
 
-    @api.constrains("low", "high")
-    def _validate_low_high(self):
-        for rec in self:
-            if not (0.0 <= rec.low <= 100.0):
-                raise ValidationError(
-                    _("%s low value must be in between 0.0-100.0") % rec.name
-                )
-            if not (0.0 <= rec.high <= 100.0):
-                raise ValidationError(
-                    _("%s high value must be in between 0.0-100.0") % rec.name
-                )
-            if rec.low > rec.high:
-                raise ValidationError(
-                    _("%s is not a valid range (%s >= %s)")
-                    % (rec.name, rec.low, rec.high)
-                )
-
-            grade_id = rec.search(
-                [
-                    ("survey_id", "in", [rec.survey_id.id, False]),
-                    ("gender", "=", rec.gender),
-                    ("age_low", "=", rec.age_low),
-                    ("low", "<", rec.high),
-                    ("high", ">", rec.low),
-                    ("id", "!=", rec.id),
-                ],
-                limit=1,
-            )
-            if grade_id:
-                raise ValidationError(
-                    _("%s is overlapping with %s") % (rec.name, grade_id.name)
-                )
+    def _scope_key(self):
+        return super()._scope_key() + (self.gender, self.age_low, self.age_high)

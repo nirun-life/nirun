@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-07 09:06+0000\n"
-"PO-Revision-Date: 2023-04-07 09:06+0000\n"
+"POT-Creation-Date: 2026-09-06 12:03+0000\n"
+"PO-Revision-Date: 2026-09-06 12:03+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,29 +19,22 @@ msgstr ""
 #. odoo-python
 #: code:addons/survey_grading/models/survey_grade.py:0
 #, python-format
-msgid "%s high value must be in between 0.0-100.0"
-msgstr ""
-
-#. module: survey_grading
-#. odoo-python
-#: code:addons/survey_grading/models/survey_grade.py:0
-#, python-format
 msgid "%s is not a valid range (%s >= %s)"
-msgstr ""
+msgstr "%s ไม่อยู่ในช่วง (%s >= %s)"
 
 #. module: survey_grading
 #. odoo-python
 #: code:addons/survey_grading/models/survey_grade.py:0
 #, python-format
 msgid "%s is overlapping with %s"
-msgstr ""
+msgstr "ค่า %s ซ้อนกับ %s"
 
 #. module: survey_grading
 #. odoo-python
 #: code:addons/survey_grading/models/survey_grade.py:0
 #, python-format
-msgid "%s low value must be in between 0.0-100.0"
-msgstr ""
+msgid "%s low and high value must be in between 0.0-100.0"
+msgstr "%s ค่าต่ำสุดและสูงสุดต้องอยู่ระหว่าง 0.0-100.0"
 
 #. module: survey_grading
 #: model_terms:ir.ui.view,arch_db:survey_grading.survey_grade_view_form
@@ -49,21 +42,32 @@ msgid "<span class=\"mx-1\">-</span>"
 msgstr ""
 
 #. module: survey_grading
-#: model:ir.model.constraint,message:survey_grading.constraint_survey_grade_name_uniq
-msgid "A grading name must be unique!"
-msgstr ""
+#. odoo-python
+#: code:addons/survey_grading/models/survey_grade.py:0
+#, python-format
+msgid "A grading name must be unique! (%s)"
+msgstr "ชื่อเกณฑ์ต้องไม่ซ้ำกัน (%s)"
 
 #. module: survey_grading
 #: model:ir.model.fields,help:survey_grading.field_survey_grade__color_class
 msgid ""
-"Bootstrap4's classes to change the appearance of this grade's badge at "
-"survey result screen"
+"Bootstrap's classes to change the appearance of this grade's badge at survey"
+" result screen"
 msgstr ""
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__color_class
 msgid "Color Class"
 msgstr ""
+
+#. module: survey_grading
+#: model:ir.model.fields,help:survey_grading.field_survey_grade__grading_basis
+#: model:ir.model.fields,help:survey_grading.field_survey_survey__grading_basis
+msgid ""
+"Compare grade ranges against the score percentage, or against the raw total "
+"score. Use Points when the maximum score varies between responses, e.g. when"
+" conditional questions drop out of the scoring."
+msgstr "เทียบช่วงของเกณฑ์กับร้อยละของคะแนน หรือกับคะแนนดิบรวม เลือกคะแนนดิบเมื่อคะแนนเต็มเปลี่ยนไปในแต่ละคำตอบ เช่น เมื่อคำถามแบบมีเงื่อนไขถูกตัดออกจากการคิดคะแนน"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__create_uid
@@ -78,11 +82,6 @@ msgstr "สร้างเมื่อ"
 #. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__danger
 msgid "Danger"
-msgstr ""
-
-#. module: survey_grading
-#: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__dark
-msgid "Dark"
 msgstr ""
 
 #. module: survey_grading
@@ -104,15 +103,21 @@ msgid "Grading"
 msgstr "เกณฑ์คะแนน"
 
 #. module: survey_grading
+#: model:ir.model.fields,field_description:survey_grading.field_survey_grade__grading_basis
+#: model:ir.model.fields,field_description:survey_grading.field_survey_survey__grading_basis
+msgid "Grading Basis"
+msgstr "เทียบเกณฑ์จาก"
+
+#. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__high
-msgid "High (%)"
-msgstr "สูง (%)"
+msgid "High"
+msgstr "สูง"
 
 #. module: survey_grading
 #: model:ir.model.fields,help:survey_grading.field_survey_grade__high
 msgid ""
-"Highest percentage of score, Inclusive but Exclusive for next lesser grade"
-msgstr ""
+"Highest score of this grade, Inclusive but Exclusive for next lesser grade"
+msgstr "คะแนนสูงสุดของเกณฑ์นี้ (รวมค่านี้) แต่ไม่รวมในเกณฑ์ที่ต่ำกว่าถัดไป"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__id
@@ -140,34 +145,34 @@ msgid "Last Updated on"
 msgstr "แก้ไขล่าสุดเมื่อ"
 
 #. module: survey_grading
-#: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__light
-msgid "Light"
-msgstr "6"
-
-#. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__low
-msgid "Low (%)"
-msgstr "ต่ำ (%)"
+msgid "Low"
+msgstr "ต่ำ"
 
 #. module: survey_grading
 #: model:ir.model.fields,help:survey_grading.field_survey_grade__low
-msgid "Lowest percentage of score (Inclusive)"
-msgstr ""
+msgid "Lowest score of this grade (Inclusive)"
+msgstr "คะแนนต่ำสุดของเกณฑ์นี้ (รวมค่านี้)"
 
 #. module: survey_grading
-#: model_terms:ir.ui.view,arch_db:survey_grading.survey_grade_view_form
-msgid "Max"
-msgstr ""
-
-#. module: survey_grading
-#: model_terms:ir.ui.view,arch_db:survey_grading.survey_grade_view_form
-msgid "Min"
+#: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__muted
+msgid "Muted"
 msgstr ""
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__passing_grade
 msgid "Passing Grade"
 msgstr "เกณฑ์ที่ผ่าน"
+
+#. module: survey_grading
+#: model:ir.model.fields.selection,name:survey_grading.selection__survey_survey__grading_basis__percentage
+msgid "Percentage"
+msgstr "ร้อยละ"
+
+#. module: survey_grading
+#: model:ir.model.fields.selection,name:survey_grading.selection__survey_survey__grading_basis__score
+msgid "Points"
+msgstr "คะแนนดิบ"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_user_input__grade_ids
@@ -181,8 +186,8 @@ msgstr ""
 
 #. module: survey_grading
 #: model_terms:ir.ui.view,arch_db:survey_grading.survey_grade_view_form
-msgid "Range of Score (%)"
-msgstr "ช่วงคะแนน (%)"
+msgid "Range of Score"
+msgstr "ช่วงคะแนน"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__scoring_success_min
@@ -211,11 +216,23 @@ msgid "Survey User Input"
 msgstr "แบบสำรวจข้อมูลผู้ใช้"
 
 #. module: survey_grading
+#: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__text
+msgid "Text"
+msgstr ""
+
+#. module: survey_grading
+#: model:ir.model.fields,help:survey_grading.field_survey_grade__triggering_answer_ids
+msgid ""
+"Use this grade only for responses that selected one of these answers. Leave "
+"empty to use it for every response."
+msgstr "ใช้เกณฑ์นี้เฉพาะกับคำตอบที่เลือกตัวเลือกใดตัวเลือกหนึ่งเหล่านี้ เว้นว่างไว้เพื่อใช้กับทุกคำตอบ"
+
+#. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__warning
 msgid "Warning"
 msgstr ""
 
 #. module: survey_grading
-#: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__muted
-msgid "Muted"
-msgstr ""
+#: model:ir.model.fields,field_description:survey_grading.field_survey_grade__triggering_answer_ids
+msgid "When Answered"
+msgstr "เมื่อตอบว่า"
