@@ -10,5 +10,7 @@ class SurveyQuestion(models.Model):
         [("score", "Score"), ("value", "Value")],
         "Value type",
         default="score",
-        required=True,
+        # Not required: a NOT NULL column on survey.question would break any
+        # upstream module's tests, which run before this module is in the registry.
+        # Readers treat an empty value as "score".
     )
