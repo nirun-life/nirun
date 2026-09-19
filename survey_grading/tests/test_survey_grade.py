@@ -123,6 +123,50 @@ class TestSurveyGrade(common.TransactionCase):
 
         self.assertEqual(response.grade_id.name, "Pass")
 
+    # ------------------------------------------------------- the completion page
+
+    def _completion_page(self, response):
+        return str(
+            self.env["ir.qweb"]._render(
+                "survey.survey_fill_form_done",
+                {"survey": response.survey_id, "answer": response, "graph_data": False},
+            )
+        )
+
+    def test_finished_page_shows_the_badge_without_a_passing_mark(self):
+        """Core gates the score block on scoring_success_min, which a points
+        questionnaire leaves at 0; the badge must not go down with it."""
+        self.score_survey.scoring_success_min = 0
+        self.score_survey.grade_ids.filtered(lambda g: g.name == "Pass").name = "Badge"
+        response = self._respond(
+            self.score_survey, self._question_worth(self.score_survey, 6)
+        )
+        self.assertEqual(response.grade_id.name, "Badge")
+        self.assertIn("Badge", self._completion_page(response))
+
+    def test_no_verdict_without_a_passing_mark(self):
+        """scoring_success is trivially true at scoring_success_min 0, so neither
+        branch of the passed/failed verdict may render."""
+        self.score_survey.scoring_success_min = 0
+        response = self._respond(
+            self.score_survey, self._question_worth(self.score_survey, 6)
+        )
+        self.assertTrue(response.scoring_success)
+
+        page = self._completion_page(response)
+        self.assertNotIn("you have passed the test", page)
+        self.assertNotIn("you have failed the test", page)
+
+    def test_verdict_is_untouched_when_there_is_a_passing_mark(self):
+        self.percentage_survey.scoring_success_min = 50
+        passed = self._respond(
+            self.percentage_survey, self._question_worth(self.percentage_survey, 6)
+        )
+        self.assertIn("you have passed the test", self._completion_page(passed))
+
+        failed = self._respond(self.percentage_survey)
+        self.assertIn("you have failed the test", self._completion_page(failed))
+
     def test_percentage_basis_rejects_ranges_outside_0_100(self):
         with self.assertRaises(ValidationError):
             self._grade(self.percentage_survey, "Impossible", 0, 150)
