@@ -4,7 +4,41 @@
   -->
 <odoo>
     <template id="survey_fill_form_done_inherit" name="Survey: finished" inherit_id="survey.survey_fill_form_done">
-        <xpath expr="//div/div[1]/div[2]/div[1]/t[1]/div" position="before">
+        <!--
+            Core gates its whole score block on scoring_success_min, a percentage that
+            is meaningless on a graded questionnaire - and therefore left at 0 - so the
+            grade badge went down with the block. Open the gate for graded surveys
+            rather than move the badge out of it: survey_subject rewrites this same
+            column with a positional xpath, so nothing here may shift an element.
+            These three specs only touch attributes, and must stay ahead of the badge.
+        -->
+        <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]" position="attributes">
+            <attribute name="t-if">
+                survey.scoring_type != 'no_scoring' and (survey.scoring_success_min or survey.grade_ids)
+            </attribute>
+        </xpath>
+        <!--
+            Passed/failed is a verdict against the passing mark, so it stays tied to
+            scoring_success_min: without one, scoring_success is trivially true and
+            every respondent would be congratulated. t-else always fires, so the
+            failure branch becomes a t-elif on the same condition. Both are addressed as
+            direct children of the scoring block: survey_subject introduces a t-else of
+            its own further down, and view order between the two modules is not fixed.
+        -->
+        <xpath
+            expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/t[@t-if='answer.scoring_success']"
+            position="attributes"
+        >
+            <attribute name="t-if">survey.scoring_success_min and answer.scoring_success</attribute>
+        </xpath>
+        <xpath
+            expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/t[@t-else='']"
+            position="attributes"
+        >
+            <attribute name="t-else" />
+            <attribute name="t-elif">survey.scoring_success_min</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div" position="before">
             <t t-if="answer.grade_id">
                 <h4>
                     <span t-attf-class="badge bg-#{answer.grade_id.color_class or 'primary'} text-wrap">
