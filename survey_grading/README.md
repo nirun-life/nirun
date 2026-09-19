@@ -19,7 +19,11 @@ of ranges for a maximum score that varies between responses.
 
 - Survey form: adds editable grading rows under survey scoring options.
 - Survey-user-input tree and form: show the computed grade.
-- Frontend completion template: renders a colored grade badge when an answer has a matching grade.
+- Frontend completion template: renders a colored grade badge when an answer has a matching grade. Core gates that whole block
+  on `scoring_success_min`, which is a percentage and so left at 0 on a graded questionnaire, so this module widens the gate to
+  `scoring_success_min or grade_ids` instead of moving the badge out of it — `survey_subject` rewrites the same column with a
+  positional `t[1]/div` xpath, and inserting any element ahead of that target silently breaks it. The passed/failed verdict
+  stays tied to `scoring_success_min`, since `scoring_success` is trivially true without one.
 - Security: grants survey users access to `survey.grade`.
 
 ## Dependencies
