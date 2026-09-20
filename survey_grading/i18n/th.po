@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 12:03+0000\n"
-"PO-Revision-Date: 2026-09-06 12:03+0000\n"
+"POT-Creation-Date: 2026-09-20 05:14+0000\n"
+"PO-Revision-Date: 2026-09-20 05:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -67,7 +67,15 @@ msgid ""
 "Compare grade ranges against the score percentage, or against the raw total "
 "score. Use Points when the maximum score varies between responses, e.g. when"
 " conditional questions drop out of the scoring."
-msgstr "เทียบช่วงของเกณฑ์กับร้อยละของคะแนน หรือกับคะแนนดิบรวม เลือกคะแนนดิบเมื่อคะแนนเต็มเปลี่ยนไปในแต่ละคำตอบ เช่น เมื่อคำถามแบบมีเงื่อนไขถูกตัดออกจากการคิดคะแนน"
+msgstr ""
+"เทียบช่วงของเกณฑ์กับร้อยละของคะแนน หรือกับคะแนนดิบรวม "
+"เลือกคะแนนดิบเมื่อคะแนนเต็มเปลี่ยนไปในแต่ละคำตอบ เช่น "
+"เมื่อคำถามแบบมีเงื่อนไขถูกตัดออกจากการคิดคะแนน"
+
+#. module: survey_grading
+#: model_terms:ir.ui.view,arch_db:survey_grading.survey_grade_view_form
+msgid "Conditional"
+msgstr "มีเงื่อนไข"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__create_uid
@@ -94,6 +102,7 @@ msgstr "ชื่อที่ใช้แสดง"
 #: model:ir.model.fields,field_description:survey_grading.field_survey_survey__grade_ids
 #: model:ir.model.fields,field_description:survey_grading.field_survey_user_input__grade
 #: model:ir.model.fields,field_description:survey_grading.field_survey_user_input__grade_id
+#: model_terms:ir.ui.view,arch_db:survey_grading.survey_fill_form_done_inherit
 msgid "Grade"
 msgstr "เกณฑ์"
 
@@ -107,6 +116,11 @@ msgstr "เกณฑ์คะแนน"
 #: model:ir.model.fields,field_description:survey_grading.field_survey_survey__grading_basis
 msgid "Grading Basis"
 msgstr "เทียบเกณฑ์จาก"
+
+#. module: survey_grading
+#: model_terms:ir.ui.view,arch_db:survey_grading.survey_fill_form_done_inherit
+msgid "Grading reference"
+msgstr "เกณฑ์การให้คะแนน"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__high
@@ -153,6 +167,16 @@ msgstr "ต่ำ"
 #: model:ir.model.fields,help:survey_grading.field_survey_grade__low
 msgid "Lowest score of this grade (Inclusive)"
 msgstr "คะแนนต่ำสุดของเกณฑ์นี้ (รวมค่านี้)"
+
+#. module: survey_grading
+#: model_terms:ir.ui.view,arch_db:survey_grading.survey_fill_form_done_inherit
+msgid "Max"
+msgstr "สูงสุด"
+
+#. module: survey_grading
+#: model_terms:ir.ui.view,arch_db:survey_grading.survey_fill_form_done_inherit
+msgid "Min"
+msgstr "ต่ำสุด"
 
 #. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__muted
@@ -206,6 +230,11 @@ msgid "Survey"
 msgstr "การสำรวจ"
 
 #. module: survey_grading
+#: model:ir.model,name:survey_grading.model_survey_question_answer
+msgid "Survey Label"
+msgstr "ป้ายสอบถาม"
+
+#. module: survey_grading
 #: model:ir.model,name:survey_grading.model_survey_grade
 msgid "Survey Scoring Grade"
 msgstr "เกณฑ์คะแนนแบบประเมิน"
@@ -221,11 +250,19 @@ msgid "Text"
 msgstr ""
 
 #. module: survey_grading
+#: model_terms:ir.ui.view,arch_db:survey_grading.survey_grade_view_tree
+#: model_terms:ir.ui.view,arch_db:survey_grading.survey_view_form_inherit
+msgid "This grade only applies when its triggering answers are selected."
+msgstr "เกณฑ์นี้ใช้เฉพาะเมื่อมีการเลือกตัวเลือกที่กำหนดไว้เท่านั้น"
+
+#. module: survey_grading
 #: model:ir.model.fields,help:survey_grading.field_survey_grade__triggering_answer_ids
 msgid ""
 "Use this grade only for responses that selected one of these answers. Leave "
 "empty to use it for every response."
-msgstr "ใช้เกณฑ์นี้เฉพาะกับคำตอบที่เลือกตัวเลือกใดตัวเลือกหนึ่งเหล่านี้ เว้นว่างไว้เพื่อใช้กับทุกคำตอบ"
+msgstr ""
+"ใช้เกณฑ์นี้เฉพาะกับคำตอบที่เลือกตัวเลือกใดตัวเลือกหนึ่งเหล่านี้ "
+"เว้นว่างไว้เพื่อใช้กับทุกคำตอบ"
 
 #. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__warning
@@ -236,3 +273,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__triggering_answer_ids
 msgid "When Answered"
 msgstr "เมื่อตอบว่า"
+
+#. module: survey_grading
+#: model_terms:ir.ui.view,arch_db:survey_grading.survey_fill_form_done_inherit
+msgid "Your result"
+msgstr "ผลของคุณ"

@@ -44,6 +44,41 @@ class SurveyUserInput(models.Model):
         scoped = self.grade_ids.filtered(lambda g: g.triggering_answer_ids & answers)
         return scoped or self.grade_ids.filtered(lambda g: not g.triggering_answer_ids)
 
+    def grade_reference(self):
+        """The bands this response could have landed in, best first.
+
+        Public because the completion page renders it.
+        """
+        self.ensure_one()
+        return self._grade_candidates().sorted("low", reverse=True)
+
+    def grade_scale(self):
+        """This response's value against the top of the scale it was graded on.
+
+        Not `total_possible_score`: that is the whole survey's maximum, and it
+        overstates the scale whenever conditional questions drop out - the case
+        `grading_basis = score` exists for. The candidate bands are authored per
+        gate, so their highest bound is the ceiling this response was actually
+        measured against. Empty when there is no such ceiling.
+        """
+        self.ensure_one()
+        top = max(self._grade_candidates().mapped("high"), default=0)
+        if not top:
+            return ""
+        unit = "" if self.survey_id.grading_basis == "score" else "%"
+        return "%g / %g%s" % (self._grading_value(), top, unit)
+
+    def grade_conditions(self):
+        """Why these bands and not another set, for the reader of that table.
+
+        Extended by ni_questionnaire with the patient traits it grades on.
+        """
+        self.ensure_one()
+        answers = self.user_input_line_ids.suggested_answer_id
+        return (answers & self._grade_candidates().triggering_answer_ids).mapped(
+            "value"
+        )
+
     def _quizz_grade(self):
         self.ensure_one()
         value = self._grading_value()

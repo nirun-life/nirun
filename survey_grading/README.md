@@ -24,7 +24,19 @@ of ranges for a maximum score that varies between responses.
   `scoring_success_min or grade_ids` instead of moving the badge out of it — `survey_subject` rewrites the same column with a
   positional `t[1]/div` xpath, and inserting any element ahead of that target silently breaks it. The passed/failed verdict
   stays tied to `scoring_success_min`, since `scoring_success` is trivially true without one.
-- Security: grants survey users access to `survey.grade`.
+- Frontend completion template, part one and a half: `survey.user_input.grade_scale()` prints the response's value over the top
+  of the scale it was graded on (`6 / 6`, or `60 / 100%` under the percentage basis) beside the badge. The ceiling is the
+  candidate bands' highest bound, **not** `total_possible_score` — the survey's own maximum overstates the scale whenever
+  conditional questions drop out, which is the case `grading_basis = score` exists for.
+- Frontend completion template, part two: a **grading reference** table sits between the score block and the statistics charts,
+  so a respondent can see the whole scale their badge came from. Its rows are `survey.user_input.grade_reference()` — the bands
+  that could still have applied to _this_ response, best first — and not every band of the survey, because answer-scoped sets
+  (and the gender/age sets `ni_questionnaire` adds) would otherwise contradict each other on screen. The reached band's row is
+  marked with `table-active` plus a titled check icon, never colour alone. A one-band scale renders nothing.
+  `survey.user_input.grade_conditions()` supplies the parenthesised hint naming what selected those bands; it is the extension
+  seam, so downstream modules add their criteria there rather than xpath'ing into this table.
+- Security: grants survey users access to `survey.grade`. The completion page is rendered from sudo records by
+  `survey.controllers.main`, so an iterated `grade_ids` is reachable for an anonymous respondent.
 
 ## Dependencies
 
@@ -75,4 +87,5 @@ question rather than by scoping the skipped items on several answers.
 ## Verification
 
 `survey_grading/tests/test_survey_grade.py` covers both bases against the same 6-of-10 response, which the two band sets
-deliberately grade in opposite directions.
+deliberately grade in opposite directions, plus the grading-reference table: that it lists only candidate bands, marks the
+reached one, and names the answer that selected the set.
