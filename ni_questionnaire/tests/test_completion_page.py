@@ -78,3 +78,55 @@ class TestCompletionPage(common.TransactionCase):
         response = self._respond()
         self.assertEqual(response.grade_id.name, "Unmistakable")
         self.assertIn("Unmistakable", self._page(response))
+
+
+class TestGradeConditions(common.TransactionCase):
+    """The patient traits `ni_questionnaire` adds to the grading-reference hint.
+
+    Only the traits the survey actually grades differently by are named, so the
+    fixture splits its bands on both gender and age.
+    """
+
+    def setUp(self):
+        super().setUp()
+        partner = self.env["res.partner"].create(
+            {"name": "Graded Patient", "gender": "female", "age": 30}
+        )
+        self.patient = self.env["ni.patient"].create({"partner_id": partner.id})
+        self.survey = self.env["survey.survey"].create(
+            {
+                "title": "Graded by gender and age",
+                "scoring_type": "scoring_with_answers",
+                "grading_basis": "score",
+                "subject_type": "ni.patient",
+            }
+        )
+        for gender in ("female", "male"):
+            for age_low, age_high, cut in ((0, 17, 5), (18, 200, 7)):
+                self._grade(gender, age_low, age_high, "Low", 0, cut)
+                self._grade(gender, age_low, age_high, "High", cut + 1, 10)
+
+    def _grade(self, gender, age_low, age_high, name, low, high):
+        return self.env["survey.grade"].create(
+            {
+                "survey_id": self.survey.id,
+                "name": name,
+                "low": low,
+                "high": high,
+                "gender": gender,
+                "age_low": age_low,
+                "age_high": age_high,
+            }
+        )
+
+    def test_hint_names_the_traits_that_selected_the_bands(self):
+        response = self.env["survey.user_input"].create(
+            {
+                "survey_id": self.survey.id,
+                "patient_id": self.patient.id,
+                "subject_model": "ni.patient",
+                "subject_id": self.patient.id,
+            }
+        )
+        self.assertEqual(response.grade_conditions(), ["Female", "Age 30"])
+        self.assertEqual(response.grade_reference().mapped("name"), ["High", "Low"])

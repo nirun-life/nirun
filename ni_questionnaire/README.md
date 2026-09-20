@@ -55,6 +55,13 @@ ranges. This is required for questionnaires whose maximum score varies between r
 `ni.observation.reference.range` only scopes by age and gender and knows nothing about the survey. Reference ranges remain the
 fallback when the grade has no interpretation.
 
+### Grading-Reference Hint
+
+`survey.user_input.grade_conditions()` (from `survey_grading`) is extended to name the patient traits `grade_for()` selected on,
+which the completion page prints beside the grading-reference table. Only traits the survey _grades differently by_ are named —
+a gender label when any band carries one, an age when the bands fall into more than one age window — otherwise every result page
+would carry an age and a gender that had no bearing on the grade.
+
 ## Reports, Views, and Security
 
 - `report/ni_patient_survey_latest_*`, `report/ni_encounter_survey_latest_*`, and `report/survey_user_input_line_report_*`
@@ -79,6 +86,8 @@ fallback when the grade has no interpretation.
   answer, question group), `grade_for()`, `action_sync_observation_range()`, and the misconfiguration guards.
 - `ni_questionnaire/tests/test_variable_max_score.py` covers the variable-maximum path end to end, including a percentage-basis
   case that is the regression guard for creating observations before `_mark_done()` trims.
+- `ni_questionnaire/tests/test_completion_page.py` covers the completion page with every extension applied, including the
+  patient traits added to the grading-reference hint.
 - Re-check a full questionnaire flow from patient or encounter launch through completed response creation.
 - Confirm completed responses still generate the expected observation or observation sheet records.
 - Review latest-response and monthly pivot/report views after any change to answer mapping, grading, or SQL-backed report
