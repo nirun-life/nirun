@@ -167,6 +167,68 @@ class TestSurveyGrade(common.TransactionCase):
         failed = self._respond(self.percentage_survey)
         self.assertIn("you have failed the test", self._completion_page(failed))
 
+    def test_reference_table_lists_only_the_candidate_bands(self):
+        """A band scoped to an answer nobody picked is not part of this scale."""
+        yes = self._question_worth(self.score_survey, 6).suggested_answer_ids.filtered(
+            lambda a: a.value == "Yes"
+        )
+        self._grade(self.score_survey, "Scoped", 0, 10, answers=yes)
+        response = self._respond(self.score_survey)
+
+        self.assertEqual(response.grade_reference().mapped("name"), ["Pass", "Fail"])
+        self.assertNotIn("Scoped", self._completion_page(response))
+
+    def test_reference_table_marks_the_grade_that_was_reached(self):
+        response = self._respond(
+            self.score_survey, self._question_worth(self.score_survey, 6)
+        )
+        page = self._completion_page(response)
+        self.assertIn("Grading reference", page)
+        # The marked row is the one carrying the reached band's name.
+        row = page.split('<tr class="fw-bold">')[1]
+        self.assertIn("Pass", row)
+        self.assertIn(">6</td>", row)
+        self.assertIn(">10</td>", row)
+        self.assertIn("Your result", row)
+
+    def test_scale_beside_the_badge_uses_the_conditioned_maximum(self):
+        """The ceiling is the candidate set's top bound, not the survey's 10 points:
+        a gated questionnaire is scored out of whatever its gate administered."""
+        yes = self._question_worth(self.score_survey, 6).suggested_answer_ids.filtered(
+            lambda a: a.value == "Yes"
+        )
+        self._grade(self.score_survey, "Short Low", 0, 3, answers=yes)
+        self._grade(self.score_survey, "Short High", 4, 6, answers=yes)
+
+        gated = self._respond(
+            self.score_survey, self._question_worth(self.score_survey, 6)
+        )
+        self.assertEqual(gated.grade_scale(), "6 / 6")
+        self.assertIn("6 / 6", self._completion_page(gated))
+
+        ungated = self._respond(self.score_survey)
+        self.assertEqual(ungated.grade_scale(), "0 / 10")
+
+    def test_scale_carries_the_unit_under_the_percentage_basis(self):
+        response = self._respond(
+            self.percentage_survey, self._question_worth(self.percentage_survey, 6)
+        )
+        self.assertEqual(response.grade_scale(), "60 / 100%")
+
+    def test_reference_table_names_the_answer_that_selected_the_bands(self):
+        """Two bands in the scoped set, so the table is not gated off and the
+        rendered hint itself is covered, not only what feeds it."""
+        yes = self._question_worth(self.score_survey, 6).suggested_answer_ids.filtered(
+            lambda a: a.value == "Yes"
+        )
+        self._grade(self.score_survey, "Low", 0, 5, answers=yes)
+        self._grade(self.score_survey, "High", 6, 10, answers=yes)
+        response = self._respond(
+            self.score_survey, self._question_worth(self.score_survey, 6)
+        )
+        self.assertEqual(response.grade_conditions(), ["Yes"])
+        self.assertIn("(Yes)", self._completion_page(response))
+
     def test_percentage_basis_rejects_ranges_outside_0_100(self):
         with self.assertRaises(ValidationError):
             self._grade(self.percentage_survey, "Impossible", 0, 150)
