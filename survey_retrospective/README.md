@@ -8,7 +8,7 @@ Adds retrospective survey entry support so privileged users can record an answer
 
 - `survey.user_input` extension Adds boolean `retrospective`.
 - `survey.subject.wizard` extension Adds `retrospective` and `survey_date`, forwards the retrospective flag into answer
-  creation, and rewrites `survey_user_input.create_date` when a past survey date is supplied.
+  creation, and rewrites `survey_user_input.create_date` in `_create_answer()` when a past survey date is supplied.
 
 ## Views
 

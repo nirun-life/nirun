@@ -10,6 +10,8 @@ partner.
 - `survey.survey` extension Adds required `subject_type` selection and `action_survey_subject_wizard()`.
 - `survey.user_input` extension Adds `subject_model`, `subject_id`, computed `subject_ref`, and `subject_name`.
 - `survey.subject.wizard` Transient wizard that selects the target subject and opens a survey answer URL for that record.
+  Extension seam: override `_create_answer()` to customize the created `survey.user_input`; `action_survey()` owns the `started`
+  flag and the URL, so do not replace it.
 
 ## Views, Templates, and Security
 

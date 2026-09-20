@@ -58,13 +58,18 @@ class SurveySubjectWizard(models.TransientModel):
                 )
             return {"subject_model": self.type, "subject_id": subject.id}
 
-    def action_survey(self):
-        answer = self.sudo().survey_id._create_answer(
+    def _create_answer(self):
+        return self.sudo().survey_id._create_answer(
             user=self.subject_res_users or self.env.user,
             partner=self.subject_res_partner,
             **self.subject_get()
         )
-        lang = self.env.context["lang"].split("_")[0]
+
+    def action_survey(self):
+        answer = self._create_answer()
+        lang = (self.env.context.get("lang") or self.env.user.lang or "en_US").split(
+            "_"
+        )[0]
         self.write({"started": True})
         return {
             "type": "ir.actions.act_url",
