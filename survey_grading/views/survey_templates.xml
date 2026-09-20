@@ -4,59 +4,19 @@
   -->
 <odoo>
     <template id="survey_fill_form_done_inherit" name="Survey: finished" inherit_id="survey.survey_fill_form_done">
-        <!--
-            Core gates its whole score block on scoring_success_min, a percentage that
-            is meaningless on a graded questionnaire - and therefore left at 0 - so the
-            grade badge went down with the block. Open the gate for graded surveys
-            rather than move the badge out of it: survey_subject rewrites this same
-            column with a positional xpath, so nothing here may shift an element.
-            These three specs only touch attributes, and must stay ahead of the badge.
-        -->
-        <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]" position="attributes">
-            <attribute name="t-if">
-                survey.scoring_type != 'no_scoring' and (survey.scoring_success_min or survey.grade_ids)
-            </attribute>
-        </xpath>
-        <!--
-            Passed/failed is a verdict against the passing mark, so it stays tied to
-            scoring_success_min: without one, scoring_success is trivially true and
-            every respondent would be congratulated. t-else always fires, so the
-            failure branch becomes a t-elif on the same condition. Both are addressed as
-            direct children of the scoring block: survey_subject introduces a t-else of
-            its own further down, and view order between the two modules is not fixed.
-        -->
-        <xpath
-            expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/t[@t-if='answer.scoring_success']"
-            position="attributes"
-        >
-            <attribute name="t-if">survey.scoring_success_min and answer.scoring_success</attribute>
-        </xpath>
-        <xpath
-            expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/t[@t-else='']"
-            position="attributes"
-        >
-            <attribute name="t-else" />
-            <attribute name="t-elif">survey.scoring_success_min</attribute>
-        </xpath>
-        <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div" position="before">
+        <xpath expr="//div[hasclass('o_survey_finished')]/div[1]" position="after">
             <t t-if="answer.grade_id">
                 <t t-set="scale" t-value="answer.grade_scale()" />
                 <h4>
-                    <span t-attf-class="badge bg-#{answer.grade_id.color_class or 'primary'} text-wrap">
+                    <span
+                        t-attf-class="badge text-bg-#{'primary' if answer.grade_id.color_class in [False, 'text', 'muted'] else answer.grade_id.color_class} text-wrap"
+                    >
                         <t t-esc="answer.grade_id.name" />
                     </span>
                     <span t-if="scale" class="fs-5 text-muted ms-2" t-esc="scale" />
                 </h4>
             </t>
         </xpath>
-        <!--
-            The grading reference, so a respondent can see the whole scale their badge
-            came from. Rows are the bands that could still have applied to this
-            response, not every band of the survey - answer-scoped sets, and the
-            gender/age sets ni_questionnaire adds, would otherwise contradict each
-            other on screen. Addressed by class: survey_subject also rewrites this
-            template, and view order between the two modules is not fixed.
-        -->
         <xpath expr="//div[hasclass('o_survey_result')]" position="before">
             <t t-set="grades" t-value="answer.grade_reference()" />
             <t t-set="conditions" t-value="answer.grade_conditions()" />
@@ -70,6 +30,7 @@
                     <table class="table table-sm table-striped table-hover table-bordered w-auto">
                         <thead>
                             <tr>
+                                <th class="px-2" />
                                 <th class="px-2">Grade</th>
                                 <th class="text-end px-2">Min</th>
                                 <th class="text-end px-2">Max</th>
@@ -80,15 +41,17 @@
                             t-as="grade"
                             t-att-class="'fw-bold' if grade == answer.grade_id else None"
                         >
-                            <td class="ps-2 pe-4">
-                                <span t-attf-class="text-wrap" t-esc="grade.name" />
+                            <td>
                                 <i
                                     t-if="grade == answer.grade_id"
-                                    class="fa fa-check text-success"
+                                    class="fa fa-arrow-right text-primary mx-2"
                                     role="img"
                                     aria-label="Your result"
                                     title="Your result"
                                 />
+                            </td>
+                            <td class="ps-2 pe-4">
+                                <span t-attf-class="text-wrap" t-esc="grade.name" />
                             </td>
                             <td
                                 t-attf-class="text-#{grade.color_class or 'primary'} text-end px-2"
