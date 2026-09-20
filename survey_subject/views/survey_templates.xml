@@ -4,22 +4,18 @@
   -->
 <odoo>
     <template id="survey_fill_form_done_inherit" name="Survey: finished" inherit_id="survey.survey_fill_form_done">
-        <xpath expr="//div/div[1]/div[2]/div[1]/t[1]/div" position="replace">
-            <div>
-                <t t-if="is_partner_subject">Your scored</t>
-                <t t-else="">
-                    <t t-esc="answer.subject_name" />
-                    scored
-                </t>
-                <t t-esc="answer.scoring_total" />
-                <span class="text-muted">
-                    (
-                    <t t-esc="answer.scoring_percentage" />
-                    %)
-                </span>
+        <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div" position="attributes">
+            <attribute name="t-if">is_partner_subject</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div" position="after">
+            <div t-if="not is_partner_subject">
+                <t t-esc="answer.subject_name" />
+                scored
+                <t t-esc="answer.scoring_percentage" />
+                %
             </div>
         </xpath>
-        <xpath expr="//div/div[1]/div[2]/div[1]" position="inside">
+        <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]" position="inside">
             <t t-if="survey.subject_type != 'res.partner'">
                 <a
                     href="#"
