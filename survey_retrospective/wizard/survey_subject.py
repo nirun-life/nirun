@@ -21,24 +21,14 @@ class SurveySubjectWizard(models.TransientModel):
             res.update({"retrospective": True})
         return res
 
-    def action_survey(self):
-        answer = self.sudo().survey_id._create_answer(
-            user=self.subject_res_users or self.env.user,
-            partner=self.subject_res_partner,
-            **self.subject_get()
-        )
+    def _create_answer(self):
+        answer = super()._create_answer()
         if self.retrospective:
             self.env.cr.execute(
                 "UPDATE survey_user_input SET create_date = %s WHERE id = %s",
                 (self.survey_date.strftime("%Y-%m-%d %H:%M:%S"), answer.id),
             )
-        return {
-            "type": "ir.actions.act_url",
-            "target": "new",
-            "url": "/survey/start/%s?answer_token=%s"
-            % (self.survey_id.access_token, answer.access_token),
-            "close_on_report_download": True,
-        }
+        return answer
 
     @api.constrains("retrospective", "survey_date")
     def check_survey_date(self):
