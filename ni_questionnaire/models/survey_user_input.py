@@ -235,3 +235,20 @@ class SurveyUserInput(models.Model):
         if self.subject_model in ["ni.patient", "ni.encounter"]:
             return grades.grade_for(self.patient_id.age, self.patient_id.gender)
         return grades
+
+    def grade_conditions(self):
+        # Override survey_grading.survey.user_input.grade_conditions(): name the
+        # patient traits grade_for() selected on, but only the ones this survey
+        # actually grades differently by - otherwise every result page would carry
+        # an age and a gender that had no bearing on the grade.
+        res = super().grade_conditions()
+        if self.subject_model not in ["ni.patient", "ni.encounter"]:
+            return res
+        grades = self.grade_ids
+        patient = self.patient_id
+        if patient.gender and any(grades.mapped("gender")):
+            selection = grades._fields["gender"]._description_selection(self.env)
+            res.append(dict(selection)[patient.gender])
+        if len(set(grades.mapped(lambda g: (g.age_low, g.age_high)))) > 1:
+            res.append(_("Age %s") % patient.age)
+        return res
