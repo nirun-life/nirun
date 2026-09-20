@@ -1,12 +1,18 @@
 #  Copyright (c) 2026 NSTDA
 
-from datetime import timedelta
+from datetime import datetime
 
-from odoo import fields
+from freezegun import freeze_time
+
 from odoo.exceptions import ValidationError
 from odoo.tests import common
 
+NOW = datetime(2026, 9, 20, 10, 0, 0)
+PAST = datetime(2026, 9, 17, 10, 0, 0)
+FUTURE = datetime(2026, 9, 21, 10, 0, 0)
 
+
+@freeze_time(NOW)
 class TestRetrospectiveWizard(common.TransactionCase):
     @classmethod
     def setUpClass(cls):
@@ -27,36 +33,32 @@ class TestRetrospectiveWizard(common.TransactionCase):
         )
 
     def _last_answer(self):
-        return self.env["survey.user_input"].search(
+        answer = self.env["survey.user_input"].search(
             [("survey_id", "=", self.survey.id)], order="id desc", limit=1
         )
+        answer.invalidate_recordset()  # create_date is rewritten with raw SQL
+        return answer
 
     def test_retrospective_backdates_answer_and_marks_started(self):
-        survey_date = fields.Datetime.now().replace(microsecond=0) - timedelta(days=3)
-        wizard = self._wizard(retrospective=True, survey_date=survey_date)
+        wizard = self._wizard(retrospective=True, survey_date=PAST)
         wizard.action_survey()
 
         answer = self._last_answer()
         self.assertTrue(answer.retrospective)
-        self.assertEqual(answer.create_date, survey_date)
+        self.assertEqual(answer.create_date, PAST)
         self.assertTrue(wizard.started)
 
-    def test_non_retrospective_keeps_create_date(self):
-        wizard = self._wizard()
+    def test_non_retrospective_ignores_survey_date(self):
+        wizard = self._wizard(retrospective=False, survey_date=PAST)
         wizard.action_survey()
 
         answer = self._last_answer()
         self.assertFalse(answer.retrospective)
-        self.assertAlmostEqual(
-            answer.create_date, fields.Datetime.now(), delta=timedelta(minutes=1)
-        )
+        self.assertNotEqual(answer.create_date, PAST)
         self.assertTrue(wizard.started)
 
     def test_survey_date_constraints(self):
         with self.assertRaises(ValidationError):
             self._wizard(retrospective=True)
         with self.assertRaises(ValidationError):
-            self._wizard(
-                retrospective=True,
-                survey_date=fields.Datetime.now() + timedelta(days=1),
-            )
+            self._wizard(retrospective=True, survey_date=FUTURE)
