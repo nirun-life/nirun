@@ -40,7 +40,7 @@ class TestSurveySubjectWizard(common.TransactionCase):
         )
         self.assertEqual(answer.subject_model, "res.partner")
         self.assertEqual(answer.subject_id, self.partner.id)
-        self.assertEqual(answer.partner_id, self.partner)
+        self.assertEqual(answer.partner_id, self.env.user.partner_id.id)
         self.assertTrue(wizard.started)
         self.assertEqual(action["type"], "ir.actions.act_url")
         self.assertIn(
