@@ -40,12 +40,68 @@
         </xpath>
         <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div" position="before">
             <t t-if="answer.grade_id">
+                <t t-set="scale" t-value="answer.grade_scale()" />
                 <h4>
                     <span t-attf-class="badge bg-#{answer.grade_id.color_class or 'primary'} text-wrap">
                         <t t-esc="answer.grade_id.name" />
                     </span>
+                    <span t-if="scale" class="fs-5 text-muted ms-2" t-esc="scale" />
                 </h4>
             </t>
+        </xpath>
+        <!--
+            The grading reference, so a respondent can see the whole scale their badge
+            came from. Rows are the bands that could still have applied to this
+            response, not every band of the survey - answer-scoped sets, and the
+            gender/age sets ni_questionnaire adds, would otherwise contradict each
+            other on screen. Addressed by class: survey_subject also rewrites this
+            template, and view order between the two modules is not fixed.
+        -->
+        <xpath expr="//div[hasclass('o_survey_result')]" position="before">
+            <t t-set="grades" t-value="answer.grade_reference()" />
+            <t t-set="conditions" t-value="answer.grade_conditions()" />
+            <div t-if="len(grades) > 1" class="o_survey_grade_reference mb-4">
+                <h5>
+                    Grading reference
+                    <span t-if="conditions" class="fw-normal text-muted" t-esc="'(%s)' % ', '.join(conditions)" />
+                </h5>
+                <t t-set="unit" t-value="'' if survey.grading_basis == 'score' else '%'" />
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped table-hover table-bordered w-auto">
+                        <thead>
+                            <tr>
+                                <th class="px-2">Grade</th>
+                                <th class="text-end px-2">Min</th>
+                                <th class="text-end px-2">Max</th>
+                            </tr>
+                        </thead>
+                        <tr
+                            t-foreach="grades"
+                            t-as="grade"
+                            t-att-class="'fw-bold' if grade == answer.grade_id else None"
+                        >
+                            <td class="ps-2 pe-4">
+                                <span t-attf-class="text-wrap" t-esc="grade.name" />
+                                <i
+                                    t-if="grade == answer.grade_id"
+                                    class="fa fa-check text-success"
+                                    role="img"
+                                    aria-label="Your result"
+                                    title="Your result"
+                                />
+                            </td>
+                            <td
+                                t-attf-class="text-#{grade.color_class or 'primary'} text-end px-2"
+                                t-esc="'%g%s' % (grade.low, unit)"
+                            />
+                            <td
+                                t-attf-class="text-#{grade.color_class or 'primary'} text-end px-2"
+                                t-esc="'%g%s' % (grade.high, unit)"
+                            />
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </xpath>
     </template>
 </odoo>
