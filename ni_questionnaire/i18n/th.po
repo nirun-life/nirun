@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-06 12:03+0000\n"
-"PO-Revision-Date: 2026-09-06 12:03+0000\n"
+"POT-Creation-Date: 2026-09-20 04:36+0000\n"
+"PO-Revision-Date: 2026-09-20 04:36+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -32,6 +32,11 @@ msgid "<i class=\"fa fa-filter me-2\" aria-hidden=\"true\" title=\"Filter\"/>"
 msgstr ""
 
 #. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_grade_view_form_inherit
+msgid "<span class=\"mx-1\">-</span>"
+msgstr ""
+
+#. module: ni_questionnaire
 #: model_terms:ir.ui.view,arch_db:ni_questionnaire.ni_encounter_view_form_inherit
 msgid ""
 "<span class=\"o_stat_text\">Print</span>\n"
@@ -48,6 +53,18 @@ msgid ""
 msgstr ""
 "<span class=\"o_stat_text\">เริ่ม</span>\n"
 "                        <span class=\"o_stat_text\">ประเมิน</span>"
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_grade_view_form_inherit
+msgid "Age"
+msgstr "อายุ"
+
+#. module: ni_questionnaire
+#. odoo-python
+#: code:addons/ni_questionnaire/models/survey_user_input.py:0
+#, python-format
+msgid "Age %s"
+msgstr "อายุ %s ปี"
 
 #. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_survey_grade__age_high
@@ -222,6 +239,11 @@ msgid "Female"
 msgstr "หญิง"
 
 #. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_grading_survey_view_form_inherit
+msgid "Female only"
+msgstr "เฉพาะเพศหญิง"
+
+#. module: ni_questionnaire
 #: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_user_input_line_monthly_report__answer_type__text_box
 msgid "Free Text"
 msgstr ""
@@ -264,7 +286,9 @@ msgstr "การแปลผล"
 msgid ""
 "Interpretation given to the observation derived from this response, instead "
 "of looking the score up in the observation's reference ranges."
-msgstr "การแปลผลที่ใช้กับการตรวจร่างกายที่ได้จากคำตอบนี้ แทนการเทียบคะแนนกับช่วงอ้างอิงของการตรวจร่างกาย"
+msgstr ""
+"การแปลผลที่ใช้กับการตรวจร่างกายที่ได้จากคำตอบนี้ "
+"แทนการเทียบคะแนนกับช่วงอ้างอิงของการตรวจร่างกาย"
 
 #. module: ni_questionnaire
 #: model:ir.model.fields,field_description:ni_questionnaire.field_ni_encounter_survey_latest____last_update
@@ -308,6 +332,11 @@ msgstr "ผลประเมินล่าสุด"
 #: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_grade__gender__male
 msgid "Male"
 msgstr "ชาย"
+
+#. module: ni_questionnaire
+#: model_terms:ir.ui.view,arch_db:ni_questionnaire.survey_grading_survey_view_form_inherit
+msgid "Male only"
+msgstr "เฉพาะเพศชาย"
 
 #. module: ni_questionnaire
 #: model:ir.model.fields.selection,name:ni_questionnaire.selection__survey_question_group__operator__max
@@ -376,6 +405,7 @@ msgstr "รูปแบบผลตรวจ"
 
 #. module: ni_questionnaire
 #: model:ir.model,name:ni_questionnaire.model_ni_observation_type
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_grade__observation_id
 #: model:ir.model.fields,field_description:ni_questionnaire.field_survey_survey__observation_type_id
 #: model:ir.model.fields,field_description:ni_questionnaire.field_survey_user_input__observation_type_id
 msgid "Observation Type"
@@ -617,6 +647,7 @@ msgid "Status"
 msgstr "สถานะ"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields,field_description:ni_questionnaire.field_survey_grade__subject_type
 #: model:ir.model.fields,field_description:ni_questionnaire.field_survey_survey__subject_type
 msgid "Subject Type"
 msgstr "ชนิดของเป้าหมาย"
@@ -693,6 +724,7 @@ msgid "Surveys"
 msgstr "แบบประเมิน"
 
 #. module: ni_questionnaire
+#: model:ir.model.fields,help:ni_questionnaire.field_survey_grade__subject_type
 #: model:ir.model.fields,help:ni_questionnaire.field_survey_survey__subject_type
 msgid "Target that can answer the survey"
 msgstr "ประเภทเป้าหมายที่สามารถตอบแบบประเมินได้"
