@@ -92,6 +92,7 @@ class Goal(models.Model):
     target_code_ids = fields.Many2many(
         "ni.observation.value.code", domain="[('type_ids', '=', observation_type_id)]"
     )
+    target_display = fields.Char(compute="_compute_target_display")
     observation_id = fields.Many2one(
         "ni.observation", "Latest", compute="_compute_observation"
     )
@@ -256,6 +257,27 @@ class Goal(models.Model):
             matched = value_codes.filtered_domain([("id", "parent_of", targets.ids)])
             return matched == value_codes
         return False
+
+    @api.depends(
+        "target_value_type",
+        "target_min",
+        "target_max",
+        "target_code_operator",
+        "target_code_ids",
+    )
+    def _compute_target_display(self):
+        operator_labels = dict(
+            self._fields["target_code_operator"]._description_selection(self.env)
+        )
+        for rec in self:
+            if rec.target_value_type in ("int", "float"):
+                rec.target_display = f"{rec.target_min} - {rec.target_max}"
+            elif rec.target_value_type in ("code_id", "code_ids"):
+                codes = ", ".join(rec.target_code_ids.mapped("name"))
+                operator = operator_labels.get(rec.target_code_operator)
+                rec.target_display = f"{operator}: {codes}" if operator else codes
+            else:
+                rec.target_display = False
 
     @api.model
     def _expand_state_ids(self, states, domain, order):
