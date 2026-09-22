@@ -22,6 +22,8 @@ class Observation(models.Model):
 
     state = fields.Selection(default="completed")
 
+    user_id = fields.Many2one(related="sheet_id.user_id")
+
     @api.depends("child_ids")
     def _compute_child_count(self):
         for rec in self:
