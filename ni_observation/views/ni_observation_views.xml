@@ -145,22 +145,15 @@
                     <group>
                         <group>
                             <field name="sheet_id" />
-                            <field name="type_id" />
-                        </group>
-                        <group>
-                            <field
-                                name="company_id"
-                                groups="base.group_multi_company"
-                                invisible="context.get('default_patient_id')"
-                            />
                             <field name="patient_id" invisible="context.get('default_patient_id')" />
-                            <field name="encounter_id" invisible="context.get('default_encounter_id')" />
-                        </group>
-                        <group>
+                            <field name="type_id" />
                             <field name="value_type" invisible="1" />
                             <label for="value" />
                             <div class="o_row">
-                                <field name="value" />
+                                <field
+                                    name="value"
+                                    attrs="{'invisible': [('value_type', 'in', ['char', 'float', 'int', 'code_id', 'code_ids'])]}"
+                                />
                                 <field name="value_char" attrs="{'invisible': [('value_type', '!=', 'char')]}" />
                                 <field name="value_int" attrs="{'invisible': [('value_type', '!=', 'int')]}" />
                                 <field name="value_float" attrs="{'invisible': [('value_type', '!=', 'float')]}" />
@@ -176,6 +169,16 @@
                                 />
                             </div>
                             <field name="interpretation_id" options="{'no_open': True}" />
+                        </group>
+                        <group>
+                            <field name="occurrence" attrs="{'readonly': [('sheet_id', '!=', False)]}" />
+                            <field name="user_id" />
+                            <field name="encounter_id" invisible="context.get('default_encounter_id')" />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                invisible="context.get('default_patient_id')"
+                            />
                         </group>
                     </group>
                 </sheet>
