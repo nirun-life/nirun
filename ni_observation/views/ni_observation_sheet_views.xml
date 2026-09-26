@@ -186,6 +186,178 @@
                                         <create string="Add Observation" context="{}" />
                                     </control>
                                 </tree>
+                                <kanban>
+                                    <field name="sequence" />
+                                    <field name="sheet_id" />
+                                    <field name="patient_id" />
+                                    <field name="encounter_id" />
+                                    <field name="display_type" />
+                                    <field name="display_class" />
+                                    <field name="title" />
+                                    <field name="type_id" />
+                                    <field name="icon" />
+                                    <field name="icon_color" />
+                                    <field name="value" />
+                                    <field name="value_type" />
+                                    <field name="value_char" />
+                                    <field name="unit_id" />
+                                    <field name="interpretation_id" />
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="oe_kanban_global_click">
+                                                <strong
+                                                    t-if="record.display_type.raw_value"
+                                                    t-esc="record.title.value"
+                                                />
+                                                <t t-else="">
+                                                    <t
+                                                        t-set="numeric"
+                                                        t-value="['int', 'float'].includes(record.value_type.raw_value)"
+                                                    />
+                                                    <!-- fallback icon by value type when the type has none -->
+                                                    <t
+                                                        t-set="default_icon"
+                                                        t-value="{char: 'fa-pencil', code_id: 'fa-dot-circle-o', code_ids: 'fa-list-ul'}[record.value_type.raw_value] or 'fa-stethoscope'"
+                                                    />
+                                                    <div class="d-flex justify-content-between gap-2">
+                                                        <!-- type over interpretation -->
+                                                        <div>
+                                                            <div
+                                                                style="display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden"
+                                                            >
+                                                                <i
+                                                                    t-att-class="'fa fa-fw me-1 ' + (record.icon.raw_value or default_icon)"
+                                                                    t-att-style="'color:' + (record.icon_color.raw_value or '#6c757d')"
+                                                                />
+                                                                <t t-esc="record.type_id.value" />
+                                                            </div>
+                                                            <!-- ps-4: line up under the type name, past the icon -->
+                                                            <div class="ps-4">
+                                                                <field
+                                                                    name="interpretation_id"
+                                                                    widget="badge"
+                                                                    decoration-danger="display_class == 'danger'"
+                                                                    decoration-info="display_class == 'info'"
+                                                                    decoration-muted="display_class == 'muted'"
+                                                                    decoration-primary="display_class == 'primary'"
+                                                                    decoration-success="display_class == 'success'"
+                                                                    decoration-warning="display_class == 'warning'"
+                                                                    attrs="{'invisible': [('interpretation_id', '=', False)]}"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <!-- value over unit, stacked tight so they read as one block -->
+                                                        <span
+                                                            t-if="numeric"
+                                                            class="d-flex flex-column align-items-end text-nowrap lh-sm"
+                                                        >
+                                                            <strong
+                                                                t-att-class="'fs-5 text-' + (['text', false].includes(record.display_class.raw_value) ? 'body' : record.display_class.raw_value)"
+                                                                t-esc="record.value.value"
+                                                            />
+                                                            <small class="text-muted" t-esc="record.unit_id.value" />
+                                                        </span>
+                                                    </div>
+                                                    <div t-if="!numeric" class="ps-4">
+                                                        <div
+                                                            t-if="record.value_type.raw_value == 'char'"
+                                                            class="text-break"
+                                                            style="display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden"
+                                                            t-esc="record.value_char.value"
+                                                        />
+                                                        <field
+                                                            t-if="record.value_type.raw_value == 'code_id'"
+                                                            name="value_code_id"
+                                                            widget="badge"
+                                                        />
+                                                        <div
+                                                            t-if="record.value_type.raw_value == 'code_ids'"
+                                                            style="max-height: 4.5rem; overflow: hidden"
+                                                        >
+                                                            <field
+                                                                name="value_code_ids"
+                                                                widget="many2many_tags"
+                                                                options="{'color_field': 'color'}"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                                <form>
+                                    <field name="sequence" invisible="1" />
+                                    <field name="sheet_id" invisible="1" />
+                                    <field name="patient_id" invisible="1" />
+                                    <field name="encounter_id" invisible="1" />
+                                    <field name="state" invisible="1" />
+                                    <field name="compute" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="value_type" invisible="1" />
+                                    <field name="display_class" invisible="1" />
+                                    <group>
+                                        <field
+                                            name="title"
+                                            attrs="{'invisible': [('display_type', '=', False)], 'required': [('display_type', '!=', False)]}"
+                                        />
+                                        <field
+                                            name="type_id"
+                                            attrs="{'invisible': [('display_type', '!=', False)]}"
+                                            options="{'no_open': True}"
+                                        />
+                                        <field
+                                            name="value_char"
+                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'char')], 'readonly': [('compute', '=', True)]}"
+                                        />
+                                        <label
+                                            for="value_int"
+                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'int')]}"
+                                        />
+                                        <div
+                                            class="o_row"
+                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'int')]}"
+                                        >
+                                            <field name="value_int" attrs="{'readonly': [('compute', '=', True)]}" />
+                                            <field name="unit_id" options="{'no_open': True}" />
+                                        </div>
+                                        <label
+                                            for="value_float"
+                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'float')]}"
+                                        />
+                                        <div
+                                            class="o_row"
+                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'float')]}"
+                                        >
+                                            <field name="value_float" attrs="{ 'readonly': [('compute', '=', True)]}" />
+                                            <field name="unit_id" options="{'no_open': True}" />
+                                        </div>
+                                        <field
+                                            name="value_code_id"
+                                            options="{'no_open': True}"
+                                            context="{'default_type_ids': [type_id]}"
+                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'code_id')], 'readonly': [('compute', '=', True)]}"
+                                        />
+                                        <field
+                                            name="value_code_ids"
+                                            widget="many2many_tags"
+                                            options="{'color_field': 'color'}"
+                                            context="{'default_type_ids': [type_id]}"
+                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'code_ids')], 'readonly': [('compute', '=', True)]}"
+                                        />
+                                        <field
+                                            name="interpretation_id"
+                                            widget="badge"
+                                            decoration-danger="display_class == 'danger'"
+                                            decoration-info="display_class == 'info'"
+                                            decoration-muted="display_class == 'muted'"
+                                            decoration-primary="display_class == 'primary'"
+                                            decoration-success="display_class == 'success'"
+                                            decoration-warning="display_class == 'warning'"
+                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('interpretation_id', '=', False)]}"
+                                        />
+                                    </group>
+                                </form>
                             </field>
                             <button
                                 name="garbage_collect"
