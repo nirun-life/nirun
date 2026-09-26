@@ -91,6 +91,8 @@ class Observation(models.Model):
     compare_interpret = fields.Selection(compute="_compute_compare")
 
     compute = fields.Boolean(related="type_id.compute")
+    icon = fields.Char(related="type_id.icon")
+    icon_color = fields.Char(related="type_id.icon_color")
 
     _sql_constraints = [
         (
