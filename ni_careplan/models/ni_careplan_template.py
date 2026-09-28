@@ -54,6 +54,7 @@ class CareplanTemplate(models.Model):
 
 class ServiceRequestTemplate(models.Model):
     _name = "ni.careplan.template.service.request"
+    _description = "Care Plan Template Service Request"
 
     company_id = fields.Many2one(related="template_id.company_id", copy=False)
     template_id = fields.Many2one("ni.careplan.template", copy=False)

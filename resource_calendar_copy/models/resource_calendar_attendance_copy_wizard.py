@@ -4,6 +4,7 @@ from odoo import fields, models
 
 class AttendanceCopyWizard(models.TransientModel):
     _name = "resource.calendar.attendance.copy.wizard"
+    _description = "Copy Working Hours Attendance"
 
     calendar_id = fields.Many2one("resource.calendar", required=True)
     dayofweek_filter = fields.Selection(
