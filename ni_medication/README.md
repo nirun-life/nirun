@@ -28,7 +28,7 @@ flows.
 
 - `data/product_category_data.xml`, `data/uom_uom_data.xml`, and the `data/ni_medication_*` files seed medication vocabularies
   and dosage metadata.
-- `views/ni_medication_views.xml`, `views/ni_medication_reqeust_views.xml`, `views/ni_medication_statement_views.xml`, and
+- `views/ni_medication_views.xml`, `views/ni_medication_request_views.xml`, `views/ni_medication_statement_views.xml`, and
   `views/ni_medication_dispense_views.xml` provide the core workflows.
 - `views/ni_medication_dosage*.xml`, `views/ni_medication_form_views.xml`, and related dictionary views expose the supporting
   dosage structures.

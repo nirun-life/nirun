@@ -39,7 +39,7 @@
         "views/ni_medication_views.xml",
         "views/ni_medication_admin_location_views.xml",
         "views/ni_medication_statement_views.xml",
-        "views/ni_medication_reqeust_views.xml",
+        "views/ni_medication_request_views.xml",
         "views/ni_medication_dispense_views.xml",
         "views/ni_medication_dosage_views.xml",
         "views/ni_medication_dosage_route_views.xml",
