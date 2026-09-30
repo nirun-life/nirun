@@ -7,11 +7,18 @@ class Dosage(models.Model):
     _name = "ni.medication.dosage"
     _description = "Dosage"
     _order = "sequence"
-    _inherit = ["ni.timing.mixin"]
+    _inherit = ["ni.timing.mixin", "ni.medication.dosage.fields.mixin"]
 
     sequence = fields.Integer(default=16)
     name = fields.Char()
     display_name = fields.Char(compute="_compute_display_name")
+    dosage_display = fields.Char(
+        string="Dosage Summary",
+        related="display_name",
+        help="Internal: mirrors ni.medication.abstract's own dosage_display "
+        "so the shared dosage_fields view fragment can use one field name "
+        "across all 5 models.",
+    )
     color = fields.Integer(related="route_id.color")
     text = fields.Text(
         help="How the medication is/was taken or should be taken",
@@ -57,7 +64,9 @@ class Dosage(models.Model):
         default="C",
     )
 
-    meal_offset = fields.Integer()
+    meal_offset = fields.Integer(
+        help="Minutes before or after the meal timing (e.g., 30 minutes before a meal)."
+    )
 
     site_id = fields.Many2one(
         "ni.body.site", "Body Site", help="Body site to administer to"

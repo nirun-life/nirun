@@ -36,13 +36,13 @@
         <field name="name">Medication Request</field>
         <field name="res_model">ni.medication.request</field>
         <field name="view_mode">tree,kanban,form,pivot,graph</field>
-        <field name="context">{'search_default_today': 1,'show_detail': 1 }</field>
+        <field name="context">{'search_default_today': 1, 'show_detail': 1}</field>
     </record>
     <record id="ni_medication_request_action_active" model="ir.actions.act_window">
         <field name="name">Medication Request</field>
         <field name="res_model">ni.medication.request</field>
         <field name="view_mode">tree,kanban,form,pivot,graph</field>
-        <field name="context">{'search_default_active': 1,'show_detail': 1}</field>
+        <field name="context">{'search_default_active': 1, 'show_detail': 1}</field>
     </record>
     <record id="ni_medication_request_action_all" model="ir.actions.act_window">
         <field name="name">Medication Request</field>
@@ -114,6 +114,7 @@
                 <field name="medication_dose_unit_id" invisible="1" />
                 <field name="quantity_display" invisible="1" />
                 <field name="display_name" invisible="1" />
+                <field name="dosage_id" invisible="1" />
                 <field name="timing_id" invisible="1" />
                 <header>
                     <button
@@ -216,132 +217,51 @@
                         attrs="{'invisible': [('medication_id', '=', False), ('custom_checkbox_medication', '=', False)]}"
                     >
                         <page name="dosage" string="Dosage" icon="fa-indent">
-                            <div name="Dosage Template" attrs="{'invisible': [('medication_id', '=', False)]}">
-                                <separator string="Dosage Template" />
-                                <field name="medication_dosage_ids" invisible="1" />
-                                <field name="medication_dosage_count" invisible="1" />
-                                <field name="medication_dose_unit_id" invisible="1" />
-                                <p
-                                    class="text-muted"
-                                    attrs="{'invisible': ['|',('medication_id', '=', False), ('medication_dosage_count', '>', 0)]}"
-                                >
-                                    There is no template for this medication
-                                </p>
-                                <field
-                                    name="dosage_tmpl_id"
-                                    context="{'show_text': True, 'show_additional':True}"
-                                    options="{'no_create':True}"
-                                    widget="radio"
+                            <!-- name= is load-bearing: ni.medication.dosage.fields.mixin
+                                 reads this arch and splices it into
+                                 dispense/statement/suggest_line's forms too. -->
+                            <div name="dosage_page_content">
+                                <div name="Dosage Template" attrs="{'invisible': [('medication_id', '=', False)]}">
+                                    <separator string="Dosage Template" />
+                                    <field name="medication_dosage_ids" invisible="1" />
+                                    <field name="medication_dosage_count" invisible="1" />
+                                    <field name="medication_dose_unit_id" invisible="1" />
+                                    <p
+                                        class="text-muted"
+                                        attrs="{'invisible': ['|',('medication_id', '=', False), ('medication_dosage_count', '>', 0)]}"
+                                    >
+                                        There is no template for this medication
+                                    </p>
+                                    <field
+                                        name="dosage_tmpl_id"
+                                        context="{'show_text': True, 'show_additional':True}"
+                                        options="{'no_create':True}"
+                                        widget="radio"
+                                    />
+                                </div>
+                                <group>
+                                    <!-- filled at render time by ni.medication.dosage.fields.mixin
+                                         from ni_medication.ni_medication_dosage_view_form -->
+                                    <group name="dosage_fields" />
+                                    <!-- filled at render time by ni.medication.dosage.fields.mixin
+                                         from ni_medication.ni_medication_dosage_view_form -->
+                                    <group name="dosage_administration_fields" />
+                                </group>
+                                <field name="text" placeholder="Describe more additional dosage here..." />
+                                <button
+                                    name="save_dosage_as_template"
+                                    type="object"
+                                    string="Save as template"
+                                    attrs="{'invisible': ['|',('medication_id', '=', False),('dosage_tmpl_id', '!=', False)]}"
+                                />
+                                <button
+                                    name="reset_dosage_template"
+                                    class="oe_edit_only"
+                                    type="object"
+                                    string="Reset"
+                                    icon="fa-trash-o"
                                 />
                             </div>
-                            <group name="Dosage">
-                                <group string="Dosage">
-                                    <field name="dosage_id" invisible="1" />
-                                    <field name="dosage_display" placeholder="Summary of medication usage..." />
-                                    <label for="dose" />
-                                    <div class="o_row">
-                                        <field name="dose" />
-                                        <field
-                                            name="dose_unit_id"
-                                            attrs="{'required': [('dose', '!=', 0 )]}"
-                                            placeholder="ex. tab, ml"
-                                        />
-                                    </div>
-                                    <!--                                    <field-->
-                                    <!--                                        name="timing_id"-->
-                                    <!--                                        domain="[('id', '=', False)]"-->
-                                    <!--                                        options="{'no_quick_create':True}"-->
-                                    <!--                                        placeholder="Summary of medication usage..."-->
-                                    <!--                                        groups="base.group_no_one"-->
-                                    <!--                                    />-->
-                                    <!--                                    <field name="dosage_when" groups="base.group_no_one" />-->
-                                    <field name="timing_type" widget="radio" options="{'horizontal':True}" />
-                                    <field
-                                        name="meal_timing"
-                                        widget="radio"
-                                        options="{'horizontal':True}"
-                                        attrs="{'invisible': [('timing_type', '!=', 'meal')]}"
-                                    />
-                                    <field
-                                        name="meal_period_ids"
-                                        widget="many2many_checkboxes"
-                                        attrs="{'invisible': [('timing_type', 'not in', ['meal'])]}"
-                                    />
-                                    <field
-                                        name="period_ids"
-                                        widget="many2many_checkboxes"
-                                        attrs="{'invisible': [('timing_type', 'not in', ['period'])]}"
-                                    />
-                                    <field
-                                        name="meal_offset"
-                                        attrs="{'invisible': ['|', ('timing_type', '!=', 'meal'), ('meal_timing', '=', 'C')]}"
-                                    />
-                                    <label
-                                        for="timing_frequency"
-                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
-                                    />
-                                    <div class="o_row" attrs="{'invisible': [('timing_type', '!=', 'custom')]}">
-                                        <field name="timing_frequency" class="oe_inline" />
-                                        <span>-</span>
-                                        <field name="timing_frequency_max" class="oe_inline" />
-                                        <span>Times</span>
-                                    </div>
-                                    <label
-                                        string="Duration"
-                                        for="timing_duration"
-                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
-                                    />
-                                    <div class="o_row" attrs="{'invisible': [('timing_type', '!=', 'custom')]}">
-                                        <field name="timing_duration" class="oe_inline" />
-                                        <span>-</span>
-                                        <field name="timing_duration_max" class="oe_inline" />
-                                        <field
-                                            name="timing_duration_unit"
-                                            nolabel="True"
-                                            placeholder="Select Duration Unit"
-                                            decoration-muted="timing_duration_unit == False"
-                                        />
-                                    </div>
-                                    <label
-                                        string="Repeat Every"
-                                        for="timing_period"
-                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
-                                    />
-                                    <div class="o_row" attrs="{'invisible': [('timing_type', '!=', 'custom')]}">
-                                        <field name="timing_period" class="oe_inline" />
-                                        <span>-</span>
-                                        <field name="timing_period_max" class="oe_inline" />
-                                        <field name="timing_period_unit" string="Unit" />
-                                    </div>
-                                    <field
-                                        name="timing_tod"
-                                        context="{'default_timing_id': id}"
-                                        attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
-                                        mode="kanban"
-                                    />
-                                    />
-                                    <field name="as_need" />
-                                    <field
-                                        name="additional_ids"
-                                        widget="many2many_tags"
-                                        options="{'color_field': 'color'}"
-                                    />
-                                </group>
-                                <group string="Administration Method">
-                                    <!--                                       attrs="{'invisible': [('dosage_tmpl_id', '=', False), ('custom_checkbox_dosage', '=', False)]}">-->
-                                    <field name="route_id" placeholder="ex. IV, po" />
-                                    <field name="method_id" placeholder="ex. Inj" />
-                                    <field name="site_id" placeholder="ex. OD, OS" />
-                                </group>
-                            </group>
-                            <field name="text" placeholder="Describe more additional dosage here..." />
-                            <button
-                                name="save_dosage_as_template"
-                                type="object"
-                                string="Save as template"
-                                attrs="{'invisible': ['|',('medication_id', '=', False),('dosage_tmpl_id', '!=', False)]}"
-                            />
-                            <button name="reset_dosage_template" type="object" string="Reset" icon="fa-trash-o" />
                         </page>
                         <page
                             name="dispense"
