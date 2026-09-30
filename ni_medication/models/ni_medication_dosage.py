@@ -161,7 +161,9 @@ class Dosage(models.Model):
 
             if record.meal_period_ids:
                 codes_to_match = [
-                    f"{record.meal_timing}{period.code}"
+                    "HS"
+                    if period.code == "HS"
+                    else f"{record.meal_timing}{period.code}"
                     for period in record.meal_period_ids
                 ]
                 # ค้นหาจาก code ที่ได้จาก codes_to_match

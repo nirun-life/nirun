@@ -3,7 +3,7 @@
 {
     "name": "Medication",
     "summary": "Medication management including prescriptions, dispensing, and dosing",
-    "version": "16.0.0.5.0",
+    "version": "16.0.0.5.1",
     "development_status": "Alpha",
     "category": "Medical/Medication",
     "author": "NSTDA, Piruin P.",
