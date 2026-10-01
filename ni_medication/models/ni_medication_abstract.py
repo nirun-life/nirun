@@ -8,6 +8,7 @@ from odoo.exceptions import UserError
 class MedicationAbstract(models.AbstractModel):
     _name = "ni.medication.abstract"
     _description = "Medication Abstract Resource"
+    _inherit = ["ni.medication.dosage.fields.mixin"]
     _inherits = {"ni.medication.dosage": "dosage_id"}
     _rec_name = "name"
 

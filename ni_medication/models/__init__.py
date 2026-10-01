@@ -1,4 +1,5 @@
 #  Copyright (c) 2023 NSTDA
+from . import ni_medication_dosage_fields_mixin
 from . import ni_medication_dosage
 from . import ni_medication_dosage_additional
 from . import ni_medication_dosage_method

@@ -28,7 +28,7 @@ flows.
 
 - `data/product_category_data.xml`, `data/uom_uom_data.xml`, and the `data/ni_medication_*` files seed medication vocabularies
   and dosage metadata.
-- `views/ni_medication_views.xml`, `views/ni_medication_reqeust_views.xml`, `views/ni_medication_statement_views.xml`, and
+- `views/ni_medication_views.xml`, `views/ni_medication_request_views.xml`, `views/ni_medication_statement_views.xml`, and
   `views/ni_medication_dispense_views.xml` provide the core workflows.
 - `views/ni_medication_dosage*.xml`, `views/ni_medication_form_views.xml`, and related dictionary views expose the supporting
   dosage structures.
@@ -41,6 +41,14 @@ flows.
 - `security/ni_medication_rules.xml` and `security/ir.model.access.csv` control visibility and permissions.
 - The module depends on `ni_body_site`, `ni_timing`, `ni_patient`, `ni_condition`, `ni_practitioner`, `product`, and
   `uom_alias`.
+
+## Shared Dosage Form Fields
+
+- The dosage fields of the dosage, request, dispense, statement, and suggest line forms are spliced in at view-load time by
+  `ni.medication.dosage.fields.mixin` from the donor views' raw `arch` (`ni_medication_dosage_view_form`,
+  `ni_medication_request_view_form`).
+- Inheriting a donor view (e.g. an xpath adding a field to the dosage form) therefore only affects the donor form, not the other
+  four, and the empty placeholders in the other forms cannot be targeted by xpath.
 
 ## Verification
 

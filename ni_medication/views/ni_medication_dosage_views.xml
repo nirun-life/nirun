@@ -114,12 +114,11 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <group string="Dosage">
-                        <field
-                            name="display_name"
-                            string="Dosage Summary"
-                            placeholder="Summary of medication usage..."
-                        />
+                    <!-- name= is load-bearing: ni.medication.dosage.fields.mixin
+                         reads this group's arch and splices it into request/
+                         dispense/statement/suggest_line's forms too -->
+                    <group name="dosage_fields" string="Dosage">
+                        <field name="dosage_display" placeholder="Summary of medication usage..." />
                         <label for="dose" />
                         <div class="o_row">
                             <field name="dose" />
@@ -146,10 +145,17 @@
                             widget="many2many_checkboxes"
                             attrs="{'invisible': [('timing_type', 'not in', ['period'])]}"
                         />
-                        <field
-                            name="meal_offset"
+                        <label
+                            for="meal_offset"
                             attrs="{'invisible': ['|', ('timing_type', '!=', 'meal'), ('meal_timing', '=', 'C')]}"
                         />
+                        <div
+                            class="o_row"
+                            attrs="{'invisible': ['|', ('timing_type', '!=', 'meal'), ('meal_timing', '=', 'C')]}"
+                        >
+                            <field name="meal_offset" class="o_narrow_field" />
+                            <span>Minutes</span>
+                        </div>
                         <label for="timing_frequency" attrs="{'invisible': [('timing_type', '!=', 'custom')]}" />
                         <div class="o_row" attrs="{'invisible': [('timing_type', '!=', 'custom')]}">
                             <field name="timing_frequency" class="oe_inline" />
@@ -190,11 +196,16 @@
                             attrs="{'invisible': [('timing_type', '!=', 'custom')]}"
                             mode="kanban"
                         />
-                        />
                         <field name="as_need" />
-                        <field name="additional_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                        <field
+                            name="additional_ids"
+                            widget="many2many_tags"
+                            options="{'color_field': 'color'}"
+                            placeholder='ex. "with meals", "may cause drowsiness"'
+                        />
                     </group>
-                    <group string="Administration Method">
+                    <!-- name= is load-bearing, see dosage_fields above -->
+                    <group name="dosage_administration_fields" string="Administration Method">
                         <field name="route_id" placeholder="ex. IV, po" />
                         <field name="method_id" placeholder="ex. Inj" />
                         <field name="site_id" placeholder="ex. OD, OS" />
