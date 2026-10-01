@@ -15,9 +15,6 @@ class Dosage(models.Model):
     dosage_display = fields.Char(
         string="Dosage Summary",
         related="display_name",
-        help="Internal: mirrors ni.medication.abstract's own dosage_display "
-        "so the shared dosage_fields view fragment can use one field name "
-        "across all 5 models.",
     )
     color = fields.Integer(related="route_id.color")
     text = fields.Text(

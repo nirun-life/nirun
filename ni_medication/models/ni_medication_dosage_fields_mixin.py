@@ -44,7 +44,7 @@ class DosageFieldsMixin(models.AbstractModel):
                     if not placeholders:
                         continue
                     donor_arch = etree.fromstring(self.env.ref(donor_xmlid).arch)
-                    fragments = donor_arch.xpath(f"//*[@name='{name}']")
+                    fragments = donor_arch.xpath(f"//*[@name='{name}' and node()]")
                     if not fragments:
                         continue
                     for placeholder in placeholders:
