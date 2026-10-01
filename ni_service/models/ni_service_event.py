@@ -93,9 +93,9 @@ class ServiceEvent(models.Model):
     service_type_id = fields.Many2one(related="service_id.type_id")
     service_category_ids = fields.Many2many(
         "ni.service.category",
+        store=False,
         string="Category Tags",
         compute="_compute_service_category_ids",
-        store=True,
     )
     service_category_id = fields.Many2one(
         "ni.service.category",
@@ -232,11 +232,7 @@ class ServiceEvent(models.Model):
     @api.depends("service_id.category_ids", "service_ids.category_ids")
     def _compute_service_category_ids(self):
         for rec in self:
-            rec.service_category_ids = (
-                [fields.Command.set(rec.service_ids.mapped("category_ids").ids)]
-                if rec.service_ids
-                else [fields.Command.set(rec.service_id.mapped("category_ids").ids)]
-            )
+            rec.service_category_ids = (rec.service_ids or rec.service_id).category_ids
 
     @api.constrains("service_category_id", "service_id", "color")
     def _check_color(self):
