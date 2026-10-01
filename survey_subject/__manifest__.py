@@ -3,7 +3,7 @@
 {
     "name": "Survey - Subject",
     "summary": "Survey subjects and respondent management",
-    "version": "16.0.0.3.0",
+    "version": "16.0.0.3.1",
     "development_status": "Alpha",
     "category": "Marketing/Surveys",
     "author": "NSTDA, Piruin P.",
@@ -18,6 +18,11 @@
         "views/survey_templates.xml",
         "wizard/survey_subject_views.xml",
     ],
+    "assets": {
+        "survey.survey_assets": [
+            "survey_subject/static/src/js/survey_form.js",
+        ],
+    },
     "demo": [],
     "application": False,
     "auto_install": False,

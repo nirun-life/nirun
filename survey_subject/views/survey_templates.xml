@@ -59,6 +59,17 @@
             <attribute name="t-if">survey.subject_type == 'res.partner' and graph_data</attribute>
         </xpath>
     </template>
+    <template id="survey_fill_form_inherit" name="Survey: saving indicator" inherit_id="survey.survey_fill_form">
+        <xpath expr="//div[hasclass('o_survey_form_content')]" position="after">
+            <div
+                class="o_survey_saving d-none position-fixed top-50 start-50 translate-middle text-center text-muted"
+                role="status"
+            >
+                <i class="fa fa-circle-o-notch fa-spin fa-2x" />
+                <div class="mt-2">Saving...</div>
+            </div>
+        </xpath>
+    </template>
     <template id="survey_button_retake_inherit" name="Survey: Retake button" inherit_id="survey.survey_button_retake">
         <xpath expr="//div/t" position="attributes">
             <attribute name="t-if">
