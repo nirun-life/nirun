@@ -22,19 +22,15 @@ class CodingSystem(models.Model):
         index=True,
         default=lambda self: self._get_default_sequence(),
     )
-    name = fields.Char(required=True, index=True, translate=True)
+    name = fields.Char(required=True, index="trigram", translate=True)
     url = fields.Char()
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [
-        (
-            "name__uniq",
-            "unique (name)",
-            "This name already exists!",
-        ),
-        (
-            "url__uniq",
-            "unique (url)",
-            "This url already exists!",
-        ),
-    ]
+    _name__uniq = models.Constraint(
+        "unique (name)",
+        "This name already exists!",
+    )
+    _url__uniq = models.Constraint(
+        "unique (url)",
+        "This url already exists!",
+    )

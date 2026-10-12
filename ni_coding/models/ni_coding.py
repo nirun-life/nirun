@@ -5,7 +5,7 @@ from pathlib import Path
 from lxml import etree
 
 from odoo import api, fields, models
-from odoo.osv import expression
+from odoo.fields import Domain
 
 
 class Coding(models.AbstractModel):
@@ -60,18 +60,14 @@ class Coding(models.AbstractModel):
     color = fields.Integer(default=lambda _: random.randint(0, 10))
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [
-        (
-            "system_name_uniq",
-            "unique (system_id, name)",
-            "This name already exists!",
-        ),
-        (
-            "system_code_uniq",
-            "unique (system_id, code)",
-            "This code already exists!",
-        ),
-    ]
+    _system_name_uniq = models.Constraint(
+        "unique (system_id, name)",
+        "This name already exists!",
+    )
+    _system_code_uniq = models.Constraint(
+        "unique (system_id, code)",
+        "This code already exists!",
+    )
 
     @api.model
     def _search_display_name(self, operator, value):
@@ -79,7 +75,7 @@ class Coding(models.AbstractModel):
         if operator in ("ilike", "like") and isinstance(value, str):
             words = value.split()
             if len(words) > 1:
-                return expression.AND([[("name", operator, word)] for word in words])
+                return Domain.AND([[("name", operator, word)] for word in words])
         return super()._search_display_name(operator, value)
 
     @api.depends(

@@ -3,7 +3,7 @@
 {
     "name": "Nirun - Coding",
     "summary": "Base module for clinical coding systems (ICD, SNOMED, LOINC)",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
@@ -17,6 +17,13 @@
         "views/ni_coding_system_views.xml",
         "views/ir_model_views.xml",
         "views/ni_coding_menu.xml",
+    ],
+    # Default views read from disk by ni.coding._get_view()
+    "oca_data_manual": [
+        "views/ni_coding_default_form.xml",
+        "views/ni_coding_default_kanban.xml",
+        "views/ni_coding_default_list.xml",
+        "views/ni_coding_default_search.xml",
     ],
     "application": False,
     "auto_install": False,
