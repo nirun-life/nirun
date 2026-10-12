@@ -8,6 +8,7 @@ class SurveyQuestionAnswer(models.Model):
 
     @api.depends(
         "value",
+        "value_label",
         "question_id.question_type",
         "question_id.title",
         "matrix_question_id",
