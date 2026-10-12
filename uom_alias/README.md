@@ -21,5 +21,9 @@ Adds alternate search names to units of measure.
 
 ## Notes
 
+- Since Odoo 19 the square-meter and square-foot aliases sit on
+  `uom.product_uom_square_meter` and `uom.product_uom_square_foot` (OpenUpgrade renames
+  the old `uom.uom_square_*` xmlids). Several aliased units, such as `gal (US)`, are
+  archived by default in 19.
 - The module does not add any views. Its impact is limited to search behavior and seeded
   alias values.
