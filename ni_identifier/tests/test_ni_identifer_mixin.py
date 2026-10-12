@@ -1,37 +1,41 @@
 #  Copyright (c) 2023 NSTDA
 
-from odoo_test_helper import FakeModelLoader
-
+from odoo.orm.model_classes import add_to_registry
 from odoo.tests import TransactionCase
 
 
 class TestMixin(TransactionCase):
-    # Odoo 18 checks the registry after each test, so the fake model is loaded
-    # and restored per test (odoo-test-helper "Right Way (v18)").
-    def setUp(self):
-        super().setUp()
-        self.loader = FakeModelLoader(self.env, self.__module__)
-        self.loader.backup_registry()
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
 
-        from .test_models import ResPartner
+        from .test_models import NiIdentifierTest
 
-        self.loader.update_registry((ResPartner,))
+        add_to_registry(cls.registry, NiIdentifierTest)
+        cls.registry._setup_models__(cls.env.cr, ["ni.identifier.test"])
+        cls.registry.init_models(
+            cls.env.cr, ["ni.identifier.test"], {"models_to_check": True}
+        )
+        cls.addClassCleanup(cls.registry.__delitem__, "ni.identifier.test")
 
-        self.env["ir.sequence"].create(
+        cls.env["ir.sequence"].create(
             {
-                "name": "Partner Identifier",
-                "code": "res.partner",
-                "prefix": "PRN-",
+                "name": "Test Identifier",
+                "code": "ni.identifier.test",
+                "prefix": "TST-",
                 "padding": 5,
                 "number_next": 1,
             }
         )
 
-    def tearDown(self):
-        self.loader.restore_registry()
-        super().tearDown()
-
     def test_create(self):
-        partner = self.env["res.partner"].create({"name": "BAR"})
-        self.assertEqual(partner.name, "BAR")
-        self.assertEqual(partner.identifier, "PRN-00001")
+        record = self.env["ni.identifier.test"].create({"name": "BAR"})
+        self.assertEqual(record.name, "BAR")
+        self.assertEqual(record.identifier, "TST-00001")
+
+    def test_create_without_sequence(self):
+        self.env["ir.sequence"].search([("code", "=", "ni.identifier.test")]).unlink()
+        logger = "odoo.addons.ni_identifier.models.ni_identifer_mixin"
+        with self.assertLogs(logger, level="WARNING"):
+            record = self.env["ni.identifier.test"].create({"name": "BAR"})
+        self.assertEqual(record.identifier, "New")
