@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import api, fields, models, tools
+from odoo import api, fields, models
 
 
 class SurveyUserInput(models.Model):
@@ -8,7 +8,8 @@ class SurveyUserInput(models.Model):
 
     @api.model
     def _select_target_model(self):
-        models = self.env["ir.model"].search([])
+        # A Reference selection lists every model.
+        models = self.env["ir.model"].search([])  # pylint: disable=no-search-all
         return [(model.model, model.name) for model in models]
 
     subject_model = fields.Char(
@@ -29,15 +30,8 @@ class SurveyUserInput(models.Model):
     )
     subject_name = fields.Char(compute="_compute_subject_ref")
 
-    def _auto_init(self):
-        res = super()._auto_init()
-        tools.create_index(
-            self._cr,
-            "survey_user_input_subject_idx",
-            self._table,
-            ["subject_model", "subject_id"],
-        )
-        return res
+    # SQL name survey_user_input_subject_idx, the index created up to 18.0
+    _subject_idx = models.Index("(subject_model, subject_id)")
 
     @api.depends("subject_model", "subject_id")
     def _compute_subject_ref(self):

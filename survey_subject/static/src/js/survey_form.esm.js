@@ -1,17 +1,22 @@
-import SurveyFormWidget from "@survey/js/survey_form";
+import {SurveyForm} from "@survey/interactions/survey_form";
+import {fadeIn} from "@survey/utils";
+import {patch} from "@web/core/utils/patch";
 
-SurveyFormWidget.include({
-    _nextScreen(nextScreenPromise) {
-        this.$(".o_survey_saving").removeClass("d-none");
+patch(SurveyForm.prototype, {
+    async nextScreen(nextScreenPromise) {
+        this.el.querySelector(".o_survey_saving")?.classList.remove("d-none");
         nextScreenPromise.catch(() => {
-            this.$(".o_survey_saving").addClass("d-none");
-            this.$(".o_survey_form_content").fadeIn(0);
+            this.el.querySelector(".o_survey_saving")?.classList.add("d-none");
+            const contentEl = this.el.querySelector(".o_survey_form_content");
+            if (contentEl) {
+                fadeIn(contentEl, 0);
+            }
         });
-        return this._super(...arguments);
+        return super.nextScreen(...arguments);
     },
 
-    _onNextScreenDone() {
-        this.$(".o_survey_saving").addClass("d-none");
-        return this._super(...arguments);
+    onNextScreenDone() {
+        this.el.querySelector(".o_survey_saving")?.classList.add("d-none");
+        return super.onNextScreenDone(...arguments);
     },
 });
