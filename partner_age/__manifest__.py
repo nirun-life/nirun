@@ -3,7 +3,7 @@
 {
     "name": "Partner - Age",
     "summary": "Add age, birthdate and deceased_date fields for partner",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "development_status": "Alpha",
     "category": "Tools",
     "author": "NSTDA, Piruin P.",
