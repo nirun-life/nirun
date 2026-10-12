@@ -2,7 +2,7 @@
 
 import base64
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.tools.misc import file_path
 
 ENCOUNTER_INACTIVE_STATE = ["entered-in-error", "cancelled"]
@@ -40,7 +40,6 @@ class Patient(models.Model):
 
     company_id = fields.Many2one(
         "res.company",
-        "Company",
         tracking=True,
         required=True,
         index=True,
@@ -54,7 +53,7 @@ class Patient(models.Model):
         required=True,
         ondelete="restrict",
         domain="[('type', '=', 'contact'), ('is_company', '=', False)]",
-        auto_join=True,
+        bypass_search_access=True,
         help="Partner-related data of patient",
     )
     user_ids = fields.Many2many(
@@ -62,12 +61,14 @@ class Patient(models.Model):
         string="Related Users",
         ondelete="restrict",
         domain="[('partner_id.is_company', '=', False)]",
-        auto_join=True,
+        bypass_search_access=True,
         help="Users allows to access patient information on portal",
     )
 
     image_1920 = fields.Image(
-        related="partner_id.image_1920", readonly=False, default=_default_image
+        related="partner_id.image_1920",
+        readonly=False,
+        default=lambda self: self._default_image(),
     )
     image_1024 = fields.Image(related="partner_id.image_1024", readonly=False)
     image_512 = fields.Image(related="partner_id.image_512", readonly=False)
@@ -88,7 +89,6 @@ class Patient(models.Model):
     )
     other_address_id = fields.Many2one(
         "res.partner",
-        "Other Address",
         domain="[('ref', '=', identifier), ('type', '=', 'other')]",
     )
 
@@ -124,7 +124,6 @@ class Patient(models.Model):
 
     state_reason_id = fields.Many2one(
         "ni.patient.state.reason",
-        string="State Reason",
     )
     state_date = fields.Date()
     state_note = fields.Text(
@@ -215,10 +214,10 @@ class Patient(models.Model):
     past_medical_history_uid = fields.Many2one("res.users", readonly=True, copy=False)
     past_medical_history_date = fields.Datetime(readonly=True, copy=False)
 
-    @api.onchange("title")
-    def _onchange_title(self):
-        if self.title and self.title.gender:
-            self.gender = self.title.gender
+    @api.onchange("title_id")
+    def _onchange_title_id(self):
+        if self.title_id and self.title_id.gender:
+            self.gender = self.title_id.gender
 
     @api.model
     def _prepare_sign_field_vals(self, vals):
@@ -244,18 +243,14 @@ class Patient(models.Model):
         vals.update(self._prepare_sign_field_vals(vals))
         return super().write(vals)
 
-    _sql_constraints = [
-        (
-            "identifier_uniq",
-            "unique (company_id, identifier)",
-            "Identifier must be unique !",
-        ),
-        (
-            "partner_uniq",
-            "unique (company_id, partner_id)",
-            "This contact have already registered as patient!",
-        ),
-    ]
+    _identifier_uniq = models.Constraint(
+        "unique (company_id, identifier)",
+        "Identifier must be unique !",
+    )
+    _partner_uniq = models.Constraint(
+        "unique (company_id, partner_id)",
+        "This contact have already registered as patient!",
+    )
 
     @api.depends("name", "identifier", "identification_id", "gender", "age")
     @api.depends_context(
@@ -279,11 +274,11 @@ class Patient(models.Model):
                     dict(self._fields["gender"].selection(self))[self.gender]
                 )
             if patient.age:
-                gender_age.append(_("%(age)s years old", age=patient.age))
+                gender_age.append(self.env._("%(age)s years old", age=patient.age))
             if gender_age:
                 name = "{}\n{}".format(name, ", ".join(gender_age))
         elif self.env.context.get("show_age") and patient.age:
-            name = _("%(name)s (%(age)sY)", name=name, age=patient.age)
+            name = self.env._("%(name)s (%(age)sY)", name=name, age=patient.age)
         return name
 
     @api.onchange("partner_id")

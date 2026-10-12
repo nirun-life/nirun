@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -14,7 +14,6 @@ class Location(models.Model):
 
     company_id = fields.Many2one(
         "res.company",
-        "Company",
         required=True,
         index=True,
         default=lambda self: self.env.company,
@@ -67,13 +66,10 @@ class Location(models.Model):
         "Female", compute="_compute_patient_count", store=True, compute_sudo=True
     )
 
-    _sql_constraints = [
-        (
-            "company_id__parent_id__name__uniq",
-            "unique (company_id, parent_id, name)",
-            "Name is this location already exists !",
-        ),
-    ]
+    _company_id__parent_id__name__uniq = models.Constraint(
+        "unique (company_id, parent_id, name)",
+        "Name is this location already exists !",
+    )
 
     @api.depends("child_ids", "child_ids.parent_path")
     def _compute_child_count(self):
@@ -124,7 +120,9 @@ class Location(models.Model):
     @api.constrains("parent_id")
     def _check_hierarchy(self):
         if self._has_cycle():
-            raise ValidationError(_("Error! You cannot create recursive data."))
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
 
     @api.depends("parent_name", "parent_id", "name")
     def _compute_full_name(self):

@@ -9,7 +9,7 @@
         <field name="binding_model_id" ref="model_ni_encounter" />
         <field name="binding_view_types">list,form</field>
         <field name="state">code</field>
-        <field name="groups_id" eval="[(4, ref('group_manager'))]" />
+        <field name="group_ids" eval="[(4, ref('group_manager'))]" />
         <field name="sequence" eval="99" />
         <field name="code">action = records.action_entered_in_error()</field>
     </record>
@@ -223,7 +223,7 @@
                     decoration-warning="state in ['in-progress']"
                     decoration-info="state == ['draft', 'planned']"
                 />
-                <field name="participate" invisible="1" />
+                <field name="participate" column_invisible="1" />
                 <field
                     name="participant_count"
                     optional="hide"
@@ -733,7 +733,7 @@
                         />
                         <page
                             name="service"
-                            string="&#3585;&#3636;&#3592;&#3585;&#3619;&#3619;&#3617;&#3585;&#3634;&#3619;&#3604;&#3641;&#3649;&#3621;&#3626;&#3640;&#3586;&#3616;&#3634;&#3614;"
+                            string="กิจกรรมการดูแลสุขภาพ"
                             icon="fa-list-alt"
                             invisible="not show_service"
                         />

@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!--
-  ~ Copyright (c) 2021-2023 NSTDA
-  -->
 <odoo>
     <record id="ni_encounter_participant_action" model="ir.actions.act_window">
         <field name="name">Encounter Participant</field>
@@ -17,7 +14,7 @@
             <search>
                 <field name="employee_id" />
                 <filter name="period_start" date="period_start" />
-                <group name="group_by" string="Group by">
+                <group name="group_by">
                     <filter
                         name="group_by_type"
                         string="Type"
@@ -32,7 +29,7 @@
         <field name="model">ni.encounter.participant</field>
         <field name="arch" type="xml">
             <list default_order="period_end desc" create="0" edit="0">
-                <field name="company_id" invisible="1" />
+                <field name="company_id" column_invisible="1" />
                 <field
                     name="encounter_id"
                     invisible="context.get('default_encounter_id', False)"
@@ -63,8 +60,8 @@
                 <field
                     name="avatar_1920"
                     class="oe_avatar"
-                    options='{"preview_image":"avatar_128"}'
-                    widget='image'
+                    options="{&quot;preview_image&quot;:&quot;avatar_128&quot;}"
+                    widget="image"
                 />
                 <group>
                     <group>

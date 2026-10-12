@@ -16,7 +16,7 @@ class TestPatient(TestPatientCommon):
             {
                 "name": "Glenda J Langlois",
                 "country_id": self.ref("base.us"),
-                "title": self.ref("base.res_partner_title_madam"),
+                "title_id": self.ref("ni_partner_title.res_partner_title_madam"),
             }
         )
 
@@ -33,7 +33,7 @@ class TestPatient(TestPatientCommon):
         form = Form(self.patient_admin)
         form.partner_id = self.env["res.partner"].create({"name": "Eunice"})
         form.save()
-        form.birthdate = fields.date.today() - relativedelta(years=62)
+        form.birthdate = fields.Date.today() - relativedelta(years=62)
 
         patient = form.save()
 
@@ -44,8 +44,8 @@ class TestPatient(TestPatientCommon):
         form = Form(self.patient_admin)
         form.partner_id = self.env["res.partner"].create({"name": "Smith"})
         form.save()
-        form.birthdate = fields.date.today() - relativedelta(years=62)
-        form.deceased_date = fields.date.today() - relativedelta(years=2)
+        form.birthdate = fields.Date.today() - relativedelta(years=62)
+        form.deceased_date = fields.Date.today() - relativedelta(years=2)
 
         patient = form.save()
 

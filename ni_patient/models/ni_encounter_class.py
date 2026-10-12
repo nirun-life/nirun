@@ -6,7 +6,7 @@ from datetime import datetime, time
 import pytz
 from dateutil.relativedelta import relativedelta
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -96,7 +96,9 @@ class EncounterClassification(models.Model):
     @api.constrains("parent_id")
     def _check_hierarchy(self):
         if self._has_cycle():
-            raise ValidationError(_("Error! You cannot create recursive data."))
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
 
     def _get_auto_close_reference_time(self, now, company):
         """Reference instant (UTC-naive, comparable to create_date) before

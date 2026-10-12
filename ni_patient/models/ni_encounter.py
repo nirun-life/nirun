@@ -2,7 +2,7 @@
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import Command, _, api, fields, models
+from odoo import Command, api, fields, models
 from odoo.exceptions import ValidationError
 
 # Maps ni.encounter.state to ni.workflow.event.state; "draft" is omitted
@@ -88,11 +88,10 @@ class Encounter(models.Model):
     period_end = fields.Datetime(readonly=True)
     patient_id = fields.Many2one(
         "ni.patient",
-        "Patient",
         readonly=True,
         required=True,
         ondelete="cascade",
-        auto_join=True,
+        bypass_search_access=True,
         index=True,
     )
     patient_name = fields.Char(related="patient_id.name", readonly=False)
@@ -130,13 +129,12 @@ class Encounter(models.Model):
                 rec.display_age = self._format_age(relativedelta(ref, rec.birthdate))
             elif rec.age_init and rec.age_init_date:
                 age_year = rec.age_init + ref.year - rec.age_init_date.year
-                rec.display_age = _("%s Years") % age_year
+                rec.display_age = self.env._("%s Years", age_year)
             else:
                 rec.display_age = None
 
     other_address_id = fields.Many2one(
         "res.partner",
-        "Other Address",
         domain="[('ref', '=', patient_identifier), ('type', '=', 'other')]",
     )
 
@@ -197,7 +195,6 @@ class Encounter(models.Model):
     )
     location_id = fields.Many2one(
         "ni.location",
-        "Location",
         help="Where services are provided to the patient",
         tracking=True,
     )
@@ -207,7 +204,7 @@ class Encounter(models.Model):
         copy=True,
     )
     location_history_count = fields.Integer(
-        string="Location History",
+        string="Location Moves",
         compute="_compute_location_history_count",
         store=True,
     )
@@ -309,13 +306,11 @@ class Encounter(models.Model):
     )
     discharge_status_id = fields.Many2one(
         "ni.encounter.discharge.status",
-        "Discharge Status",
         help="Patient's status on discharge",
         tracking=True,
     )
     discharge_disposition_id = fields.Many2one(
         "ni.encounter.discharge.disposition",
-        "Discharge Disposition",
         help="Category or kind of location after discharge",
         tracking=True,
     )
@@ -370,13 +365,10 @@ class Encounter(models.Model):
     workflow_event_ids = fields.One2many("ni.workflow.event", "encounter_id")
     workflow_request_ids = fields.One2many("ni.workflow.request", "encounter_id")
 
-    _sql_constraints = [
-        (
-            "company_id__name__uniq",
-            "unique (company_id, name)",
-            "This Encounter No. already exists!",
-        ),
-    ]
+    _company_id__name__uniq = models.Constraint(
+        "unique (company_id, name)",
+        "This Encounter No. already exists!",
+    )
 
     @api.depends("participant_ids")
     def _compute_participant_id(self):
@@ -435,8 +427,8 @@ class Encounter(models.Model):
             if encounter:
                 return {
                     "warning": {
-                        "title": _("Warning!"),
-                        "message": _(
+                        "title": self.env._("Warning!"),
+                        "message": self.env._(
                             "%(patient)s was already registered as Encounter No. "
                             "%(encounter)s (%(state)s).",
                             patient=self.patient_id.name,
@@ -448,12 +440,12 @@ class Encounter(models.Model):
 
             if self.patient_id.deceased:
                 warning = {
-                    "title": _("Warning!"),
-                    "message": _(
+                    "title": self.env._("Warning!"),
+                    "message": self.env._(
                         "%s is already deceased. Reference to this patient may "
-                        "cause database inconsistency!"
-                    )
-                    % self.patient_id.name,
+                        "cause database inconsistency!",
+                        self.patient_id.name,
+                    ),
                 }
                 return {"warning": warning}
             self.pre_admission_identifier = self.patient_id.identifier
@@ -510,9 +502,11 @@ class Encounter(models.Model):
     def check_origin_date(self):
         for rec in self:
             if rec.origin_date and not rec.origin_partner_id:
-                raise _("Transfer from must not be null when transfer at is present")
+                raise self.env._(
+                    "Transfer from must not be null when transfer at is present"
+                )
             if rec.origin_date and rec.origin_date > rec.period_start:
-                raise _("Transfer date must not be after encounter start date")
+                raise self.env._("Transfer date must not be after encounter start date")
 
     @api.constrains(
         "discharge_status_id",
@@ -526,7 +520,7 @@ class Encounter(models.Model):
                 not in rec.discharge_status_id.disposition_ids
             ):
                 raise ValidationError(
-                    _("Inconsistency between discharge status and disposition")
+                    self.env._("Inconsistency between discharge status and disposition")
                 )
 
     @api.depends(
@@ -566,7 +560,7 @@ class Encounter(models.Model):
             name = f"{name}\n{rec.location_id.display_name}"
         if self.env.context.get("show_period"):
             name = "{}\n{} → {}".format(
-                name, rec.period_start, rec.period_end or _("Now")
+                name, rec.period_start, rec.period_end or self.env._("Now")
             )
         return name
 
@@ -687,7 +681,7 @@ class Encounter(models.Model):
         for enc in self:
             if not enc.period_start:
                 raise ValidationError(
-                    _("Verified encounter must defined start date (since)")
+                    self.env._("Verified encounter must defined start date (since)")
                 )
             if enc.state == "draft":
                 if now < enc.period_start:
@@ -704,13 +698,15 @@ class Encounter(models.Model):
                     enc.action_participate()
             else:
                 raise ValidationError(
-                    _("Invalid State!, Please contact your system administrator")
+                    self.env._(
+                        "Invalid State!, Please contact your system administrator"
+                    )
                 )
 
     def action_close(self, vals=None):
         for enc in self:
             if enc.state != "in-progress":
-                raise ValidationError(_("Must be in-progress state"))
+                raise ValidationError(self.env._("Must be in-progress state"))
 
         vals = dict(vals or {"state": "finished", "period_end": fields.Datetime.now()})
         self.participant_ids.action_stop()
@@ -782,7 +778,9 @@ class Encounter(models.Model):
         user = self.env["res.users"].browse(self.env.uid)
         if not user.employee_id:
             raise ValidationError(
-                _("กรุณาติดต่อผู้ดูแลระบบเพือเพิ่มทะเบียนผู้ปฎิบัติงานก่อนบันทึกเป็นผู้มีส่วนร่วมในงานให้บริการ")
+                self.env._(
+                    "กรุณาติดต่อผู้ดูแลระบบเพือเพิ่มทะเบียนผู้ปฎิบัติงานก่อนบันทึกเป็นผู้มีส่วนร่วมในงานให้บริการ"
+                )
             )
         val = {
             "user_id": user.id,

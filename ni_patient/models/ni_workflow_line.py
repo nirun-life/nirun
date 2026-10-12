@@ -39,8 +39,8 @@ class WorkflowLine(models.Model):
     write_date = fields.Datetime("Last Updated on", readonly=True)
 
     def init(self):
-        tools.drop_view_if_exists(self._cr, self._table)
-        self._cr.execute(
+        tools.drop_view_if_exists(self.env.cr, self._table)
+        self.env.cr.execute(
             """
             CREATE OR REPLACE VIEW ni_workflow_line AS (
                 SELECT

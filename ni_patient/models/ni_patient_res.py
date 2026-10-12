@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import _, api, fields, models, tools
+from odoo import api, fields, models, tools
 from odoo.exceptions import ValidationError
 
 
@@ -41,7 +41,6 @@ class PatientResource(models.AbstractModel):
     )
     patient_id = fields.Many2one(
         "ni.patient",
-        "Patient",
         index=True,
         ondelete="cascade",
         required=True,
@@ -62,7 +61,7 @@ class PatientResource(models.AbstractModel):
     def init(self):
         if not self._abstract:
             tools.create_index(
-                self._cr,
+                self.env.cr,
                 f"{self._table}_company_id_patient_id_encounter_id_index",
                 self._table,
                 ["company_id", "patient_id", "encounter_id"],
@@ -77,12 +76,12 @@ class PatientResource(models.AbstractModel):
 
         if self.patient_id.deceased:
             warning = {
-                "title": _("Warning!"),
-                "message": _(
+                "title": self.env._("Warning!"),
+                "message": self.env._(
                     "%s is already deceased. Reference to this patient may "
-                    "cause database inconsistency!"
-                )
-                % self.patient_id.name,
+                    "cause database inconsistency!",
+                    self.patient_id.name,
+                ),
             }
             return {"warning": warning}
 
@@ -133,7 +132,7 @@ class PatientResource(models.AbstractModel):
         start = fields.Datetime.to_datetime(period_start)
         if start.replace(microsecond=0) < enc.period_start.replace(microsecond=0):
             raise ValidationError(
-                _(
+                self.env._(
                     "Since date must not before the encounter start date\n"
                     "\n\tEncounter Since: %(encounter_start)s"
                     "\n\t%(resource)s Since: %(start)s",
@@ -150,5 +149,5 @@ class PatientResource(models.AbstractModel):
                 rec.encounter_id.patient_id != rec.patient_id
             ):
                 raise ValidationError(
-                    _("Inconsistent patient and encounter references")
+                    self.env._("Inconsistent patient and encounter references")
                 )

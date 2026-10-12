@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!--
-  ~ Copyright (c) 2021-2023 NSTDA
-  -->
 <odoo>
     <record id="location_action" model="ir.actions.act_window">
         <field name="name">Location</field>
@@ -29,7 +26,7 @@
                     domain="[('active', '=', False)]"
                     string="Archived"
                 />
-                <group string="Group by">
+                <group>
                     <filter name="Type" context="{'group_by': 'physical_type_id'}" />
                     <filter
                         name="Parent Location"
@@ -110,7 +107,7 @@
                                     <field name="location_id" optional="show" />
                                     <field name="period_start" />
                                     <field name="duration_days" />
-                                    <field name="state" invisible="1" />
+                                    <field name="state" column_invisible="1" />
                                 </list>
                             </field>
                         </page>
