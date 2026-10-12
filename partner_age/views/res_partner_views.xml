@@ -10,12 +10,9 @@
         <field name="priority">1</field>
         <field name="arch" type="xml">
             <field name="title" position="after">
-                <label attrs="{'readonly': [('birthdate', '!=', False)]}" for="age" />
+                <label for="age" />
                 <div>
-                    <field
-                        name="age"
-                        attrs="{'readonly': [('birthdate', '!=', False)]}"
-                    />
+                    <field name="age" readonly="birthdate" />
                 </div>
                 <field name="birthdate" />
                 <field name="deceased_date" />
