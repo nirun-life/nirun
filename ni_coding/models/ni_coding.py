@@ -5,19 +5,21 @@ from pathlib import Path
 from lxml import etree
 
 from odoo import api, fields, models
+from odoo.osv import expression
 
 
 class Coding(models.AbstractModel):
     _name = "ni.coding"
     _description = "Coding"
     _order = "sequence, id"
+    _rec_names_search = ["name", "code", "abbr"]
 
     _display_name_separator = ", "
     _default_coding_form = (
         Path(__file__).parent.parent / "views" / "ni_coding_default_form.xml"
     )
-    _default_coding_tree = (
-        Path(__file__).parent.parent / "views" / "ni_coding_default_tree.xml"
+    _default_coding_list = (
+        Path(__file__).parent.parent / "views" / "ni_coding_default_list.xml"
     )
     _default_coding_search = (
         Path(__file__).parent.parent / "views" / "ni_coding_default_search.xml"
@@ -29,7 +31,7 @@ class Coding(models.AbstractModel):
     @api.model
     def _get_view(self, view_id=None, view_type="form", **options):
         arch, view = super()._get_view(view_id, view_type, **options)
-        can_write = self.check_access_rights("write", raise_exception=False)
+        can_write = self.has_access("write")
         use_default = not view or (view_type == "form" and not can_write)
         if use_default:
             default_path = getattr(self, f"_default_coding_{view_type}", None)
@@ -72,21 +74,13 @@ class Coding(models.AbstractModel):
     ]
 
     @api.model
-    def _name_search(self, name, domain=None, operator="ilike", limit=None, order=None):
-        domain = list(domain or [])
-        if not (name == "" and operator == "ilike"):
-            if len(name.split()) > 1:
-                for n in name.split():
-                    domain.append(("name", operator, n))
-            else:
-                domain += [
-                    "|",
-                    "|",
-                    ("name", operator, name),
-                    ("code", operator, name),
-                    ("abbr", operator, name),
-                ]
-        return self._search(domain, limit=limit, order=order)
+    def _search_display_name(self, operator, value):
+        # A multi-word query must match every word of the name.
+        if operator in ("ilike", "like") and isinstance(value, str):
+            words = value.split()
+            if len(words) > 1:
+                return expression.AND([[("name", operator, word)] for word in words])
+        return super()._search_display_name(operator, value)
 
     @api.depends(
         lambda self: ["name", "abbr", "code"]
@@ -120,10 +114,12 @@ class Coding(models.AbstractModel):
             name = coding.abbr
         return name
 
-    def copy(self, default=None):
-        default = default or {}
-        if "name" not in default:
-            default["name"] = "%s (copy)" % self.name
-        if "code" not in default and self.code:
-            default["code"] = "%s (copy)" % self.code
-        return super().copy(default)
+    def copy_data(self, default=None):
+        default = dict(default or {})
+        vals_list = super().copy_data(default=default)
+        for coding, vals in zip(self, vals_list, strict=True):
+            if "name" not in default:
+                vals["name"] = f"{coding.name} (copy)"
+            if "code" not in default and coding.code:
+                vals["code"] = f"{coding.code} (copy)"
+        return vals_list

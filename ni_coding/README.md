@@ -25,7 +25,7 @@ This module owns:
 
 `ni.coding` centralizes the common behavior for downstream models:
 
-- default view scaffolding for form, tree, search, and kanban views
+- default view scaffolding for form, list, search, and kanban views
 - name formatting options such as code, abbreviation, and parent path display
 - a shared `sequence` field and default ordering
 - copy semantics that preserve uniqueness by appending `(copy)`
@@ -40,7 +40,7 @@ The module installs a small Coding menu under `base.menu_custom` with two entrie
 The following view files are part of the module contract:
 
 - `views/ni_coding_default_form.xml`
-- `views/ni_coding_default_tree.xml`
+- `views/ni_coding_default_list.xml`
 - `views/ni_coding_default_search.xml`
 - `views/ni_coding_default_kanban.xml`
 - `views/ni_coding_system_views.xml`
@@ -65,6 +65,11 @@ and downstream add-ons:
 - `DICOM`
 - `UCUM`
 
+## Security
+
+- `ni.coding.system`: read access for internal, portal and public users; full access for
+  Settings administrators (`base.group_system`).
+
 ## Dependencies
 
 - `base`
@@ -75,7 +80,8 @@ and downstream add-ons:
 - `ni.coding.system` enforces uniqueness on both `name` and `url`.
 - `ni.coding` enforces uniqueness of `(system_id, name)` and `(system_id, code)`.
 - Search on both models matches the human name plus the code fields they expose. On
-  `ni.coding`, a multi-word query must match every word in `name`.
+  `ni.coding`, `_search_display_name` makes a multi-word query match every word in
+  `name`.
 - `ni.coding` computes `display_name` in `_compute_display_name`. The context keys
   `show_parent`, `show_abbr`, `show_code` and `only_abbr` change the format.
 - The module is intended to be extended by other clinical modules that need stable coded
