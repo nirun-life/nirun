@@ -63,8 +63,9 @@ class EncounterLocation(models.Model):
             if rec.period_end > limit_date:
                 raise ValidationError(
                     _(
-                        "Participant end time (%s) must not be in the"
-                        " future or after the encounter have ended (%s) "
-                        % (rec.period_end, limit_date)
+                        "Participant end time (%(end)s) must not be in the"
+                        " future or after the encounter have ended (%(limit)s) ",
+                        end=rec.period_end,
+                        limit=limit_date,
                     )
                 )
