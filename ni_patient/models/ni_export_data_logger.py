@@ -14,7 +14,11 @@ class ExportDataLogger(models.AbstractModel):
     def export_data(self, fields_to_export):
         # Call super() to get the original export_data functionality
         _logger.info(
-            f"{self.env.user.name}[{self.env.user.id}] exporting {self._name} {len(self)} records"
+            "%s[%s] exporting %s %s records",
+            self.env.user.name,
+            self.env.user.id,
+            self._name,
+            len(self),
         )
 
         return super().export_data(fields_to_export)

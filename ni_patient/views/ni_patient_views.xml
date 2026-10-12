@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version='1.0' encoding='UTF-8' ?>
 <!--
   ~ Copyright (c) 2021-2023 NSTDA
   -->
@@ -6,7 +6,7 @@
     <record id="patient_action" model="ir.actions.act_window">
         <field name="name">Patients</field>
         <field name="res_model">ni.patient</field>
-        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Create a new patient record</p>
         </field>
@@ -14,7 +14,7 @@
     <record id="patient_action_in_progress" model="ir.actions.act_window">
         <field name="name">Patients</field>
         <field name="res_model">ni.patient</field>
-        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
         <field name="context">{'search_default_in_progress': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No patients found</p>
@@ -30,7 +30,7 @@
     <record id="patient_action_deceased" model="ir.actions.act_window">
         <field name="name">Deceased</field>
         <field name="res_model">ni.patient</field>
-        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
         <field name="domain">[('deceased_date', '!=', False)]</field>
         <field name="context">{'show_deceased': 1, 'create': False}</field>
         <field name="help" type="html">
@@ -129,10 +129,10 @@
         </field>
     </record>
     <record id="ni_patient_view_tree" model="ir.ui.view">
-        <field name="name">ni.patient.view.tree</field>
+        <field name="name">ni.patient.view.list</field>
         <field name="model">ni.patient</field>
         <field name="arch" type="xml">
-            <tree default_order="encounter_id, name" js_class="ni_patient_list">
+            <list default_order="encounter_id, name" js_class="ni_patient_list">
                 <field name="identifier" optional="show" />
                 <field name="name" />
                 <field name="gender" optional="show" />
@@ -142,7 +142,7 @@
                 <field name="mobile" optional="show" widget="phone" />
                 <field name="presence_state" />
                 <field name="company_id" groups="base.group_multi_company" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_patient_view_form" model="ir.ui.view">
@@ -438,11 +438,7 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div name="chatter" class="oe_chatter">
-                    <field name="message_follower_ids" />
-                    <field name="activity_ids" />
-                    <field name="message_ids" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
@@ -465,215 +461,212 @@
                 <field name="image_128" />
                 <field name="company_id" />
                 <templates>
-                    <t t-name="kanban-box">
-                        <div
-                            class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban"
-                        >
+                    <t t-name="card" class="flex-row">
+                        <aside class="o_kanban_aside_full">
                             <field
                                 name="image_1024"
-                                class="o_kanban_image_fill_left d-block"
-                                preview_image="image_128"
-                                widget="background_image"
-                                options="{'zoom': true, 'zoom_delay': 1000}"
+                                class="o_kanban_image_fill w-100"
+                                widget="image"
+                                options="{'img_class': 'object-fit-cover', 'preview_image': 'image_128', 'zoom': true, 'zoom_delay': 1000}"
                             />
-                            <div class="oe_kanban_details">
-                                <div name="kanban_top" class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings">
-                                        <div
-                                            class="float-end"
-                                            t-if="record.presence_state.raw_value == 'unknown'"
-                                        >
-                                            <span
-                                                name="presence_to_define"
-                                                aria-label="Unknown"
-                                                class="fa fa-circle text-secondary"
-                                                role="img"
-                                                title="Unknown"
-                                            />
-                                        </div>
-                                        <div
-                                            class="float-end"
-                                            t-if="record.presence_state.raw_value == 'draft'"
-                                        >
-                                            <span
-                                                name="presence_draft"
-                                                aria-label="Draft"
-                                                class="fa fa-circle text-info"
-                                                role="img"
-                                                title="Draft"
-                                            />
-                                        </div>
-                                        <div
-                                            class="float-end"
-                                            t-if="record.presence_state.raw_value == 'planned'"
-                                        >
-                                            <span
-                                                name="presence_planned"
-                                                aria-label="Planned"
-                                                class="fa fa-circle text-warning"
-                                                role="img"
-                                                title="Planned"
-                                            />
-                                        </div>
-                                        <div
-                                            class="float-end"
-                                            t-if="record.presence_state.raw_value == 'in-progress'"
-                                        >
-                                            <span
-                                                name="presence_in_progress"
-                                                aria-label="Treating"
-                                                class="fa fa-circle text-success"
-                                                role="img"
-                                                title="Treating"
-                                            />
-                                        </div>
-                                        <div
-                                            class="float-end"
-                                            t-if="record.presence_state.raw_value == 'finished'"
-                                        >
-                                            <span
-                                                name="presence_finished"
-                                                aria-label="Treated"
-                                                class="fa fa-circle text-primary"
-                                                role="img"
-                                                title="Treated"
-                                            />
-                                        </div>
-                                        <div
-                                            class="float-end"
-                                            t-if="record.presence_state.raw_value == 'deceased'"
-                                        >
-                                            <span
-                                                name="presence_deceased"
-                                                aria-label="Deceased"
-                                                class="fa fa-circle"
-                                                role="img"
-                                                title="Deceased"
-                                            />
-                                        </div>
-                                        <span class="o_kanban_record_title">
-                                            <field
-                                                name="name"
-                                                placeholder="Patient's Name"
-                                            />
-                                        </span>
+                        </aside>
+                        <main class="ps-2 ps-md-0">
+                            <div name="kanban_top" class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <div
+                                        class="float-end"
+                                        t-if="record.presence_state.raw_value == 'unknown'"
+                                    >
                                         <span
-                                            class="o_kanban_record_subtitle small"
-                                            t-if="record.identifier.value"
-                                        >
-                                            <t t-esc="record.identifier.value" />
-                                        </span>
+                                            name="presence_to_define"
+                                            aria-label="Unknown"
+                                            class="fa fa-circle text-secondary"
+                                            role="img"
+                                            title="Unknown"
+                                        />
+                                    </div>
+                                    <div
+                                        class="float-end"
+                                        t-if="record.presence_state.raw_value == 'draft'"
+                                    >
                                         <span
-                                            class="o_kanban_record_subtitle small"
-                                            t-if="record.encounter_id.value"
+                                            name="presence_draft"
+                                            aria-label="Draft"
+                                            class="fa fa-circle text-info"
+                                            role="img"
+                                            title="Draft"
+                                        />
+                                    </div>
+                                    <div
+                                        class="float-end"
+                                        t-if="record.presence_state.raw_value == 'planned'"
+                                    >
+                                        <span
+                                            name="presence_planned"
+                                            aria-label="Planned"
+                                            class="fa fa-circle text-warning"
+                                            role="img"
+                                            title="Planned"
+                                        />
+                                    </div>
+                                    <div
+                                        class="float-end"
+                                        t-if="record.presence_state.raw_value == 'in-progress'"
+                                    >
+                                        <span
+                                            name="presence_in_progress"
+                                            aria-label="Treating"
+                                            class="fa fa-circle text-success"
+                                            role="img"
+                                            title="Treating"
+                                        />
+                                    </div>
+                                    <div
+                                        class="float-end"
+                                        t-if="record.presence_state.raw_value == 'finished'"
+                                    >
+                                        <span
+                                            name="presence_finished"
+                                            aria-label="Treated"
+                                            class="fa fa-circle text-primary"
+                                            role="img"
+                                            title="Treated"
+                                        />
+                                    </div>
+                                    <div
+                                        class="float-end"
+                                        t-if="record.presence_state.raw_value == 'deceased'"
+                                    >
+                                        <span
+                                            name="presence_deceased"
+                                            aria-label="Deceased"
+                                            class="fa fa-circle"
+                                            role="img"
+                                            title="Deceased"
+                                        />
+                                    </div>
+                                    <div class="fw-bold">
+                                        <field
+                                            name="name"
+                                            placeholder="Patient's Name"
+                                        />
+                                    </div>
+                                    <div
+                                        class="small text-muted"
+                                        t-if="record.identifier.value"
+                                    >
+                                        <t t-esc="record.identifier.value" />
+                                    </div>
+                                    <div
+                                        class="small text-muted"
+                                        t-if="record.encounter_id.value"
+                                    >
+                                        <t t-esc="record.encounter_id.value" />
+                                        <t
+                                            t-if="record.presence_state.raw_value == 'draft' or record.presence_state.raw_value == 'planned'"
                                         >
-                                            <t t-esc="record.encounter_id.value" />
-                                            <t
-                                                t-if="record.presence_state.raw_value == 'draft' or record.presence_state.raw_value == 'planned'"
-                                            >
-                                                <small>
+                                            <small>
                                                     [
                                                     <t
-                                                    t-esc="record.presence_state.value"
-                                                />
+                                                t-esc="record.presence_state.value"
+                                            />
                                                     ]
                                                 </small>
-                                            </t>
-                                        </span>
+                                        </t>
                                     </div>
                                 </div>
-                                <ul>
-                                    <li
-                                        groups="base.group_multi_company"
-                                        class="text-truncate"
-                                    >
+                            </div>
+                            <ul>
+                                <li
+                                    groups="base.group_multi_company"
+                                    class="text-truncate"
+                                >
+                                    <i
+                                        class="fa fa-hospital-o me-2"
+                                        aria-hidden="true"
+                                        title="company"
+                                    />
+                                    <!--                                        <span t-esc="record.company_id.value" />-->
+                                    <field name="company_id" />
+                                </li>
+                                <li
+                                    class="o_force_ltr"
+                                    t-if="record.gender.value or record.age.value &gt; 0"
+                                >
+                                    <t t-if="record.gender.raw_value == 'male'">
                                         <i
-                                            class="fa fa-hospital-o me-2"
+                                            class="fa fa-mars me-2 text-info"
                                             aria-hidden="true"
-                                            title="company"
+                                            title="male"
                                         />
-                                        <!--                                        <span t-esc="record.company_id.value" />-->
-                                        <field name="company_id" />
-                                    </li>
-                                    <li
-                                        class="o_force_ltr"
-                                        t-if="record.gender.value or record.age.value &gt; 0"
-                                    >
-                                        <t t-if="record.gender.raw_value == 'male'">
-                                            <i
-                                                class="fa fa-mars me-2 text-info"
-                                                aria-hidden="true"
-                                                title="male"
-                                            />
-                                        </t>
-                                        <t t-elif="record.gender.raw_value == 'female'">
-                                            <i
-                                                class="fa fa-venus me-2 text-danger"
-                                                aria-hidden="true"
-                                                title="female"
-                                            />
-                                        </t>
-                                        <t t-else="">
-                                            <i
-                                                class="fa fa-genderless me-2"
-                                                aria-hidden="true"
-                                                title="Undefined"
-                                            />
-                                        </t>
-                                        <field name="gender" />
-                                        <t t-if="record.age.value &gt; 0">
+                                    </t>
+                                    <t t-elif="record.gender.raw_value == 'female'">
+                                        <i
+                                            class="fa fa-venus me-2 text-danger"
+                                            aria-hidden="true"
+                                            title="female"
+                                        />
+                                    </t>
+                                    <t t-else="">
+                                        <i
+                                            class="fa fa-genderless me-2"
+                                            aria-hidden="true"
+                                            title="Undefined"
+                                        />
+                                    </t>
+                                    <field name="gender" />
+                                    <t t-if="record.age.value &gt; 0">
                                             <t t-if="record.gender.value">,</t>
                                             <field name="age" />
                                             years old
                                         </t>
-                                    </li>
-                                    <li
-                                        t-if="context.show_deceased and record.deceased_date.value"
-                                    >
-                                        <span>Deceased:</span>
-                                        <field name="deceased_date" />
-                                    </li>
-                                    <li
-                                        class="o_text_overflow"
-                                        t-if="record.location_id.value"
-                                    >
-                                        <i
-                                            class="fa fa-map-marker me-2"
-                                            aria-hidden="true"
-                                            title="location"
-                                        />
-                                        <field name="location_id" />
-                                    </li>
-                                </ul>
-                                <div
-                                    class="o_kanban_card_actions mt-4"
-                                    t-if="!selection_mode"
+                                </li>
+                                <li
+                                    t-if="context.show_deceased and record.deceased_date.value"
                                 >
-                                    <button
-                                        name="%(ni_encounter_action_from_patient)d"
-                                        class="btn-outline-primary"
-                                        icon="fa-sign-in"
-                                        type="action"
-                                        groups="ni_patient.group_user"
-                                        invisible="presence_state not in ['unknown', 'finished']"
-                                    >
+                                    <span>Deceased:</span>
+                                    <field name="deceased_date" />
+                                </li>
+                                <li
+                                    class="o_text_overflow"
+                                    t-if="record.location_id.value"
+                                >
+                                    <i
+                                        class="fa fa-map-marker me-2"
+                                        aria-hidden="true"
+                                        title="location"
+                                    />
+                                    <field name="location_id" />
+                                </li>
+                            </ul>
+                            <div
+                                class="o_kanban_card_actions mt-4"
+                                t-if="!selection_mode"
+                            >
+                                <button
+                                    name="%(ni_encounter_action_from_patient)d"
+                                    class="btn-outline-primary"
+                                    icon="fa-sign-in"
+                                    type="action"
+                                    groups="ni_patient.group_user"
+                                    invisible="presence_state not in ['unknown', 'finished']"
+                                >
                                         Admission
                                     </button>
-                                    <button
-                                        name="%(ni_encounter_action)d"
-                                        string="Validate"
-                                        class="btn btn-outline-info"
-                                        context="{'search_default_patient_id': active_id}"
-                                        icon="fa-file-o"
-                                        type="action"
-                                        groups="ni_patient.group_user"
-                                        invisible="presence_state not in ['draft', 'planned']"
-                                    >
+                                <button
+                                    name="%(ni_encounter_action)d"
+                                    string="Validate"
+                                    class="btn btn-outline-info"
+                                    context="{'search_default_patient_id': id}"
+                                    icon="fa-file-o"
+                                    type="action"
+                                    groups="ni_patient.group_user"
+                                    invisible="presence_state not in ['draft', 'planned']"
+                                >
                                         Validate
                                     </button>
-                                </div>
                             </div>
-                        </div>
+                        </main>
                     </t>
                 </templates>
             </kanban>
