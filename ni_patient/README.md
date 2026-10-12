@@ -1,6 +1,6 @@
 # Patient (`ni_patient`)
 
-Odoo 18.0 module that provides the core patient and encounter model for Nirun. It
+Odoo 19.0 module that provides the core patient and encounter model for Nirun. It
 anchors the clinical data hierarchy, patient/encounter workflow state, and shared
 timeline records used by the rest of the healthcare modules.
 
@@ -79,6 +79,15 @@ and requests into a single patient history.
 - `ni.encounter.display_age` is the age at the encounter start (`_compute_display_age`
   overrides the `partner_age` one).
 
+## Titles and Mobile (Odoo 19)
+
+- Odoo 19 removed the partner title and mobile. Patients keep both through
+  `ni_partner_title` (via `partner_gender`, field `title_id`) and `ni_partner_mobile`
+  (field `mobile`). The title → gender default follows `title_id`.
+- Upgrade from 18.0: run OpenUpgrade with this repository's `upgrade_path/` as a second
+  `--upgrade-path`; it hands titles to `ni_partner_title` and puts back the phone
+  numbers OpenUpgrade merged with mobiles.
+
 ## Encounter Locking
 
 - Encounter fields are read-only in the form once the encounter is finished, cancelled
@@ -101,11 +110,15 @@ and requests into a single patient history.
   and loses that data.
 - `PatientListController` is an extension seam imported by downstream repositories
   (since 17.0 from `@ni_patient/views/list_view.esm`); renaming it is a breaking change
-  outside this module. The controllers override `getStaticActionMenuItems()`.
+  outside this module. The controllers override `getStaticActionMenuItems()`; the list
+  one reads the selection with `model.root.getResIds(true)` (19.0 dropped
+  `getSelectedResIds()`).
 
 ## Security and Support Files
 
-- `security/ni_patient_group.xml` defines the patient access group.
+- `security/ni_patient_group.xml` defines the Viewer < User < Manager < Admin groups
+  under the "Patients" privilege (`res_groups_privilege_patient`, Odoo 19) in the
+  Medical > Patients category.
 - `security/ni_patient_rules.xml` constrains record access.
 - `security/ir.model.access.csv` grants model-level permissions.
 - `data/ir_sequence_data.xml` and the other `data/*.xml` files seed encounter classes,
@@ -118,6 +131,7 @@ and requests into a single patient history.
 
 - `ni_coding`
 - `ni_identifier`
+- `ni_partner_mobile`
 - `ni_period`
 - `hr`
 - `mail`
@@ -128,9 +142,8 @@ and requests into a single patient history.
 
 ## Verification
 
-- `tests/test_ni_patient_display_name.py` (D1), `tests/test_ni_patient_address.py`
-  (address type) and `tests/test_ni_coding_default_views.py` (ni_coding default views on
-  every coding model).
+- `tests/test_ni_patient_display_name.py` (D1) and `tests/test_ni_patient_address.py`
+  (address type). The ni_coding default views are tested in `ni_coding`.
 - Review `ni_patient/tests/test_ni_patient.py` and
   `ni_patient/tests/test_ni_workflow.py` after any workflow, security, or portal change.
 - Re-check patient, encounter, workflow timeline, and portal flows after structural

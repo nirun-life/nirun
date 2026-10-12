@@ -13,6 +13,7 @@
     "depends": [
         "ni_coding",
         "ni_identifier",
+        "ni_partner_mobile",
         "ni_period",
         "hr",
         "mail",

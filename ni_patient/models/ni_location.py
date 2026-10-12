@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -14,7 +14,6 @@ class Location(models.Model):
 
     company_id = fields.Many2one(
         "res.company",
-        "Company",
         required=True,
         index=True,
         default=lambda self: self.env.company,
@@ -121,7 +120,9 @@ class Location(models.Model):
     @api.constrains("parent_id")
     def _check_hierarchy(self):
         if self._has_cycle():
-            raise ValidationError(_("Error! You cannot create recursive data."))
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
 
     @api.depends("parent_name", "parent_id", "name")
     def _compute_full_name(self):

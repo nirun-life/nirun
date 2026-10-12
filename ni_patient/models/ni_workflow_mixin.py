@@ -117,7 +117,6 @@ class EventMixin(models.AbstractModel):
 
     event_id = fields.Many2one(
         "ni.workflow.event",
-        "Event",
         bypass_search_access=True,
         ondelete="cascade",
         domain=lambda self: (
@@ -186,7 +185,6 @@ class RequestMixin(models.AbstractModel):
 
     request_id = fields.Many2one(
         "ni.workflow.request",
-        "Request",
         bypass_search_access=True,
         ondelete="cascade",
         readonly=True,
