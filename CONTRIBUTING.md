@@ -6,6 +6,7 @@ Thanks for contributing to Nirun. This project follows the
 ## Table of Contents
 
 - [Development Setup](#development-setup)
+- [Migration Environment](#migration-environment)
 - [Making a Change](#making-a-change)
 - [Code Style](#code-style)
 - [Commit Messages](#commit-messages)
@@ -71,6 +72,41 @@ local install. It requires a reachable PostgreSQL instance (see Requirements in
 docker build -t nirun .
 docker run -p 8069:8069 nirun
 ```
+
+## Migration Environment
+
+Porting modules from 16.0 (epic [#131](https://github.com/nirun-life/nirun/issues/131))
+needs Odoo 16 to 19 side by side. The full guide is
+[#133](https://github.com/nirun-life/nirun/issues/133); the short version:
+
+- **Sources:** shallow clones of `odoo/odoo` 16.0 to 19.0 and `OCA/OpenUpgrade` 17.0 to
+  19.0.
+- **Worktrees:** one per branch, e.g. `git worktree add ../nirun-19.0 19.0`.
+- **Venvs:** one per Odoo version, on Python 3.10 (the oca-ci test image). Install that
+  version's `requirements.txt`, `openupgradelib` from git master and `odoo-test-helper`.
+  Write its activation path into each worktree's `.tools/local-venv.txt`, and keep one
+  `odoo-X.conf` per version.
+- **Tools** (through pipx): `copier>=9`, `pre-commit`, `oca-port`, and
+  `odoo-module-migrator` from git master (the PyPI release stops at 17 to 18).
+- **PostgreSQL:** 13 or later.
+
+On macOS (arm64), some pins in Odoo's `requirements.txt` have no wheel. Install with an
+override file that uses the versions Odoo pins for Python 3.12 (`lxml==5.2.1` plus
+`lxml-html-clean`, `gevent==24.2.1`, `greenlet==3.0.3`, `psycopg2==2.9.9`,
+`cbor2==5.6.5`), and add `setuptools<81` for `pkg_resources`. Run pre-commit from a
+Python 3.10 install too: on newer Pythons the pinned pylint fails.
+
+To prove that an OpenUpgrade step loses no data, snapshot the database before and after
+it and compare the two files. The output holds counts and hashes only, no personal data:
+
+```bash
+SNAPSHOT_OUT=snap-16.json python odoo-bin shell -c odoo-16.conf -d <db> --no-http \
+    < .tools/migration_snapshot.py
+diff <(jq -S . snap-16.json) <(jq -S . snap-19.json)
+```
+
+`SNAPSHOT_DETAIL=1` adds one hash per record, keyed by id, and `SNAPSHOT_SALT` mixes a
+secret into every hash (use the same salt for both snapshots).
 
 ## Making a Change
 
