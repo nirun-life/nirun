@@ -23,7 +23,10 @@
                             invisible="context.get('default_survey_id', False)"
                             options="{'no_create': True, 'no_create_edit': True}"
                         />
-                        <field name="survey_name" invisible="not context.get('default_survey_id', False)" />
+                        <field
+                            name="survey_name"
+                            invisible="not context.get('default_survey_id', False)"
+                        />
                     </div>
                 </group>
                 <group name="main" states="choose">
@@ -74,7 +77,12 @@
                     </p>
                 </div>
                 <footer states="choose">
-                    <button name="prepare_answer" string="Start Survey" class="oe_highlight" type="object" />
+                    <button
+                        name="prepare_answer"
+                        string="Start Survey"
+                        class="oe_highlight"
+                        type="object"
+                    />
                     <button string="Cancel" class="btn-secondary" special="cancel" />
                 </footer>
                 <footer states="survey">
