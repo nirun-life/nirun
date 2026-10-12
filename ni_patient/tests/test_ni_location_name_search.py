@@ -21,7 +21,7 @@ class TestLocationNameSearch(common.TransactionCase):
         # an arbitrary 100 rows that need not include bravo/charlie, and the assert
         # passes against the bug.
         found = self.env["ni.location"].name_search(
-            name, args=[("id", "in", self.locations.ids)]
+            name, domain=[("id", "in", self.locations.ids)]
         )
         return self.env["ni.location"].browse(i for i, _label in found)
 

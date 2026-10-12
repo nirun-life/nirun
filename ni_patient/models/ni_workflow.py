@@ -15,7 +15,6 @@ class Workflow(models.AbstractModel):
     )
     patient_id = fields.Many2one(
         "ni.patient",
-        "Patient",
         index=True,
         ondelete="cascade",
         required=True,
@@ -68,7 +67,7 @@ class Workflow(models.AbstractModel):
 
     @api.model
     def garbage_collect(self):
-        limit_date = fields.datetime.now() - get_timedelta(1, "day")
+        limit_date = fields.Datetime.now() - get_timedelta(1, "day")
         return self.search(
             [
                 ("res_model", "=", False),
@@ -99,7 +98,7 @@ class Request(models.Model):
 
     parent_id = fields.Many2one("ni.workflow.request", "Base on")
     replace_id = fields.Many2one(
-        "ni.workflow.request", "Replace", domain=[("is_replaced", "=", False)]
+        "ni.workflow.request", domain=[("is_replaced", "=", False)]
     )
     replaced_by_ids = fields.One2many(
         "ni.workflow.request", "replace_id", "Replaced by"

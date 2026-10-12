@@ -1,5 +1,5 @@
 #  Copyright (c) 2021-2023 NSTDA
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -65,19 +65,25 @@ class Discharge(models.TransientModel):
     def check_decease_date(self):
         for rec in self:
             if rec.deceased and not rec.decease_date:
-                raise UserError(_("Decease date should not be null"))
+                raise UserError(self.env._("Decease date should not be null"))
             if rec.decease_date and rec.decease_date < rec.encounter_start:
-                raise UserError(_("Decease date should not before encounter start"))
+                raise UserError(
+                    self.env._("Decease date should not before encounter start")
+                )
             if rec.decease_date and rec.decease_date > fields.Date.today():
-                raise UserError(_("Decease date should not be in the future"))
+                raise UserError(self.env._("Decease date should not be in the future"))
 
     @api.constrains("discharge_date")
     def check_discharge_date(self):
         for rec in self:
             if rec.discharge_date < rec.encounter_start:
-                raise UserError(_("Discharge date should not before encounter start"))
+                raise UserError(
+                    self.env._("Discharge date should not before encounter start")
+                )
             if rec.discharge_date.date() > fields.Date.today():
-                raise UserError(_("Discharge date should not be in the future"))
+                raise UserError(
+                    self.env._("Discharge date should not be in the future")
+                )
 
     def discharge(self):
         self.encounter_id.action_close(

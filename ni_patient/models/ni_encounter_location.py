@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -17,7 +17,6 @@ class EncounterLocation(models.Model):
     )
     encounter_id = fields.Many2one(
         "ni.encounter",
-        string="Encounter",
         required=True,
         ondelete="cascade",
         index=True,
@@ -25,7 +24,6 @@ class EncounterLocation(models.Model):
     )
     location_id = fields.Many2one(
         "ni.location",
-        string="Location",
         ondelete="restrict",
         index=True,
         required=True,
@@ -39,7 +37,7 @@ class EncounterLocation(models.Model):
     note = fields.Text()
 
     _period_start_end_check = models.Constraint(
-        "CHECK (\n                period_end is NULL or\n                period_end > period_start\n            )",
+        "CHECK (period_end IS NULL OR period_end > period_start)",
         "Participant end time must be after start time",
     )
 
@@ -56,7 +54,7 @@ class EncounterLocation(models.Model):
             limit_date = rec.encounter_id.period_end or now
             if rec.period_end > limit_date:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "Participant end time (%(end)s) must not be in the"
                         " future or after the encounter have ended (%(limit)s) ",
                         end=rec.period_end,

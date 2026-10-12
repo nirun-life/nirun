@@ -1,6 +1,6 @@
 #  Copyright (c) 2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -44,7 +44,7 @@ class EncounterParticipant(models.Model):
     note = fields.Text()
 
     _period_start_end_check = models.Constraint(
-        "CHECK (\n                period_end is NULL or\n                period_end > period_start\n            )",
+        "CHECK (period_end IS NULL OR period_end > period_start)",
         "Participant end time must be after start time",
     )
 
@@ -77,14 +77,14 @@ class EncounterParticipant(models.Model):
             if intercept:
                 r = intercept[0]
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "%(employee)s already involved for given time! %(start)s"
                         "\n\n\t%(type)s (%(other_start)s → %(other_end)s)",
                         employee=rec.employee_id.name,
                         start=rec.period_start,
                         type=r.type_id.name,
                         other_start=r.period_start or "...",
-                        other_end=r.period_end or _("Now"),
+                        other_end=r.period_end or self.env._("Now"),
                     )
                 )
 
@@ -95,7 +95,7 @@ class EncounterParticipant(models.Model):
             limit_date = rec.encounter_id.period_end or now
             if rec.period_end > limit_date:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "Participant end time (%(end)s) must not be in the"
                         " future or after the encounter have ended (%(limit)s) ",
                         end=rec.period_end,
