@@ -3,7 +3,7 @@ import logging
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -52,7 +52,6 @@ class AgeMixin(models.AbstractModel):
     )
     age_range_id = fields.Many2one(
         "res.partner.age.range",
-        "Age Range",
         compute="_compute_age_range_id",
         index=True,
         store=True,
@@ -113,7 +112,7 @@ class AgeMixin(models.AbstractModel):
                 rec.display_age = self._format_age(relativedelta(dt, rec.birthdate))
             elif rec.age_init and rec.age_init_date:
                 age_year = rec.age_init + dt.year - rec.age_init_date.year
-                rec.display_age = _("%s Years") % age_year
+                rec.display_age = self.env._("%s Years", age_year)
             else:
                 rec.display_age = None
 
@@ -149,16 +148,17 @@ class AgeMixin(models.AbstractModel):
     def _format_age(self, delta):
         result = []
         if delta.years > 0:
-            result.append(_("%s Years") % delta.years)
+            result.append(self.env._("%s Years", delta.years))
         if delta.months > 0:
-            result.append(_("%s Months") % delta.months)
+            result.append(self.env._("%s Months", delta.months))
         if delta.days > 0:
-            result.append(_("%s Days") % delta.days)
+            result.append(self.env._("%s Days", delta.days))
         return " ".join(result) or None
 
     @api.depends("age")
     def _compute_age_range_id(self):
-        range_ids = self.env["res.partner.age.range"].search([])
+        # Age ranges are a short configuration list, read them all once.
+        range_ids = self.env["res.partner.age.range"].search([])  # pylint: disable=no-search-all
         for record in self:
             if not record.age:
                 range_id = False
@@ -179,7 +179,7 @@ class AgeMixin(models.AbstractModel):
                 continue
             if record.birthdate > fields.Date.today():
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "Birthdate must not be in the future",
                     )
                 )
@@ -191,13 +191,13 @@ class AgeMixin(models.AbstractModel):
                 continue
             if record.deceased_date > fields.Date.today():
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "Deceased date must not be in the future",
                     )
                 )
             if record.birthdate and record.deceased_date < record.birthdate:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "Deceased date must not before birthdate",
                     )
                 )
@@ -206,7 +206,7 @@ class AgeMixin(models.AbstractModel):
     def _check_age(self):
         for rec in self:
             if rec.age < 0:
-                raise ValidationError(_("Age (years) must not be less than 0"))
+                raise ValidationError(self.env._("Age (years) must not be less than 0"))
 
     @api.depends("deceased_date")
     def _compute_is_deceased(self):

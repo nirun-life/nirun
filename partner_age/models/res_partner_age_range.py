@@ -1,6 +1,6 @@
 #  Copyright (c) 2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -25,14 +25,17 @@ class ResPartnerDateRange(models.Model):
     age_to = fields.Integer(string="To", required=True)
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [("name_uniq", "unique (name)", "A name must be unique !")]
+    _name_uniq = models.Constraint(
+        "unique (name)",
+        "A name must be unique !",
+    )
 
     @api.constrains("age_from", "age_to")
     def _validate_range(self):
         for rec in self:
             if rec.age_from >= rec.age_to:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "%(name)s is not a valid range (%(age_from)s >= %(age_to)s)",
                         name=rec.name,
                         age_from=rec.age_from,
@@ -49,7 +52,7 @@ class ResPartnerDateRange(models.Model):
             )
             if range_id:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "%(name)s is overlapping with range %(other)s",
                         name=rec.name,
                         other=range_id.name,

@@ -15,7 +15,7 @@ manual age input fallback, deceased tracking, age ranges, and daily recomputatio
 
 ## Data, Views, and Automation
 
-- Partner form: adds editable age, birthdate, and deceased-date fields after `title`.
+- Partner form: adds editable age, birthdate, and deceased-date fields before `lang`.
 - Age-range configuration: adds list/form views, an action, and a Contacts configuration
   menu entry.
 - Seeds default age ranges from `0-9 Years old` through `100 Years & above`.
