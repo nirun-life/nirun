@@ -3,7 +3,7 @@
 import base64
 
 from odoo import _, api, fields, models
-from odoo.modules.module import get_module_resource
+from odoo.tools.misc import file_path
 
 ENCOUNTER_INACTIVE_STATE = ["entered-in-error", "cancelled"]
 
@@ -25,16 +25,18 @@ class Patient(models.Model):
     _inherits = {"res.partner": "partner_id"}
     _check_company_auto = True
     _order = "name"
+    # ni.identifier.mixin uses the identifier (HN); patients are known by name.
+    _rec_name = "name"
+    _rec_names_search = ["name", "identifier", "identification_id"]
     _sign_fields = [
         "past_medical_history",
     ]
 
     @api.model
     def _default_image(self):
-        image_path = get_module_resource(
-            "ni_patient", "static/src/img", "default_image.png"
-        )
-        return base64.b64encode(open(image_path, "rb").read())
+        image_path = file_path("ni_patient/static/src/img/default_image.png")
+        with open(image_path, "rb") as image:
+            return base64.b64encode(image.read())
 
     company_id = fields.Many2one(
         "res.company",
@@ -87,7 +89,7 @@ class Patient(models.Model):
     other_address_id = fields.Many2one(
         "res.partner",
         "Other Address",
-        domain="[('ref', '=', identifier), ('type', '=', 'private')]",
+        domain="[('ref', '=', identifier), ('type', '=', 'other')]",
     )
 
     nationality_id = fields.Many2one(
@@ -124,9 +126,7 @@ class Patient(models.Model):
         "ni.patient.state.reason",
         string="State Reason",
     )
-    state_date = fields.Date(
-        string="State Date",
-    )
+    state_date = fields.Date()
     state_note = fields.Text(
         string="Additional Details",
     )
@@ -142,7 +142,6 @@ class Patient(models.Model):
             ("polygamous", "Polygamous"),
             ("unknown", "Unknown"),
         ],
-        string="Marital Status",
         default="unknown",
         tracking=True,
     )
@@ -150,7 +149,7 @@ class Patient(models.Model):
     mother_name = fields.Char("Mother Complete Name")
     spouse_name = fields.Char("Spouse Complete Name")
     sibling_count = fields.Integer("Number of Sibling")
-    birth_order = fields.Integer("Birth Order")
+    birth_order = fields.Integer()
     children_count = fields.Integer("Number of Children")
 
     education_level = fields.Selection(
@@ -186,7 +185,6 @@ class Patient(models.Model):
         store=True,
     )
     encounter_start = fields.Date(
-        "Encounter Start",
         compute="_compute_encounter",
         required=False,
         compute_sudo=True,
@@ -211,7 +209,7 @@ class Patient(models.Model):
     location_id = fields.Many2one(related="encounter_id.location_id")
     active = fields.Boolean(default=True)
 
-    past_medical_history = fields.Html("Past Medical History", tracking=True)
+    past_medical_history = fields.Html(tracking=True)
     past_medical_history_uid = fields.Many2one("res.users", readonly=True, copy=False)
     past_medical_history_date = fields.Datetime(readonly=True, copy=False)
 
@@ -257,44 +255,34 @@ class Patient(models.Model):
         ),
     ]
 
-    def name_get(self):
-        return [(patient.id, patient._name_get()) for patient in self]
+    @api.depends("name", "identifier", "identification_id", "gender", "age")
+    @api.depends_context(
+        "show_identifier", "show_identification_id", "show_gender_age", "show_age"
+    )
+    def _compute_display_name(self):
+        for patient in self:
+            patient.display_name = patient._name_get()
 
     def _name_get(self):
         patient = self
         name = patient.name or ""
-        if self._context.get("show_identifier") and patient.identifier:
+        if self.env.context.get("show_identifier") and patient.identifier:
             name = f"{patient.identifier}  {name}"
-        if self._context.get("show_identification_id") and patient.identification_id:
+        if self.env.context.get("show_identification_id") and patient.identification_id:
             name = f"{name} ({patient.identification_id})"
-        if self._context.get("show_gender_age"):
+        if self.env.context.get("show_gender_age"):
             gender_age = []
             if patient.gender in ["male", "female"]:
                 gender_age.append(
                     dict(self._fields["gender"].selection(self))[self.gender]
                 )
             if patient.age:
-                gender_age.append(_("{} years old").format(patient.age))
+                gender_age.append(_("%(age)s years old", age=patient.age))
             if gender_age:
                 name = "{}\n{}".format(name, ", ".join(gender_age))
-        elif self._context.get("show_age") and patient.age:
-            name = _("{} ({}Y)").format(name, patient.age)
+        elif self.env.context.get("show_age") and patient.age:
+            name = _("%(name)s (%(age)sY)", name=name, age=patient.age)
         return name
-
-    def _name_search(
-        self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        args = list(args or [])
-        if not (name == "" and operator == "ilike"):
-            args += [
-                "|",
-                "|",
-                ("name", operator, name),
-                ("identifier", operator, name),
-                ("identification_id", operator, name),
-            ]
-
-        return self._search(args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.onchange("partner_id")
     def onchange_partner_id(self):
@@ -316,7 +304,7 @@ class Patient(models.Model):
             order="id DESC",
         )
         for rec in self:
-            enc_ids = enc.filtered(lambda en: en.patient_id.id == rec.id)
+            enc_ids = enc.filtered(lambda en, rec=rec: en.patient_id.id == rec.id)
             rec.encounter_count = len(enc_ids)
             latest_enc = enc_ids[0] if enc_ids else None
             if latest_enc and latest_enc.state in ["draft", "planned", "in-progress"]:

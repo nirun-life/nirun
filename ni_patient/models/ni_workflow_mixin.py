@@ -120,10 +120,9 @@ class EventMixin(models.AbstractModel):
         "Event",
         auto_join=True,
         ondelete="cascade",
-        domain=[
-            ("res_model", "=", lambda self: self._name),
-            ("res_id", "=", lambda self: self.id),
-        ],
+        domain=lambda self: (
+            f"[('res_model', '=', '{self._name}'), ('res_id', '=', id)]"
+        ),
     )
 
     state = fields.Selection(
@@ -191,10 +190,9 @@ class RequestMixin(models.AbstractModel):
         auto_join=True,
         ondelete="cascade",
         readonly=True,
-        domain=[
-            ("res_model", "=", lambda self: self._name),
-            ("res_id", "=", lambda self: self.id),
-        ],
+        domain=lambda self: (
+            f"[('res_model', '=', '{self._name}'), ('res_id', '=', id)]"
+        ),
     )
     priority = fields.Selection(related="request_id.priority", readonly=False)
     intent = fields.Selection(related="request_id.intent", readonly=False, store=True)

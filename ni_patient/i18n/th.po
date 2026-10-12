@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 09:14+0000\n"
-"PO-Revision-Date: 2026-08-14 09:14+0000\n"
+"POT-Creation-Date: 2026-10-12 09:08+0000\n"
+"PO-Revision-Date: 2026-10-12 09:08+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -43,6 +43,39 @@ msgstr "บ่งชี้ว่าเป้าหมายของการม
 
 #. module: ni_patient
 #. odoo-python
+#: code:addons/ni_patient/models/ni_patient.py:0
+#, python-format
+msgid "%(age)s years old"
+msgstr "%(age)s ปี"
+
+#. module: ni_patient
+#. odoo-python
+#: code:addons/ni_patient/models/ni_encounter_participant.py:0
+#, python-format
+msgid ""
+"%(employee)s already involved for given time! %(start)s\n"
+"\n"
+"\t%(type)s (%(other_start)s → %(other_end)s)"
+msgstr "%(employee)s มีส่วนร่วมในช่วงเวลาที่ระบบอยู่แล้ว! %(start)s\n\n	%(type)s (%(other_start)s → %(other_end)s)"
+
+#. module: ni_patient
+#. odoo-python
+#: code:addons/ni_patient/models/ni_patient.py:0
+#, python-format
+msgid "%(name)s (%(age)sY)"
+msgstr "%(name)s (%(age)s ปี)"
+
+#. module: ni_patient
+#. odoo-python
+#: code:addons/ni_patient/models/ni_encounter.py:0
+#, python-format
+msgid ""
+"%(patient)s was already registered as Encounter No. %(encounter)s "
+"(%(state)s)."
+msgstr "%(patient)s ถูกบันทึกว่าเข้ารับบริการแล้ว รหัสรับบริการ %(encounter)s (%(state)s)"
+
+#. module: ni_patient
+#. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
 #: code:addons/ni_patient/models/ni_patient_res.py:0
 #, python-format
@@ -54,20 +87,12 @@ msgstr ""
 "การอ้างอิงถึงอาจทำให้เกิดความไม่สอดคล้องในฐานข้อมูล"
 
 #. module: ni_patient
-#. odoo-python
-#: code:addons/ni_patient/models/ni_encounter.py:0
-#, python-format
-msgid "%s was already registered as Encounter No. %s (%s)."
-msgstr "%s ถูกบันทึกว่าเข้ารับบริการแล้ว รหัสรับบริการ %s (%s)"
-
-#. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__type
 #: model:ir.model.fields,help:ni_patient.field_ni_patient__type
 msgid ""
 "- Contact: Use this to organize the contact details of employees of a given company (e.g. CEO, CFO, ...).\n"
-"- Invoice Address : Preferred address for all invoices. Selected by default when you invoice an order that belongs to this company.\n"
-"- Delivery Address : Preferred address for all deliveries. Selected by default when you deliver an order that belongs to this company.\n"
-"- Private: Private addresses are only visible by authorized users and contain sensitive data (employee home addresses, ...).\n"
+"- Invoice Address: Preferred address for all invoices. Selected by default when you invoice an order that belongs to this company.\n"
+"- Delivery Address: Preferred address for all deliveries. Selected by default when you deliver an order that belongs to this company.\n"
 "- Other: Other address for the company (e.g. subsidiary, ...)"
 msgstr ""
 "- ที่ติดต่อ: ใช้เพื่อจัดระเบียบรายละเอียดที่ติดต่อของพนักงานในบริษัท (เช่น CEO, CFO ฯลฯ)\n"
@@ -82,11 +107,20 @@ msgid "<i class=\"fa fa-building text-primary\" title=\"Company\"/>"
 msgstr "<i class=\"fa fa-building text-primary\" title=\"บริษัท\"/>"
 
 #. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_kanban
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_kanban
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_kanban
+msgid "<i class=\"fa fa-clock-o me-1\" title=\"Occurrence\"/>"
+msgstr ""
+
+#. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.portal_my_patients
 msgid ""
 "<i class=\"fa fa-genderless me-2 text-secondary\" aria-hidden=\"true\" "
 "title=\"Undefined\"/>"
-msgstr "<i class=\"fa fa-genderless me-2 text-secondary\" aria-hidden=\"true\" title=\"ไม่ระบุ\"/>"
+msgstr ""
+"<i class=\"fa fa-genderless me-2 text-secondary\" aria-hidden=\"true\" "
+"title=\"ไม่ระบุ\"/>"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_kanban
@@ -132,9 +166,21 @@ msgstr ""
 "                                                ดูประวัติ"
 
 #. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_kanban
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_kanban
+msgid "<i class=\"fa fa-stethoscope me-1 text-muted\" title=\"Encounter\"/>"
+msgstr ""
+
+#. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "<i class=\"fa fa-tags\" aria-hidden=\"true\" title=\"Reasons\"/>"
 msgstr "<i class=\"fa fa-tags\" aria-hidden=\"true\" title=\"เหตุผล\"/>"
+
+#. module: ni_patient
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_kanban
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_kanban
+msgid "<i class=\"fa fa-user me-1 text-muted\" title=\"Patient\"/>"
+msgstr ""
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.portal_my_patients
@@ -602,6 +648,7 @@ msgstr "ข้อมูลเพิ่มเติม"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
+#: model_terms:ir.ui.view,arch_db:ni_patient.res_partner_view_form_address
 msgid "Address"
 msgstr "ที่อยู่"
 
@@ -1049,6 +1096,7 @@ msgstr "สัญชาติ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__city
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__city
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
+#: model_terms:ir.ui.view,arch_db:ni_patient.res_partner_view_form_address
 msgid "City"
 msgstr "เขต / อำเภอ"
 
@@ -1167,6 +1215,12 @@ msgid "Complete Address"
 msgstr "ที่อยู่"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__complete_name
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__complete_name
+msgid "Complete Name"
+msgstr "ชื่อเต็ม"
+
+#. module: ni_patient
 #: model:ni.encounter.discharge.status,name:ni_patient.discharge_status_1
 msgid "Complete Recovery"
 msgstr "หายเป็นปกติ"
@@ -1217,6 +1271,7 @@ msgstr "ตัวนับจำนวนอีเมลที่ตีกลั
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__country_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__country_id
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
+#: model_terms:ir.ui.view,arch_db:ni_patient.res_partner_view_form_address
 msgid "Country"
 msgstr "ประเทศ"
 
@@ -1475,6 +1530,11 @@ msgid "Discharge Disposition"
 msgstr "รูปแบบการจำหน่าย"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_discharge_wizard__discharge_disposition_domain
+msgid "Discharge Disposition Domain"
+msgstr "โดเมนการจำหน่าย"
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__discharge_status_id
 msgid "Discharge Status"
 msgstr "สถานะเมื่อจำหน่าย"
@@ -1645,7 +1705,10 @@ msgid ""
 "Either customer (not a user), either shared user. Indicated the current "
 "partner is a customer without access or with a limited access created for "
 "sharing data."
-msgstr "ลูกค้า (ที่ไม่ใช่ผู้ใช้งาน) หรือผู้ใช้งานแบบแชร์ บ่งชี้ว่าคู่ค้าปัจจุบันเป็นลูกค้าที่ไม่มีสิทธิ์เข้าถึง หรือมีสิทธิ์เข้าถึงแบบจำกัดที่สร้างขึ้นเพื่อแชร์ข้อมูล"
+msgstr ""
+"ลูกค้า (ที่ไม่ใช่ผู้ใช้งาน) หรือผู้ใช้งานแบบแชร์ "
+"บ่งชี้ว่าคู่ค้าปัจจุบันเป็นลูกค้าที่ไม่มีสิทธิ์เข้าถึง "
+"หรือมีสิทธิ์เข้าถึงแบบจำกัดที่สร้างขึ้นเพื่อแชร์ข้อมูล"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__email
@@ -1757,7 +1820,6 @@ msgstr "วันที่เข้ารับบริการ"
 
 #. module: ni_patient
 #: model:ir.actions.server,name:ni_patient.ir_cron_ni_encounter_auto_close_ir_actions_server
-#: model:ir.cron,cron_name:ni_patient.ir_cron_ni_encounter_auto_close
 msgid "Encounter class: Auto-close"
 msgstr "ประเภทการเข้ารับบริการ: ปิดอัตโนมัติ"
 
@@ -1904,7 +1966,9 @@ msgstr "ลงพื้นที่"
 msgid ""
 "Field used to store sanitized phone number. Helps speeding up searches and "
 "comparisons."
-msgstr "ฟิลด์ที่ใช้จัดเก็บหมายเลขโทรศัพท์ที่จัดรูปแบบแล้ว ช่วยให้การค้นหาและเปรียบเทียบรวดเร็วขึ้น"
+msgstr ""
+"ฟิลด์ที่ใช้จัดเก็บหมายเลขโทรศัพท์ที่จัดรูปแบบแล้ว "
+"ช่วยให้การค้นหาและเปรียบเทียบรวดเร็วขึ้น"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
@@ -2194,7 +2258,9 @@ msgstr "หากเลือกข้อความบางข้อควา
 msgid ""
 "If the email address is on the blacklist, the contact won't receive mass "
 "mailing anymore, from any list"
-msgstr "หากที่อยู่อีเมลอยู่ในบัญชีดำ ผู้ติดต่อจะไม่ได้รับอีเมลจำนวนมากอีกต่อไปจากรายชื่อใด ๆ"
+msgstr ""
+"หากที่อยู่อีเมลอยู่ในบัญชีดำ "
+"ผู้ติดต่อจะไม่ได้รับอีเมลจำนวนมากอีกต่อไปจากรายชื่อใด ๆ"
 
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__phone_sanitized_blacklisted
@@ -2202,7 +2268,9 @@ msgstr "หากที่อยู่อีเมลอยู่ในบัญ
 msgid ""
 "If the sanitized phone number is on the blacklist, the contact won't receive"
 " mass mailing sms anymore, from any list"
-msgstr "หากหมายเลขโทรศัพท์ที่จัดรูปแบบแล้วอยู่ในบัญชีดำ ผู้ติดต่อจะไม่ได้รับ SMS จำนวนมากอีกต่อไปจากรายชื่อใด ๆ"
+msgstr ""
+"หากหมายเลขโทรศัพท์ที่จัดรูปแบบแล้วอยู่ในบัญชีดำ ผู้ติดต่อจะไม่ได้รับ SMS "
+"จำนวนมากอีกต่อไปจากรายชื่อใด ๆ"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__image_1920
@@ -2297,7 +2365,9 @@ msgid ""
 "Indicates if a blacklisted sanitized phone number is a mobile number. Helps "
 "distinguish which number is blacklisted             when there is both a "
 "mobile and phone field in a model."
-msgstr "ระบุว่าหมายเลขโทรศัพท์ในบัญชีดำที่จัดรูปแบบแล้วเป็นเบอร์มือถือ ช่วยแยกแยะว่าเบอร์ใดถูกขึ้นบัญชีดำเมื่อโมเดลมีทั้งฟิลด์มือถือและโทรศัพท์"
+msgstr ""
+"ระบุว่าหมายเลขโทรศัพท์ในบัญชีดำที่จัดรูปแบบแล้วเป็นเบอร์มือถือ "
+"ช่วยแยกแยะว่าเบอร์ใดถูกขึ้นบัญชีดำเมื่อโมเดลมีทั้งฟิลด์มือถือและโทรศัพท์"
 
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__phone_blacklisted
@@ -2306,7 +2376,9 @@ msgid ""
 "Indicates if a blacklisted sanitized phone number is a phone number. Helps "
 "distinguish which number is blacklisted             when there is both a "
 "mobile and phone field in a model."
-msgstr "ระบุว่าหมายเลขโทรศัพท์ในบัญชีดำที่จัดรูปแบบแล้วเป็นเบอร์โทรศัพท์ ช่วยแยกแยะว่าเบอร์ใดถูกขึ้นบัญชีดำเมื่อโมเดลมีทั้งฟิลด์มือถือและโทรศัพท์"
+msgstr ""
+"ระบุว่าหมายเลขโทรศัพท์ในบัญชีดำที่จัดรูปแบบแล้วเป็นเบอร์โทรศัพท์ "
+"ช่วยแยกแยะว่าเบอร์ใดถูกขึ้นบัญชีดำเมื่อโมเดลมีทั้งฟิลด์มือถือและโทรศัพท์"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__industry_id
@@ -2318,6 +2390,12 @@ msgstr "อุตสาหกรรม"
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_encounter_class__decoration__info
 msgid "Info"
 msgstr "ข้อมูล"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__contact_address_inline
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__contact_address_inline
+msgid "Inlined Complete Address"
+msgstr "ที่อยู่เต็มแบบบรรทัดเดียว"
 
 #. module: ni_patient
 #: model:ni.encounter.class,name:ni_patient.class_IMP
@@ -2439,31 +2517,6 @@ msgstr "ผลแล็ป"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__lang
 msgid "Language"
 msgstr "ภาษา"
-
-#. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_admit____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_arrangement____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_courtesy____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_diet____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_discharge_disposition____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_discharge_status____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_discharge_wizard____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_location____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_participant____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_reason____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_location____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_location_type____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_participant_type____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient_archive_wizard____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient_state_reason____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line____last_update
-#: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request____last_update
-msgid "Last Modified on"
-msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__write_uid
@@ -2594,12 +2647,6 @@ msgstr "สถานที่ภายใน"
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_patient__education_level__2
 msgid "Lower Secondary"
 msgstr "มัธยมต้น"
-
-#. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__message_main_attachment_id
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__message_main_attachment_id
-msgid "Main Attachment"
-msgstr "ไฟล์แนบหลัก"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_location__patient_male_count
@@ -2851,6 +2898,7 @@ msgstr "บันทึกภายใน"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
+#: code:addons/ni_patient/models/ni_encounter_participant.py:0
 #, python-format
 msgid "Now"
 msgstr "ปัจจุบัน"
@@ -2943,7 +2991,10 @@ msgstr "เปิด"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_kanban
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_tree
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_tree
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_kanban
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_tree
 msgid "Open source"
 msgstr "เปิดต้นฉบับ"
 
@@ -3040,11 +3091,9 @@ msgstr "ประเภทการมีส่วนร่วม"
 #: code:addons/ni_patient/models/ni_encounter_participant.py:0
 #, python-format
 msgid ""
-"Participant end time (%s) must not be in the future or after the encounter "
-"have ended (%s) "
-msgstr ""
-"เวลาสิ้นสุดการมีส่วนร่วม (%s) "
-"ต้องไม่เป็นเวลาในอนาคตหรือหลังจากบริการสิ้นสุดแล้ว (%s)"
+"Participant end time (%(end)s) must not be in the future or after the "
+"encounter have ended (%(limit)s) "
+msgstr "เวลาสิ้นสุดการมีส่วนร่วม (%(end)s) ต้องไม่เป็นเวลาในอนาคตหรือหลังจากบริการสิ้นสุดแล้ว (%(limit)s)"
 
 #. module: ni_patient
 #. odoo-python
@@ -3136,7 +3185,7 @@ msgstr "ผู้รับบริการ"
 
 #. module: ni_patient
 #. odoo-javascript
-#: code:addons/ni_patient/static/src/views/archive_patient_hook.js:0
+#: code:addons/ni_patient/static/src/views/archive_patient_hook.esm.js:0
 #, python-format
 msgid "Patient Archive"
 msgstr "การเปลี่ยนสถานะเป็นเก็บถาวร"
@@ -3873,13 +3922,9 @@ msgstr "ตั้งแต่วันที่"
 msgid ""
 "Since date must not before the encounter start date\n"
 "\n"
-"\tEncounter Since: %s\n"
-"\t%s Since: %s"
-msgstr ""
-"วันเริ่มต้น(ตั้งแต่) ต้องไม่เกิดขึ้นก่อนวันที่เริ่มรับบริการ\n"
-"\n"
-"\tวันที่เริ่มรับบริการ: %s\n"
-"\t%sตั้งแต่: %s"
+"\tEncounter Since: %(encounter_start)s\n"
+"\t%(resource)s Since: %(start)s"
+msgstr "วันเริ่มต้น(ตั้งแต่) ต้องไม่เกิดขึ้นก่อนวันที่เริ่มรับบริการ\n\n	วันที่เริ่มรับบริการ: %(encounter_start)s\n	%(resource)sตั้งแต่: %(start)s"
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_patient__marital_status__single
@@ -3921,6 +3966,12 @@ msgid "Spouse Complete Name"
 msgstr "ชื่อ-นามสกุลคู่สมรส"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__starred_message_ids
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__starred_message_ids
+msgid "Starred Message"
+msgstr "ข้อความติดดาว"
+
+#. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 msgid "Start"
 msgstr "เริ่มรับบริการ"
@@ -3937,6 +3988,7 @@ msgstr "เริ่มรับบริการ"
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
+#: model_terms:ir.ui.view,arch_db:ni_patient.res_partner_view_form_address
 msgid "State"
 msgstr "จังหวัด"
 
@@ -3989,11 +4041,13 @@ msgstr "ที่อยู่"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
+#: model_terms:ir.ui.view,arch_db:ni_patient.res_partner_view_form_address
 msgid "Street 2..."
 msgstr "ที่อยู่บรรทัดที่ 2..."
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
+#: model_terms:ir.ui.view,arch_db:ni_patient.res_partner_view_form_address
 msgid "Street..."
 msgstr "ถนน..."
 
@@ -4096,7 +4150,9 @@ msgid ""
 "The Tax Identification Number. Values here will be validated based on the "
 "country format. You can use '/' to indicate that the partner is not subject "
 "to tax."
-msgstr "เลขประจำตัวผู้เสียภาษี ค่าที่ป้อนจะถูกตรวจสอบตามรูปแบบของประเทศ สามารถใช้ '/' เพื่อระบุว่าคู่ค้าไม่ต้องเสียภาษี"
+msgstr ""
+"เลขประจำตัวผู้เสียภาษี ค่าที่ป้อนจะถูกตรวจสอบตามรูปแบบของประเทศ สามารถใช้ "
+"'/' เพื่อระบุว่าคู่ค้าไม่ต้องเสียภาษี"
 
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__user_id
@@ -4193,14 +4249,18 @@ msgstr "ผู้ปฏิบัติงานหลักหรือผู้
 msgid ""
 "The registry number of the company. Use it if it is different from the Tax "
 "ID. It must be unique across all partners of a same country"
-msgstr "เลขทะเบียนของบริษัท ใช้เมื่อแตกต่างจากเลขประจำตัวผู้เสียภาษี ต้องไม่ซ้ำกันในบรรดาคู่ค้าทั้งหมดของประเทศเดียวกัน"
+msgstr ""
+"เลขทะเบียนของบริษัท ใช้เมื่อแตกต่างจากเลขประจำตัวผู้เสียภาษี "
+"ต้องไม่ซ้ำกันในบรรดาคู่ค้าทั้งหมดของประเทศเดียวกัน"
 
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__re_admission
 msgid ""
 "The type of hospital re-admission that has occurred (if any). If the value "
 "is absent, then this is not identified as a readmission"
-msgstr "ประเภทของการกลับเข้ารับการรักษาซ้ำในโรงพยาบาลที่เกิดขึ้น (ถ้ามี) หากไม่มีค่านี้ แสดงว่าไม่ถูกระบุว่าเป็นการกลับเข้ารับการรักษาซ้ำ"
+msgstr ""
+"ประเภทของการกลับเข้ารับการรักษาซ้ำในโรงพยาบาลที่เกิดขึ้น (ถ้ามี) "
+"หากไม่มีค่านี้ แสดงว่าไม่ถูกระบุว่าเป็นการกลับเข้ารับการรักษาซ้ำ"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.portal_my_patients
@@ -4231,7 +4291,9 @@ msgstr "รายชื่อนี้ถูกขึ้นทะเบียน
 msgid ""
 "This field is used to search on email address as the primary email field can"
 " contain more than strictly an email address."
-msgstr "ฟิลด์นี้ใช้สำหรับค้นหาที่อยู่อีเมล เนื่องจากฟิลด์อีเมลหลักอาจมีข้อมูลมากกว่าที่อยู่อีเมลเพียงอย่างเดียว"
+msgstr ""
+"ฟิลด์นี้ใช้สำหรับค้นหาที่อยู่อีเมล "
+"เนื่องจากฟิลด์อีเมลหลักอาจมีข้อมูลมากกว่าที่อยู่อีเมลเพียงอย่างเดียว"
 
 #. module: ni_patient
 #: model:ir.actions.act_window,name:ni_patient.ni_workflow_line_action
@@ -4301,12 +4363,6 @@ msgstr "ต้องระบุข้อมูลหน่วยงานนำ
 #: model:ni.encounter.admit,name:ni_patient.admit_hosp_trans
 msgid "Transferred from other hospital"
 msgstr "ส่งตัวจากสถานดูแลอื่น"
-
-#. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__translated_display_name
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__translated_display_name
-msgid "Translated Display Name"
-msgstr "ชื่อที่แสดงที่แปลแล้ว"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__priority
@@ -4408,7 +4464,9 @@ msgstr "ใช้บาร์โค้ดเพื่อระบุตัวต
 msgid ""
 "Use local midnight (encounter company's timezone, falling back to UTC) as "
 "the day boundary, instead of a fixed elapsed duration"
-msgstr "ใช้เที่ยงคืนตามเขตเวลาท้องถิ่น (เขตเวลาของบริษัทของการเข้ารับบริการ หรือ UTC หากไม่ได้กำหนด) เป็นขอบเขตของวัน แทนที่จะใช้ระยะเวลาคงที่"
+msgstr ""
+"ใช้เที่ยงคืนตามเขตเวลาท้องถิ่น (เขตเวลาของบริษัทของการเข้ารับบริการ หรือ UTC"
+" หากไม่ได้กำหนด) เป็นขอบเขตของวัน แทนที่จะใช้ระยะเวลาคงที่"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_participant__user_id
@@ -4618,6 +4676,7 @@ msgstr ""
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_patient_view_form
+#: model_terms:ir.ui.view,arch_db:ni_patient.res_partner_view_form_address
 msgid "ZIP"
 msgstr "รหัสไปรษณีย์"
 
@@ -4736,26 +4795,6 @@ msgstr "ปี"
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_kanban
 msgid "{{ record.priority.value }}"
 msgstr ""
-
-#. module: ni_patient
-#. odoo-python
-#: code:addons/ni_patient/models/ni_encounter_participant.py:0
-#, python-format
-msgid ""
-"{} already involved for given time! {}\n"
-"\n"
-"\t{} ({} → {})"
-msgstr ""
-"{} มีส่วนร่วมในช่วงเวลาที่ระบบอยู่แล้ว! {}\n"
-"\n"
-"\t{} ({} → {})"
-
-#. module: ni_patient
-#. odoo-python
-#: code:addons/ni_patient/models/ni_patient.py:0
-#, python-format
-msgid "{} years old"
-msgstr "{} ปี"
 
 #. module: ni_patient
 #. odoo-python
