@@ -17,7 +17,7 @@ class Survey(models.Model):
     def action_survey_subject_wizard(self):
         self.ensure_one()
 
-        ctx = dict(self._context)
+        ctx = dict(self.env.context)
         ctx.update({"default_survey_id": self.id})
         action = self.env.ref("survey_subject.survey_subject_action").sudo().read()[0]
         return dict(action, context=ctx)
