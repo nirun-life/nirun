@@ -9,8 +9,8 @@ class TestPartnerGender(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.mister = cls.env.ref("base.res_partner_title_mister")
-        cls.madam = cls.env.ref("base.res_partner_title_madam")
+        cls.mister = cls.env.ref("partner_title.res_partner_title_mister")
+        cls.madam = cls.env.ref("partner_title.res_partner_title_madam")
 
     def test_title_data(self):
         self.assertEqual(self.mister.gender, "male")
@@ -19,9 +19,9 @@ class TestPartnerGender(TransactionCase):
     def test_onchange_title_sets_gender(self):
         with Form(self.env["res.partner"]) as form:
             form.name = "Gender Test"
-            form.title = self.madam
+            form.title_id = self.madam
             self.assertEqual(form.gender, "female")
-            form.title = self.mister
+            form.title_id = self.mister
             self.assertEqual(form.gender, "male")
 
     def test_onchange_title_without_gender_keeps_gender(self):
@@ -29,12 +29,12 @@ class TestPartnerGender(TransactionCase):
         with Form(self.env["res.partner"]) as form:
             form.name = "Gender Test"
             form.gender = "other"
-            form.title = title
+            form.title_id = title
             self.assertEqual(form.gender, "other")
 
     def test_post_init_hook_backfills_gender(self):
         partner = self.env["res.partner"].create(
-            {"name": "Legacy Contact", "title": self.mister.id, "active": False}
+            {"name": "Legacy Contact", "title_id": self.mister.id, "active": False}
         )
         self.assertFalse(partner.gender)
         post_init_hook(self.env)
