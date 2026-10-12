@@ -13,7 +13,10 @@
         <field name="sequence" eval="99" />
         <field name="code">action = records.action_entered_in_error()</field>
     </record>
-    <record id="ni_encounter_action_server_encounter_location" model="ir.actions.server">
+    <record
+        id="ni_encounter_action_server_encounter_location"
+        model="ir.actions.server"
+    >
         <field name="name">Location History</field>
         <field name="sequence" eval="1" />
         <field name="model_id" ref="model_ni_encounter" />
@@ -22,7 +25,10 @@
         <field name="state">code</field>
         <field name="code">action = records.action_encounter_location()</field>
     </record>
-    <record id="ni_encounter_action_server_encounter_participant" model="ir.actions.server">
+    <record
+        id="ni_encounter_action_server_encounter_participant"
+        model="ir.actions.server"
+    >
         <field name="name">Participant History</field>
         <field name="sequence" eval="0" />
         <field name="model_id" ref="model_ni_encounter" />
@@ -63,7 +69,10 @@
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('patient_id', 'ilike', self)]" />
+                <field
+                    name="name"
+                    filter_domain="['|', ('name', 'ilike', self), ('patient_id', 'ilike', self)]"
+                />
                 <field name="patient_id" />
                 <field name="location_id" />
                 <separator />
@@ -76,11 +85,31 @@
                     domain="[('state', 'in', ['draft', 'planned', 'in-progress'])]"
                 />
                 <separator />
-                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
-                <filter name="planned" string="Planned" domain="[('state', '=', 'planned')]" />
-                <filter name="in_progress" string="In-Progress" domain="[('state', '=', 'in-progress')]" />
-                <filter name="discharged" string="Discharged" domain="[('state', '=', 'finished')]" />
-                <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]" />
+                <filter
+                    name="draft"
+                    string="Draft"
+                    domain="[('state', '=', 'draft')]"
+                />
+                <filter
+                    name="planned"
+                    string="Planned"
+                    domain="[('state', '=', 'planned')]"
+                />
+                <filter
+                    name="in_progress"
+                    string="In-Progress"
+                    domain="[('state', '=', 'in-progress')]"
+                />
+                <filter
+                    name="discharged"
+                    string="Discharged"
+                    domain="[('state', '=', 'finished')]"
+                />
+                <filter
+                    name="cancelled"
+                    string="Cancelled"
+                    domain="[('state', '=', 'cancelled')]"
+                />
                 <filter
                     name="entered-in-error"
                     string="Error Entry"
@@ -89,10 +118,26 @@
                 />
                 <separator />
                 <group name="priority" groups="base.group_no_one">
-                    <filter name="stat" string="Priority: STAT" domain="[('priority', '=', 'stat')]" />
-                    <filter name="asap" string="Priority: ASAP" domain="[('priority', '=', 'asap')]" />
-                    <filter name="urgent" string="Priority: Urgent" domain="[('priority', '=', 'urgent')]" />
-                    <filter name="routine" string="Priority: Routine" domain="[('priority', '=', 'routine')]" />
+                    <filter
+                        name="stat"
+                        string="Priority: STAT"
+                        domain="[('priority', '=', 'stat')]"
+                    />
+                    <filter
+                        name="asap"
+                        string="Priority: ASAP"
+                        domain="[('priority', '=', 'asap')]"
+                    />
+                    <filter
+                        name="urgent"
+                        string="Priority: Urgent"
+                        domain="[('priority', '=', 'urgent')]"
+                    />
+                    <filter
+                        name="routine"
+                        string="Priority: Routine"
+                        domain="[('priority', '=', 'routine')]"
+                    />
                 </group>
                 <group name="Group by">
                     <filter name="Priority" context="{'group_by': 'priority'}" />
@@ -105,12 +150,25 @@
                     <filter name="Until" context="{'group_by': 'period_end'}" />
                 </group>
                 <searchpanel>
-                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" />
+                    <field
+                        name="company_id"
+                        groups="base.group_multi_company"
+                        icon="fa-building"
+                        enable_counters="1"
+                    />
                     <field name="class_id" enable_counters="1" />
                     <field name="priority" icon="fa-flag" />
-                    <field name="location_id" icon="fa-map-marker" enable_counters="1" />
+                    <field
+                        name="location_id"
+                        icon="fa-map-marker"
+                        enable_counters="1"
+                    />
                     <field name="gender" icon="fa-venus-mars" enable_counters="1" />
-                    <field name="age_range_id" icon="fa-birthday-cake" enable_counters="1" />
+                    <field
+                        name="age_range_id"
+                        icon="fa-birthday-cake"
+                        enable_counters="1"
+                    />
                     <field name="state" enable_counters="1" icon="fa-circle" />
                 </searchpanel>
             </search>
@@ -126,7 +184,11 @@
                 decoration-info="state in ['draft','planned']"
                 decoration-muted="state in ['cancelled', 'entered-in-error', 'finished']"
             >
-                <field name="company_id" groups="base.group_multi_company" optional="hide" />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="hide"
+                />
                 <field name="name" />
                 <field name="patient_id" widget="many2one_avatar" />
                 <field
@@ -175,7 +237,13 @@
         <field name="name">ni.encounter.view.calendar</field>
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
-            <calendar color="class_id" date_start="period_start" hide_time="true" mode="month" quick_add="False">
+            <calendar
+                color="class_id"
+                date_start="period_start"
+                hide_time="true"
+                mode="month"
+                quick_add="False"
+            >
                 <field name="patient_id" />
                 <field name="class_id" />
                 <field name="state" />
@@ -281,7 +349,11 @@
                         confirm="Are you sure to stop the participation of this encounter?"
                         attrs="{'invisible': ['|', ('show_participant', '=', False), '|', ('participate', '=', False), ('state', 'not in', ['in-progress', 'draft'])]}"
                     />
-                    <field name="state" statusbar_visible="in-progress,finished" widget="statusbar" />
+                    <field
+                        name="state"
+                        statusbar_visible="in-progress,finished"
+                        widget="statusbar"
+                    />
                 </header>
                 <sheet>
                     <div
@@ -330,9 +402,18 @@
                             <field name="identifier" placeholder="AN. 0000X" />
                         </h1>
                     </div>
-                    <div name="company" class="mb-4" attrs="{'invisible': [('id', '=', False)]}">
+                    <div
+                        name="company"
+                        class="mb-4"
+                        attrs="{'invisible': [('id', '=', False)]}"
+                    >
                         <i class="fa fa-building text-primary" title="Company" />
-                        <field name="company_id" class="mx-2" placeholder="Company" options="{'no_open': True}" />
+                        <field
+                            name="company_id"
+                            class="mx-2"
+                            placeholder="Company"
+                            options="{'no_open': True}"
+                        />
                     </div>
                     <group>
                         <group>
@@ -368,7 +449,10 @@
                                 class="o_row"
                                 attrs="{'invisible': ['|', ('participant_id', '=', False), ('show_participant', '=', False)]}"
                             >
-                                <field name="participant_id" context="{'default_encounter_id': id}" />
+                                <field
+                                    name="participant_id"
+                                    context="{'default_encounter_id': id}"
+                                />
                                 <label for="participant_permit_no" />
                                 <field name="participant_permit_no" />
                             </div>
@@ -381,7 +465,11 @@
                             <field name="duration" />
                         </group>
                         <group>
-                            <field name="priority" widget="radio" options="{'horizontal': True}" />
+                            <field
+                                name="priority"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                            />
                         </group>
                     </group>
                     <notebook attrs="{'invisible': [('id', '=', False)]}">
@@ -416,7 +504,10 @@
                                     />
                                     <field name="pre_admission_identifier" />
                                 </group>
-                                <group string="Special" attrs="{'invisible': [('show_special', '=', False)]}">
+                                <group
+                                    string="Special"
+                                    attrs="{'invisible': [('show_special', '=', False)]}"
+                                >
                                     <field
                                         name="arrangement_ids"
                                         options="{'color_field': 'color', 'no_edit': True}"
@@ -434,14 +525,26 @@
                                     />
                                 </group>
                             </group>
-                            <group string="Discharge" attrs="{'invisible': [('state', '!=', 'finished')]}">
+                            <group
+                                string="Discharge"
+                                attrs="{'invisible': [('state', '!=', 'finished')]}"
+                            >
                                 <group>
-                                    <field name="discharge_status_id" options="{'no_open': True}" />
-                                    <field name="discharge_disposition_id" options="{'no_open': True}" />
+                                    <field
+                                        name="discharge_status_id"
+                                        options="{'no_open': True}"
+                                    />
+                                    <field
+                                        name="discharge_disposition_id"
+                                        options="{'no_open': True}"
+                                    />
                                     <field name="discharge_partner_id" />
                                 </group>
                                 <div>
-                                    <field name="discharge_note" placeholder="Discharging note..." />
+                                    <field
+                                        name="discharge_note"
+                                        placeholder="Discharging note..."
+                                    />
                                 </div>
                             </group>
                         </page>
@@ -451,9 +554,16 @@
                             icon="fa-star-half-o"
                             attrs="{'invisible': [('show_chief_complaint', '=', False)]}"
                         >
-                            <field name="chief_complaint" placeholder="Chief Complaint" />
+                            <field
+                                name="chief_complaint"
+                                placeholder="Chief Complaint"
+                            />
                             <div class="my-1">
-                                <i class="fa fa-tags" aria-hidden="true" title="Reasons" />
+                                <i
+                                    class="fa fa-tags"
+                                    aria-hidden="true"
+                                    title="Reasons"
+                                />
                                 <field
                                     name="reason_ids"
                                     class="mx-3"
@@ -469,7 +579,10 @@
                                     options="{'no_open': True}"
                                     widget="many2one_avatar_user"
                                 />
-                                <field name="chief_complaint_date" class="text-muted mx-2" />
+                                <field
+                                    name="chief_complaint_date"
+                                    class="text-muted mx-2"
+                                />
                             </div>
                         </page>
                         <page
@@ -478,7 +591,10 @@
                             icon="fa-hourglass-start"
                             attrs="{'invisible': [('show_history_of_present_illness', '=', False)]}"
                         >
-                            <field name="history_of_present_illness" placeholder="History of Present Illness" />
+                            <field
+                                name="history_of_present_illness"
+                                placeholder="History of Present Illness"
+                            />
                             <div class="my-2">
                                 <field
                                     name="history_of_present_illness_uid"
@@ -486,7 +602,10 @@
                                     options="{'no_open': True}"
                                     widget="many2one_avatar_user"
                                 />
-                                <field name="history_of_present_illness_date" class="text-muted mx-2" />
+                                <field
+                                    name="history_of_present_illness_date"
+                                    class="text-muted mx-2"
+                                />
                             </div>
                         </page>
                         <page
@@ -496,7 +615,10 @@
                             attrs="{'invisible': [('show_history', '=', False)]}"
                         >
                             <separator string="Past Medical History" />
-                            <field name="past_medical_history" placeholder="Past Medical History" />
+                            <field
+                                name="past_medical_history"
+                                placeholder="Past Medical History"
+                            />
                             <div class="my-2">
                                 <field
                                     name="past_medical_history_uid"
@@ -504,7 +626,10 @@
                                     options="{'no_open': True}"
                                     widget="many2one_avatar_user"
                                 />
-                                <field name="past_medical_history_date" class="text-muted mx-2" />
+                                <field
+                                    name="past_medical_history_date"
+                                    class="text-muted mx-2"
+                                />
                             </div>
                         </page>
                         <page
@@ -513,7 +638,10 @@
                             icon="fa-stethoscope"
                             attrs="{'invisible': [('show_review_of_systems', '=', False)]}"
                         >
-                            <field name="review_of_systems" placeholder="Review of Systems" />
+                            <field
+                                name="review_of_systems"
+                                placeholder="Review of Systems"
+                            />
                             <div class="my-2">
                                 <field
                                     name="review_of_systems_uid"
@@ -521,7 +649,10 @@
                                     options="{'no_open': True}"
                                     widget="many2one_avatar_user"
                                 />
-                                <field name="review_of_systems_date" class="text-muted mx-2" />
+                                <field
+                                    name="review_of_systems_date"
+                                    class="text-muted mx-2"
+                                />
                             </div>
                         </page>
                         <page
@@ -530,7 +661,10 @@
                             icon="fa-gavel"
                             attrs="{'invisible': [('show_physical_exam', '=', False)]}"
                         >
-                            <field name="physical_exam" placeholder="Physical Examination" />
+                            <field
+                                name="physical_exam"
+                                placeholder="Physical Examination"
+                            />
                             <div class="my-2">
                                 <field
                                     name="physical_exam_uid"
@@ -538,7 +672,10 @@
                                     options="{'no_open': True}"
                                     widget="many2one_avatar_user"
                                 />
-                                <field name="physical_exam_date" class="text-muted mx-2" />
+                                <field
+                                    name="physical_exam_date"
+                                    class="text-muted mx-2"
+                                />
                             </div>
                         </page>
                         <page
@@ -649,9 +786,16 @@
                                 </a>
                                 <div class="dropdown-menu" role="menu">
                                     <t t-if="widget.editable">
-                                        <a class="dropdown-item" role="menuitem" type="edit">Edit</a>
+                                        <a
+                                            class="dropdown-item"
+                                            role="menuitem"
+                                            type="edit"
+                                        >Edit</a>
                                     </t>
-                                    <ul class="oe_kanban_colorpicker" data-field="color" />
+                                    <ul
+                                        class="oe_kanban_colorpicker"
+                                        data-field="color"
+                                    />
                                 </div>
                             </div>
                             <div t-attf-class="oe_kanban_content">
@@ -731,7 +875,12 @@
         <field name="name">ni.encounter.view.tree</field>
         <field name="model">ni.encounter</field>
         <field name="arch" type="xml">
-            <tree create="0" decoration-muted="state in ['cancelled', 'entered-in-error']" edit="0" duplicate="0">
+            <tree
+                create="0"
+                decoration-muted="state in ['cancelled', 'entered-in-error']"
+                edit="0"
+                duplicate="0"
+            >
                 <field name="name" />
                 <field name="patient_id" widget="many2one_avatar" />
                 <field name="class_id" optional="show" />
