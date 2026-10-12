@@ -46,11 +46,7 @@ class PeriodMixin(models.AbstractModel):
         inverse="_inverse_period_end_date",
     )
     period_end_date_calendar = fields.Date(compute="_compute_period_end_date_calendar")
-    duration = fields.Char(
-        "Duration",
-        compute="_compute_duration",
-        default="",
-    )
+    duration = fields.Char(compute="_compute_duration", default="")
     duration_hours = fields.Float(
         "Duration (Hours)", compute="_compute_duration", readonly=False, default=0.0
     )
@@ -105,7 +101,6 @@ class PeriodMixin(models.AbstractModel):
                 dt = dt.replace(hour=0, tzinfo=None)
                 rec.period_end = dt
 
-    @api.onchange("period_start_date", "period_end_date")
     @api.depends("period_start_date", "period_end_date")
     def _compute_tense(self):
         today = fields.Date.today()
@@ -214,11 +209,12 @@ class PeriodMixin(models.AbstractModel):
                 continue
             if record.period_end_date < record.period_start_date:
                 raise ValidationError(
-                    _("(%s), End date (%s) should not set before start date (%s)")
-                    % (
-                        record._description,
-                        record.period_end_date,
-                        record.period_start_date,
+                    _(
+                        "(%(model)s), End date (%(end)s) should not set before "
+                        "start date (%(start)s)",
+                        model=record._description,
+                        end=record.period_end_date,
+                        start=record.period_start_date,
                     )
                 )
 
