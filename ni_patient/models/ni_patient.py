@@ -175,17 +175,19 @@ class Patient(models.Model):
     encounter_ids = fields.One2many(
         "ni.encounter", "patient_id", "Encounter(s)", readonly=True
     )
-    encounter_count = fields.Integer(compute="_compute_encounter", compute_sudo=True)
+    encounter_count = fields.Integer(
+        compute="_compute_encounter_count", compute_sudo=True
+    )
     encounter_id = fields.Many2one(
         "ni.encounter",
-        "Encounter No.",
+        "Current Encounter",
         compute="_compute_encounter",
         required=False,
         compute_sudo=True,
         store=True,
     )
     encounter_start = fields.Date(
-        compute="_compute_encounter",
+        compute="_compute_encounter_start",
         required=False,
         compute_sudo=True,
     )
@@ -246,12 +248,12 @@ class Patient(models.Model):
         (
             "identifier_uniq",
             "unique (company_id, identifier)",
-            _("Identifier must be unique !"),
+            "Identifier must be unique !",
         ),
         (
             "partner_uniq",
             "unique (company_id, partner_id)",
-            _("This contact have already registered as patient!"),
+            "This contact have already registered as patient!",
         ),
     ]
 
@@ -305,13 +307,11 @@ class Patient(models.Model):
         )
         for rec in self:
             enc_ids = enc.filtered(lambda en, rec=rec: en.patient_id.id == rec.id)
-            rec.encounter_count = len(enc_ids)
             latest_enc = enc_ids[0] if enc_ids else None
             if latest_enc and latest_enc.state in ["draft", "planned", "in-progress"]:
                 rec.update(
                     {
                         "encounter_id": latest_enc.id,
-                        "encounter_start": latest_enc.period_start,
                         "is_encountering": True,
                         "presence_state": latest_enc.state,
                     }
@@ -320,7 +320,6 @@ class Patient(models.Model):
                 rec.update(
                     {
                         "encounter_id": None,
-                        "encounter_start": None,
                         "is_encountering": False,
                         "presence_state": latest_enc.state,
                     }
@@ -329,13 +328,30 @@ class Patient(models.Model):
                 rec.update(
                     {
                         "encounter_id": None,
-                        "encounter_start": None,
                         "is_encountering": False,
                         "presence_state": "unknown",
                     }
                 )
             if rec.deceased:
                 rec.presence_state = "deceased"
+
+    @api.depends("encounter_ids", "encounter_ids.state")
+    def _compute_encounter_count(self):
+        enc = self.env["ni.encounter"].search(
+            [
+                ("patient_id", "in", self.ids),
+                ("state", "not in", ENCOUNTER_INACTIVE_STATE),
+            ]
+        )
+        for rec in self:
+            rec.encounter_count = len(
+                enc.filtered(lambda en, rec=rec: en.patient_id == rec)
+            )
+
+    @api.depends("encounter_id.period_start")
+    def _compute_encounter_start(self):
+        for rec in self:
+            rec.encounter_start = rec.encounter_id.period_start
 
     @api.onchange("country_id")
     def _onchange_country_id(self):
