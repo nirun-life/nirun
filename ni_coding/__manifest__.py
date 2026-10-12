@@ -3,7 +3,7 @@
 {
     "name": "Nirun - Coding",
     "summary": "Base module for clinical coding systems (ICD, SNOMED, LOINC)",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
