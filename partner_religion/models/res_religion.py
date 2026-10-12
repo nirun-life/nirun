@@ -2,6 +2,8 @@
 import random
 
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
+from odoo.osv import expression
 
 
 class Religion(models.Model):
@@ -9,6 +11,7 @@ class Religion(models.Model):
     _description = "Religions"
     _parent_store = True
     _order = "sequence"
+    _rec_names_search = ["name", "abbr"]
 
     _display_name_separator = ", "
 
@@ -31,7 +34,6 @@ class Religion(models.Model):
     parent_id = fields.Many2one("res.religion", string="Major", index=True)
     parent_path = fields.Char(
         index=True,
-        unaccent=False,
         readonly=True,
         groups="base.group_partner_manager",
     )
@@ -41,23 +43,17 @@ class Religion(models.Model):
     color = fields.Integer(default=lambda _: random.randint(0, 10))
     active = fields.Boolean(default=True)
     _sql_constraints = [
-        ("name_uniq", "unique (name)", _("Name of the religion must be unique !"))
+        ("name_uniq", "unique (name)", "Name of the religion must be unique !")
     ]
 
     @api.model
-    def _name_search(self, name, domain=None, operator="ilike", limit=None, order=None):
-        domain = list(domain or [])
-        if not (name == "" and operator == "ilike"):
-            if len(name.split()) > 1:
-                for n in name.split():
-                    domain.append(("name", operator, n))
-            else:
-                domain += [
-                    "|",
-                    ("name", operator, name),
-                    ("abbr", operator, name),
-                ]
-        return self._search(domain, limit=limit, order=order)
+    def _search_display_name(self, operator, value):
+        # A multi-word query must match every word of the name.
+        if operator in ("ilike", "like") and isinstance(value, str):
+            words = value.split()
+            if len(words) > 1:
+                return expression.AND([[("name", operator, word)] for word in words])
+        return super()._search_display_name(operator, value)
 
     @api.depends("name", "abbr", "parent_id.name")
     @api.depends_context("show_parent", "show_abbr", "only_abbr")
@@ -88,5 +84,5 @@ class Religion(models.Model):
 
     @api.constrains("parent_id")
     def _check_hierarchy(self):
-        if not self._check_recursion():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+        if self._has_cycle():
+            raise ValidationError(_("Error! You cannot create recursive data."))

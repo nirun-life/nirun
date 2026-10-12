@@ -14,9 +14,10 @@ Adds a religion master-data model and links contacts to it.
 
 - Seeds a starter religion hierarchy including Dharmic and Abrahamic groups plus child
   religions.
-- Religion management views: standalone action plus tree, form, and search views.
+- Religion management views: standalone action plus list, form, and search views.
 - Partner form: adds `religion_id` after `lang`.
-- Security: grants model access for `res.religion`.
+- Security: internal, portal and public users can read `res.religion`; contact managers
+  (`base.group_partner_manager`) have full access.
 
 ## Verification
 
@@ -29,8 +30,8 @@ Adds a religion master-data model and links contacts to it.
 
 ## Notes
 
-- Religion search supports both `name` and `abbr`; a multi-word query must match every
-  word in `name`.
+- Religion search supports both `name` and `abbr` (`_rec_names_search`);
+  `_search_display_name` makes a multi-word query match every word in `name`.
 - `display_name` is computed in `_compute_display_name`. The context keys `show_parent`,
   `show_abbr` and `only_abbr` change the format.
 - The hierarchy is protected against recursive parent relationships, and religion names
