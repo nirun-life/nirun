@@ -23,7 +23,9 @@ only the current frontend user or partner.
 - Survey-user-input tree/form: shows subject reference fields and provides grouped
   answer actions.
 - Frontend templates: adjust the completion page wording and result actions for
-  non-partner subjects, and show a saving spinner while the next page loads
+  non-partner subjects (the heading's "You scored" and the retake button are kept for
+  partner subjects only; other subjects get a line naming the subject and an
+  "Acknowledge Results" button), and show a saving spinner while the next page loads
   (`static/src/js/survey_form.esm.js` patches the survey form widget). Since 17.0 core
   shows no result graph on the completion page, so the module no longer hides it.
 - Security: grants survey users access to the wizard model.
