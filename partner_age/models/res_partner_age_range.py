@@ -32,8 +32,12 @@ class ResPartnerDateRange(models.Model):
         for rec in self:
             if rec.age_from >= rec.age_to:
                 raise ValidationError(
-                    _("%s is not a valid range (%s >= %s)")
-                    % (rec.name, rec.age_from, rec.age_to)
+                    _(
+                        "%(name)s is not a valid range (%(age_from)s >= %(age_to)s)",
+                        name=rec.name,
+                        age_from=rec.age_from,
+                        age_to=rec.age_to,
+                    )
                 )
             range_id = rec.search(
                 [
@@ -45,5 +49,9 @@ class ResPartnerDateRange(models.Model):
             )
             if range_id:
                 raise ValidationError(
-                    _("%s is overlapping with range %s") % (rec.name, range_id.name)
+                    _(
+                        "%(name)s is overlapping with range %(other)s",
+                        name=rec.name,
+                        other=range_id.name,
+                    )
                 )
