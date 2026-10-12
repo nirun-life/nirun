@@ -13,9 +13,7 @@ class PatientPortal(CustomerPortal):
                 request.env["ni.patient"].search_count(
                     [("user_ids", "=", request.env.user.id)]
                 )
-                if request.env["ni.patient"].check_access_rights(
-                    "read", raise_exception=False
-                )
+                if request.env["ni.patient"].has_access("read")
                 else 0
             )
 

@@ -6,7 +6,7 @@
     <record id="ni_encounter_class_action" model="ir.actions.act_window">
         <field name="name">Encounter Classification</field>
         <field name="res_model">ni.encounter.class</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <record id="ni_encounter_class_view_search" model="ir.ui.view">
         <field name="name">ni.encounter.class.view.search</field>
@@ -24,10 +24,10 @@
         </field>
     </record>
     <record id="ni_encounter_class_view_tree" model="ir.ui.view">
-        <field name="name">ni.encounter.class.view.tree</field>
+        <field name="name">ni.encounter.class.view.list</field>
         <field name="model">ni.encounter.class</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="code" optional="show" />
@@ -35,7 +35,7 @@
                 <field name="color" optional="hide" widget="color_picker" />
                 <field name="active" optional="hide" />
                 <field name="auto_close" optional="hide" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_encounter_class_view_form" model="ir.ui.view">

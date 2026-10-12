@@ -1,9 +1,11 @@
 #  Copyright (c) 2021-2023 NSTDA
 
 from dateutil.relativedelta import relativedelta
+from psycopg2 import IntegrityError
 
 from odoo import fields
 from odoo.tests import Form
+from odoo.tools import mute_logger
 
 from .common import TestPatientCommon
 
@@ -24,12 +26,8 @@ class TestPatient(TestPatientCommon):
 
         form2 = Form(self.patient_admin)
         form2.partner_id = madam_glenda
-        try:
+        with mute_logger("odoo.sql_db"), self.assertRaises(IntegrityError):
             form2.save()
-        except Exception:
-            self.assertEqual(True, True, "Raised UniqueViolation")
-        else:
-            self.assertEqual(True, False, "Not raise UniqueViolation")
 
     def test_age(self):
         form = Form(self.patient_admin)

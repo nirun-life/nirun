@@ -1,6 +1,7 @@
 #  Copyright (c) 2021-2023 NSTDA
 
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class Location(models.Model):
@@ -30,7 +31,7 @@ class Location(models.Model):
     parent_name = fields.Char(
         related="parent_id.name", readonly=True, string="Parent Location Name"
     )
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
     child_ids = fields.One2many(
         "ni.location",
         "parent_id",
@@ -44,15 +45,17 @@ class Location(models.Model):
     encounter_active_ids = fields.One2many(
         "ni.encounter",
         "location_id",
-        string="Encounter",
-        compute="_compute_patient_count",
+        string="Active Encounters",
+        compute="_compute_encounter_active",
         compute_sudo=True,
     )
     encounter_active_count = fields.Integer(
-        compute="_compute_patient_count", string="Encounter", compute_sudo=True
+        compute="_compute_encounter_active",
+        string="Active Encounter Count",
+        compute_sudo=True,
     )
     patient_ids = fields.One2many(
-        "ni.patient", compute="_compute_patient_count", compute_sudo=True
+        "ni.patient", compute="_compute_encounter_active", compute_sudo=True
     )
     patient_count = fields.Integer(
         "Total", compute="_compute_patient_count", store=True, compute_sudo=True
@@ -86,17 +89,26 @@ class Location(models.Model):
         return count
 
     @api.depends("encounter_ids", "encounter_ids.state")
-    def _compute_patient_count(self):
+    def _compute_encounter_active(self):
         for rec in self:
             rec.encounter_active_ids = rec._get_encounter_active_ids()
             rec.encounter_active_count = len(rec.encounter_active_ids)
             rec.patient_ids = rec.encounter_active_ids.mapped("patient_id")
-            rec.patient_count = len(rec.patient_ids)
+
+    @api.depends("encounter_ids", "encounter_ids.state")
+    def _compute_patient_count(self):
+        for rec in self:
+            patients = (
+                self.env["ni.encounter"]
+                .browse(rec._get_encounter_active_ids())
+                .mapped("patient_id")
+            )
+            rec.patient_count = len(patients)
             rec.patient_male_count = len(
-                rec.patient_ids.filtered(lambda p: p.gender == "male")
+                patients.filtered(lambda p: p.gender == "male")
             )
             rec.patient_female_count = len(
-                rec.patient_ids.filtered(lambda p: p.gender == "female")
+                patients.filtered(lambda p: p.gender == "female")
             )
 
     def _get_encounter_active_ids(self):
@@ -111,8 +123,8 @@ class Location(models.Model):
 
     @api.constrains("parent_id")
     def _check_hierarchy(self):
-        if not self._check_recursion():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+        if self._has_cycle():
+            raise ValidationError(_("Error! You cannot create recursive data."))
 
     @api.depends("parent_name", "parent_id", "name")
     def _compute_full_name(self):

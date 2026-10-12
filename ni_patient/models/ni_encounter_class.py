@@ -7,6 +7,7 @@ import pytz
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -33,10 +34,12 @@ class EncounterClassification(models.Model):
     company_id = fields.Many2one("res.company", required=False)
 
     parent_id = fields.Many2one("ni.encounter.class", string="Parent Class", index=True)
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
 
     sequence_id = fields.Many2one(
-        "ir.sequence", help="Fallback to default sequence when leave this field empty"
+        "ir.sequence",
+        string="Identifier Sequence",
+        help="Fallback to default sequence when leave this field empty",
     )
     report_title = fields.Char(default="Summary Report")
 
@@ -92,8 +95,8 @@ class EncounterClassification(models.Model):
 
     @api.constrains("parent_id")
     def _check_hierarchy(self):
-        if not self._check_recursion():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+        if self._has_cycle():
+            raise ValidationError(_("Error! You cannot create recursive data."))
 
     def _get_auto_close_reference_time(self, now, company):
         """Reference instant (UTC-naive, comparable to create_date) before
@@ -142,6 +145,4 @@ class EncounterClassification(models.Model):
                 to_close.action_close()
                 _logger.info("%s encounter: Closed  ids=%s", cls.name, to_close.ids)
             else:
-                _logger.info(
-                    "%s encounter: Not found any encounter to close" % cls.name
-                )
+                _logger.info("%s encounter: Not found any encounter to close", cls.name)

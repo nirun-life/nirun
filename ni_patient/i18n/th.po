@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 09:08+0000\n"
-"PO-Revision-Date: 2026-10-12 09:08+0000\n"
+"POT-Creation-Date: 2026-10-14 01:01+0000\n"
+"PO-Revision-Date: 2026-10-14 01:01+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -44,62 +44,53 @@ msgstr "บ่งชี้ว่าเป้าหมายของการม
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_patient.py:0
-#, python-format
 msgid "%(age)s years old"
 msgstr "%(age)s ปี"
 
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter_participant.py:0
-#, python-format
 msgid ""
 "%(employee)s already involved for given time! %(start)s\n"
 "\n"
 "\t%(type)s (%(other_start)s → %(other_end)s)"
-msgstr "%(employee)s มีส่วนร่วมในช่วงเวลาที่ระบบอยู่แล้ว! %(start)s\n\n	%(type)s (%(other_start)s → %(other_end)s)"
+msgstr ""
+"%(employee)s มีส่วนร่วมในช่วงเวลาที่ระบบอยู่แล้ว! %(start)s\n"
+"\n"
+"\t%(type)s (%(other_start)s → %(other_end)s)"
 
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_patient.py:0
-#, python-format
 msgid "%(name)s (%(age)sY)"
 msgstr "%(name)s (%(age)s ปี)"
 
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
-#, python-format
 msgid ""
 "%(patient)s was already registered as Encounter No. %(encounter)s "
 "(%(state)s)."
-msgstr "%(patient)s ถูกบันทึกว่าเข้ารับบริการแล้ว รหัสรับบริการ %(encounter)s (%(state)s)"
+msgstr ""
+"%(patient)s ถูกบันทึกว่าเข้ารับบริการแล้ว รหัสรับบริการ %(encounter)s "
+"(%(state)s)"
+
+#. module: ni_patient
+#. odoo-python
+#: code:addons/ni_patient/models/ni_encounter.py:0
+msgid "%s Years"
+msgstr "%s ปี"
 
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
 #: code:addons/ni_patient/models/ni_patient_res.py:0
-#, python-format
 msgid ""
 "%s is already deceased. Reference to this patient may cause database "
 "inconsistency!"
 msgstr ""
 "%s ถูกบันทึกว่าเสียชีวิตแล้ว "
 "การอ้างอิงถึงอาจทำให้เกิดความไม่สอดคล้องในฐานข้อมูล"
-
-#. module: ni_patient
-#: model:ir.model.fields,help:ni_patient.field_ni_encounter__type
-#: model:ir.model.fields,help:ni_patient.field_ni_patient__type
-msgid ""
-"- Contact: Use this to organize the contact details of employees of a given company (e.g. CEO, CFO, ...).\n"
-"- Invoice Address: Preferred address for all invoices. Selected by default when you invoice an order that belongs to this company.\n"
-"- Delivery Address: Preferred address for all deliveries. Selected by default when you deliver an order that belongs to this company.\n"
-"- Other: Other address for the company (e.g. subsidiary, ...)"
-msgstr ""
-"- ที่ติดต่อ: ใช้เพื่อจัดระเบียบรายละเอียดที่ติดต่อของพนักงานในบริษัท (เช่น CEO, CFO ฯลฯ)\n"
-"- ที่อยู่ใบแจ้งหนี้: ที่อยู่ที่ต้องการสำหรับใบแจ้งหนี้ทั้งหมด จะถูกเลือกโดยอัตโนมัติเมื่อออกใบแจ้งหนี้สำหรับคำสั่งซื้อของบริษัทนี้\n"
-"- ที่อยู่จัดส่ง: ที่อยู่ที่ต้องการสำหรับการจัดส่งทั้งหมด จะถูกเลือกโดยอัตโนมัติเมื่อจัดส่งคำสั่งซื้อของบริษัทนี้\n"
-"- ส่วนตัว: ที่อยู่ส่วนตัวจะมองเห็นได้เฉพาะผู้ใช้ที่ได้รับอนุญาตเท่านั้น และมีข้อมูลที่ละเอียดอ่อน (ที่อยู่บ้านพนักงาน ฯลฯ)\n"
-"- อื่นๆ: ที่อยู่อื่นของบริษัท (เช่น บริษัทในเครือ ฯลฯ)"
 
 #. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
@@ -594,6 +585,16 @@ msgid "Active"
 msgstr "เปิดใช้งาน"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_location__encounter_active_count
+msgid "Active Encounter Count"
+msgstr "จำนวนรับบริการปัจจุบัน"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_location__encounter_active_ids
+msgid "Active Encounters"
+msgstr "รายการรับบริการปัจจุบัน"
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__active_lang_count
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__active_lang_count
 msgid "Active Lang Count"
@@ -1065,7 +1066,6 @@ msgstr "เลือกช่องนี้หากผู้ติดต่อ
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__chief_complaint
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_chief_complaint
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__chief_complaint
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 #: model_terms:ir.ui.view,arch_db:ni_patient.portal_my_patient
@@ -1183,6 +1183,12 @@ msgstr "บริษัท"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__company_registry
 msgid "Company ID"
 msgstr "รหัสบริษัท"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__company_registry_label
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__company_registry_label
+msgid "Company ID Label"
+msgstr "ป้ายรหัสบริษัท"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__company_name
@@ -1348,6 +1354,17 @@ msgid "Created on"
 msgstr "สร้างเมื่อ"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__encounter_id
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__encounter_id
+msgid "Current Encounter"
+msgstr "รหัสรับบริการปัจจุบัน"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__participant_id
+msgid "Current Participant"
+msgstr "ผู้ดูแลปัจจุบัน"
+
+#. module: ni_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.portal_my_patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.portal_my_patient_encounter
 msgid "Current stage of this task"
@@ -1364,8 +1381,6 @@ msgid "Danger"
 msgstr "อันตราย"
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__date
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__date
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
@@ -1411,21 +1426,18 @@ msgstr "วันที่เสียชีวิต"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/wizard/ni_encounter_discharge_wizard.py:0
-#, python-format
 msgid "Decease date should not be in the future"
 msgstr "วันที่เสียชีวิตไม่สามารถเป็นวันในอนาคตได้"
 
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/wizard/ni_encounter_discharge_wizard.py:0
-#, python-format
 msgid "Decease date should not be null"
 msgstr "กรุณาระบุวันเสียชีวิต"
 
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/wizard/ni_encounter_discharge_wizard.py:0
-#, python-format
 msgid "Decease date should not before encounter start"
 msgstr "วันเสียชีวิตไม่สามารถเป็นวันก่อนวันเข้ารับบริการได้"
 
@@ -1542,14 +1554,12 @@ msgstr "สถานะเมื่อจำหน่าย"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/wizard/ni_encounter_discharge_wizard.py:0
-#, python-format
 msgid "Discharge date should not be in the future"
 msgstr "วันที่จำหน่ายไม่สามารถเป็นวันในอนาคตได้"
 
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/wizard/ni_encounter_discharge_wizard.py:0
-#, python-format
 msgid "Discharge date should not before encounter start"
 msgstr "วันที่จำหน่ายไม่สามารถเป็นวันก่อนเข้ารับบริการได้"
 
@@ -1629,11 +1639,6 @@ msgstr "เอกสาร"
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_search
 msgid "Draft"
 msgstr "ร่าง"
-
-#. module: ni_patient
-#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_kanban
-msgid "Dropdown menu"
-msgstr "เมนูแบบเลื่อนลง"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__duration
@@ -1753,8 +1758,6 @@ msgstr "จำนวนบุคลากร"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_location__encounter_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_participant__encounter_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_reason__encounter_ids
-#: model:ir.model.fields,field_description:ni_patient.field_ni_location__encounter_active_count
-#: model:ir.model.fields,field_description:ni_patient.field_ni_location__encounter_active_ids
 #: model:ir.model.fields,field_description:ni_patient.field_ni_location__encounter_ids
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_line__encounter_id
 #: model:ir.ui.menu,name:ni_patient.encounter_menu_root
@@ -1785,10 +1788,12 @@ msgid "Encounter Count"
 msgstr "การรับบริการ"
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__encounter_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__identifier
+msgid "Encounter Identifier"
+msgstr "เลขที่รับบริการ"
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__name
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__encounter_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_res__encounter_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow__encounter_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_event__encounter_id
@@ -1796,6 +1801,7 @@ msgstr "การรับบริการ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_mixin__encounter_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__encounter_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request_mixin__encounter_id
+#: model_terms:ir.ui.view,arch_db:ni_patient.ni_encounter_view_form
 #: model_terms:ir.ui.view,arch_db:ni_patient.portal_my_patient
 msgid "Encounter No."
 msgstr "รหัสรับบริการ"
@@ -1860,7 +1866,6 @@ msgstr "ข้อมูลผิดพลาด"
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter_class.py:0
 #: code:addons/ni_patient/models/ni_location.py:0
-#, python-format
 msgid "Error! You cannot create recursive data."
 msgstr "ข้อผิดพลาด! ไม่สามารถสร้างข้อมูลที่อ้างอิงถึงตัวเองแบบวนซ้ำได้"
 
@@ -2231,10 +2236,12 @@ msgid "Identifier"
 msgstr "เลขที่หน่วยบริการ"
 
 #. module: ni_patient
-#. odoo-python
-#: code:addons/ni_patient/models/ni_patient.py:0
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__sequence_id
+msgid "Identifier Sequence"
+msgstr "ลำดับ"
+
+#. module: ni_patient
 #: model:ir.model.constraint,message:ni_patient.constraint_ni_patient_identifier_uniq
-#, python-format
 msgid "Identifier must be unique !"
 msgstr "Identifier ต้องไม่ซ้ำกัน!"
 
@@ -2330,14 +2337,12 @@ msgstr "รับบริการ"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
-#, python-format
 msgid "Inconsistency between discharge status and disposition"
 msgstr "สถานะการจำหน่ายและการจัดการหลังจำหน่ายไม่สอดคล้องกัน"
 
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_patient_res.py:0
-#, python-format
 msgid "Inconsistent patient and encounter references"
 msgstr "ข้อมูลอ้างอิงระหว่างผู้รับบริการและข้อมูลรับบริการไม่สอดคล้องกัน"
 
@@ -2429,7 +2434,6 @@ msgstr "ล่ามแปลภาษา"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
-#, python-format
 msgid "Invalid State!, Please contact your system administrator"
 msgstr "สถานะข้อมูลไม่ถูกต้อง กรุณาติดต่อผู้ดูแลระบบของคุณ"
 
@@ -2482,6 +2486,14 @@ msgstr "ถูกแทนที่"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__is_company
 msgid "Is a Company"
 msgstr "บริษัท"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__patient
+#: model:ir.model.fields,field_description:ni_patient.field_res_partner__patient
+#: model:ir.model.fields,field_description:ni_patient.field_res_users__patient
+msgid "Is a Patient"
+msgstr "ผู้รับบริการ"
 
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__is_admission
@@ -2592,7 +2604,6 @@ msgstr "ลิงก์"
 #. module: ni_patient
 #: model:ir.actions.act_window,name:ni_patient.location_action
 #: model:ir.model,name:ni_patient.model_ni_location
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__location_history_count
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__location_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_location__location_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_location__full_name
@@ -2611,6 +2622,11 @@ msgstr "สถานที่"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__location_history_ids
 msgid "Location History"
 msgstr "ประวัติการย้ายอาคาร"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__location_history_count
+msgid "Location Moves"
+msgstr "จำนวนการย้ายสถานที่"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_location__name
@@ -2729,7 +2745,6 @@ msgstr "ชื่อ-นามสกุลมารดา"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
-#, python-format
 msgid "Must be in-progress state"
 msgstr "ต้องอยู่ในสถานะกำลังรักษา"
 
@@ -2823,7 +2838,6 @@ msgstr "ไม่พบผู้เสียชีวิต"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/wizard/ni_patient_archive_wizard.py:0
-#, python-format
 msgid "No patient selected."
 msgstr "ไม่ได้เลือกผู้รับบริการ"
 
@@ -2899,7 +2913,6 @@ msgstr "บันทึกภายใน"
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
 #: code:addons/ni_patient/models/ni_encounter_participant.py:0
-#, python-format
 msgid "Now"
 msgstr "ปัจจุบัน"
 
@@ -3056,9 +3069,7 @@ msgid "Part of"
 msgstr "เป็นส่วนหนึ่งของ"
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__participant_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__participant_ids
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_participant
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__participant
 msgid "Participant"
 msgstr "ผู้ดูแล"
@@ -3089,19 +3100,16 @@ msgstr "ประเภทการมีส่วนร่วม"
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter_location.py:0
 #: code:addons/ni_patient/models/ni_encounter_participant.py:0
-#, python-format
 msgid ""
 "Participant end time (%(end)s) must not be in the future or after the "
 "encounter have ended (%(limit)s) "
-msgstr "เวลาสิ้นสุดการมีส่วนร่วม (%(end)s) ต้องไม่เป็นเวลาในอนาคตหรือหลังจากบริการสิ้นสุดแล้ว (%(limit)s)"
+msgstr ""
+"เวลาสิ้นสุดการมีส่วนร่วม (%(end)s) "
+"ต้องไม่เป็นเวลาในอนาคตหรือหลังจากบริการสิ้นสุดแล้ว (%(limit)s)"
 
 #. module: ni_patient
-#. odoo-python
-#: code:addons/ni_patient/models/ni_encounter_location.py:0
-#: code:addons/ni_patient/models/ni_encounter_participant.py:0
 #: model:ir.model.constraint,message:ni_patient.constraint_ni_encounter_location_period_start_end_check
 #: model:ir.model.constraint,message:ni_patient.constraint_ni_encounter_participant_period_start_end_check
-#, python-format
 msgid "Participant end time must be after start time"
 msgstr "เวลาสิ้นสุดการมีส่วนร่วมต้องเกิดหลังเวลาเริ่ม"
 
@@ -3160,11 +3168,9 @@ msgstr "ผู้บันทึกสภาวะสุขภาพ"
 
 #. module: ni_patient
 #: model:ir.model,name:ni_patient.model_ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_discharge_wizard__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_location__patient_ids
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_archive_wizard__patient_ids
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient_res__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow__patient_id
@@ -3174,8 +3180,6 @@ msgstr "ผู้บันทึกสภาวะสุขภาพ"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_mixin__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request__patient_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_workflow_request_mixin__patient_id
-#: model:ir.model.fields,field_description:ni_patient.field_res_partner__patient
-#: model:ir.model.fields,field_description:ni_patient.field_res_users__patient
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_event_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_line_view_search
 #: model_terms:ir.ui.view,arch_db:ni_patient.ni_workflow_request_view_search
@@ -3186,7 +3190,6 @@ msgstr "ผู้รับบริการ"
 #. module: ni_patient
 #. odoo-javascript
 #: code:addons/ni_patient/static/src/views/archive_patient_hook.esm.js:0
-#, python-format
 msgid "Patient Archive"
 msgstr "การเปลี่ยนสถานะเป็นเก็บถาวร"
 
@@ -3728,7 +3731,6 @@ msgstr "แยกกันอยู่"
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_admit__sequence
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_arrangement__sequence
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__sequence
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_class__sequence_id
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_courtesy__sequence
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_diet__sequence
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_discharge_disposition__sequence
@@ -3771,6 +3773,16 @@ msgstr "พักระยะสั้น"
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_patient__education_level__5
 msgid "Short-cycle Tertiary"
 msgstr "อนุปริญญา"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_chief_complaint
+msgid "Show Chief Complaint"
+msgstr "แสดงอาการสำคัญ"
+
+#. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__show_participant
+msgid "Show Participant"
+msgstr "แสดงผู้ดูแล"
 
 #. module: ni_patient
 #: model:ir.model.fields,help:ni_patient.field_ni_encounter__show_careplan
@@ -3869,34 +3881,10 @@ msgid "Show/Hide Vital Signs"
 msgstr "แสดง/ซ่อนสัญญาณชีพ"
 
 #. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__signup_expiration
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__signup_expiration
-msgid "Signup Expiration"
-msgstr "วันหมดอายุลิงก์สมัครสมาชิก"
-
-#. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__signup_token
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__signup_token
-msgid "Signup Token"
-msgstr "โทเคนสมัครสมาชิก"
-
-#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__signup_type
 #: model:ir.model.fields,field_description:ni_patient.field_ni_patient__signup_type
 msgid "Signup Token Type"
 msgstr "ประเภทโทเคนสมัครสมาชิก"
-
-#. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__signup_valid
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__signup_valid
-msgid "Signup Token is Valid"
-msgstr "โทเคนสมัครสมาชิกยังใช้งานได้"
-
-#. module: ni_patient
-#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__signup_url
-#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__signup_url
-msgid "Signup URL"
-msgstr "URL สมัครสมาชิก"
 
 #. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__period_start
@@ -3918,13 +3906,16 @@ msgstr "ตั้งแต่วันที่"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_patient_res.py:0
-#, python-format
 msgid ""
 "Since date must not before the encounter start date\n"
 "\n"
 "\tEncounter Since: %(encounter_start)s\n"
 "\t%(resource)s Since: %(start)s"
-msgstr "วันเริ่มต้น(ตั้งแต่) ต้องไม่เกิดขึ้นก่อนวันที่เริ่มรับบริการ\n\n	วันที่เริ่มรับบริการ: %(encounter_start)s\n	%(resource)sตั้งแต่: %(start)s"
+msgstr ""
+"วันเริ่มต้น(ตั้งแต่) ต้องไม่เกิดขึ้นก่อนวันที่เริ่มรับบริการ\n"
+"\n"
+"\tวันที่เริ่มรับบริการ: %(encounter_start)s\n"
+"\t%(resource)sตั้งแต่: %(start)s"
 
 #. module: ni_patient
 #: model:ir.model.fields.selection,name:ni_patient.selection__ni_patient__marital_status__single
@@ -4121,6 +4112,12 @@ msgid "Tax ID"
 msgstr "เลขประจำตัวผู้เสียภาษี"
 
 #. module: ni_patient
+#: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__vat_label
+#: model:ir.model.fields,field_description:ni_patient.field_ni_patient__vat_label
+msgid "Tax ID Label"
+msgstr "ป้ายเลขประจำตัวผู้เสียภาษี"
+
+#. module: ni_patient
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter__tense
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_location__tense
 #: model:ir.model.fields,field_description:ni_patient.field_ni_encounter_participant__tense
@@ -4278,10 +4275,7 @@ msgid "This Encounter No. already exists!"
 msgstr "รหัสรับบริการนี้มีอยู่แล้ว"
 
 #. module: ni_patient
-#. odoo-python
-#: code:addons/ni_patient/models/ni_patient.py:0
 #: model:ir.model.constraint,message:ni_patient.constraint_ni_patient_partner_uniq
-#, python-format
 msgid "This contact have already registered as patient!"
 msgstr "รายชื่อนี้ถูกขึ้นทะเบียนเป็นผู้รับบริการแล้ว"
 
@@ -4343,7 +4337,6 @@ msgstr "วันที่ประสานส่งต่อ"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
-#, python-format
 msgid "Transfer date must not be after encounter start date"
 msgstr "วันที่ประสานส่งต่อต้องไม่เกิดขึ้นหลังวันเริ่มรับบริการ"
 
@@ -4355,7 +4348,6 @@ msgstr "ข้อมูลหน่วยงานนำส่ง"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
-#, python-format
 msgid "Transfer from must not be null when transfer at is present"
 msgstr "ต้องระบุข้อมูลหน่วยงานนำส่งเมื่อมีการระบุวันที่ประสานส่งต่อ"
 
@@ -4511,7 +4503,6 @@ msgstr "ยานพาหนะ"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
-#, python-format
 msgid "Verified encounter must defined start date (since)"
 msgstr "ต้องระบุวันที่เริ่มต้น ก่อนยืนยันการเข้ารับบริการ"
 
@@ -4545,9 +4536,7 @@ msgstr "คำเตือน"
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
-#: code:addons/ni_patient/models/ni_encounter.py:0
 #: code:addons/ni_patient/models/ni_patient_res.py:0
-#, python-format
 msgid "Warning!"
 msgstr "คำเตือน!"
 
@@ -4799,7 +4788,6 @@ msgstr ""
 #. module: ni_patient
 #. odoo-python
 #: code:addons/ni_patient/models/ni_encounter.py:0
-#, python-format
 msgid ""
 "กรุณาติดต่อผู้ดูแลระบบเพือเพิ่มทะเบียนผู้ปฎิบัติงานก่อนบันทึกเป็นผู้มีส่วนร่วมในงานให้บริการ"
 msgstr ""
