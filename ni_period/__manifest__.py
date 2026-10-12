@@ -3,7 +3,7 @@
 {
     "name": "Nirun - Period",
     "summary": "Time period fields (start/end datetime ranges) for clinical resources",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
