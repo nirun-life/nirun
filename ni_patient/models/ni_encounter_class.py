@@ -88,7 +88,7 @@ class EncounterClassification(models.Model):
     def _onchange_admission(self):
         for rec in self:
             if rec.admission:
-                rec.write({"auto_close": False})
+                rec.auto_close = False
 
     @api.constrains("parent_id")
     def _check_hierarchy(self):
@@ -128,16 +128,19 @@ class EncounterClassification(models.Model):
             to_close = enc_model
             for company in candidates.mapped("company_id"):
                 rev = cls._get_auto_close_reference_time(now, company)
-                logging.debug(
-                    "%s encounter: auto-close reference time (company=%s) = %s"
-                    % (cls.name, company.name, rev)
+                _logger.debug(
+                    "%s encounter: auto-close reference time (company=%s) = %s",
+                    cls.name,
+                    company.name,
+                    rev,
                 )
                 to_close |= candidates.filtered(
-                    lambda e, rev=rev: e.company_id == company and e.create_date <= rev
+                    lambda e, rev=rev, company=company: e.company_id == company
+                    and e.create_date <= rev
                 )
             if to_close:
                 to_close.action_close()
-                _logger.info("%s encounter: Closed  ids=%s" % (cls.name, to_close.ids))
+                _logger.info("%s encounter: Closed  ids=%s", cls.name, to_close.ids)
             else:
                 _logger.info(
                     "%s encounter: Not found any encounter to close" % cls.name

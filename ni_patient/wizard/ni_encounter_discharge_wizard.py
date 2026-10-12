@@ -28,35 +28,30 @@ class Discharge(models.TransientModel):
     deceased = fields.Boolean(related="discharge_disposition_id.deceased", store=True)
     decease_date = fields.Date()
     note = fields.Text()
+    discharge_disposition_domain = fields.Binary(
+        compute="_compute_discharge_disposition_domain"
+    )
+
+    @api.depends("discharge_status_id")
+    def _compute_discharge_disposition_domain(self):
+        for rec in self:
+            dispositions = rec.discharge_status_id.disposition_ids
+            if dispositions:
+                rec.discharge_disposition_domain = [("id", "in", dispositions.ids)]
+            else:
+                rec.discharge_disposition_domain = [("status_ids", "=", False)]
 
     @api.onchange("discharge_status_id")
     def _onchange_discharge_status_id(self):
-        res = {}
-        if self.discharge_status_id and self.discharge_status_id.disposition_ids:
-            res["domain"] = {
-                "discharge_disposition_id": [
-                    ("id", "in", self.discharge_status_id.disposition_ids.ids)
-                ]
-            }
+        dispositions = self.discharge_status_id.disposition_ids
+        if dispositions:
             if (
                 self.discharge_disposition_id
-                and self.discharge_disposition_id
-                not in self.discharge_status_id.disposition_ids
+                and self.discharge_disposition_id not in dispositions
             ):
-                self.discharge_disposition_id = (
-                    self.discharge_status_id.disposition_ids[0]
-                )
-                res["value"] = {
-                    "discharge_disposition_id": self.discharge_status_id.disposition_ids.ids[
-                        0
-                    ]
-                }
-            return res
-        else:
-            res["domain"] = {"discharge_disposition_id": "[('status_ids','=', False)]"}
-            if self.discharge_disposition_id.status_ids:
-                res["value"] = {"discharge_disposition_id": False}
-            return res
+                self.discharge_disposition_id = dispositions[0]
+        elif self.discharge_disposition_id.status_ids:
+            self.discharge_disposition_id = False
 
     @api.onchange("discharge_disposition_id")
     def _onchange_discharge_disposition_id(self):

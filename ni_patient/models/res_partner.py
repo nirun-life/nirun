@@ -30,14 +30,13 @@ class Partner(models.Model):
         help="ID related to patient's nationality",
     )
 
-    def _name_search(
-        self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        args = list(args or [])
+    @api.model
+    def _name_search(self, name, domain=None, operator="ilike", limit=None, order=None):
+        domain = list(domain or [])
         if name:
             name = name.split(" / ")[-1]
         if not (name == "" and operator == "ilike"):
-            args += [
+            domain += [
                 "|",
                 "|",
                 "|",
@@ -46,7 +45,7 @@ class Partner(models.Model):
                 ("phone", "=", name),
                 ("identification_id", "=", name),
             ]
-        return self._search(args, limit=limit, access_rights_uid=name_get_uid)
+        return self._search(domain, limit=limit, order=order)
 
     @api.model
     def default_get(self, default_fields):
@@ -58,8 +57,8 @@ class Partner(models.Model):
         So, Workaround solution is use `default_partner_parent_id` instead
         """
         values = super().default_get(default_fields)
-        if self._context.get("default_partner_parent_id"):
-            values["parent_id"] = self._context.get("default_partner_parent_id")
+        if self.env.context.get("default_partner_parent_id"):
+            values["parent_id"] = self.env.context.get("default_partner_parent_id")
         return values
 
     @api.depends("patient_ids")
