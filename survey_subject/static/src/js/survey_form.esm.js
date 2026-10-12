@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import SurveyFormWidget from "survey.form";
+import SurveyFormWidget from "@survey/js/survey_form";
 
 SurveyFormWidget.include({
     _nextScreen(nextScreenPromise) {

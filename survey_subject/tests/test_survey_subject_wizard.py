@@ -44,7 +44,7 @@ class TestSurveySubjectWizard(common.TransactionCase):
         self.assertTrue(wizard.started)
         self.assertEqual(action["type"], "ir.actions.act_url")
         self.assertIn(
-            "/survey/%s/%s" % (self.survey.access_token, answer.access_token),
+            f"/survey/{self.survey.access_token}/{answer.access_token}",
             action["url"],
         )
 
