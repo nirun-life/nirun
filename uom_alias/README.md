@@ -6,8 +6,8 @@ Adds alternate search names to units of measure.
 
 ## Main Components
 
-- `uom.uom` extension Adds `alias` and extends `_name_search()` to match either `name`
-  or `alias`.
+- `uom.uom` extension Adds `alias` and sets `_rec_names_search` so name search matches
+  either `name` or `alias`.
 
 ## Data and Tests
 
