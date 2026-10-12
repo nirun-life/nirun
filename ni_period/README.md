@@ -1,6 +1,6 @@
 # Nirun - Period
 
-Odoo 16.0 utility module that adds reusable datetime range fields for clinical
+Odoo 17.0 utility module that adds reusable datetime range fields for clinical
 resources. It exists so patient-facing models can share a consistent `period_start` /
 `period_end` structure without duplicating field logic.
 
