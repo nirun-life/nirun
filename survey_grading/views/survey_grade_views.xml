@@ -57,7 +57,7 @@
         <field name="model">survey.grade</field>
         <field name="arch" type="xml">
             <list>
-                <field name="survey_id" invisible="1" />
+                <field name="survey_id" column_invisible="1" />
                 <field name="name" />
                 <field
                     name="low"
@@ -78,7 +78,7 @@
                     decoration-info="color_class == 'info'"
                 />
                 <field
-                    invisible="1"
+                    column_invisible="1"
                     name="triggering_answer_ids"
                     widget="many2many_tags"
                     options="{'no_create': True}"
@@ -91,8 +91,8 @@
                     class="icon_rotates"
                     invisible="not triggering_answer_ids"
                 />
-                <field name="color_class" invisible="1" />
-                <field name="passing_grade" invisible="1" />
+                <field name="color_class" column_invisible="1" />
+                <field name="passing_grade" column_invisible="1" />
             </list>
         </field>
     </record>

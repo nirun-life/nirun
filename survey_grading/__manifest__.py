@@ -3,7 +3,7 @@
 {
     "name": "Grading",
     "summary": "Survey grading and scoring management",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "development_status": "Alpha",
     "category": "Marketing/Surveys",
     "author": "NSTDA, Piruin P.",

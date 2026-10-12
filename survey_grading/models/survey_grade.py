@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -15,7 +15,7 @@ class SurveyGrade(models.Model):
     scoring_success_min = fields.Float(related="survey_id.scoring_success_min")
     grading_basis = fields.Selection(related="survey_id.grading_basis")
 
-    name = fields.Char("Grade", index=True, translate=True, required=True)
+    name = fields.Char("Grade", index="trigram", translate=True, required=True)
     low = fields.Float(default=0.0, help="Lowest score of this grade (Inclusive)")
     high = fields.Float(
         default=100.0,
@@ -87,11 +87,13 @@ class SurveyGrade(models.Model):
                 0.0 <= rec.low <= 100.0 and 0.0 <= rec.high <= 100.0
             ):
                 raise ValidationError(
-                    _("%s low and high value must be in between 0.0-100.0") % rec.name
+                    self.env._(
+                        "%s low and high value must be in between 0.0-100.0", rec.name
+                    )
                 )
             if rec.low > rec.high:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "%(name)s is not a valid range (%(low)s >= %(high)s)",
                         name=rec.name,
                         low=rec.low,
@@ -105,11 +107,11 @@ class SurveyGrade(models.Model):
                     continue
                 if other.name == rec.name:
                     raise ValidationError(
-                        _("A grading name must be unique! (%s)") % rec.name
+                        self.env._("A grading name must be unique! (%s)", rec.name)
                     )
                 if other.low < rec.high and other.high > rec.low:
                     raise ValidationError(
-                        _(
+                        self.env._(
                             "%(name)s is overlapping with %(other)s",
                             name=rec.name,
                             other=other.name,
