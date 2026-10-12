@@ -4,16 +4,30 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-10 06:26+0000\n"
-"PO-Revision-Date: 2025-01-10 06:26+0000\n"
+"POT-Creation-Date: 2026-10-12 07:01+0000\n"
+"PO-Revision-Date: 2026-10-12 07:01+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: partner_age
+#. odoo-python
+#: code:addons/partner_age/models/res_partner_age_range.py:0
+#, python-format
+msgid "%(name)s is not a valid range (%(age_from)s >= %(age_to)s)"
+msgstr "ช่วงอายุของ %(name)s ไม่ถูกต้อง (%(age_from)s >= %(age_to)s)"
+
+#. module: partner_age
+#. odoo-python
+#: code:addons/partner_age/models/res_partner_age_range.py:0
+#, python-format
+msgid "%(name)s is overlapping with range %(other)s"
+msgstr "ช่วงอายุของ %(name)s ทับซ้อนกับ %(other)s"
 
 #. module: partner_age
 #. odoo-python
@@ -36,20 +50,6 @@ msgstr "%s เดือน"
 #, python-format
 msgid "%s Years"
 msgstr "%s ปี"
-
-#. module: partner_age
-#. odoo-python
-#: code:addons/partner_age/models/res_partner_age_range.py:0
-#, python-format
-msgid "%s is not a valid range (%s >= %s)"
-msgstr "ช่วงอายุของ %s ไม่ถูกต้อง (%s >= %s)"
-
-#. module: partner_age
-#. odoo-python
-#: code:addons/partner_age/models/res_partner_age_range.py:0
-#, python-format
-msgid "%s is overlapping with range %s"
-msgstr "ช่วงอายุของ %s ทับซ้อนกับ %s"
 
 #. module: partner_age
 #: model:res.partner.age.range,name:partner_age.range_0
@@ -110,6 +110,11 @@ msgstr "อายุ 90-99 ปี"
 #: model:ir.model.constraint,message:partner_age.constraint_res_partner_age_range_name_uniq
 msgid "A name must be unique !"
 msgstr "ชื่อช่วงอายุต้องไม่ซ้ำกัน"
+
+#. module: partner_age
+#: model:ir.model.fields,field_description:partner_age.field_res_partner_age_range__active
+msgid "Active"
+msgstr "ใช้งาน"
 
 #. module: partner_age
 #: model:ir.model.fields,field_description:partner_age.field_age_mixin__display_age
@@ -177,7 +182,7 @@ msgstr "ช่วงอายุ"
 #. module: partner_age
 #: model:ir.model,name:partner_age.model_age_mixin
 msgid "Age mixin"
-msgstr ""
+msgstr "Mixin อายุ"
 
 #. module: partner_age
 #. odoo-python
@@ -266,11 +271,6 @@ msgid "Internal: Date when Age (years) input value was provided"
 msgstr "ภายใน: วันที่ผู้ใช้บันทึกอายุ(ปี)"
 
 #. module: partner_age
-#: model:ir.model.fields,field_description:partner_age.field_res_partner_age_range____last_update
-msgid "Last Modified on"
-msgstr "แก้ไขล่าสุดเมื่อ"
-
-#. module: partner_age
 #: model:ir.model.fields,field_description:partner_age.field_res_partner_age_range__write_uid
 msgid "Last Updated by"
 msgstr "แก้ไขล่าสุดโดย"
@@ -286,6 +286,8 @@ msgid ""
 "Manage the contact age range you want to have available in your system.\n"
 "            For eg: 0-10, 11-20"
 msgstr ""
+"กำหนดช่วงอายุของผู้ติดต่อที่ต้องการใช้ในระบบ\n"
+"            เช่น 0-10, 11-20"
 
 #. module: partner_age
 #: model:ir.model.fields,field_description:partner_age.field_res_partner_age_range__name
@@ -295,19 +297,16 @@ msgstr "ชื่อ"
 #. module: partner_age
 #: model:ir.model,name:partner_age.model_res_partner_age_range
 #: model_terms:ir.ui.view,arch_db:partner_age.res_partner_age_range_view_form
-#: model_terms:ir.ui.view,arch_db:partner_age.res_partner_age_range_view_tree
 msgid "Partner Age Range"
 msgstr "ช่วงอายุ"
 
 #. module: partner_age
 #: model:ir.actions.server,name:partner_age.ir_cron_res_partner_age_ir_actions_server
-#: model:ir.cron,cron_name:partner_age.ir_cron_res_partner_age
 msgid "Partner: Compute Age"
 msgstr "คู่ค้า: คำนวณอายุ"
 
 #. module: partner_age
 #: model:ir.actions.server,name:partner_age.ir_cron_res_partner_age_range_ir_actions_server
-#: model:ir.cron,cron_name:partner_age.ir_cron_res_partner_age_range
 msgid "Partner: Compute Age Range"
 msgstr "คู่ค้า: คำนวณช่วงอายุ"
 
