@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <data>
         <!-- Form View -->
         <record id="ni_patient_archive_wizard_view_form" model="ir.ui.view">
             <field name="name">ni.patient.archive.wizard.view.form</field>
@@ -9,22 +8,22 @@
                 <form>
                     <sheet>
                         <field name="patient_count" invisible="1" />
-                        <h1 attrs="{'invisible': [('patient_count', '&gt;', 1)]}">
+                        <h1 invisible="patient_count &gt; 1">
                             <field name="patient_name" nolabel="1" />
                         </h1>
                         <group>
                             <group id="info">
                                 <field
-                                    name="patient_ids"
-                                    readonly="1"
-                                    widget="many2many_tags"
-                                    options="{'no_open': True}"
-                                    attrs="{'invisible': [('patient_count', '&lt;', 2)]}"
-                                />
+                                name="patient_ids"
+                                readonly="1"
+                                widget="many2many_tags"
+                                options="{'no_open': True}"
+                                invisible="patient_count &lt; 2"
+                            />
                                 <field
-                                    name="state_reason_id"
-                                    options="{'no_edit': True, 'no_create': True, 'no_open': True}"
-                                />
+                                name="state_reason_id"
+                                options="{'no_edit': True, 'no_create': True, 'no_open': True}"
+                            />
                                 <field name="state_date" />
                             </group>
                             <!--                            <group id="action">-->
@@ -41,30 +40,29 @@
                         <group>
                             <div id="detailed_reason" colspan="2">
                                 <span
-                                    class="o_form_label o_hr_form_label cursor-default"
-                                >Detailed Reason</span>
+                                class="o_form_label o_hr_form_label cursor-default"
+                            >Detailed Reason</span>
                                 <field name="state_note" />
                             </div>
                         </group>
                     </sheet>
                     <footer>
                         <button
-                            name="action_register_departure"
-                            string="Apply"
-                            type="object"
-                            class="oe_highlight"
-                            data-hotkey="q"
-                        />
+                        name="action_register_departure"
+                        string="Apply"
+                        type="object"
+                        class="oe_highlight"
+                        data-hotkey="q"
+                    />
                         <button
-                            string="Discard"
-                            class="btn-secondary"
-                            special="cancel"
-                            data-hotkey="z"
-                        />
+                        string="Discard"
+                        class="btn-secondary"
+                        special="cancel"
+                        data-hotkey="z"
+                    />
                     </footer>
                 </form>
             </field>
         </record>
         <!-- ไม่มี act_window: wizard ถูกเปิดจาก archive_patient_hook.js ที่ส่ง default_patient_ids มาให้ -->
-    </data>
 </odoo>

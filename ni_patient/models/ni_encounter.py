@@ -1,14 +1,7 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import Command, _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.models import Command
-
-LOCK_STATE_DICT = {
-    "cancelled": [("readonly", True)],
-    "entered-in-error": [("readonly", True)],
-    "finished": [("readonly", True)],
-}
 
 # Maps ni.encounter.state to ni.workflow.event.state; "draft" is omitted
 # because nothing has occurred yet.
@@ -35,6 +28,7 @@ class Encounter(models.Model):
     _inherits = {"ni.patient": "patient_id"}
     _check_company_auto = True
     _order = "period_start DESC, name DESC"
+    _rec_names_search = ["name", "patient_id"]
     _sign_fields = [
         "chief_complaint",
         "history_of_present_illness",
@@ -68,14 +62,12 @@ class Encounter(models.Model):
         "Encounter No.",
         copy=False,
         store=True,
-        states=LOCK_STATE_DICT,
         index=True,
         compute="_compute_name",
     )
     identifier = fields.Char(
         "Encounter No.",
         readonly=True,
-        states={"draft": [("readonly", False)]},
         help="ใส่เลขรับบริการที่ทางหน่วยงานต้องการ หากไม่ระบุระบบจะสร้างให้อัตโนมัติ",
     )
     color = fields.Integer()
@@ -84,16 +76,13 @@ class Encounter(models.Model):
         "Classification",
         index=True,
         required=True,
-        states=LOCK_STATE_DICT,
         help="Classification of patient encounter",
         ondelete="restrict",
         tracking=True,
     )
     class_decoration = fields.Selection(related="class_id.decoration")
     auto_close = fields.Boolean(related="class_id.auto_close")
-    period_start = fields.Datetime(
-        readonly=True, states={"draft": [("readonly", False)]}
-    )
+    period_start = fields.Datetime(readonly=True)
     period_end = fields.Datetime(readonly=True)
     patient_id = fields.Many2one(
         "ni.patient",
@@ -101,7 +90,6 @@ class Encounter(models.Model):
         readonly=True,
         required=True,
         ondelete="cascade",
-        states={"draft": [("readonly", False)]},
         auto_join=True,
         index=True,
     )
@@ -126,7 +114,7 @@ class Encounter(models.Model):
     other_address_id = fields.Many2one(
         "res.partner",
         "Other Address",
-        domain="[('ref', '=', patient_identifier), ('type', '=', 'private')]",
+        domain="[('ref', '=', patient_identifier), ('type', '=', 'other')]",
     )
 
     partner_id = fields.Many2one(
@@ -152,7 +140,6 @@ class Encounter(models.Model):
         default="routine",
         tracking=True,
         required=True,
-        states=LOCK_STATE_DICT,
     )
     priority_decoration = fields.Selection(
         [
@@ -189,13 +176,11 @@ class Encounter(models.Model):
         "ni.location",
         "Location",
         help="Where services are provided to the patient",
-        states=LOCK_STATE_DICT,
         tracking=True,
     )
     location_history_ids = fields.One2many(
         "ni.encounter.location",
         "encounter_id",
-        states=LOCK_STATE_DICT,
         copy=True,
     )
     location_history_count = fields.Integer(
@@ -206,39 +191,30 @@ class Encounter(models.Model):
         "ni_encounter_reason_rel",
         "encounter_id",
         "reason_id",
-        states=LOCK_STATE_DICT,
         copy=True,
         help="Reason the encounter takes place",
     )
-    chief_complaint = fields.Text(
-        "Chief Complaint", tracking=True, states=LOCK_STATE_DICT
-    )
+    chief_complaint = fields.Text(tracking=True)
     chief_complaint_uid = fields.Many2one("res.users", readonly=True, copy=False)
     chief_complaint_date = fields.Datetime(readonly=True, copy=False)
 
     history_of_present_illness = fields.Html(
-        "History of Present Illness", tracking=True, states=LOCK_STATE_DICT
+        "History of Present Illness", tracking=True
     )
     history_of_present_illness_uid = fields.Many2one(
         "res.users", readonly=True, copy=False
     )
     history_of_present_illness_date = fields.Datetime(readonly=True, copy=False)
 
-    past_medical_history = fields.Html(
-        "Past Medical History", tracking=True, states=LOCK_STATE_DICT
-    )
+    past_medical_history = fields.Html(tracking=True)
     past_medical_history_uid = fields.Many2one("res.users", readonly=True, copy=False)
     past_medical_history_date = fields.Datetime(readonly=True, copy=False)
 
-    review_of_systems = fields.Html(
-        "Review of Systems", tracking=True, states=LOCK_STATE_DICT
-    )
+    review_of_systems = fields.Html("Review of Systems", tracking=True)
     review_of_systems_uid = fields.Many2one("res.users", readonly=True, copy=False)
     review_of_systems_date = fields.Datetime(readonly=True, copy=False)
 
-    physical_exam = fields.Html(
-        "Physical Examination", tracking=True, states=LOCK_STATE_DICT
-    )
+    physical_exam = fields.Html("Physical Examination", tracking=True)
     physical_exam_uid = fields.Many2one("res.users", readonly=True, copy=False)
     physical_exam_date = fields.Datetime(readonly=True, copy=False)
 
@@ -249,7 +225,6 @@ class Encounter(models.Model):
         "encounter_id",
         "diet_id",
         string="Diet Preferences",
-        states=LOCK_STATE_DICT,
     )
     arrangement_ids = fields.Many2many(
         "ni.encounter.arrangement",
@@ -257,7 +232,6 @@ class Encounter(models.Model):
         "encounter_id",
         "arrange_id",
         string="Special Arrangements",
-        states=LOCK_STATE_DICT,
     )
     courtesy_ids = fields.Many2many(
         "ni.encounter.courtesy",
@@ -265,51 +239,44 @@ class Encounter(models.Model):
         "encounter_id",
         "courtesy_id",
         string="Special Courtesy",
-        states=LOCK_STATE_DICT,
     )
 
     # Admission
     is_admission = fields.Boolean(related="class_id.admission", store=True)
     pre_admission_identifier = fields.Char(
-        states=LOCK_STATE_DICT, tracking=True, help="Pre-admission identifier"
+        tracking=True, help="Pre-admission identifier"
     )
     origin_partner_id = fields.Many2one(
         "res.partner",
         string="Transfer from",
-        states=LOCK_STATE_DICT,
         tracking=True,
         help="organization which the patient came before admission",
         copy=True,
     )
     origin_date = fields.Date(
         string="Transfer At",
-        states=LOCK_STATE_DICT,
         tracking=True,
         help="When origin organization request to transfer",
     )
     admit_source_id = fields.Many2one(
         "ni.encounter.admit",
         "Admission Source",
-        states=LOCK_STATE_DICT,
         tracking=True,
         help="From where patient was admitted (physician referral, transfer)",
     )
     re_admission = fields.Boolean(
         "Re-Admission",
-        states=LOCK_STATE_DICT,
         tracking=True,
         help="The type of hospital re-admission that has occurred (if any). "
         "If the value is absent, then this is not identified as a readmission",
     )
     re_admission_reason = fields.Text(
         "Re-Admission Reason",
-        states=LOCK_STATE_DICT,
         tracking=True,
     )
     re_admission_encounter_id = fields.Many2one(
         "ni.encounter",
         "Re-Admission Of",
-        states=LOCK_STATE_DICT,
         tracking=True,
         domain="[('patient_id', '=', patient_id),"
         " ('id', '!=', id),"
@@ -320,14 +287,12 @@ class Encounter(models.Model):
         "Discharge Status",
         help="Patient's status on discharge",
         tracking=True,
-        states=LOCK_STATE_DICT,
     )
     discharge_disposition_id = fields.Many2one(
         "ni.encounter.discharge.disposition",
         "Discharge Disposition",
         help="Category or kind of location after discharge",
         tracking=True,
-        states=LOCK_STATE_DICT,
     )
     discharge_partner_id = fields.Many2one(
         "res.partner",
@@ -335,7 +300,6 @@ class Encounter(models.Model):
         domain="[('is_company', '=', True)]",
         help="Location/organization to which the patient is discharged",
         tracking=True,
-        states=LOCK_STATE_DICT,
     )
     discharge_note = fields.Text("Note", tracking=True)
 
@@ -360,9 +324,7 @@ class Encounter(models.Model):
     show_order = fields.Boolean(related="class_id.order")
 
     # Participant
-    participant_ids = fields.One2many(
-        "ni.encounter.participant", "encounter_id", states=LOCK_STATE_DICT
-    )
+    participant_ids = fields.One2many("ni.encounter.participant", "encounter_id")
     participant_id = fields.Many2one(
         "ni.encounter.participant", compute="_compute_participant_id"
     )
@@ -444,12 +406,11 @@ class Encounter(models.Model):
                     "warning": {
                         "title": _("Warning!"),
                         "message": _(
-                            "%s was already registered as Encounter No. %s (%s)."
-                        )
-                        % (
-                            self.patient_id.name,
-                            encounter.name,
-                            encounter._get_state_label(),
+                            "%(patient)s was already registered as Encounter No. "
+                            "%(encounter)s (%(state)s).",
+                            patient=self.patient_id.name,
+                            encounter=encounter.name,
+                            state=encounter._get_state_label(),
                         ),
                     }
                 }
@@ -537,40 +498,46 @@ class Encounter(models.Model):
                     _("Inconsistency between discharge status and disposition")
                 )
 
-    def name_get(self):
-        return [(enc.id, enc._get_name()) for enc in self]
+    @api.depends(
+        "name",
+        "class_id",
+        "patient_id.name",
+        "state",
+        "location_id",
+        "period_start",
+        "period_end",
+    )
+    @api.depends_context(
+        "show_class",
+        "show_patient",
+        "show_patient_name",
+        "show_state",
+        "show_location",
+        "show_period",
+    )
+    def _compute_display_name(self):
+        for enc in self:
+            enc.display_name = enc._get_name()
 
     def _get_name(self):
         self.ensure_one()
         rec = self
         name = rec.name
-        if self._context.get("show_class"):
+        if self.env.context.get("show_class"):
             name = f"{name}/{rec.class_id.code or rec.class_id.name}"
-        if self._context.get("show_patient") or self._context.get("show_patient_name"):
+        if self.env.context.get("show_patient") or self.env.context.get(
+            "show_patient_name"
+        ):
             name = f"{name} {rec.patient_id.name}"
-        if self._context.get("show_state"):
+        if self.env.context.get("show_state"):
             name = f"{name} [{rec._get_state_label()}]"
-        if self._context.get("show_location") and rec.location_id:
+        if self.env.context.get("show_location") and rec.location_id:
             name = f"{name}\n{rec.location_id.display_name}"
-        if self._context.get("show_period"):
+        if self.env.context.get("show_period"):
             name = "{}\n{} → {}".format(
                 name, rec.period_start, rec.period_end or _("Now")
             )
         return name
-
-    @api.model
-    def _name_search(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        args = args or []
-        if name:
-            # Also search for patient name
-            args = [
-                "|",
-                ("name", operator, name),
-                ("patient_id", operator, name),
-            ] + args
-        return self._search(args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -685,7 +652,7 @@ class Encounter(models.Model):
         }
 
     def action_confirm(self):
-        now = fields.datetime.now()
+        now = fields.Datetime.now()
         for enc in self:
             if not enc.period_start:
                 raise ValidationError(
@@ -714,7 +681,7 @@ class Encounter(models.Model):
             if enc.state != "in-progress":
                 raise ValidationError(_("Must be in-progress state"))
 
-        vals = dict(vals or {"state": "finished", "period_end": fields.datetime.now()})
+        vals = dict(vals or {"state": "finished", "period_end": fields.Datetime.now()})
         self.participant_ids.action_stop()
         self.write(vals)
         for enc in self.filtered(

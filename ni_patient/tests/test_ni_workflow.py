@@ -79,7 +79,8 @@ class TestWorkflow(common.TransactionCase):
         event = self._make_event(res_model="ni.patient", res_id=self.patient.id)
         event_id = event.id
         self.env.cr.execute(
-            "UPDATE ni_workflow_event SET write_date = '2000-01-01', create_date = '2000-01-01' WHERE id = %s",
+            "UPDATE ni_workflow_event SET write_date = '2000-01-01', "
+            "create_date = '2000-01-01' WHERE id = %s",
             (event_id,),
         )
         self.env["ni.workflow.event"].garbage_collect()

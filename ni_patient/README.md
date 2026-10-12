@@ -1,6 +1,6 @@
 # Patient (`ni_patient`)
 
-Odoo 16.0 module that provides the core patient and encounter model for Nirun. It
+Odoo 17.0 module that provides the core patient and encounter model for Nirun. It
 anchors the clinical data hierarchy, patient/encounter workflow state, and shared
 timeline records used by the rest of the healthcare modules.
 
@@ -45,19 +45,55 @@ and requests into a single patient history.
 - Portal templates in `views/ni_patient_portal.xml` and
   `views/ni_patient_portal_templates.xml` expose patient-facing entry points.
 
+## Display Names and Search
+
+- `ni.patient` sets `_rec_name = "name"`: patients display by name, not by the
+  identifier (HN) that `ni.identifier.mixin` would use. `_compute_display_name` (via the
+  `_name_get()` extension seam, extended by `ni_observation`) adds details for the
+  context keys `show_identifier`, `show_identification_id`, `show_gender_age` and
+  `show_age`. Name search covers `name`, `identifier` and `identification_id`
+  (`_rec_names_search`).
+- `ni.encounter` display name honours `show_class`, `show_patient`/`show_patient_name`,
+  `show_state`, `show_location` and `show_period`; name search covers the encounter
+  number and the patient.
+- `ni.location` display name honours `location_display="short"`, `show_parent` and
+  `show_alias`; `full_name` is the parent path with alias.
+- `res.partner` name search matches the name, or exactly the phone, mobile or
+  identification number (`_name_search` override).
+
+## Addresses
+
+- Patient and encounter "other addresses" are `res.partner` records of type `other` with
+  `ref` set to the patient identifier, edited in the compact form
+  `res_partner_view_form_address`. Up to 16.0 they were `private` partners, a type Odoo
+  17 removed.
+- Upgrade from 16.0: `migrations/17.0.1.0.0/post-migration.py` restores those addresses
+  from OpenUpgrade's `ou_res_partner_private` copy (OpenUpgrade masks private addresses)
+  and sets them to `other`.
+
+## Encounter Locking
+
+- Encounter fields are read-only in the form once the encounter is finished, cancelled
+  or entered in error, and the patient, number and start are editable only in draft.
+  Since 17.0 this lives in `views/ni_encounter_views.xml` (`readonly="state ..."`), not
+  in field `states=`. Forms of downstream modules that edit `ni.workflow` `intent`/
+  `priority` must add their own `readonly` expression for completed/revoked requests.
+
 ## Frontend View Registrations
 
-- `static/src/views/form_view.js` and `static/src/views/list_view.js` register the
-  `ni_patient_form` and `ni_patient_list` view types; the base patient form and tree in
-  `views/ni_patient_views.xml` carry the matching `js_class`.
+- `static/src/views/form_view.esm.js` and `static/src/views/list_view.esm.js` register
+  the `ni_patient_form` and `ni_patient_list` view types; the base patient form and tree
+  in `views/ni_patient_views.xml` carry the matching `js_class`.
 - Both controllers replace the standard Archive action menu item through the shared
-  `static/src/views/archive_patient_hook.js`, which opens `ni.patient.archive.wizard`
-  with `default_patient_ids` (one id from the form, the whole selection from the list).
+  `static/src/views/archive_patient_hook.esm.js`, which opens
+  `ni.patient.archive.wizard` with `default_patient_ids` (one id from the form, the
+  whole selection from the list).
 - Invariant: archiving a patient must go through that wizard — it is the only path that
   records state reason, date, and note. A plain `write({"active": False})` bypasses it
   and loses that data.
-- `PatientListController` is an extension seam imported by downstream repositories;
-  renaming it is a breaking change outside this module.
+- `PatientListController` is an extension seam imported by downstream repositories
+  (since 17.0 from `@ni_patient/views/list_view.esm`); renaming it is a breaking change
+  outside this module. The controllers override `getStaticActionMenuItems()`.
 
 ## Security and Support Files
 
@@ -84,6 +120,8 @@ and requests into a single patient history.
 
 ## Verification
 
+- `tests/test_ni_patient_display_name.py` (D1) and `tests/test_ni_patient_address.py`
+  (address type). The ni_coding default views are tested in `ni_coding`.
 - Review `ni_patient/tests/test_ni_patient.py` and
   `ni_patient/tests/test_ni_workflow.py` after any workflow, security, or portal change.
 - Re-check patient, encounter, workflow timeline, and portal flows after structural
