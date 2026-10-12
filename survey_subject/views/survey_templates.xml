@@ -3,11 +3,21 @@
   ~ Copyright (c) 2021-2023 NSTDA
   -->
 <odoo>
-    <template id="survey_fill_form_done_inherit" name="Survey: finished" inherit_id="survey.survey_fill_form_done">
-        <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div" position="attributes">
+    <template
+        id="survey_fill_form_done_inherit"
+        name="Survey: finished"
+        inherit_id="survey.survey_fill_form_done"
+    >
+        <xpath
+            expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div"
+            position="attributes"
+        >
             <attribute name="t-if">is_partner_subject</attribute>
         </xpath>
-        <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div" position="after">
+        <xpath
+            expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div"
+            position="after"
+        >
             <div t-if="not is_partner_subject">
                 <t t-esc="answer.subject_name" />
                 scored
@@ -15,7 +25,10 @@
                 %
             </div>
         </xpath>
-        <xpath expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]" position="inside">
+        <xpath
+            expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]"
+            position="inside"
+        >
             <t t-if="survey.subject_type != 'res.partner'">
                 <a
                     href="#"
@@ -56,10 +69,16 @@
             </t>
         </xpath>
         <xpath expr="//div[contains(@class, 'o_survey_result')]" position="attributes">
-            <attribute name="t-if">survey.subject_type == 'res.partner' and graph_data</attribute>
+            <attribute
+                name="t-if"
+            >survey.subject_type == 'res.partner' and graph_data</attribute>
         </xpath>
     </template>
-    <template id="survey_fill_form_inherit" name="Survey: saving indicator" inherit_id="survey.survey_fill_form">
+    <template
+        id="survey_fill_form_inherit"
+        name="Survey: saving indicator"
+        inherit_id="survey.survey_fill_form"
+    >
         <xpath expr="//div[hasclass('o_survey_form_content')]" position="after">
             <div
                 class="o_survey_saving d-none position-fixed top-50 start-50 translate-middle text-center text-muted"
@@ -70,7 +89,11 @@
             </div>
         </xpath>
     </template>
-    <template id="survey_button_retake_inherit" name="Survey: Retake button" inherit_id="survey.survey_button_retake">
+    <template
+        id="survey_button_retake_inherit"
+        name="Survey: Retake button"
+        inherit_id="survey.survey_button_retake"
+    >
         <xpath expr="//div/t" position="attributes">
             <attribute name="t-if">
                 survey.subject_type == 'res.partner' and not answer.scoring_success and not answer.is_session_answer
