@@ -226,8 +226,8 @@ class Patient(models.Model):
         ts = fields.Datetime.now()
         for f in self._sign_fields:
             if f in vals and vals[f]:
-                f_uid = "{}_uid".format(f)
-                f_date = "{}_date".format(f)
+                f_uid = f"{f}_uid"
+                f_date = f"{f}_date"
                 if f_uid not in vals:
                     value[f_uid] = self.env.uid
                 if f_date not in vals:
@@ -264,9 +264,9 @@ class Patient(models.Model):
         patient = self
         name = patient.name or ""
         if self._context.get("show_identifier") and patient.identifier:
-            name = "{}  {}".format(patient.identifier, name)
+            name = f"{patient.identifier}  {name}"
         if self._context.get("show_identification_id") and patient.identification_id:
-            name = "{} ({})".format(name, patient.identification_id)
+            name = f"{name} ({patient.identification_id})"
         if self._context.get("show_gender_age"):
             gender_age = []
             if patient.gender in ["male", "female"]:

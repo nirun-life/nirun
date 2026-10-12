@@ -48,7 +48,7 @@ class Workflow(models.AbstractModel):
         if not self._abstract:
             tools.create_index(
                 self._cr,
-                "{}_res_model_res_id_index".format(self._table),
+                f"{self._table}_res_model_res_id_index",
                 self._table,
                 ["res_model", "res_id"],
             )
