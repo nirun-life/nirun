@@ -6,7 +6,7 @@ from odoo.tests.common import TransactionCase
 
 class TestUoM(TransactionCase):
     def setUp(self):
-        super(TestUoM, self).setUp()
+        super().setUp()
         self.uom = self.env["uom.uom"]
 
     def test_name_search(self):
