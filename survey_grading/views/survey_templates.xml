@@ -21,7 +21,9 @@
                 </h4>
             </t>
         </xpath>
-        <xpath expr="//div[hasclass('o_survey_result')]" position="before">
+        <!-- Up to 16.0 this sat before the result graph, which core dropped from this
+             page in 17.0; the graph used to follow the o_survey_finished block. -->
+        <xpath expr="//div[hasclass('o_survey_finished')]" position="after">
             <t t-set="grades" t-value="answer.grade_reference()" />
             <t t-set="conditions" t-value="answer.grade_conditions()" />
             <div t-if="len(grades) > 1" class="o_survey_grade_reference mb-4">

@@ -16,11 +16,8 @@ class SurveyGrade(models.Model):
     grading_basis = fields.Selection(related="survey_id.grading_basis")
 
     name = fields.Char("Grade", index=True, translate=True, required=True)
-    low = fields.Float(
-        "Low", default=0.0, help="Lowest score of this grade (Inclusive)"
-    )
+    low = fields.Float(default=0.0, help="Lowest score of this grade (Inclusive)")
     high = fields.Float(
-        "High",
         default=100.0,
         help="Highest score of this grade, "
         "Inclusive but Exclusive for next lesser grade",
@@ -49,14 +46,17 @@ class SurveyGrade(models.Model):
         "this grade's badge at survey result screen",
     )
 
-    def name_get(self):
-        return [(rec.id, rec._name_get()) for rec in self]
+    @api.depends("name", "low", "high")
+    @api.depends_context("show_score_range")
+    def _compute_display_name(self):
+        for rec in self:
+            rec.display_name = rec._name_get()
 
     def _name_get(self):
         rec = self
         name = rec.name or ""
-        if self._context.get("show_score_range"):
-            name = "%s [%d-%d]" % (name, rec.low, rec.high)
+        if self.env.context.get("show_score_range"):
+            name = f"{name} [{int(rec.low)}-{int(rec.high)}]"
         return name
 
     def is_cover(self, value):
@@ -91,8 +91,12 @@ class SurveyGrade(models.Model):
                 )
             if rec.low > rec.high:
                 raise ValidationError(
-                    _("%s is not a valid range (%s >= %s)")
-                    % (rec.name, rec.low, rec.high)
+                    _(
+                        "%(name)s is not a valid range (%(low)s >= %(high)s)",
+                        name=rec.name,
+                        low=rec.low,
+                        high=rec.high,
+                    )
                 )
 
             scope = rec._scope_key()
@@ -105,5 +109,9 @@ class SurveyGrade(models.Model):
                     )
                 if other.low < rec.high and other.high > rec.low:
                     raise ValidationError(
-                        _("%s is overlapping with %s") % (rec.name, other.name)
+                        _(
+                            "%(name)s is overlapping with %(other)s",
+                            name=rec.name,
+                            other=other.name,
+                        )
                     )

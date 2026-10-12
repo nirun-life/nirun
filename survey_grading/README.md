@@ -13,10 +13,11 @@ sets of ranges for a maximum score that varies between responses.
   `triggering_answer_ids`, `color_class`, and computed `passing_grade`.
 - `survey.survey` extension Adds `grade_ids` and `grading_basis`.
 - `survey.user_input` extension Adds computed/stored `grade_id`, related `grade_ids`,
-  and related `grade`.
-- `survey.question.answer` extension `name_get` prefixes the answer with its question
-  title when the field context sets `show_question` (used by the `triggering_answer_ids`
-  widgets), since a survey has many answers sharing the same text.
+  and related `grade` (labelled "Grade Name").
+- `survey.question.answer` extension `_compute_display_name` prefixes the answer with
+  its question title when the field context sets `show_question` (used by the
+  `triggering_answer_ids` widgets), since a survey has many answers sharing the same
+  text.
 
 ## Views, Templates, and Security
 
@@ -28,15 +29,16 @@ sets of ranges for a maximum score that varies between responses.
   bands' highest bound, **not** `total_possible_score` — the survey's own maximum
   overstates the scale whenever conditional questions drop out, which is the case
   `grading_basis = score` exists for.
-- Frontend completion template, part two: a **grading reference** table sits between the
-  score block and the statistics charts, so a respondent can see the whole scale their
-  badge came from. Its rows are `survey.user_input.grade_reference()` — the bands that
-  could still have applied to _this_ response, best first — and not every band of the
-  survey, because answer-scoped sets (and the gender/age sets `ni_questionnaire` adds)
-  would otherwise contradict each other on screen. The reached band's row is marked with
-  `table-active` plus a titled check icon, never colour alone. A one-band scale renders
-  nothing. `survey.user_input.grade_conditions()` supplies the parenthesised hint naming
-  what selected those bands; it is the extension seam, so downstream modules add their
+- Frontend completion template, part two: a **grading reference** table sits right after
+  the score block (`o_survey_finished`; core shows no statistics charts there since
+  17.0), so a respondent can see the whole scale their badge came from. Its rows are
+  `survey.user_input.grade_reference()` — the bands that could still have applied to
+  _this_ response, best first — and not every band of the survey, because answer-scoped
+  sets (and the gender/age sets `ni_questionnaire` adds) would otherwise contradict each
+  other on screen. The reached band's row is marked with `table-active` plus a titled
+  check icon, never colour alone. A one-band scale renders nothing.
+  `survey.user_input.grade_conditions()` supplies the parenthesised hint naming what
+  selected those bands; it is the extension seam, so downstream modules add their
   criteria there rather than xpath'ing into this table.
 - Security: grants survey users access to `survey.grade`. The completion page is
   rendered from sudo records by `survey.controllers.main`, so an iterated `grade_ids` is
@@ -60,9 +62,9 @@ sets of ranges for a maximum score that varies between responses.
 ## Questionnaires With a Variable Maximum Score
 
 Odoo core already shrinks the maximum: a question that stays hidden because of its
-conditional display (`is_conditional` / `triggering_question_id` /
-`triggering_answer_id`) is removed from `predefined_question_ids` in `_mark_done()`, and
-`_compute_scoring_values` builds `total_possible_score` from that field.
+conditional display (`triggering_answer_ids`) is removed from `predefined_question_ids`
+in `_mark_done()`, and `_compute_scoring_values` builds `total_possible_score` from that
+field.
 
 Author such a questionnaire like this:
 
@@ -71,9 +73,8 @@ Author such a questionnaire like this:
 3. Set `grading_basis` to `score` and create one set of grade bands per gating answer,
    each with that answer in `triggering_answer_ids`.
 
-`triggering_answer_id` is single-valued in Odoo 16.0, so an "any of these answers" gate
-is expressed with a binary gating question rather than by scoping the skipped items on
-several answers.
+Since 17.0 `triggering_answer_ids` is many2many, so a question can also be shown for any
+of several gating answers.
 
 ## Notes
 

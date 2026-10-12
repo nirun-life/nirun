@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 05:14+0000\n"
-"PO-Revision-Date: 2026-09-20 05:14+0000\n"
+"POT-Creation-Date: 2026-10-12 08:22+0000\n"
+"PO-Revision-Date: 2026-10-12 08:22+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,15 +19,15 @@ msgstr ""
 #. odoo-python
 #: code:addons/survey_grading/models/survey_grade.py:0
 #, python-format
-msgid "%s is not a valid range (%s >= %s)"
-msgstr "%s ไม่อยู่ในช่วง (%s >= %s)"
+msgid "%(name)s is not a valid range (%(low)s >= %(high)s)"
+msgstr "%(name)s ไม่อยู่ในช่วง (%(low)s >= %(high)s)"
 
 #. module: survey_grading
 #. odoo-python
 #: code:addons/survey_grading/models/survey_grade.py:0
 #, python-format
-msgid "%s is overlapping with %s"
-msgstr "ค่า %s ซ้อนกับ %s"
+msgid "%(name)s is overlapping with %(other)s"
+msgstr "ค่า %(name)s ซ้อนกับ %(other)s"
 
 #. module: survey_grading
 #. odoo-python
@@ -53,12 +53,12 @@ msgstr "ชื่อเกณฑ์ต้องไม่ซ้ำกัน (%s)"
 msgid ""
 "Bootstrap's classes to change the appearance of this grade's badge at survey"
 " result screen"
-msgstr ""
+msgstr "คลาส Bootstrap สำหรับกำหนดสีป้ายเกณฑ์นี้ในหน้าผลแบบสอบถาม"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__color_class
 msgid "Color Class"
-msgstr ""
+msgstr "สีป้าย"
 
 #. module: survey_grading
 #: model:ir.model.fields,help:survey_grading.field_survey_grade__grading_basis
@@ -68,6 +68,8 @@ msgid ""
 "score. Use Points when the maximum score varies between responses, e.g. when"
 " conditional questions drop out of the scoring."
 msgstr ""
+"เทียบช่วงเกณฑ์กับร้อยละของคะแนน หรือกับคะแนนรวมดิบ ใช้แบบคะแนนเมื่อคะแนนเต็ม"
+"ของแต่ละคำตอบไม่เท่ากัน เช่น เมื่อคำถามแบบมีเงื่อนไขไม่ถูกนำมาคิดคะแนน"
 "เทียบช่วงของเกณฑ์กับร้อยละของคะแนน หรือกับคะแนนดิบรวม "
 "เลือกคะแนนดิบเมื่อคะแนนเต็มเปลี่ยนไปในแต่ละคำตอบ เช่น "
 "เมื่อคำถามแบบมีเงื่อนไขถูกตัดออกจากการคิดคะแนน"
@@ -90,7 +92,7 @@ msgstr "สร้างเมื่อ"
 #. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__danger
 msgid "Danger"
-msgstr ""
+msgstr "อันตราย"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__display_name
@@ -100,11 +102,15 @@ msgstr "ชื่อที่ใช้แสดง"
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__name
 #: model:ir.model.fields,field_description:survey_grading.field_survey_survey__grade_ids
-#: model:ir.model.fields,field_description:survey_grading.field_survey_user_input__grade
 #: model:ir.model.fields,field_description:survey_grading.field_survey_user_input__grade_id
 #: model_terms:ir.ui.view,arch_db:survey_grading.survey_fill_form_done_inherit
 msgid "Grade"
 msgstr "เกณฑ์"
+
+#. module: survey_grading
+#: model:ir.model.fields,field_description:survey_grading.field_survey_user_input__grade
+msgid "Grade Name"
+msgstr "ชื่อเกณฑ์"
 
 #. module: survey_grading
 #: model_terms:ir.ui.view,arch_db:survey_grading.survey_view_form_inherit
@@ -141,12 +147,7 @@ msgstr "รหัส"
 #. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__info
 msgid "Info"
-msgstr ""
-
-#. module: survey_grading
-#: model:ir.model.fields,field_description:survey_grading.field_survey_grade____last_update
-msgid "Last Modified on"
-msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
+msgstr "ข้อมูล"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__write_uid
@@ -181,7 +182,7 @@ msgstr "ต่ำสุด"
 #. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__muted
 msgid "Muted"
-msgstr ""
+msgstr "จาง"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__passing_grade
@@ -206,7 +207,7 @@ msgstr "เกณฑ์ที่เป็นไปได้"
 #. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__primary
 msgid "Primary"
-msgstr ""
+msgstr "หลัก"
 
 #. module: survey_grading
 #: model_terms:ir.ui.view,arch_db:survey_grading.survey_grade_view_form
@@ -216,12 +217,12 @@ msgstr "ช่วงคะแนน"
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__scoring_success_min
 msgid "Required Score (%)"
-msgstr ""
+msgstr "คะแนนที่ต้องได้ (%)"
 
 #. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__success
 msgid "Success"
-msgstr ""
+msgstr "สำเร็จ"
 
 #. module: survey_grading
 #: model:ir.model,name:survey_grading.model_survey_survey
@@ -247,7 +248,7 @@ msgstr "แบบสำรวจข้อมูลผู้ใช้"
 #. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__text
 msgid "Text"
-msgstr ""
+msgstr "ข้อความ"
 
 #. module: survey_grading
 #: model_terms:ir.ui.view,arch_db:survey_grading.survey_grade_view_tree
@@ -267,7 +268,7 @@ msgstr ""
 #. module: survey_grading
 #: model:ir.model.fields.selection,name:survey_grading.selection__survey_grade__color_class__warning
 msgid "Warning"
-msgstr ""
+msgstr "คำเตือน"
 
 #. module: survey_grading
 #: model:ir.model.fields,field_description:survey_grading.field_survey_grade__triggering_answer_ids
