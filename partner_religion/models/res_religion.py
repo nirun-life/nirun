@@ -1,9 +1,9 @@
 #  Copyright (c) 2021-2023 NSTDA
 import random
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.osv import expression
+from odoo.fields import Domain
 
 
 class Religion(models.Model):
@@ -42,9 +42,10 @@ class Religion(models.Model):
     )
     color = fields.Integer(default=lambda _: random.randint(0, 10))
     active = fields.Boolean(default=True)
-    _sql_constraints = [
-        ("name_uniq", "unique (name)", "Name of the religion must be unique !")
-    ]
+    _name_uniq = models.Constraint(
+        "unique (name)",
+        "Name of the religion must be unique !",
+    )
 
     @api.model
     def _search_display_name(self, operator, value):
@@ -52,7 +53,7 @@ class Religion(models.Model):
         if operator in ("ilike", "like") and isinstance(value, str):
             words = value.split()
             if len(words) > 1:
-                return expression.AND([[("name", operator, word)] for word in words])
+                return Domain.AND([[("name", operator, word)] for word in words])
         return super()._search_display_name(operator, value)
 
     @api.depends("name", "abbr", "parent_id.name")
@@ -85,4 +86,6 @@ class Religion(models.Model):
     @api.constrains("parent_id")
     def _check_hierarchy(self):
         if self._has_cycle():
-            raise ValidationError(_("Error! You cannot create recursive data."))
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
