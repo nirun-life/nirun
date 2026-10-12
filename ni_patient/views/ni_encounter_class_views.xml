@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021-2023 NSTDA
   -->
@@ -48,9 +48,9 @@
                 <sheet>
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
+                        invisible="active"
                     />
                     <group>
                         <group>
@@ -92,22 +92,19 @@
                                     <field name="service" />
                                     <field name="participant" />
                                 </group>
-                                <group
-                                    string="Auto-close"
-                                    attrs="{'invisible': [('admission', '=', True)]}"
-                                >
+                                <group string="Auto-close" invisible="admission">
                                     <field name="auto_close" />
                                     <field
                                         name="auto_close_midnight"
-                                        attrs="{'invisible': [('auto_close', '=', False)]}"
+                                        invisible="not auto_close"
                                     />
                                     <field
                                         name="auto_close_offset_number"
-                                        attrs="{'invisible': [('auto_close', '=', False)]}"
+                                        invisible="not auto_close"
                                     />
                                     <field
                                         name="auto_close_offset_type"
-                                        attrs="{'invisible': [('auto_close', '=', False)]}"
+                                        invisible="not auto_close"
                                     />
                                 </group>
                             </group>

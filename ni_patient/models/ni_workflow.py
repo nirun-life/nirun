@@ -119,10 +119,6 @@ class Request(models.Model):
         default="order",
         required=True,
         readonly=False,
-        states={
-            "completed": [("readonly", True)],
-            "revoked": [("readonly", True)],
-        },
     )
     priority = fields.Selection(
         [
@@ -134,10 +130,6 @@ class Request(models.Model):
         default="routine",
         required=True,
         readonly=False,
-        states={
-            "completed": [("readonly", True)],
-            "revoked": [("readonly", True)],
-        },
     )
     state = fields.Selection(
         [

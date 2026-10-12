@@ -52,17 +52,17 @@
                 />
                 <filter
                     name="in_progress"
-                    string='In-Progress'
+                    string="In-Progress"
                     domain="[('presence_state', '=', 'in-progress')]"
                 />
                 <filter
                     name="planned"
-                    string='Planned'
+                    string="Planned"
                     domain="[('presence_state', '=', 'planned')]"
                 />
                 <filter
                     name="finished"
-                    string='Discharged'
+                    string="Discharged"
                     domain="[('presence_state', 'in', ['finished', 'deceased'])]"
                 />
                 <filter
@@ -73,12 +73,12 @@
                 <separator />
                 <filter
                     name="alive"
-                    string='Alive'
+                    string="Alive"
                     domain="[('deceased_date', '=', False)]"
                 />
                 <filter
                     name="deceased"
-                    string='Deceased'
+                    string="Deceased"
                     domain="[('deceased_date', '!=', False)]"
                     context="{'show_deceased': True}"
                 />
@@ -159,26 +159,26 @@
                     <button
                         name="%(ni_encounter_action_from_patient)d"
                         string="Admission"
-                        attrs="{'invisible': ['|', ('is_encountering', '=', True), ('deceased', '=', True)]}"
                         class="btn-primary"
                         icon="fa-sign-in"
                         type="action"
                         groups="ni_patient.group_user"
+                        invisible="(is_encountering or deceased)"
                     />
                 </header>
                 <sheet>
                     <div
                         name="button_box"
-                        attrs="{'invisible': [('id', '=', False)]}"
                         class="oe_button_box"
                         groups="ni_patient.group_user"
+                        invisible="not id"
                     >
                         <button
                             name="action_encounter"
-                            attrs="{'invisible': [('encounter_count', '=', 0)]}"
                             class="oe_stat_button"
                             icon="fa-hospital-o"
                             type="object"
+                            invisible="encounter_count == 0"
                         >
                             <field
                                 name="encounter_count"
@@ -190,32 +190,30 @@
                     <field
                         name="image_1920"
                         class="oe_avatar"
-                        options='{"preview_image":"image_128"}'
-                        widget='image'
+                        options="{&quot;preview_image&quot;:&quot;image_128&quot;}"
+                        widget="image"
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('deceased', '=', False)]}"
                         bg_color="bg-dark"
                         title="Deceased"
+                        invisible="not deceased"
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': ['|', ('active', '=', True), ('deceased', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
+                        invisible="(active or deceased)"
                     />
                     <div class="oe_title">
                         <b>
                             <field
                                 name="identifier"
                                 placeholder="e.g. HN-001204"
-                                attrs="{'invisible': [('id', '=', False)], 'readonly': [('id', '!=', False)]}"
+                                invisible="not id"
+                                readonly="id"
                             />
-                            <div
-                                class="mb-1"
-                                attrs="{'invisible': [('id', '!=', False)]}"
-                            >New Patient</div>
+                            <div class="mb-1" invisible="id">New Patient</div>
                         </b>
                         <h1>
                             <field
@@ -228,9 +226,9 @@
                         <div class="oe_read_only">
                             <!-- align-top use for support responsive module-->
                             <label
-                                attrs="{'invisible': [('display_age', '=', False)]}"
                                 class="align-top"
                                 for="display_age"
+                                invisible="not display_age"
                             />
                             <field name="display_age" />
                         </div>
@@ -244,18 +242,19 @@
                         <group name="encounter">
                             <field
                                 name="partner_id"
-                                attrs="{'readonly':[('id', '!=', False)], 'invisible': [('id', '!=', False)]}"
-                                options='{"always_reload": True, "no_create": True}'
+                                options="{&quot;always_reload&quot;: True, &quot;no_create&quot;: True}"
                                 required="False"
                                 placeholder="from Contacts..."
+                                readonly="id"
+                                invisible="id"
                             />
                             <field
                                 name="partner_id"
                                 groups="base.group_no_one"
-                                attrs="{'invisible': [('id', '=', False)]}"
-                                options='{"always_reload": True, "no_create": True}'
+                                options="{&quot;always_reload&quot;: True, &quot;no_create&quot;: True}"
                                 readonly="True"
                                 required="False"
+                                invisible="not id"
                             />
                             <field name="company_id" invisible="1" />
                             <field
@@ -265,16 +264,13 @@
                             />
                             <field
                                 name="encounter_id"
-                                attrs="{'invisible': [('is_encountering', '=', False)]}"
                                 context="{'show_state': True, 'show_location': True}"
-                                options='{"always_reload": True}'
+                                options="{&quot;always_reload&quot;: True}"
+                                invisible="not is_encountering"
                             />
                         </group>
                     </group>
-                    <notebook
-                        name="notebook"
-                        attrs="{'invisible': [('id', '=', False)]}"
-                    >
+                    <notebook name="notebook" invisible="not id">
                         <page
                             name="private"
                             string="Private Information"
@@ -307,7 +303,7 @@
                                             name="state_id"
                                             class="o_address_state"
                                             context="{'country_id': country_id, 'zip': zip}"
-                                            options='{"no_open": True}'
+                                            options="{&quot;no_open&quot;: True}"
                                             placeholder="State"
                                         />
                                         <field
@@ -318,7 +314,7 @@
                                         <field
                                             name="country_id"
                                             class="o_address_country"
-                                            options='{"no_open": True, "no_create": True}'
+                                            options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
                                             placeholder="Country"
                                         />
                                     </div>
@@ -326,13 +322,13 @@
                                         name="other_address_id"
                                         placeholder="e.g. Current Address, Work Address"
                                         options="{'always_reload':True, 'no_quick_create': True}"
-                                        context="{'form_view_ref': 'base.res_partner_view_form_private', 'default_type': 'private', 'default_name': 'Home Address', 'show_address': True, 'show_name': False, 'no_bank':True, 'default_ref': identifier}"
+                                        context="{'form_view_ref': 'ni_patient.res_partner_view_form_address', 'default_type': 'other', 'default_name': 'Home Address', 'show_address': True, 'show_name': False, 'no_bank':True, 'default_ref': identifier}"
                                     />
                                 </group>
                                 <group string="Citizenship">
                                     <field
                                         name="nationality_id"
-                                        options='{"no_open": True}'
+                                        options="{&quot;no_open&quot;: True}"
                                     />
                                     <field
                                         name="identification_id"
@@ -351,21 +347,18 @@
                                         name="birthdate"
                                         placeholder="e.g. 31/01/1950"
                                     />
-                                    <field
-                                        name="age"
-                                        attrs="{'readonly': [('birthdate', '!=', False)]}"
-                                    />
+                                    <field name="age" readonly="birthdate" />
                                     <field
                                         name="age_range_id"
-                                        attrs="{'readonly': ['|', ('birthdate', '!=', False), ('age', '!=', 0)]}"
                                         groups="ni_patient.group_admin"
+                                        readonly="(birthdate or age != 0)"
                                     />
                                 </group>
                                 <group string="Marital Status">
                                     <field name="marital_status" />
                                     <field
                                         name="spouse_name"
-                                        attrs="{'invisible':[('marital_status', '=', 'single')]}"
+                                        invisible="marital_status == 'single'"
                                     />
                                 </group>
                                 <group string="Family">
@@ -374,7 +367,7 @@
                                     <field name="sibling_count" />
                                     <field
                                         name="birth_order"
-                                        attrs="{'invisible': [('sibling_count', '=', 0)]}"
+                                        invisible="sibling_count == 0"
                                     />
                                     <field name="children_count" />
                                 </group>
@@ -399,7 +392,7 @@
                                 <group
                                     name="archive_state"
                                     string="Patient State"
-                                    attrs="{'invisible': [('active', '=', True)]}"
+                                    invisible="active"
                                 >
                                     <field
                                         name="state_reason_id"
@@ -658,23 +651,23 @@
                                 >
                                     <button
                                         name="%(ni_encounter_action_from_patient)d"
-                                        attrs="{'invisible': [('presence_state', 'not in', ['unknown', 'finished'])]}"
                                         class="btn-outline-primary"
                                         icon="fa-sign-in"
                                         type="action"
                                         groups="ni_patient.group_user"
+                                        invisible="presence_state not in ['unknown', 'finished']"
                                     >
                                         Admission
                                     </button>
                                     <button
                                         name="%(ni_encounter_action)d"
                                         string="Validate"
-                                        attrs="{'invisible': [('presence_state', 'not in', ['draft', 'planned'])]}"
                                         class="btn btn-outline-info"
                                         context="{'search_default_patient_id': active_id}"
                                         icon="fa-file-o"
                                         type="action"
                                         groups="ni_patient.group_user"
+                                        invisible="presence_state not in ['draft', 'planned']"
                                     >
                                         Validate
                                     </button>

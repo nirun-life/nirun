@@ -242,7 +242,7 @@
                 date_start="period_start"
                 hide_time="true"
                 mode="month"
-                quick_add="False"
+                quick_create="0"
             >
                 <field name="patient_id" />
                 <field name="class_id" />
@@ -282,64 +282,64 @@
                 <header>
                     <button
                         name="action_confirm"
-                        attrs="{'invisible': [('state', 'not in', ['draft'])]}"
                         string="Confirm"
                         class="btn-primary"
                         type="object"
                         confirm="Are you sure you want to confirm this?"
                         groups="ni_patient.group_user"
+                        invisible="state not in ['draft']"
                     />
                     <button
                         name="action_confirm"
                         string="Start"
-                        attrs="{'invisible': [('state', 'not in', [ 'planned'])]}"
                         class="btn-warning"
                         confirm="Are you sure you want to start this?"
                         type="object"
                         icon="fa-check-square-o"
                         groups="ni_patient.group_user"
+                        invisible="state not in ['planned']"
                     />
                     <button
                         name="%(ni_encounter_discharge_wizard_action)d"
-                        attrs="{'invisible': ['|', ('is_admission', '=', False),('state', 'not in', ['in-progress'])]}"
                         string="Discharge"
                         class="btn-primary"
                         context="{'default_encounter_id': id}"
                         icon="fa-share-square-o"
                         type="action"
                         groups="ni_patient.group_user"
+                        invisible="(not is_admission or state not in ['in-progress'])"
                     />
                     <button
                         name="action_close"
                         type="object"
                         string="Finish"
                         class="btn-primary"
-                        attrs="{'invisible': ['|', ('is_admission', '=', True), ('state', 'not in', ['in-progress'])]}"
                         icon="fa-share-square-o"
                         confirm="Are you sure to finish this encounter?"
+                        invisible="(is_admission or state not in ['in-progress'])"
                     />
                     <button
                         name="action_cancel"
                         string="Cancel"
-                        attrs="{'invisible': [('state', 'not in', ['planned', 'in-progress'])]}"
                         type="object"
                         confirm="Are you sure you want to cancel this?"
                         groups="ni_patient.group_user"
+                        invisible="state not in ['planned', 'in-progress']"
                     />
                     <button
                         name="action_reset_to_draft"
                         string="Reset To Draft"
-                        attrs="{'invisible': [('state', 'not in', ['cancelled', 'entered-in-error'])]}"
                         type="object"
                         confirm="Are you sure you want to reset this to draft?"
                         groups="ni_patient.group_admin"
+                        invisible="state not in ['cancelled', 'entered-in-error']"
                     />
                     <button
                         name="action_participate"
                         type="object"
                         string="Participate"
                         icon="fa-user-plus"
-                        attrs="{'invisible': ['|', ('show_participant', '=', False), '|', ('participate', '=', True),('state', 'not in', ['in-progress', 'draft'])]}"
+                        invisible="(not show_participant or (participate or state not in ['in-progress', 'draft']))"
                     />
                     <button
                         name="action_quit"
@@ -347,7 +347,7 @@
                         string="Quit"
                         icon="fa-user-times"
                         confirm="Are you sure to stop the participation of this encounter?"
-                        attrs="{'invisible': ['|', ('show_participant', '=', False), '|', ('participate', '=', False), ('state', 'not in', ['in-progress', 'draft'])]}"
+                        invisible="(not show_participant or (not participate or state not in ['in-progress', 'draft']))"
                     />
                     <field
                         name="state"
@@ -358,55 +358,55 @@
                 <sheet>
                     <div
                         name="button_box"
-                        attrs="{'invisible': [('id', '=', False)]}"
                         class="oe_button_box"
                         groups="ni_patient.group_user"
+                        invisible="not id"
                     />
                     <field
                         name="image_1920"
                         class="oe_avatar"
-                        options='{"preview_image":"image_128"}'
-                        widget='image'
-                        attrs="{'invisible': [('patient_id', '=', False)]}"
+                        options="{&quot;preview_image&quot;:&quot;image_128&quot;}"
+                        widget="image"
+                        invisible="not patient_id"
                     />
                     <widget
                         name="web_ribbon"
                         class="oe_read_only"
-                        attrs="{'invisible': ['|',('state', '!=', 'draft'), ('id', '=', False)]}"
                         bg_color="bg-warning"
                         title="Draft"
+                        invisible="(state != 'draft' or not id)"
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('state', '!=', 'cancelled')]}"
                         bg_color="bg-danger"
                         title="Cancelled"
+                        invisible="state != 'cancelled'"
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('state', '!=', 'finished')]}"
                         bg_color="bg-success"
                         title="Finished"
+                        invisible="state != 'finished'"
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('state', '!=', 'entered-in-error')]}"
                         bg_color="bg-danger"
                         title="Error Entry"
+                        invisible="state != 'entered-in-error'"
                     />
                     <div class="oe_title">
                         <div>
                             <label for="identifier" />
                         </div>
                         <h1>
-                            <field name="identifier" placeholder="AN. 0000X" />
+                            <field
+                                name="identifier"
+                                readonly="state != 'draft'"
+                                placeholder="AN. 0000X"
+                            />
                         </h1>
                     </div>
-                    <div
-                        name="company"
-                        class="mb-4"
-                        attrs="{'invisible': [('id', '=', False)]}"
-                    >
+                    <div name="company" class="mb-4" invisible="not id">
                         <i class="fa fa-building text-primary" title="Company" />
                         <field
                             name="company_id"
@@ -421,6 +421,7 @@
                             <div>
                                 <field
                                     name="patient_id"
+                                    readonly="state != 'draft'"
                                     context="{'show_identifier': True}"
                                     options="{'always_reload': True}"
                                     placeholder="Search for patient..."
@@ -430,11 +431,13 @@
                             <field name="display_age" />
                             <field
                                 name="class_id"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                 options="{'no_create': True, 'no_open':True, 'always_reload': True}"
                                 context="{'show_parent': True}"
                             />
                             <field
                                 name="location_id"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                 domain="[('company_id', '=', company_id)]"
                                 options="{'no_create': True, 'always_reload': True, 'no_open': True}"
                                 context="{'show_parent': True}"
@@ -443,11 +446,11 @@
                         <group>
                             <label
                                 for="participant_id"
-                                attrs="{'invisible': ['|', ('participant_id', '=', False), ('show_participant', '=', False)]}"
+                                invisible="(not participant_id or not show_participant)"
                             />
                             <div
                                 class="o_row"
-                                attrs="{'invisible': ['|', ('participant_id', '=', False), ('show_participant', '=', False)]}"
+                                invisible="(not participant_id or not show_participant)"
                             >
                                 <field
                                     name="participant_id"
@@ -456,89 +459,109 @@
                                 <label for="participant_permit_no" />
                                 <field name="participant_permit_no" />
                             </div>
-                            <field name="period_start" placeholder="Start" />
+                            <field
+                                name="period_start"
+                                readonly="state != 'draft'"
+                                placeholder="Start"
+                            />
                             <field
                                 name="period_end"
                                 placeholder="End"
-                                attrs="{'invisible': [('state', 'not in', ['cancelled','finished'])]}"
+                                invisible="state not in ['cancelled', 'finished']"
                             />
                             <field name="duration" />
                         </group>
                         <group>
                             <field
                                 name="priority"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                 widget="radio"
                                 options="{'horizontal': True}"
                             />
                         </group>
                     </group>
-                    <notebook attrs="{'invisible': [('id', '=', False)]}">
+                    <notebook invisible="not id">
                         <page
                             name="admission"
                             string="Admission"
                             icon="fa-bed"
-                            attrs="{'invisible': [('is_admission', '=', False)]}"
+                            invisible="not is_admission"
                         >
                             <group>
                                 <group string="Admission">
-                                    <field name="admit_source_id" />
+                                    <field
+                                        name="admit_source_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                    />
                                     <field
                                         name="origin_partner_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                         context="{'default_type': 'contact', 'default_show_company': False}"
-                                        options='{"always_reload": True}'
+                                        options="{&quot;always_reload&quot;: True}"
                                     />
                                     <field
                                         name="origin_date"
-                                        attrs="{'invisible': [('origin_partner_id', '=', False)]}"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        invisible="not origin_partner_id"
                                     />
-                                    <field name="re_admission" />
+                                    <field
+                                        name="re_admission"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                    />
                                     <field
                                         name="re_admission_reason"
-                                        attrs="{'invisible': [('re_admission', '=', False)]}"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        invisible="not re_admission"
                                     />
                                     <field
                                         name="re_admission_encounter_id"
-                                        attrs="{'invisible': [('re_admission', '=', False)]}"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                         context="{'order_display': 'period_end desc, period_start desc'}"
                                         options="{'always_reload': True, 'no_create': True, 'no_create_edit': True}"
+                                        invisible="not re_admission"
                                     />
-                                    <field name="pre_admission_identifier" />
+                                    <field
+                                        name="pre_admission_identifier"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                    />
                                 </group>
-                                <group
-                                    string="Special"
-                                    attrs="{'invisible': [('show_special', '=', False)]}"
-                                >
+                                <group string="Special" invisible="not show_special">
                                     <field
                                         name="arrangement_ids"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                         options="{'color_field': 'color', 'no_edit': True}"
                                         widget="many2many_tags"
                                     />
                                     <field
                                         name="courtesy_ids"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                         options="{'color_field': 'color', 'no_edit': True}"
                                         widget="many2many_tags"
                                     />
                                     <field
                                         name="diet_ids"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                         options="{'color_field': 'color', 'no_edit': True}"
                                         widget="many2many_tags"
                                     />
                                 </group>
                             </group>
-                            <group
-                                string="Discharge"
-                                attrs="{'invisible': [('state', '!=', 'finished')]}"
-                            >
+                            <group string="Discharge" invisible="state != 'finished'">
                                 <group>
                                     <field
                                         name="discharge_status_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                         options="{'no_open': True}"
                                     />
                                     <field
                                         name="discharge_disposition_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                         options="{'no_open': True}"
                                     />
-                                    <field name="discharge_partner_id" />
+                                    <field
+                                        name="discharge_partner_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                    />
                                 </group>
                                 <div>
                                     <field
@@ -552,10 +575,11 @@
                             name="cc"
                             string="Chief Complaint"
                             icon="fa-star-half-o"
-                            attrs="{'invisible': [('show_chief_complaint', '=', False)]}"
+                            invisible="not show_chief_complaint"
                         >
                             <field
                                 name="chief_complaint"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                 placeholder="Chief Complaint"
                             />
                             <div class="my-1">
@@ -566,10 +590,11 @@
                                 />
                                 <field
                                     name="reason_ids"
+                                    readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                     class="mx-3"
                                     placeholder="Reason Tag..."
                                     options="{'color_field': 'color'}"
-                                    widget='many2many_tags'
+                                    widget="many2many_tags"
                                 />
                             </div>
                             <div class="my-2">
@@ -589,10 +614,11 @@
                             name="hpi"
                             string="History of Present Illness"
                             icon="fa-hourglass-start"
-                            attrs="{'invisible': [('show_history_of_present_illness', '=', False)]}"
+                            invisible="not show_history_of_present_illness"
                         >
                             <field
                                 name="history_of_present_illness"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                 placeholder="History of Present Illness"
                             />
                             <div class="my-2">
@@ -612,11 +638,12 @@
                             name="history"
                             string="History"
                             icon="fa-history"
-                            attrs="{'invisible': [('show_history', '=', False)]}"
+                            invisible="not show_history"
                         >
                             <separator string="Past Medical History" />
                             <field
                                 name="past_medical_history"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                 placeholder="Past Medical History"
                             />
                             <div class="my-2">
@@ -636,10 +663,11 @@
                             name="ros"
                             string="Review of Systems"
                             icon="fa-stethoscope"
-                            attrs="{'invisible': [('show_review_of_systems', '=', False)]}"
+                            invisible="not show_review_of_systems"
                         >
                             <field
                                 name="review_of_systems"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                 placeholder="Review of Systems"
                             />
                             <div class="my-2">
@@ -659,10 +687,11 @@
                             name="pe"
                             string="Physical Examination"
                             icon="fa-gavel"
-                            attrs="{'invisible': [('show_physical_exam', '=', False)]}"
+                            invisible="not show_physical_exam"
                         >
                             <field
                                 name="physical_exam"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                                 placeholder="Physical Examination"
                             />
                             <div class="my-2">
@@ -682,61 +711,61 @@
                             name="vital-signs"
                             string="Vital Signs"
                             icon="fa-heartbeat"
-                            attrs="{'invisible': [('show_vital_signs', '=', False)]}"
+                            invisible="not show_vital_signs"
                         />
                         <page
                             name="laboratory"
                             string="Laboratory"
                             icon="fa-flask"
-                            attrs="{'invisible': [('show_laboratory', '=', False)]}"
+                            invisible="not show_laboratory"
                         />
                         <page
                             name="problem"
                             string="Problem List"
                             icon="fa-list-ul"
-                            attrs="{'invisible': [('show_problem_list', '=', False)]}"
+                            invisible="not show_problem_list"
                         />
                         <page
                             name="order"
                             string="Order"
                             icon="fa-inbox"
-                            attrs="{'invisible': [('show_order', '=', False)]}"
+                            invisible="not show_order"
                         />
                         <page
                             name="service"
-                            string="กิจกรรมการดูแลสุขภาพ"
+                            string="&#3585;&#3636;&#3592;&#3585;&#3619;&#3619;&#3617;&#3585;&#3634;&#3619;&#3604;&#3641;&#3649;&#3621;&#3626;&#3640;&#3586;&#3616;&#3634;&#3614;"
                             icon="fa-list-alt"
-                            attrs="{'invisible': [('show_service', '=', False)]}"
+                            invisible="not show_service"
                         />
                         <page
                             name="medication"
                             string="Medication"
                             icon="fa-minus-circle"
-                            attrs="{'invisible': [('show_medication', '=', False)]}"
+                            invisible="not show_medication"
                         />
                         <page
                             name="procedure"
                             string="Procedure"
                             icon="fa-scissors"
-                            attrs="{'invisible': [('show_procedure', '=', False)]}"
+                            invisible="not show_procedure"
                         />
                         <page
                             name="questionnaire"
                             string="Questionnaire"
                             icon="fa-pencil-square-o"
-                            attrs="{'invisible': [('show_questionnaire', '=', False)]}"
+                            invisible="not show_questionnaire"
                         />
                         <page
                             name="document_ref"
                             string="Document"
                             icon="fa-file-text"
-                            attrs="{'invisible': [('show_document_ref', '=', False)]}"
+                            invisible="not show_document_ref"
                         />
                         <page
                             name="careplan"
                             icon="fa-bullseye"
                             string="Care Plan"
-                            attrs="{'invisible': [('show_careplan', '=', False)]}"
+                            invisible="not show_careplan"
                         >
 
                         </page>
@@ -927,7 +956,7 @@
                 date_start="period_end"
                 hide_time="true"
                 mode="month"
-                quick_add="False"
+                quick_create="0"
             >
                 <field name="patient_id" />
                 <field name="class_id" />
