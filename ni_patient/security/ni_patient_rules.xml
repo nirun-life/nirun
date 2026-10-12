@@ -31,12 +31,16 @@
         <field name="name">Encounter Classification: multi-company</field>
         <field name="model_id" ref="model_ni_encounter_class" />
         <field name="global" eval="True" />
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field
+            name="domain_force"
+        >['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
     <record id="location_company_rule" model="ir.rule">
         <field name="name">Location: multi-company</field>
         <field name="model_id" ref="model_ni_location" />
         <field name="global" eval="True" />
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field
+            name="domain_force"
+        >['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
 </odoo>

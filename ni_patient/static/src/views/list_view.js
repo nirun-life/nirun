@@ -23,7 +23,8 @@ export class PatientListController extends ListController {
             // ponytail: "เลือกทั้งหมด" ส่ง id ได้ถึง active_ids_limit (20000)
             // ระดับนั้น dialog ค้าง (m2m write + name_get + DOM tag อย่างละ 20k)
             // ถ้าเจอจริง: ใส่ limit หรือเลิกโชว์ tag ใช้ patient_count เป็นข้อความแทน
-            archiveAction.callback = async () => this.archivePatient(await this.getSelectedResIds());
+            archiveAction.callback = async () =>
+                this.archivePatient(await this.getSelectedResIds());
         }
         return menuItems;
     }

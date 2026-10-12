@@ -57,7 +57,7 @@ class Encounter(models.Model):
             self = self.with_context(
                 default_class_id=comp.encounter_class_id.id,
             )
-        return super(Encounter, self).default_get(fields)
+        return super().default_get(fields)
 
     company_id = fields.Many2one(
         related="patient_id.company_id",
@@ -545,13 +545,13 @@ class Encounter(models.Model):
         rec = self
         name = rec.name
         if self._context.get("show_class"):
-            name = "{}/{}".format(name, rec.class_id.code or rec.class_id.name)
+            name = f"{name}/{rec.class_id.code or rec.class_id.name}"
         if self._context.get("show_patient") or self._context.get("show_patient_name"):
-            name = "{} {}".format(name, rec.patient_id.name)
+            name = f"{name} {rec.patient_id.name}"
         if self._context.get("show_state"):
-            name = "{} [{}]".format(name, rec._get_state_label())
+            name = f"{name} [{rec._get_state_label()}]"
         if self._context.get("show_location") and rec.location_id:
-            name = "{}\n{}".format(name, rec.location_id.display_name)
+            name = f"{name}\n{rec.location_id.display_name}"
         if self._context.get("show_period"):
             name = "{}\n{} → {}".format(
                 name, rec.period_start, rec.period_end or _("Now")
@@ -652,7 +652,7 @@ class Encounter(models.Model):
         summary = self.class_id.name
         if self.priority != "routine":
             priority_label = dict(self._fields["priority"].selection).get(self.priority)
-            summary = "{} ({})".format(summary, priority_label)
+            summary = f"{summary} ({priority_label})"
         return summary
 
     @api.model
@@ -661,8 +661,8 @@ class Encounter(models.Model):
         ts = fields.Datetime.now()
         for f in self._sign_fields:
             if f in vals and vals[f]:
-                f_uid = "{}_uid".format(f)
-                f_date = "{}_date".format(f)
+                f_uid = f"{f}_uid"
+                f_date = f"{f}_date"
                 if f_uid not in vals:
                     value[f_uid] = self.env.uid
                 if f_date not in vals:
@@ -784,9 +784,7 @@ class Encounter(models.Model):
         user = self.env["res.users"].browse(self.env.uid)
         if not user.employee_id:
             raise ValidationError(
-                _(
-                    "กรุณาติดต่อผู้ดูแลระบบเพือเพิ่มทะเบียนผู้ปฎิบัติงานก่อนบันทึกเป็นผู้มีส่วนร่วมในงานให้บริการ"
-                )
+                _("กรุณาติดต่อผู้ดูแลระบบเพือเพิ่มทะเบียนผู้ปฎิบัติงานก่อนบันทึกเป็นผู้มีส่วนร่วมในงานให้บริการ")
             )
         val = {
             "user_id": user.id,
