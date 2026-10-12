@@ -30,7 +30,7 @@ class SurveyUserInput(models.Model):
     subject_name = fields.Char(compute="_compute_subject_ref")
 
     def _auto_init(self):
-        res = super(SurveyUserInput, self)._auto_init()
+        res = super()._auto_init()
         tools.create_index(
             self._cr,
             "survey_user_input_subject_idx",
@@ -45,9 +45,7 @@ class SurveyUserInput(models.Model):
             if rec.subject_model and rec.subject_id:
                 rec.update(
                     {
-                        "subject_ref": "{},{}".format(
-                            rec.subject_model, rec.subject_id
-                        ),
+                        "subject_ref": f"{rec.subject_model},{rec.subject_id}",
                         "subject_name": rec._get_subject_name(),
                     }
                 )
