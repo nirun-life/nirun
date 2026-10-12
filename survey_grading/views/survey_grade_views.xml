@@ -41,11 +41,11 @@
                             options="{'no_create': True}"
                             context="{'show_question': 1, 'search_default_group_by_question':1}"
                         >
-                            <tree>
+                            <list>
                                 <field name="question_id" />
                                 <field name="value" />
                                 <field name="answer_score" optional="hide" />
-                            </tree>
+                            </list>
                         </field>
                     </page>
                 </notebook>
@@ -53,11 +53,11 @@
         </field>
     </record>
     <record id="survey_grade_view_tree" model="ir.ui.view">
-        <field name="name">survey.grade.view.tree</field>
+        <field name="name">survey.grade.view.list</field>
         <field name="model">survey.grade</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="survey_id" invisible="1" />
+            <list>
+                <field name="survey_id" column_invisible="1" />
                 <field name="name" />
                 <field
                     name="low"
@@ -78,7 +78,7 @@
                     decoration-info="color_class == 'info'"
                 />
                 <field
-                    invisible="1"
+                    column_invisible="1"
                     name="triggering_answer_ids"
                     widget="many2many_tags"
                     options="{'no_create': True}"
@@ -91,9 +91,9 @@
                     class="icon_rotates"
                     invisible="not triggering_answer_ids"
                 />
-                <field name="color_class" invisible="1" />
-                <field name="passing_grade" invisible="1" />
-            </tree>
+                <field name="color_class" column_invisible="1" />
+                <field name="passing_grade" column_invisible="1" />
+            </list>
         </field>
     </record>
 </odoo>
