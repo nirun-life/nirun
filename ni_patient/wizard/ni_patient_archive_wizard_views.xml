@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-        <!-- Form View -->
-        <record id="ni_patient_archive_wizard_view_form" model="ir.ui.view">
-            <field name="name">ni.patient.archive.wizard.view.form</field>
-            <field name="model">ni.patient.archive.wizard</field>
-            <field name="arch" type="xml">
-                <form>
-                    <sheet>
-                        <field name="patient_count" invisible="1" />
-                        <h1 invisible="patient_count &gt; 1">
-                            <field name="patient_name" nolabel="1" />
-                        </h1>
-                        <group>
-                            <group id="info">
-                                <field
+    <!-- Form View -->
+    <record id="ni_patient_archive_wizard_view_form" model="ir.ui.view">
+        <field name="name">ni.patient.archive.wizard.view.form</field>
+        <field name="model">ni.patient.archive.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="patient_count" invisible="1" />
+                    <h1 invisible="patient_count &gt; 1">
+                        <field name="patient_name" nolabel="1" />
+                    </h1>
+                    <group>
+                        <group id="info">
+                            <field
                                 name="patient_ids"
                                 readonly="1"
                                 widget="many2many_tags"
                                 options="{'no_open': True}"
                                 invisible="patient_count &lt; 2"
                             />
-                                <field
+                            <field
                                 name="state_reason_id"
                                 options="{'no_edit': True, 'no_create': True, 'no_open': True}"
                             />
-                                <field name="state_date" />
-                            </group>
-                            <!--                            <group id="action">-->
-                            <!--                                <div class="o_td_label" id="activities_label" invisible="1">-->
-                            <!--                                    <span class="o_form_label o_hr_form_label cursor-default">Close Activities</span>-->
-                            <!--                                </div>-->
-                            <!--                                <div class="column" id="activities" invisible="1">-->
-                            <!--                                    &lt;!&ndash; &#3627;&#3634;&#3585;&#3617;&#3637;&#3615;&#3637;&#3648;&#3592;&#3629;&#3619;&#3660;&#3648;&#3614;&#3636;&#3656;&#3617;&#3648;&#3605;&#3636;&#3617;&#3648;&#3585;&#3637;&#3656;&#3618;&#3623;&#3585;&#3633;&#3610; activity &#3588;&#3656;&#3629;&#3618;&#3648;&#3614;&#3636;&#3656;&#3617;&#3605;&#3619;&#3591;&#3609;&#3637;&#3657; &ndash;&gt;-->
-                            <!--                                </div>-->
-                            <!--                                <separator colspan="2" />-->
-                            <!--                                &lt;!&ndash; &#3605;&#3619;&#3591;&#3609;&#3637;&#3657;&#3621;&#3610; Archive Private Address &#3629;&#3629;&#3585;&#3649;&#3621;&#3657;&#3623; &ndash;&gt;-->
-                            <!--                            </group>-->
+                            <field name="state_date" />
                         </group>
-                        <group>
-                            <div id="detailed_reason" colspan="2">
-                                <span
+                        <!--                            <group id="action">-->
+                        <!--                                <div class="o_td_label" id="activities_label" invisible="1">-->
+                        <!--                                    <span class="o_form_label o_hr_form_label cursor-default">Close Activities</span>-->
+                        <!--                                </div>-->
+                        <!--                                <div class="column" id="activities" invisible="1">-->
+                        <!--                                    &lt;!&ndash; &#3627;&#3634;&#3585;&#3617;&#3637;&#3615;&#3637;&#3648;&#3592;&#3629;&#3619;&#3660;&#3648;&#3614;&#3636;&#3656;&#3617;&#3648;&#3605;&#3636;&#3617;&#3648;&#3585;&#3637;&#3656;&#3618;&#3623;&#3585;&#3633;&#3610; activity &#3588;&#3656;&#3629;&#3618;&#3648;&#3614;&#3636;&#3656;&#3617;&#3605;&#3619;&#3591;&#3609;&#3637;&#3657; &ndash;&gt;-->
+                        <!--                                </div>-->
+                        <!--                                <separator colspan="2" />-->
+                        <!--                                &lt;!&ndash; &#3605;&#3619;&#3591;&#3609;&#3637;&#3657;&#3621;&#3610; Archive Private Address &#3629;&#3629;&#3585;&#3649;&#3621;&#3657;&#3623; &ndash;&gt;-->
+                        <!--                            </group>-->
+                    </group>
+                    <group>
+                        <div id="detailed_reason" colspan="2">
+                            <span
                                 class="o_form_label o_hr_form_label cursor-default"
                             >Detailed Reason</span>
-                                <field name="state_note" />
-                            </div>
-                        </group>
-                    </sheet>
-                    <footer>
-                        <button
+                            <field name="state_note" />
+                        </div>
+                    </group>
+                </sheet>
+                <footer>
+                    <button
                         name="action_register_departure"
                         string="Apply"
                         type="object"
                         class="oe_highlight"
                         data-hotkey="q"
                     />
-                        <button
+                    <button
                         string="Discard"
                         class="btn-secondary"
                         special="cancel"
                         data-hotkey="z"
                     />
-                    </footer>
-                </form>
-            </field>
-        </record>
-        <!-- &#3652;&#3617;&#3656;&#3617;&#3637; act_window: wizard &#3606;&#3641;&#3585;&#3648;&#3611;&#3636;&#3604;&#3592;&#3634;&#3585; archive_patient_hook.js &#3607;&#3637;&#3656;&#3626;&#3656;&#3591; default_patient_ids &#3617;&#3634;&#3651;&#3627;&#3657; -->
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!-- &#3652;&#3617;&#3656;&#3617;&#3637; act_window: wizard &#3606;&#3641;&#3585;&#3648;&#3611;&#3636;&#3604;&#3592;&#3634;&#3585; archive_patient_hook.js &#3607;&#3637;&#3656;&#3626;&#3656;&#3591; default_patient_ids &#3617;&#3634;&#3651;&#3627;&#3657; -->
 </odoo>
