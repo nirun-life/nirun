@@ -8,17 +8,16 @@
         name="Survey: finished"
         inherit_id="survey.survey_fill_form_done"
     >
+        <!-- Since 18.0 core prints "You scored" in the heading. Keep it for partner
+             subjects; other subjects get "Thank you!" and a line naming the subject. -->
         <xpath
-            expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div"
+            expr="//div[hasclass('o_survey_finished')]/h1/t[1]"
             position="attributes"
         >
-            <attribute name="t-if">is_partner_subject</attribute>
+            <attribute name="t-if" separator=" and " add="is_partner_subject" />
         </xpath>
-        <xpath
-            expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]/t[1]/div"
-            position="after"
-        >
-            <div t-if="not is_partner_subject">
+        <xpath expr="//div[hasclass('o_survey_finished')]/h1" position="after">
+            <div t-if="survey.scoring_type != 'no_scoring' and not is_partner_subject">
                 <t t-esc="answer.subject_name" />
                 scored
                 <t t-esc="answer.scoring_percentage" />
@@ -89,10 +88,12 @@ function returnToPreviousURL() {
         name="Survey: Retake button"
         inherit_id="survey.survey_button_retake"
     >
-        <xpath expr="//div/t" position="attributes">
-            <attribute name="t-if">
-                survey.subject_type == 'res.partner' and not answer.scoring_success and not answer.is_session_answer
-            </attribute>
+        <xpath expr="/t/div" position="attributes">
+            <attribute
+                name="t-if"
+                separator=" and "
+                add="survey.subject_type == 'res.partner'"
+            />
         </xpath>
     </template>
 </odoo>
