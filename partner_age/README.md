@@ -15,13 +15,17 @@ manual age input fallback, deceased tracking, age ranges, and daily recomputatio
 
 ## Data, Views, and Automation
 
-- Partner form: adds editable age, birthdate, and deceased-date fields plus hidden
-  internal tracking fields.
-- Age-range configuration: adds tree/form views, an action, and a Contacts configuration
+- Partner form: adds editable age, birthdate, and deceased-date fields after `title`.
+- Age-range configuration: adds list/form views, an action, and a Contacts configuration
   menu entry.
 - Seeds default age ranges from `0-9 Years old` through `100 Years & above`.
 - Schedules two daily cron jobs: one recomputes age values, and one recomputes age-range
   assignments.
+
+## Security
+
+- `res.partner.age.range`: internal, portal and public users can read; contact managers
+  (`base.group_partner_manager`) have full access.
 
 ## Dependencies
 
@@ -33,6 +37,8 @@ manual age input fallback, deceased tracking, age ranges, and daily recomputatio
 
 - If a record has no birthdate, entering `age` stores the input as `age_init` plus
   `age_init_date`; subsequent age updates are derived from that snapshot.
+- `display_age` is a non-stored compute of its own, so reading it never rewrites the
+  stored `age`, `age_month` and `age_day`.
 - The module prevents future birthdates, future deceased dates, deceased dates before
   birthdate, and negative ages.
 - Tests cover partner age calculation, age ranges, and contact integration.
