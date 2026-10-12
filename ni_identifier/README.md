@@ -1,6 +1,6 @@
 # Nirun - Identifier
 
-Odoo 17.0 utility module that adds reusable auto-generated identifiers to clinical
+Odoo 18.0 utility module that adds reusable auto-generated identifiers to clinical
 resources. It exists so dependent models can expose stable human-facing identifiers
 without re-implementing sequence and default logic.
 
