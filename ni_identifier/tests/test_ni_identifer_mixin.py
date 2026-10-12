@@ -14,7 +14,7 @@ else:
 class TestMixin(TransactionCase):
     @classmethod
     def setUpClass(cls):
-        super(TestMixin, cls).setUpClass()
+        super().setUpClass()
 
         cls.loader = FakeModelLoader(cls.env, cls.__module__)
         cls.loader.backup_registry()
@@ -36,7 +36,7 @@ class TestMixin(TransactionCase):
     @classmethod
     def tearDownClass(cls):
         cls.loader.restore_registry()
-        super(TestMixin, cls).tearDownClass()
+        super().tearDownClass()
 
     def test_create(self):
         partner = self.env["res.partner"].create({"name": "BAR"})
