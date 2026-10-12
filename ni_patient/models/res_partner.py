@@ -1,12 +1,14 @@
 #  Copyright (c) 2021-2023 NSTDA
 
 from odoo import api, fields, models
+from odoo.osv import expression
 
 
 class Partner(models.Model):
     _inherit = "res.partner"
 
     patient = fields.Boolean(
+        "Is a Patient",
         compute="_compute_patient",
         store=True,
         help="Check this box if this contact is an Patient.",
@@ -19,7 +21,7 @@ class Partner(models.Model):
     patient_id = fields.Many2one(
         "ni.patient",
         "Patient Record",
-        compute="_compute_patient",
+        compute="_compute_patient_id",
         compute_sudo=True,
         groups="ni_patient.group_viewer",
     )
@@ -31,21 +33,20 @@ class Partner(models.Model):
     )
 
     @api.model
-    def _name_search(self, name, domain=None, operator="ilike", limit=None, order=None):
-        domain = list(domain or [])
-        if name:
-            name = name.split(" / ")[-1]
-        if not (name == "" and operator == "ilike"):
-            domain += [
-                "|",
-                "|",
-                "|",
-                ("name", operator, name),
-                ("mobile", "=", name),
-                ("phone", "=", name),
-                ("identification_id", "=", name),
-            ]
-        return self._search(domain, limit=limit, order=order)
+    def _search_display_name(self, operator, value):
+        # Also find a partner by its exact phone, mobile or identification number.
+        domain = super()._search_display_name(operator, value)
+        if operator in ("ilike", "=ilike", "like", "=like", "=") and value:
+            value = value.split(" / ")[-1]
+            domain = expression.OR(
+                [
+                    domain,
+                    [("mobile", "=", value)],
+                    [("phone", "=", value)],
+                    [("identification_id", "=", value)],
+                ]
+            )
+        return domain
 
     @api.model
     def default_get(self, default_fields):
@@ -65,6 +66,11 @@ class Partner(models.Model):
     def _compute_patient(self):
         for rec in self:
             rec.patient = bool(rec.patient_ids)
+
+    @api.depends("patient_ids")
+    @api.depends_context("company")
+    def _compute_patient_id(self):
+        for rec in self:
             rec.patient_id = rec.patient_ids.filtered(
                 lambda p: p.company_id == self.env.company
             )
