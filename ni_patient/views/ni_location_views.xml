@@ -21,7 +21,7 @@
                 <field
                     name="parent_id"
                     operator="child_of"
-                    domain="[('child_count', '>', 1)]"
+                    domain="[('child_count', '&gt;', 1)]"
                 />
                 <separator />
                 <filter
@@ -74,9 +74,9 @@
                 <sheet>
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
+                        invisible="active"
                     />
                     <div class="oe_title">
                         <h1>
@@ -110,7 +110,7 @@
                                     <field name="location_id" optional="show" />
                                     <field name="period_start" />
                                     <field name="duration_days" />
-                                    <field name="state" invisible="1" />
+                                    <field name="state" column_invisible="1" />
                                 </tree>
                             </field>
                         </page>

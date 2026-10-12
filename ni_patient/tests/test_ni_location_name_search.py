@@ -17,8 +17,9 @@ class TestLocationNameSearch(common.TransactionCase):
         cls.alpha, cls.bravo, cls.charlie = cls.locations
 
     def _search(self, name):
-        # Scoped to this test's own records: unscoped, the pre-fix TRUE leaf returns an arbitrary
-        # 100 rows that need not include bravo/charlie, and the assert passes against the bug.
+        # Scoped to this test's own records: unscoped, the pre-fix TRUE leaf returns
+        # an arbitrary 100 rows that need not include bravo/charlie, and the assert
+        # passes against the bug.
         found = self.env["ni.location"].name_search(
             name, args=[("id", "in", self.locations.ids)]
         )

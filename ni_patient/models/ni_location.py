@@ -38,7 +38,7 @@ class Location(models.Model):
         domain=[("active", "=", True)],
     )
     child_count = fields.Integer(compute="_compute_child_count", store=True)
-    active = fields.Boolean("Active", default=True)
+    active = fields.Boolean(default=True)
 
     encounter_ids = fields.One2many("ni.encounter", "location_id")
     encounter_active_ids = fields.One2many(
@@ -117,23 +117,21 @@ class Location(models.Model):
     @api.depends("parent_name", "parent_id", "name")
     def _compute_full_name(self):
         diff = dict(location_display=None, show_alias=True, show_parent=True)
-        names = dict(self.with_context(**diff).name_get())
         for rec in self:
-            rec.full_name = names.get(rec.id)
+            rec.full_name = rec.with_context(**diff)._get_name()
 
-    def name_get(self):
-        res = []
+    @api.depends("name", "alias", "parent_id", "parent_name")
+    @api.depends_context("location_display", "show_parent", "show_alias")
+    def _compute_display_name(self):
         for rec in self:
-            name = rec._get_name()
-            res.append((rec.id, name))
-        return res
+            rec.display_name = rec._get_name()
 
     def _get_name(self):
         self.ensure_one()
-        if self._context.get("location_display") == "short":
+        if self.env.context.get("location_display") == "short":
             return self.name
 
-        if self._context.get("show_parent"):
+        if self.env.context.get("show_parent"):
             names = []
             current = self
             while current:
@@ -142,6 +140,6 @@ class Location(models.Model):
             name = ", ".join(reversed(names))
         else:
             name = self.name
-        if self._context.get("show_alias", True) and self.alias:
+        if self.env.context.get("show_alias", True) and self.alias:
             name = f"{name} ({self.alias})"
         return name
