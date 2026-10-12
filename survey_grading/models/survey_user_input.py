@@ -14,7 +14,7 @@ class SurveyUserInput(models.Model):
         index=True,
         copy=False,
     )
-    grade = fields.Char(related="grade_id.name")
+    grade = fields.Char(related="grade_id.name", string="Grade Name")
 
     @api.depends(
         "scoring_percentage",
@@ -66,7 +66,7 @@ class SurveyUserInput(models.Model):
         if not top:
             return ""
         unit = "" if self.survey_id.grading_basis == "score" else "%"
-        return "%g / %g%s" % (self._grading_value(), top, unit)
+        return f"{self._grading_value():g} / {top:g}{unit}"
 
     def grade_conditions(self):
         """Why these bands and not another set, for the reader of that table.
