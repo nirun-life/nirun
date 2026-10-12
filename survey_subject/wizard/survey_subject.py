@@ -74,8 +74,9 @@ class SurveySubjectWizard(models.TransientModel):
         return {
             "type": "ir.actions.act_url",
             "target": "new",
-            "url": "/%s/survey/%s/%s"
-            % (lang, self.survey_id.access_token, answer.access_token),
+            "url": (
+                f"/{lang}/survey/{self.survey_id.access_token}/{answer.access_token}"
+            ),
         }
 
     def prepare_answer(self):
