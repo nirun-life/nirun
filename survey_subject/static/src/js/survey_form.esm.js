@@ -1,5 +1,3 @@
-/** @odoo-module **/
-
 import SurveyFormWidget from "@survey/js/survey_form";
 
 SurveyFormWidget.include({
