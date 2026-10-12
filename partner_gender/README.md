@@ -20,6 +20,11 @@ can prefill gender automatically.
 - Partner-title tree and form views: show the title-level gender default for partner
   managers.
 
+## Verification
+
+- `tests/test_res_partner_gender.py`: title data, the title → gender onchange and the
+  post-init backfill.
+
 ## Dependencies
 
 - `base`
