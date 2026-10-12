@@ -2,7 +2,7 @@
 
 import logging
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -14,7 +14,8 @@ class SurveySubjectWizard(models.TransientModel):
 
     @api.model
     def _select_target_model(self):
-        models = self.env["ir.model"].search([])
+        # A Reference selection lists every model.
+        models = self.env["ir.model"].search([])  # pylint: disable=no-search-all
         return [(model.model, model.name) for model in models]
 
     survey_id = fields.Many2one("survey.survey", required=True)
@@ -49,12 +50,14 @@ class SurveySubjectWizard(models.TransientModel):
         except AttributeError as err:
             _logger.error(self.type + ": Not found field value for this subject type")
             raise ValidationError(
-                _("%s : Not found field value for this subject type") % self.type
+                self.env._(
+                    "%s : Not found field value for this subject type", self.type
+                )
             ) from err
         else:
             if not subject:
                 raise ValidationError(
-                    _("Please select %s") % self._fields[subject_field].string
+                    self.env._("Please select %s", self._fields[subject_field].string)
                 )
             return {"subject_model": self.type, "subject_id": subject.id}
 
@@ -83,7 +86,7 @@ class SurveySubjectWizard(models.TransientModel):
         this = self[0]
         this.write({"state": "survey"})
         return {
-            "name": _("Start Survey"),
+            "name": self.env._("Start Survey"),
             "type": "ir.actions.act_window",
             "res_model": "survey.subject.wizard",
             "view_mode": "form",

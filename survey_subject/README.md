@@ -26,8 +26,8 @@ only the current frontend user or partner.
   non-partner subjects (the heading's "You scored" and the retake button are kept for
   partner subjects only; other subjects get a line naming the subject and an
   "Acknowledge Results" button), and show a saving spinner while the next page loads
-  (`static/src/js/survey_form.esm.js` patches the survey form widget). Since 17.0 core
-  shows no result graph on the completion page, so the module no longer hides it.
+  (`static/src/js/survey_form.esm.js` patches the `SurveyForm` interaction). Since 17.0
+  core shows no result graph on the completion page, so the module no longer hides it.
 - Security: grants survey users access to the wizard model.
 
 ## Dependencies
@@ -36,7 +36,8 @@ only the current frontend user or partner.
 
 ## Notes
 
-- `survey.user_input` creates an index on `(subject_model, subject_id)` during
-  `_auto_init()`.
+- `survey.user_input` declares a `models.Index` on `(subject_model, subject_id)`
+  (`survey_user_input_subject_idx`, the same index earlier versions created in
+  `_auto_init()`).
 - The wizard currently supports `res.partner` and `res.users` through dedicated subject
   fields, even though the stored reference model field is generic.
