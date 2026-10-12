@@ -1,10 +1,7 @@
 #  Copyright (c) 2022-2023 NSTDA
 
-from odoo import SUPERUSER_ID, api
 
-
-def post_init_hook(cr, registry):
-    env = api.Environment(cr, SUPERUSER_ID, {})
+def post_init_hook(env):
     gender_title = {
         "male": env.ref("base.res_partner_title_mister"),
         "female": env.ref("base.res_partner_title_miss")
