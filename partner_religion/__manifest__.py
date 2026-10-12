@@ -3,7 +3,7 @@
 {
     "name": "Partner - Religions",
     "summary": "Add religion field and classification for partner records",
-    "version": "16.0.0.1.0",
+    "version": "17.0.1.0.0",
     "development_status": "Alpha",
     "author": "NSTDA, Piruin P.",
     "website": "https://nirun.life/",

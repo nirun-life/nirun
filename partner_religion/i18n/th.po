@@ -4,16 +4,21 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 13.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-14 09:51+0000\n"
-"PO-Revision-Date: 2021-05-14 09:51+0000\n"
+"POT-Creation-Date: 2026-10-12 06:58+0000\n"
+"PO-Revision-Date: 2026-10-12 06:58+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: partner_religion
+#: model:ir.model.fields,field_description:partner_religion.field_res_religion__abbr
+msgid "Abbreviation"
+msgstr "ชื่อย่อ"
 
 #. module: partner_religion
 #: model:res.religion,name:partner_religion.abrahamic
@@ -24,6 +29,12 @@ msgstr "ศาสนาอับราฮัม"
 #: model:ir.model.fields,field_description:partner_religion.field_res_religion__active
 msgid "Active"
 msgstr "เปิดใช้งาน"
+
+#. module: partner_religion
+#: model_terms:ir.ui.view,arch_db:partner_religion.coding_view_form
+#: model_terms:ir.ui.view,arch_db:partner_religion.religion_view_search
+msgid "Archived"
+msgstr "เก็บถาวร"
 
 #. module: partner_religion
 #: model:res.religion,name:partner_religion.buddhism
@@ -41,6 +52,16 @@ msgid "Christianity"
 msgstr "คริสต์ศาสนา"
 
 #. module: partner_religion
+#: model:ir.model.fields,field_description:partner_religion.field_res_religion__color
+msgid "Color"
+msgstr "สี"
+
+#. module: partner_religion
+#: model:ir.model,name:partner_religion.model_res_partner
+msgid "Contact"
+msgstr "ติดต่อ"
+
+#. module: partner_religion
 #: model:ir.model.fields,field_description:partner_religion.field_res_religion__create_uid
 msgid "Created by"
 msgstr "สร้างโดย"
@@ -52,6 +73,7 @@ msgstr "สร้างเมื่อ"
 
 #. module: partner_religion
 #: model:ir.model.fields,field_description:partner_religion.field_res_religion__child_ids
+#: model_terms:ir.ui.view,arch_db:partner_religion.coding_view_form
 msgid "Denominations"
 msgstr "นิกาย"
 
@@ -66,10 +88,16 @@ msgid "Display Name"
 msgstr "ชื่อที่ใช้แสดง"
 
 #. module: partner_religion
+#. odoo-python
 #: code:addons/partner_religion/models/res_religion.py:0
 #, python-format
 msgid "Error! You cannot create recursive data."
-msgstr ""
+msgstr "ผิดพลาด! ไม่สามารถสร้างข้อมูลที่อ้างอิงวนซ้ำได้"
+
+#. module: partner_religion
+#: model_terms:ir.ui.view,arch_db:partner_religion.coding_view_form
+msgid "Extra Info"
+msgstr "ข้อมูลเพิ่มเติม"
 
 #. module: partner_religion
 #: model:res.religion,name:partner_religion.hinduism
@@ -97,11 +125,6 @@ msgid "Judaism"
 msgstr "ศาสนายูดาห์ (ยิว)"
 
 #. module: partner_religion
-#: model:ir.model.fields,field_description:partner_religion.field_res_religion____last_update
-msgid "Last Modified on"
-msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
-
-#. module: partner_religion
 #: model:ir.model.fields,field_description:partner_religion.field_res_religion__write_uid
 msgid "Last Updated by"
 msgstr "แก้ไขล่าสุดโดย"
@@ -117,6 +140,12 @@ msgid "Major"
 msgstr "แม่"
 
 #. module: partner_religion
+#: model_terms:ir.ui.view,arch_db:partner_religion.coding_view_form
+msgid "Metadata"
+msgstr "ข้อมูลเมตา"
+
+#. module: partner_religion
+#. odoo-python
 #: code:addons/partner_religion/models/res_religion.py:0
 #: model:ir.model.constraint,message:partner_religion.constraint_res_religion_name_uniq
 #, python-format
@@ -126,10 +155,11 @@ msgstr "ชื่อศาสนาต้องไม่ซ้ำกัน"
 #. module: partner_religion
 #: model:ir.model.fields,field_description:partner_religion.field_res_religion__parent_path
 msgid "Parent Path"
-msgstr ""
+msgstr "เส้นทางลำดับชั้น"
 
 #. module: partner_religion
 #: model:ir.model.fields,field_description:partner_religion.field_res_partner__religion_id
+#: model:ir.model.fields,field_description:partner_religion.field_res_users__religion_id
 msgid "Religion"
 msgstr "ศาสนา"
 
@@ -139,9 +169,15 @@ msgid "Religion Name"
 msgstr "ศาสนา"
 
 #. module: partner_religion
+#: model:ir.actions.act_window,name:partner_religion.religion_action
 #: model:ir.model,name:partner_religion.model_res_religion
-msgid "Religion or Spiritual Tradition"
+msgid "Religions"
 msgstr "ศาสนา"
+
+#. module: partner_religion
+#: model:ir.model.fields,field_description:partner_religion.field_res_religion__sequence
+msgid "Sequence"
+msgstr "ลำดับ"
 
 #. module: partner_religion
 #: model:res.religion,name:partner_religion.shinto
@@ -162,3 +198,8 @@ msgstr "ลัทธิเต๋า"
 #: model:ir.model.fields,help:partner_religion.field_res_religion__name
 msgid "The full name of the Religion."
 msgstr "ชื่อเต็มของศาสนา"
+
+#. module: partner_religion
+#: model_terms:ir.ui.view,arch_db:partner_religion.coding_view_form
+msgid "User Interface"
+msgstr "ส่วนติดต่อผู้ใช้"
