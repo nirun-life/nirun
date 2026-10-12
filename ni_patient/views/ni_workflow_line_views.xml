@@ -29,7 +29,11 @@
                     string="Ongoing"
                     domain="[('state', 'in', ['preparation', 'draft', 'in-progress', 'active', 'on-hold', 'suspended'])]"
                 />
-                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
+                <filter
+                    name="completed"
+                    string="Completed"
+                    domain="[('state', '=', 'completed')]"
+                />
                 <filter
                     name="cancelled"
                     string="Cancelled"
@@ -37,18 +41,47 @@
                 />
                 <separator />
                 <filter name="event" string="Event" domain="[('type', '=', 'event')]" />
-                <filter name="request" string="Request" domain="[('type', '=', 'request')]" />
+                <filter
+                    name="request"
+                    string="Request"
+                    domain="[('type', '=', 'request')]"
+                />
                 <group name="Group by">
-                    <filter name="group_by_type" string="Type" context="{'group_by': 'type'}" />
-                    <filter name="group_by_state" string="State" context="{'group_by': 'state'}" />
+                    <filter
+                        name="group_by_type"
+                        string="Type"
+                        context="{'group_by': 'type'}"
+                    />
+                    <filter
+                        name="group_by_state"
+                        string="State"
+                        context="{'group_by': 'state'}"
+                    />
                     <separator />
-                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
-                    <filter name="group_by_encounter" string="Encounter" context="{'group_by': 'encounter_id'}" />
+                    <filter
+                        name="group_by_patient"
+                        string="Patient"
+                        context="{'group_by': 'patient_id'}"
+                    />
+                    <filter
+                        name="group_by_encounter"
+                        string="Encounter"
+                        context="{'group_by': 'encounter_id'}"
+                    />
                     <separator />
-                    <filter name="group_by_occurrence" string="Date" context="{'group_by': 'occurrence'}" />
+                    <filter
+                        name="group_by_occurrence"
+                        string="Date"
+                        context="{'group_by': 'occurrence'}"
+                    />
                 </group>
                 <searchpanel>
-                    <field name="company_id" icon="fa-building" enable_counters="1" groups="base.group_multi_company" />
+                    <field
+                        name="company_id"
+                        icon="fa-building"
+                        enable_counters="1"
+                        groups="base.group_multi_company"
+                    />
                     <field name="type" icon="fa-tag" enable_counters="1" />
                     <field name="state" icon="fa-circle" enable_counters="1" />
                 </searchpanel>
@@ -59,7 +92,14 @@
         <field name="name">ni.workflow.line.view.kanban</field>
         <field name="model">ni.workflow.line</field>
         <field name="arch" type="xml">
-            <kanban create="0" edit="0" delete="0" records_draggable="0" quick_create="0" group_create="0">
+            <kanban
+                create="0"
+                edit="0"
+                delete="0"
+                records_draggable="0"
+                quick_create="0"
+                group_create="0"
+            >
                 <field name="type" />
                 <field name="state" />
                 <field name="occurrence" />
@@ -83,10 +123,19 @@
                                         <field name="name" />
                                     </strong>
                                     <span class="o_kanban_record_subtitle small">
-                                        <field class='text-danger' name="res_model" groups="base.group_no_one" />
+                                        <field
+                                            class='text-danger'
+                                            name="res_model"
+                                            groups="base.group_no_one"
+                                        />
                                     </span>
-                                    <span class="o_kanban_record_subtitle text-muted small">
-                                        <i class="fa fa-clock-o me-1" title="Occurrence" />
+                                    <span
+                                        class="o_kanban_record_subtitle text-muted small"
+                                    >
+                                        <i
+                                            class="fa fa-clock-o me-1"
+                                            title="Occurrence"
+                                        />
                                         <field name="occurrence" widget="datetime" />
                                     </span>
                                 </div>
@@ -104,7 +153,10 @@
                                     class="text-muted small"
                                     t-esc="record.summary.raw_value"
                                 />
-                                <div t-if="!context['default_patient_id']" class="mt-1 small">
+                                <div
+                                    t-if="!context['default_patient_id']"
+                                    class="mt-1 small"
+                                >
                                     <field name="patient_id" />
                                     <field
                                         class="ms-4"
@@ -122,7 +174,10 @@
                                     </span>
                                 </div>
                                 <div class="oe_kanban_bottom_right">
-                                    <field name="create_uid" widget="many2one_avatar_user" />
+                                    <field
+                                        name="create_uid"
+                                        widget="many2one_avatar_user"
+                                    />
                                     <button
                                         name="action_resource"
                                         type="object"
@@ -156,7 +211,11 @@
                     widget="many2one_avatar"
                     optional="show"
                 />
-                <field name="encounter_id" invisible="context.get('default_encounter_id')" optional="show" />
+                <field
+                    name="encounter_id"
+                    invisible="context.get('default_encounter_id')"
+                    optional="show"
+                />
                 <field
                     name="type"
                     widget="badge"
@@ -173,7 +232,11 @@
                     decoration-warning="state in ('suspended', 'on-hold')"
                     decoration-info="state in ('in-progress', 'active')"
                 />
-                <field name="create_uid" widget="many2one_avatar_user" optional="hide" />
+                <field
+                    name="create_uid"
+                    widget="many2one_avatar_user"
+                    optional="hide"
+                />
                 <field name="create_date" optional="hide" />
                 <button
                     name="action_resource"

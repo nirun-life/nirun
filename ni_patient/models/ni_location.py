@@ -143,5 +143,5 @@ class Location(models.Model):
         else:
             name = self.name
         if self._context.get("show_alias", True) and self.alias:
-            name = "{} ({})".format(name, self.alias)
+            name = f"{name} ({self.alias})"
         return name

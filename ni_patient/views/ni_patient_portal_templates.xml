@@ -11,11 +11,17 @@
                 t-if="page_name == 'patient' or patient"
                 t-attf-class="breadcrumb-item #{'active ' if not patient else ''}"
             >
-                <a t-if="patient" t-attf-href="/my/patients?{{ keep_query() }}">Patients</a>
+                <a
+                    t-if="patient"
+                    t-attf-href="/my/patients?{{ keep_query() }}"
+                >Patients</a>
                 <t t-else="">Patients</t>
             </li>
             <li t-if="patient" class="breadcrumb-item active text-truncate">
-                <a t-if="encounter" t-attf-href="/my/patients/{{patient.id}}?{{ keep_query() }}">
+                <a
+                    t-if="encounter"
+                    t-attf-href="/my/patients/{{patient.id}}?{{ keep_query() }}"
+                >
                     <t t-esc="patient.name" />
                 </a>
                 <t t-else="">
@@ -34,7 +40,10 @@
                 <t t-set="title">Patients</t>
             </t>
             <t t-if="not patients">
-                <div class="alert alert-warning mt8" role="alert">There are no patients.</div>
+                <div
+                    class="alert alert-warning mt8"
+                    role="alert"
+                >There are no patients.</div>
             </t>
             <t t-if="patients">
                 <div class="container">
@@ -44,7 +53,9 @@
                                 <div class="card p-3 shadow-sm">
                                     <div class="d-flex align-items-center">
                                         <!-- รูปผู้ป่วย -->
-                                        <a t-attf-href="/my/patients/#{patient.id}?{{ keep_query() }}">
+                                        <a
+                                            t-attf-href="/my/patients/#{patient.id}?{{ keep_query() }}"
+                                        >
                                             <img
                                                 class="img-thumbnail float-start me-3"
                                                 t-att-src="image_data_uri(patient.avatar_1024)"
@@ -54,7 +65,9 @@
                                         </a>
                                         <div class="flex-grow-1">
                                             <!-- ชื่อผู้ป่วย -->
-                                            <a t-attf-href="/my/patients/#{patient.id}?{{ keep_query() }}">
+                                            <a
+                                                t-attf-href="/my/patients/#{patient.id}?{{ keep_query() }}"
+                                            >
                                                 <h6 class="mb-1">
                                                     <t t-esc="patient.name" />
                                                 </h6>
@@ -68,12 +81,18 @@
                                             <!-- Encounter ID -->
                                             <t t-if="patient.encounter_id">
                                                 <p class="text-muted small mb-0">
-                                                    <t t-esc="patient.encounter_id.name" />
+                                                    <t
+                                                        t-esc="patient.encounter_id.name"
+                                                    />
                                                 </p>
                                             </t>
                                             <!-- เพศและอายุ -->
-                                            <t t-if="patient.gender or patient.age &gt; 0">
-                                                <p class="text-muted small mb-0 d-flex align-items-center">
+                                            <t
+                                                t-if="patient.gender or patient.age &gt; 0"
+                                            >
+                                                <p
+                                                    class="text-muted small mb-0 d-flex align-items-center"
+                                                >
                                                     <!-- ไอคอนเพศ -->
                                                     <t t-if="patient.gender == 'male'">
                                                         <i
@@ -82,7 +101,9 @@
                                                             title="Male"
                                                         />
                                                     </t>
-                                                    <t t-elif="patient.gender == 'female'">
+                                                    <t
+                                                        t-elif="patient.gender == 'female'"
+                                                    >
                                                         <i
                                                             class="fa fa-venus me-2 text-danger"
                                                             aria-hidden="true"
@@ -99,10 +120,14 @@
                                                     <!-- แสดงเพศและอายุ -->
                                                     <span>
                                                         <t t-if="patient.gender">
-                                                            <t t-esc="patient.gender.capitalize()" />
+                                                            <t
+                                                                t-esc="patient.gender.capitalize()"
+                                                            />
                                                         </t>
                                                         <t t-if="patient.age &gt; 0">
-                                                            <t t-if="patient.gender">,</t>
+                                                            <t
+                                                                t-if="patient.gender"
+                                                            >,</t>
                                                             <t t-esc="patient.age" />
                                                             years old
                                                         </t>
@@ -136,7 +161,10 @@
                 <t t-set="title">Encounters</t>
             </t>
             <t t-if="not encounters">
-                <div class="alert alert-warning mt8" role="alert">There are no record.</div>
+                <div
+                    class="alert alert-warning mt8"
+                    role="alert"
+                >There are no record.</div>
             </t>
             <t t-if="encounters" t-call="portal.portal_table">
                 <thead>
@@ -153,7 +181,9 @@
                 <tbody>
                     <tr t-foreach="encounters" t-as="encounter">
                         <td>
-                            <a t-attf-href="/my/patients/#{patient.id}/#{encounter.id}?{{ keep_query() }}">
+                            <a
+                                t-attf-href="/my/patients/#{patient.id}/#{encounter.id}?{{ keep_query() }}"
+                            >
                                 <t t-esc="encounter.name" />
                             </a>
                             <!-- ใช้ t-esc -->
@@ -205,7 +235,9 @@
                 <t t-call="portal.portal_record_sidebar">
                     <t t-set="classes" t-value="'col-lg-3 d-print-none'" />
                     <t t-set="entries">
-                        <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
+                        <ul
+                            class="list-group list-group-flush flex-wrap flex-row flex-lg-column"
+                        >
                             <li
                                 id="task-links"
                                 t-if="task_link_section"
@@ -216,7 +248,10 @@
                                 <ul class="nav flex-column">
                                     <t t-foreach="task_link_section" t-as="task_link">
                                         <li class="nav-item">
-                                            <a class="nav-link ps-3" t-att-href="task_link['access_url']">
+                                            <a
+                                                class="nav-link ps-3"
+                                                t-att-href="task_link['access_url']"
+                                            >
                                                 <t t-out="task_link['title']" />
                                             </a>
                                         </li>
@@ -259,7 +294,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-12 pb-2" t-if="o.performer_id">
+                                <div
+                                    class="col-12 col-md-12 pb-2"
+                                    t-if="o.performer_id"
+                                >
                                     <strong>Performer</strong>
                                     <div class="d-flex flex-nowrap">
                                         <img
@@ -300,13 +338,22 @@
                 </t>
                 <div id="task_content" class="col-lg-9 justify-content-end">
                     <div id="card" class="card">
-                        <div id="card_header" class="card-header bg-white" data-anchor="true">
+                        <div
+                            id="card_header"
+                            class="card-header bg-white"
+                            data-anchor="true"
+                        >
                             <div class="row g-0">
                                 <div class="col-12">
                                     <h5 class="d-flex mb-1 mb-md-0 row">
                                         <div class="col-9">
-                                            <span t-field="o.name" class="text-truncate" />
-                                            <small class="text-muted d-none d-md-inline">
+                                            <span
+                                                t-field="o.name"
+                                                class="text-truncate"
+                                            />
+                                            <small
+                                                class="text-muted d-none d-md-inline"
+                                            >
                                                 (#
                                                 <span t-field="o.id" />
                                                 )
@@ -354,7 +401,10 @@
                             </div>
                             <div class="mt-2" id="person">
                                 <strong>Patient:</strong>
-                                <span class="me-3 " t-field="o.patient_id.display_name" />
+                                <span
+                                    class="me-3 "
+                                    t-field="o.patient_id.display_name"
+                                />
                                 <strong>Gender:</strong>
                                 <span class="me-3" t-field="o.gender" />
                                 <strong>Age:</strong>
@@ -369,10 +419,17 @@
                                     <span>-</span>
                                 </t>
                             </div>
-                            <div class="row mt-2" id="hpi" t-if="o.show_history_of_present_illness">
+                            <div
+                                class="row mt-2"
+                                id="hpi"
+                                t-if="o.show_history_of_present_illness"
+                            >
                                 <div class="col-auto col-12 mw-100">
                                     <strong>History of Present Illness:</strong>
-                                    <p class="m-0" t-field="o.history_of_present_illness" />
+                                    <p
+                                        class="m-0"
+                                        t-field="o.history_of_present_illness"
+                                    />
                                     <t t-if="not encounter.history_of_present_illness">
                                         <span>-</span>
                                     </t>
@@ -387,7 +444,11 @@
                                     </t>
                                 </div>
                             </div>
-                            <div class="row mt-2" id="ros" t-if="o.show_review_of_systems">
+                            <div
+                                class="row mt-2"
+                                id="ros"
+                                t-if="o.show_review_of_systems"
+                            >
                                 <div class="col-auto col-12 mw-100">
                                     <strong>Review of Systems:</strong>
                                     <p class="m-0" t-field="o.review_of_systems" />
