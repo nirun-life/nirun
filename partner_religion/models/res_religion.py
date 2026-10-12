@@ -76,7 +76,7 @@ class Religion(models.Model):
                 current = current.parent_id
             name = self._display_name_separator.join(reversed(names))
         if self._context.get("show_abbr") and self.abbr:
-            name = "{} ({})".format(name, coding.abbr)
+            name = f"{name} ({coding.abbr})"
         if self._context.get("only_abbr") and self.abbr:
             name = coding.abbr
         return name
