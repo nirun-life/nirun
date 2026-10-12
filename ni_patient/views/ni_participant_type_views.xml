@@ -14,8 +14,15 @@
         <field name="model">ni.participant.type</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
-                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <field
+                    name="name"
+                    filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]"
+                />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
             </search>
         </field>
     </record>

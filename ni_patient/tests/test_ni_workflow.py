@@ -105,7 +105,7 @@ class TestWorkflow(common.TransactionCase):
         events = self.env["ni.workflow.event"].search(events_domain, order="id")
         self.assertEqual(len(events), 1)
         self.assertEqual(events.state, "in-progress")
-        self.assertEqual(events.summary, "{} (Urgent)".format(enc_class.name))
+        self.assertEqual(events.summary, f"{enc_class.name} (Urgent)")
 
         encounter.action_close()
         self.assertEqual(encounter.state, "finished")
