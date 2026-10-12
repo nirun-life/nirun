@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -183,23 +183,23 @@ class PeriodMixin(models.AbstractModel):
     def _format_relative_delta(self, delta):
         result = []
         if delta.years > 0:
-            result.append(_("%s Years") % delta.years)
+            result.append(self.env._("%s Years", delta.years))
         if delta.months > 0:
-            result.append(_("%s Months") % delta.months)
+            result.append(self.env._("%s Months", delta.months))
         if delta.days > 0:
-            result.append(_("%s Days") % delta.days)
+            result.append(self.env._("%s Days", delta.days))
         if delta.days == 0 and not result:
             if not self.period_end:
-                result.append(_("Today"))
+                result.append(self.env._("Today"))
             else:
                 if delta.hours > 0:
-                    result.append(_("%s Hours") % delta.hours)
+                    result.append(self.env._("%s Hours", delta.hours))
                 if delta.minutes > 0:
-                    result.append(_("%s Minutes") % delta.minutes)
+                    result.append(self.env._("%s Minutes", delta.minutes))
                 if not result:
-                    result.append(_("%s Seconds") % delta.seconds)
+                    result.append(self.env._("%s Seconds", delta.seconds))
         if delta.days < 0:
-            result.append(_("Next %s days") % abs(delta.days))
+            result.append(self.env._("Next %s days", abs(delta.days)))
         return " ".join(result) or None
 
     @api.constrains("period_start_date", "period_end_date")
@@ -209,7 +209,7 @@ class PeriodMixin(models.AbstractModel):
                 continue
             if record.period_end_date < record.period_start_date:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "(%(model)s), End date (%(end)s) should not set before "
                         "start date (%(start)s)",
                         model=record._description,
