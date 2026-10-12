@@ -15,7 +15,11 @@
             <search>
                 <field name="name" />
                 <field name="code" />
-                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
             </search>
         </field>
     </record>
@@ -52,10 +56,16 @@
                         <group>
                             <field name="name" />
                             <field name="parent_id" />
-                            <field name="sequence_id" context="{'default_use_date_range':True, 'default_code': code}" />
+                            <field
+                                name="sequence_id"
+                                context="{'default_use_date_range':True, 'default_code': code}"
+                            />
                         </group>
                         <group>
-                            <field name="company_id" groups="base.group_multi_company" />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                            />
                             <field name="code" />
                             <field name="decoration" />
                         </group>
@@ -82,7 +92,10 @@
                                     <field name="service" />
                                     <field name="participant" />
                                 </group>
-                                <group string="Auto-close" attrs="{'invisible': [('admission', '=', True)]}">
+                                <group
+                                    string="Auto-close"
+                                    attrs="{'invisible': [('admission', '=', True)]}"
+                                >
                                     <field name="auto_close" />
                                     <field
                                         name="auto_close_midnight"

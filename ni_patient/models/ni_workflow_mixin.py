@@ -14,7 +14,7 @@ class WorkflowMixin(models.AbstractModel):
 
     @property
     def _workflow_table(self) -> str:
-        return "ni.workflow.{}".format(self._workflow_type)
+        return f"ni.workflow.{self._workflow_type}"
 
     @property
     def _workflow_name(self) -> str:
@@ -22,7 +22,7 @@ class WorkflowMixin(models.AbstractModel):
 
     @property
     def _workflow_summary(self) -> str:
-        return str()
+        return ""
 
     @property
     def _workflow_occurrence(self) -> fields.Datetime:
@@ -92,7 +92,7 @@ class WorkflowMixin(models.AbstractModel):
         """Override unlink to delete workflow. This cannot be
         cascaded, because link is done through (res_model, res_id)."""
         record_ids = self.ids
-        result = super(WorkflowMixin, self).unlink()
+        result = super().unlink()
         self.env[self._workflow_table].sudo().search(
             [("res_model", "=", self._name), ("res_id", "in", record_ids)]
         ).unlink()
@@ -144,7 +144,7 @@ class EventMixin(models.AbstractModel):
         return None
 
     def _to_workflow(self):
-        res = super(EventMixin, self)._to_workflow()
+        res = super()._to_workflow()
         if self._workflow_request_id:
             res.update({"request_id": self._workflow_request_id.id})
         return res
@@ -203,7 +203,7 @@ class RequestMixin(models.AbstractModel):
     )
 
     def _to_workflow(self):
-        data = super(RequestMixin, self)._to_workflow()
+        data = super()._to_workflow()
         data.update(
             {
                 "priority": self.priority or "routine",

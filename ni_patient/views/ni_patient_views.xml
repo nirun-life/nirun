@@ -46,17 +46,36 @@
                     name="name"
                     filter_domain="['|','|' ,('name', 'ilike', self), ('identifier', 'ilike', self),('identification_id', 'ilike', self)]"
                 />
-                <field name="phone" filter_domain="['|' ,('phone', 'ilike', self), ('mobile', 'ilike', self)]" />
-                <filter name="in_progress" string='In-Progress' domain="[('presence_state', '=', 'in-progress')]" />
-                <filter name="planned" string='Planned' domain="[('presence_state', '=', 'planned')]" />
+                <field
+                    name="phone"
+                    filter_domain="['|' ,('phone', 'ilike', self), ('mobile', 'ilike', self)]"
+                />
+                <filter
+                    name="in_progress"
+                    string='In-Progress'
+                    domain="[('presence_state', '=', 'in-progress')]"
+                />
+                <filter
+                    name="planned"
+                    string='Planned'
+                    domain="[('presence_state', '=', 'planned')]"
+                />
                 <filter
                     name="finished"
                     string='Discharged'
                     domain="[('presence_state', 'in', ['finished', 'deceased'])]"
                 />
-                <filter string="Archived" name="inactive" domain="[('active', '=', False)]" />
+                <filter
+                    string="Archived"
+                    name="inactive"
+                    domain="[('active', '=', False)]"
+                />
                 <separator />
-                <filter name="alive" string='Alive' domain="[('deceased_date', '=', False)]" />
+                <filter
+                    name="alive"
+                    string='Alive'
+                    domain="[('deceased_date', '=', False)]"
+                />
                 <filter
                     name="deceased"
                     string='Deceased'
@@ -64,11 +83,23 @@
                     context="{'show_deceased': True}"
                 />
                 <separator />
-                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
                 <group name="group_by" string="Group by">
-                    <filter name="group_by_state" string="Presence State" context="{'group_by': 'presence_state'}" />
+                    <filter
+                        name="group_by_state"
+                        string="Presence State"
+                        context="{'group_by': 'presence_state'}"
+                    />
                     <separator />
-                    <filter name="group_by_gender" string="Gender" context="{'group_by': 'gender'}" />
+                    <filter
+                        name="group_by_gender"
+                        string="Gender"
+                        context="{'group_by': 'gender'}"
+                    />
                     <filter
                         name="group_by_education"
                         string="Education Level"
@@ -76,10 +107,23 @@
                     />
                 </group>
                 <searchpanel>
-                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" />
-                    <field name="presence_state" icon="fa-bookmark" enable_counters="1" />
+                    <field
+                        name="company_id"
+                        groups="base.group_multi_company"
+                        icon="fa-building"
+                        enable_counters="1"
+                    />
+                    <field
+                        name="presence_state"
+                        icon="fa-bookmark"
+                        enable_counters="1"
+                    />
                     <field name="gender" icon="fa-venus-mars" enable_counters="1" />
-                    <field name="age_range_id" icon="fa-birthday-cake" enable_counters="1" />
+                    <field
+                        name="age_range_id"
+                        icon="fa-birthday-cake"
+                        enable_counters="1"
+                    />
                 </searchpanel>
             </search>
         </field>
@@ -136,10 +180,19 @@
                             icon="fa-hospital-o"
                             type="object"
                         >
-                            <field name="encounter_count" string="Encounter(s)" widget="statinfo" />
+                            <field
+                                name="encounter_count"
+                                string="Encounter(s)"
+                                widget="statinfo"
+                            />
                         </button>
                     </div>
-                    <field name="image_1920" class="oe_avatar" options='{"preview_image":"image_128"}' widget='image' />
+                    <field
+                        name="image_1920"
+                        class="oe_avatar"
+                        options='{"preview_image":"image_128"}'
+                        widget='image'
+                    />
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('deceased', '=', False)]}"
@@ -159,10 +212,18 @@
                                 placeholder="e.g. HN-001204"
                                 attrs="{'invisible': [('id', '=', False)], 'readonly': [('id', '!=', False)]}"
                             />
-                            <div class="mb-1" attrs="{'invisible': [('id', '!=', False)]}">New Patient</div>
+                            <div
+                                class="mb-1"
+                                attrs="{'invisible': [('id', '!=', False)]}"
+                            >New Patient</div>
                         </b>
                         <h1>
-                            <field name="name" placeholder="Patient's Name" readonly="False" required="True" />
+                            <field
+                                name="name"
+                                placeholder="Patient's Name"
+                                readonly="False"
+                                required="True"
+                            />
                         </h1>
                         <div class="oe_read_only">
                             <!-- align-top use for support responsive module-->
@@ -210,15 +271,38 @@
                             />
                         </group>
                     </group>
-                    <notebook name="notebook" attrs="{'invisible': [('id', '=', False)]}">
-                        <page name="private" string="Private Information" icon="fa-address-card-o">
+                    <notebook
+                        name="notebook"
+                        attrs="{'invisible': [('id', '=', False)]}"
+                    >
+                        <page
+                            name="private"
+                            string="Private Information"
+                            icon="fa-address-card-o"
+                        >
                             <group>
                                 <group string="Address">
-                                    <label name="address_name" for="street" string="Address" />
+                                    <label
+                                        name="address_name"
+                                        for="street"
+                                        string="Address"
+                                    />
                                     <div class="o_address_format">
-                                        <field name="street" class="o_address_street" placeholder="Street..." />
-                                        <field name="street2" class="o_address_street" placeholder="Street 2..." />
-                                        <field name="city" class="o_address_city" placeholder="City" />
+                                        <field
+                                            name="street"
+                                            class="o_address_street"
+                                            placeholder="Street..."
+                                        />
+                                        <field
+                                            name="street2"
+                                            class="o_address_street"
+                                            placeholder="Street 2..."
+                                        />
+                                        <field
+                                            name="city"
+                                            class="o_address_city"
+                                            placeholder="City"
+                                        />
                                         <field
                                             name="state_id"
                                             class="o_address_state"
@@ -226,7 +310,11 @@
                                             options='{"no_open": True}'
                                             placeholder="State"
                                         />
-                                        <field name="zip" class="o_address_zip" placeholder="ZIP" />
+                                        <field
+                                            name="zip"
+                                            class="o_address_zip"
+                                            placeholder="ZIP"
+                                        />
                                         <field
                                             name="country_id"
                                             class="o_address_country"
@@ -242,12 +330,31 @@
                                     />
                                 </group>
                                 <group string="Citizenship">
-                                    <field name="nationality_id" options='{"no_open": True}' />
-                                    <field name="identification_id" placeholder="e.g. 1104740100001" />
-                                    <field name="religion_id" options="{'no_open': True}" />
-                                    <field name="gender" options="{'horizontal': True}" widget="radio" />
-                                    <field name="birthdate" placeholder="e.g. 31/01/1950" />
-                                    <field name="age" attrs="{'readonly': [('birthdate', '!=', False)]}" />
+                                    <field
+                                        name="nationality_id"
+                                        options='{"no_open": True}'
+                                    />
+                                    <field
+                                        name="identification_id"
+                                        placeholder="e.g. 1104740100001"
+                                    />
+                                    <field
+                                        name="religion_id"
+                                        options="{'no_open': True}"
+                                    />
+                                    <field
+                                        name="gender"
+                                        options="{'horizontal': True}"
+                                        widget="radio"
+                                    />
+                                    <field
+                                        name="birthdate"
+                                        placeholder="e.g. 31/01/1950"
+                                    />
+                                    <field
+                                        name="age"
+                                        attrs="{'readonly': [('birthdate', '!=', False)]}"
+                                    />
                                     <field
                                         name="age_range_id"
                                         attrs="{'readonly': ['|', ('birthdate', '!=', False), ('age', '!=', 0)]}"
@@ -265,13 +372,22 @@
                                     <field name="father_name" />
                                     <field name="mother_name" />
                                     <field name="sibling_count" />
-                                    <field name="birth_order" attrs="{'invisible': [('sibling_count', '=', 0)]}" />
+                                    <field
+                                        name="birth_order"
+                                        attrs="{'invisible': [('sibling_count', '=', 0)]}"
+                                    />
                                     <field name="children_count" />
                                 </group>
                                 <group string="Education">
                                     <field name="education_level" />
-                                    <field name="study_field" placeholder="e.g. Public Health" />
-                                    <field name="study_school" placeholder="e.g. Health Science" />
+                                    <field
+                                        name="study_field"
+                                        placeholder="e.g. Public Health"
+                                    />
+                                    <field
+                                        name="study_school"
+                                        placeholder="e.g. Health Science"
+                                    />
                                 </group>
                                 <group string="Career">
                                     <field name="function" />
@@ -296,7 +412,10 @@
                         </page>
                         <page name="history" string="History" icon="fa-history">
                             <separator string="Past Medical History" />
-                            <field name="past_medical_history" placeholder="Past Medical History" />
+                            <field
+                                name="past_medical_history"
+                                placeholder="Past Medical History"
+                            />
                             <div class="my-2">
                                 <field
                                     name="past_medical_history_uid"
@@ -304,12 +423,24 @@
                                     options="{'no_open': True}"
                                     widget="many2one_avatar_user"
                                 />
-                                <field name="past_medical_history_date" class="text-muted mx-2" />
+                                <field
+                                    name="past_medical_history_date"
+                                    class="text-muted mx-2"
+                                />
                             </div>
                         </page>
-                        <page name="setting" string="Settings" icon="fa-cog" groups="ni_patient.group_manager">
+                        <page
+                            name="setting"
+                            string="Settings"
+                            icon="fa-cog"
+                            groups="ni_patient.group_manager"
+                        >
                             <group>
-                                <field name="user_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                                <field
+                                    name="user_ids"
+                                    widget="many2many_tags"
+                                    options="{'color_field': 'color'}"
+                                />
                             </group>
                         </page>
                     </notebook>
@@ -342,7 +473,9 @@
                 <field name="company_id" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                        <div
+                            class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban"
+                        >
                             <field
                                 name="image_1024"
                                 class="o_kanban_image_fill_left d-block"
@@ -353,7 +486,10 @@
                             <div class="oe_kanban_details">
                                 <div name="kanban_top" class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
-                                        <div class="float-end" t-if="record.presence_state.raw_value == 'unknown'">
+                                        <div
+                                            class="float-end"
+                                            t-if="record.presence_state.raw_value == 'unknown'"
+                                        >
                                             <span
                                                 name="presence_to_define"
                                                 aria-label="Unknown"
@@ -362,7 +498,10 @@
                                                 title="Unknown"
                                             />
                                         </div>
-                                        <div class="float-end" t-if="record.presence_state.raw_value == 'draft'">
+                                        <div
+                                            class="float-end"
+                                            t-if="record.presence_state.raw_value == 'draft'"
+                                        >
                                             <span
                                                 name="presence_draft"
                                                 aria-label="Draft"
@@ -371,7 +510,10 @@
                                                 title="Draft"
                                             />
                                         </div>
-                                        <div class="float-end" t-if="record.presence_state.raw_value == 'planned'">
+                                        <div
+                                            class="float-end"
+                                            t-if="record.presence_state.raw_value == 'planned'"
+                                        >
                                             <span
                                                 name="presence_planned"
                                                 aria-label="Planned"
@@ -380,7 +522,10 @@
                                                 title="Planned"
                                             />
                                         </div>
-                                        <div class="float-end" t-if="record.presence_state.raw_value == 'in-progress'">
+                                        <div
+                                            class="float-end"
+                                            t-if="record.presence_state.raw_value == 'in-progress'"
+                                        >
                                             <span
                                                 name="presence_in_progress"
                                                 aria-label="Treating"
@@ -389,7 +534,10 @@
                                                 title="Treating"
                                             />
                                         </div>
-                                        <div class="float-end" t-if="record.presence_state.raw_value == 'finished'">
+                                        <div
+                                            class="float-end"
+                                            t-if="record.presence_state.raw_value == 'finished'"
+                                        >
                                             <span
                                                 name="presence_finished"
                                                 aria-label="Treated"
@@ -398,7 +546,10 @@
                                                 title="Treated"
                                             />
                                         </div>
-                                        <div class="float-end" t-if="record.presence_state.raw_value == 'deceased'">
+                                        <div
+                                            class="float-end"
+                                            t-if="record.presence_state.raw_value == 'deceased'"
+                                        >
                                             <span
                                                 name="presence_deceased"
                                                 aria-label="Deceased"
@@ -408,19 +559,30 @@
                                             />
                                         </div>
                                         <span class="o_kanban_record_title">
-                                            <field name="name" placeholder="Patient's Name" />
+                                            <field
+                                                name="name"
+                                                placeholder="Patient's Name"
+                                            />
                                         </span>
-                                        <span class="o_kanban_record_subtitle small" t-if="record.identifier.value">
+                                        <span
+                                            class="o_kanban_record_subtitle small"
+                                            t-if="record.identifier.value"
+                                        >
                                             <t t-esc="record.identifier.value" />
                                         </span>
-                                        <span class="o_kanban_record_subtitle small" t-if="record.encounter_id.value">
+                                        <span
+                                            class="o_kanban_record_subtitle small"
+                                            t-if="record.encounter_id.value"
+                                        >
                                             <t t-esc="record.encounter_id.value" />
                                             <t
                                                 t-if="record.presence_state.raw_value == 'draft' or record.presence_state.raw_value == 'planned'"
                                             >
                                                 <small>
                                                     [
-                                                    <t t-esc="record.presence_state.value" />
+                                                    <t
+                                                        t-esc="record.presence_state.value"
+                                                    />
                                                     ]
                                                 </small>
                                             </t>
@@ -428,20 +590,42 @@
                                     </div>
                                 </div>
                                 <ul>
-                                    <li groups="base.group_multi_company" class="text-truncate">
-                                        <i class="fa fa-hospital-o me-2" aria-hidden="true" title="company" />
+                                    <li
+                                        groups="base.group_multi_company"
+                                        class="text-truncate"
+                                    >
+                                        <i
+                                            class="fa fa-hospital-o me-2"
+                                            aria-hidden="true"
+                                            title="company"
+                                        />
                                         <!--                                        <span t-esc="record.company_id.value" />-->
                                         <field name="company_id" />
                                     </li>
-                                    <li class="o_force_ltr" t-if="record.gender.value or record.age.value &gt; 0">
+                                    <li
+                                        class="o_force_ltr"
+                                        t-if="record.gender.value or record.age.value &gt; 0"
+                                    >
                                         <t t-if="record.gender.raw_value == 'male'">
-                                            <i class="fa fa-mars me-2 text-info" aria-hidden="true" title="male" />
+                                            <i
+                                                class="fa fa-mars me-2 text-info"
+                                                aria-hidden="true"
+                                                title="male"
+                                            />
                                         </t>
                                         <t t-elif="record.gender.raw_value == 'female'">
-                                            <i class="fa fa-venus me-2 text-danger" aria-hidden="true" title="female" />
+                                            <i
+                                                class="fa fa-venus me-2 text-danger"
+                                                aria-hidden="true"
+                                                title="female"
+                                            />
                                         </t>
                                         <t t-else="">
-                                            <i class="fa fa-genderless me-2" aria-hidden="true" title="Undefined" />
+                                            <i
+                                                class="fa fa-genderless me-2"
+                                                aria-hidden="true"
+                                                title="Undefined"
+                                            />
                                         </t>
                                         <field name="gender" />
                                         <t t-if="record.age.value &gt; 0">
@@ -450,16 +634,28 @@
                                             years old
                                         </t>
                                     </li>
-                                    <li t-if="context.show_deceased and record.deceased_date.value">
+                                    <li
+                                        t-if="context.show_deceased and record.deceased_date.value"
+                                    >
                                         <span>Deceased:</span>
                                         <field name="deceased_date" />
                                     </li>
-                                    <li class="o_text_overflow" t-if="record.location_id.value">
-                                        <i class="fa fa-map-marker me-2" aria-hidden="true" title="location" />
+                                    <li
+                                        class="o_text_overflow"
+                                        t-if="record.location_id.value"
+                                    >
+                                        <i
+                                            class="fa fa-map-marker me-2"
+                                            aria-hidden="true"
+                                            title="location"
+                                        />
                                         <field name="location_id" />
                                     </li>
                                 </ul>
-                                <div class="o_kanban_card_actions mt-4" t-if="!selection_mode">
+                                <div
+                                    class="o_kanban_card_actions mt-4"
+                                    t-if="!selection_mode"
+                                >
                                     <button
                                         name="%(ni_encounter_action_from_patient)d"
                                         attrs="{'invisible': [('presence_state', 'not in', ['unknown', 'finished'])]}"
