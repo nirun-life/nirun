@@ -2,7 +2,7 @@
 
 import logging
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -12,7 +12,9 @@ class IdentifierMixin(models.AbstractModel):
     _description = "Record Identifier Mixin"
     _rec_name = "identifier"
 
-    _identifier_default = _("New")
+    # Plain string: a class attribute is evaluated at import time, where _() has
+    # no language to translate into. Stored identifiers compare against it.
+    _identifier_default = "New"
     _identifier_field = "identifier"
     _identifier_ts_field = "period_start"
 
@@ -42,9 +44,9 @@ class IdentifierMixin(models.AbstractModel):
                 if not vals[self._identifier_field]:
                     vals[self._identifier_field] = self._identifier_default
                     _logger.warning(
-                        "Not found ir.sequence code={}, used default '{}' instead".format(
-                            self._name, self._identifier_default
-                        )
+                        "Not found ir.sequence code=%s, used default '%s' instead",
+                        self._name,
+                        self._identifier_default,
                     )
 
         return super().create(vals_list)
