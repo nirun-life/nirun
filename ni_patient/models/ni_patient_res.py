@@ -135,10 +135,12 @@ class PatientResource(models.AbstractModel):
             raise ValidationError(
                 _(
                     "Since date must not before the encounter start date\n"
-                    "\n\tEncounter Since: %s"
-                    "\n\t%s Since: %s"
+                    "\n\tEncounter Since: %(encounter_start)s"
+                    "\n\t%(resource)s Since: %(start)s",
+                    encounter_start=enc.period_start,
+                    resource=self._description,
+                    start=start,
                 )
-                % (enc.period_start, self._description, start)
             )
 
     @api.constrains("patient_id", "encounter_id")

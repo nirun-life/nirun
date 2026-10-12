@@ -121,7 +121,7 @@
                 <field name="write_uid" />
                 <progressbar
                     field="state"
-                    colors='{"completed": "success", "active": "info", "revoked": "danger", "on-hold": "warning"}'
+                    colors="{&quot;completed&quot;: &quot;success&quot;, &quot;active&quot;: &quot;info&quot;, &quot;revoked&quot;: &quot;danger&quot;, &quot;on-hold&quot;: &quot;warning&quot;}"
                 />
                 <templates>
                     <t t-name="kanban-box">
@@ -133,7 +133,7 @@
                                     </strong>
                                     <span class="o_kanban_record_subtitle small">
                                         <field
-                                            class='text-danger'
+                                            class="text-danger"
                                             name="res_model"
                                             groups="base.group_no_one"
                                         />
@@ -279,9 +279,9 @@
                     </div>
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('is_replaced', '=', False)]}"
                         bg_color="bg-danger"
                         title="Replaced"
+                        invisible="not is_replaced"
                     />
                     <group>
                         <group>
