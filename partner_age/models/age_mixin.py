@@ -136,9 +136,7 @@ class AgeMixin(models.AbstractModel):
                     rec.age = rd.years
                 rec.age_month = rd.months
                 rec.age_day = rd.days
-                _logger.debug(
-                    "age = {}Y {}M {}D".format(rec.age, rec.age_month, rec.age_day)
-                )
+                _logger.debug(f"age = {rec.age}Y {rec.age_month}M {rec.age_day}D")
 
     @api.model
     def _format_age(self, delta):
