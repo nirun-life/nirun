@@ -16,9 +16,7 @@ class AgeMixin(models.AbstractModel):
     birthdate = fields.Date("Date of Birth", tracking=True)
     deceased_date = fields.Date(tracking=True)
     deceased = fields.Boolean(compute="_compute_is_deceased", store=True, tracking=True)
-    display_age = fields.Char(
-        "Age", compute="_compute_age", compute_sudo=True, readonly=True
-    )
+    display_age = fields.Char("Age", compute="_compute_display_age", compute_sudo=True)
     age = fields.Integer(
         "Age (years)",
         compute="_compute_age",
@@ -26,7 +24,7 @@ class AgeMixin(models.AbstractModel):
         compute_sudo=True,
         store=True,
         readonly=False,
-        group_operator="avg",
+        aggregator="avg",
     )
     age_month = fields.Integer(
         "Age (month)",
@@ -34,7 +32,7 @@ class AgeMixin(models.AbstractModel):
         compute_sudo=True,
         store=True,
         readonly=False,
-        group_operator="avg",
+        aggregator="avg",
     )
     age_day = fields.Integer(
         "Age (day)",
@@ -42,7 +40,7 @@ class AgeMixin(models.AbstractModel):
         compute_sudo=True,
         store=True,
         readonly=False,
-        group_operator="avg",
+        aggregator="avg",
     )
     age_init = fields.Integer(
         "Age (Years) Input", help="Internal: Age (years) input value", readonly=True
@@ -104,7 +102,20 @@ class AgeMixin(models.AbstractModel):
             elif rec.age_init:
                 rec._compute_age_from_init()
             else:
-                rec.update({"age": 0, "display_age": None})
+                rec.age = 0
+
+    @api.depends("birthdate", "deceased_date", "age_init", "age_init_date")
+    def _compute_display_age(self):
+        today = fields.Date.context_today(self)
+        for rec in self:
+            dt = rec.deceased_date or today
+            if rec.birthdate:
+                rec.display_age = self._format_age(relativedelta(dt, rec.birthdate))
+            elif rec.age_init and rec.age_init_date:
+                age_year = rec.age_init + dt.year - rec.age_init_date.year
+                rec.display_age = _("%s Years") % age_year
+            else:
+                rec.display_age = None
 
     def _compute_age_from_init(self, date=None):
         if not date:
@@ -114,7 +125,6 @@ class AgeMixin(models.AbstractModel):
                 dt = rec.deceased_date if rec.deceased_date else date
                 year_diff = dt.year - rec.age_init_date.year
                 age_year = rec.age_init + year_diff
-                rec.display_age = _("%s Years") % age_year
                 if rec.age != age_year:
                     # check this for reduce chance to call `_inverse_age()`
                     rec.age = age_year
@@ -128,7 +138,6 @@ class AgeMixin(models.AbstractModel):
             if rec.birthdate:
                 dt = rec.deceased_date if rec.deceased_date else date
                 rd = relativedelta(dt, rec.birthdate)
-                rec.display_age = self._format_age(rd)
                 if rec.age != rd.years:
                     # check this for reduce chance to call `_inverse_age()`
                     rec.age = rd.years
@@ -168,7 +177,7 @@ class AgeMixin(models.AbstractModel):
         for record in self:
             if not record.birthdate:
                 continue
-            if record.birthdate > fields.date.today():
+            if record.birthdate > fields.Date.today():
                 raise ValidationError(
                     _(
                         "Birthdate must not be in the future",
@@ -180,7 +189,7 @@ class AgeMixin(models.AbstractModel):
         for record in self:
             if not record.deceased_date:
                 continue
-            if record.deceased_date > fields.date.today():
+            if record.deceased_date > fields.Date.today():
                 raise ValidationError(
                     _(
                         "Deceased date must not be in the future",
