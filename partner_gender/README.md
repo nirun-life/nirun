@@ -9,14 +9,15 @@ can prefill gender automatically.
 
 - `res.partner` extension Adds tracked `gender` selection values `male`, `female`, and
   `other`.
-- `res.partner.title` extension Adds a `gender` default on title records.
+- `res.partner.title` extension (model from OCA `partner_title`) Adds a `gender` default
+  on title records.
 - Post-init hook Backfills partner gender for existing contacts that already use the
-  base Mister, Miss, or Madam titles.
+  `partner_title` Mister, Miss, or Madam titles.
 
 ## Data and Views
 
 - Loads title data updates from `data/res_partner_tiltle_data.xml`.
-- Partner form: shows `gender` after `title` and hides it for companies.
+- Partner form: shows `gender` before `lang` and hides it for companies.
 - Partner-title tree and form views: show the title-level gender default for partner
   managers.
 
@@ -28,9 +29,20 @@ can prefill gender automatically.
 ## Dependencies
 
 - `mail`: `gender` changes are tracked in the chatter.
+- `partner_title` (OCA/partner-contact): Odoo 19 removed `res.partner.title` and the
+  partner `title` field; this module brings them back as `res.partner.title` and
+  `title_id`.
+
+## Upgrade from 18.0
+
+Run OpenUpgrade 19 with `upgrade_path/` of this repository as a second `--upgrade-path`.
+Its `base/19.0.1.3/pre-nirun_partner_title.py` hands the existing titles, their xmlids
+and the `res_partner.title` column over to `partner_title` (`title_id`) before that
+module is installed. Without it `partner_title` fails to install and contact titles are
+lost.
 
 ## Notes
 
-- Changing a contact title triggers `onchange` logic that copies the title's configured
-  gender into the contact.
-- The post-init hook uses the base Odoo title records to initialize legacy data.
+- Changing a contact title (`title_id`) triggers `onchange` logic that copies the
+  title's configured gender into the contact.
+- The post-init hook uses the `partner_title` title records to initialize legacy data.

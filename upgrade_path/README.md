@@ -1,0 +1,15 @@
+# Upgrade path for OpenUpgrade
+
+Extra migration scripts for core modules, used next to OpenUpgrade when a Nirun database
+is upgraded from one version to the next. Odoo merges the scripts of every
+`--upgrade-path` entry, so pass this folder after OpenUpgrade's own scripts:
+
+```bash
+--upgrade-path=<OpenUpgrade-19>/openupgrade_scripts/scripts,<nirun-19.0>/upgrade_path
+```
+
+| Script                                     | Why                                                                                                                                                                                                                                                                          |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `base/19.0.1.3/pre-nirun_partner_title.py` | Odoo 19 dropped partner titles. Hands the `res_partner_title` table, its xmlids and the `res_partner.title` column over to OCA `partner_title` (`title_id`) before that module is installed, so titles survive the 18→19 step. Runs only when `partner_gender` is installed. |
+
+The scripts only run during an OpenUpgrade step; a normal module update ignores them.

@@ -3,14 +3,14 @@
 {
     "name": "Partner - Gender",
     "summary": "Add gender field to partner also default gender by selected title",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "development_status": "Alpha",
     "category": "Tools",
     "author": "NSTDA, Piruin P.",
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["mail"],
+    "depends": ["mail", "partner_title"],
     "data": [
         "data/res_partner_tiltle_data.xml",
         "views/res_partner_views.xml",

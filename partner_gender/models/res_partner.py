@@ -13,7 +13,7 @@ class Partner(models.Model):
         required=False,
     )
 
-    @api.onchange("title")
-    def _onchange_title(self):
-        if self.title and self.title.gender:
-            self.gender = self.title.gender
+    @api.onchange("title_id")
+    def _onchange_title_id(self):
+        if self.title_id and self.title_id.gender:
+            self.gender = self.title_id.gender
