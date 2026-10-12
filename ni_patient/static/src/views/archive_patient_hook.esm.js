@@ -1,18 +1,18 @@
 /** @odoo-module **/
 
+import {_t} from "@web/core/l10n/translation";
+import {useComponent} from "@odoo/owl";
 import {useService} from "@web/core/utils/hooks";
-const {useComponent, useEnv} = owl;
 
 export function useArchivePatient() {
     const component = useComponent();
-    const env = useEnv();
     const action = useService("action");
 
     return (resIds) => {
         action.doAction(
             {
                 type: "ir.actions.act_window",
-                name: env._t("Patient Archive"),
+                name: _t("Patient Archive"),
                 res_model: "ni.patient.archive.wizard",
                 view_mode: "form",
                 views: [[false, "form"]],

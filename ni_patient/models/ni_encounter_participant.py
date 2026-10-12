@@ -84,14 +84,13 @@ class EncounterParticipant(models.Model):
                 r = intercept[0]
                 raise ValidationError(
                     _(
-                        "{} already involved for given time! {}"
-                        "\n\n\t{} ({} → {})".format(
-                            rec.employee_id.name,
-                            rec.period_start,
-                            r.type_id.name,
-                            r.period_start or "...",
-                            r.period_end or _("Now"),
-                        )
+                        "%(employee)s already involved for given time! %(start)s"
+                        "\n\n\t%(type)s (%(other_start)s → %(other_end)s)",
+                        employee=rec.employee_id.name,
+                        start=rec.period_start,
+                        type=r.type_id.name,
+                        other_start=r.period_start or "...",
+                        other_end=r.period_end or _("Now"),
                     )
                 )
 
@@ -103,8 +102,9 @@ class EncounterParticipant(models.Model):
             if rec.period_end > limit_date:
                 raise ValidationError(
                     _(
-                        "Participant end time (%s) must not be in the"
-                        " future or after the encounter have ended (%s) "
-                        % (rec.period_end, limit_date)
+                        "Participant end time (%(end)s) must not be in the"
+                        " future or after the encounter have ended (%(limit)s) ",
+                        end=rec.period_end,
+                        limit=limit_date,
                     )
                 )
