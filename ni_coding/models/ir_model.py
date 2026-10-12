@@ -11,7 +11,7 @@ class IrModel(models.Model):
             "type": "ir.actions.act_window",
             "name": self.name,
             "res_model": self.model,
-            "view_mode": "tree,kanban,form",
+            "view_mode": "list,kanban,form",
         }
 
     @api.model
@@ -25,13 +25,13 @@ class IrModel(models.Model):
 
     @api.model
     def action_open_coding_models(self):
-        tree_view_id = self.env.ref("ni_coding.coding_model_view_tree").id
+        list_view_id = self.env.ref("ni_coding.coding_model_view_tree").id
         return {
             "type": "ir.actions.act_window",
             "name": "Coding Models",
             "res_model": "ir.model",
-            "view_mode": "tree",
-            "views": [(tree_view_id, "tree")],
+            "view_mode": "list",
+            "views": [(list_view_id, "list")],
             "domain": [("model", "in", self._get_coding_model_names())],
             "context": {"create": False, "delete": False},
         }
