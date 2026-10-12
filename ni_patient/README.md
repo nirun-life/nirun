@@ -1,6 +1,6 @@
 # Patient (`ni_patient`)
 
-Odoo 17.0 module that provides the core patient and encounter model for Nirun. It
+Odoo 18.0 module that provides the core patient and encounter model for Nirun. It
 anchors the clinical data hierarchy, patient/encounter workflow state, and shared
 timeline records used by the rest of the healthcare modules.
 
@@ -58,8 +58,8 @@ and requests into a single patient history.
   number and the patient.
 - `ni.location` display name honours `location_display="short"`, `show_parent` and
   `show_alias`; `full_name` is the parent path with alias.
-- `res.partner` name search matches the name, or exactly the phone, mobile or
-  identification number (`_name_search` override).
+- `res.partner` search by display name (`_search_display_name`) also matches the exact
+  phone, mobile or identification number, on top of the core partner search.
 
 ## Addresses
 
@@ -70,6 +70,14 @@ and requests into a single patient history.
 - Upgrade from 16.0: `migrations/17.0.1.0.0/post-migration.py` restores those addresses
   from OpenUpgrade's `ou_res_partner_private` copy (OpenUpgrade masks private addresses)
   and sets them to `other`.
+
+## Computed Fields
+
+- Stored and non-stored computed fields use separate compute methods (Odoo 18 warns
+  otherwise): e.g. `ni.patient.encounter_count`/`encounter_start`,
+  `res.partner.patient_id`, `ni.location.encounter_active_*`.
+- `ni.encounter.display_age` is the age at the encounter start (`_compute_display_age`
+  overrides the `partner_age` one).
 
 ## Encounter Locking
 
