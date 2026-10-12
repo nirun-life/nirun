@@ -1,13 +1,14 @@
 #  Copyright (c) 2021-2023 NSTDA
 
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class CodingSystem(models.Model):
     _name = "ni.coding.system"
     _description = "Coding System"
     _order = "sequence, id"
+    _rec_names_search = ["name", "url"]
 
     def _get_default_sequence(self):
         other = self.env.ref("ni_coding.system_other")
@@ -24,15 +25,6 @@ class CodingSystem(models.Model):
     name = fields.Char(required=True, index=True, translate=True)
     url = fields.Char()
     active = fields.Boolean(default=True)
-
-    @api.model
-    def _name_search(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        args = list(args or [])
-        if not (name == "" and operator == "ilike"):
-            args += ["|", ("name", operator, name), ("url", operator, name)]
-        return self._search(args, limit=limit, access_rights_uid=name_get_uid)
 
     _sql_constraints = [
         (
