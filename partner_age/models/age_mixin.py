@@ -14,10 +14,8 @@ class AgeMixin(models.AbstractModel):
     _description = "Age mixin"
 
     birthdate = fields.Date("Date of Birth", tracking=True)
-    deceased_date = fields.Date("Deceased Date", tracking=True)
-    deceased = fields.Boolean(
-        "Deceased", compute="_compute_is_deceased", store=True, tracking=True
-    )
+    deceased_date = fields.Date(tracking=True)
+    deceased = fields.Boolean(compute="_compute_is_deceased", store=True, tracking=True)
     display_age = fields.Char(
         "Age", compute="_compute_age", compute_sudo=True, readonly=True
     )
@@ -156,8 +154,9 @@ class AgeMixin(models.AbstractModel):
             if not record.age:
                 range_id = False
             else:
+                age = record.age
                 range_id = (
-                    range_ids.filtered(lambda r: r.age_from <= record.age <= r.age_to)
+                    range_ids.filtered(lambda r, age=age: r.age_from <= age <= r.age_to)
                     or False
                 )
             if record.age_range_id != range_id:
