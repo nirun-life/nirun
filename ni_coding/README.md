@@ -74,6 +74,9 @@ and downstream add-ons:
 
 - `ni.coding.system` enforces uniqueness on both `name` and `url`.
 - `ni.coding` enforces uniqueness of `(system_id, name)` and `(system_id, code)`.
-- Search on both models matches the human name plus the code fields they expose.
+- Search on both models matches the human name plus the code fields they expose. On
+  `ni.coding`, a multi-word query must match every word in `name`.
+- `ni.coding` computes `display_name` in `_compute_display_name`. The context keys
+  `show_parent`, `show_abbr`, `show_code` and `only_abbr` change the format.
 - The module is intended to be extended by other clinical modules that need stable coded
   terminology.
