@@ -1,5 +1,7 @@
 #  Copyright (c) 2021-2023 NSTDA
 
+from dateutil.relativedelta import relativedelta
+
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -59,7 +61,7 @@ class Encounter(models.Model):
         store=True,
     )
     name = fields.Char(
-        "Encounter No.",
+        "Encounter Name",
         copy=False,
         store=True,
         index=True,
@@ -109,7 +111,28 @@ class Encounter(models.Model):
             elif rec.age_init:
                 rec._compute_age_from_init(rec.period_start)
             else:
-                rec.update({"age": 0, "display_age": None})
+                rec.age = 0
+
+    @api.constrains()
+    def _check_birthdate(self):
+        # birthdate is related to the patient, which validates it.
+        return
+
+    @api.depends(
+        "birthdate", "deceased_date", "age_init", "age_init_date", "period_start"
+    )
+    def _compute_display_age(self):
+        # Age at the encounter, not today.
+        now = fields.Datetime.now()
+        for rec in self:
+            ref = rec.deceased_date or (rec.period_start or now).date()
+            if rec.birthdate:
+                rec.display_age = self._format_age(relativedelta(ref, rec.birthdate))
+            elif rec.age_init and rec.age_init_date:
+                age_year = rec.age_init + ref.year - rec.age_init_date.year
+                rec.display_age = _("%s Years") % age_year
+            else:
+                rec.display_age = None
 
     other_address_id = fields.Many2one(
         "res.partner",
@@ -184,7 +207,9 @@ class Encounter(models.Model):
         copy=True,
     )
     location_history_count = fields.Integer(
-        string="Location", compute="_compute_location_history_count", store=True
+        string="Location Moves",
+        compute="_compute_location_history_count",
+        store=True,
     )
     reason_ids = fields.Many2many(
         "ni.encounter.reason",
@@ -305,7 +330,9 @@ class Encounter(models.Model):
 
     # Encounter Class configuration
     show_history = fields.Boolean(related="class_id.history")
-    show_chief_complaint = fields.Boolean(related="class_id.chief_complaint")
+    show_chief_complaint = fields.Boolean(
+        related="class_id.chief_complaint", string="Show Chief Complaint"
+    )
     show_history_of_present_illness = fields.Boolean(
         related="class_id.history_of_present_illness"
     )
@@ -319,14 +346,18 @@ class Encounter(models.Model):
     show_questionnaire = fields.Boolean(related="class_id.questionnaire")
     show_document_ref = fields.Boolean(related="class_id.document_ref")
     show_service = fields.Boolean(related="class_id.service")
-    show_participant = fields.Boolean(related="class_id.participant")
+    show_participant = fields.Boolean(
+        related="class_id.participant", string="Show Participant"
+    )
     show_careplan = fields.Boolean(related="class_id.careplan")
     show_order = fields.Boolean(related="class_id.order")
 
     # Participant
     participant_ids = fields.One2many("ni.encounter.participant", "encounter_id")
     participant_id = fields.Many2one(
-        "ni.encounter.participant", compute="_compute_participant_id"
+        "ni.encounter.participant",
+        string="Current Participant",
+        compute="_compute_participant_id",
     )
     participant_permit_no = fields.Char("Permit No.", compute="_compute_participant_id")
     participant_title = fields.Char(compute="_compute_participant_id")

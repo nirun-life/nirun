@@ -82,7 +82,7 @@ class WorkflowMixin(models.AbstractModel):
     def _write_workflow(self):
         self.ensure_one()
         rec = self
-        workflow_id = "%s_id" % self._workflow_type
+        workflow_id = f"{self._workflow_type}_id"
         if rec[workflow_id]:
             rec[workflow_id].write(rec._to_workflow())
         else:

@@ -50,7 +50,7 @@ class EncounterParticipant(models.Model):
                 period_end is NULL or
                 period_end > period_start
             )""",
-            _("Participant end time must be after start time"),
+            "Participant end time must be after start time",
         ),
     ]
 
