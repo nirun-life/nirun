@@ -27,7 +27,7 @@ can prefill gender automatically.
 
 ## Dependencies
 
-- `base`
+- `mail`: `gender` changes are tracked in the chatter.
 
 ## Notes
 
