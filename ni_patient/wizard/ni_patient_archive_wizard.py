@@ -20,7 +20,8 @@ class PatientArchiveWizard(models.TransientModel):
         required=True,
     )
     state_date = fields.Date(
-        string="State Date", default=fields.Date.context_today  # วันที่เข้าสู่สถานะนี้
+        string="State Date",
+        default=fields.Date.context_today,  # วันที่เข้าสู่สถานะนี้
     )
     state_note = fields.Text(string="Additional Details")  # รายละเอียดเพิ่มเติม
 

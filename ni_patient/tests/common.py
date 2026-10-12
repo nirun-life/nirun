@@ -7,7 +7,7 @@ from odoo.tests import common
 
 class TestPatientCommon(common.TransactionCase):
     def setUp(self):
-        super(TestPatientCommon, self).setUp()
+        super().setUp()
 
         patient_admin = self.env["res.users"].create(
             {

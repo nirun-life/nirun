@@ -63,7 +63,7 @@ class PatientResource(models.AbstractModel):
         if not self._abstract:
             tools.create_index(
                 self._cr,
-                "{}_company_id_patient_id_encounter_id_index".format(self._table),
+                f"{self._table}_company_id_patient_id_encounter_id_index",
                 self._table,
                 ["company_id", "patient_id", "encounter_id"],
             )
