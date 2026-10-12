@@ -9,7 +9,7 @@ from odoo.tests import common
 
 class TestPartnerAge(common.TransactionCase):
     def setUp(self):
-        super(TestPartnerAge, self).setUp()
+        super().setUp()
         self.partners = self.env["res.partner"]
         self.today = fields.Date.context_today(self.partners)
 
