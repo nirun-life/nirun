@@ -1,7 +1,7 @@
 #  Copyright (c) 2021 NSTDA
 
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class SurveySubjectWizard(models.TransientModel):
@@ -28,12 +28,12 @@ class SurveySubjectWizard(models.TransientModel):
 
             if rec.subject_ni_patient.deceased:
                 warning = {
-                    "title": _("Warning!"),
-                    "message": _(
-                        "%s is already deceased. Reference to this patient may "
-                        "cause database inconsistency!"
-                    )
-                    % rec.subject_ni_patient.name,
+                    "title": self.env._("Warning!"),
+                    "message": self.env._(
+                        "%(patient)s is already deceased. Reference to this patient "
+                        "may cause database inconsistency!",
+                        patient=rec.subject_ni_patient.name,
+                    ),
                 }
                 return {"warning": warning}
 

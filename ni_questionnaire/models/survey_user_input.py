@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023. NSTDA
 
-from odoo import _, api, fields, models, tools
+from odoo import api, fields, models, tools
 from odoo.exceptions import ValidationError
 
 
@@ -22,14 +22,14 @@ class SurveyUserInput(models.Model):
     def init(self):
         res = super().init()
         tools.create_index(
-            self._cr,
+            self.env.cr,
             "survey_user_input_patient_survey_create_date_idx",
             self._table,
             ["patient_id", "survey_id", "create_date DESC", "id"],
             where="state = 'done' AND patient_id IS NOT NULL",
         )
         tools.create_index(
-            self._cr,
+            self.env.cr,
             "survey_user_input_encounter_survey_create_date_idx",
             self._table,
             ["encounter_id", "survey_id", "create_date DESC", "id"],
@@ -187,7 +187,7 @@ class SurveyUserInput(models.Model):
         for rec in self:
             if rec.encounter_id and rec.patient_id != rec.encounter_id.patient_id:
                 raise ValidationError(
-                    _("The referencing encounter is not belong to patient")
+                    self.env._("The referencing encounter is not belong to patient")
                 )
 
     def action_survey_subject_wizard(self):
@@ -260,5 +260,5 @@ class SurveyUserInput(models.Model):
             selection = grades._fields["gender"]._description_selection(self.env)
             res.append(dict(selection)[patient.gender])
         if len(set(grades.mapped(lambda g: (g.age_low, g.age_high)))) > 1:
-            res.append(_("Age %s") % patient.age)
+            res.append(self.env._("Age %s", patient.age))
         return res

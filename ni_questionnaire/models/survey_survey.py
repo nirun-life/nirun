@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -26,9 +26,9 @@ class Survey(models.Model):
 
     def action_sync_observation_range(self):
         if not self.observation_type_id:
-            raise ValidationError(_("Please specify observation"))
+            raise ValidationError(self.env._("Please specify observation"))
         if not self.observation_type_id.ref_range_ids:
-            raise ValidationError(_("Observation not have reference range"))
+            raise ValidationError(self.env._("Observation not have reference range"))
 
         # Points grades are compared against scoring_total, so the reference range
         # bounds are already in the right unit and must not be scaled.
@@ -66,4 +66,4 @@ class Survey(models.Model):
                 "int",
                 "float",
             ]:
-                raise UserError(_("Observation but be Int or Float"))
+                raise UserError(self.env._("Observation but be Int or Float"))
