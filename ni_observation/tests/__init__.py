@@ -2,3 +2,4 @@
 
 from . import test_compute_code
 from . import test_inverse_value
+from . import test_latest_observation
