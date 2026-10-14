@@ -1,6 +1,6 @@
 # Questionnaire (`ni_questionnaire`)
 
-Odoo 17.0 module that integrates Odoo Survey with Nirun patients, encounters, grading,
+Odoo 18.0 module that integrates Odoo Survey with Nirun patients, encounters, grading,
 and observation generation.
 
 ## Purpose
@@ -42,6 +42,8 @@ views.
   modules' tests, which run before this module enters the registry. `value` and
   `percentage` are the special cases; an empty value reads as `score` and `raw`
   respectively.
+- Scale questions (new in 18.0) map their `value_scale` when the question is
+  `value`-mapped; the monthly report has a "Scale answer" column.
 - A `value`-mapped answer is read by `answer_type`, not by testing each `value_*` field
   for truthiness. Truthiness rejected a legitimate numerical answer of `0` and had no
   branch for `datetime` at all, both of which blocked survey completion.
@@ -98,7 +100,9 @@ bearing on the grade.
   `views/ni_patient_views.xml`, and `views/ni_encounter_views.xml` expose questionnaire
   operations across survey and clinical screens.
 - `security/res_groups.xml`, `security/ir_rules.xml`, and `security/ir.model.access.csv`
-  define questionnaire-specific access.
+  define questionnaire-specific access. From 18.0 the read rule on question groups is
+  split into `base.group_user`/`base.group_portal`/`base.group_public` rows (same
+  access).
 
 ## Dependencies
 

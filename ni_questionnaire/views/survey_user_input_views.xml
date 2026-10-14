@@ -21,11 +21,11 @@
         </field>
     </record>
     <record id="survey_user_input_view_tree_inherit" model="ir.ui.view">
-        <field name="name">survey.user_input.view.tree.inherit</field>
+        <field name="name">survey.user_input.view.list.inherit</field>
         <field name="model">survey.user_input</field>
         <field name="inherit_id" ref="survey.survey_user_input_view_tree" />
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="attributes">
+            <xpath expr="//list" position="attributes">
                 <attribute name="default_order">create_date desc</attribute>
             </xpath>
             <field name="partner_id" position="after">
@@ -81,7 +81,7 @@
         <field name="name">Questionnaire Response</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">survey.user_input</field>
-        <field name="view_mode">pivot,graph,tree</field>
+        <field name="view_mode">pivot,graph,list</field>
         <field name="domain">[('state', '=', 'done'),('test_entry', '=', False)]</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">Questionnaire response Not found!</p>
