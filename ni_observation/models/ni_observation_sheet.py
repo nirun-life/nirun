@@ -16,7 +16,7 @@ class ObservationSheet(models.Model):
     _identifier_ts_field = "period_start"
 
     name = fields.Char(
-        "Identifier",
+        "Sheet Name",
         copy=False,
         readonly=True,
         index=True,
