@@ -1,6 +1,7 @@
 #  Copyright (c) 2022 Piruin P.
 
 from odoo import models, tools
+from odoo.tools import SQL
 
 
 class EncounterObservationLatest(models.Model):
@@ -12,12 +13,13 @@ class EncounterObservationLatest(models.Model):
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)
         self.env.cr.execute(
-            """CREATE OR REPLACE VIEW %s AS (
-            SELECT DISTINCT ON (patient_id, type_id) *
-            FROM ni_observation
-            WHERE value IS NOT NULL
-            ORDER BY patient_id, type_id, occurrence DESC
-        )
-        """
-            % (self._table)
+            SQL(
+                """CREATE OR REPLACE VIEW %s AS (
+                SELECT DISTINCT ON (patient_id, type_id) *
+                FROM ni_observation
+                WHERE value IS NOT NULL
+                ORDER BY patient_id, type_id, occurrence DESC
+            )""",
+                SQL.identifier(self._table),
+            )
         )

@@ -17,11 +17,18 @@ class ObservationAbstract(models.AbstractModel):
 
     occurrence = fields.Datetime(default=fields.Datetime.now, index=True)
     effective_date = fields.Datetime(
-        related="occurrence", readonly=False, help="Alias for occurrence"
+        "Effective Date",
+        related="occurrence",
+        readonly=False,
+        help="Alias for occurrence",
     )
     type_id = fields.Many2one("ni.observation.type", required=False, index=True)
     code_id = fields.Many2one(
-        related="type_id", store=True, readonly=False, help="Alias for type_id"
+        string="Observation Code",
+        related="type_id",
+        store=True,
+        readonly=False,
+        help="Alias for type_id",
     )
     code = fields.Char(compute="_compute_code", inverse="_inverse_code")
 
@@ -66,11 +73,13 @@ class ObservationAbstract(models.AbstractModel):
         default="float",
     )
     value = fields.Char(compute="_compute_value", inverse="_inverse_value", store=True)
-    value_float = fields.Float("Value", group_operator="avg")
-    value_char = fields.Char("Value")
-    value_int = fields.Integer("Value", group_operator="avg")
+    value_float = fields.Float("Value (Decimal)", aggregator="avg")
+    value_char = fields.Char("Value (Text)")
+    value_int = fields.Integer("Value (Integer)", aggregator="avg")
     value_code_id = fields.Many2one(
-        "ni.observation.value.code", "Value", domain="[('type_ids', '=', type_id)]"
+        "ni.observation.value.code",
+        "Value (Code)",
+        domain="[('type_ids', '=', type_id)]",
     )
     value_code_ids = fields.Many2many(
         "ni.observation.value.code",
@@ -104,19 +113,7 @@ class ObservationAbstract(models.AbstractModel):
         default=None,
     )
     is_problem = fields.Boolean(related="interpretation_id.is_problem", store=True)
-    display_class = fields.Selection(
-        [
-            ("text", "Text"),
-            ("muted", "Muted"),
-            ("info", "Info"),
-            ("primary", "Primary"),
-            ("success", "Success"),
-            ("warning", "Warning"),
-            ("danger", "Danger"),
-        ],
-        related="interpretation_id.display_class",
-        default="text",
-    )
+    display_class = fields.Selection(related="interpretation_id.display_class")
 
     @api.depends("type_id", "value", "display_type", "title")
     def _compute_name(self):
@@ -171,7 +168,7 @@ class ObservationAbstract(models.AbstractModel):
     def _compute_value(self):
         for rec in self:
             if not rec.type_id or (
-                not rec["value_%s" % rec.type_id.value_type]
+                not rec[f"value_{rec.type_id.value_type}"]
                 and not rec.type_id.keep_falsy
             ):
                 rec.value = None
@@ -216,7 +213,7 @@ class ObservationAbstract(models.AbstractModel):
                         )
                     else:
                         raise ValidationError(
-                            _('Not found match value for "%s"!' % rec.value)
+                            _('Not found match value for "%(value)s"!', value=rec.value)
                         )
                 case "code_ids":
                     values = rec.value.split(",")

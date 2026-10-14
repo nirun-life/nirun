@@ -17,16 +17,13 @@ class ObservationReport(models.AbstractModel):
         [("line_section", "Section"), ("line_note", "Note")]
     )
     type_id = fields.Many2one("ni.observation.type", readonly=True, required=True)
-    sequence = fields.Integer(related="type_id.sequence", readonly=True)
+    sequence = fields.Integer(related="type_id.sequence", readonly=True, default=None)
     category_id = fields.Many2one(related="type_id.category_id", readonly=True)
-    value_type = fields.Selection(
-        [("char", "Char"), ("float", "Float"), ("int", "Integer"), ("code_id", "Code")],
-        readonly=True,
-    )
+    value_type = fields.Selection(readonly=True)
     value = fields.Char(readonly=True)
     value_char = fields.Char(readonly=True)
-    value_int = fields.Integer(group_operator="avg", readonly=True)
-    value_float = fields.Float(group_operator="avg", readonly=True)
+    value_int = fields.Integer(aggregator="avg", readonly=True)
+    value_float = fields.Float(aggregator="avg", readonly=True)
     value_code_id = fields.Many2one("ni.observation.value.code", readonly=True)
     unit_id = fields.Many2one(related="type_id.unit_id")
     interpretation_id = fields.Many2one(

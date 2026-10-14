@@ -1,5 +1,6 @@
 #  Copyright (c) 2021 NSTDA
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class ObservationValueCode(models.Model):
@@ -11,7 +12,7 @@ class ObservationValueCode(models.Model):
     parent_id = fields.Many2one(
         "ni.observation.value.code", index=True, ondelete="set null"
     )
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
     child_ids = fields.One2many("ni.observation.value.code", "parent_id", index=True)
 
     type_ids = fields.Many2many(
@@ -25,5 +26,5 @@ class ObservationValueCode(models.Model):
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
-        if not self._check_recursion():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+        if self._has_cycle():
+            raise ValidationError(_("Error! You cannot create recursive data."))
