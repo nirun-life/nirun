@@ -1,6 +1,6 @@
 #  Copyright (c) 2022 Piruin P.
 
-from odoo import _, fields, models, tools
+from odoo import fields, models, tools
 from odoo.exceptions import ValidationError
 from odoo.tools import SQL
 
@@ -17,7 +17,7 @@ class PatientSurveyLatest(models.Model):
     gender = fields.Selection(related="patient_id.gender")
     encounter_id = fields.Many2one("ni.encounter", readonly=True)
     encounter_state = fields.Selection(related="encounter_id.state")
-    grade_id = fields.Many2one("survey.grade", "Grade", readonly=True, compute=False)
+    grade_id = fields.Many2one("survey.grade", readonly=True, compute=False)
     grade = fields.Char("Grade Name", related="grade_id.name")
     scoring_percentage = fields.Float(
         "Score (%)", readonly=True, compute=False, aggregator="avg"
@@ -75,5 +75,5 @@ class PatientSurveyLatest(models.Model):
     def _get_survey_user_input(self):
         response_id = self.env["survey.user_input"].browse(self.id)
         if not response_id:
-            raise ValidationError(_("Not found requested survey's response!"))
+            raise ValidationError(self.env._("Not found requested survey's response!"))
         return response_id

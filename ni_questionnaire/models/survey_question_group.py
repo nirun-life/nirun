@@ -1,4 +1,4 @@
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -33,4 +33,4 @@ class SurveyQuestionGroup(models.Model):
     def _check_question(self):
         for rec in self:
             if len(rec.question_ids) < 2:
-                raise UserError(_("Must specify at least 2 question"))
+                raise UserError(self.env._("Must specify at least 2 question"))

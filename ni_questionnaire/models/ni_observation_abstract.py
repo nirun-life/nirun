@@ -1,5 +1,5 @@
 #  Copyright (c) 2024 NSTDA
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -44,11 +44,11 @@ class ObservationAbstract(models.AbstractModel):
     def action_survey_subject(self):
         self.ensure_one()
         if not self.survey_id:
-            raise ValidationError(_("This observation not have survey"))
+            raise ValidationError(self.env._("This observation not have survey"))
 
         if "patient_id" in self._fields and self["patient_id"]:
             enc = self.patient_id.encounter_id
-            # enc = self.env['ni.encounter'].browse(self._context.get('active_id'))
+            # enc = self.env['ni.encounter'].browse(self.env.context.get('active_id'))
             if enc:
                 action = enc[0].action_survey_subject()
                 ctx = dict(action.get("context"))
@@ -63,5 +63,5 @@ class ObservationAbstract(models.AbstractModel):
             return action
 
         raise ValidationError(
-            _("Can't start survey! This may cause by misconfiguration")
+            self.env._("Can't start survey! This may cause by misconfiguration")
         )
