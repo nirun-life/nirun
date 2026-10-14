@@ -13,11 +13,26 @@
         <field name="model">ni.observation.value.code</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
-                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <field
+                    name="name"
+                    filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]"
+                />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
                 <group name="group_by" string="Group By">
-                    <filter name="system" string="System" context="{'group_by': 'system_id'}" />
-                    <filter name="parent" string="Parent" context="{'group_by': 'parent_id'}" />
+                    <filter
+                        name="system"
+                        string="System"
+                        context="{'group_by': 'system_id'}"
+                    />
+                    <filter
+                        name="parent"
+                        string="Parent"
+                        context="{'group_by': 'parent_id'}"
+                    />
                 </group>
             </search>
         </field>
@@ -28,7 +43,12 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="sequence" widget="handle" />
-                <field name="type_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show" />
+                <field
+                    name="type_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    optional="show"
+                />
                 <field name="name" />
                 <field name="code" optional="show" />
                 <field name="parent_id" optional="hide" />
@@ -84,9 +104,15 @@
                                 </group>
                                 <group name="metadata" string="Metadata">
                                     <field name="create_date" />
-                                    <field name="create_uid" widget="many2one_avatar_user" />
+                                    <field
+                                        name="create_uid"
+                                        widget="many2one_avatar_user"
+                                    />
                                     <field name="write_date" />
-                                    <field name="write_uid" widget="many2one_avatar_user" />
+                                    <field
+                                        name="write_uid"
+                                        widget="many2one_avatar_user"
+                                    />
                                 </group>
                             </group>
                         </page>
