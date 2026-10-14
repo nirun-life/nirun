@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2024 NSTDA
   -->
@@ -9,14 +9,8 @@
         <field name="inherit_id" ref="ni_observation.ni_encounter_ob_line_view_form" />
         <field name="arch" type="xml">
             <field name="interpretation_id" position="after">
-                <label
-                    for="survey_response_id"
-                    attrs="{'invisible': [('survey_response_id', '=', False)]}"
-                />
-                <div
-                    class="o_row"
-                    attrs="{'invisible': [('survey_response_id', '=', False)]}"
-                >
+                <label for="survey_response_id" invisible="not survey_response_id" />
+                <div class="o_row" invisible="not survey_response_id">
                     <field name="survey_response_id" />
                     <button
                         name="action_print_survey"
@@ -49,21 +43,21 @@
                     type="object"
                     title="View Monthly Report"
                     icon="fa-table"
-                    attrs="{'invisible': [('survey_id', '=', False)]}"
+                    invisible="not survey_id"
                 />
                 <button
                     name="action_print_survey"
                     type="object"
                     icon="fa-eye"
                     title="See Result"
-                    attrs="{'invisible': ['|',('survey_id', '=', False), ('survey_response_id', '=', False)]}"
+                    invisible="(not survey_id or not survey_response_id)"
                 />
                 <button
                     name="action_survey_subject"
                     type="object"
                     icon="fa-commenting"
                     title="Start Survey"
-                    attrs="{'invisible': [('survey_id', '=', False)]}"
+                    invisible="not survey_id"
                 />
             </xpath>
         </field>

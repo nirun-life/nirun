@@ -20,7 +20,7 @@ class SurveyUserInput(models.Model):
     observation_group_ids = fields.One2many(related="survey_id.question_group_ids")
 
     def init(self):
-        super().init()
+        res = super().init()
         tools.create_index(
             self._cr,
             "survey_user_input_patient_survey_create_date_idx",
@@ -35,6 +35,7 @@ class SurveyUserInput(models.Model):
             ["encounter_id", "survey_id", "create_date DESC", "id"],
             where="state = 'done' AND encounter_id IS NOT NULL",
         )
+        return res
 
     def _mark_done(self):
         # After super(): _mark_done() drops the inactive conditional questions from
@@ -94,8 +95,10 @@ class SurveyUserInput(models.Model):
             val.update({"value": str(int(result))})
         else:
             raise ValidationError(
-                _("{} value type is [{}], not support score input").format(
-                    code.name, code.value_type
+                _(
+                    "%(name)s value type is [%(type)s], not support score input",
+                    name=code.name,
+                    type=code.value_type,
                 )
             )
         return val
@@ -115,8 +118,10 @@ class SurveyUserInput(models.Model):
                 val.update({"value": str(line.answer_score)})
             else:
                 raise ValidationError(
-                    _("{} value type is [{}], not support score input").format(
-                        code.name, code.value_type
+                    _(
+                        "%(name)s value type is [%(type)s], not support score input",
+                        name=code.name,
+                        type=code.value_type,
                     )
                 )
         else:
@@ -167,8 +172,10 @@ class SurveyUserInput(models.Model):
             val.update({"value": str(result)})
         else:
             raise ValidationError(
-                _("{} value type is [{}], not support score input").format(
-                    code.observation_type_id.name, code.observation_type_id.value_type
+                _(
+                    "%(name)s value type is [%(type)s], not support score input",
+                    name=code.name,
+                    type=code.value_type,
                 )
             )
         return val
@@ -224,7 +231,8 @@ class SurveyUserInput(models.Model):
             "target": "current",
             "domain": domain,
             "context": {
-                "pivot_view_ref": "ni_questionnaire.survey_user_input_line_monthly_report_view_pivot",
+                "pivot_view_ref": "ni_questionnaire."
+                "survey_user_input_line_monthly_report_view_pivot",
             },
             "views": [[False, "pivot"]],
         }
