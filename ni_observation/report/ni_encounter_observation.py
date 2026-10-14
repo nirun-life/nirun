@@ -16,7 +16,7 @@ class EncounterObservationLatest(models.Model):
             SELECT DISTINCT ON (encounter_id, type_id) *
             FROM ni_observation
             WHERE value IS NOT NULL
-            ORDER BY encounter_id, type_id, occurrence DESC
+            ORDER BY encounter_id, type_id, occurrence DESC, id DESC
         )
         """
             % (self._table)
