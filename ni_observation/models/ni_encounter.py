@@ -68,13 +68,13 @@ class Encounter(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        res = super(Encounter, self).create(vals_list)
+        res = super().create(vals_list)
         for rec, vals in zip(res, vals_list):
             rec._create_observation(vals)
         return res
 
     def write(self, vals):
-        res = super(Encounter, self).write(vals)
+        res = super().write(vals)
         for rec in self:
             rec._create_observation(vals)
         return res

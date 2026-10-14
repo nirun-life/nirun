@@ -39,7 +39,11 @@
                 />
                 <filter name="effective_date" string="Period" date="occurrence" />
                 <separator />
-                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
                 <group string="Group By">
                     <filter name="Patient" context="{'group_by': 'patient_id'}" />
                     <filter name="Encounter " context="{'group_by': 'encounter_id'}" />
@@ -54,14 +58,27 @@
             <tree>
                 <field name="patient_id" />
                 <field name="encounter_id" />
-                <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show" />
+                <field
+                    name="category_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    optional="show"
+                />
                 <field name="observation_ids" />
                 <field name="note" optional="hide" />
                 <field name="active" optional="hide" />
                 <field name="occurrence" />
                 <field name="create_date" optional="hide" />
-                <field name="create_uid" optional="hide" widget="many2one_avatar_user" />
-                <field name="company_id" groups="base.group_multi_company" optional="show" />
+                <field
+                    name="create_uid"
+                    optional="hide"
+                    widget="many2one_avatar_user"
+                />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="show"
+                />
             </tree>
         </field>
     </record>
@@ -84,7 +101,11 @@
                 <field name="active" invisible="True" />
                 <header />
                 <sheet>
-                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
+                    <div
+                        name="button_box"
+                        class="oe_button_box"
+                        groups="base.group_user"
+                    />
                     <widget
                         name="web_ribbon"
                         attrs="{'invisible': [('active', '=', True)]}"
@@ -93,8 +114,14 @@
                     />
                     <group>
                         <group>
-                            <field name="patient_id" invisible="context.get('default_patient_id')" />
-                            <field name="encounter_id" invisible="context.get('default_encounter_id')" />
+                            <field
+                                name="patient_id"
+                                invisible="context.get('default_patient_id')"
+                            />
+                            <field
+                                name="encounter_id"
+                                invisible="context.get('default_encounter_id')"
+                            />
                             <label for="category_ids" />
                             <div>
                                 <field
@@ -132,7 +159,12 @@
                                     <field name="value_type" invisible="1" />
                                     <field name="sequence" widget="handle" />
                                     <field name="type_id" />
-                                    <field name="title" widget="ob_section_and_note_text" optional="show" nolabel="1" />
+                                    <field
+                                        name="title"
+                                        widget="ob_section_and_note_text"
+                                        optional="show"
+                                        nolabel="1"
+                                    />
                                     <field
                                         name="value_char"
                                         class="text-end"
@@ -219,7 +251,9 @@
                                                         t-set="default_icon"
                                                         t-value="{char: 'fa-pencil', code_id: 'fa-dot-circle-o', code_ids: 'fa-list-ul'}[record.value_type.raw_value] or 'fa-stethoscope'"
                                                     />
-                                                    <div class="d-flex justify-content-between gap-2">
+                                                    <div
+                                                        class="d-flex justify-content-between gap-2"
+                                                    >
                                                         <!-- type over interpretation -->
                                                         <div>
                                                             <div
@@ -229,7 +263,9 @@
                                                                     t-att-class="'fa fa-fw me-1 ' + (record.icon.raw_value or default_icon)"
                                                                     t-att-style="'color:' + (record.icon_color.raw_value or '#6c757d')"
                                                                 />
-                                                                <t t-esc="record.type_id.value" />
+                                                                <t
+                                                                    t-esc="record.type_id.value"
+                                                                />
                                                             </div>
                                                             <!-- ps-4: line up under the type name, past the icon -->
                                                             <div class="ps-4">
@@ -255,7 +291,10 @@
                                                                 t-att-class="'fs-5 text-' + (['text', false].includes(record.display_class.raw_value) ? 'body' : record.display_class.raw_value)"
                                                                 t-esc="record.value.value"
                                                             />
-                                                            <small class="text-muted" t-esc="record.unit_id.value" />
+                                                            <small
+                                                                class="text-muted"
+                                                                t-esc="record.unit_id.value"
+                                                            />
                                                         </span>
                                                     </div>
                                                     <div t-if="!numeric" class="ps-4">
@@ -318,8 +357,14 @@
                                             class="o_row"
                                             attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'int')]}"
                                         >
-                                            <field name="value_int" attrs="{'readonly': [('compute', '=', True)]}" />
-                                            <field name="unit_id" options="{'no_open': True}" />
+                                            <field
+                                                name="value_int"
+                                                attrs="{'readonly': [('compute', '=', True)]}"
+                                            />
+                                            <field
+                                                name="unit_id"
+                                                options="{'no_open': True}"
+                                            />
                                         </div>
                                         <label
                                             for="value_float"
@@ -329,8 +374,14 @@
                                             class="o_row"
                                             attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'float')]}"
                                         >
-                                            <field name="value_float" attrs="{ 'readonly': [('compute', '=', True)]}" />
-                                            <field name="unit_id" options="{'no_open': True}" />
+                                            <field
+                                                name="value_float"
+                                                attrs="{ 'readonly': [('compute', '=', True)]}"
+                                            />
+                                            <field
+                                                name="unit_id"
+                                                options="{'no_open': True}"
+                                            />
                                         </div>
                                         <field
                                             name="value_code_id"
@@ -401,10 +452,15 @@
                                 <!-- ── Header ── -->
                                 <div class="mb-2">
                                     <t t-if="record.patient_id.raw_value">
-                                        <strong class="d-block text-truncate" t-esc="record.patient_id.value" />
+                                        <strong
+                                            class="d-block text-truncate"
+                                            t-esc="record.patient_id.value"
+                                        />
                                     </t>
                                     <t t-else="">
-                                        <span class="text-muted fst-italic d-block">ไม่ระบุผู้ป่วย</span>
+                                        <span
+                                            class="text-muted fst-italic d-block"
+                                        >ไม่ระบุผู้ป่วย</span>
                                     </t>
                                     <div class="text-muted small">
                                         <i class="fa fa-clock-o me-1" />
@@ -412,7 +468,10 @@
                                     </div>
                                 </div>
                                 <!-- ── ค่าตรวจวัด: loop จาก vitalsign_summary ── -->
-                                <t t-set="vitals" t-value="record.vitalsign_summary.raw_value or []" />
+                                <t
+                                    t-set="vitals"
+                                    t-value="record.vitalsign_summary.raw_value or []"
+                                />
                                 <t t-foreach="vitals" t-as="vs">
                                     <div class="d-flex justify-content-between mb-1">
                                         <div>
@@ -432,13 +491,18 @@
                                     </div>
                                 </t>
                                 <!-- ── Footer: ผู้บันทึก ── -->
-                                <div class="d-flex align-items-center gap-1 mt-2 pt-1 border-top">
+                                <div
+                                    class="d-flex align-items-center gap-1 mt-2 pt-1 border-top"
+                                >
                                     <img
                                         t-att-src="kanban_image('res.users', 'avatar_128', record.user_id.raw_value)"
                                         class="rounded-circle"
                                         style="width:18px;height:18px;object-fit:cover;"
                                     />
-                                    <small class="text-muted" t-esc="record.user_id.value" />
+                                    <small
+                                        class="text-muted"
+                                        t-esc="record.user_id.value"
+                                    />
                                 </div>
                             </div>
                         </div>

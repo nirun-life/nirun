@@ -70,7 +70,7 @@ class Observation(models.Model):
 
     @api.model
     def default_get(self, fields):
-        res = super(Observation, self).default_get(fields)
+        res = super().default_get(fields)
         if "patient_id" in fields and "patient_id" not in res:
             if self.env.context.get("active_model") == "ni.observation.sheet":
                 res["sheet_id"] = self.env.context["active_id"]
