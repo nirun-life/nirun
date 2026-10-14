@@ -7,6 +7,7 @@ Under the points basis the pre-trim and post-trim numbers are identical, so only
 a percentage-scored survey can catch an observation created too early.
 """
 
+from odoo import Command
 from odoo.tests import common
 
 
@@ -45,9 +46,7 @@ class TestPercentageOfShrunkMaximum(common.TransactionCase):
         cls.extra = cls._question(
             "Extra item",
             [("0", 0), ("4", 4)],
-            is_conditional=True,
-            triggering_question_id=cls.gate.id,
-            triggering_answer_id=cls.answer_yes.id,
+            triggering_answer_ids=[Command.set(cls.answer_yes.ids)],
         )
 
     @classmethod
