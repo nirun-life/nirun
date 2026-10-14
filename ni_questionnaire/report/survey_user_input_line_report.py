@@ -10,18 +10,14 @@ class SurveyUserInputLineMonthlyReport(models.Model):
     _auto = False
 
     # --- User Input ---
-    user_input_id = fields.Many2one(
-        "survey.user_input", string="User Input", readonly=True, index=True
-    )
-    survey_id = fields.Many2one("survey.survey", string="Survey", readonly=True)
-    partner_id = fields.Many2one("res.partner", string="Partner", readonly=True)
-    patient_id = fields.Many2one("ni.patient", string="Patient", readonly=True)
+    user_input_id = fields.Many2one("survey.user_input", readonly=True, index=True)
+    survey_id = fields.Many2one("survey.survey", readonly=True)
+    partner_id = fields.Many2one("res.partner", readonly=True)
+    patient_id = fields.Many2one("ni.patient", readonly=True)
 
     # --- Question ---
-    question_id = fields.Many2one(
-        "survey.question", string="Question", readonly=True, index=True
-    )
-    page_id = fields.Many2one("survey.question", string="Page", readonly=True)
+    question_id = fields.Many2one("survey.question", readonly=True, index=True)
+    page_id = fields.Many2one("survey.question", readonly=True)
     question_sequence = fields.Integer(readonly=True)
 
     # --- Answer ---

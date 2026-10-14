@@ -1,6 +1,6 @@
 # Questionnaire (`ni_questionnaire`)
 
-Odoo 18.0 module that integrates Odoo Survey with Nirun patients, encounters, grading,
+Odoo 19.0 module that integrates Odoo Survey with Nirun patients, encounters, grading,
 and observation generation.
 
 ## Purpose
