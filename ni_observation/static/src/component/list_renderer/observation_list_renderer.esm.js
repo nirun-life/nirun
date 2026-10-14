@@ -1,8 +1,6 @@
-/** @odoo-module **/
-
 /*
  * Observation lines with sections and notes. Re-ported from core
- * account/static/src/components/section_and_note_fields_backend (17.0), plus:
+ * account/static/src/components/section_and_note_fields_backend (18.0), plus:
  * - the title field is "title";
  * - only the value column matching the line's value_type is shown, spanning the
  *   hidden ones.
@@ -24,6 +22,8 @@ const VALUE_COLUMNS = [
 ];
 
 export class SectionAndNoteListRenderer extends ListRenderer {
+    static template = "ni_observation.sectionAndNoteListRenderer";
+
     setup() {
         super.setup();
         this.titleField = "title";
@@ -35,7 +35,7 @@ export class SectionAndNoteListRenderer extends ListRenderer {
 
     focusToName(editRec) {
         if (editRec && editRec.isNew && this.isSectionOrNote(editRec)) {
-            const col = this.state.columns.find((c) => c.name === this.titleField);
+            const col = this.columns.find((c) => c.name === this.titleField);
             this.focusCell(col, null);
         }
     }
@@ -105,15 +105,15 @@ export class SectionAndNoteListRenderer extends ListRenderer {
         });
     }
 }
-SectionAndNoteListRenderer.template = "ni_observation.sectionAndNoteListRenderer";
-
-export class SectionAndNoteFieldOne2Many extends X2ManyField {}
-SectionAndNoteFieldOne2Many.components = {
-    ...X2ManyField.components,
-    ListRenderer: SectionAndNoteListRenderer,
-};
+export class SectionAndNoteFieldOne2Many extends X2ManyField {
+    static components = {
+        ...X2ManyField.components,
+        ListRenderer: SectionAndNoteListRenderer,
+    };
+}
 
 export class SectionAndNoteText extends Component {
+    static template = "ni_observation.SectionAndNoteText";
     static props = {...standardFieldProps};
 
     get componentToUse() {
@@ -122,7 +122,6 @@ export class SectionAndNoteText extends Component {
             : TextField;
     }
 }
-SectionAndNoteText.template = "ni_observation.SectionAndNoteText";
 
 export class ListSectionAndNoteText extends SectionAndNoteText {
     get componentToUse() {

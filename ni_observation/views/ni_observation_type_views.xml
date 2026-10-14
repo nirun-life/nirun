@@ -6,7 +6,7 @@
     <record id="ni_observation_type_action" model="ir.actions.act_window">
         <field name="name">Observation Types</field>
         <field name="res_model">ni.observation.type</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <record id="ni_observation_type_view_search" model="ir.ui.view">
         <field name="name">ni.observation.type.view.search</field>
@@ -32,10 +32,10 @@
         </field>
     </record>
     <record id="ni_observation_type_view_tree" model="ir.ui.view">
-        <field name="name">ni.observation.type.view.tree</field>
+        <field name="name">ni.observation.type.view.list</field>
         <field name="model">ni.observation.type</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="code" optional="show" />
@@ -45,7 +45,7 @@
                 <field name="unit_id" />
                 <field name="definition" optional="hide" />
                 <field name="active" optional="hide" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_observation_type_view_form" model="ir.ui.view">
@@ -137,12 +137,12 @@
                             invisible="value_type not in ['code_id', 'code_ids']"
                         >
                             <field name="value_code_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="sequence" widget="handle" />
                                     <field name="name" />
                                     <field name="code" optional="show" />
                                     <field name="system_id" optional="show" />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Reference Range">
@@ -150,7 +150,7 @@
                                 name="ref_range_ids"
                                 context="{'default_type_id': id}"
                             >
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field
                                         name="gender"
                                         optional="show"
@@ -178,7 +178,7 @@
                                         icon="fa-files-o"
                                         title="copy"
                                     />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Extra Info" groups="base.group_no_one">

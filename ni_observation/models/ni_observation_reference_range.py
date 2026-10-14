@@ -13,15 +13,15 @@ class ReferenceRange(models.Model):
     parent_id = fields.Many2one(
         "ni.observation.reference.range", index=True, ondelete="set null"
     )
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
     child_ids = fields.One2many("ni.observation.reference.range", "parent_id")
 
     type_id = fields.Many2one("ni.observation.type", index=True, required=True)
-    low = fields.Float(help="Inclusive", group_operator="min")
-    high = fields.Float(help="Exclusive", group_operator="max")
+    low = fields.Float(help="Inclusive", aggregator="min")
+    high = fields.Float(help="Exclusive", aggregator="max")
     gender = fields.Selection([("male", "Male"), ("female", "Female")], required=False)
-    age_low = fields.Float(default=0, help="Inclusive", group_operator="min")
-    age_high = fields.Float(default=200, help="Exclusive", group_operator="max")
+    age_low = fields.Float(default=0, help="Inclusive", aggregator="min")
+    age_high = fields.Float(default=200, help="Exclusive", aggregator="max")
     interpretation_id = fields.Many2one("ni.observation.interpretation", required=True)
     display_class = fields.Selection(related="interpretation_id.display_class")
     active = fields.Boolean(default="True")
@@ -74,5 +74,5 @@ class ReferenceRange(models.Model):
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
-        if not self._check_recursion():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+        if self._has_cycle():
+            raise ValidationError(_("Error! You cannot create recursive data."))

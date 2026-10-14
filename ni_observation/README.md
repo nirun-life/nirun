@@ -1,6 +1,6 @@
 # Observation (`ni_observation`)
 
-Odoo 17.0 module that implements FHIR-style clinical observations for Nirun. It covers
+Odoo 18.0 module that implements FHIR-style clinical observations for Nirun. It covers
 measurements, laboratory values, vital signs, interpretation logic, and the supporting
 reference data needed to store and display observations consistently.
 
@@ -45,6 +45,13 @@ fields.
 - `ni_observation` extends the patient display name through `ni.patient._name_get()`:
   with `show_gender_age`, it adds the blood group.
 
+## Field Labels
+
+From 18.0 every field has its own label (Odoo warns on duplicates): the typed value
+fields are "Value (Text)", "Value (Integer)", "Value (Decimal)" and "Value (Code)", and
+the aliases are "Effective Date" (`effective_date`) and "Observation Code" (`code_id`).
+Views that show one value column keep the label "Value".
+
 ## List Widget
 
 `ob_section_and_note_one2many` (with `ob_section_and_note_text`) shows observation lines
@@ -57,6 +64,9 @@ patching it.
 - `security/ni_observation_group.xml` defines observation access.
 - `security/ni_observation_security.xml` and `security/ir.model.access.csv` control
   record visibility and permissions.
+- Reference data (categories, types, interpretations, reference ranges, value codes) is
+  readable by every internal, portal and public user: from 18.0 each read rule is split
+  into one row per `base.group_user`, `base.group_portal` and `base.group_public`.
 - The module depends on `ni_patient`, `mail`, `uom`, and `uom_alias`.
 - Soft dependency: the encounter form sets a `badge` attribute on the Vital Signs and
   Laboratory pages. Only `web_notebook_advance` shows it as a counter; without that
