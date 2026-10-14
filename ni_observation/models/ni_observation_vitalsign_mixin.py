@@ -1,6 +1,6 @@
 #  Copyright (c) 2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 VITALSIGN_FIELDS = [
@@ -167,4 +167,4 @@ class ObservationVitalsignMixin(models.AbstractModel):
     def _check_pain_score(self):
         for rec in self:
             if rec.pain_area and all([not rec.pain_score, rec.pain_score_enum == "0"]):
-                raise UserError(_("กรุณาระบุระดับความเจ็บปวด"))
+                raise UserError(self.env._("กรุณาระบุระดับความเจ็บปวด"))

@@ -1,7 +1,7 @@
 #  Copyright (c) 2021 NSTDA
 import ast
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class Patient(models.Model):
@@ -22,7 +22,7 @@ class Patient(models.Model):
     )
     observation_category_id = fields.Many2one(
         "ni.observation.category",
-        default=_get_default_observation_category,
+        default=lambda self: self._get_default_observation_category(),
         domain=[("type_count", ">", 0)],
         store=True,
     )
@@ -79,11 +79,11 @@ class Patient(models.Model):
     def _name_get(self):
         name = super()._name_get()
         if (
-            self._context.get("show_gender_age")
+            self.env.context.get("show_gender_age")
             and (self.age or self.gender)
             and self.blood_group
         ):
-            name = _(
+            name = self.env._(
                 "%(name)s • Blood group %(blood_group)s",
                 name=name,
                 blood_group=self.blood_group,
@@ -119,7 +119,7 @@ class Patient(models.Model):
             }
         )
         view = {
-            "name": _("Observation Wizard"),
+            "name": self.env._("Observation Wizard"),
             "res_model": "ni.observation.wizard",
             "type": "ir.actions.act_window",
             "target": context.get("target", "new"),

@@ -1,5 +1,5 @@
 #  Copyright (c) 2021 NSTDA
-from odoo import _, api, fields, models, tools
+from odoo import api, fields, models, tools
 from odoo.exceptions import ValidationError
 from odoo.tools.date_utils import get_timedelta
 
@@ -33,7 +33,9 @@ class Observation(models.Model):
     @api.constrains("parent_id")
     def _check_parent_id(self):
         if self._has_cycle():
-            raise ValidationError(_("Error! You cannot create recursive data."))
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
 
     history_ids = fields.One2many(
         "ni.observation", string="ประวัติ", compute="_compute_history"
@@ -95,13 +97,10 @@ class Observation(models.Model):
     icon = fields.Char(related="type_id.icon")
     icon_color = fields.Char(related="type_id.icon_color")
 
-    _sql_constraints = [
-        (
-            "type__uniq",
-            "unique (sheet_id, type_id)",
-            "Duplication observation type!",
-        ),
-    ]
+    _type__uniq = models.Constraint(
+        "unique (sheet_id, type_id)",
+        "Duplication observation type!",
+    )
 
     @api.depends("value_float", "value_int", "occurrence", "type_id", "type_id.compare")
     def _compute_compare(self):
@@ -156,13 +155,13 @@ class Observation(models.Model):
 
     def init(self):
         tools.create_index(
-            self._cr,
+            self.env.cr,
             "ni_observation__patient__ob_type__idx",
             self._table,
             ["patient_id", "type_id", "occurrence DESC", "id"],
         )
         tools.create_index(
-            self._cr,
+            self.env.cr,
             "ni_observation__encounter__ob_type__idx",
             self._table,
             ["encounter_id", "type_id", "occurrence DESC", "id"],
