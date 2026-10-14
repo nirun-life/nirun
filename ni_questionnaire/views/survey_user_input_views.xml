@@ -11,7 +11,11 @@
             <field name="partner_id" position="after">
                 <field name="patient_id" />
                 <field name="encounter_id" />
-                <filter name="patient" string="Patient Answer" domain="[('patient_id', '!=', False)]" />
+                <filter
+                    name="patient"
+                    string="Patient Answer"
+                    domain="[('patient_id', '!=', False)]"
+                />
                 <separator />
             </field>
         </field>
@@ -45,7 +49,9 @@
         <field name="inherit_id" ref="survey.survey_user_input_view_form" />
         <field name="arch" type="xml">
             <field name="subject_ref" position="attributes">
-                <attribute name="attrs">{'invisible': [('subject_model', '=', 'ni.patient')]}</attribute>
+                <attribute
+                    name="attrs"
+                >{'invisible': [('subject_model', '=', 'ni.patient')]}</attribute>
             </field>
         </field>
     </record>
