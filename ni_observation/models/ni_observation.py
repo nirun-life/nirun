@@ -1,5 +1,5 @@
 #  Copyright (c) 2021 NSTDA
-from odoo import _, api, fields, models, tools
+from odoo import api, fields, models, tools
 from odoo.exceptions import ValidationError
 from odoo.tools.date_utils import get_timedelta
 
@@ -33,7 +33,9 @@ class Observation(models.Model):
     @api.constrains("parent_id")
     def _check_parent_id(self):
         if self._has_cycle():
-            raise ValidationError(_("Error! You cannot create recursive data."))
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
 
     history_ids = fields.One2many(
         "ni.observation", string="ประวัติ", compute="_compute_history"

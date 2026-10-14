@@ -1,6 +1,7 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class ObservationType(models.Model):
@@ -95,7 +96,9 @@ class ObservationType(models.Model):
     @api.constrains("parent_id")
     def _check_parent_id(self):
         if self._has_cycle():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
 
     def copy_data(self, default=None):
         default = default or {}

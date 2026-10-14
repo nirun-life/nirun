@@ -37,7 +37,6 @@
         "report/ni_encounter_observation_view.xml",
         "report/ni_patient_observation_view.xml",
         "report/summary_report.xml",
-        "views/uom_uom_views.xml",
     ],
     "assets": {
         "web.assets_backend": [

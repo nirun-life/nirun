@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import _, fields, models
+from odoo import fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -50,7 +50,7 @@ class ObservationWizard(models.TransientModel):
 
     def prepare_sheet(self):
         if not len(self.category_ids):
-            raise ValidationError(_("Please specify at least one category"))
+            raise ValidationError(self.env._("Please specify at least one category"))
 
         sheet = self.env["ni.observation.sheet"].create(
             {"occurrence": self.init_occurrence, "category_ids": self.category_ids.ids}

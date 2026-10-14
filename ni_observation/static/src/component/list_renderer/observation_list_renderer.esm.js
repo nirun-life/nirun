@@ -1,6 +1,8 @@
 /*
  * Observation lines with sections and notes. Re-ported from core
- * account/static/src/components/section_and_note_fields_backend (18.0), plus:
+ * account/static/src/components/section_and_note_fields_backend (18.0; the 19.0
+ * core adds section menus, subsections and price totals, which observations do not
+ * use, and keeps the parts below unchanged), plus:
  * - the title field is "title";
  * - only the value column matching the line's value_type is shown, spanning the
  *   hidden ones.

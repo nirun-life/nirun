@@ -1,5 +1,5 @@
 #  Copyright (c) 2024 NSTDA
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -213,7 +213,10 @@ class ObservationAbstract(models.AbstractModel):
                         )
                     else:
                         raise ValidationError(
-                            _('Not found match value for "%(value)s"!', value=rec.value)
+                            self.env._(
+                                'Not found match value for "%(value)s"!',
+                                value=rec.value,
+                            )
                         )
                 case "code_ids":
                     values = rec.value.split(",")
@@ -249,7 +252,7 @@ class ObservationAbstract(models.AbstractModel):
         for rec in self:
             if not (rec.type_id.min <= rec.value_float <= rec.type_id.max):
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "%(type)s %(value)s is out of acceptable range "
                         "[%(min)d-%(max)d]",
                         type=rec.type_id.name,
@@ -269,6 +272,6 @@ class ObservationAbstract(models.AbstractModel):
     def _check_name_type(self):
         for rec in self:
             if not rec.display_type and not rec.type_id:
-                raise UserError(_("Must specify code type"))
+                raise UserError(self.env._("Must specify code type"))
             if rec.display_type and not rec.title:
-                raise UserError(_("Must specify section name"))
+                raise UserError(self.env._("Must specify section name"))

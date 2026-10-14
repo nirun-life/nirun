@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 01:45+0000\n"
-"PO-Revision-Date: 2026-10-14 01:45+0000\n"
+"POT-Creation-Date: 2026-10-14 02:01+0000\n"
+"PO-Revision-Date: 2026-10-14 02:01+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -486,7 +486,6 @@ msgstr "Mixin หมู่เลือด"
 #: model:ir.model.fields,help:ni_observation.field_ni_encounter__bp
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_vitalsign_mixin__bp
 #: model:ni.observation.type,name:ni_observation.type_bp
-#: model:uom.category,name:ni_observation.uom_categ_blood_pressure
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
 msgid "Blood Pressure"
 msgstr "ความดันโลหิต"
@@ -567,11 +566,6 @@ msgstr "ยกเลิก"
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_view_search
 msgid "Category"
 msgstr "หมวด"
-
-#. module: ni_observation
-#: model:uom.category,name:ni_observation.uom_categ_cell_count
-msgid "Cell Count"
-msgstr "จำนวนเซลล์"
 
 #. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__value_type__char
@@ -808,11 +802,6 @@ msgid "Delete Observation?"
 msgstr "ต้องการลบผลการตรวจร่างกาย?"
 
 #. module: ni_observation
-#: model:uom.category,name:ni_observation.uom_categ_density
-msgid "Density"
-msgstr "ความหนาแน่น"
-
-#. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_sheet_view_form
 msgid "Detail"
 msgstr "รายละเอียด"
@@ -871,15 +860,21 @@ msgid "Display Class"
 msgstr "รูปแบบการแสดงผล"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__display_name
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__display_name
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_bloodgroup_mixin__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__display_name
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__display_name
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_vitalsign_mixin__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__display_name
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient__display_name
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__display_name
 msgid "Display Name"
 msgstr "ชื่อที่ใช้แสดง"
@@ -914,11 +909,6 @@ msgid "Effective Date"
 msgstr "วันที่มีผล"
 
 #. module: ni_observation
-#: model:uom.category,name:ni_observation.uom_categ_electrolyte
-msgid "Electrolyte"
-msgstr "อิเล็กโทรไลต์"
-
-#. module: ni_observation
 #: model:ir.model,name:ni_observation.model_ni_encounter
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__encounter_id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__encounter_id
@@ -949,11 +939,6 @@ msgstr "ผลการตรวจของการรับบริการ
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__enforce_specialty
 msgid "Enforce Specialty"
 msgstr "บังคับตามสาขาเฉพาะทาง"
-
-#. module: ni_observation
-#: model:uom.category,name:ni_observation.uom_categ_enzymatic_activity
-msgid "Enzymatic Activity"
-msgstr "กิจกรรมเอนไซม์"
 
 #. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__compare__eq
@@ -1050,11 +1035,6 @@ msgid "Filtered Patient Observation"
 msgstr "ผลการตรวจของผู้ป่วยที่กรองแล้ว"
 
 #. module: ni_observation
-#: model:uom.category,name:ni_observation.uom_categ_filtration_rate
-msgid "Filtration Rate"
-msgstr "อัตราการกรอง"
-
-#. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_encounter_observation__value_type__float
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation__value_type__float
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_abstract__value_type__float
@@ -1069,16 +1049,6 @@ msgstr "เลขทศนิยม"
 #: model:ir.model.fields,help:ni_observation.field_ni_observation_type__icon
 msgid "Font Awesome class (e.g. fa-heartbeat, fa-thermometer-three-quarters)"
 msgstr "คลาส Font Awesome (เช่น fa-heartbeat, fa-thermometer-three-quarters)"
-
-#. module: ni_observation
-#: model:uom.category,name:ni_observation.uom_categ_fraction
-msgid "Fraction"
-msgstr "สัดส่วน"
-
-#. module: ni_observation
-#: model:uom.category,name:ni_observation.uom_categ_frequency
-msgid "Frequency"
-msgstr "ความถี่"
 
 #. module: ni_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_sheet_view_form
@@ -1119,18 +1089,6 @@ msgstr "กราฟ"
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_patient_observation__compare__gt
 msgid "Greater"
 msgstr "มากกว่า"
-
-#. module: ni_observation
-#: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_ob_line_view_search
-#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_interpretation_view_search
-#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_reference_range_view_search
-#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_sheet_view_search
-#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_type_view_search
-#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_value_code_view_search
-#: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_view_search
-#: model_terms:ir.ui.view,arch_db:ni_observation.ni_patient_ob_line_view_search
-msgid "Group By"
-msgstr "จัดกลุ่มโดย"
 
 #. module: ni_observation
 #: model:ni.observation.type,name:ni_observation.type_hdl
@@ -1210,15 +1168,21 @@ msgid "How this observation should display on graph view"
 msgstr "วิธีแสดงผลการตรวจนี้ในมุมมองกราฟ"
 
 #. module: ni_observation
+#: model:ir.model.fields,field_description:ni_observation.field_ni_encounter__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_encounter_observation__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation__id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_abstract__id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_bloodgroup_mixin__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_category__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_interpretation__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_reference_range__id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_report__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_sheet__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_value_code__id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_observation_vitalsign_mixin__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_wizard__id
+#: model:ir.model.fields,field_description:ni_observation.field_ni_patient__id
 #: model:ir.model.fields,field_description:ni_observation.field_ni_patient_observation__id
 msgid "ID"
 msgstr "รหัส"
@@ -1398,11 +1362,6 @@ msgid "Manager"
 msgstr "ผู้จัดการ"
 
 #. module: ni_observation
-#: model:uom.category,name:ni_observation.uom_categ_mass_concentration
-msgid "Mass Concentration"
-msgstr "ความเข้มข้นมวล"
-
-#. module: ni_observation
 #: model:ir.model.fields,field_description:ni_observation.field_ni_observation_type__max
 msgid "Max"
 msgstr "สูงสุด"
@@ -1563,6 +1522,7 @@ msgstr ""
 #: model:ir.module.category,name:ni_observation.module_category_medical_observation
 #: model:ir.ui.menu,name:ni_observation.observation_line_menu
 #: model:ir.ui.menu,name:ni_observation.observation_menu_main
+#: model:res.groups.privilege,name:ni_observation.res_groups_privilege_observation
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_encounter_view_form_inherit
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_observation_category_view_form
 #: model_terms:ir.ui.view,arch_db:ni_observation.ni_patient_view_form_inherit
@@ -1842,11 +1802,6 @@ msgid "Practitioner"
 msgstr "บุคคลกร"
 
 #. module: ni_observation
-#: model:uom.category,name:ni_observation.uom_categ_pressure
-msgid "Pressure"
-msgstr "ความดัน"
-
-#. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_interpretation__display_class__primary
 msgid "Primary"
 msgstr "ประถม"
@@ -2081,11 +2036,6 @@ msgstr "งาน"
 #: model:ir.model.fields,help:ni_observation.field_ni_patient_observation__display_type
 msgid "Technical field for UX purpose."
 msgstr "ฟิลด์เทคนิคสำหรับ UX"
-
-#. module: ni_observation
-#: model:uom.category,name:ni_observation.uom_categ_temperature
-msgid "Temperature"
-msgstr "อุณหภูมิ"
 
 #. module: ni_observation
 #: model:ir.model.fields.selection,name:ni_observation.selection__ni_observation_interpretation__display_class__text

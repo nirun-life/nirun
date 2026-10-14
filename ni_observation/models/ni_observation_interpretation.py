@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -32,4 +32,6 @@ class ObservationInterpretation(models.Model):
     @api.constrains("parent_id")
     def _check_hierarchy(self):
         if self._has_cycle():
-            raise ValidationError(_("Error! You cannot create recursive data."))
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
