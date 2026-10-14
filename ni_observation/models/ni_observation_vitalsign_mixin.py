@@ -29,7 +29,7 @@ class ObservationVitalsignMixin(models.AbstractModel):
     _name = "ni.observation.vitalsign.mixin"
     _description = "Vital Sign Mixin"
 
-    vital_sign = fields.Text("Vital Sign", compute="_compute_vital_sign", store=True)
+    vital_sign = fields.Text(compute="_compute_vital_sign", store=True)
     bp = fields.Char(
         "Blood Pressure", help="Blood Pressure", compute="_compute_bp", store=True
     )
@@ -42,14 +42,12 @@ class ObservationVitalsignMixin(models.AbstractModel):
         help="Diastolic Blood Pressure (mmHg)",
     )
     heart_rate = fields.Integer("Heart Rate (Pulse)", help="Heart Rate | Pulse (/min)")
-    respiratory_rate = fields.Integer(
-        "Respiratory Rate", help="Respiratory Rate (/min)"
-    )
+    respiratory_rate = fields.Integer(help="Respiratory Rate (/min)")
     body_temp = fields.Float(
         "Body Temperature", digits=(3, 1), help="Body Temperature (°C)"
     )
-    body_weight = fields.Float("Body Weight", digits=(4, 1), help="Body Weight (kg)")
-    body_height = fields.Float("Body Height", digits=(4, 1), help="Body Height (cm)")
+    body_weight = fields.Float(digits=(4, 1), help="Body Weight (kg)")
+    body_height = fields.Float(digits=(4, 1), help="Body Height (cm)")
     bmi = fields.Float(
         "Body Mass Index",
         digits=(3, 1),

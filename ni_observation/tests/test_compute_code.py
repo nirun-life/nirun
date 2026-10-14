@@ -73,7 +73,10 @@ class TestComputeCode(common.TransactionCase):
                 "code": "test-pair-xy",
                 "value_type": "char",
                 "compute": True,
-                "compute_code": "result = '{} / {}'.format(test_input_x, test_input_y) if test_input_x and test_input_y else None",
+                "compute_code": (
+                    "result = '{} / {}'.format(test_input_x, test_input_y) "
+                    "if test_input_x and test_input_y else None"
+                ),
                 "child_ids": [(4, cls.type_x.id), (4, cls.type_y.id)],
             }
         )

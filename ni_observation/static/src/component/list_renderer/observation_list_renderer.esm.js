@@ -1,44 +1,47 @@
 /** @odoo-module **/
 
-import {registry} from "@web/core/registry";
-import {ListRenderer} from "@web/views/list/list_renderer";
-import {X2ManyField} from "@web/views/fields/x2many/x2many_field";
+/*
+ * Observation lines with sections and notes. Re-ported from core
+ * account/static/src/components/section_and_note_fields_backend (17.0), plus:
+ * - the title field is "title";
+ * - only the value column matching the line's value_type is shown, spanning the
+ *   hidden ones.
+ */
+import {Component, useEffect} from "@odoo/owl";
 import {ListTextField, TextField} from "@web/views/fields/text/text_field";
+import {X2ManyField, x2ManyField} from "@web/views/fields/x2many/x2many_field";
 import {CharField} from "@web/views/fields/char/char_field";
+import {ListRenderer} from "@web/views/list/list_renderer";
+import {registry} from "@web/core/registry";
+import {standardFieldProps} from "@web/views/fields/standard_field_props";
 
-const {Component, useEffect} = owl;
+const VALUE_COLUMNS = [
+    "value_char",
+    "value_int",
+    "value_float",
+    "value_code_id",
+    "value_code_ids",
+];
 
 export class SectionAndNoteListRenderer extends ListRenderer {
-    /**
-     * The purpose of this extension is to allow sections and notes in the one2many list
-     * primarily used on Sales Orders and Invoices
-     *
-     * @override
-     */
     setup() {
         super.setup();
         this.titleField = "title";
         useEffect(
-            () => this.focusToName(this.props.list.editedRecord),
-            () => [this.props.list.editedRecord]
+            (editedRecord) => this.focusToName(editedRecord),
+            () => [this.editedRecord]
         );
     }
 
     focusToName(editRec) {
-        if (editRec && editRec.isVirtual && this.isSectionOrNote(editRec)) {
+        if (editRec && editRec.isNew && this.isSectionOrNote(editRec)) {
             const col = this.state.columns.find((c) => c.name === this.titleField);
             this.focusCell(col, null);
         }
     }
 
     isValueColumn(column) {
-        return [
-            "value_char",
-            "value_int",
-            "value_float",
-            "value_code_id",
-            "value_code_ids",
-        ].includes(column.name);
+        return VALUE_COLUMNS.includes(column.name);
     }
 
     isSectionOrNote(record = null) {
@@ -54,7 +57,7 @@ export class SectionAndNoteListRenderer extends ListRenderer {
     getCellClass(column, record) {
         const classNames = super.getCellClass(column, record);
         const isValueColumnMismatch =
-            this.isValueColumn(column, record) &&
+            this.isValueColumn(column) &&
             column.name !== `value_${record.data.value_type}`;
         const isHiddenSectionOrNote =
             this.isSectionOrNote(record) &&
@@ -105,13 +108,14 @@ export class SectionAndNoteListRenderer extends ListRenderer {
 SectionAndNoteListRenderer.template = "ni_observation.sectionAndNoteListRenderer";
 
 export class SectionAndNoteFieldOne2Many extends X2ManyField {}
-SectionAndNoteFieldOne2Many.additionalClasses = ["o_field_one2many"];
 SectionAndNoteFieldOne2Many.components = {
     ...X2ManyField.components,
     ListRenderer: SectionAndNoteListRenderer,
 };
 
 export class SectionAndNoteText extends Component {
+    static props = {...standardFieldProps};
+
     get componentToUse() {
         return this.props.record.data.display_type === "line_section"
             ? CharField
@@ -119,7 +123,6 @@ export class SectionAndNoteText extends Component {
     }
 }
 SectionAndNoteText.template = "ni_observation.SectionAndNoteText";
-SectionAndNoteText.additionalClasses = ["o_field_text"];
 
 export class ListSectionAndNoteText extends SectionAndNoteText {
     get componentToUse() {
@@ -129,10 +132,26 @@ export class ListSectionAndNoteText extends SectionAndNoteText {
     }
 }
 
+export const sectionAndNoteFieldOne2Many = {
+    ...x2ManyField,
+    component: SectionAndNoteFieldOne2Many,
+    additionalClasses: [...(x2ManyField.additionalClasses || []), "o_field_one2many"],
+};
+
+export const sectionAndNoteText = {
+    component: SectionAndNoteText,
+    additionalClasses: ["o_field_text"],
+};
+
+export const listSectionAndNoteText = {
+    ...sectionAndNoteText,
+    component: ListSectionAndNoteText,
+};
+
 registry
     .category("fields")
-    .add("ob_section_and_note_one2many", SectionAndNoteFieldOne2Many);
-registry.category("fields").add("ob_section_and_note_text", SectionAndNoteText);
+    .add("ob_section_and_note_one2many", sectionAndNoteFieldOne2Many);
+registry.category("fields").add("ob_section_and_note_text", sectionAndNoteText);
 registry
     .category("fields")
-    .add("list.ob_section_and_note_text", ListSectionAndNoteText);
+    .add("list.ob_section_and_note_text", listSectionAndNoteText);

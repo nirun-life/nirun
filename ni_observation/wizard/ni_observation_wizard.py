@@ -11,10 +11,10 @@ class ObservationWizard(models.TransientModel):
         "res.company", required=True, default=lambda self: self.env.company
     )
     patient_id = fields.Many2one(
-        "ni.patient", required=True, domain=[("company_id", "=", company_id)]
+        "ni.patient", required=True, domain="[('company_id', '=', company_id)]"
     )
     encounter_id = fields.Many2one(
-        "ni.encounter", domain=[("parent_id", "=", patient_id)]
+        "ni.encounter", domain="[('patient_id', '=', patient_id)]"
     )
     type = fields.Selection(
         [
@@ -32,7 +32,8 @@ class ObservationWizard(models.TransientModel):
     )
     sheet_id = fields.Many2one(
         "ni.observation.sheet",
-        domain="[('patient_id', '=?', patient_id), ('encounter_id', '=?', encounter_id)]",
+        domain="[('patient_id', '=?', patient_id), "
+        "('encounter_id', '=?', encounter_id)]",
     )
     init_occurrence = fields.Datetime(default=fields.Datetime.now)
     occurrence = fields.Datetime(related="sheet_id.occurrence")

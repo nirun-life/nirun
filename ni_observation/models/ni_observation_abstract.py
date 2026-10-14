@@ -15,7 +15,7 @@ class ObservationAbstract(models.AbstractModel):
     name = fields.Char(compute="_compute_name")
     title = fields.Char()
 
-    occurrence = fields.Datetime(default=lambda _: fields.datetime.now(), index=True)
+    occurrence = fields.Datetime(default=fields.Datetime.now, index=True)
     effective_date = fields.Datetime(
         related="occurrence", readonly=False, help="Alias for occurrence"
     )
@@ -252,8 +252,14 @@ class ObservationAbstract(models.AbstractModel):
         for rec in self:
             if not (rec.type_id.min <= rec.value_float <= rec.type_id.max):
                 raise ValidationError(
-                    _("%s %s is out of acceptable range [%d-%d]")
-                    % (rec.type_id.name, rec.value, rec.type_id.min, rec.type_id.max)
+                    _(
+                        "%(type)s %(value)s is out of acceptable range "
+                        "[%(min)d-%(max)d]",
+                        type=rec.type_id.name,
+                        value=rec.value,
+                        min=rec.type_id.min,
+                        max=rec.type_id.max,
+                    )
                 )
 
     @api.constrains("type_id", "value_type")
