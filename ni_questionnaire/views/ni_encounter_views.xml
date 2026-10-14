@@ -23,11 +23,11 @@
                 <button
                     name="action_start_survey"
                     class="oe_stat_button"
-                    attrs="{'invisible':['|', ('survey_id','=',False), ('response_id', '!=', False)]}"
                     type="object"
                     context="{'survey_id': survey_id}"
                     help="Questionnaire relate to  encounter classification"
                     icon="fa-commenting-o"
+                    invisible="(not survey_id or response_id)"
                 >
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Start</span>
@@ -36,11 +36,11 @@
                 </button>
                 <button
                     name="action_print_survey"
-                    attrs="{'invisible':[('response_latest_id', '=', False)]}"
                     class="oe_stat_button"
                     help="Print questionnaire response"
                     icon="fa-commenting"
                     type="object"
+                    invisible="not response_latest_id"
                 >
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Print</span>
@@ -74,7 +74,7 @@
                 </div>
                 <field
                     name="patient_response_latest_ids"
-                    attrs="{'invisible': [('response_filter', '!=', 'patient')]}"
+                    invisible="response_filter != 'patient'"
                 >
                     <tree>
                         <field name="survey_id" />
@@ -111,13 +111,13 @@
                             type="object"
                             icon="fa-commenting"
                             title="Start Questionnaire"
-                            attrs="{'column_invisible': [('parent.state', 'not in', ['in-progress'])]}"
+                            column_invisible="parent.state not in ['in-progress']"
                         />
                     </tree>
                 </field>
                 <field
                     name="response_latest_ids"
-                    attrs="{'invisible': [('response_filter', '!=', 'encounter')]}"
+                    invisible="response_filter != 'encounter'"
                 >
                     <tree>
                         <field name="survey_id" />
@@ -154,7 +154,7 @@
                             type="object"
                             icon="fa-commenting"
                             title="Start Questionnaire"
-                            attrs="{'column_invisible': [('parent.state', 'not in', ['in-progress'])]}"
+                            column_invisible="parent.state not in ['in-progress']"
                         />
                     </tree>
                 </field>
@@ -169,7 +169,7 @@
                     type="object"
                     icon="fa-commenting"
                     string="Start Questionnaire"
-                    attrs="{'invisible': [('state', '!=', 'in-progress')]}"
+                    invisible="state != 'in-progress'"
                 />
             </xpath>
         </field>
@@ -186,7 +186,7 @@
                     type="object"
                     icon="fa-commenting"
                     string="Start Questionnaire"
-                    attrs="{'invisible': [('state', '!=', 'in-progress')]}"
+                    invisible="state != 'in-progress'"
                 />
             </xpath>
         </field>
