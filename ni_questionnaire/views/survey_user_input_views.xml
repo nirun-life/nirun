@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021-2023. NSTDA
   -->
@@ -50,9 +50,8 @@
         <field name="arch" type="xml">
             <field name="subject_ref" position="attributes">
                 <attribute
-                    name="attrs"
-                >{'invisible': [('subject_model', '=', 'ni.patient')]}</attribute>
-            </field>
+                    name="invisible"
+                >subject_model == 'ni.patient'</attribute></field>
         </field>
     </record>
     <record id="survey_user_input_view_graph" model="ir.ui.view">
