@@ -1,6 +1,6 @@
 # Observation (`ni_observation`)
 
-Odoo 18.0 module that implements FHIR-style clinical observations for Nirun. It covers
+Odoo 19.0 module that implements FHIR-style clinical observations for Nirun. It covers
 measurements, laboratory values, vital signs, interpretation logic, and the supporting
 reference data needed to store and display observations consistently.
 
@@ -37,6 +37,23 @@ fields.
 - `static/src/component/list_renderer/*` and `static/src/scss/observation.scss`
   customize the backend list presentation.
 
+## Units of Measure
+
+`data/uom_uom_data.xml` (`noupdate`) creates Nirun's units on the 19.0 UoM model: no
+categories; a unit is `relative_factor` times its reference unit (`relative_uom_id`),
+for example mg/dl = 0.01 kg/m³. The xmlids are the same as on 16.0-18.0 and every
+conversion gives the same result.
+
+Upgrading from 18.0 with OpenUpgrade: OpenUpgrade converts only units without an xmlid,
+so `migrations/19.0.1.0.0/post-migration.py` converts Nirun's units from OpenUpgrade's
+legacy columns (`relative_factor = 1 / factor`) and drops the old category xmlids. Pass
+the repository's `upgrade_path/` as a second `--upgrade-path`; it also fixes
+user-created "bigger" units, which OpenUpgrade 19 converts with an inverted ratio.
+
+Known issue (from 16.0): `/sec` and `/hour` are defined as if they were time units (1
+/min = 60 /sec), the inverse of a rate. Conversions are kept as they were; fix the data
+before relying on frequency conversions.
+
 ## Display Names
 
 - `ni.observation.sheet` displays its identifier; with the context key `show_occurrence`
@@ -61,7 +78,8 @@ patching it.
 
 ## Security and Dependencies
 
-- `security/ni_observation_group.xml` defines observation access.
+- `security/ni_observation_group.xml` defines observation access: from 19.0 the
+  Viewer/User/Manager groups belong to the privilege "Observation".
 - `security/ni_observation_security.xml` and `security/ir.model.access.csv` control
   record visibility and permissions.
 - Reference data (categories, types, interpretations, reference ranges, value codes) is

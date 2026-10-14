@@ -44,7 +44,7 @@ class ObservationSheet(models.Model):
     )
 
     user_id = fields.Many2one(
-        "res.users", "User", required=True, default=lambda self: self.env.user
+        "res.users", required=True, default=lambda self: self.env.user
     )
 
     vitalsign_summary = fields.Json(
@@ -126,7 +126,7 @@ class ObservationSheet(models.Model):
                     continue
                 try:
                     code = textwrap.dedent(ctype.compute_code).strip()
-                    safe_eval(code, ctx, mode="exec", nocopy=True)
+                    safe_eval(code, ctx, mode="exec")
                     computed_result = ctx.get("result")
                 except Exception:
                     continue

@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -30,13 +30,15 @@ class ReferenceRange(models.Model):
     @api.depends("type_id.name", "low", "high")
     def _compute_display_name(self):
         for ref in self:
-            ref.display_name = "%s [%d-%d]" % (ref.type_id.name, ref.low, ref.high)
+            ref.display_name = f"{ref.type_id.name} [{int(ref.low)}-{int(ref.high)}]"
 
     @api.constrains("low", "high")
     def _validate_low_high(self):
         for rec in self:
             if rec.low > rec.high:
-                raise ValidationError(_("low value must not be more than high value"))
+                raise ValidationError(
+                    self.env._("low value must not be more than high value")
+                )
 
     @api.model
     def range_for(self, type_id, age=0, gender=None):
@@ -75,4 +77,6 @@ class ReferenceRange(models.Model):
     @api.constrains("parent_id")
     def _check_parent_id(self):
         if self._has_cycle():
-            raise ValidationError(_("Error! You cannot create recursive data."))
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
