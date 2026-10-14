@@ -4,7 +4,7 @@
   -->
 <odoo>
     <record id="ni_encounter_view_tree_inherit" model="ir.ui.view">
-        <field name="name">ni.encounter.view.tree.inherit</field>
+        <field name="name">ni.encounter.view.list.inherit</field>
         <field name="model">ni.encounter</field>
         <field name="inherit_id" ref="ni_patient.ni_encounter_view_tree" />
         <field name="arch" type="xml">
@@ -76,7 +76,7 @@
                     name="patient_response_latest_ids"
                     invisible="response_filter != 'patient'"
                 >
-                    <tree>
+                    <list>
                         <field name="survey_id" />
                         <field name="grade_id" />
                         <field name="scoring_total" optional="show" />
@@ -113,13 +113,13 @@
                             title="Start Questionnaire"
                             column_invisible="parent.state not in ['in-progress']"
                         />
-                    </tree>
+                    </list>
                 </field>
                 <field
                     name="response_latest_ids"
                     invisible="response_filter != 'encounter'"
                 >
-                    <tree>
+                    <list>
                         <field name="survey_id" />
                         <field name="grade_id" />
                         <field name="scoring_total" optional="show" />
@@ -156,7 +156,7 @@
                             title="Start Questionnaire"
                             column_invisible="parent.state not in ['in-progress']"
                         />
-                    </tree>
+                    </list>
                 </field>
                 <button
                     type="object"
@@ -199,6 +199,7 @@
             <field name="name" position="after">
                 <field
                     name="survey_id"
+                    string="Questionnaire"
                     context="{'default_category': 'ni_encounter'}"
                 />
             </field>
