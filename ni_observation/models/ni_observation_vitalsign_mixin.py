@@ -154,7 +154,7 @@ class ObservationVitalsignMixin(models.AbstractModel):
     def _compute_bp(self):
         for rec in self:
             if rec.bp_s and rec.bp_d:
-                rec.bp = "{} / {}".format(rec.bp_s, rec.bp_d)
+                rec.bp = f"{rec.bp_s} / {rec.bp_d}"
 
     @api.depends("body_height", "body_weight")
     def _compute_bmi(self):
