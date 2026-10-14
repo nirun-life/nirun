@@ -2,8 +2,9 @@
 
 {
     "name": "Observation",
-    "summary": "Clinical observations including vital signs, lab results, and measurements",
-    "version": "16.0.0.6.0",
+    "summary": "Clinical observations including vital signs, lab results, "
+    "and measurements",
+    "version": "17.0.1.0.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -40,8 +41,8 @@
     ],
     "assets": {
         "web.assets_backend": [
-            "/ni_observation/static/src/component/**/*",
-            "/ni_observation/static/src/scss/observation.scss",
+            "ni_observation/static/src/component/**/*",
+            "ni_observation/static/src/scss/observation.scss",
         ],
     },
     "demo": [],

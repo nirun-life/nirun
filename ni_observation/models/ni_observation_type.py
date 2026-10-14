@@ -50,7 +50,6 @@ class ObservationType(models.Model):
         default=False, help="Type value by compute from other ob type not by user input"
     )
     compute_code = fields.Text(
-        "Compute Code",
         help=(
             "Python code to compute this observation's value from its inputs.\n"
             "Each input type's value is available as a variable named by its code "
@@ -72,24 +71,24 @@ class ObservationType(models.Model):
     )
     keep_falsy = fields.Boolean(
         default=False,
-        help="Check this if Falsy (0, 0.0 and empty) have meaning on this observation. Otherwise, It will see as garbage input",
+        help="Check this if Falsy (0, 0.0 and empty) have meaning on this "
+        "observation. Otherwise, It will see as garbage input",
     )
 
     icon = fields.Char(
-        "Icon",
         help="Font Awesome class (e.g. fa-heartbeat, fa-thermometer-three-quarters)",
     )
     icon_color = fields.Char(
-        string="Icon Color", help="Hex color for icon (e.g. #FF5733)", default="#6c757d"
+        help="Hex color for icon (e.g. #FF5733)", default="#6c757d"
     )
 
     @api.depends("ref_range_ids")
     def _compute_ref_range_count(self):
         ref_range = self.env["ni.observation.reference.range"].sudo()
-        read = ref_range.read_group(
-            [("type_id", "in", self.ids)], ["type_id"], ["type_id"]
+        read = ref_range._read_group(
+            [("type_id", "in", self.ids)], ["type_id"], ["__count"]
         )
-        data = {res["type_id"][0]: res["type_id_count"] for res in read}
+        data = {rec.id: count for rec, count in read}
         for rec in self:
             rec.ref_range_count = data.get(rec.id, 0)
 

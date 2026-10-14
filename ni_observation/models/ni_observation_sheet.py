@@ -2,7 +2,7 @@
 
 import textwrap
 
-from odoo import fields, models
+from odoo import api, fields, models
 from odoo.tools.safe_eval import safe_eval
 
 _VALUE_FIELDS = frozenset({"value", "value_float", "value_int", "value_char"})
@@ -68,8 +68,11 @@ class ObservationSheet(models.Model):
                     )
             rec.vitalsign_summary = result
 
-    def name_get(self):
-        return [(sheet.id, sheet._get_name()) for sheet in self]
+    @api.depends("identifier", "occurrence")
+    @api.depends_context("show_occurrence")
+    def _compute_display_name(self):
+        for sheet in self:
+            sheet.display_name = sheet._get_name()
 
     def _get_name(self):
         sheet = self
@@ -188,7 +191,7 @@ class ObservationSheet(models.Model):
                     line.append(self.line_section(cat))
                 line = line + [
                     self.line_data(t)
-                    for t in types.filtered(lambda s: s.category_id.id == cat.id)
+                    for t in types.filtered(lambda s, cat=cat: s.category_id == cat)
                     if t not in line_types
                 ]
             # Apply sequence to each line

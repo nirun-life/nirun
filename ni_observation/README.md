@@ -1,6 +1,6 @@
 # Observation (`ni_observation`)
 
-Odoo 16.0 module that implements FHIR-style clinical observations for Nirun. It covers
+Odoo 17.0 module that implements FHIR-style clinical observations for Nirun. It covers
 measurements, laboratory values, vital signs, interpretation logic, and the supporting
 reference data needed to store and display observations consistently.
 
@@ -37,12 +37,30 @@ fields.
 - `static/src/component/list_renderer/*` and `static/src/scss/observation.scss`
   customize the backend list presentation.
 
+## Display Names
+
+- `ni.observation.sheet` displays its identifier; with the context key `show_occurrence`
+  it adds the occurrence (used by the edit step of the wizard).
+- `ni.observation.reference.range` displays `Type [low-high]`.
+- `ni_observation` extends the patient display name through `ni.patient._name_get()`:
+  with `show_gender_age`, it adds the blood group.
+
+## List Widget
+
+`ob_section_and_note_one2many` (with `ob_section_and_note_text`) shows observation lines
+grouped by category sections. It is ported from the core `account` section-and-note
+widget of the same Odoo version, so re-port it from that file on each upgrade instead of
+patching it.
+
 ## Security and Dependencies
 
 - `security/ni_observation_group.xml` defines observation access.
 - `security/ni_observation_security.xml` and `security/ir.model.access.csv` control
   record visibility and permissions.
 - The module depends on `ni_patient`, `mail`, `uom`, and `uom_alias`.
+- Soft dependency: the encounter form sets a `badge` attribute on the Vital Signs and
+  Laboratory pages. Only `web_notebook_advance` shows it as a counter; without that
+  module the views still load and the badge is not shown.
 
 ## Verification
 
