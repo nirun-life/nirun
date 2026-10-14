@@ -11,7 +11,9 @@
         <field name="unit_id" ref="uom_mmHg" />
         <field name="category_id" ref="category_vital_signs" />
         <field name="compute" eval="1" />
-        <field name="compute_code">result = "{} / {}".format(int(bp_s), int(bp_d)) if bp_s and bp_d else None</field>
+        <field
+            name="compute_code"
+        >result = "{} / {}".format(int(bp_s), int(bp_d)) if bp_s and bp_d else None</field>
     </record>
     <record id="type_bp_s" model="ni.observation.type">
         <field name="code">bp-s</field>

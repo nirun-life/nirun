@@ -32,7 +32,13 @@ export class SectionAndNoteListRenderer extends ListRenderer {
     }
 
     isValueColumn(column) {
-        return ["value_char", "value_int", "value_float", "value_code_id", "value_code_ids"].includes(column.name);
+        return [
+            "value_char",
+            "value_int",
+            "value_float",
+            "value_code_id",
+            "value_code_ids",
+        ].includes(column.name);
     }
 
     isSectionOrNote(record = null) {
@@ -47,10 +53,15 @@ export class SectionAndNoteListRenderer extends ListRenderer {
 
     getCellClass(column, record) {
         const classNames = super.getCellClass(column, record);
-        const isValueColumnMismatch = this.isValueColumn(column, record) && column.name !== `value_${record.data.value_type}`;
+        const isValueColumnMismatch =
+            this.isValueColumn(column, record) &&
+            column.name !== `value_${record.data.value_type}`;
         const isHiddenSectionOrNote =
-            this.isSectionOrNote(record) && column.widget !== "handle" && column.name !== this.titleField;
-        const isHiddenTitleField = !this.isSectionOrNote(record) && column.name === this.titleField;
+            this.isSectionOrNote(record) &&
+            column.widget !== "handle" &&
+            column.name !== this.titleField;
+        const isHiddenTitleField =
+            !this.isSectionOrNote(record) && column.name === this.titleField;
         if (isValueColumnMismatch || isHiddenSectionOrNote || isHiddenTitleField) {
             return `${classNames} o_hidden`;
         }
@@ -63,7 +74,10 @@ export class SectionAndNoteListRenderer extends ListRenderer {
             return this.getSectionColumns(columns);
         }
         const hideCols = columns.filter(
-            (col) => col.name === this.titleField || (this.isValueColumn(col) && col.name !== `value_${record.data.value_type}`)
+            (col) =>
+                col.name === this.titleField ||
+                (this.isValueColumn(col) &&
+                    col.name !== `value_${record.data.value_type}`)
         );
         const showCols = columns.filter((col) => !hideCols.includes(col));
         return showCols.map((col) => {
@@ -76,7 +90,9 @@ export class SectionAndNoteListRenderer extends ListRenderer {
 
     getSectionColumns(columns) {
         const sectionCols = columns.filter(
-            (col) => col.widget === "handle" || (col.type === "field" && col.name === this.titleField)
+            (col) =>
+                col.widget === "handle" ||
+                (col.type === "field" && col.name === this.titleField)
         );
         return sectionCols.map((col) => {
             if (col.name === this.titleField) {
@@ -97,7 +113,9 @@ SectionAndNoteFieldOne2Many.components = {
 
 export class SectionAndNoteText extends Component {
     get componentToUse() {
-        return this.props.record.data.display_type === "line_section" ? CharField : TextField;
+        return this.props.record.data.display_type === "line_section"
+            ? CharField
+            : TextField;
     }
 }
 SectionAndNoteText.template = "ni_observation.SectionAndNoteText";
@@ -105,10 +123,16 @@ SectionAndNoteText.additionalClasses = ["o_field_text"];
 
 export class ListSectionAndNoteText extends SectionAndNoteText {
     get componentToUse() {
-        return this.props.record.data.display_type !== "line_section" ? ListTextField : super.componentToUse;
+        return this.props.record.data.display_type !== "line_section"
+            ? ListTextField
+            : super.componentToUse;
     }
 }
 
-registry.category("fields").add("ob_section_and_note_one2many", SectionAndNoteFieldOne2Many);
+registry
+    .category("fields")
+    .add("ob_section_and_note_one2many", SectionAndNoteFieldOne2Many);
 registry.category("fields").add("ob_section_and_note_text", SectionAndNoteText);
-registry.category("fields").add("list.ob_section_and_note_text", ListSectionAndNoteText);
+registry
+    .category("fields")
+    .add("list.ob_section_and_note_text", ListSectionAndNoteText);
