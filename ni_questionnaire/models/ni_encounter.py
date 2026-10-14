@@ -6,7 +6,7 @@ from odoo import api, fields, models
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
-    survey_id = fields.Many2one(related="class_id.survey_id")
+    survey_id = fields.Many2one(string="Class Survey", related="class_id.survey_id")
     response_id = fields.Many2one(
         "survey.user_input", store=True, groups="survey.group_survey_user"
     )
@@ -14,6 +14,7 @@ class Encounter(models.Model):
     response_ids = fields.One2many(
         "survey.user_input",
         "encounter_id",
+        string="Completed Responses",
         domain=[("state", "=", "done")],
         help="Completed survey's response",
     )
