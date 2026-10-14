@@ -13,7 +13,10 @@
         <field name="model">ni.observation.type</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]" />
+                <field
+                    name="name"
+                    filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]"
+                />
                 <group string="Group By">
                     <filter
                         string="Category"
@@ -82,19 +85,28 @@
                             string="Value Range"
                             attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}"
                         />
-                        <div class="o_row" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}">
+                        <div
+                            class="o_row"
+                            attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}"
+                        >
                             <field name="min" />
                             <span class="mx-1">-</span>
                             <field name="max" />
                         </div>
-                        <field name="compare" attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}" />
+                        <field
+                            name="compare"
+                            attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}"
+                        />
                         <field
                             name="graph_type"
                             widget="radio"
                             options="{'horizontal': True}"
                             attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
                         />
-                        <field name="keep_falsy" attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}" />
+                        <field
+                            name="keep_falsy"
+                            attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                        />
                     </group>
                     <notebook>
                         <page name="component" string="Component">
@@ -112,7 +124,12 @@
                                 <code>result</code>
                                 .
                             </p>
-                            <field name="compute_code" widget="ace" options="{'mode': 'python'}" nolabel="1" />
+                            <field
+                                name="compute_code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                                nolabel="1"
+                            />
                         </page>
                         <page
                             name="concept"
@@ -129,7 +146,10 @@
                             </field>
                         </page>
                         <page string="Reference Range">
-                            <field name="ref_range_ids" context="{'default_type_id': id}">
+                            <field
+                                name="ref_range_ids"
+                                context="{'default_type_id': id}"
+                            >
                                 <tree editable="bottom">
                                     <field
                                         name="gender"
@@ -152,7 +172,12 @@
                                         decoration-warning="display_class == 'warning'"
                                     />
                                     <field name="display_class" invisible="1" />
-                                    <button name="copy" type="object" icon="fa-files-o" title="copy" />
+                                    <button
+                                        name="copy"
+                                        type="object"
+                                        icon="fa-files-o"
+                                        title="copy"
+                                    />
                                 </tree>
                             </field>
                         </page>

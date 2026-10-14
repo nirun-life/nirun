@@ -75,14 +75,14 @@ class ObservationSheet(models.Model):
         sheet = self
         name = sheet.identifier
         if self._context.get("show_occurrence") and self.occurrence:
-            name = "{} • {}".format(name, sheet.occurrence)
+            name = f"{name} • {sheet.occurrence}"
         return name
 
     def garbage_collect(self):
         self.observation_ids.garbage_collect(0, "day")
 
     def write(self, vals):
-        result = super(ObservationSheet, self).write(vals)
+        result = super().write(vals)
         if result and vals.get("occurrence"):
             for rec in self:
                 rec.observation_ids.write({"occurrence": rec.occurrence})
