@@ -29,5 +29,5 @@ class BloodGroupMixin(models.AbstractModel):
         for rec in self:
             bg = rec.blood_abo.name or None
             if bg and rec.blood_rh:
-                bg = "{}{}".format(bg, rec.blood_rh.abbr)
+                bg = f"{bg}{rec.blood_rh.abbr}"
             rec.blood_group = bg
