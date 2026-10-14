@@ -100,6 +100,12 @@ bearing on the grade.
 - `security/res_groups.xml`, `security/ir_rules.xml`, and `security/ir.model.access.csv`
   define questionnaire-specific access.
 
+## Upgrading from 16.0
+
+`migrations/17.0.1.0.0/post-migration.py` recomputes each encounter's latest response
+(`response_latest_id`, its grade and date). The 16.0 values are empty or stale, because
+16.0 read them from a SQL view before the response was saved.
+
 ## Dependencies
 
 - `ni_patient`
