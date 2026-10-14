@@ -9,10 +9,21 @@
         <field name="inherit_id" ref="ni_observation.ni_patient_ob_line_view_form" />
         <field name="arch" type="xml">
             <field name="interpretation_id" position="after">
-                <label for="survey_response_id" attrs="{'invisible': [('survey_response_id', '=', False)]}" />
-                <div class="o_row" attrs="{'invisible': [('survey_response_id', '=', False)]}">
+                <label
+                    for="survey_response_id"
+                    attrs="{'invisible': [('survey_response_id', '=', False)]}"
+                />
+                <div
+                    class="o_row"
+                    attrs="{'invisible': [('survey_response_id', '=', False)]}"
+                >
                     <field name="survey_response_id" />
-                    <button name="action_print_survey" type="object" icon="fa-eye" title="See Result" />
+                    <button
+                        name="action_print_survey"
+                        type="object"
+                        icon="fa-eye"
+                        title="See Result"
+                    />
                     <button
                         name="action_survey_monthly_pivot"
                         type="object"
