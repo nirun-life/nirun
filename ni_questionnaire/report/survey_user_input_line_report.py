@@ -31,6 +31,7 @@ class SurveyUserInputLineMonthlyReport(models.Model):
             ("text_box", "Free Text"),
             ("char_box", "Text"),
             ("numerical_box", "Number"),
+            ("scale", "Scale"),
             ("date", "Date"),
             ("datetime", "Datetime"),
             ("suggestion", "Suggestion"),
@@ -39,6 +40,7 @@ class SurveyUserInputLineMonthlyReport(models.Model):
     )
     value_char_box = fields.Char("Text answer", readonly=True)
     value_numerical_box = fields.Float("Numerical answer", readonly=True)
+    value_scale = fields.Integer("Scale answer", readonly=True)
     value_date = fields.Date("Date answer", readonly=True)
     value_datetime = fields.Datetime("Datetime answer", readonly=True)
     value_text_box = fields.Text("Free Text answer", readonly=True)
@@ -67,6 +69,7 @@ class SurveyUserInputLineMonthlyReport(models.Model):
                 A.answer_type,
                 A.value_char_box,
                 A.value_numerical_box,
+                A.value_scale,
                 A.value_date,
                 A.value_datetime,
                 A.value_text_box,

@@ -65,7 +65,7 @@ class TestObservationMapping(common.TransactionCase):
 
     def _question(self, question_type, **kwargs):
         vals = {
-            "title": "Open %s" % question_type,
+            "title": f"Open {question_type}",
             "sequence": 30,
             "survey_id": self.survey.id,
             "question_type": question_type,
@@ -213,6 +213,19 @@ class TestObservationMapping(common.TransactionCase):
         response._mark_done()
 
         self.assertEqual(self._observations(response).value_int, 0)
+
+    def test_scale_answer_is_recorded(self):
+        """18.0 scale questions map their value, including 0."""
+        question = self._question(
+            "scale",
+            observation_code_id=self.int_type.id,
+            observation_answer_type="value",
+        )
+        for value in (7, 0):
+            response = self._response()
+            self._answer(response, question, "scale", value_scale=value)
+            response._mark_done()
+            self.assertEqual(self._observations(response).value_int, value)
 
     def test_datetime_answer_is_recorded(self):
         question = self._question(
