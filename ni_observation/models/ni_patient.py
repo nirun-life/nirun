@@ -73,7 +73,7 @@ class Patient(models.Model):
         return action
 
     def _name_get(self):
-        name = super(Patient, self)._name_get()
+        name = super()._name_get()
         if (
             self._context.get("show_gender_age")
             and (self.age or self.gender)
