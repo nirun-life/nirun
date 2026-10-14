@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2022-2023. NSTDA
   -->
@@ -20,18 +20,12 @@
                 <filter
                     name="effective_today"
                     string="Today"
-                    domain="[
-                    ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
-                    ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))
-                    ]"
+                    domain="[                     ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),                     ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))                     ]"
                 />
                 <filter
                     name="effective_yesterday"
                     string="Yesterday"
-                    domain="[
-                    ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
-                    ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))
-                    ]"
+                    domain="[                     ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),                     ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))                     ]"
                 />
                 <filter name="effective_date" string="Period" date="occurrence" />
                 <separator />
@@ -53,7 +47,7 @@
                 <field name="sequence" widget="handle" />
                 <field name="category_id" optional="hide" />
                 <field name="type_id" optional="show" />
-                <field name="value_type" invisible="1" />
+                <field name="value_type" column_invisible="1" />
                 <field name="value" decoration-bf="1" />
                 <field name="unit_id" decoration-muted="1" />
                 <field
@@ -66,7 +60,7 @@
                     decoration-success="display_class == 'success'"
                     decoration-warning="display_class == 'warning'"
                 />
-                <field name="display_class" invisible="1" />
+                <field name="display_class" column_invisible="1" />
                 <field
                     name="compare_interpret"
                     decoration-success="compare_interpret == 'better'"
@@ -105,7 +99,7 @@
                                 <field
                                     name="unit_id"
                                     options="{'no_open': True}"
-                                    attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                                    invisible="value_type not in ['int', 'float']"
                                 />
                             </div>
                             <field
@@ -139,7 +133,7 @@
                                 decoration-success="display_class == 'success'"
                                 decoration-warning="display_class == 'warning'"
                             />
-                            <field name="display_class" invisible="1" />
+                            <field name="display_class" column_invisible="1" />
                             <field
                                 name="create_uid"
                                 widget="many2one_avatar_user"

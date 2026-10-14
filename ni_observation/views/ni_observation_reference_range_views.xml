@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021 NSTDA
   -->
@@ -51,7 +51,7 @@
                     decoration-success="display_class == 'success'"
                     decoration-warning="display_class == 'warning'"
                 />
-                <field name="display_class" invisible="1" />
+                <field name="display_class" column_invisible="1" />
             </tree>
         </field>
     </record>
@@ -65,9 +65,9 @@
                 <sheet>
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
+                        invisible="active"
                     />
                     <group>
                         <group>
