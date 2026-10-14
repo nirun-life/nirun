@@ -3,14 +3,19 @@
   ~ Copyright (c) 2026 NSTDA
   -->
 <odoo>
-    <record id="ni_observation_wizard_action_from_encounter" model="ir.actions.act_window">
+    <record
+        id="ni_observation_wizard_action_from_encounter"
+        model="ir.actions.act_window"
+    >
         <field name="name">Observation</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.observation.wizard</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">No Observation found. Let's create one!</p>
+            <p
+                class="o_view_nocontent_smiling_face"
+            >No Observation found. Let's create one!</p>
         </field>
     </record>
     <record id="ni_observation_wizard_view_form" model="ir.ui.view">
@@ -25,8 +30,14 @@
                 <field name="state" invisible="1" />
                 <field name="occurrence" invisible="1" />
                 <group states="1">
-                    <field name="patient_id" invisible="context.get('default_patient_id')" />
-                    <field name="encounter_id" invisible="context.get('default_patient_id')" />
+                    <field
+                        name="patient_id"
+                        invisible="context.get('default_patient_id')"
+                    />
+                    <field
+                        name="encounter_id"
+                        invisible="context.get('default_patient_id')"
+                    />
                 </group>
                 <field
                     name="type"
@@ -36,24 +47,42 @@
                     states="1"
                     invisible="context.get('default_type')"
                 />
-                <group attrs="{'invisible': ['|', ('state', '!=', '1'), ('type', '!=', 'new')]}">
-                    <field name="category_ids" widget="many2many_checkboxes" invisible="context.get('hide_category')" />
+                <group
+                    attrs="{'invisible': ['|', ('state', '!=', '1'), ('type', '!=', 'new')]}"
+                >
+                    <field
+                        name="category_ids"
+                        widget="many2many_checkboxes"
+                        invisible="context.get('hide_category')"
+                    />
                     <field name="init_occurrence" string="Occurrence" />
                 </group>
-                <group attrs="{'invisible': ['|', ('state', '!=', '1'), ('type', '!=', 'edit')]}">
+                <group
+                    attrs="{'invisible': ['|', ('state', '!=', '1'), ('type', '!=', 'edit')]}"
+                >
                     <field
                         name="sheet_id"
                         context="{'show_occurrence': 1}"
                         options="{'no_create': True, 'no_open':True}"
                         attrs="{'invisible': [('type', '!=', 'edit')]}"
                     />
-                    <label for="occurrence" attrs="{'invisible': [('sheet_id', '=', False)]}" />
-                    <div class="o_row" attrs="{'invisible': [('sheet_id', '=', False)]}">
+                    <label
+                        for="occurrence"
+                        attrs="{'invisible': [('sheet_id', '=', False)]}"
+                    />
+                    <div
+                        class="o_row"
+                        attrs="{'invisible': [('sheet_id', '=', False)]}"
+                    >
                         <field name="occurrence" widget="remaining_days" />
                         <label for="sheet_create_date" />
                         <field name="sheet_create_date" class="w-25" />
                         <label for="sheet_create_uid" string="by" />
-                        <field name="sheet_create_uid" class="w-25" widget="many2one_avatar_user" />
+                        <field
+                            name="sheet_create_uid"
+                            class="w-25"
+                            widget="many2one_avatar_user"
+                        />
                     </div>
                 </group>
                 <field
@@ -72,7 +101,12 @@
                         <field name="value_type" invisible="1" />
                         <field name="sequence" widget="handle" />
                         <field name="type_id" />
-                        <field name="title" widget="ob_section_and_note_text" optional="show" nolabel="1" />
+                        <field
+                            name="title"
+                            widget="ob_section_and_note_text"
+                            optional="show"
+                            nolabel="1"
+                        />
                         <field name="value_char" />
                         <field name="value_int" nolabel="1" />
                         <field name="value_float" nolabel="1" />
@@ -108,9 +142,26 @@
                 <label for="note" states="2" />
                 <field name="note" placeholder="Additional Note..." states="2" />
                 <footer attrs="{'invisible': [('type', '!=', 'new')]}">
-                    <button class="oe_highlight" name="prepare_sheet" type="object" string="Next" states="1" />
-                    <button class="btn-secondary" special="cancel" string="Cancel" states="1" />
-                    <button class="oe_highlight" name="submit_sheet" type="object" string="Save" states="2" />
+                    <button
+                        class="oe_highlight"
+                        name="prepare_sheet"
+                        type="object"
+                        string="Next"
+                        states="1"
+                    />
+                    <button
+                        class="btn-secondary"
+                        special="cancel"
+                        string="Cancel"
+                        states="1"
+                    />
+                    <button
+                        class="oe_highlight"
+                        name="submit_sheet"
+                        type="object"
+                        string="Save"
+                        states="2"
+                    />
                     <button
                         class="text-danger"
                         name="discard_sheet"
@@ -121,8 +172,20 @@
                     />
                 </footer>
                 <footer attrs="{'invisible': [('type', '!=', 'edit')]}">
-                    <button class="oe_highlight" name="next_state" type="object" string="Edit" states="1" />
-                    <button class="oe_highlight" name="submit_sheet" type="object" string="Save" states="2" />
+                    <button
+                        class="oe_highlight"
+                        name="next_state"
+                        type="object"
+                        string="Edit"
+                        states="1"
+                    />
+                    <button
+                        class="oe_highlight"
+                        name="submit_sheet"
+                        type="object"
+                        string="Save"
+                        states="2"
+                    />
                     <button class="btn-secondary" special="cancel" string="Cancel" />
                     <button
                         class="btn-secondary text-danger"
