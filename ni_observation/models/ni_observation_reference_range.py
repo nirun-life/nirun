@@ -27,11 +27,10 @@ class ReferenceRange(models.Model):
     active = fields.Boolean(default="True")
     is_problem = fields.Boolean(related="interpretation_id.is_problem")
 
-    def name_get(self):
-        return [
-            (ref.id, "%s [%d-%d]" % (ref.type_id.name, ref.low, ref.high))
-            for ref in self
-        ]
+    @api.depends("type_id.name", "low", "high")
+    def _compute_display_name(self):
+        for ref in self:
+            ref.display_name = "%s [%d-%d]" % (ref.type_id.name, ref.low, ref.high)
 
     @api.constrains("low", "high")
     def _validate_low_high(self):

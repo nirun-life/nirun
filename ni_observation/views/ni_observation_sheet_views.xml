@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021 NSTDA
   -->
@@ -24,18 +24,12 @@
                 <filter
                     name="effective_today"
                     string="Today"
-                    domain="[
-                    ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
-                    ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))
-                    ]"
+                    domain="[                     ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),                     ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))                     ]"
                 />
                 <filter
                     name="effective_yesterday"
                     string="Yesterday"
-                    domain="[
-                    ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
-                    ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))
-                    ]"
+                    domain="[                     ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),                     ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))                     ]"
                 />
                 <filter name="effective_date" string="Period" date="occurrence" />
                 <separator />
@@ -108,9 +102,9 @@
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
+                        invisible="active"
                     />
                     <group>
                         <group>
@@ -128,14 +122,14 @@
                                     name="category_ids"
                                     options="{'color_field': 'color', 'no_open':True, 'no_create':True}"
                                     widget="many2many_tags"
-                                    attrs="{'readonly': [('patient_id', '=', False)]}"
+                                    readonly="not patient_id"
                                 />
                                 <button
                                     class="oe_edit_only btn-primary"
                                     string="Apply"
                                     name="action_line_by_category_ids"
                                     type="object"
-                                    attrs="{'invisible': ['|', ('category_ids', '=', False), ('patient_id', '=', False)]}"
+                                    invisible="(not category_ids or not patient_id)"
                                 />
                             </div>
                         </group>
@@ -145,7 +139,7 @@
                             <field name="user_id" />
                         </group>
                     </group>
-                    <notebook attrs="{'invisible': [('id', '=', False)]}">
+                    <notebook invisible="not id">
                         <page name="detail" string="Detail" icon="fa-list-ul">
                             <field
                                 name="observation_ids"
@@ -153,10 +147,10 @@
                                 widget="ob_section_and_note_one2many"
                             >
                                 <tree editable="bottom">
-                                    <field name="compute" invisible="1" />
-                                    <field name="display_type" invisible="1" />
-                                    <field name="display_class" invisible="1" />
-                                    <field name="value_type" invisible="1" />
+                                    <field name="compute" column_invisible="1" />
+                                    <field name="display_type" column_invisible="1" />
+                                    <field name="display_class" column_invisible="1" />
+                                    <field name="value_type" column_invisible="1" />
                                     <field name="sequence" widget="handle" />
                                     <field name="type_id" />
                                     <field
@@ -168,25 +162,25 @@
                                     <field
                                         name="value_char"
                                         class="text-end"
-                                        attrs="{'readonly': [('compute', '=', True)]}"
+                                        readonly="compute"
                                     />
                                     <field
                                         name="value_int"
                                         nolabel="1"
-                                        attrs="{'readonly': [('compute', '=', True)]}"
+                                        readonly="compute"
                                     />
                                     <field
                                         name="value_float"
                                         nolabel="1"
-                                        attrs="{'readonly': [('compute', '=', True)]}"
+                                        readonly="compute"
                                     />
                                     <field
                                         name="value_code_id"
                                         class="text-end"
                                         nolabel="1"
-                                        attrs="{'readonly': [('compute', '=', True)]}"
                                         options="{'no_open': True}"
                                         context="{'default_type_ids': [type_id]}"
+                                        readonly="compute"
                                     />
                                     <field
                                         name="value_code_ids"
@@ -200,7 +194,7 @@
                                         name="unit_id"
                                         optional="show"
                                         decoration-muted="1"
-                                        attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                                        invisible="value_type not in ['int', 'float']"
                                     />
                                     <field
                                         name="interpretation_id"
@@ -213,13 +207,14 @@
                                         decoration-warning="display_class == 'warning'"
                                         optional="show"
                                     />
-                                    <field name="value" invisible="1" />
+                                    <field name="value" column_invisible="1" />
                                     <control>
                                         <create string="Add Observation" context="{}" />
                                     </control>
                                 </tree>
                                 <kanban>
                                     <field name="sequence" />
+                                    <field name="company_id" />
                                     <field name="sheet_id" />
                                     <field name="patient_id" />
                                     <field name="encounter_id" />
@@ -278,7 +273,7 @@
                                                                     decoration-primary="display_class == 'primary'"
                                                                     decoration-success="display_class == 'success'"
                                                                     decoration-warning="display_class == 'warning'"
-                                                                    attrs="{'invisible': [('interpretation_id', '=', False)]}"
+                                                                    invisible="not interpretation_id"
                                                                 />
                                                             </div>
                                                         </div>
@@ -327,6 +322,7 @@
                                 </kanban>
                                 <form>
                                     <field name="sequence" invisible="1" />
+                                    <field name="company_id" invisible="1" />
                                     <field name="sheet_id" invisible="1" />
                                     <field name="patient_id" invisible="1" />
                                     <field name="encounter_id" invisible="1" />
@@ -338,28 +334,30 @@
                                     <group>
                                         <field
                                             name="title"
-                                            attrs="{'invisible': [('display_type', '=', False)], 'required': [('display_type', '!=', False)]}"
+                                            invisible="not display_type"
+                                            required="display_type"
                                         />
                                         <field
                                             name="type_id"
-                                            attrs="{'invisible': [('display_type', '!=', False)]}"
                                             options="{'no_open': True}"
+                                            invisible="display_type"
                                         />
                                         <field
                                             name="value_char"
-                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'char')], 'readonly': [('compute', '=', True)]}"
+                                            invisible="(display_type or value_type != 'char')"
+                                            readonly="compute"
                                         />
                                         <label
                                             for="value_int"
-                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'int')]}"
+                                            invisible="(display_type or value_type != 'int')"
                                         />
                                         <div
                                             class="o_row"
-                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'int')]}"
+                                            invisible="(display_type or value_type != 'int')"
                                         >
                                             <field
                                                 name="value_int"
-                                                attrs="{'readonly': [('compute', '=', True)]}"
+                                                readonly="compute"
                                             />
                                             <field
                                                 name="unit_id"
@@ -368,15 +366,15 @@
                                         </div>
                                         <label
                                             for="value_float"
-                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'float')]}"
+                                            invisible="(display_type or value_type != 'float')"
                                         />
                                         <div
                                             class="o_row"
-                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'float')]}"
+                                            invisible="(display_type or value_type != 'float')"
                                         >
                                             <field
                                                 name="value_float"
-                                                attrs="{ 'readonly': [('compute', '=', True)]}"
+                                                readonly="compute"
                                             />
                                             <field
                                                 name="unit_id"
@@ -387,14 +385,16 @@
                                             name="value_code_id"
                                             options="{'no_open': True}"
                                             context="{'default_type_ids': [type_id]}"
-                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'code_id')], 'readonly': [('compute', '=', True)]}"
+                                            invisible="(display_type or value_type != 'code_id')"
+                                            readonly="compute"
                                         />
                                         <field
                                             name="value_code_ids"
                                             widget="many2many_tags"
                                             options="{'color_field': 'color'}"
                                             context="{'default_type_ids': [type_id]}"
-                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('value_type', '!=', 'code_ids')], 'readonly': [('compute', '=', True)]}"
+                                            invisible="(display_type or value_type != 'code_ids')"
+                                            readonly="compute"
                                         />
                                         <field
                                             name="interpretation_id"
@@ -405,7 +405,7 @@
                                             decoration-primary="display_class == 'primary'"
                                             decoration-success="display_class == 'success'"
                                             decoration-warning="display_class == 'warning'"
-                                            attrs="{'invisible': ['|', ('display_type', '!=', False), ('interpretation_id', '=', False)]}"
+                                            invisible="(display_type or not interpretation_id)"
                                         />
                                     </group>
                                 </form>
@@ -449,7 +449,7 @@
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click o_kanban_record p-0">
                             <div class="p-3">
-                                <!-- ── Header ── -->
+                                <!-- &#9472;&#9472; Header &#9472;&#9472; -->
                                 <div class="mb-2">
                                     <t t-if="record.patient_id.raw_value">
                                         <strong
@@ -460,14 +460,14 @@
                                     <t t-else="">
                                         <span
                                             class="text-muted fst-italic d-block"
-                                        >ไม่ระบุผู้ป่วย</span>
+                                        >&#3652;&#3617;&#3656;&#3619;&#3632;&#3610;&#3640;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;</span>
                                     </t>
                                     <div class="text-muted small">
                                         <i class="fa fa-clock-o me-1" />
                                         <t t-esc="record.occurrence.value" />
                                     </div>
                                 </div>
-                                <!-- ── ค่าตรวจวัด: loop จาก vitalsign_summary ── -->
+                                <!-- &#9472;&#9472; &#3588;&#3656;&#3634;&#3605;&#3619;&#3623;&#3592;&#3623;&#3633;&#3604;: loop &#3592;&#3634;&#3585; vitalsign_summary &#9472;&#9472; -->
                                 <t
                                     t-set="vitals"
                                     t-value="record.vitalsign_summary.raw_value or []"
@@ -490,7 +490,7 @@
                                         </div>
                                     </div>
                                 </t>
-                                <!-- ── Footer: ผู้บันทึก ── -->
+                                <!-- &#9472;&#9472; Footer: &#3612;&#3641;&#3657;&#3610;&#3633;&#3609;&#3607;&#3638;&#3585; &#9472;&#9472; -->
                                 <div
                                     class="d-flex align-items-center gap-1 mt-2 pt-1 border-top"
                                 >
