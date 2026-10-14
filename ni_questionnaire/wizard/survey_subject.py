@@ -38,7 +38,7 @@ class SurveySubjectWizard(models.TransientModel):
                 return {"warning": warning}
 
     def subject_get(self):
-        result = super(SurveySubjectWizard, self).subject_get()
+        result = super().subject_get()
         if result:
             result.update(
                 {
