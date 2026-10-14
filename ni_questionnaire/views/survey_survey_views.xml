@@ -16,7 +16,10 @@
                 >
                     <label for="observation_type_id" string="Observation" />
                     <div>
-                        <field name="observation_type_id" context="{'default_value_type': 'int'}" />
+                        <field
+                            name="observation_type_id"
+                            context="{'default_value_type': 'int'}"
+                        />
                         <button
                             name="action_sync_observation_range"
                             type="object"
@@ -91,7 +94,11 @@
             <!-- position values: after|before|replace|attributes|inside -->
             <xpath expr="//filter[@name='not_certification']" position="after">
                 <separator />
-                <filter string="Patient Questionnaire" name="patient" domain="[('subject_type', '=', 'ni.patient')]" />
+                <filter
+                    string="Patient Questionnaire"
+                    name="patient"
+                    domain="[('subject_type', '=', 'ni.patient')]"
+                />
                 <filter
                     string="Encounter Questionnaire"
                     name="encounter"
@@ -149,7 +156,10 @@
                     for="age_low"
                     attrs="{'invisible': [('subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
                 />
-                <div class="o_row" attrs="{'invisible': [('subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}">
+                <div
+                    class="o_row"
+                    attrs="{'invisible': [('subject_type', 'not in', ['ni.patient', 'ni.encounter'])]}"
+                >
                     <field name="age_low" />
                     <span class="mx-1">-</span>
                     <field name="age_high" />
