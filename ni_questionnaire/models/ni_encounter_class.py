@@ -8,7 +8,7 @@ class EncounterClassification(models.Model):
 
     survey_id = fields.Many2one(
         "survey.survey",
-        "Questionnaire",
+        "Questionnaire Survey",
         help="Questionnaire relate for this class of encounter",
         groups="survey.group_survey_user",
         domain="[('subject_type', 'in', ['ni.encounter', 'ni.patient'])]",

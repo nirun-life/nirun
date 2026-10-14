@@ -95,7 +95,7 @@ class SurveyUserInput(models.Model):
             val.update({"value": str(int(result))})
         else:
             raise ValidationError(
-                _(
+                rec.env._(
                     "%(name)s value type is [%(type)s], not support score input",
                     name=code.name,
                     type=code.value_type,
@@ -118,7 +118,7 @@ class SurveyUserInput(models.Model):
                 val.update({"value": str(line.answer_score)})
             else:
                 raise ValidationError(
-                    _(
+                    _input.env._(
                         "%(name)s value type is [%(type)s], not support score input",
                         name=code.name,
                         type=code.value_type,
@@ -139,8 +139,10 @@ class SurveyUserInput(models.Model):
                 answer = line.value_text_box
             elif line.answer_type == "numerical_box":
                 answer = line.value_numerical_box
+            elif line.answer_type == "scale":
+                answer = line.value_scale
             else:
-                raise ValidationError(_("Not support this type of answer"))
+                raise ValidationError(_input.env._("Not support this type of answer"))
             val.update({"value": str(answer)})
         return val
 
@@ -172,7 +174,7 @@ class SurveyUserInput(models.Model):
             val.update({"value": str(result)})
         else:
             raise ValidationError(
-                _(
+                _input.env._(
                     "%(name)s value type is [%(type)s], not support score input",
                     name=code.observation_type_id.name,
                     type=code.observation_type_id.value_type,

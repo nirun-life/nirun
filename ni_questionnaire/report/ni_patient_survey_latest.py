@@ -18,16 +18,16 @@ class PatientSurveyLatest(models.Model):
     encounter_id = fields.Many2one("ni.encounter", readonly=True)
     encounter_state = fields.Selection(related="encounter_id.state")
     grade_id = fields.Many2one("survey.grade", "Grade", readonly=True, compute=False)
-    grade = fields.Char("Grade", related="grade_id.name")
+    grade = fields.Char("Grade Name", related="grade_id.name")
     scoring_percentage = fields.Float(
-        "Score (%)", readonly=True, compute=False, group_operator="avg"
+        "Score (%)", readonly=True, compute=False, aggregator="avg"
     )
     scoring_total = fields.Float(
-        "Score", readonly=True, compute=False, group_operator="avg"
+        "Score", readonly=True, compute=False, aggregator="avg"
     )
     create_date = fields.Datetime("Authored", readonly=True)
     create_uid = fields.Many2one("res.users", "Author")
-    partner_id = fields.Many2one("res.partner", "Author")
+    partner_id = fields.Many2one("res.partner", "Respondent")
 
     # survey_user_input columns read by these views. An explicit list keeps the view
     # independent of columns that survey and other modules add to the table.
