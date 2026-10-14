@@ -1,5 +1,6 @@
 #  Copyright (c) 2021 NSTDA
 from odoo import _, api, fields, models, tools
+from odoo.exceptions import ValidationError
 from odoo.tools.date_utils import get_timedelta
 
 _VALUE_FIELDS = frozenset({"value", "value_float", "value_int", "value_char"})
@@ -16,7 +17,7 @@ class Observation(models.Model):
     parent_id = fields.Many2one(
         "ni.observation", "Component of", index=True, ondelete="set null"
     )
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
     child_ids = fields.One2many("ni.observation", "parent_id", "Components")
     child_count = fields.Integer("Number of Components", compute="_compute_child_count")
 
@@ -31,8 +32,8 @@ class Observation(models.Model):
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
-        if not self._check_recursion():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+        if self._has_cycle():
+            raise ValidationError(_("Error! You cannot create recursive data."))
 
     history_ids = fields.One2many(
         "ni.observation", string="ประวัติ", compute="_compute_history"

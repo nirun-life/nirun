@@ -6,12 +6,12 @@
     <record id="ni_observation_action" model="ir.actions.act_window">
         <field name="name">Observation</field>
         <field name="res_model">ni.observation</field>
-        <field name="view_mode">pivot,graph,tree</field>
+        <field name="view_mode">pivot,graph,list</field>
     </record>
     <record id="ni_observation_action_graph" model="ir.actions.act_window">
         <field name="name">Observation</field>
         <field name="res_model">ni.observation</field>
-        <field name="view_mode">graph,pivot,tree</field>
+        <field name="view_mode">graph,pivot,list</field>
     </record>
     <record id="ni_observation_view_search" model="ir.ui.view">
         <field name="name">ni.observation.view.search</field>
@@ -37,7 +37,7 @@
                     name="occurrence"
                     string="Occurrence"
                     date="occurrence"
-                    default_period="this_year,last_year"
+                    default_period="year,year-1"
                 />
                 <separator />
                 <group string="Group By">
@@ -140,10 +140,10 @@
         </field>
     </record>
     <record id="ni_observation_view_tree" model="ir.ui.view">
-        <field name="name">ni.observation.view.tree</field>
+        <field name="name">ni.observation.view.list</field>
         <field name="model">ni.observation</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 editable="bottom"
                 default_order="sequence"
                 decoration-info="not value"
@@ -188,7 +188,7 @@
                     title="View graph"
                     invisible="value_type not in ['int', 'float']"
                 />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_observation_view_form" model="ir.ui.view">
