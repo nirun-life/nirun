@@ -52,10 +52,10 @@ class Patient(models.Model):
 
     def _compute_observation_sheet_count(self):
         observations = self.env["ni.observation.sheet"].sudo()
-        read = observations.read_group(
-            [("patient_id", "in", self.ids)], ["patient_id"], ["patient_id"]
+        read = observations._read_group(
+            [("patient_id", "in", self.ids)], ["patient_id"], ["__count"]
         )
-        data = {res["patient_id"][0]: res["patient_id_count"] for res in read}
+        data = {rec.id: count for rec, count in read}
         for patient in self:
             patient.observation_sheet_count = data.get(patient.id, 0)
 
@@ -72,6 +72,10 @@ class Patient(models.Model):
         action["context"] = ctx
         return action
 
+    @api.depends("blood_group")
+    def _compute_display_name(self):
+        return super()._compute_display_name()
+
     def _name_get(self):
         name = super()._name_get()
         if (
@@ -79,7 +83,11 @@ class Patient(models.Model):
             and (self.age or self.gender)
             and self.blood_group
         ):
-            name = _("{} • Blood group {}").format(name, self.blood_group)
+            name = _(
+                "%(name)s • Blood group %(blood_group)s",
+                name=name,
+                blood_group=self.blood_group,
+            )
         return name
 
     def action_view_observation_sheet(self):
