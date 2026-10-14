@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2026 NSTDA
   -->
@@ -29,7 +29,7 @@
                 <field name="sheet_id" invisible="1" />
                 <field name="state" invisible="1" />
                 <field name="occurrence" invisible="1" />
-                <group states="1">
+                <group invisible="state != '1'">
                     <field
                         name="patient_id"
                         invisible="context.get('default_patient_id')"
@@ -44,12 +44,9 @@
                     class="mb-4"
                     widget="radio"
                     options="{'horizontal': True}"
-                    states="1"
-                    invisible="context.get('default_type')"
+                    invisible="state != '1' or context.get('default_type')"
                 />
-                <group
-                    attrs="{'invisible': ['|', ('state', '!=', '1'), ('type', '!=', 'new')]}"
-                >
+                <group invisible="(state != '1' or type != 'new')">
                     <field
                         name="category_ids"
                         widget="many2many_checkboxes"
@@ -57,23 +54,15 @@
                     />
                     <field name="init_occurrence" string="Occurrence" />
                 </group>
-                <group
-                    attrs="{'invisible': ['|', ('state', '!=', '1'), ('type', '!=', 'edit')]}"
-                >
+                <group invisible="(state != '1' or type != 'edit')">
                     <field
                         name="sheet_id"
                         context="{'show_occurrence': 1}"
                         options="{'no_create': True, 'no_open':True}"
-                        attrs="{'invisible': [('type', '!=', 'edit')]}"
+                        invisible="type != 'edit'"
                     />
-                    <label
-                        for="occurrence"
-                        attrs="{'invisible': [('sheet_id', '=', False)]}"
-                    />
-                    <div
-                        class="o_row"
-                        attrs="{'invisible': [('sheet_id', '=', False)]}"
-                    >
+                    <label for="occurrence" invisible="not sheet_id" />
+                    <div class="o_row" invisible="not sheet_id">
                         <field name="occurrence" widget="remaining_days" />
                         <label for="sheet_create_date" />
                         <field name="sheet_create_date" class="w-25" />
@@ -89,16 +78,17 @@
                     name="observation_ids"
                     context="{'default_sheet_id':sheet_id, 'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_occurrence': occurrence}"
                     widget="ob_section_and_note_one2many"
-                    states="2"
+                    invisible="state != '2'"
                 >
                     <tree editable="bottom">
-                        <field name="sheet_id" invisible="1" />
-                        <field name="patient_id" invisible="1" />
-                        <field name="encounter_id" invisible="1" />
-                        <field name="occurrence" invisible="1" />
-                        <field name="display_type" invisible="1" />
-                        <field name="display_class" invisible="1" />
-                        <field name="value_type" invisible="1" />
+                        <field name="company_id" column_invisible="1" />
+                        <field name="sheet_id" column_invisible="1" />
+                        <field name="patient_id" column_invisible="1" />
+                        <field name="encounter_id" column_invisible="1" />
+                        <field name="occurrence" column_invisible="1" />
+                        <field name="display_type" column_invisible="1" />
+                        <field name="display_class" column_invisible="1" />
+                        <field name="value_type" column_invisible="1" />
                         <field name="sequence" widget="handle" />
                         <field name="type_id" />
                         <field
@@ -121,7 +111,7 @@
                             name="unit_id"
                             optional="show"
                             decoration-muted="1"
-                            attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                            invisible="value_type not in ['int', 'float']"
                         />
                         <field
                             name="interpretation_id"
@@ -139,52 +129,55 @@
                         </control>
                     </tree>
                 </field>
-                <label for="note" states="2" />
-                <field name="note" placeholder="Additional Note..." states="2" />
-                <footer attrs="{'invisible': [('type', '!=', 'new')]}">
+                <label for="note" invisible="state != '2'" />
+                <field
+                    name="note"
+                    placeholder="Additional Note..."
+                    invisible="state != '2'"
+                />
+                <footer invisible="type != 'new'">
                     <button
                         class="oe_highlight"
                         name="prepare_sheet"
                         type="object"
                         string="Next"
-                        states="1"
+                        invisible="state != '1'"
                     />
                     <button
                         class="btn-secondary"
                         special="cancel"
                         string="Cancel"
-                        states="1"
+                        invisible="state != '1'"
                     />
                     <button
                         class="oe_highlight"
                         name="submit_sheet"
                         type="object"
                         string="Save"
-                        states="2"
+                        invisible="state != '2'"
                     />
                     <button
                         class="text-danger"
                         name="discard_sheet"
                         type="object"
                         string="Discard"
-                        states="2"
-                        attrs="{'invisible': [('state', '!=', '2')]}"
+                        invisible="state != '2'"
                     />
                 </footer>
-                <footer attrs="{'invisible': [('type', '!=', 'edit')]}">
+                <footer invisible="type != 'edit'">
                     <button
                         class="oe_highlight"
                         name="next_state"
                         type="object"
                         string="Edit"
-                        states="1"
+                        invisible="state != '1'"
                     />
                     <button
                         class="oe_highlight"
                         name="submit_sheet"
                         type="object"
                         string="Save"
-                        states="2"
+                        invisible="state != '2'"
                     />
                     <button class="btn-secondary" special="cancel" string="Cancel" />
                     <button
@@ -193,9 +186,8 @@
                         type="object"
                         icon="fa-trash"
                         string="Discard"
-                        states="2"
-                        attrs="{'invisible': [('state', '!=', '2')]}"
                         confirm="Delete Observation?"
+                        invisible="state != '2'"
                     />
                 </footer>
             </form>

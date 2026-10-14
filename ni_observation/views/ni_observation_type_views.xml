@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021 NSTDA
   -->
@@ -58,9 +58,9 @@
                 <sheet>
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
+                        invisible="active"
                     />
                     <label for="name" class="oe_edit_only" />
                     <field name="name" />
@@ -83,11 +83,11 @@
                         <label
                             for="min"
                             string="Value Range"
-                            attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}"
+                            invisible="value_type not in ['float', 'int']"
                         />
                         <div
                             class="o_row"
-                            attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}"
+                            invisible="value_type not in ['float', 'int']"
                         >
                             <field name="min" />
                             <span class="mx-1">-</span>
@@ -95,17 +95,17 @@
                         </div>
                         <field
                             name="compare"
-                            attrs="{'invisible': [('value_type', 'not in', ['float', 'int'])]}"
+                            invisible="value_type not in ['float', 'int']"
                         />
                         <field
                             name="graph_type"
                             widget="radio"
                             options="{'horizontal': True}"
-                            attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                            invisible="value_type not in ['int', 'float']"
                         />
                         <field
                             name="keep_falsy"
-                            attrs="{'invisible': [('value_type', 'not in', ['int', 'float'])]}"
+                            invisible="value_type not in ['int', 'float']"
                         />
                     </group>
                     <notebook>
@@ -115,7 +115,7 @@
                         <page
                             name="compute_code"
                             string="Compute Code"
-                            attrs="{'invisible': [('compute', '=', False)]}"
+                            invisible="not compute"
                         >
                             <p class="text-muted small mb-2">
                                 Python code evaluated when component observations change. Each
@@ -134,7 +134,7 @@
                         <page
                             name="concept"
                             string="Concept"
-                            attrs="{'invisible': [('value_type', 'not in', ['code_id', 'code_ids'])]}"
+                            invisible="value_type not in ['code_id', 'code_ids']"
                         >
                             <field name="value_code_ids">
                                 <tree editable="bottom">
@@ -171,7 +171,7 @@
                                         decoration-success="display_class == 'success'"
                                         decoration-warning="display_class == 'warning'"
                                     />
-                                    <field name="display_class" invisible="1" />
+                                    <field name="display_class" column_invisible="1" />
                                     <button
                                         name="copy"
                                         type="object"

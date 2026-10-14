@@ -69,7 +69,7 @@ class Encounter(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         res = super().create(vals_list)
-        for rec, vals in zip(res, vals_list):
+        for rec, vals in zip(res, vals_list, strict=True):
             rec._create_observation(vals)
         return res
 
@@ -82,12 +82,12 @@ class Encounter(models.Model):
     def _create_observation(self, vals):
         ts = fields.Datetime.now()
         vals_list = []
-        types = self.env["ni.observation.type"].with_context({"readonly_test": False})
+        types = self.env["ni.observation.type"].with_context(readonly_test=False)
         for f in VITALSIGN_FIELDS:
             if f in vals and vals[f]:
                 ob_type = types.search([("code", "=", f.replace("_", "-"))])
                 value = vals[f]
-                if type(value) is float:
+                if isinstance(value, float):
                     value = round(value, 2)
                 vals_list.append(self._observation_vals(ts, ob_type, value))
         if ("body_height" in vals or "body_weight" in vals) and self.bmi:
@@ -109,10 +109,10 @@ class Encounter(models.Model):
 
     def _compute_observation_sheet_count(self):
         observations = self.env["ni.observation.sheet"].sudo()
-        read = observations.read_group(
-            [("encounter_id", "in", self.ids)], ["encounter_id"], ["encounter_id"]
+        read = observations._read_group(
+            [("encounter_id", "in", self.ids)], ["encounter_id"], ["__count"]
         )
-        data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
+        data = {rec.id: count for rec, count in read}
         for encounter in self:
             encounter.observation_sheet_count = data.get(encounter.id, 0)
 
@@ -129,17 +129,11 @@ class Encounter(models.Model):
             lab_lines = observations.search(
                 [("encounter_id", "=", rec.id), ("category_id.code", "=", "laboratory")]
             )
-            rec.write(
-                {
-                    "observation_latest_count": len(rec.observation_latest_ids),
-                    "observation_latest_vital_sign_ids": [
-                        fields.Command.set(vs_lines.ids)
-                    ],
-                    "observation_latest_vital_sign_count": len(vs_lines),
-                    "observation_latest_lab_ids": [fields.Command.set(lab_lines.ids)],
-                    "observation_latest_lab_count": len(lab_lines),
-                }
-            )
+            rec.observation_latest_count = len(rec.observation_latest_ids)
+            rec.observation_latest_vital_sign_ids = vs_lines
+            rec.observation_latest_vital_sign_count = len(vs_lines)
+            rec.observation_latest_lab_ids = lab_lines
+            rec.observation_latest_lab_count = len(lab_lines)
 
     def action_observation(self):
         action_rec = self.env.ref("ni_observation.ni_observation_action").sudo()
