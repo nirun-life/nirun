@@ -2,6 +2,7 @@
 
 from odoo import _, fields, models, tools
 from odoo.exceptions import ValidationError
+from odoo.tools import SQL
 
 
 class PatientSurveyLatest(models.Model):
@@ -28,18 +29,32 @@ class PatientSurveyLatest(models.Model):
     create_uid = fields.Many2one("res.users", "Author")
     partner_id = fields.Many2one("res.partner", "Author")
 
-    def init(self):
+    # survey_user_input columns read by these views. An explicit list keeps the view
+    # independent of columns that survey and other modules add to the table.
+    _survey_input_columns = (
+        "id, company_id, survey_id, patient_id, encounter_id, grade_id, "
+        "scoring_percentage, scoring_total, partner_id, "
+        "create_date, create_uid, write_date, write_uid"
+    )
+
+    def _create_latest_view(self, key):
         tools.drop_view_if_exists(self.env.cr, self._table)
         self.env.cr.execute(
-            """CREATE OR REPLACE VIEW %s AS (
-            SELECT DISTINCT ON (patient_id, survey_id) *
-            FROM survey_user_input
-            WHERE state = 'done' AND patient_id IS NOT NULL
-            ORDER BY patient_id, survey_id, create_date DESC
+            SQL(
+                """CREATE OR REPLACE VIEW %(view)s AS (
+                SELECT DISTINCT ON (%(key)s, survey_id) %(columns)s
+                FROM survey_user_input
+                WHERE state = 'done' AND %(key)s IS NOT NULL
+                ORDER BY %(key)s, survey_id, create_date DESC, id DESC
+                )""",
+                view=SQL.identifier(self._table),
+                key=SQL.identifier(key),
+                columns=SQL(self._survey_input_columns),
             )
-        """
-            % (self._table)
         )
+
+    def init(self):
+        self._create_latest_view("patient_id")
 
     def action_survey_subject_wizard(self):
         self.ensure_one()

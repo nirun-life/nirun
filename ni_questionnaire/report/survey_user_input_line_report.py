@@ -1,5 +1,5 @@
 #  Copyright (c) 2025 NSTDA
-from odoo import fields, models, tools
+from odoo import fields, models
 
 
 class SurveyUserInputLineMonthlyReport(models.Model):
@@ -22,10 +22,10 @@ class SurveyUserInputLineMonthlyReport(models.Model):
         "survey.question", string="Question", readonly=True, index=True
     )
     page_id = fields.Many2one("survey.question", string="Page", readonly=True)
-    question_sequence = fields.Integer(string="Question Sequence", readonly=True)
+    question_sequence = fields.Integer(readonly=True)
 
     # --- Answer ---
-    skipped = fields.Boolean("Skipped", readonly=True)
+    skipped = fields.Boolean(readonly=True)
     answer_type = fields.Selection(
         [
             ("text_box", "Free Text"),
@@ -35,7 +35,6 @@ class SurveyUserInputLineMonthlyReport(models.Model):
             ("datetime", "Datetime"),
             ("suggestion", "Suggestion"),
         ],
-        string="Answer Type",
         readonly=True,
     )
     value_char_box = fields.Char("Text answer", readonly=True)
@@ -97,8 +96,3 @@ class SurveyUserInputLineMonthlyReport(models.Model):
                 A.user_input_id = latest.id
                 AND DATE_TRUNC('month', A.create_date) = latest.month
         """
-
-    def init(self):
-        tools.drop_view_if_exists(self.env.cr, self._table)
-        query = f"CREATE OR REPLACE VIEW {self._table} AS ({self._table_query})"
-        self.env.cr.execute(query)

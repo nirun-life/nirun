@@ -262,6 +262,14 @@ class TestObservationMapping(common.TransactionCase):
 
         self.assertFalse(self._observations(response))
 
+    def test_group_needs_a_numeric_observation_type(self):
+        """The type may be made non-numeric after the group was wired to it."""
+        self._group("sum")
+        response = self._scored_response()
+        self.item_type.value_type = "char"
+        with self.assertRaises(ValidationError):
+            response._mark_done()
+
     # --------------------------------------------------------- grade selection
 
     def test_grade_for_narrows_to_the_patient_demographics(self):

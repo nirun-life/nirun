@@ -14,7 +14,7 @@ class Patient(models.Model):
     )
     response_count = fields.Integer(
         compute="_compute_response_count",
-        sudo_compute=True,
+        compute_sudo=True,
     )
     response_latest_ids = fields.One2many("ni.patient.survey_latest", "patient_id")
 
