@@ -182,7 +182,7 @@ class SurveyUserInput(models.Model):
                 )
 
     def action_survey_subject_wizard(self):
-        res = super(SurveyUserInput, self).action_survey_subject_wizard()
+        res = super().action_survey_subject_wizard()
         if self.survey_id.subject_type in ["ni.patient", "ni.encounter"]:
             res["context"].update(
                 {
