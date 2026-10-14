@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="survey_subject_view_form_wizard_inherit" model="ir.ui.view">
         <field name="name">survey.subject.view.form.wizard.inherit</field>
@@ -8,14 +8,13 @@
             <field name="subject_res_users" position="after">
                 <field
                     name="subject_ni_patient"
-                    invisible="context.get('default_subject_ni_patient')"
-                    attrs="{'invisible': [('type', 'not in', ['ni.patient', 'ni.encounter'])], 'required': [('type', '=', 'ni.patient')]}"
+                    invisible="type not in ['ni.patient', 'ni.encounter']"
                     options="{'no_create': True, 'no_create_edit': True}"
+                    required="type == 'ni.patient'"
                 />
                 <field
                     name="subject_ni_encounter"
-                    invisible="context.get('default_subject_ni_encounter')"
-                    attrs="{'invisible': [('type', 'not in', ['ni.patient', 'ni.encounter'])] }"
+                    invisible="type not in ['ni.patient', 'ni.encounter']"
                     options="{'no_create': True, 'no_create_edit': True}"
                 />
             </field>

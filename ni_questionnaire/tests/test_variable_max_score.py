@@ -12,6 +12,7 @@ bands hang off a separate three-level "Education level" question. Do not fold
 the two back into one question.
 """
 
+from odoo import Command
 from odoo.exceptions import ValidationError
 from odoo.tests import common
 
@@ -79,9 +80,7 @@ class TestVariableMaxScore(common.TransactionCase):
             "Education level",
             1,
             ["Primary", "Above primary"],
-            is_conditional=True,
-            triggering_question_id=cls.gate.id,
-            triggering_answer_id=cls.schooled.id,
+            triggering_answer_ids=[Command.set(cls.schooled.ids)],
         )
         cls.answer_primary, cls.answer_above = cls.level.suggested_answer_ids
         # The answer(s) a respondent of each education level gives to the two
@@ -97,9 +96,7 @@ class TestVariableMaxScore(common.TransactionCase):
             kwargs = {}
             if schooled_only:
                 kwargs = {
-                    "is_conditional": True,
-                    "triggering_question_id": cls.gate.id,
-                    "triggering_answer_id": cls.schooled.id,
+                    "triggering_answer_ids": [Command.set(cls.schooled.ids)],
                 }
             cls.items[title] = cls._question(
                 title, seq, [str(s) for s in range(max_score + 1)], **kwargs

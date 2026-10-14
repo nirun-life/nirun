@@ -9,12 +9,8 @@ class Survey(models.Model):
     _inherit = ["survey.survey"]
 
     subject_type = fields.Selection(
-        selection=[
-            ("res.partner", "Partner"),
-            ("res.users", "Users"),
-            ("ni.patient", "Patient"),
-            ("ni.encounter", "Encounter"),
-        ],
+        selection_add=[("ni.patient", "Patient"), ("ni.encounter", "Encounter")],
+        ondelete={"ni.patient": "set default", "ni.encounter": "set default"},
     )
 
     observation_type_id = fields.Many2one(

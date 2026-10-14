@@ -1,6 +1,6 @@
 # Questionnaire (`ni_questionnaire`)
 
-Odoo 16.0 module that integrates Odoo Survey with Nirun patients, encounters, grading,
+Odoo 17.0 module that integrates Odoo Survey with Nirun patients, encounters, grading,
 and observation generation.
 
 ## Purpose
@@ -26,10 +26,12 @@ views.
 
 ## Workflow and Integration
 
-- `models/survey_survey.py` adds subject targeting, observation output settings, and
-  sync logic for grading ranges. `action_sync_observation_range` follows
-  `grading_basis`: under `score` it copies the reference-range bounds unchanged, under
-  `percentage` it scales them by the observation type's `max`.
+- `models/survey_survey.py` adds the subject types "Patient" and "Encounter" to
+  `survey_subject`'s `subject_type` with `selection_add` (removing the module resets
+  them to the default), subject targeting, observation output settings, and sync logic
+  for grading ranges. `action_sync_observation_range` follows `grading_basis`: under
+  `score` it copies the reference-range bounds unchanged, under `percentage` it scales
+  them by the observation type's `max`.
 - `models/survey_user_input.py` links responses to patients and encounters, adds
   database indexes for completed-response lookups, and creates `ni.observation` or
   `ni.observation.sheet` records when a response is completed.
@@ -45,7 +47,10 @@ views.
   branch for `datetime` at all, both of which blocked survey completion.
 - `models/ni_encounter.py`, `models/ni_patient.py`, and
   `models/ni_observation_abstract.py` add response counters and launch actions from the
-  clinical records.
+  clinical records. The encounter's "start" and "print" buttons create (once) and reuse
+  the encounter's own response, linked to the patient and the encounter, and pass it to
+  core `action_start_survey(answer=...)`/`action_print_survey(answer=...)`, which put
+  its access token in the URL.
 - `wizard/survey_subject.py` adapts the survey subject wizard for `ni.patient` and
   `ni.encounter`.
 
@@ -83,7 +88,9 @@ bearing on the grade.
 
 - `report/ni_patient_survey_latest_*`, `report/ni_encounter_survey_latest_*`, and
   `report/survey_user_input_line_report_*` provide latest-response and monthly analysis
-  models and views.
+  models and views. The two "latest" SQL views select an explicit column list from
+  `survey_user_input` (`_survey_input_columns`), so columns that later versions or other
+  modules add do not change them; the monthly report is a `_table_query`.
 - `report/ni_patient_observation_views.xml` and
   `report/ni_encounter_observation_views.xml` surface questionnaire-backed observations
   inside the patient and encounter UIs.
@@ -109,6 +116,8 @@ bearing on the grade.
 - `ni_questionnaire/tests/test_variable_max_score.py` covers the variable-maximum path
   end to end, including a percentage-basis case that is the regression guard for
   creating observations before `_mark_done()` trims.
+- `ni_questionnaire/tests/test_encounter_survey.py` covers starting and printing the
+  encounter's questionnaire on the encounter's own response.
 - `ni_questionnaire/tests/test_completion_page.py` covers the completion page with every
   extension applied, including the patient traits added to the grading-reference hint.
 - Re-check a full questionnaire flow from patient or encounter launch through completed
