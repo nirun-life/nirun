@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <!-- This file only intent use as scaffold for coding model -->
+    <record id="religion_action" model="ir.actions.act_window">
+        <field name="name">Religions</field>
+        <field name="res_model">res.religion</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="religion_view_search" model="ir.ui.view">
+        <field name="name">religion.view.search</field>
+        <field name="model">res.religion</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="parent_id" />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
+            </search>
+        </field>
+    </record>
+    <record id="coding_view_tree" model="ir.ui.view">
+        <field name="name">coding.view.list</field>
+        <field name="model">res.religion</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="abbr" optional="hide" />
+                <field name="parent_id" optional="hide" />
+                <field name="active" optional="hide" />
+            </list>
+        </field>
+    </record>
+    <record id="coding_view_form" model="ir.ui.view">
+        <field name="name">coding.view.form</field>
+        <field name="model">res.religion</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        bg_color="bg-danger"
+                        title="Archived"
+                        invisible="active"
+                    />
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="abbr" />
+                        </group>
+                        <group>
+                            <field name="parent_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="child" string="Denominations">
+                            <field name="child_ids" />
+                        </page>
+                        <page string="Extra Info">
+                            <group>
+                                <group name="ui" string="User Interface">
+                                    <field name="color" widget="color_picker" />
+                                    <field name="sequence" />
+                                </group>
+                                <group name="metadata" string="Metadata">
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
