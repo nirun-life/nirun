@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2023 NSTDA
+  -->
+<!--
+  From 19.0 a unit is defined relative to its reference unit: 1 unit = relative_factor x
+  relative_uom_id. Each relative_factor equals 1/factor of the 16.0-18.0 data, so
+  conversions stay the same. migrations/19.0.1.0.0 converts existing databases.
+-->
+<odoo noupdate="1">
+    <record id="uom_%" model="uom.uom">
+        <field name="name">%</field>
+        <field name="alias">Percentage</field>
+    </record>
+    <record id="uom_kg_m3" model="uom.uom">
+        <field name="name">kg/m³</field>
+    </record>
+    <record id="uom_mg_dl" model="uom.uom">
+        <field name="name">mg/dl</field>
+        <field name="relative_uom_id" ref="uom_kg_m3" />
+        <field name="relative_factor" eval="0.01" />
+    </record>
+    <record id="uom_kg_m2" model="uom.uom">
+        <field name="name">kg/m²</field>
+    </record>
+    <record id="uom_degree_cel" model="uom.uom">
+        <field name="name">°C</field>
+        <field name="alias">Celsius</field>
+    </record>
+    <record id="uom_mmHg" model="uom.uom">
+        <field name="name">mmHg</field>
+    </record>
+    <record id="uom_per_min" model="uom.uom">
+        <field name="name">/min</field>
+    </record>
+    <record id="uom_per_sec" model="uom.uom">
+        <field name="name">/sec</field>
+        <field name="relative_uom_id" ref="uom_per_min" />
+        <field name="relative_factor" eval="1.0 / 60" />
+    </record>
+    <record id="uom_per_hour" model="uom.uom">
+        <field name="name">/hour</field>
+        <field name="relative_uom_id" ref="uom_per_min" />
+        <field name="relative_factor" eval="60" />
+    </record>
+    <record id="uom_g_dl" model="uom.uom">
+        <field name="name">g/dL</field>
+        <field name="alias">Gram per deciliter</field>
+    </record>
+    <record id="uom_k_ul" model="uom.uom">
+        <field name="name">×10³/µL</field>
+        <field name="alias">Thousand per microliter</field>
+    </record>
+    <record id="uom_m_ul" model="uom.uom">
+        <field name="name">×10⁶/µL</field>
+        <field name="alias">Million per microliter</field>
+        <field name="relative_uom_id" ref="uom_k_ul" />
+        <field name="relative_factor" eval="1000" />
+    </record>
+    <record id="uom_u_l" model="uom.uom">
+        <field name="name">U/L</field>
+        <field name="alias">Units per liter</field>
+    </record>
+    <record id="uom_meq_l" model="uom.uom">
+        <field name="name">mEq/L</field>
+        <field name="alias">Milliequivalent per liter</field>
+    </record>
+    <record id="uom_ml_min_bsa" model="uom.uom">
+        <field name="name">mL/min/1.73m²</field>
+        <field name="alias">Milliliter per minute per BSA</field>
+    </record>
+</odoo>
