@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_discharge_wizard_action" model="ir.actions.act_window">
+        <field name="name">Discharge</field>
+        <field name="res_model">ni.encounter.discharge.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="ni_encounter_discharge_wizard_view_form" model="ir.ui.view">
+        <field name="name">ni.encounter.discharge.wizard.view.form</field>
+        <field name="model">ni.encounter.discharge.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field
+                            name="patient_id"
+                            readonly="1"
+                            options="{'no_open': True}"
+                        />
+                    </group>
+                    <group>
+                        <field
+                            name="encounter_id"
+                            readonly="1"
+                            options="{'no_open': True}"
+                        />
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field
+                            name="discharge_status_id"
+                            options="{'no_open': True}"
+                            widget="radio"
+                        />
+                    </group>
+                    <group>
+                        <field
+                            name="discharge_disposition_id"
+                            options="{'no_open': True}"
+                            widget="radio"
+                            domain="discharge_disposition_domain"
+                        />
+                        <field name="discharge_disposition_domain" invisible="1" />
+                        <field name="discharge_disposition_referral" invisible="1" />
+                    </group>
+                </group>
+                <group>
+                    <field
+                        name="discharge_partner_id"
+                        required="discharge_disposition_referral"
+                    />
+                    <field name="discharge_date" />
+                    <field name="deceased" invisible="1" />
+                    <field
+                        name="decease_date"
+                        invisible="not deceased"
+                        required="deceased"
+                    />
+                </group>
+                <field name="note" placeholder="Note..." />
+                <footer>
+                    <button
+                        name="discharge"
+                        string="Discharge"
+                        class="oe_highlight"
+                        type="object"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

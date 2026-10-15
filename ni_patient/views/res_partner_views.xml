@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="res_partner_view_search_inherit" model="ir.ui.view">
+        <field name="name">res.partner.view.search.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter" />
+        <field name="arch" type="xml">
+            <filter name="type_company" position="after">
+                <filter
+                    name="type_patient"
+                    string="Patient"
+                    domain="[('patient', '=', True)]"
+                />
+            </filter>
+        </field>
+    </record>
+    <record id="res_partner_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <field name="parent_id" position="attributes">
+                <attribute
+                    name="invisible"
+                >context.get('default_partner_parent_id')</attribute>
+            </field>
+        </field>
+    </record>
+    <!-- Compact address form for patient home/other addresses (type "other").
+         Replaces base.res_partner_view_form_private, which 17.0 deprecated and 19.0
+         removed together with the "private" partner type. -->
+    <record id="res_partner_view_form_address" model="ir.ui.view">
+        <field name="name">res.partner.view.form.patient.address</field>
+        <field name="model">res.partner</field>
+        <field name="priority">300</field>
+        <field name="arch" type="xml">
+            <form string="Address">
+                <sheet>
+                    <field name="type" invisible="1" />
+                    <field name="parent_id" invisible="1" />
+                    <label for="name" />
+                    <field name="name" required="0" />
+                    <group>
+                        <group>
+                            <label for="street" string="Address" />
+                            <div>
+                                <div class="o_address_format" name="div_address">
+                                    <field
+                                        name="street"
+                                        placeholder="Street..."
+                                        class="o_address_street"
+                                    />
+                                    <field
+                                        name="street2"
+                                        placeholder="Street 2..."
+                                        class="o_address_street"
+                                    />
+                                    <field
+                                        name="city"
+                                        placeholder="City"
+                                        class="o_address_city"
+                                    />
+                                    <field
+                                        name="state_id"
+                                        class="o_address_state"
+                                        placeholder="State"
+                                        options="{'no_open': True, 'no_quick_create': True}"
+                                        context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"
+                                    />
+                                    <field
+                                        name="zip"
+                                        placeholder="ZIP"
+                                        class="o_address_zip"
+                                    />
+                                    <field
+                                        name="country_id"
+                                        placeholder="Country"
+                                        class="o_address_country"
+                                        options="{'no_open': True, 'no_create': True}"
+                                    />
+                                </div>
+                            </div>
+                        </group>
+                        <group>
+                            <field
+                                name="phone"
+                                widget="phone"
+                                options="{'enable_sms': false}"
+                            />
+                            <field
+                                name="mobile"
+                                widget="phone"
+                                options="{'enable_sms': false}"
+                            />
+                            <field name="email" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
