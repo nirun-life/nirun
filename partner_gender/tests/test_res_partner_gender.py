@@ -9,8 +9,8 @@ class TestPartnerGender(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.mister = cls.env.ref("partner_title.res_partner_title_mister")
-        cls.madam = cls.env.ref("partner_title.res_partner_title_madam")
+        cls.mister = cls.env.ref("ni_partner_title.res_partner_title_mister")
+        cls.madam = cls.env.ref("ni_partner_title.res_partner_title_madam")
 
     def test_title_data(self):
         self.assertEqual(self.mister.gender, "male")

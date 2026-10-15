@@ -10,7 +10,7 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["mail", "partner_title"],
+    "depends": ["mail", "ni_partner_title"],
     "data": [
         "data/res_partner_tiltle_data.xml",
         "views/res_partner_views.xml",
