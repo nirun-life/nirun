@@ -1,0 +1,43 @@
+#  Copyright (c) 2021 NSTDA
+
+{
+    "name": "Questionnaire",
+    "summary": "Patient questionnaires and survey administration",
+    "version": "19.0.1.0.0",
+    "development_status": "Alpha",
+    "category": "Healthcare",
+    "author": "NSTDA, Piruin P.",
+    "website": "https://nirun.life/",
+    "license": "LGPL-3",
+    "maintainers": ["piruin"],
+    "depends": [
+        "ni_patient",
+        "survey",
+        "survey_subject",
+        "survey_grading",
+        "ni_observation",
+    ],
+    "data": [
+        "security/res_groups.xml",
+        "security/ir_rules.xml",
+        "security/ir.model.access.csv",
+        "wizard/survey_subject_views.xml",
+        "views/survey_survey_views.xml",
+        "views/survey_survey_menu.xml",
+        "views/survey_user_input_views.xml",
+        "views/ni_patient_views.xml",
+        "views/ni_encounter_views.xml",
+        "views/ni_observation_type_views.xml",
+        "report/ni_patient_survey_latest_views.xml",
+        "report/ni_encounter_survey_latest_views.xml",
+        "report/ni_patient_observation_views.xml",
+        "report/ni_encounter_observation_views.xml",
+        "report/survey_user_input_line_report_views.xml",
+    ],
+    "application": True,
+    "auto_install": False,
+    "installable": True,
+    "assets": {
+        "web.assets_backend": ["ni_questionnaire/static/src/scss/survey_grade.scss"],
+    },
+}

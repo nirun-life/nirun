@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <template
+        id="survey_fill_form_done_inherit"
+        name="Survey: finished"
+        inherit_id="survey.survey_fill_form_done"
+    >
+        <!-- Since 18.0 core prints "You scored" in the heading (h1[t]; 19.0 adds a title h1). Keep it for partner
+             subjects; other subjects get "Thank you!" and a line naming the subject. -->
+        <xpath
+            expr="//div[hasclass('o_survey_finished')]/h1[t]/t[1]"
+            position="attributes"
+        >
+            <attribute name="t-if" separator=" and " add="is_partner_subject" />
+        </xpath>
+        <xpath expr="//div[hasclass('o_survey_finished')]/h1[t]" position="after">
+            <div t-if="survey.scoring_type != 'no_scoring' and not is_partner_subject">
+                <t t-esc="answer.subject_name" />
+                scored
+                <t t-esc="answer.scoring_percentage" />
+                %
+            </div>
+        </xpath>
+        <xpath
+            expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]"
+            position="inside"
+        >
+            <t t-if="survey.subject_type != 'res.partner'">
+                <a
+                    href="#"
+                    class="btn btn-primary btn-lg mt-2"
+                    role="button"
+                    onclick="acknowledgeResults()"
+                    id="acknowledge-button"
+                >
+                    Acknowledge Results
+                </a>
+                <div id="return-link" style="display: none;">
+                    <a href="#" onclick="returnToPreviousURL()">
+                        Click here to return to previous page, if this page not automatic close
+                    </a>
+                </div>
+                <script type="text/javascript">
+var previousURL = document.referrer;
+
+function acknowledgeResults() {
+    document.getElementById("acknowledge-button").style.display = "none";
+    window.close();
+    showReturnLink();
+}
+
+function showReturnLink() {
+    if (previousURL) {
+        document.getElementById("return-link").style.display = "block";
+        document.getElementById("return-link").querySelector("a").href = previousURL;
+    }
+}
+
+function returnToPreviousURL() {
+    if (previousURL) {
+        window.location.href = previousURL;
+    }
+}
+                </script>
+            </t>
+        </xpath>
+    </template>
+    <template
+        id="survey_fill_form_inherit"
+        name="Survey: saving indicator"
+        inherit_id="survey.survey_fill_form"
+    >
+        <xpath expr="//div[hasclass('o_survey_form_content')]" position="after">
+            <div
+                class="o_survey_saving d-none position-fixed top-50 start-50 translate-middle text-center text-muted"
+                role="status"
+            >
+                <i class="fa fa-circle-o-notch fa-spin fa-2x" />
+                <div class="mt-2">Saving...</div>
+            </div>
+        </xpath>
+    </template>
+    <template
+        id="survey_button_retake_inherit"
+        name="Survey: Retake button"
+        inherit_id="survey.survey_button_retake"
+    >
+        <xpath expr="/t/div" position="attributes">
+            <attribute
+                name="t-if"
+                separator=" and "
+                add="survey.subject_type == 'res.partner'"
+            />
+        </xpath>
+    </template>
+</odoo>

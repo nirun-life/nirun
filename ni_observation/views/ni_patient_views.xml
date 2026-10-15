@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <record id="ni_patient_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.patient.view.form.inherit</field>
+        <field name="model">ni.patient</field>
+        <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
+        <field name="arch" type="xml">
+            <field name="gender" position="after">
+                <label for="blood_abo" string="Blood Group" />
+                <div class="o_row">
+                    <field
+                        name="blood_abo"
+                        class="abo_field"
+                        placeholder="ABO"
+                        options="{'no_open': True}"
+                    />
+                    <field
+                        name="blood_rh"
+                        class="abo_field"
+                        placeholder="RH"
+                        context="{'only_abbr':True}"
+                        options="{'no_open': True}"
+                    />
+                </div>
+            </field>
+            <xpath expr="//page[@name='history']" position="after">
+                <page name="observation" string="Observation" icon="fa-stethoscope">
+                    <div class="row">
+                        <div class="col-12 col-lg-9">
+                            <field
+                                name="observation_category_id"
+                                class="mt-2"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                            />
+                        </div>
+                        <div class="col-12 col-lg-3 text-end">
+                            <field name="observation_problem_only" />
+                            <label
+                                for="observation_problem_only"
+                                string="Problem only"
+                            />
+                        </div>
+                    </div>
+                    <field name="filtered_patient_observation_ids" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

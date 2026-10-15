@@ -1,0 +1,37 @@
+#  Copyright (c) 2021 NSTDA
+
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+
+
+class ObservationInterpretation(models.Model):
+    _name = "ni.observation.interpretation"
+    _description = "Interpretation"
+    _inherit = ["ni.coding"]
+    _parent_store = True
+
+    parent_id = fields.Many2one(
+        "ni.observation.interpretation", index=True, ondelete="cascade"
+    )
+    parent_path = fields.Char(index=True)
+    display_class = fields.Selection(
+        [
+            ("text", "Text"),
+            ("muted", "Muted"),
+            ("info", "Info"),
+            ("primary", "Primary"),
+            ("success", "Success"),
+            ("warning", "Warning"),
+            ("danger", "Danger"),
+        ],
+        default="text",
+        required=True,
+    )
+    is_problem = fields.Boolean(default=False, help="Indicator patient problem")
+
+    @api.constrains("parent_id")
+    def _check_hierarchy(self):
+        if self._has_cycle():
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )

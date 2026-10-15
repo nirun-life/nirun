@@ -1,0 +1,104 @@
+#  Copyright (c) 2023 NSTDA
+
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+
+
+class EncounterParticipant(models.Model):
+    _name = "ni.encounter.participant"
+    _description = "Encounter Participant"
+    _inherit = ["ni.period.mixin", "avatar.mixin"]
+    _order = "period_start desc, period_end desc, type_id"
+
+    def _get_default_type(self):
+        part = self.env.ref("ni_patient.PART")
+        if part and part.active:
+            return part
+        else:
+            return self.env["ni.participant.type"].search([], limit=1)
+
+    name = fields.Char(related="employee_id.name", store=True)
+    avatar_1920 = fields.Image(related="employee_id.avatar_1920")
+    avatar_1024 = fields.Image(related="employee_id.avatar_1024")
+    avatar_512 = fields.Image(related="employee_id.avatar_512")
+    avatar_256 = fields.Image(related="employee_id.avatar_256")
+    avatar_128 = fields.Image(related="employee_id.avatar_128")
+    encounter_id = fields.Many2one("ni.encounter", required=True, ondelete="cascade")
+    company_id = fields.Many2one(related="encounter_id.company_id")
+    employee_id = fields.Many2one("hr.employee", required=True, ondelete="restrict")
+    user_id = fields.Many2one(
+        "res.users",
+        required=False,
+        ondelete="restrict",
+        store=True,
+        compute="_compute_user_id",
+        inverse="_inverse_user_id",
+    )
+    type_id = fields.Many2one(
+        "ni.participant.type",
+        default=lambda self: self._get_default_type(),
+        required=True,
+        ondelete="restrict",
+    )
+    period_start = fields.Datetime(required=True)
+    note = fields.Text()
+
+    _period_start_end_check = models.Constraint(
+        "CHECK (period_end IS NULL OR period_end > period_start)",
+        "Participant end time must be after start time",
+    )
+
+    def action_stop(self, dt=None):
+        period_end = dt or fields.Datetime.now()
+        self.filtered_domain([("period_end", "=", False)]).write(
+            {"period_end": period_end.replace(microsecond=0)}
+        )
+
+    @api.depends("employee_id")
+    def _compute_user_id(self):
+        for rec in self:
+            if rec.employee_id:
+                rec.user_id = rec.employee_id.user_id
+
+    def _inverse_user_id(self):
+        for rec in self:
+            if rec.user_id:
+                rec.employee_id = rec.user_id.employee_id
+
+    @api.constrains("employee_id", "period_start", "period_end")
+    def check_interception(self):
+        for rec in self:
+            intercept = rec.search_intercept(
+                [
+                    ("encounter_id", "=", rec.encounter_id.id),
+                    ("employee_id", "=", rec.employee_id.id),
+                ]
+            )
+            if intercept:
+                r = intercept[0]
+                raise ValidationError(
+                    self.env._(
+                        "%(employee)s already involved for given time! %(start)s"
+                        "\n\n\t%(type)s (%(other_start)s → %(other_end)s)",
+                        employee=rec.employee_id.name,
+                        start=rec.period_start,
+                        type=r.type_id.name,
+                        other_start=r.period_start or "...",
+                        other_end=r.period_end or self.env._("Now"),
+                    )
+                )
+
+    @api.constrains("period_end")
+    def check_period_end(self):
+        now = fields.Datetime.now()
+        for rec in self.filtered_domain([("period_end", "!=", False)]):
+            limit_date = rec.encounter_id.period_end or now
+            if rec.period_end > limit_date:
+                raise ValidationError(
+                    self.env._(
+                        "Participant end time (%(end)s) must not be in the"
+                        " future or after the encounter have ended (%(limit)s) ",
+                        end=rec.period_end,
+                        limit=limit_date,
+                    )
+                )

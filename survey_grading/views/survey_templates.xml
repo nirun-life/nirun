@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <template
+        id="survey_fill_form_done_inherit"
+        name="Survey: finished"
+        inherit_id="survey.survey_fill_form_done"
+    >
+        <xpath expr="//div[hasclass('o_survey_finished')]/div[1]" position="after">
+            <t t-if="answer.grade_id">
+                <t t-set="scale" t-value="answer.grade_scale()" />
+                <h4>
+                    <span
+                        t-attf-class="badge text-bg-#{'primary' if answer.grade_id.color_class in [False, 'text', 'muted'] else answer.grade_id.color_class} text-wrap"
+                    >
+                        <t t-esc="answer.grade_id.name" />
+                    </span>
+                    <span t-if="scale" class="fs-5 text-muted ms-2" t-esc="scale" />
+                </h4>
+            </t>
+        </xpath>
+        <!-- Up to 16.0 this sat before the result graph, which core dropped from this
+             page in 17.0; the graph used to follow the o_survey_finished block. -->
+        <xpath expr="//div[hasclass('o_survey_finished')]" position="after">
+            <t t-set="grades" t-value="answer.grade_reference()" />
+            <t t-set="conditions" t-value="answer.grade_conditions()" />
+            <div t-if="len(grades) > 1" class="o_survey_grade_reference mb-4">
+                <h5>
+                    Grading reference
+                    <span
+                    t-if="conditions"
+                    class="fw-normal text-muted"
+                    t-esc="'(%s)' % ', '.join(conditions)"
+                />
+                </h5>
+                <t
+                    t-set="unit"
+                    t-value="'' if survey.grading_basis == 'score' else '%'"
+                />
+                <div class="table-responsive">
+                    <table
+                        class="table table-sm table-striped table-hover table-bordered w-auto"
+                    >
+                        <thead>
+                            <tr>
+                                <th class="px-2" />
+                                <th class="px-2">Grade</th>
+                                <th class="text-end px-2">Min</th>
+                                <th class="text-end px-2">Max</th>
+                            </tr>
+                        </thead>
+                        <tr
+                            t-foreach="grades"
+                            t-as="grade"
+                            t-att-class="'fw-bold' if grade == answer.grade_id else None"
+                        >
+                            <td>
+                                <i
+                                    t-if="grade == answer.grade_id"
+                                    class="fa fa-arrow-right text-primary mx-2"
+                                    role="img"
+                                    aria-label="Your result"
+                                    title="Your result"
+                                />
+                            </td>
+                            <td class="ps-2 pe-4">
+                                <span t-attf-class="text-wrap" t-esc="grade.name" />
+                            </td>
+                            <td
+                                t-attf-class="text-#{grade.color_class or 'primary'} text-end px-2"
+                                t-esc="'%g%s' % (grade.low, unit)"
+                            />
+                            <td
+                                t-attf-class="text-#{grade.color_class or 'primary'} text-end px-2"
+                                t-esc="'%g%s' % (grade.high, unit)"
+                            />
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>
