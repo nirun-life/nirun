@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_location_action" model="ir.actions.act_window">
+        <field name="name">Location History</field>
+        <field name="res_model">ni.encounter.location</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('encounter_id', '=', active_id)]</field>
+        <field name="context">{'default_encounter_id': active_id}</field>
+    </record>
+    <record id="ni_encounter_location_view_search" model="ir.ui.view">
+        <field name="name">ni.encounter.location.view.search</field>
+        <field name="model">ni.encounter.location</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="location_id" />
+                <group name="group_by" string="Group by">
+                    <filter
+                        name="group_by_type"
+                        string="Type"
+                        context="{'group_by': 'physical_type_id'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_encounter_location_view_tree" model="ir.ui.view">
+        <field name="name">ni.encounter.location.view.tree</field>
+        <field name="model">ni.encounter.location</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" default_order="period_end desc" create="0" edit="0">
+                <field name="company_id" column_invisible="1" />
+                <field
+                    name="encounter_id"
+                    invisible="context.get('default_encounter_id', False)"
+                    context="{'show_patient':True}"
+                />
+                <field name="location_id" />
+                <field name="physical_type_id" optional="show" />
+                <field name="period_start" />
+                <field name="period_end" optional="hide" />
+                <field name="duration" optional="show" />
+                <field name="note" optional="show" />
+                <field name="write_uid" widget="many2one_avatar_user" optional="hide" />
+                <field name="write_date" optional="hide" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_encounter_location_view_form" model="ir.ui.view">
+        <field name="name">ni.encounter.location.view.form</field>
+        <field name="model">ni.encounter.location</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="company_id" invisible="1" />
+                <group>
+                    <group>
+                        <field name="encounter_id" context="{'show_patient':True}" />
+                        <field name="location_id" />
+                        <field name="physical_type_id" />
+                    </group>
+                    <group>
+                        <label name="period" string="Period" for="period_start" />
+                        <div class="o_row">
+                            <field name="period_start" />
+                            <span>-</span>
+                            <field name="period_end" />
+                        </div>
+                        <field name="duration" />
+                    </group>
+                </group>
+                <field name="note" placeholder="Note..." />
+            </form>
+        </field>
+    </record>
+</odoo>

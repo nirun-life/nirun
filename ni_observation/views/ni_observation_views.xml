@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_observation_action" model="ir.actions.act_window">
+        <field name="name">Observation</field>
+        <field name="res_model">ni.observation</field>
+        <field name="view_mode">pivot,graph,tree</field>
+    </record>
+    <record id="ni_observation_action_graph" model="ir.actions.act_window">
+        <field name="name">Observation</field>
+        <field name="res_model">ni.observation</field>
+        <field name="view_mode">graph,pivot,tree</field>
+    </record>
+    <record id="ni_observation_view_search" model="ir.ui.view">
+        <field name="name">ni.observation.view.search</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="sheet_id" />
+                <field name="patient_id" />
+                <field name="type_id" />
+                <field name="interpretation_id" operator="child_of" />
+                <filter
+                    name="occurrence_today"
+                    string="Today"
+                    domain="[                     ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),                     ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))                     ]"
+                />
+                <filter
+                    name="occurrence_yesterday"
+                    string="Yesterday"
+                    domain="[                     ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),                     ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))                     ]"
+                />
+                <separator />
+                <filter
+                    name="occurrence"
+                    string="Occurrence"
+                    date="occurrence"
+                    default_period="this_year,last_year"
+                />
+                <separator />
+                <group string="Group By">
+                    <filter
+                        name="group_by_occurrence"
+                        string="Occurrence"
+                        context="{'group_by': 'occurrence:day'}"
+                    />
+                    <separator />
+                    <filter
+                        name="group_by_patient"
+                        string="Patient"
+                        context="{'group_by': 'patient_id'}"
+                    />
+                    <filter
+                        name="group_by_encounter"
+                        string="Encounter"
+                        context="{'group_by': 'encounter_id'}"
+                    />
+                    <separator />
+                    <filter
+                        name="group_by_sheet"
+                        string="Task"
+                        context="{'group_by': 'sheet_id'}"
+                    />
+                    <filter
+                        name="group_by_type"
+                        string="Type"
+                        context="{'group_by': 'type_id'}"
+                    />
+                    <filter
+                        name="group_by_category"
+                        string="Category"
+                        context="{'group_by': 'category_id'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_observation_view_graph_line" model="ir.ui.view">
+        <field name="name">ni.observation.view.graph.line</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <graph type="line" stacked="0">
+                <field name="occurrence" interval="day" type="col" />
+                <field name="type_id" type="row" />
+                <field
+                    name="value_float"
+                    type="measure"
+                    invisible="context.get('value_type') != 'float'"
+                />
+                <field
+                    name="value_int"
+                    type="measure"
+                    invisible="context.get('value_type') != 'int'"
+                />
+            </graph>
+        </field>
+    </record>
+    <record id="ni_observation_view_graph_bar" model="ir.ui.view">
+        <field name="name">ni.observation.view.graph.bar</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="0">
+                <field name="occurrence" interval="day" type="col" />
+                <field name="type_id" type="row" />
+                <field
+                    name="value_float"
+                    type="measure"
+                    invisible="context.get('value_type') != 'float'"
+                />
+                <field
+                    name="value_int"
+                    type="measure"
+                    invisible="context.get('value_type') != 'int'"
+                />
+            </graph>
+        </field>
+    </record>
+    <record id="ni_observation_view_pivot" model="ir.ui.view">
+        <field name="name">ni.observation.view.pivot</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <pivot default_order="type_id.sequence, occurrence">
+                <!-- oca-disable duplicate-xml-fields -->
+                <field name="occurrence" interval="day" type="col" />
+                <field name="occurrence" interval="hour" type="col" />
+                <field name="type_id" type="row" />
+                <field
+                    name="value_float"
+                    type="measure"
+                    invisible="context.get('value_type') != 'float'"
+                />
+                <field
+                    name="value_int"
+                    type="measure"
+                    invisible="context.get('value_type') != 'int'"
+                />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_observation_view_tree" model="ir.ui.view">
+        <field name="name">ni.observation.view.tree</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <tree
+                editable="bottom"
+                default_order="sequence"
+                decoration-info="not value"
+            >
+                <field name="company_id" column_invisible="1" />
+                <field name="patient_id" column_invisible="1" />
+                <field name="encounter_id" column_invisible="1" />
+                <field name="sequence" widget="handle" />
+                <field name="occurrence" optional="hide" />
+                <field name="category_id" optional="hide" />
+                <field name="type_id" />
+                <field name="value_type" column_invisible="1" />
+                <field name="value" decoration-bf="1" />
+                <field
+                    name="unit_id"
+                    decoration-muted="1"
+                    optional="show"
+                    invisible="value_type not in ['int', 'float']"
+                />
+                <field
+                    name="interpretation_id"
+                    widget="badge"
+                    decoration-danger="display_class == 'danger'"
+                    decoration-info="display_class == 'info'"
+                    decoration-muted="display_class == 'muted'"
+                    decoration-primary="display_class == 'primary'"
+                    decoration-success="display_class == 'success'"
+                    decoration-warning="display_class == 'warning'"
+                    optional="show"
+                />
+                <field name="display_class" column_invisible="1" />
+                <field name="create_date" optional="hide" />
+                <field
+                    name="create_uid"
+                    widget="many2one_avatar_user"
+                    optional="hide"
+                />
+                <button
+                    name="view_graph"
+                    icon="fa-bar-chart"
+                    type="object"
+                    title="View graph"
+                    invisible="value_type not in ['int', 'float']"
+                />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_observation_view_form" model="ir.ui.view">
+        <field name="name">ni.observation.view.form</field>
+        <field name="model">ni.observation</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="company_id" invisible="1" />
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="sheet_id" />
+                            <field
+                                name="patient_id"
+                                invisible="context.get('default_patient_id')"
+                            />
+                            <field name="type_id" />
+                            <field name="value_type" invisible="1" />
+                            <label for="value" />
+                            <div class="o_row">
+                                <field
+                                    name="value"
+                                    invisible="value_type in ['char', 'float', 'int', 'code_id', 'code_ids']"
+                                />
+                                <field
+                                    name="value_char"
+                                    invisible="value_type != 'char'"
+                                />
+                                <field
+                                    name="value_int"
+                                    invisible="value_type != 'int'"
+                                />
+                                <field
+                                    name="value_float"
+                                    invisible="value_type != 'float'"
+                                />
+                                <field
+                                    name="value_code_id"
+                                    invisible="value_type != 'code_id'"
+                                />
+                                <field
+                                    name="value_code_ids"
+                                    invisible="value_type != 'code_ids'"
+                                />
+                                <field
+                                    name="unit_id"
+                                    options="{'no_open': True}"
+                                    invisible="value_type not in ['int', 'float']"
+                                />
+                            </div>
+                            <field
+                                name="interpretation_id"
+                                options="{'no_open': True}"
+                            />
+                        </group>
+                        <group>
+                            <field name="occurrence" readonly="sheet_id" />
+                            <field name="user_id" />
+                            <field
+                                name="encounter_id"
+                                invisible="context.get('default_encounter_id')"
+                            />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                invisible="context.get('default_patient_id')"
+                            />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
