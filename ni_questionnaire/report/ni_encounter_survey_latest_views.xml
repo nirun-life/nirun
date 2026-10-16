@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2022-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_survey_latest_view_form" model="ir.ui.view">
+        <field name="name">ni.encounter.survey.latest.view.form</field>
+        <field name="model">ni.encounter.survey_latest</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="deceased" invisible="1" />
+                <sheet>
+                    <div
+                        name="button_box"
+                        class="oe_button_box"
+                        groups="ni_patient.group_user"
+                        invisible="not id"
+                    >
+                        <button
+                            name="action_print_answers"
+                            class="oe_stat_button"
+                            icon="fa-print"
+                            type="object"
+                            string="Print"
+                        />
+                        <button
+                            name="action_graph_view"
+                            class="oe_stat_button"
+                            icon="fa-bar-chart"
+                            type="object"
+                            string="See results"
+                        />
+                        <button
+                            name="action_survey_subject_wizard"
+                            class="oe_stat_button"
+                            icon="fa-commenting"
+                            type="object"
+                            string="Answer Survey"
+                            invisible="deceased"
+                        />
+                    </div>
+                    <group>
+                        <group>
+                            <field name="survey_id" />
+                            <field name="patient_id" />
+                            <field name="encounter_id" />
+                        </group>
+                        <group>
+                            <field name="scoring_percentage" widget="progressbar" />
+                            <field name="scoring_total" />
+                        </group>
+                        <group>
+                            <field name="create_uid" />
+                            <field name="create_date" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_encounter_survey_latest_view_tree" model="ir.ui.view">
+        <field name="name">ni.encounter.survey.latest.view.list</field>
+        <field name="model">ni.encounter.survey_latest</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="deceased" column_invisible="1" />
+                <field
+                    name="patient_id"
+                    invisible="context.get('default_patient_id', False)"
+                />
+                <field
+                    name="encounter_id"
+                    invisible="context.get('default_encounter_id', False)"
+                />
+                <field name="survey_id" />
+                <field name="grade_id" />
+                <field name="scoring_percentage" widget="progressbar" optional="show" />
+                <field name="scoring_total" optional="hide" />
+                <field name="create_uid" optional="show" />
+                <field name="create_date" optional="show" />
+                <button
+                    name="action_print_answers"
+                    string="Print"
+                    type="object"
+                    icon="fa-eye"
+                    title="See Result"
+                />
+                <button
+                    name="action_graph_view"
+                    string="See results"
+                    type="object"
+                    icon="fa-bar-chart"
+                />
+                <button
+                    name="action_survey_subject_wizard"
+                    string="Answer Survey"
+                    type="object"
+                    icon="fa-commenting"
+                    invisible="deceased"
+                />
+            </list>
+        </field>
+    </record>
+</odoo>

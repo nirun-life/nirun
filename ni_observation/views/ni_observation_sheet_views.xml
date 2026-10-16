@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <record id="ni_observation_sheet_action" model="ir.actions.act_window">
+        <field name="name">Observations</field>
+        <field name="res_model">ni.observation.sheet</field>
+        <field name="view_mode">list,kanban,form,graph</field>
+    </record>
+    <record id="ni_observation_sheet_action_form" model="ir.actions.act_window">
+        <field name="name">Observations</field>
+        <field name="res_model">ni.observation.sheet</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+    <record id="ni_observation_sheet_view_search" model="ir.ui.view">
+        <field name="name">ni.observation.sheet.view.search</field>
+        <field name="model">ni.observation.sheet</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <filter
+                    name="effective_today"
+                    string="Today"
+                    domain="[                     ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),                     ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))                     ]"
+                />
+                <filter
+                    name="effective_yesterday"
+                    string="Yesterday"
+                    domain="[                     ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),                     ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))                     ]"
+                />
+                <filter name="effective_date" string="Period" date="occurrence" />
+                <separator />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
+                <group string="Group By">
+                    <filter name="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter name="Encounter " context="{'group_by': 'encounter_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ni_observation_sheet_view_tree" model="ir.ui.view">
+        <field name="name">ni.observation.sheet.view.list</field>
+        <field name="model">ni.observation.sheet</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="patient_id" />
+                <field name="encounter_id" />
+                <field
+                    name="category_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    optional="show"
+                />
+                <field name="observation_ids" />
+                <field name="note" optional="hide" />
+                <field name="active" optional="hide" />
+                <field name="occurrence" />
+                <field name="create_date" optional="hide" />
+                <field
+                    name="create_uid"
+                    optional="hide"
+                    widget="many2one_avatar_user"
+                />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="show"
+                />
+            </list>
+        </field>
+    </record>
+    <record id="ni_observation_sheet_view_graph" model="ir.ui.view">
+        <field name="name">ni.observation.line.view.graph</field>
+        <field name="model">ni.observation.sheet</field>
+        <field name="arch" type="xml">
+            <graph stacked="False" type="bar">
+                <field name="patient_id" type="col" />
+                <field name="occurrence" interval="day" />
+            </graph>
+        </field>
+    </record>
+    <record id="ni_observation_sheet_view_form" model="ir.ui.view">
+        <field name="name">ni.observation.sheet.view.form</field>
+        <field name="model">ni.observation.sheet</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <header />
+                <sheet>
+                    <div
+                        name="button_box"
+                        class="oe_button_box"
+                        groups="base.group_user"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        bg_color="bg-danger"
+                        title="Archived"
+                        invisible="active"
+                    />
+                    <group>
+                        <group>
+                            <field
+                                name="patient_id"
+                                invisible="context.get('default_patient_id')"
+                            />
+                            <field
+                                name="encounter_id"
+                                invisible="context.get('default_encounter_id')"
+                            />
+                            <label for="category_ids" />
+                            <div>
+                                <field
+                                    name="category_ids"
+                                    options="{'color_field': 'color', 'no_open':True, 'no_create':True}"
+                                    widget="many2many_tags"
+                                    readonly="not patient_id"
+                                />
+                                <button
+                                    class="oe_edit_only btn-primary"
+                                    string="Apply"
+                                    name="action_line_by_category_ids"
+                                    type="object"
+                                    invisible="(not category_ids or not patient_id)"
+                                />
+                            </div>
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="1" />
+                            <field name="occurrence" />
+                            <field name="user_id" />
+                        </group>
+                    </group>
+                    <notebook invisible="not id">
+                        <page name="detail" string="Detail" icon="fa-list-ul">
+                            <field
+                                name="observation_ids"
+                                context="{'default_sheet_id':id, 'default_patient_id': patient_id, 'default_encounter_id': encounter_id, 'default_occurrence': occurrence}"
+                                widget="ob_section_and_note_one2many"
+                            >
+                                <list editable="bottom">
+                                    <field name="compute" column_invisible="1" />
+                                    <field name="display_type" column_invisible="1" />
+                                    <field name="display_class" column_invisible="1" />
+                                    <field name="value_type" column_invisible="1" />
+                                    <field name="sequence" widget="handle" />
+                                    <field name="type_id" />
+                                    <field
+                                        name="title"
+                                        widget="ob_section_and_note_text"
+                                        optional="show"
+                                        nolabel="1"
+                                    />
+                                    <field
+                                        name="value_char"
+                                        string="Value"
+                                        class="text-end"
+                                        readonly="compute"
+                                    />
+                                    <field
+                                        name="value_int"
+                                        nolabel="1"
+                                        readonly="compute"
+                                    />
+                                    <field
+                                        name="value_float"
+                                        nolabel="1"
+                                        readonly="compute"
+                                    />
+                                    <field
+                                        name="value_code_id"
+                                        class="text-end"
+                                        nolabel="1"
+                                        options="{'no_open': True}"
+                                        context="{'default_type_ids': [type_id]}"
+                                        readonly="compute"
+                                    />
+                                    <field
+                                        name="value_code_ids"
+                                        class="text-end"
+                                        nolabel="1"
+                                        widget="many2many_tags"
+                                        options="{'color_field': 'color'}"
+                                        context="{'default_type_ids': [type_id]}"
+                                    />
+                                    <field
+                                        name="unit_id"
+                                        optional="show"
+                                        decoration-muted="1"
+                                        invisible="value_type not in ['int', 'float']"
+                                    />
+                                    <field
+                                        name="interpretation_id"
+                                        widget="badge"
+                                        decoration-danger="display_class == 'danger'"
+                                        decoration-info="display_class == 'info'"
+                                        decoration-muted="display_class == 'muted'"
+                                        decoration-primary="display_class == 'primary'"
+                                        decoration-success="display_class == 'success'"
+                                        decoration-warning="display_class == 'warning'"
+                                        optional="show"
+                                    />
+                                    <field name="value" column_invisible="1" />
+                                    <control>
+                                        <create string="Add Observation" context="{}" />
+                                    </control>
+                                </list>
+                                <kanban>
+                                    <field name="sequence" />
+                                    <field name="company_id" />
+                                    <field name="sheet_id" />
+                                    <field name="patient_id" />
+                                    <field name="encounter_id" />
+                                    <field name="display_type" />
+                                    <field name="display_class" />
+                                    <field name="title" />
+                                    <field name="type_id" />
+                                    <field name="icon" />
+                                    <field name="icon_color" />
+                                    <field name="value" />
+                                    <field name="value_type" />
+                                    <field name="value_char" />
+                                    <field name="unit_id" />
+                                    <field name="interpretation_id" />
+                                    <templates>
+                                        <t t-name="card">
+                                            <strong
+                                                t-if="record.display_type.raw_value"
+                                                t-esc="record.title.value"
+                                            />
+                                            <t t-else="">
+                                                <t
+                                                    t-set="numeric"
+                                                    t-value="['int', 'float'].includes(record.value_type.raw_value)"
+                                                />
+                                                <!-- fallback icon by value type when the type has none -->
+                                                <t
+                                                    t-set="default_icon"
+                                                    t-value="{char: 'fa-pencil', code_id: 'fa-dot-circle-o', code_ids: 'fa-list-ul'}[record.value_type.raw_value] or 'fa-stethoscope'"
+                                                />
+                                                <div
+                                                    class="d-flex justify-content-between gap-2"
+                                                >
+                                                    <!-- type over interpretation -->
+                                                    <div>
+                                                        <div
+                                                            style="display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden"
+                                                        >
+                                                            <i
+                                                                t-att-class="'fa fa-fw me-1 ' + (record.icon.raw_value or default_icon)"
+                                                                t-att-style="'color:' + (record.icon_color.raw_value or '#6c757d')"
+                                                            />
+                                                            <t
+                                                                t-esc="record.type_id.value"
+                                                            />
+                                                        </div>
+                                                        <!-- ps-4: line up under the type name, past the icon -->
+                                                        <div class="ps-4">
+                                                            <field
+                                                                name="interpretation_id"
+                                                                widget="badge"
+                                                                decoration-danger="display_class == 'danger'"
+                                                                decoration-info="display_class == 'info'"
+                                                                decoration-muted="display_class == 'muted'"
+                                                                decoration-primary="display_class == 'primary'"
+                                                                decoration-success="display_class == 'success'"
+                                                                decoration-warning="display_class == 'warning'"
+                                                                invisible="not interpretation_id"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <!-- value over unit, stacked tight so they read as one block -->
+                                                    <span
+                                                        t-if="numeric"
+                                                        class="d-flex flex-column align-items-end text-nowrap lh-sm"
+                                                    >
+                                                        <strong
+                                                            t-att-class="'fs-5 text-' + (['text', false].includes(record.display_class.raw_value) ? 'body' : record.display_class.raw_value)"
+                                                            t-esc="record.value.value"
+                                                        />
+                                                        <small
+                                                            class="text-muted"
+                                                            t-esc="record.unit_id.value"
+                                                        />
+                                                    </span>
+                                                </div>
+                                                <div t-if="!numeric" class="ps-4">
+                                                    <div
+                                                        t-if="record.value_type.raw_value == 'char'"
+                                                        class="text-break"
+                                                        style="display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden"
+                                                        t-esc="record.value_char.value"
+                                                    />
+                                                    <field
+                                                        t-if="record.value_type.raw_value == 'code_id'"
+                                                        name="value_code_id"
+                                                        widget="badge"
+                                                    />
+                                                    <div
+                                                        t-if="record.value_type.raw_value == 'code_ids'"
+                                                        style="max-height: 4.5rem; overflow: hidden"
+                                                    >
+                                                        <field
+                                                            name="value_code_ids"
+                                                            widget="many2many_tags"
+                                                            options="{'color_field': 'color'}"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                                <form>
+                                    <field name="sequence" invisible="1" />
+                                    <field name="company_id" invisible="1" />
+                                    <field name="sheet_id" invisible="1" />
+                                    <field name="patient_id" invisible="1" />
+                                    <field name="encounter_id" invisible="1" />
+                                    <field name="state" invisible="1" />
+                                    <field name="compute" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="value_type" invisible="1" />
+                                    <field name="display_class" invisible="1" />
+                                    <group>
+                                        <field
+                                            name="title"
+                                            invisible="not display_type"
+                                            required="display_type"
+                                        />
+                                        <field
+                                            name="type_id"
+                                            options="{'no_open': True}"
+                                            invisible="display_type"
+                                        />
+                                        <field
+                                            name="value_char"
+                                            string="Value"
+                                            invisible="(display_type or value_type != 'char')"
+                                            readonly="compute"
+                                        />
+                                        <label
+                                            for="value_int"
+                                            string="Value"
+                                            invisible="(display_type or value_type != 'int')"
+                                        />
+                                        <div
+                                            class="o_row"
+                                            invisible="(display_type or value_type != 'int')"
+                                        >
+                                            <field
+                                                name="value_int"
+                                                readonly="compute"
+                                            />
+                                            <field
+                                                name="unit_id"
+                                                options="{'no_open': True}"
+                                            />
+                                        </div>
+                                        <label
+                                            for="value_float"
+                                            string="Value"
+                                            invisible="(display_type or value_type != 'float')"
+                                        />
+                                        <div
+                                            class="o_row"
+                                            invisible="(display_type or value_type != 'float')"
+                                        >
+                                            <field
+                                                name="value_float"
+                                                readonly="compute"
+                                            />
+                                            <field
+                                                name="unit_id"
+                                                options="{'no_open': True}"
+                                            />
+                                        </div>
+                                        <field
+                                            name="value_code_id"
+                                            string="Value"
+                                            options="{'no_open': True}"
+                                            context="{'default_type_ids': [type_id]}"
+                                            invisible="(display_type or value_type != 'code_id')"
+                                            readonly="compute"
+                                        />
+                                        <field
+                                            name="value_code_ids"
+                                            widget="many2many_tags"
+                                            options="{'color_field': 'color'}"
+                                            context="{'default_type_ids': [type_id]}"
+                                            invisible="(display_type or value_type != 'code_ids')"
+                                            readonly="compute"
+                                        />
+                                        <field
+                                            name="interpretation_id"
+                                            widget="badge"
+                                            decoration-danger="display_class == 'danger'"
+                                            decoration-info="display_class == 'info'"
+                                            decoration-muted="display_class == 'muted'"
+                                            decoration-primary="display_class == 'primary'"
+                                            decoration-success="display_class == 'success'"
+                                            decoration-warning="display_class == 'warning'"
+                                            invisible="(display_type or not interpretation_id)"
+                                        />
+                                    </group>
+                                </form>
+                            </field>
+                            <button
+                                name="garbage_collect"
+                                type="object"
+                                class="btn-outline-danger"
+                                icon="fa-trash"
+                                string="Garbage Collect"
+                                groups="base.group_no_one"
+                            />
+                        </page>
+                        <page name="note" string="Note" icon="fa-sticky-note-o">
+                            <field name="note" placeholder="Additional Note..." />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_observation_sheet_view_kanban" model="ir.ui.view">
+        <field name="name">ni.observation.sheet.view.kanban</field>
+        <field name="model">ni.observation.sheet</field>
+        <field name="arch" type="xml">
+            <kanban
+                default_group_by="create_date:month"
+                default_order="create_date desc"
+                limit="16"
+                group_limit="6"
+                class="o_kanban_small_column"
+                sample="1"
+            >
+                <field name="id" />
+                <field name="occurrence" />
+                <field name="patient_id" />
+                <field name="user_id" />
+                <field name="vitalsign_summary" />
+                <templates>
+                    <t t-name="card">
+                        <!-- ── Header ── -->
+                        <div class="mb-2">
+                            <t t-if="record.patient_id.raw_value">
+                                <strong
+                                    class="d-block text-truncate"
+                                    t-esc="record.patient_id.value"
+                                />
+                            </t>
+                            <t t-else="">
+                                <span class="text-muted fst-italic d-block">
+                                    ไม่ระบุผู้ป่วย
+                                </span>
+                            </t>
+                            <div class="text-muted small">
+                                <i class="fa fa-clock-o me-1" />
+                                <t t-esc="record.occurrence.value" />
+                            </div>
+                        </div>
+                        <!-- ── ค่าตรวจวัด: loop จาก vitalsign_summary ── -->
+                        <t
+                            t-set="vitals"
+                            t-value="record.vitalsign_summary.raw_value or []"
+                        />
+                        <t t-foreach="vitals" t-as="vs">
+                            <div class="d-flex justify-content-between mb-1">
+                                <div>
+                                    <t t-if="vs.i">
+                                        <i
+                                            t-att-class="'fa ' + vs.i"
+                                            t-att-style="'color:' + (vs.color or '#6c757d')"
+                                            class="me-2"
+                                        />
+                                    </t>
+                                    <span t-esc="vs.l" />
+                                </div>
+                                <div>
+                                    <strong t-esc="vs.v" />
+                                    <span class="ms-1" t-esc="vs.u" />
+                                </div>
+                            </div>
+                        </t>
+                        <!-- ── Footer: ผู้บันทึก ── -->
+                        <footer class="align-items-center gap-1 mt-2 pt-1 border-top">
+                            <field name="user_id" widget="many2one_avatar_user" />
+                            <small class="text-muted" t-esc="record.user_id.value" />
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

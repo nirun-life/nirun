@@ -1,0 +1,221 @@
+#  Copyright (c) 2021 NSTDA
+
+import textwrap
+
+from odoo import api, fields, models
+from odoo.tools.safe_eval import safe_eval
+
+_VALUE_FIELDS = frozenset({"value", "value_float", "value_int", "value_char"})
+
+
+class ObservationSheet(models.Model):
+    _name = "ni.observation.sheet"
+    _description = "Observation Sheet"
+    _inherit = ["ni.patient.res", "ni.identifier.mixin"]
+    _order = "occurrence DESC"
+    _identifier_ts_field = "period_start"
+
+    name = fields.Char(
+        "Sheet Name",
+        copy=False,
+        readonly=True,
+        index=True,
+        default=lambda self: self._identifier_default,
+    )
+    performer_ref = fields.Reference(
+        [("ni.patient", "Patient"), ("hr.employee", "Practitioner")],
+        string="Performer",
+        required=False,
+        index=True,
+    )
+    occurrence = fields.Datetime(
+        required=True, default=lambda _: fields.Datetime.now(), index=True
+    )
+    active = fields.Boolean(default=True)
+    note = fields.Text()
+    observation_ids = fields.One2many("ni.observation", "sheet_id")
+
+    category_ids = fields.Many2many(
+        "ni.observation.category",
+        "ni_observation_sheet_category_rel",
+        "sheet_id",
+        "category_id",
+        required=False,
+    )
+
+    user_id = fields.Many2one(
+        "res.users", "User", required=True, default=lambda self: self.env.user
+    )
+
+    vitalsign_summary = fields.Json(
+        compute="_compute_log_summary",
+        store=False,
+    )
+
+    def _compute_log_summary(self):
+        for rec in self:
+            result = []
+            for ob in rec.observation_ids:
+                if ob.value:
+                    result.append(
+                        {
+                            "l": ob.type_id.abbr or ob.type_id.name or "",
+                            "v": ob.value,
+                            "u": ob.unit_id.name or "",
+                            "i": ob.type_id.icon,
+                            "color": ob.type_id.icon_color or "#6c757d",
+                        }
+                    )
+            rec.vitalsign_summary = result
+
+    @api.depends("identifier", "occurrence")
+    @api.depends_context("show_occurrence")
+    def _compute_display_name(self):
+        for sheet in self:
+            sheet.display_name = sheet._get_name()
+
+    def _get_name(self):
+        sheet = self
+        name = sheet.identifier
+        if self._context.get("show_occurrence") and self.occurrence:
+            name = f"{name} • {sheet.occurrence}"
+        return name
+
+    def garbage_collect(self):
+        self.observation_ids.garbage_collect(0, "day")
+
+    def write(self, vals):
+        result = super().write(vals)
+        if result and vals.get("occurrence"):
+            for rec in self:
+                rec.observation_ids.write({"occurrence": rec.occurrence})
+        if result and "observation_ids" in vals:
+            self._eval_compute_types()
+        return result
+
+    def _eval_compute_types(self):
+        for sheet in self:
+            obs_map = {
+                ob.type_id.id: ob for ob in sheet.observation_ids.filtered("type_id")
+            }
+            present_types = sheet.observation_ids.mapped("type_id")
+            computed_types = (
+                present_types | present_types.mapped("parent_id")
+            ).filtered(lambda t: t.compute and t.compute_code)
+            for ctype in computed_types:
+                ctx = {}
+                has_any_value = False
+                for child in ctype.child_ids:
+                    var = child.code.replace("-", "_")
+                    ob = obs_map.get(child.id)
+                    if ob and ob.value:
+                        has_any_value = True
+                        if child.value_type == "int":
+                            ctx[var] = ob.value_int
+                        elif child.value_type == "float":
+                            ctx[var] = ob.value_float
+                        else:
+                            ctx[var] = ob.value_char or ""
+                    else:
+                        ctx[var] = (
+                            0
+                            if child.value_type == "int"
+                            else (0.0 if child.value_type == "float" else "")
+                        )
+                if not has_any_value:
+                    continue
+                try:
+                    code = textwrap.dedent(ctype.compute_code).strip()
+                    safe_eval(code, ctx, mode="exec", nocopy=True)
+                    computed_result = ctx.get("result")
+                except Exception:
+                    continue
+                if computed_result is None:
+                    continue
+                if ctype.value_type == "float":
+                    value_write = {"value_float": float(computed_result)}
+                elif ctype.value_type == "int":
+                    value_write = {"value_int": int(computed_result)}
+                else:
+                    value_write = {"value_char": str(computed_result)}
+                input_obs_ids = [
+                    obs_map[child.id].id
+                    for child in ctype.child_ids
+                    if child.id in obs_map and obs_map[child.id].value
+                ]
+                value_write["child_ids"] = [(6, 0, input_obs_ids)]
+                computed_ob = obs_map.get(ctype.id)
+                if computed_ob:
+                    computed_ob.with_context(skip_compute_eval=True).write(value_write)
+                else:
+                    self.env["ni.observation"].with_context(
+                        skip_compute_eval=True
+                    ).create(
+                        {
+                            "sheet_id": sheet.id,
+                            "type_id": ctype.id,
+                            "patient_id": sheet.patient_id.id,
+                            "encounter_id": sheet.encounter_id.id
+                            if sheet.encounter_id
+                            else False,
+                            "occurrence": sheet.occurrence,
+                            "value_type": ctype.value_type,
+                            **value_write,
+                        }
+                    )
+
+    def action_patient_observation_graph(self):
+        action_rec = self.env.ref("ni_observation.ni_observation_action").sudo()
+        action = action_rec.read()[0]
+        ctx = dict(self.env.context)
+        ctx.update(
+            {
+                "search_default_patient_id": self.patient_id.id,
+                "default_patient_id": self.patient_id.id,
+            }
+        )
+        action["context"] = ctx
+        return action
+
+    def action_line_by_category_ids(self):
+        if self.category_ids:
+            types = self.env["ni.observation.type"].search(
+                [("category_id", "in", self.category_ids.ids)],
+                order="category_id, sequence, id",
+            )
+            line_types = self.observation_ids.mapped("type_id")
+            section_name = self.observation_ids.filtered("display_type").mapped("name")
+            line = []
+            for cat in self.category_ids:
+                if cat.name not in section_name and len(self.category_ids) > 1:
+                    line.append(self.line_section(cat))
+                line = line + [
+                    self.line_data(t)
+                    for t in types.filtered(lambda s, cat=cat: s.category_id == cat)
+                    if t not in line_types
+                ]
+            # Apply sequence to each line
+            for i in range(len(line)):
+                line[i]["sequence"] = i
+            self.update({"observation_ids": [(0, 0, data) for data in line]})
+
+    def line_section(self, category_id):
+        return {
+            "sheet_id": self.id,
+            "title": category_id.name,
+            "patient_id": self.patient_id.id,
+            "occurrence": self.occurrence,
+            "encounter_id": self.encounter_id.id,
+            "display_type": "line_section",
+        }
+
+    def line_data(self, type_id):
+        return {
+            "sheet_id": self.id,
+            "occurrence": self.occurrence,
+            "patient_id": self.patient_id.id,
+            "encounter_id": self.encounter_id.id,
+            "type_id": type_id.id,
+            "value_type": type_id.value_type,
+            "sequence": type_id.sequence,
+        }

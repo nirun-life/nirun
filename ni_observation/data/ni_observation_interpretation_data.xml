@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo noupdate="1">
+    <record id="interpretation_EX" model="ni.observation.interpretation">
+        <field name="name">Outside threshold</field>
+        <field name="code">EX</field>
+        <field name="display_class">muted</field>
+    </record>
+    <record id="interpretation_LX" model="ni.observation.interpretation">
+        <field name="name">Below low threshold</field>
+        <field name="code">LX</field>
+        <field name="parent_id" ref="interpretation_EX" />
+        <field name="display_class">muted</field>
+    </record>
+    <record id="interpretation_HX" model="ni.observation.interpretation">
+        <field name="name">Above high threshold</field>
+        <field name="code">HX</field>
+        <field name="parent_id" ref="interpretation_EX" />
+        <field name="display_class">muted</field>
+    </record>
+    <record id="interpretation_N" model="ni.observation.interpretation">
+        <field name="name">Normal</field>
+        <field name="code">N</field>
+        <field name="display_class">success</field>
+    </record>
+    <record id="interpretation_A" model="ni.observation.interpretation">
+        <field name="name">Abnormal</field>
+        <field name="code">A</field>
+        <field name="display_class">warning</field>
+    </record>
+    <record id="interpretation_AA" model="ni.observation.interpretation">
+        <field name="name">Critical Abnormal</field>
+        <field name="code">AA</field>
+        <field name="display_class">danger</field>
+        <field name="parent_id" ref="interpretation_A" />
+    </record>
+    <record id="interpretation_L" model="ni.observation.interpretation">
+        <field name="name">Low</field>
+        <field name="code">L</field>
+        <field name="parent_id" ref="interpretation_A" />
+        <field name="display_class">text</field>
+    </record>
+    <record id="interpretation_LU" model="ni.observation.interpretation">
+        <field name="name">Significantly Low</field>
+        <field name="code">LU</field>
+        <field name="parent_id" ref="interpretation_L" />
+        <field name="display_class">info</field>
+    </record>
+    <record id="interpretation_LL" model="ni.observation.interpretation">
+        <field name="name">Critical Low</field>
+        <field name="code">LL</field>
+        <field name="parent_id" ref="interpretation_AA" />
+        <field name="display_class">primary</field>
+    </record>
+    <record id="interpretation_H" model="ni.observation.interpretation">
+        <field name="name">High</field>
+        <field name="code">H</field>
+        <field name="parent_id" ref="interpretation_A" />
+        <field name="display_class">warning</field>
+    </record>
+    <record id="interpretation_HU" model="ni.observation.interpretation">
+        <field name="name">Significantly High</field>
+        <field name="code">HU</field>
+        <field name="parent_id" ref="interpretation_H" />
+        <field name="display_class">danger</field>
+    </record>
+    <record id="interpretation_HH" model="ni.observation.interpretation">
+        <field name="name">Critical High</field>
+        <field name="code">HH</field>
+        <field name="parent_id" ref="interpretation_AA" />
+        <field name="display_class">danger</field>
+    </record>
+    <record id="interpretation_IND" model="ni.observation.interpretation">
+        <field name="name">Indeterminate</field>
+        <field name="code">IND</field>
+        <field name="display_class">muted</field>
+    </record>
+    <record id="interpretation_POS" model="ni.observation.interpretation">
+        <field name="name">Positive</field>
+        <field name="code">POS</field>
+        <field name="display_class">warning</field>
+    </record>
+    <record id="interpretation_NEG" model="ni.observation.interpretation">
+        <field name="name">Negative</field>
+        <field name="code">NEG</field>
+        <field name="display_class">success</field>
+    </record>
+</odoo>

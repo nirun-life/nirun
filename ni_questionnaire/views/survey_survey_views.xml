@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+~ Copyright (c) 2021 NSTDA
+-->
+<odoo>
+    <record id="survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.view.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='options']/group" position="after">
+                <group
+                    name="observation"
+                    string="Observation"
+                    invisible="scoring_type == 'no_scoring'"
+                >
+                    <label for="observation_type_id" string="Observation" />
+                    <div>
+                        <field
+                            name="observation_type_id"
+                            context="{'default_value_type': 'int'}"
+                        />
+                        <button
+                            name="action_sync_observation_range"
+                            type="object"
+                            string="Ref. Range"
+                            icon="fa-clone"
+                            title="Clone Reference Range"
+                            confirm="Clone reference range from observation will replace existing grades"
+                            invisible="not observation_type_id"
+                        />
+                    </div>
+                    <field
+                        name="observation_score_type"
+                        widget="radio"
+                        options="{'horizontal': True}"
+                        string="Score Type"
+                        invisible="not observation_type_id"
+                    />
+                </group>
+                <field name="question_group_ids" nolabel="1">
+                    <list editable="bottom">
+                        <field name="survey_id" column_invisible="1" />
+                        <field name="sequence" widget="handle" />
+                        <field name="operator" />
+                        <field name="question_ids" widget="many2many_tags" />
+                        <field name="observation_code_id" />
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_grading_survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey_grading.survey_view_form_inherit" />
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='name']" position="after">
+                <field name="gender" invisible="1" />
+                <button
+                    disabled="disabled"
+                    icon="fa-mars"
+                    title="Male only"
+                    class="o_gender_male"
+                    invisible="gender != 'male'"
+                    column_invisible="parent.subject_type not in ['ni.patient', 'ni.encounter']"
+                />
+                <button
+                    disabled="disabled"
+                    icon="fa-venus"
+                    title="Female only"
+                    class="o_gender_female"
+                    invisible="gender != 'female'"
+                    column_invisible="parent.subject_type not in ['ni.patient', 'ni.encounter']"
+                />
+                <field
+                    name="age_low"
+                    column_invisible="parent.subject_type not in ['ni.patient', 'ni.encounter']"
+                />
+                <field
+                    name="age_high"
+                    column_invisible="parent.subject_type not in ['ni.patient', 'ni.encounter']"
+                />
+                <field
+                    name="interpretation_id"
+                    column_invisible="parent.subject_type not in ['ni.patient', 'ni.encounter']"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_view_search_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.search</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_search" />
+        <field name="arch" type="xml">
+            <!-- position values: after|before|replace|attributes|inside -->
+            <xpath expr="//filter[@name='not_certification']" position="after">
+                <separator />
+                <filter
+                    string="Patient Questionnaire"
+                    name="patient"
+                    domain="[('subject_type', '=', 'ni.patient')]"
+                />
+                <filter
+                    string="Encounter Questionnaire"
+                    name="encounter"
+                    domain="[('subject_type', '=', 'ni.encounter')]"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_view_tree_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.list.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='answer_count']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_action_patient" model="ir.actions.act_window">
+        <field name="name">Surveys</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">survey.survey</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+        <field name="context">{'search_default_patient': 1}</field>
+    </record>
+    <record id="survey_question_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.question.view.form.inherit</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='options']/group[2]" position="inside">
+                <group string="Observation">
+                    <field name="observation_code_id" string="Observation" />
+                    <field
+                        name="observation_answer_type"
+                        invisible="not observation_code_id"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="survey_grade_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.grade.view.form.inherit</field>
+        <field name="model">survey.grade</field>
+        <field name="inherit_id" ref="survey_grading.survey_grade_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group/group[2]" position="inside">
+                <field name="subject_type" invisible="1" />
+                <field
+                    name="gender"
+                    invisible="subject_type not in ['ni.patient', 'ni.encounter']"
+                />
+                <label
+                    string="Age"
+                    for="age_low"
+                    invisible="subject_type not in ['ni.patient', 'ni.encounter']"
+                />
+                <div
+                    class="o_row"
+                    invisible="subject_type not in ['ni.patient', 'ni.encounter']"
+                >
+                    <field name="age_low" />
+                    <span class="mx-1">-</span>
+                    <field name="age_high" />
+                </div>
+                <field
+                    name="observation_id"
+                    invisible="subject_type not in ['ni.patient', 'ni.encounter']"
+                />
+                <field
+                    name="interpretation_id"
+                    invisible="subject_type not in ['ni.patient', 'ni.encounter']"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
