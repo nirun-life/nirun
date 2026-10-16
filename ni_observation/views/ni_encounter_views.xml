@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023. NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_view_form_inherit" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form.inherit</field>
+        <field name="model">ni.encounter</field>
+        <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
+        <field name="priority">2</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='physical_exam']" position="before">
+                <div class="text-center d-none d-lg-block">
+                    <label for="pain_score_enum" />
+                    <div class="mt-2">
+                        <field
+                            name="pain_score_enum"
+                            widget="radio"
+                            options="{'horizontal': True}"
+                            readonly="state not in ['draft', 'in-progress']"
+                        />
+                    </div>
+                    <div>
+                        <field
+                            name="pain_area"
+                            placeholder="บริเวณที่เจ็บปวด"
+                            class="w-75"
+                            readonly="state not in ['draft', 'in-progress']"
+                        />
+                    </div>
+                </div>
+                <group class="my-4">
+                    <group>
+                        <label for="body_temp" />
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="body_temp"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="text-muted me-4">°C</span>
+                        </div>
+                        <label for="respiratory_rate" />
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="respiratory_rate"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="text-muted me-4">/min</span>
+                        </div>
+                        <label for="bp_s" string="Blood Pressure" />
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="bp_s"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="mx-1">/</span>
+                            <field
+                                class="narrow_field"
+                                name="bp_d"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="text-muted me-4">mmHg</span>
+                        </div>
+                        <label for="heart_rate" />
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="heart_rate"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="text-muted me-4">/min</span>
+                        </div>
+                        <label for="oxygen_sat" />
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="oxygen_sat"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="text-muted me-4">%</span>
+                        </div>
+                    </group>
+                    <group>
+                        <label for="body_weight" />
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="body_weight"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="text-muted me-4">kg</span>
+                        </div>
+                        <label for="body_height" />
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="body_height"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="text-muted me-4">cm</span>
+                            <label for="bmi" />
+                            <field class="narrow_field mx-1" name="bmi" />
+                            <span class="text-muted me-4">kg/m²</span>
+                        </div>
+                        <label for="waist" />
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="waist"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="text-muted me-4">in</span>
+                        </div>
+                        <label for="hip" />
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="hip"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="text-muted me-4">in</span>
+                            <label for="whr" />
+                            <field class="narrow_field mx-1" name="whr" />
+                        </div>
+                        <span class="o_form_label o_td_label" name="glucose_type">
+                            <field
+                                name="glucose_type"
+                                class="fw-bold"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                        </span>
+                        <div class="o_row">
+                            <field
+                                class="narrow_field"
+                                name="fbs"
+                                invisible="glucose_type != 'fbs'"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <field
+                                class="narrow_field"
+                                name="dtx"
+                                invisible="glucose_type != 'dtx'"
+                                readonly="state not in ['draft', 'in-progress']"
+                            />
+                            <span class="text-muted me-4">mg/dl</span>
+                        </div>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='vital-signs']" position="before">
+                <page name="observation" string="Observation" icon="fa-stethoscope">
+                    <div class="row">
+                        <div class="col-12 col-lg-9">
+                            <field
+                                name="observation_category_id"
+                                class="mt-2"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                            />
+                        </div>
+                        <div class="col-12 col-lg-3 text-end">
+                            <i
+                                class="fa fa-filter me-2"
+                                aria-hidden="true"
+                                title="Filter"
+                            />
+                            <field name="observation_filter" />
+                        </div>
+                    </div>
+                    <field
+                        name="filtered_patient_observation_ids"
+                        invisible="observation_filter != 'patient'"
+                    />
+                    <field
+                        name="filtered_encounter_observation_ids"
+                        invisible="observation_filter != 'encounter'"
+                    />
+                    <div class="mb-4">
+                        <field name="observation_problem_only" />
+                        <label for="observation_problem_only" string="Problem only" />
+                    </div>
+                    <button
+                        name="action_view_observation_sheet"
+                        type="object"
+                        string="See More"
+                        class="btn-secondary"
+                        context="{'default_patient_id': patient_id ,'default_encounter_id': id}"
+                    />
+                    <button
+                        name="action_observation_wizard"
+                        type="object"
+                        string="New Observation"
+                        icon="fa-pencil"
+                        class="btn-primary"
+                        context="{'default_patient_id': patient_id ,'default_encounter_id': id,  'default_category_ids': observation_category_id and [observation_category_id] or []}"
+                        invisible="state not in ['in-progress']"
+                    />
+                </page>
+            </xpath>
+            <xpath expr="//page[@name='vital-signs']" position="attributes">
+                <attribute name="badge">observation_latest_vital_sign_count</attribute>
+            </xpath>
+            <xpath expr="//page[@name='vital-signs']" position="inside">
+                <field name="observation_latest_vital_sign_count" invisible="1" />
+                <field name="observation_latest_vital_sign_ids" />
+                <button
+                    name="action_observation"
+                    type="object"
+                    string="See More"
+                    class="btn-secondary"
+                    context="{'category_id': %(ni_observation.category_vital_signs)d}"
+                />
+                <button
+                    name="%(ni_observation_sheet_action_form)d"
+                    type="action"
+                    string="New Vital Sign"
+                    icon="fa-pencil"
+                    class="btn-primary"
+                    context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(category_vital_signs)d]}"
+                    invisible="state not in ['in-progress']"
+                />
+            </xpath>
+            <xpath expr="//page[@name='laboratory']" position="attributes">
+                <attribute name="badge">observation_latest_lab_count</attribute>
+            </xpath>
+            <xpath expr="//page[@name='laboratory']" position="inside">
+                <field name="observation_latest_lab_count" invisible="1" />
+                <field name="observation_latest_lab_ids" />
+                <button
+                    name="action_observation"
+                    type="object"
+                    string="See More"
+                    class="btn-secondary"
+                    context="{'category_id': %(ni_observation.category_laboratory)d}"
+                />
+                <button
+                    name="%(ni_observation_sheet_action_form)d"
+                    type="action"
+                    string="New Laboratory"
+                    class="btn-primary"
+                    icon="fa-pencil"
+                    context="{'default_patient_id': patient_id ,'default_encounter_id': id, 'default_category_ids': [%(ni_observation.category_laboratory)d]}"
+                    invisible="state not in ['in-progress']"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

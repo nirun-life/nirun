@@ -1,0 +1,982 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_encounter_action_server_entered_in_error" model="ir.actions.server">
+        <field name="name">Error Entry</field>
+        <field name="model_id" ref="model_ni_encounter" />
+        <field name="binding_model_id" ref="model_ni_encounter" />
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="groups_id" eval="[(4, ref('group_manager'))]" />
+        <field name="sequence" eval="99" />
+        <field name="code">action = records.action_entered_in_error()</field>
+    </record>
+    <record
+        id="ni_encounter_action_server_encounter_location"
+        model="ir.actions.server"
+    >
+        <field name="name">Location History</field>
+        <field name="sequence" eval="1" />
+        <field name="model_id" ref="model_ni_encounter" />
+        <field name="binding_model_id" ref="model_ni_encounter" />
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_encounter_location()</field>
+    </record>
+    <record
+        id="ni_encounter_action_server_encounter_participant"
+        model="ir.actions.server"
+    >
+        <field name="name">Participant History</field>
+        <field name="sequence" eval="0" />
+        <field name="model_id" ref="model_ni_encounter" />
+        <field name="binding_model_id" ref="model_ni_encounter" />
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_encounter_participant()</field>
+    </record>
+    <record id="ni_encounter_action_server_workflow_timeline" model="ir.actions.server">
+        <field name="name">Workflow Timeline</field>
+        <field name="sequence" eval="2" />
+        <field name="model_id" ref="model_ni_encounter" />
+        <field name="binding_model_id" ref="model_ni_encounter" />
+        <field name="binding_view_types">form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_encounter_workflow_timeline()</field>
+    </record>
+    <record id="ni_encounter_action" model="ir.actions.act_window">
+        <field name="name">Encounter</field>
+        <field name="res_model">ni.encounter</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+        <field name="context">{'search_default_encounter': True}</field>
+    </record>
+    <record id="ni_encounter_action_from_patient" model="ir.actions.act_window">
+        <field name="name">Encounter</field>
+        <field name="res_model">ni.encounter</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">
+            {
+                'default_patient_id': active_id,
+                'search_default_patient_id': active_id
+            }
+        </field>
+    </record>
+    <record id="ni_encounter_view_search" model="ir.ui.view">
+        <field name="name">ni.encounter.view.search</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="name"
+                    filter_domain="['|', ('name', 'ilike', self), ('patient_id', 'ilike', self)]"
+                />
+                <field name="patient_id" />
+                <field name="location_id" />
+                <separator />
+                <filter name="period_start" string="Since" date="period_start" />
+                <filter name="period_end" string="Until" date="period_start" />
+                <separator />
+                <filter
+                    name="encounter"
+                    string="Active"
+                    domain="[('state', 'in', ['draft', 'planned', 'in-progress'])]"
+                />
+                <separator />
+                <filter
+                    name="draft"
+                    string="Draft"
+                    domain="[('state', '=', 'draft')]"
+                />
+                <filter
+                    name="planned"
+                    string="Planned"
+                    domain="[('state', '=', 'planned')]"
+                />
+                <filter
+                    name="in_progress"
+                    string="In-Progress"
+                    domain="[('state', '=', 'in-progress')]"
+                />
+                <filter
+                    name="discharged"
+                    string="Discharged"
+                    domain="[('state', '=', 'finished')]"
+                />
+                <filter
+                    name="cancelled"
+                    string="Cancelled"
+                    domain="[('state', '=', 'cancelled')]"
+                />
+                <filter
+                    name="entered-in-error"
+                    string="Error Entry"
+                    domain="[('state', '=', 'entered-in-error')]"
+                    groups="ni_patient.group_manager"
+                />
+                <separator />
+                <group name="priority" groups="base.group_no_one">
+                    <filter
+                        name="stat"
+                        string="Priority: STAT"
+                        domain="[('priority', '=', 'stat')]"
+                    />
+                    <filter
+                        name="asap"
+                        string="Priority: ASAP"
+                        domain="[('priority', '=', 'asap')]"
+                    />
+                    <filter
+                        name="urgent"
+                        string="Priority: Urgent"
+                        domain="[('priority', '=', 'urgent')]"
+                    />
+                    <filter
+                        name="routine"
+                        string="Priority: Routine"
+                        domain="[('priority', '=', 'routine')]"
+                    />
+                </group>
+                <group name="Group by">
+                    <filter name="Priority" context="{'group_by': 'priority'}" />
+                    <filter name="Classification" context="{'group_by': 'class_id'}" />
+                    <filter name="Location" context="{'group_by': 'location_id'}" />
+                    <separator />
+                    <filter name="State" context="{'group_by': 'state'}" />
+                    <separator />
+                    <filter name="Since" context="{'group_by': 'period_start'}" />
+                    <filter name="Until" context="{'group_by': 'period_end'}" />
+                </group>
+                <searchpanel>
+                    <field
+                        name="company_id"
+                        groups="base.group_multi_company"
+                        icon="fa-building"
+                        enable_counters="1"
+                    />
+                    <field name="class_id" enable_counters="1" />
+                    <field name="priority" icon="fa-flag" />
+                    <field
+                        name="location_id"
+                        icon="fa-map-marker"
+                        enable_counters="1"
+                    />
+                    <field name="gender" icon="fa-venus-mars" enable_counters="1" />
+                    <field
+                        name="age_range_id"
+                        icon="fa-birthday-cake"
+                        enable_counters="1"
+                    />
+                    <field name="state" enable_counters="1" icon="fa-circle" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_encounter_view_tree" model="ir.ui.view">
+        <field name="name">ni.encounter.view.tree</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <tree
+                duplicate="0"
+                decoration-bf="state in ['draft','planned']"
+                decoration-info="state in ['draft','planned']"
+                decoration-muted="state in ['cancelled', 'entered-in-error', 'finished']"
+            >
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="hide"
+                />
+                <field name="name" />
+                <field name="patient_id" widget="many2one_avatar" />
+                <field
+                    name="gender"
+                    widget="badge"
+                    decoration-danger="gender == 'female'"
+                    decoration-info="gender == 'male'"
+                />
+                <field name="age" />
+                <field name="class_id" optional="show" />
+                <field
+                    name="priority"
+                    optional="hide"
+                    widget="badge"
+                    decoration-danger="priority=='stat'"
+                    decoration-warning="priority=='asap'"
+                    decoration-success="priority=='urgent'"
+                />
+                <field name="location_id" optional="show" />
+                <field name="period_start" optional="show" />
+                <field name="period_start_date" optional="hide" />
+                <field name="period_end" optional="show" />
+                <field name="period_end_date" optional="hide" />
+                <field name="duration" optional="hide" />
+                <field name="duration_hours" optional="hide" widget="float_time" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-primary="state in ['finished']"
+                    decoration-muted="state in ['cancelled']"
+                    decoration-danger="state in ['entered-in-error']"
+                    decoration-warning="state in ['in-progress']"
+                    decoration-info="state == ['draft', 'planned']"
+                />
+                <field name="participate" column_invisible="1" />
+                <field
+                    name="participant_count"
+                    optional="hide"
+                    decoration-success="participate == True"
+                    decoration-bf="participate == True"
+                />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_encounter_view_calendar" model="ir.ui.view">
+        <field name="name">ni.encounter.view.calendar</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <calendar
+                color="class_id"
+                date_start="period_start"
+                hide_time="true"
+                mode="month"
+                quick_create="0"
+            >
+                <field name="patient_id" />
+                <field name="class_id" />
+                <field name="state" />
+                <field name="location_id" />
+            </calendar>
+        </field>
+    </record>
+    <record id="ni_encounter_view_form" model="ir.ui.view">
+        <field name="name">ni.encounter.view.form</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <form duplicate="0">
+                <field name="id" invisible="1" />
+                <field name="active" invisible="1" />
+                <field name="partner_id" invisible="1" />
+                <field name="patient_identifier" invisible="1" />
+                <field name="participate" invisible="1" />
+                <field name="is_admission" invisible="1" />
+                <field name="show_special" invisible="1" />
+                <field name="show_history" invisible="1" />
+                <field name="show_chief_complaint" invisible="1" />
+                <field name="show_history_of_present_illness" invisible="1" />
+                <field name="show_review_of_systems" invisible="1" />
+                <field name="show_vital_signs" invisible="1" />
+                <field name="show_laboratory" invisible="1" />
+                <field name="show_physical_exam" invisible="1" />
+                <field name="show_problem_list" invisible="1" />
+                <field name="show_medication" invisible="1" />
+                <field name="show_procedure" invisible="1" />
+                <field name="show_questionnaire" invisible="1" />
+                <field name="show_document_ref" invisible="1" />
+                <field name="show_service" invisible="1" />
+                <field name="show_participant" invisible="1" />
+                <field name="show_careplan" invisible="1" />
+                <field name="show_order" invisible="1" />
+                <header>
+                    <button
+                        name="action_confirm"
+                        string="Confirm"
+                        class="btn-primary"
+                        type="object"
+                        confirm="Are you sure you want to confirm this?"
+                        groups="ni_patient.group_user"
+                        invisible="state not in ['draft']"
+                    />
+                    <button
+                        name="action_confirm"
+                        string="Start"
+                        class="btn-warning"
+                        confirm="Are you sure you want to start this?"
+                        type="object"
+                        icon="fa-check-square-o"
+                        groups="ni_patient.group_user"
+                        invisible="state not in ['planned']"
+                    />
+                    <button
+                        name="%(ni_encounter_discharge_wizard_action)d"
+                        string="Discharge"
+                        class="btn-primary"
+                        context="{'default_encounter_id': id}"
+                        icon="fa-share-square-o"
+                        type="action"
+                        groups="ni_patient.group_user"
+                        invisible="(not is_admission or state not in ['in-progress'])"
+                    />
+                    <button
+                        name="action_close"
+                        type="object"
+                        string="Finish"
+                        class="btn-primary"
+                        icon="fa-share-square-o"
+                        confirm="Are you sure to finish this encounter?"
+                        invisible="(is_admission or state not in ['in-progress'])"
+                    />
+                    <button
+                        name="action_cancel"
+                        string="Cancel"
+                        type="object"
+                        confirm="Are you sure you want to cancel this?"
+                        groups="ni_patient.group_user"
+                        invisible="state not in ['planned', 'in-progress']"
+                    />
+                    <button
+                        name="action_reset_to_draft"
+                        string="Reset To Draft"
+                        type="object"
+                        confirm="Are you sure you want to reset this to draft?"
+                        groups="ni_patient.group_admin"
+                        invisible="state not in ['cancelled', 'entered-in-error']"
+                    />
+                    <button
+                        name="action_participate"
+                        type="object"
+                        string="Participate"
+                        icon="fa-user-plus"
+                        invisible="(not show_participant or (participate or state not in ['in-progress', 'draft']))"
+                    />
+                    <button
+                        name="action_quit"
+                        type="object"
+                        string="Quit"
+                        icon="fa-user-times"
+                        confirm="Are you sure to stop the participation of this encounter?"
+                        invisible="(not show_participant or (not participate or state not in ['in-progress', 'draft']))"
+                    />
+                    <field
+                        name="state"
+                        statusbar_visible="in-progress,finished"
+                        widget="statusbar"
+                    />
+                </header>
+                <sheet>
+                    <div
+                        name="button_box"
+                        class="oe_button_box"
+                        groups="ni_patient.group_user"
+                        invisible="not id"
+                    />
+                    <field
+                        name="image_1920"
+                        class="oe_avatar"
+                        options="{&quot;preview_image&quot;:&quot;image_128&quot;}"
+                        widget="image"
+                        invisible="not patient_id"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        class="oe_read_only"
+                        bg_color="bg-warning"
+                        title="Draft"
+                        invisible="(state != 'draft' or not id)"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        bg_color="bg-danger"
+                        title="Cancelled"
+                        invisible="state != 'cancelled'"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        bg_color="bg-success"
+                        title="Finished"
+                        invisible="state != 'finished'"
+                    />
+                    <widget
+                        name="web_ribbon"
+                        bg_color="bg-danger"
+                        title="Error Entry"
+                        invisible="state != 'entered-in-error'"
+                    />
+                    <div class="oe_title">
+                        <div>
+                            <label for="identifier" />
+                        </div>
+                        <h1>
+                            <field
+                                name="identifier"
+                                readonly="state != 'draft'"
+                                placeholder="AN. 0000X"
+                            />
+                        </h1>
+                    </div>
+                    <div name="company" class="mb-4" invisible="not id">
+                        <i class="fa fa-building text-primary" title="Company" />
+                        <field
+                            name="company_id"
+                            class="mx-2"
+                            placeholder="Company"
+                            options="{'no_open': True}"
+                        />
+                    </div>
+                    <group>
+                        <group>
+                            <label for="patient_id" />
+                            <div>
+                                <field
+                                    name="patient_id"
+                                    readonly="state != 'draft'"
+                                    context="{'show_identifier': True}"
+                                    options="{'always_reload': True}"
+                                    placeholder="Search for patient..."
+                                />
+                            </div>
+                            <field name="age" invisible="1" />
+                            <field name="display_age" />
+                            <field
+                                name="class_id"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                options="{'no_create': True, 'no_open':True, 'always_reload': True}"
+                                context="{'show_parent': True}"
+                            />
+                            <field
+                                name="location_id"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                domain="[('company_id', '=', company_id)]"
+                                options="{'no_create': True, 'always_reload': True, 'no_open': True}"
+                                context="{'show_parent': True}"
+                            />
+                        </group>
+                        <group>
+                            <label
+                                for="participant_id"
+                                invisible="(not participant_id or not show_participant)"
+                            />
+                            <div
+                                class="o_row"
+                                invisible="(not participant_id or not show_participant)"
+                            >
+                                <field
+                                    name="participant_id"
+                                    context="{'default_encounter_id': id}"
+                                />
+                                <label for="participant_permit_no" />
+                                <field name="participant_permit_no" />
+                            </div>
+                            <field
+                                name="period_start"
+                                readonly="state != 'draft'"
+                                placeholder="Start"
+                            />
+                            <field
+                                name="period_end"
+                                placeholder="End"
+                                invisible="state not in ['cancelled', 'finished']"
+                            />
+                            <field name="duration" />
+                        </group>
+                        <group>
+                            <field
+                                name="priority"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                            />
+                        </group>
+                    </group>
+                    <notebook invisible="not id">
+                        <page
+                            name="admission"
+                            string="Admission"
+                            icon="fa-bed"
+                            invisible="not is_admission"
+                        >
+                            <group>
+                                <group string="Admission">
+                                    <field
+                                        name="admit_source_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                    />
+                                    <field
+                                        name="origin_partner_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        context="{'default_type': 'contact', 'default_show_company': False}"
+                                        options="{&quot;always_reload&quot;: True}"
+                                    />
+                                    <field
+                                        name="origin_date"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        invisible="not origin_partner_id"
+                                    />
+                                    <field
+                                        name="re_admission"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                    />
+                                    <field
+                                        name="re_admission_reason"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        invisible="not re_admission"
+                                    />
+                                    <field
+                                        name="re_admission_encounter_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        context="{'order_display': 'period_end desc, period_start desc'}"
+                                        options="{'always_reload': True, 'no_create': True, 'no_create_edit': True}"
+                                        invisible="not re_admission"
+                                    />
+                                    <field
+                                        name="pre_admission_identifier"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                    />
+                                </group>
+                                <group string="Special" invisible="not show_special">
+                                    <field
+                                        name="arrangement_ids"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="courtesy_ids"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="diet_ids"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        options="{'color_field': 'color', 'no_edit': True}"
+                                        widget="many2many_tags"
+                                    />
+                                </group>
+                            </group>
+                            <group string="Discharge" invisible="state != 'finished'">
+                                <group>
+                                    <field
+                                        name="discharge_status_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        options="{'no_open': True}"
+                                    />
+                                    <field
+                                        name="discharge_disposition_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                        options="{'no_open': True}"
+                                    />
+                                    <field
+                                        name="discharge_partner_id"
+                                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                    />
+                                </group>
+                                <div>
+                                    <field
+                                        name="discharge_note"
+                                        placeholder="Discharging note..."
+                                    />
+                                </div>
+                            </group>
+                        </page>
+                        <page
+                            name="cc"
+                            string="Chief Complaint"
+                            icon="fa-star-half-o"
+                            invisible="not show_chief_complaint"
+                        >
+                            <field
+                                name="chief_complaint"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                placeholder="Chief Complaint"
+                            />
+                            <div class="my-1">
+                                <i
+                                    class="fa fa-tags"
+                                    aria-hidden="true"
+                                    title="Reasons"
+                                />
+                                <field
+                                    name="reason_ids"
+                                    readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                    class="mx-3"
+                                    placeholder="Reason Tag..."
+                                    options="{'color_field': 'color'}"
+                                    widget="many2many_tags"
+                                />
+                            </div>
+                            <div class="my-2">
+                                <field
+                                    name="chief_complaint_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field
+                                    name="chief_complaint_date"
+                                    class="text-muted mx-2"
+                                />
+                            </div>
+                        </page>
+                        <page
+                            name="hpi"
+                            string="History of Present Illness"
+                            icon="fa-hourglass-start"
+                            invisible="not show_history_of_present_illness"
+                        >
+                            <field
+                                name="history_of_present_illness"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                placeholder="History of Present Illness"
+                            />
+                            <div class="my-2">
+                                <field
+                                    name="history_of_present_illness_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field
+                                    name="history_of_present_illness_date"
+                                    class="text-muted mx-2"
+                                />
+                            </div>
+                        </page>
+                        <page
+                            name="history"
+                            string="History"
+                            icon="fa-history"
+                            invisible="not show_history"
+                        >
+                            <separator string="Past Medical History" />
+                            <field
+                                name="past_medical_history"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                placeholder="Past Medical History"
+                            />
+                            <div class="my-2">
+                                <field
+                                    name="past_medical_history_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field
+                                    name="past_medical_history_date"
+                                    class="text-muted mx-2"
+                                />
+                            </div>
+                        </page>
+                        <page
+                            name="ros"
+                            string="Review of Systems"
+                            icon="fa-stethoscope"
+                            invisible="not show_review_of_systems"
+                        >
+                            <field
+                                name="review_of_systems"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                placeholder="Review of Systems"
+                            />
+                            <div class="my-2">
+                                <field
+                                    name="review_of_systems_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field
+                                    name="review_of_systems_date"
+                                    class="text-muted mx-2"
+                                />
+                            </div>
+                        </page>
+                        <page
+                            name="pe"
+                            string="Physical Examination"
+                            icon="fa-gavel"
+                            invisible="not show_physical_exam"
+                        >
+                            <field
+                                name="physical_exam"
+                                readonly="state in ('cancelled', 'entered-in-error', 'finished')"
+                                placeholder="Physical Examination"
+                            />
+                            <div class="my-2">
+                                <field
+                                    name="physical_exam_uid"
+                                    class="text-muted"
+                                    options="{'no_open': True}"
+                                    widget="many2one_avatar_user"
+                                />
+                                <field
+                                    name="physical_exam_date"
+                                    class="text-muted mx-2"
+                                />
+                            </div>
+                        </page>
+                        <page
+                            name="vital-signs"
+                            string="Vital Signs"
+                            icon="fa-heartbeat"
+                            invisible="not show_vital_signs"
+                        />
+                        <page
+                            name="laboratory"
+                            string="Laboratory"
+                            icon="fa-flask"
+                            invisible="not show_laboratory"
+                        />
+                        <page
+                            name="problem"
+                            string="Problem List"
+                            icon="fa-list-ul"
+                            invisible="not show_problem_list"
+                        />
+                        <page
+                            name="order"
+                            string="Order"
+                            icon="fa-inbox"
+                            invisible="not show_order"
+                        />
+                        <page
+                            name="service"
+                            string="กิจกรรมการดูแลสุขภาพ"
+                            icon="fa-list-alt"
+                            invisible="not show_service"
+                        />
+                        <page
+                            name="medication"
+                            string="Medication"
+                            icon="fa-minus-circle"
+                            invisible="not show_medication"
+                        />
+                        <page
+                            name="procedure"
+                            string="Procedure"
+                            icon="fa-scissors"
+                            invisible="not show_procedure"
+                        />
+                        <page
+                            name="questionnaire"
+                            string="Questionnaire"
+                            icon="fa-pencil-square-o"
+                            invisible="not show_questionnaire"
+                        />
+                        <page
+                            name="document_ref"
+                            string="Document"
+                            icon="fa-file-text"
+                            invisible="not show_document_ref"
+                        />
+                        <page
+                            name="careplan"
+                            icon="fa-bullseye"
+                            string="Care Plan"
+                            invisible="not show_careplan"
+                        >
+
+                        </page>
+                    </notebook>
+                </sheet>
+                <div name="chatter" class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="ni_encounter_view_kanban" model="ir.ui.view">
+        <field name="name">ni.encounter.view.kanban</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <kanban archivable="false" class="o_kanban_mobile">
+                <field name="name" />
+                <field name="class_id" />
+                <field name="class_decoration" />
+                <field name="patient_id" />
+                <field name="priority" />
+                <field name="priority_decoration" />
+                <field name="location_id" />
+                <field name="state" />
+                <field name="period_start" />
+                <field name="period_end" />
+                <field name="color" widget="color_picker" />
+                <field name="image_128" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''} oe_kanban_global_click"
+                        >
+                            <div class="o_dropdown_kanban dropdown">
+                                <a
+                                    aria-label="Dropdown menu"
+                                    class="dropdown-toggle o-no-caret btn"
+                                    data-display="static"
+                                    data-toggle="dropdown"
+                                    href="#"
+                                    role="button"
+                                    title="Dropdown menu"
+                                >
+                                    <span class="fa fa-ellipsis-v" />
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <t t-if="widget.editable">
+                                        <a
+                                            class="dropdown-item"
+                                            role="menuitem"
+                                            type="edit"
+                                        >Edit</a>
+                                    </t>
+                                    <ul
+                                        class="oe_kanban_colorpicker"
+                                        data-field="color"
+                                    />
+                                </div>
+                            </div>
+                            <div t-attf-class="oe_kanban_content">
+                                <div>
+                                    <strong class="o_kanban_record_title">
+                                        <span>
+                                            <field name="name" />
+                                        </span>
+                                    </strong>
+                                </div>
+                                <div>
+                                    <span
+                                        t-attf-class="o_kanban_record_subtitle text-{{record.class_decoration.raw_value}}"
+                                    >
+                                        <field name="class_id" />
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="text-muted o_kanban_record_subtitle">
+                                        <field name="patient_id" />
+                                    </span>
+                                </div>
+                                <div class="my-2">
+                                    <field
+                                        name="reason_ids"
+                                        options="{'color_field': 'color'}"
+                                        widget="many2many_tags"
+                                    />
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <i
+                                            t-attf-class="fa fa-flag text-{{record.priority_decoration.value}}"
+                                            aria-hidden="true"
+                                            title="priority"
+                                        />
+                                        <field name="priority" />
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <img
+                                            class="oe_kanban_avatar float-right"
+                                            t-att-alt="record.patient_id.value"
+                                            t-att-src="kanban_image('ni.patient', 'image_128', record.patient_id.raw_value)"
+                                            t-att-title="record.patient_id.value"
+                                            t-if="record.image_128.raw_value"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="oe_clear" />
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="ni_encounter_view_pivot" model="ir.ui.view">
+        <field name="name">ni.encounter.view.pivot</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="class_id" type="col" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_encounter_view_graph" model="ir.ui.view">
+        <field name="name">ni.encounter.view.graph</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="class_id" type="col" />
+            </graph>
+        </field>
+    </record>
+    <!-- Specific views for discharge encounter -->
+    <record id="ni_encounter_view_tree_discharged" model="ir.ui.view">
+        <field name="name">ni.encounter.view.tree</field>
+        <field name="model">ni.encounter</field>
+        <field name="arch" type="xml">
+            <tree
+                create="0"
+                decoration-muted="state in ['cancelled', 'entered-in-error']"
+                edit="0"
+                duplicate="0"
+            >
+                <field name="name" />
+                <field name="patient_id" widget="many2one_avatar" />
+                <field name="class_id" optional="show" />
+                <field name="location_id" optional="show" />
+                <field name="period_start" optional="show" />
+                <field name="period_end" optional="show" />
+                <field name="duration_days" optional="show" />
+                <field name="discharge_status_id" />
+                <field name="discharge_disposition_id" />
+                <field name="state" optional="hide" />
+                <field name="company_id" groups="base.group_multi_company" />
+            </tree>
+        </field>
+    </record>
+    <record id="ni_encounter_view_pivot_discharged" model="ir.ui.view">
+        <field name="name">ni.encounter.view.pivot</field>
+        <field name="model">ni.encounter</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="discharge_disposition_id" type="row" />
+                <field name="period_end" type="col" interval="month" />
+            </pivot>
+        </field>
+    </record>
+    <record id="ni_encounter_view_graph_discharged" model="ir.ui.view">
+        <field name="name">ni.encounter.view.graph</field>
+        <field name="model">ni.encounter</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <graph stacked="False">
+                <field name="period_end" type="col" interval="month" />
+                <field name="discharge_disposition_id" type="row" />
+            </graph>
+        </field>
+    </record>
+    <record id="ni_encounter_view_calendar_discharged" model="ir.ui.view">
+        <field name="name">ni.encounter.view.calendar</field>
+        <field name="model">ni.encounter</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <calendar
+                color="discharge_disposition_id"
+                date_start="period_end"
+                hide_time="true"
+                mode="month"
+                quick_create="0"
+            >
+                <field name="patient_id" />
+                <field name="class_id" />
+                <field name="discharge_status_id" />
+                <field name="discharge_partner_id" />
+            </calendar>
+        </field>
+    </record>
+    <record id="ni_encounter_action_discharged" model="ir.actions.act_window">
+        <field name="name">Discharged</field>
+        <field name="res_model">ni.encounter</field>
+        <field name="view_mode">pivot,graph,tree,calendar,form</field>
+        <field name="domain">[('state', '=', 'finished')]</field>
+        <field name="context">
+            {
+                'create': False,
+                'pivot_view_ref': 'ni_patient.ni_encounter_view_pivot_discharged',
+                'graph_view_ref': 'ni_patient.ni_encounter_view_graph_discharged',
+                'calendar_view_ref': 'ni_patient.ni_encounter_view_calendar_discharged',
+            }
+        </field>
+    </record>
+</odoo>
