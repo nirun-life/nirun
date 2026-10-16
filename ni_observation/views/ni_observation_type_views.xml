@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021 NSTDA
+  -->
+<odoo>
+    <record id="ni_observation_type_action" model="ir.actions.act_window">
+        <field name="name">Observation Types</field>
+        <field name="res_model">ni.observation.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="ni_observation_type_view_search" model="ir.ui.view">
+        <field name="name">ni.observation.type.view.search</field>
+        <field name="model">ni.observation.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="name"
+                    filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]"
+                />
+                <group string="Group By">
+                    <filter
+                        string="Category"
+                        name="group_by_category"
+                        domain="[]"
+                        context="{'group_by':'category_id'}"
+                    />
+                </group>
+                <searchpanel>
+                    <field name="category_id" string="Category" enable_counters="1" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_observation_type_view_tree" model="ir.ui.view">
+        <field name="name">ni.observation.type.view.list</field>
+        <field name="model">ni.observation.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" optional="show" />
+                <field name="category_id" />
+                <field name="min" />
+                <field name="max" />
+                <field name="unit_id" />
+                <field name="definition" optional="hide" />
+                <field name="active" optional="hide" />
+            </list>
+        </field>
+    </record>
+    <record id="ni_observation_type_view_form" model="ir.ui.view">
+        <field name="name">ni.observation.type.view.form</field>
+        <field name="model">ni.observation.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="True" />
+                <field name="active" invisible="True" />
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        bg_color="bg-danger"
+                        title="Archived"
+                        invisible="active"
+                    />
+                    <label for="name" class="oe_edit_only" />
+                    <field name="name" />
+                    <label for="definition" class="oe_edit_only" />
+                    <field name="definition" />
+                    <group>
+                        <group>
+                            <field name="abbr" />
+                        </group>
+                        <group>
+                            <field name="code" />
+                        </group>
+                    </group>
+                    <group string="Details">
+                        <field name="parent_id" />
+                        <field name="category_id" />
+                        <field name="unit_id" />
+                        <field name="value_type" />
+                        <field name="compute" />
+                        <label
+                            for="min"
+                            string="Value Range"
+                            invisible="value_type not in ['float', 'int']"
+                        />
+                        <div
+                            class="o_row"
+                            invisible="value_type not in ['float', 'int']"
+                        >
+                            <field name="min" />
+                            <span class="mx-1">-</span>
+                            <field name="max" />
+                        </div>
+                        <field
+                            name="compare"
+                            invisible="value_type not in ['float', 'int']"
+                        />
+                        <field
+                            name="graph_type"
+                            widget="radio"
+                            options="{'horizontal': True}"
+                            invisible="value_type not in ['int', 'float']"
+                        />
+                        <field
+                            name="keep_falsy"
+                            invisible="value_type not in ['int', 'float']"
+                        />
+                    </group>
+                    <notebook>
+                        <page name="component" string="Component">
+                            <field name="child_ids" />
+                        </page>
+                        <page
+                            name="compute_code"
+                            string="Compute Code"
+                            invisible="not compute"
+                        >
+                            <p class="text-muted small mb-2">
+                                Python code evaluated when component observations change. Each
+                                child type's value is available as a variable (code with dashes
+                                replaced by underscores). Assign the final value to
+                                <code>result</code>
+                                .
+                            </p>
+                            <field
+                                name="compute_code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                                nolabel="1"
+                            />
+                        </page>
+                        <page
+                            name="concept"
+                            string="Concept"
+                            invisible="value_type not in ['code_id', 'code_ids']"
+                        >
+                            <field name="value_code_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="name" />
+                                    <field name="code" optional="show" />
+                                    <field name="system_id" optional="show" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Reference Range">
+                            <field
+                                name="ref_range_ids"
+                                context="{'default_type_id': id}"
+                            >
+                                <list editable="bottom">
+                                    <field
+                                        name="gender"
+                                        optional="show"
+                                        decoration-info="gender=='male'"
+                                        decoration-danger="gender=='female'"
+                                    />
+                                    <field name="age_low" optional="show" />
+                                    <field name="age_high" optional="show" />
+                                    <field name="low" />
+                                    <field name="high" />
+                                    <field
+                                        name="interpretation_id"
+                                        context="{'show_code': True}"
+                                        decoration-danger="display_class == 'danger'"
+                                        decoration-info="display_class == 'info'"
+                                        decoration-muted="display_class == 'muted'"
+                                        decoration-primary="display_class == 'primary'"
+                                        decoration-success="display_class == 'success'"
+                                        decoration-warning="display_class == 'warning'"
+                                    />
+                                    <field name="display_class" column_invisible="1" />
+                                    <button
+                                        name="copy"
+                                        type="object"
+                                        icon="fa-files-o"
+                                        title="copy"
+                                    />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <group>
+                                    <field name="color" widget="color_picker" />
+                                    <field name="sequence" />
+                                </group>
+                                <group string="Kanban">
+                                    <field name="icon" />
+                                    <field name="icon_color" widget="color" />
+                                </group>
+                                <group>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="write_date" />
+                                    <field name="write_uid" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
