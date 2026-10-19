@@ -54,7 +54,7 @@ class Patient(models.Model):
         required=True,
         ondelete="restrict",
         domain="[('type', '=', 'contact'), ('is_company', '=', False)]",
-        auto_join=True,
+        bypass_search_access=True,
         help="Partner-related data of patient",
     )
     user_ids = fields.Many2many(
@@ -62,7 +62,7 @@ class Patient(models.Model):
         string="Related Users",
         ondelete="restrict",
         domain="[('partner_id.is_company', '=', False)]",
-        auto_join=True,
+        bypass_search_access=True,
         help="Users allows to access patient information on portal",
     )
 
@@ -244,18 +244,14 @@ class Patient(models.Model):
         vals.update(self._prepare_sign_field_vals(vals))
         return super().write(vals)
 
-    _sql_constraints = [
-        (
-            "identifier_uniq",
-            "unique (company_id, identifier)",
-            "Identifier must be unique !",
-        ),
-        (
-            "partner_uniq",
-            "unique (company_id, partner_id)",
-            "This contact have already registered as patient!",
-        ),
-    ]
+    _identifier_uniq = models.Constraint(
+        "unique (company_id, identifier)",
+        "Identifier must be unique !",
+    )
+    _partner_uniq = models.Constraint(
+        "unique (company_id, partner_id)",
+        "This contact have already registered as patient!",
+    )
 
     @api.depends("name", "identifier", "identification_id", "gender", "age")
     @api.depends_context(

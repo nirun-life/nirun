@@ -43,16 +43,10 @@ class EncounterParticipant(models.Model):
     period_start = fields.Datetime(required=True)
     note = fields.Text()
 
-    _sql_constraints = [
-        (
-            "period_start_end_check",
-            """CHECK (
-                period_end is NULL or
-                period_end > period_start
-            )""",
-            "Participant end time must be after start time",
-        ),
-    ]
+    _period_start_end_check = models.Constraint(
+        "CHECK (\n                period_end is NULL or\n                period_end > period_start\n            )",
+        "Participant end time must be after start time",
+    )
 
     def action_stop(self, dt=None):
         period_end = dt or fields.Datetime.now()

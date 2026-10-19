@@ -92,7 +92,7 @@ class Encounter(models.Model):
         readonly=True,
         required=True,
         ondelete="cascade",
-        auto_join=True,
+        bypass_search_access=True,
         index=True,
     )
     patient_name = fields.Char(related="patient_id.name", readonly=False)
@@ -370,13 +370,10 @@ class Encounter(models.Model):
     workflow_event_ids = fields.One2many("ni.workflow.event", "encounter_id")
     workflow_request_ids = fields.One2many("ni.workflow.request", "encounter_id")
 
-    _sql_constraints = [
-        (
-            "company_id__name__uniq",
-            "unique (company_id, name)",
-            "This Encounter No. already exists!",
-        ),
-    ]
+    _company_id__name__uniq = models.Constraint(
+        "unique (company_id, name)",
+        "This Encounter No. already exists!",
+    )
 
     @api.depends("participant_ids")
     def _compute_participant_id(self):

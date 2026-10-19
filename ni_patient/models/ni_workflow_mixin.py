@@ -118,7 +118,7 @@ class EventMixin(models.AbstractModel):
     event_id = fields.Many2one(
         "ni.workflow.event",
         "Event",
-        auto_join=True,
+        bypass_search_access=True,
         ondelete="cascade",
         domain=lambda self: (
             f"[('res_model', '=', '{self._name}'), ('res_id', '=', id)]"
@@ -187,7 +187,7 @@ class RequestMixin(models.AbstractModel):
     request_id = fields.Many2one(
         "ni.workflow.request",
         "Request",
-        auto_join=True,
+        bypass_search_access=True,
         ondelete="cascade",
         readonly=True,
         domain=lambda self: (
