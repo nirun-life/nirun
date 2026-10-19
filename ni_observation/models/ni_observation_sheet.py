@@ -77,7 +77,7 @@ class ObservationSheet(models.Model):
     def _get_name(self):
         sheet = self
         name = sheet.identifier
-        if self._context.get("show_occurrence") and self.occurrence:
+        if self.env.context.get("show_occurrence") and self.occurrence:
             name = f"{name} • {sheet.occurrence}"
         return name
 

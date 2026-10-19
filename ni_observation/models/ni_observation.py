@@ -95,13 +95,10 @@ class Observation(models.Model):
     icon = fields.Char(related="type_id.icon")
     icon_color = fields.Char(related="type_id.icon_color")
 
-    _sql_constraints = [
-        (
-            "type__uniq",
-            "unique (sheet_id, type_id)",
-            "Duplication observation type!",
-        ),
-    ]
+    _type__uniq = models.Constraint(
+        "unique (sheet_id, type_id)",
+        "Duplication observation type!",
+    )
 
     @api.depends("value_float", "value_int", "occurrence", "type_id", "type_id.compare")
     def _compute_compare(self):
@@ -156,13 +153,13 @@ class Observation(models.Model):
 
     def init(self):
         tools.create_index(
-            self._cr,
+            self.env.cr,
             "ni_observation__patient__ob_type__idx",
             self._table,
             ["patient_id", "type_id", "occurrence DESC", "id"],
         )
         tools.create_index(
-            self._cr,
+            self.env.cr,
             "ni_observation__encounter__ob_type__idx",
             self._table,
             ["encounter_id", "type_id", "occurrence DESC", "id"],
