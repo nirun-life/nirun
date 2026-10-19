@@ -73,3 +73,34 @@ class TestLatestObservation(common.TransactionCase):
             lambda o: o.type_id == self.type
         )
         self.assertEqual(rows.mapped("value_int"), [2])
+
+    def test_compute_observation_on_many_rows(self):
+        """Each latest row computes its own observation and history, also when
+        several rows are read together."""
+        other_type = self.type.copy({"name": "Latest Test 2", "code": "test-latest-2"})
+        first = self._observe(1, "2025-01-01 08:00:00")
+        last = self._observe(2, "2025-01-02 08:00:00")
+        other = self.env["ni.observation"].create(
+            {
+                "patient_id": self.patient.id,
+                "encounter_id": self.encounter.id,
+                "type_id": other_type.id,
+                "occurrence": "2025-01-02 08:00:00",
+                "value_int": 3,
+            }
+        )
+        self.env.flush_all()
+        self.env.invalidate_all()
+        rows = self.env["ni.patient.observation"].search(
+            [
+                ("patient_id", "=", self.patient.id),
+                ("type_id", "in", (self.type | other_type).ids),
+            ]
+        )
+        self.assertEqual(len(rows), 2)
+        by_type = {row.type_id: row for row in rows}
+        self.assertEqual(by_type[self.type].observation_id, last)
+        self.assertEqual(by_type[other_type].observation_id, other)
+        self.assertEqual(by_type[self.type].history_ids, last.history_ids)
+        self.assertIn(first, by_type[self.type].history_ids)
+        self.assertEqual(by_type[other_type].history_count, len(other.history_ids))

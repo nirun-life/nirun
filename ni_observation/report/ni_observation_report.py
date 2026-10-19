@@ -54,7 +54,7 @@ class ObservationReport(models.AbstractModel):
 
     def _compute_observation(self):
         for rec in self:
-            obs = self.env["ni.observation"].browse(self.id)
+            obs = self.env["ni.observation"].browse(rec.id)
             if obs:
                 rec.update(
                     {
