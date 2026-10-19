@@ -9,7 +9,9 @@ class ObservationType(models.Model):
     _inherit = ["ni.coding"]
     _parent_store = True
 
-    parent_id = fields.Many2one("ni.observation.category", index=True, ondelete="")
+    parent_id = fields.Many2one(
+        "ni.observation.category", index=True, ondelete="set null"
+    )
     parent_path = fields.Char(index=True)
 
     child_ids = fields.One2many("ni.observation.category", "parent_id", index=True)
