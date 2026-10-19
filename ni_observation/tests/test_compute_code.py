@@ -210,7 +210,7 @@ class TestComputeCode(common.TransactionCase):
         inp = self.env["ni.observation.type"].create(
             {
                 "name": "No-Assign Input",
-                "code": "test-noassign-inp",
+                "code": "test-na-inp",
                 "value_type": "float",
                 "min": 0,
                 "max": 9999,
@@ -222,14 +222,17 @@ class TestComputeCode(common.TransactionCase):
                 "code": "test-no-assign",
                 "value_type": "float",
                 "compute": True,
-                "compute_code": "x = test_noassign_inp * 2",  # never sets result
+                "compute_code": "x = test_na_inp * 2",  # never sets result
                 "child_ids": [(4, inp.id)],
                 "min": 0,
                 "max": 9999,
             }
         )
         sheet = self._make_sheet()
-        self._add_obs(sheet, inp, 5)
+        with self.assertNoLogs(
+            "odoo.addons.ni_observation.models.ni_observation_sheet", "WARNING"
+        ):
+            self._add_obs(sheet, inp, 5)
 
         ob = self._get_computed(sheet, no_assign_type)
         self.assertFalse(ob)
@@ -259,7 +262,12 @@ class TestComputeCode(common.TransactionCase):
             }
         )
         sheet = self._make_sheet()
-        self._add_obs(sheet, inp, 5)  # must not raise
+        with self.assertLogs(
+            "odoo.addons.ni_observation.models.ni_observation_sheet", "WARNING"
+        ) as logs:
+            self._add_obs(sheet, inp, 5)  # must not raise
+        self.assertIn("test-bad-code", logs.output[0])
+        self.assertIn("ZeroDivisionError", logs.output[0])
 
         ob = self._get_computed(sheet, bad_type)
         self.assertFalse(ob, "failed compute should not create any observation")

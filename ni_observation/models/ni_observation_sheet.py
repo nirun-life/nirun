@@ -1,9 +1,12 @@
 #  Copyright (c) 2021 NSTDA
 
+import logging
 import textwrap
 
 from odoo import api, fields, models
 from odoo.tools.safe_eval import safe_eval
+
+_logger = logging.getLogger(__name__)
 
 _VALUE_FIELDS = frozenset({"value", "value_float", "value_int", "value_char"})
 
@@ -129,6 +132,13 @@ class ObservationSheet(models.Model):
                     safe_eval(code, ctx, mode="exec")
                     computed_result = ctx.get("result")
                 except Exception:
+                    _logger.warning(
+                        "Cannot compute observation type %s (%s) on sheet %s",
+                        ctype.code,
+                        ctype.id,
+                        sheet.id,
+                        exc_info=True,
+                    )
                     continue
                 if computed_result is None:
                     continue
