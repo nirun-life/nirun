@@ -3,7 +3,7 @@
 {
     "name": "Survey - Subject",
     "summary": "Survey subjects and respondent management",
-    "version": "16.0.0.3.1",
+    "version": "16.0.0.3.2",
     "development_status": "Alpha",
     "category": "Marketing/Surveys",
     "author": "NSTDA, Piruin P.",
