@@ -79,7 +79,7 @@ class Patient(models.Model):
     def _name_get(self):
         name = super()._name_get()
         if (
-            self._context.get("show_gender_age")
+            self.env.context.get("show_gender_age")
             and (self.age or self.gender)
             and self.blood_group
         ):
