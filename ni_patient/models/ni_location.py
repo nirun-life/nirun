@@ -67,13 +67,10 @@ class Location(models.Model):
         "Female", compute="_compute_patient_count", store=True, compute_sudo=True
     )
 
-    _sql_constraints = [
-        (
-            "company_id__parent_id__name__uniq",
-            "unique (company_id, parent_id, name)",
-            "Name is this location already exists !",
-        ),
-    ]
+    _company_id__parent_id__name__uniq = models.Constraint(
+        "unique (company_id, parent_id, name)",
+        "Name is this location already exists !",
+    )
 
     @api.depends("child_ids", "child_ids.parent_path")
     def _compute_child_count(self):

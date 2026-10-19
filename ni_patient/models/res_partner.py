@@ -1,7 +1,7 @@
 #  Copyright (c) 2021-2023 NSTDA
 
 from odoo import api, fields, models
-from odoo.osv import expression
+from odoo.fields import Domain
 
 
 class Partner(models.Model):
@@ -38,7 +38,7 @@ class Partner(models.Model):
         domain = super()._search_display_name(operator, value)
         if operator in ("ilike", "=ilike", "like", "=like", "=") and value:
             value = value.split(" / ")[-1]
-            domain = expression.OR(
+            domain = Domain.OR(
                 [
                     domain,
                     [("mobile", "=", value)],

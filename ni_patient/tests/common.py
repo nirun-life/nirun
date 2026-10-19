@@ -12,7 +12,7 @@ class TestPatientCommon(common.TransactionCase):
         patient_admin = self.env["res.users"].create(
             {
                 "login": "Patient.User",
-                "groups_id": [
+                "group_ids": [
                     (4, self.ref("base.group_user"), 0),
                     (4, self.ref("ni_patient.group_admin"), 0),
                 ],
