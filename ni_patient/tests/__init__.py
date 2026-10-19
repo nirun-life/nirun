@@ -3,6 +3,8 @@
 from . import (
     test_ni_encounter_class_auto_close,
     test_ni_encounter_class_auto_close_edge_cases,
+    test_ni_encounter_entered_in_error,
+    test_ni_encounter_origin_date,
     test_ni_encounter_participant,
     test_ni_location_name_search,
     test_ni_patient,
