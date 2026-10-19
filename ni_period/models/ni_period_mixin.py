@@ -28,7 +28,6 @@ class PeriodMixin(models.AbstractModel):
         store=True,
         compute="_compute_period_start_date",
         inverse="_inverse_period_start_date",
-        default=lambda self: fields.Date.context_today(self),
     )
     period_end = fields.Datetime(
         "Until",
