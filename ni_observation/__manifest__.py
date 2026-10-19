@@ -3,7 +3,7 @@
 {
     "name": "Observation",
     "summary": "Clinical observations including vital signs, lab results, and measurements",
-    "version": "16.0.0.6.1",
+    "version": "16.0.0.6.2",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
