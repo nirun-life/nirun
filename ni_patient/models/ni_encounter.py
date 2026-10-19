@@ -518,9 +518,20 @@ class Encounter(models.Model):
     def check_origin_date(self):
         for rec in self:
             if rec.origin_date and not rec.origin_partner_id:
-                raise _("Transfer from must not be null when transfer at is present")
-            if rec.origin_date and rec.origin_date > rec.period_start:
-                raise _("Transfer date must not be after encounter start date")
+                raise ValidationError(
+                    _("Transfer from must not be null when transfer at is present")
+                )
+            # origin_date is a Date: compare it with the start date as the
+            # user sees it, not with the UTC datetime.
+            if (
+                rec.origin_date
+                and rec.period_start
+                and rec.origin_date
+                > fields.Datetime.context_timestamp(rec, rec.period_start).date()
+            ):
+                raise ValidationError(
+                    _("Transfer date must not be after encounter start date")
+                )
 
     @api.constrains(
         "discharge_status_id",
