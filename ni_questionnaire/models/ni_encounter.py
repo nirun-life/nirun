@@ -20,7 +20,7 @@ class Encounter(models.Model):
 
     response_count = fields.Integer(
         compute="_compute_response_count",
-        sudo_compute=True,
+        compute_sudo=True,
     )
 
     @api.depends("response_ids")
