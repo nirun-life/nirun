@@ -46,8 +46,12 @@ class Patient(models.Model):
             if rec.observation_problem_only:
                 domain += [("is_problem", "=", True)]
 
+            # Same order as the list's default_order ("sequence,type_id"): the
+            # web client keeps the order of x2many values from an onchange.
             rec.filtered_patient_observation_ids = (
-                rec.patient_observation_ids.filtered_domain(domain)
+                rec.patient_observation_ids.filtered_domain(domain).sorted(
+                    lambda o: (o.sequence, o.type_id.sequence, o.type_id.id)
+                )
             )
 
     def _compute_observation_sheet_count(self):
