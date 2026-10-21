@@ -365,11 +365,14 @@ class Encounter(models.Model):
             participant = (
                 active_participant[0] if active_participant else rec.participant_ids[0]
             )
+            # Job title and permit number are HR-only on hr.employee, but the
+            # encounter shows them to everyone who can read the encounter.
+            employee = participant.employee_id.sudo()
             rec.update(
                 {
                     "participant_id": participant.id,
-                    "participant_title": participant.employee_id.job_title,
-                    "participant_permit_no": participant.employee_id.permit_no,
+                    "participant_title": employee.job_title,
+                    "participant_permit_no": employee.permit_no,
                 }
             )
 
