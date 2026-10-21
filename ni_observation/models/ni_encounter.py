@@ -60,8 +60,12 @@ class Encounter(models.Model):
                 domain = [("category_id", "=", rec.observation_category_id.id)]
                 if rec.observation_problem_only:
                     domain += [("is_problem", "=", True)]
+                # Same order as the list's default_order ("sequence,type_id"):
+                # the web client keeps the order of x2many values from an onchange.
                 rec.filtered_encounter_observation_ids = (
-                    rec.encounter_observation_ids.filtered_domain(domain)
+                    rec.encounter_observation_ids.filtered_domain(domain).sorted(
+                        lambda o: (o.sequence, o.type_id.sequence, o.type_id.id)
+                    )
                 )
             else:
                 rec.filtered_encounter_observation_ids = None
