@@ -3,7 +3,7 @@
 {
     "name": "Survey - Subject",
     "summary": "Survey subjects and respondent management",
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.0.2",
     "development_status": "Alpha",
     "category": "Marketing/Surveys",
     "author": "NSTDA, Piruin P.",
@@ -20,6 +20,7 @@
     ],
     "assets": {
         "survey.survey_assets": [
+            "survey_subject/static/src/interactions/survey_acknowledge.esm.js",
             "survey_subject/static/src/js/survey_form.esm.js",
         ],
     },

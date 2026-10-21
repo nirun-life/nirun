@@ -28,44 +28,25 @@
             expr="//div[hasclass('o_survey_finished')]/div[hasclass('row')]/div[1]"
             position="inside"
         >
-            <t t-if="survey.subject_type != 'res.partner'">
+            <!-- Behaviour in static/src/interactions/survey_acknowledge.esm.js: since 19.0
+                 the end screen is inserted without running inline scripts. -->
+            <div
+                t-if="survey.subject_type != 'res.partner'"
+                class="o_survey_subject_acknowledge"
+            >
                 <a
                     href="#"
-                    class="btn btn-primary btn-lg mt-2"
+                    class="btn btn-primary btn-lg mt-2 o_survey_subject_acknowledge_button"
                     role="button"
-                    onclick="acknowledgeResults()"
-                    id="acknowledge-button"
                 >
                     Acknowledge Results
                 </a>
-                <div id="return-link" style="display: none;">
-                    <a href="#" onclick="returnToPreviousURL()">
+                <div class="o_survey_subject_return_link d-none">
+                    <a href="#">
                         Click here to return to previous page, if this page not automatic close
                     </a>
                 </div>
-                <script type="text/javascript">
-var previousURL = document.referrer;
-
-function acknowledgeResults() {
-    document.getElementById("acknowledge-button").style.display = "none";
-    window.close();
-    showReturnLink();
-}
-
-function showReturnLink() {
-    if (previousURL) {
-        document.getElementById("return-link").style.display = "block";
-        document.getElementById("return-link").querySelector("a").href = previousURL;
-    }
-}
-
-function returnToPreviousURL() {
-    if (previousURL) {
-        window.location.href = previousURL;
-    }
-}
-                </script>
-            </t>
+            </div>
         </xpath>
     </template>
     <template
