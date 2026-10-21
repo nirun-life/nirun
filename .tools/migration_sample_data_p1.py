@@ -188,15 +188,11 @@ def encounter(patient, klass, start, location=None):
         "patient_id": patient.id,
         "class_id": klass.id,
         "period_start": start,
-        # ni.period.mixin gives period_start_date a default (today), which wins
-        # over its compute when a record is created from code.
-        "period_start_date": start.date(),
         "location_id": (location or locations[0]).id,
     }
     if patient.other_address_id:
         vals["other_address_id"] = patient.other_address_id.id
     enc = env["ni.encounter"].create(vals)
-    enc.location_history_ids.write({"period_start_date": start.date()})
     enc.participant_ids = [
         (
             0,
@@ -204,7 +200,6 @@ def encounter(patient, klass, start, location=None):
             {
                 "employee_id": employees[0].id,
                 "period_start": start,
-                "period_start_date": start.date(),
             },
         )
     ]
