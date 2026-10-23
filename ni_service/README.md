@@ -144,3 +144,7 @@ Encounter timeline / reporting
 
 Invariant: keep these names unchanged. Odoo skips an index by name, so a rename makes `-u` run a write-blocking `CREATE INDEX`
 on multi-million-row production tables.
+
+Invariant: `ServiceEvent.create()` clears `active_model`/`active_id` from the context. Otherwise `calendar.event.default_get`
+links the event to the record the form was opened from (for example `ni.patient`), and `calendar.event.create` adds a Meeting
+`mail.activity` on it for every service event.
