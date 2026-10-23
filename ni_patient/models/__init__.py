@@ -18,6 +18,7 @@ from . import ni_encounter_participant
 from . import ni_location
 from . import ni_location_type
 from . import res_partner
+from . import ir_attachment
 from . import res_company
 from . import ni_patient_res
 from . import ni_workflow

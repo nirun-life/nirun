@@ -6,6 +6,7 @@ from odoo import api, fields, models
 class Partner(models.Model):
     _inherit = "res.partner"
 
+    message_main_attachment_id = fields.Many2one(index="btree_not_null")
     patient = fields.Boolean(
         compute="_compute_patient",
         store=True,

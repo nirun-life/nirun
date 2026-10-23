@@ -60,6 +60,13 @@ read-only workflow timeline that combines events and requests into a single pati
 - `wizard/ni_encounter_discharge_wizard_views.xml` and `wizard/ni_patient_archive_wizard_views.xml` support guided encounter and
   archive actions.
 
+## Database Indexes
+
+`message_main_attachment_id` on `ni.patient` and `res.partner`, and `original_id` on `ir.attachment`
+(`models/ir_attachment.py`), use `index="btree_not_null"` so deleting an attachment can check those `ON DELETE SET NULL` foreign
+keys without a table scan. The generated names (`<table>_<column>_index`) match indexes already on production; do not rename
+them.
+
 ## Dependencies
 
 - `ni_coding`

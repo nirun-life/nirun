@@ -44,6 +44,7 @@ class Patient(models.Model):
         index=True,
         default=lambda self: self.env.company,
     )
+    message_main_attachment_id = fields.Many2one(index="btree_not_null")
 
     partner_id = fields.Many2one(
         "res.partner",
