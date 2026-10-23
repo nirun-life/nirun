@@ -221,7 +221,12 @@ class ServiceEvent(models.Model):
         for vals in vals_list:
             if not vals.get("name") and vals.get("service_id"):
                 vals["name"] = self.env["ni.service"].browse(vals["service_id"]).name
-        return super().create(vals_list)
+        # calendar.event.default_get turns active_model/active_id into res_model/res_id,
+        # then calendar.event.create adds a Meeting activity on that record, e.g. on
+        # every patient when created from the patient form.
+        return super(
+            ServiceEvent, self.with_context(active_model=False, active_id=False)
+        ).create(vals_list)
 
     def _compute_attachment_ids(self):
         attachments = self.env["ir.attachment"].search(
