@@ -11,6 +11,7 @@ class ObservationAbstract(models.AbstractModel):
         "survey.user_input",
         "Derived From Survey",
         store=True,
+        index=True,
         groups="survey.group_survey_user",
     )
 
