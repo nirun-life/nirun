@@ -26,8 +26,9 @@ responses in the clinical context, and transform completed answers into structur
 - `models/survey_survey.py` adds subject targeting, observation output settings, and sync logic for grading ranges.
   `action_sync_observation_range` follows `grading_basis`: under `score` it copies the reference-range bounds unchanged, under
   `percentage` it scales them by the observation type's `max`.
-- `models/survey_user_input.py` links responses to patients and encounters, adds database indexes for completed-response
-  lookups, and creates `ni.observation` or `ni.observation.sheet` records when a response is completed.
+- `models/survey_user_input.py` links responses to patients and encounters, adds database indexes for completed-response lookups
+  and for `message_main_attachment_id` (attachment FK checks on delete), and creates `ni.observation` or `ni.observation.sheet`
+  records when a response is completed.
 - `models/survey_question.py` and `models/survey_question_group.py` control how individual answers or grouped scores map into
   observation types. `observation_answer_type` and `observation_score_type` are deliberately not `required`: a NOT NULL column
   on `survey.question` or `survey.survey` breaks upstream modules' tests, which run before this module enters the registry.

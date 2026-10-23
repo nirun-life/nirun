@@ -18,6 +18,7 @@ class SurveyUserInput(models.Model):
         related="survey_id.observation_score_type"
     )
     observation_group_ids = fields.One2many(related="survey_id.question_group_ids")
+    message_main_attachment_id = fields.Many2one(index="btree_not_null")
 
     def init(self):
         super().init()
