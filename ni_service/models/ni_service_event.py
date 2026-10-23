@@ -13,10 +13,30 @@ from odoo.tools import pytz
 class Event(models.Model):
     _inherit = "calendar.event"
 
+    message_main_attachment_id = fields.Many2one(index="btree_not_null")
+
+    def init(self):
+        super().init()
+        # Index names match the ones created by hand on production; a different
+        # name would make -u rebuild them with a write-blocking CREATE INDEX.
+        self.env.cr.execute(
+            """
+            CREATE INDEX IF NOT EXISTS calendar_event_id_filter_idx
+            ON calendar_event (id)
+            INCLUDE (active, start, stop, allday, start_date)
+            """
+        )
+
     @api.model
     def _get_public_fields(self):
         # Work around to prevent maximum recursive errors when open event from other user who not service event's creator
         return super(Event, self)._get_public_fields() | {"attendee_ids"}
+
+
+class Attendee(models.Model):
+    _inherit = "calendar.attendee"
+
+    event_id = fields.Many2one(index=True)
 
 
 class ServiceEvent(models.Model):
@@ -178,7 +198,9 @@ class ServiceEvent(models.Model):
         "('res_id', '=', id), "
         "('mimetype', 'ilike', 'image')]",
         string="Cover Image",
+        index="btree_not_null",
     )
+    message_main_attachment_id = fields.Many2one(index="btree_not_null")
 
     def init(self):
         tools.create_index(
