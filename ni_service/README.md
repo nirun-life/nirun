@@ -123,8 +123,24 @@ Encounter timeline / reporting
 | Base model                     | Extension                      | Why it exists                                                                           |
 | ------------------------------ | ------------------------------ | --------------------------------------------------------------------------------------- |
 | `calendar.event`               | `models/ni_service_event.py`   | Exposes public attendee data safely and backs `ni.service.event` through `_inherits`    |
+| `calendar.attendee`            | `models/ni_service_event.py`   | Indexes `event_id` for attendee reads by event                                          |
 | `res.company`                  | `models/res_company.py`        | Stores default service calendar and default service attendance templates                |
 | `hr.job`                       | `models/hr_job.py`             | Gives service-related job records a color for UI grouping                               |
 | `resource.calendar.attendance` | `models/resource_calendar.py`  | Links calendar attendances back to services and provides a custom edit action           |
 | `ni.encounter`                 | `models/ni_encounter.py`       | Adds service-calendar context, generated service attendances, and service request links |
 | `ni.encounter.class`           | `models/ni_encounter_class.py` | Adds default service calendar and default services for encounter classes                |
+
+## Database Indexes
+
+`models/ni_service_event.py` declares indexes that were first created by hand on production:
+
+| Index                                               | Definition                                                              |
+| --------------------------------------------------- | ----------------------------------------------------------------------- |
+| `calendar_event_id_filter_idx`                      | `calendar_event (id) INCLUDE (active, start, stop, allday, start_date)` |
+| `calendar_attendee_event_id_index`                  | `calendar_attendee (event_id)`                                          |
+| `ni_service_event_message_main_attachment_id_index` | `btree_not_null`; attachment FK checks on delete                        |
+| `ni_service_event_displayed_image_id_index`         | `btree_not_null`; attachment FK checks on delete                        |
+| `calendar_event_message_main_attachment_id_index`   | `btree_not_null`; attachment FK checks on delete                        |
+
+Invariant: keep these names unchanged. Odoo skips an index by name, so a rename makes `-u` run a write-blocking `CREATE INDEX`
+on multi-million-row production tables.
