@@ -11,13 +11,7 @@ class TestLatestObservation(common.TransactionCase):
         super().setUpClass()
         partner = cls.env["res.partner"].create({"name": "Latest Test Patient"})
         cls.patient = cls.env["ni.patient"].create({"partner_id": partner.id})
-        cls.encounter = cls.env["ni.encounter"].create(
-            {
-                "patient_id": cls.patient.id,
-                "class_id": cls.env.ref("ni_patient.class_IMP").id,
-                "period_start": fields.Datetime.now(),
-            }
-        )
+        cls.encounter = cls._create_encounter(cls.patient)
         cls.type = cls.env["ni.observation.type"].create(
             {
                 "name": "Latest Test",
@@ -28,11 +22,24 @@ class TestLatestObservation(common.TransactionCase):
             }
         )
 
-    def _observe(self, value, occurrence):
+    @classmethod
+    def _create_encounter(cls, patient):
+        return cls.env["ni.encounter"].create(
+            {
+                "patient_id": patient.id,
+                "class_id": cls.env.ref("ni_patient.class_IMP").id,
+                "period_start": fields.Datetime.now(),
+            }
+        )
+
+    def _observe(self, value, occurrence, patient=None, encounter=None):
+        patient = patient or self.patient
+        if encounter is None:
+            encounter = self.encounter
         return self.env["ni.observation"].create(
             {
-                "patient_id": self.patient.id,
-                "encounter_id": self.encounter.id,
+                "patient_id": patient.id,
+                "encounter_id": encounter.id,
                 "type_id": self.type.id,
                 "occurrence": occurrence,
                 "value_int": value,
@@ -73,6 +80,53 @@ class TestLatestObservation(common.TransactionCase):
             lambda o: o.type_id == self.type
         )
         self.assertEqual(rows.mapped("value_int"), [2])
+
+    def _views(self):
+        return (
+            ("ni.patient.observation", "patient_id", self.patient),
+            ("ni.encounter.observation", "encounter_id", self.encounter),
+        )
+
+    def test_later_occurrence_wins_over_higher_id(self):
+        last = self._observe(1, "2025-01-02 08:00:00")
+        self._observe(2, "2025-01-01 08:00:00")
+        for model, field, record in self._views():
+            self.assertEqual(self._latest(model, field, record).ids, [last.id])
+
+    def test_newer_observation_without_value_is_ignored(self):
+        last = self._observe(1, "2025-01-01 08:00:00")
+        self._observe(0, "2025-01-02 08:00:00")
+        for model, field, record in self._views():
+            self.assertEqual(self._latest(model, field, record).ids, [last.id])
+
+    def test_other_patient_does_not_hide_the_latest(self):
+        partner = self.env["res.partner"].create({"name": "Latest Other Patient"})
+        other_patient = self.env["ni.patient"].create({"partner_id": partner.id})
+        other_encounter = self._create_encounter(other_patient)
+        last = self._observe(1, "2025-01-01 08:00:00")
+        self._observe(2, "2025-01-02 08:00:00", other_patient, other_encounter)
+        for model, field, record in self._views():
+            self.assertEqual(self._latest(model, field, record).ids, [last.id])
+
+    def test_search_by_id_returns_only_the_latest(self):
+        """The ORM reads these views by id, so a filter on id alone must
+        still drop the rows that are not the latest of their group."""
+        first = self._observe(1, "2025-01-01 08:00:00")
+        last = self._observe(2, "2025-01-02 08:00:00")
+        self.env.flush_all()
+        for model, _field, _record in self._views():
+            rows = self.env[model].search([("id", "in", [first.id, last.id])])
+            self.assertEqual(rows.ids, [last.id])
+            self.assertEqual(rows.read(["value_int"])[0]["value_int"], 2)
+
+    def test_encounter_view_skips_observation_without_encounter(self):
+        no_encounter = self._observe(
+            1, "2025-01-01 08:00:00", encounter=self.env["ni.encounter"]
+        )
+        self.env.flush_all()
+        domain = [("id", "=", no_encounter.id)]
+        self.assertFalse(self.env["ni.encounter.observation"].search(domain))
+        self.assertTrue(self.env["ni.patient.observation"].search(domain))
 
     def test_compute_observation_on_many_rows(self):
         """Each latest row computes its own observation and history, also when

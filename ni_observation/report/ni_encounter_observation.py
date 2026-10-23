@@ -10,13 +10,27 @@ class EncounterObservationLatest(models.Model):
     _inherit = ["ni.observation.report"]
 
     def init(self):
+        # NOT EXISTS instead of DISTINCT ON: PostgreSQL cannot push the ORM's
+        # filter on id or survey_response_id into a DISTINCT ON subquery, so
+        # each read rebuilt the view from the whole table.
         tools.drop_view_if_exists(self.env.cr, self._table)
         self.env.cr.execute(
             """CREATE OR REPLACE VIEW %s AS (
-            SELECT DISTINCT ON (encounter_id, type_id) *
-            FROM ni_observation
-            WHERE value IS NOT NULL
-            ORDER BY encounter_id, type_id, occurrence DESC, id DESC
+            SELECT o.*
+            FROM ni_observation o
+            WHERE o.value IS NOT NULL
+              AND o.encounter_id IS NOT NULL
+              AND o.type_id IS NOT NULL
+              AND o.occurrence IS NOT NULL
+              AND NOT EXISTS (
+                SELECT 1
+                FROM ni_observation n
+                WHERE n.encounter_id = o.encounter_id
+                  AND n.type_id = o.type_id
+                  AND n.value IS NOT NULL
+                  AND (n.occurrence > o.occurrence
+                       OR (n.occurrence = o.occurrence AND n.id > o.id))
+              )
         )
         """
             % (self._table)
