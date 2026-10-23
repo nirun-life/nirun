@@ -28,3 +28,20 @@ class TestServiceEvent(TestServiceCommon):
         self.assertTrue(event.event_id)
         self.assertEqual(event.name, self.service.name)
         self.assertEqual(event.service_category_ids, self.category)
+
+    def test_create_from_patient_form_adds_no_activity_on_patient(self):
+        event = (
+            self.env["ni.service.event"]
+            .with_context(active_model="ni.patient", active_id=self.patient.id)
+            .create(
+                {
+                    "service_id": self.service.id,
+                    "service_ids": [(4, self.service.id)],
+                    "start": fields.Datetime.from_string(EVENT_START),
+                    "stop": fields.Datetime.from_string(EVENT_STOP),
+                }
+            )
+        )
+
+        self.assertFalse(event.res_model)
+        self.assertFalse(self.patient.activity_ids)
