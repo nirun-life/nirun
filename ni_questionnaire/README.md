@@ -35,7 +35,8 @@ responses in the clinical context, and transform completed answers into structur
 - A `value`-mapped answer is read by `answer_type`, not by testing each `value_*` field for truthiness. Truthiness rejected a
   legitimate numerical answer of `0` and had no branch for `datetime` at all, both of which blocked survey completion.
 - `models/ni_encounter.py`, `models/ni_patient.py`, and `models/ni_observation_abstract.py` add response counters and launch
-  actions from the clinical records.
+  actions from the clinical records. `survey_response_id` on `ni.observation.abstract` is indexed
+  (`ni_observation_survey_response_id_index`) because the latest-observation views are searched by it.
 - `wizard/survey_subject.py` adapts the survey subject wizard for `ni.patient` and `ni.encounter`.
 
 ### Observations Are Created in `_mark_done()`
