@@ -47,7 +47,9 @@ views.
   branch for `datetime` at all, both of which blocked survey completion.
 - `models/ni_encounter.py`, `models/ni_patient.py`, and
   `models/ni_observation_abstract.py` add response counters and launch actions from the
-  clinical records. The encounter's "start" and "print" buttons create (once) and reuse
+  clinical records. `survey_response_id` on `ni.observation.abstract` is indexed
+  (`ni_observation__survey_response_id_index`) because the latest-observation views are
+  searched by it. The encounter's "start" and "print" buttons create (once) and reuse
   the encounter's own response, linked to the patient and the encounter, and pass it to
   core `action_start_survey(answer=...)`/`action_print_survey(answer=...)`, which put
   its access token in the URL.
