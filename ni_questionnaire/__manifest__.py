@@ -3,7 +3,7 @@
 {
     "name": "Questionnaire",
     "summary": "Patient questionnaires and survey administration",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
