@@ -49,6 +49,8 @@ flows.
   `ni_medication_request_view_form`).
 - Inheriting a donor view (e.g. an xpath adding a field to the dosage form) therefore only affects the donor form, not the other
   four, and the empty placeholders in the other forms cannot be targeted by xpath.
+- Donor views must be read with `sudo()`: `_get_view` runs as the requesting user on a view-cache miss, and only
+  `base.group_system` can read `ir.ui.view`.
 
 ## Verification
 
