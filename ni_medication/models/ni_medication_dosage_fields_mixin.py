@@ -43,7 +43,9 @@ class DosageFieldsMixin(models.AbstractModel):
                     placeholders = arch.xpath(f"//*[@name='{name}' and not(node())]")
                     if not placeholders:
                         continue
-                    donor_arch = etree.fromstring(self.env.ref(donor_xmlid).arch)
+                    # ir.ui.view is readable by group_system only
+                    donor_view = self.env.ref(donor_xmlid).sudo()
+                    donor_arch = etree.fromstring(donor_view.arch)
                     fragments = donor_arch.xpath(f"//*[@name='{name}' and node()]")
                     if not fragments:
                         continue

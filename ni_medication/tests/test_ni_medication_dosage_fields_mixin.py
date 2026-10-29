@@ -1,7 +1,7 @@
 #  Copyright (c) 2025-2026 NSTDA
 from lxml import etree
 
-from odoo.tests import TransactionCase
+from odoo.tests import TransactionCase, new_test_user
 
 PLACEHOLDERS = ("dosage_page_content", "dosage_fields", "dosage_administration_fields")
 
@@ -10,6 +10,19 @@ class TestDosageFieldsMixin(TransactionCase):
     """ni.medication.dosage.fields.mixin._get_view must resolve every
     <group name="..."/> placeholder into real content, with no leftover
     empty placeholder left in the arch."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        viewer = new_test_user(
+            cls.env, login="medication_viewer", groups="ni_medication.group_viewer"
+        )
+        cls.env = cls.env(user=viewer)
+
+    def setUp(self):
+        super().setUp()
+        # a cached view would skip _get_view, hiding access errors (#178)
+        self.env.registry.clear_caches()
 
     def _get_arch(self, model):
         arch = self.env[model].get_view(view_type="form")["arch"]

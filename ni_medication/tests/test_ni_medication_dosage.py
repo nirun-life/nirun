@@ -1,12 +1,20 @@
 #  Copyright (c) 2025 NSTDA
 
-from odoo.tests import TransactionCase
+from odoo.tests import TransactionCase, new_test_user
 
 
 class TestDosageTiming(TransactionCase):
     """ni.medication.dosage timing must resolve to the HL7 FHIR
     EventTiming codes (ni.timing.event) and Timing.repeat fields
     (ni.timing.timing) that ni_timing already models."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        user = new_test_user(
+            cls.env, login="medication_user", groups="ni_medication.group_user"
+        )
+        cls.env = cls.env(user=user)
 
     def setUp(self):
         super().setUp()
