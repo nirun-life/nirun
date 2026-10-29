@@ -127,6 +127,17 @@ and requests into a single patient history.
   `wizard/ni_patient_archive_wizard_views.xml` support guided encounter and archive
   actions.
 
+## Database Indexes
+
+`original_id` on `ir.attachment` (`models/ir_attachment.py`) uses
+`index="btree_not_null"` so deleting an attachment can check that `ON DELETE SET NULL`
+foreign key without a table scan. The generated name (`<table>_<column>_index`) matches
+the index already on production; do not rename it.
+
+Since 17.0, `message_main_attachment_id` belongs to `mail.thread.main.attachment`, which
+`ni.patient` and `res.partner` do not inherit, so the 16.0 indexes on that field are not
+declared here.
+
 ## Dependencies
 
 - `ni_coding`
