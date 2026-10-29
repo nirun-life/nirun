@@ -46,8 +46,8 @@ class Observation(models.Model):
         for rec in self:
             rec.history_ids = self.env["ni.observation"].search(
                 [
-                    ("patient_id", "=", self.patient_id.id),
-                    ("type_id", "=", self.type_id.get_display_type().ids),
+                    ("patient_id", "=", rec.patient_id.id),
+                    ("type_id", "in", rec.type_id.get_display_type().ids),
                     ("value", "!=", False),
                 ],
                 order="occurrence desc",
