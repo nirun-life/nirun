@@ -53,7 +53,7 @@ env = env(
     su=True,
 )
 
-# Core models extended by Phase 1 modules, counted even when no Nirun module
+# Core models extended by Phase 1 and 2 modules, counted even when no Nirun module
 # defines them (see the key datasets below).
 CORE_MODELS = [
     "res.partner",
@@ -64,6 +64,13 @@ CORE_MODELS = [
     "survey.question.answer",
     "survey.user_input",
     "survey.user_input.line",
+    # Phase 2
+    "calendar.event",
+    "calendar.attendee",
+    "hr.employee",
+    "hr.resume.line",
+    "res.company",
+    "res.users.role",
 ]
 
 # Key datasets: (model, [(label, dotted field path)], [group-by fields]).
@@ -98,6 +105,11 @@ DATASETS = [
             ("period_end", "period_end"),
             ("state", "state"),
             ("class_code", "class_id.code"),
+            # ni_practitioner
+            ("performer_id", "performer_id"),
+            ("performer_license_id", "performer_license_id"),
+            ("performer_license_no", "performer_license_no"),
+            ("department_id", "department_id"),
         ],
         ["state"],
     ),
@@ -169,6 +181,285 @@ DATASETS = [
         [],
         ["state"],
     ),
+    # ----------------------------------------------------------- Phase 2
+    (
+        "res.company",
+        [
+            ("name", "name"),
+            ("type_id", "type_id"),
+            ("capacity", "capacity"),
+            ("capacity_unit", "capacity_unit"),
+        ],
+        [],
+    ),
+    (
+        "hr.employee",
+        [
+            ("name", "name"),
+            ("department_id", "department_id"),
+            ("job_id", "job_id"),
+            ("license_id", "license_id"),
+            ("license_no", "license_no"),
+            ("work_contact_id", "work_contact_id"),
+        ],
+        [],
+    ),
+    (
+        "hr.resume.line",
+        [
+            ("employee_id", "employee_id"),
+            ("name", "name"),
+            ("line_type_id", "line_type_id"),
+            ("code_id", "code_id"),
+            ("identifier", "identifier"),
+            ("date_start", "date_start"),
+        ],
+        [],
+    ),
+    (
+        "res.users.role",
+        [
+            ("name", "name"),
+            ("employee_categories", "employee_category_ids"),
+            ("users", "line_ids.user_id"),
+        ],
+        [],
+    ),
+    (
+        "ni.condition",
+        [
+            ("patient_id", "patient_id"),
+            ("encounter_id", "encounter_id"),
+            ("code_id", "code_id"),
+            ("name", "name"),
+            ("clinical_state", "clinical_state"),
+            ("severity", "severity"),
+            ("verification_id", "verification_id"),
+            ("is_problem", "is_problem"),
+            ("is_diagnosis", "is_diagnosis"),
+            ("categories", "category_ids"),
+            ("period_start", "period_start"),
+        ],
+        ["clinical_state"],
+    ),
+    (
+        "ni.condition.latest",
+        [
+            ("patient_id", "patient_id"),
+            ("code_id", "code_id"),
+            ("clinical_state", "clinical_state"),
+        ],
+        [],
+    ),
+    (
+        "ni.encounter.diagnosis",
+        [
+            ("condition_id", "condition_id"),
+            ("encounter_id", "encounter_id"),
+            ("role_id", "role_id"),
+        ],
+        [],
+    ),
+    (
+        "ni.procedure",
+        [
+            ("patient_id", "patient_id"),
+            ("encounter_id", "encounter_id"),
+            ("code_id", "code_id"),
+            ("performer_id", "performer_id"),
+            ("outcome_id", "outcome_id"),
+            ("period_start", "period_start"),
+            ("period_end", "period_end"),
+        ],
+        ["state"],
+    ),
+    (
+        "ni.allergy",
+        [
+            ("patient_id", "patient_id"),
+            ("code_id", "code_id"),
+            ("category", "category"),
+            ("criticality", "criticality"),
+            ("type", "type"),
+            ("reactions", "reaction_ids"),
+        ],
+        ["state"],
+    ),
+    (
+        "ni.allergy.reaction",
+        [
+            ("allergy_id", "allergy_id"),
+            ("onset", "onset"),
+            ("severity", "severity"),
+        ],
+        [],
+    ),
+    (
+        "ni.communication",
+        [
+            ("patient_id", "patient_id"),
+            ("encounter_id", "encounter_id"),
+            ("category_id", "category_id"),
+            ("contents", "content_ids"),
+            ("sender_employee_id", "sender_employee_id"),
+            ("sender_id", "sender_id"),
+            ("recipients", "recipient_ids"),
+            ("period_start", "period_start"),
+        ],
+        ["state"],
+    ),
+    (
+        "ni.document.ref",
+        [
+            ("patient_id", "patient_id"),
+            ("encounter_id", "encounter_id"),
+            ("type_id", "type_id"),
+            ("attachments", "attachment_ids"),
+            ("author_id", "author_id"),
+            ("occurrence", "occurrence"),
+        ],
+        ["state"],
+    ),
+    (
+        "ni.coverage",
+        [
+            ("patient_id", "patient_id"),
+            ("name", "name"),
+            ("type_id", "type_id"),
+            ("insurance_plan_id", "insurance_plan_id"),
+            ("subscriber_id", "subscriber_id"),
+            ("subscriber_no", "subscriber_no"),
+            ("period_end", "period_end"),
+        ],
+        ["state"],
+    ),
+    (
+        "ni.coverage.benefit",
+        [
+            ("coverage_id", "coverage_id"),
+            ("type_id", "type_id"),
+            ("value", "value"),
+            ("value_percentage", "value_percentage"),
+            ("currency", "value_currency_id.name"),
+        ],
+        [],
+    ),
+    (
+        "ni.insurance.plan.benefit",
+        [
+            ("plan_id", "plan_id"),
+            ("type_id", "type_id"),
+            ("value", "value"),
+            ("value_percentage", "value_percentage"),
+        ],
+        [],
+    ),
+    (
+        "ni.patient.related.person",
+        [
+            ("patient_id", "patient_id"),
+            ("partner_id", "partner_id"),
+            ("name", "partner_id.name"),
+            # res.partner.title moved to ni_partner_title (title_id) in 19.0 (D3)
+            ("title", ("partner_id.title.name", "partner_id.title_id.name")),
+            ("mobile", "partner_id.mobile"),
+            ("phone", "partner_id.phone"),
+            ("relationships", "relationship_ids"),
+        ],
+        [],
+    ),
+    (
+        "ni.immunization",
+        [
+            ("patient_id", "patient_id"),
+            ("vaccine_id", "vaccine_id"),
+            ("performer_id", "performer_id"),
+            ("occurrence", "occurrence"),
+            ("route_id", "route_id"),
+            ("site_id", "site_id"),
+            ("lot_number", "lot_number"),
+        ],
+        ["state"],
+    ),
+    (
+        "ni.immunization.evaluation",
+        [
+            ("patient_id", "patient_id"),
+            ("immunization_id", "immunization_id"),
+            ("target_disease_id", "target_disease_id"),
+            ("dose_number", "dose_number"),
+            ("series_doses", "series_doses"),
+            ("dose_status", "dose_status"),
+            ("protection_status", "protection_status"),
+        ],
+        [],
+    ),
+    (
+        "ni.immunization.summary",
+        [
+            ("patient_id", "patient_id"),
+            ("target_disease_id", "target_disease_id"),
+            ("protection_status", "protection_status"),
+            ("dose_progress", "dose_progress"),
+        ],
+        [],
+    ),
+    (
+        "ni.service",
+        [
+            ("name", "name"),
+            ("category_id", "category_id"),
+            ("categories", "category_ids"),
+            ("type_id", "type_id"),
+            ("attendances", "attendance_ids"),
+            ("employees", "employee_ids"),
+        ],
+        [],
+    ),
+    (
+        "ni.service.event",
+        [
+            ("event_id", "event_id"),
+            ("service_id", "service_id"),
+            ("services", "service_ids"),
+            ("service_category_id", "service_category_id"),
+            ("planned_patients", "plan_patient_ids"),
+            ("attendances", "attendance_ids"),
+        ],
+        [],
+    ),
+    (
+        "calendar.event",
+        [
+            ("name", "name"),
+            ("start", "start"),
+            ("stop", "stop"),
+            ("allday", "allday"),
+            ("partners", "partner_ids"),
+        ],
+        [],
+    ),
+    (
+        "ni.encounter.service.attendance",
+        [
+            ("encounter_id", "encounter_id"),
+            ("service_id", "service_id"),
+            ("attendance_id", "attendance_id"),
+            ("service_event_id", "service_event_id"),
+            ("request_id", "request_id"),
+        ],
+        [],
+    ),
+    (
+        "ni.service.request",
+        [
+            ("patient_id", "patient_id"),
+            ("services", "service_ids"),
+            ("intent", "intent"),
+            ("timing_id", "timing_id"),
+        ],
+        ["state"],
+    ),
 ]
 
 
@@ -229,6 +520,12 @@ def _is_stored_model(model):
     return not (model._abstract or model._transient or not model._auto)
 
 
+def _is_readable_model(model):
+    """Stored models and SQL views (``_auto = False``), such as latest-record
+    reports."""
+    return not (model._abstract or model._transient) and model._table
+
+
 def _count_by(model, field_name):
     if field_name not in model._fields or not model._fields[field_name].store:
         return None
@@ -242,7 +539,7 @@ def _dataset(model_name, paths, group_by):
     if model_name not in env.registry:
         return None
     model = env[model_name]
-    if not _is_stored_model(model):
+    if not _is_readable_model(model):
         return None
     result = {"count": model.search_count([])}
     for field_name in group_by:
@@ -334,6 +631,72 @@ def _partner_extra():
     return result
 
 
+def _company_dependent(model_name, field_name):
+    """Hash a company-dependent field per company (ir.property up to 17.0,
+    jsonb from 18.0)."""
+    if model_name not in env.registry or field_name not in env[model_name]._fields:
+        return None
+    companies = env["res.company"].search([], order="id")
+    rows = []
+    for record in env[model_name].search([], order="id"):
+        for company in companies:
+            value = record.with_company(company)[field_name]
+            rows.append([record.id, company.id, value or None])
+    return {
+        "values": sum(1 for row in rows if row[2]),
+        "sha256": _digest(json.dumps(rows, ensure_ascii=True)),
+    }
+
+
+def _document_attachments():
+    """Every attachment of a document reference must still be readable from the
+    filestore of the new version."""
+    if "ni.document.ref" not in env.registry:
+        return None
+    rows = []
+    unreadable = 0
+    for doc in env["ni.document.ref"].search([], order="id"):
+        for attachment in doc.attachment_ids.sorted("id"):
+            raw = attachment.raw
+            if not raw:
+                unreadable += 1
+            rows.append(
+                [
+                    doc.id,
+                    attachment.id,
+                    attachment.name,
+                    hashlib.sha256(raw or b"").hexdigest(),
+                ]
+            )
+    return {
+        "count": len(rows),
+        "unreadable": unreadable,
+        "sha256": _digest(json.dumps(rows, ensure_ascii=True)),
+    }
+
+
+def _phase2_checks():
+    checks = {
+        "res.users.role.access_token": _company_dependent(
+            "res.users.role", "access_token"
+        ),
+        "ni.document.ref.attachments": _document_attachments(),
+    }
+    if "ni.communication" in env.registry:
+        checks["ni.communication.without_sender"] = env[
+            "ni.communication"
+        ].search_count([("sender_id", "=", False)])
+    if "ni.service" in env.registry:
+        services = env["ni.service"].search([("category_id", "!=", False)])
+        checks["ni.service.category_not_in_categories"] = len(
+            services.filtered(lambda s: s.category_id not in s.category_ids)
+        )
+        checks["ni.service.backfill_cron"] = bool(
+            env.ref("ni_service.ir_cron_backfill_category_ids", False)
+        )
+    return checks
+
+
 nirun_modules = _nirun_modules()
 snapshot = {
     "meta": {
@@ -352,6 +715,7 @@ for model_name, paths, group_by in DATASETS:
     snapshot["datasets"][model_name] = _dataset(model_name, paths, group_by)
 if snapshot["datasets"]["res.partner"]:
     snapshot["datasets"]["res.partner"].update(_partner_extra())
+snapshot["checks"] = _phase2_checks()
 
 # The script only reads; make sure nothing computed on the way is committed.
 env.cr.rollback()
