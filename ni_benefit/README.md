@@ -1,6 +1,6 @@
 # Patient Benefit (`ni_benefit`)
 
-Odoo 16.0 module that adds a reusable benefit or entitlement vocabulary and links those
+Odoo 17.0 module that adds a reusable benefit or entitlement vocabulary and links those
 benefit records directly to patients.
 
 ## Purpose
@@ -41,3 +41,5 @@ patient model.
 - Re-check patient forms after changes to ensure benefits can be assigned and the
   computed count stays in sync.
 - Confirm benefit hierarchy edits reject recursive parent assignments.
+- `tests/test_ni_benefit.py` checks that `ni.benefit` accepts a parent and rejects a
+  recursive one.
