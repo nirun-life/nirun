@@ -23,6 +23,8 @@ clinical identifier, a typed organization hierarchy, and simple capacity informa
 - Organization names use a custom `name_get` and `_name_search` so users can search by either organization name or identifier.
 - `models/res_company_type.py` defines a parent-child coding hierarchy for organization types and blocks recursive structures.
 - `data/res_company_type_data.xml` seeds the base organization type records used by the type selector.
+- `res.company.type` creates that base type in `init()` when none exists, so the companies that exist at install time get a type
+  and `type_id` gets its NOT NULL constraint.
 
 ## Views and Security
 
@@ -40,3 +42,4 @@ clinical identifier, a typed organization hierarchy, and simple capacity informa
 
 - Re-check organization create and edit flows, especially identifier search and the displayed organization label.
 - Confirm organization type hierarchy edits reject recursive parent assignments.
+- `tests/test_res_company.py` checks the NOT NULL constraint on `type_id` and the capacity label.
