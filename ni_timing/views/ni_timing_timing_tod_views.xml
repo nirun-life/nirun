@@ -34,10 +34,10 @@
         </field>
     </record>
     <record id="ni_timing_timing_tod_view_tree" model="ir.ui.view">
-        <field name="name">ni.timing.timing.tod.view.tree</field>
+        <field name="name">ni.timing.timing.tod.view.list</field>
         <field name="model">ni.timing.timing.tod</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" string="time" />
                 <field name="all_day" width="1" optional="hide" />
                 <field
@@ -55,7 +55,7 @@
                     invisible="all_day"
                 />
                 <field name="tz" width="2" optional="hide" invisible="all_day" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_timing_timing_tod_view_kanban" model="ir.ui.view">
@@ -70,7 +70,7 @@
                 <field name="end_time" invisible="1" />
                 <field name="tz" invisible="1" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div
                             t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''} oe_kanban_global_click"
                         >
