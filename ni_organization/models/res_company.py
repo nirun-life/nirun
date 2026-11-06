@@ -1,6 +1,6 @@
 #  Copyright (c) 2023 NSTDA
 from odoo import api, fields, models
-from odoo.osv import expression
+from odoo.fields import Domain
 
 
 class Company(models.Model):
@@ -54,7 +54,7 @@ class Company(models.Model):
             words = value.split()
             if len(words) > 1:
                 domain = super()._search_display_name(operator, words[0])
-                return expression.AND(
+                return Domain.AND(
                     [domain] + [[("name", operator, word)] for word in words]
                 )
         return super()._search_display_name(operator, value)
