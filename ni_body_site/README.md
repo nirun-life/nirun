@@ -1,6 +1,6 @@
 # Nirun - Body Site
 
-Odoo 18.0 module that provides anatomical body-site coding for Nirun. It stores
+Odoo 19.0 module that provides anatomical body-site coding for Nirun. It stores
 hierarchical body-structure terms so downstream clinical modules can reference
 consistent body-site data instead of free-text anatomical labels.
 
@@ -18,8 +18,7 @@ workflows that need structured site selection.
 
 ## Data and Views
 
-- `data/ni.body.site.csv` and `data/ni_body_site_data.xml` seed the body-site
-  vocabulary.
+- `data/ni_body_site_data.xml` seeds the body-site vocabulary.
 - `views/ni_body_site_views.xml` provides dictionary management for anatomical sites.
 
 ## Security and Dependencies
