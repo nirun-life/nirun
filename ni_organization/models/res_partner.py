@@ -1,5 +1,5 @@
 #  Copyright (c) 2023 NSTDA
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class Partner(models.Model):
@@ -11,6 +11,6 @@ class Partner(models.Model):
         (
             "identifier_unique",
             "unique (identifier)",
-            _("This identifier already exist!"),
+            "This identifier already exist!",
         ),
     ]
