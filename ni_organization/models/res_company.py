@@ -1,10 +1,12 @@
 #  Copyright (c) 2023 NSTDA
 from odoo import api, fields, models
+from odoo.osv import expression
 
 
 class Company(models.Model):
     _inherit = "res.company"
     _description = "Organization"
+    _rec_names_search = ["name", "identifier"]
 
     @api.model
     def get_default_type(self):
@@ -45,20 +47,14 @@ class Company(models.Model):
             org.display_name = name
 
     @api.model
-    def _name_search(self, name, domain=None, operator="ilike", limit=None, order=None):
-        # Match every word of a multi-word name, or a single word on the name or
-        # the identifier. The criterion goes into the domain, so the core
-        # override still applies (user_preference company filter).
-        domain = list(domain or [])
-        if name and isinstance(name, str):
-            words = name.split()
+    def _search_display_name(self, operator, value):
+        # A multi-word query must match every word of the name. The core
+        # override still builds the base domain (user_preference company filter).
+        if operator in ("ilike", "like") and isinstance(value, str):
+            words = value.split()
             if len(words) > 1:
-                domain += [("name", operator, word) for word in words]
-            else:
-                domain += [
-                    "|",
-                    ("name", operator, name),
-                    ("identifier", operator, name),
-                ]
-            name, operator = "", "ilike"
-        return super()._name_search(name, domain, operator, limit, order)
+                domain = super()._search_display_name(operator, words[0])
+                return expression.AND(
+                    [domain] + [[("name", operator, word)] for word in words]
+                )
+        return super()._search_display_name(operator, value)

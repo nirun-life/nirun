@@ -1,6 +1,6 @@
 # Organization (`ni_organization`)
 
-Odoo 17.0 module that extends `res.company` into a healthcare organization record with
+Odoo 18.0 module that extends `res.company` into a healthcare organization record with
 typed facilities, shared identifiers, and searchable capacity metadata.
 
 ## Purpose
@@ -23,8 +23,8 @@ hierarchy, and simple capacity information that can be reused by downstream modu
   the related identifier, and adds `type_id`, `capacity`, `capacity_unit`, and computed
   `display_capacity`.
 - `display_name` is `Name (Identifier)`; the context key `no_identifier` drops the
-  identifier. `_name_search` matches a single word on the name or the identifier, and
-  every word of a multi-word query on the name.
+  identifier. Search matches the name or the identifier (`_rec_names_search`); a
+  multi-word query must match every word of the name (`_search_display_name`).
 - `models/res_company_type.py` defines a parent-child coding hierarchy for organization
   types and blocks recursive structures.
 - `data/res_company_type_data.xml` seeds the base organization type records used by the
@@ -40,6 +40,7 @@ hierarchy, and simple capacity information that can be reused by downstream modu
 - `views/res_company_type_views.xml` provides maintenance views for the organization
   type hierarchy.
 - `security/ir.model.access.csv` grants access to the custom organization type model.
+  Read access is granted to internal, portal and public users; administrators can edit.
 
 ## Dependencies
 
