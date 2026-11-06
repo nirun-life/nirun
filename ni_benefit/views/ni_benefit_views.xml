@@ -3,7 +3,7 @@
     <record id="ni_benefit_action" model="ir.actions.act_window">
         <field name="name">Benefit</field>
         <field name="res_model">ni.benefit</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <record id="ni_benefit_view_search" model="ir.ui.view">
         <field name="name">ni.benefit.view.search</field>
@@ -30,17 +30,17 @@
         </field>
     </record>
     <record id="ni_benefit_view_tree" model="ir.ui.view">
-        <field name="name">ni.benefit.view.tree</field>
+        <field name="name">ni.benefit.view.list</field>
         <field name="model">ni.benefit</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="code" optional="show" />
                 <field name="system_id" optional="show" />
                 <field name="color" optional="hide" widget="color_picker" />
                 <field name="active" optional="hide" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_benefit_view_form" model="ir.ui.view">
