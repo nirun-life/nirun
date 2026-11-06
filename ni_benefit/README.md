@@ -1,6 +1,6 @@
 # Patient Benefit (`ni_benefit`)
 
-Odoo 18.0 module that adds a reusable benefit or entitlement vocabulary and links those
+Odoo 19.0 module that adds a reusable benefit or entitlement vocabulary and links those
 benefit records directly to patients.
 
 ## Purpose
