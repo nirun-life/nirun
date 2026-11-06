@@ -62,54 +62,19 @@
         <field name="name">ni.timing.timing.tod.view.kanban</field>
         <field name="model">ni.timing.timing.tod</field>
         <field name="arch" type="xml">
-            <kanban>
-                <field name="name" />
-                <field name="color" widget="color_picker" />
-                <field name="all_day" invisible="1" />
-                <field name="start_time" invisible="1" />
-                <field name="end_time" invisible="1" />
-                <field name="tz" invisible="1" />
+            <kanban highlight_color="color">
                 <templates>
+                    <t t-name="menu">
+                        <a
+                            t-if="widget.editable"
+                            role="menuitem"
+                            type="open"
+                            class="dropdown-item"
+                        >Edit</a>
+                        <field name="color" widget="kanban_color_picker" />
+                    </t>
                     <t t-name="card">
-                        <div
-                            t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''} oe_kanban_global_click"
-                        >
-                            <!-- Dropdown เมนูสำหรับ Edit -->
-                            <div
-                                class="o_dropdown_kanban dropdown"
-                                t-if="widget.editable"
-                            >
-                                <a
-                                    class="dropdown-toggle o-no-caret btn"
-                                    data-toggle="dropdown"
-                                    href="#"
-                                    role="button"
-                                    aria-label="Dropdown menu"
-                                    title="Dropdown menu"
-                                >
-                                    <span class="fa fa-ellipsis-v" />
-                                </a>
-                                <div class="dropdown-menu" role="menu">
-                                    <t t-if="widget.editable">
-                                        <a
-                                            class="dropdown-item"
-                                            role="menuitem"
-                                            type="edit"
-                                        >Edit</a>
-                                    </t>
-                                    <ul
-                                        class="oe_kanban_colorpicker"
-                                        data-field="color"
-                                    />
-                                </div>
-                            </div>
-                            <!-- แสดงข้อมูลหลัก -->
-                            <div class="o_kanban_content">
-                                <strong>
-                                    <field name="name" />
-                                </strong>
-                            </div>
-                        </div>
+                        <field name="name" class="fw-bold" />
                     </t>
                 </templates>
             </kanban>
