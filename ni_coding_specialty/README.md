@@ -1,5 +1,9 @@
 # Coding Specialty (`ni_coding_specialty`)
 
+> **Retired (decision D9, nirun-life/nirun#186).** This module is not ported to 17.0, 18.0 or 19.0. Nothing inherits
+> `ni.specialty.mixin` and no module depends on this one, so there is no feature or data to carry forward. It is uninstalled at
+> the 19.0 cutover (nirun-life/nirun#211). A real per-specialty filter would be a new feature with its own issue.
+
 Odoo 16.0 module that combines the Nirun coding base with the specialty-aware filtering mixin so coded reference data can be
 restricted by practitioner specialty.
 
