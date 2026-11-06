@@ -38,7 +38,7 @@ class TimingTimeOfDay(models.Model):
     start_time = fields.Float()
     end_time = fields.Float()
     tz = fields.Selection(
-        _tz_get, string="Timezone", default=lambda self: self._context.get("tz")
+        _tz_get, string="Timezone", default=lambda self: self.env.context.get("tz")
     )
     start = fields.Char(compute="_compute_start_end")
     end = fields.Char(compute="_compute_start_end")
