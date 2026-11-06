@@ -1,8 +1,14 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import _, _lt, api, fields, models, tools
+from odoo import api, fields, models, tools
 from odoo.exceptions import ValidationError
 from odoo.tools import date_utils
+from odoo.tools.translate import LazyTranslate
+
+_lt = LazyTranslate(__name__)
+
+# Module-level labels have no env: LazyTranslate resolves them when rendered.
+# pylint: disable=prefer-env-translation
 
 time_unit = {
     "year": _lt("year"),
@@ -23,6 +29,7 @@ time_unit_plural = {
     "minute": _lt("minutes"),
     "second": _lt("seconds"),
 }
+# pylint: enable=prefer-env-translation
 
 
 class Timing(models.Model):
@@ -35,9 +42,7 @@ class Timing(models.Model):
     res_id = fields.Many2oneReference(
         "Related Document ID", model_field="res_model", copy=False
     )
-    template_id = fields.Many2one(
-        "ni.timing.template", string="Template", required=False, index=True
-    )
+    template_id = fields.Many2one("ni.timing.template", required=False, index=True)
     bound_start = fields.Datetime("Since", index=True, copy=False)
     bound_end = fields.Datetime("Until", index=True, copy=False)
     bound_duration_days = fields.Integer(
@@ -181,7 +186,7 @@ class Timing(models.Model):
 
     @api.onchange("everyday")
     def _onchange_everyday(self):
-        all_dow = self.env["ni.timing.dow"].search([]).mapped("id")
+        all_dow = self.env["ni.timing.dow"].search([]).ids  # pylint: disable=no-search-all
         for rec in self:
             org = rec._origin
             if not org.everyday and rec.everyday:
@@ -200,32 +205,33 @@ class Timing(models.Model):
         if self.frequency > 1 and (
             not self.frequency_max or self.frequency == self.frequency_max
         ):
-            return _("%s times") % self.frequency
+            return self.env._("%s times", self.frequency)
         if self.frequency and self.frequency_max:
-            return _("%(min)s-%(max)s times") % {
-                "min": self.frequency,
-                "max": self.frequency_max,
-            }
+            return self.env._(
+                "%(min)s-%(max)s times", min=self.frequency, max=self.frequency_max
+            )
 
     @property
     def period_text(self):
         if self.period == 1 and (not self.period_max or self.period_max == 1):
             return (
-                _("every %s") % time_unit.get(self.period_unit)
+                self.env._("every %s", time_unit.get(self.period_unit))
                 if not (self.period_unit == "week" and self.day_of_week)
                 else ""
             )
         if self.period > 1 and (not self.period_max or self.period == self.period_max):
-            return _("every %(period)s %(unit)s") % {
-                "period": self.period,
-                "unit": time_unit_plural.get(self.period_unit),
-            }
+            return self.env._(
+                "every %(period)s %(unit)s",
+                period=self.period,
+                unit=time_unit_plural.get(self.period_unit),
+            )
         if self.period and self.period_max:
-            return _("every %(min)s-%(max)s %(unit)s") % {
-                "min": self.period,
-                "max": self.period_max,
-                "unit": time_unit_plural.get(self.period_unit),
-            }
+            return self.env._(
+                "every %(min)s-%(max)s %(unit)s",
+                min=self.period,
+                max=self.period_max,
+                unit=time_unit_plural.get(self.period_unit),
+            )
         else:
             return ""
 
@@ -242,8 +248,9 @@ class Timing(models.Model):
         return (
             ", ".join(wh)
             if not self.offset
-            else _("%(offset)s min %(when)s")
-            % {"offset": self.offset, "when": ", ".join(wh)}
+            else self.env._(
+                "%(offset)s min %(when)s", offset=self.offset, when=", ".join(wh)
+            )
         )
 
     @property
@@ -251,18 +258,20 @@ class Timing(models.Model):
         if self.duration and (
             not self.duration_max or self.duration_max == self.duration
         ):
-            return _("for %(duration)s %(unit)s") % {
-                "duration": self.duration,
-                "unit": time_unit.get(self.duration_unit)
+            return self.env._(
+                "for %(duration)s %(unit)s",
+                duration=self.duration,
+                unit=time_unit.get(self.duration_unit)
                 if self.duration == 1
                 else time_unit_plural.get(self.duration_unit),
-            }
+            )
         if self.duration and self.duration_max:
-            return _("for %(min)s-%(max)s %(unit)s") % {
-                "min": self.duration,
-                "max": self.duration_max,
-                "unit": time_unit_plural.get(self.duration_unit),
-            }
+            return self.env._(
+                "for %(min)s-%(max)s %(unit)s",
+                min=self.duration,
+                max=self.duration_max,
+                unit=time_unit_plural.get(self.duration_unit),
+            )
         else:
             return ""
 
@@ -304,14 +313,17 @@ class Timing(models.Model):
         for rec in self:
             if rec.offset and (not rec.when or rec.is_with_meal):
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "If there's an offset, there must be a when "
                         "(and not C, CM, CD, CV)"
                     )
                 )
             if rec.time_of_day and rec.when:
                 raise ValidationError(
-                    _("If there's a time_of_day, there cannot be a when, or vice versa")
+                    self.env._(
+                        "If there's a time_of_day, there cannot be a when, "
+                        "or vice versa"
+                    )
                 )
 
     @property
@@ -326,17 +338,21 @@ class Timing(models.Model):
         for rec in self:
             if rec.duration and not rec.duration_unit:
                 raise ValidationError(
-                    _("If there's a duration, there needs to be duration units")
+                    self.env._(
+                        "If there's a duration, there needs to be duration units"
+                    )
                 )
             if rec.duration < 0:
-                raise ValidationError(_("duration SHALL be a non-negative value"))
+                raise ValidationError(
+                    self.env._("duration SHALL be a non-negative value")
+                )
             if rec.duration_max and not rec.duration:
                 raise ValidationError(
-                    _("If there's a durationMax, there must be a duration")
+                    self.env._("If there's a durationMax, there must be a duration")
                 )
             if rec.duration_max and rec.duration > rec.duration_max:
                 raise ValidationError(
-                    _("duration max must be more than min [%s]") % rec.duration
+                    self.env._("duration max must be more than min [%s]", rec.duration)
                 )
 
     @api.constrains("frequency", "frequency_max")
@@ -345,14 +361,18 @@ class Timing(models.Model):
             return  # ถ้ามีการตั้งค่า isCopy ให้ข้ามการทำงานนี้
         for rec in self:
             if rec.frequency < 0:
-                raise ValidationError(_("frequency SHALL be a non-negative value"))
+                raise ValidationError(
+                    self.env._("frequency SHALL be a non-negative value")
+                )
             if rec.frequency_max and not rec.frequency:
                 raise ValidationError(
-                    _("If there's a frequencyMax, there must be a frequency")
+                    self.env._("If there's a frequencyMax, there must be a frequency")
                 )
             if rec.frequency_max and rec.frequency > rec.frequency_max:
                 raise ValidationError(
-                    _("frequency max must be more than min [%s]") % rec.frequency
+                    self.env._(
+                        "frequency max must be more than min [%s]", rec.frequency
+                    )
                 )
 
     @api.constrains("period", "period_max")
@@ -362,17 +382,19 @@ class Timing(models.Model):
         for rec in self:
             if rec.period and not rec.period_unit:
                 raise ValidationError(
-                    _("If there's a period, there needs to be period units")
+                    self.env._("If there's a period, there needs to be period units")
                 )
             if rec.period < 0:
-                raise ValidationError(_("period SHALL be a non-negative value"))
+                raise ValidationError(
+                    self.env._("period SHALL be a non-negative value")
+                )
             if rec.period_max and not rec.period:
                 raise ValidationError(
-                    _("If there's a periodMax, there must be a period")
+                    self.env._("If there's a periodMax, there must be a period")
                 )
             if rec.period_max and rec.period > rec.period_max:
                 raise ValidationError(
-                    _("period max must be more than min [%s]") % rec.period
+                    self.env._("period max must be more than min [%s]", rec.period)
                 )
 
     @api.model

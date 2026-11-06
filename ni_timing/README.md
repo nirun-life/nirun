@@ -1,6 +1,6 @@
 # Nirun - Timing
 
-Odoo 18.0 module that models timing, dose cadence, and scheduling patterns for clinical
+Odoo 19.0 module that models timing, dose cadence, and scheduling patterns for clinical
 use. It supports reusable timing templates and time-of-day breakdowns that can be shared
 by medication- and care-related modules.
 
