@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021-2023 NSTDA
   -->
@@ -14,10 +14,21 @@
         <field name="model">res.company.type</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
-                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <field
+                    name="name"
+                    filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]"
+                />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
                 <group name="group_by" string="Group By">
-                    <filter name="system" string="System" context="{'group_by': 'system_id'}" />
+                    <filter
+                        name="system"
+                        string="System"
+                        context="{'group_by': 'system_id'}"
+                    />
                 </group>
             </search>
         </field>
@@ -47,9 +58,9 @@
                 <sheet>
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
+                        invisible="active"
                     />
                     <group>
                         <group>
@@ -84,5 +95,9 @@
             </form>
         </field>
     </record>
-    <menuitem id="res_company_type_menu" parent="base.menu_users" action="res_company_type_action" />
+    <menuitem
+        id="res_company_type_menu"
+        parent="base.menu_users"
+        action="res_company_type_action"
+    />
 </odoo>
