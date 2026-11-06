@@ -1,12 +1,13 @@
 # Organization (`ni_organization`)
 
-Odoo 16.0 module that extends `res.company` into a healthcare organization record with typed facilities, shared identifiers, and
-searchable capacity metadata.
+Odoo 16.0 module that extends `res.company` into a healthcare organization record with
+typed facilities, shared identifiers, and searchable capacity metadata.
 
 ## Purpose
 
-`ni_organization` provides the organization and facility layer used by Nirun deployments. It lets each Odoo company carry a
-clinical identifier, a typed organization hierarchy, and simple capacity information that can be reused by downstream modules.
+`ni_organization` provides the organization and facility layer used by Nirun
+deployments. It lets each Odoo company carry a clinical identifier, a typed organization
+hierarchy, and simple capacity information that can be reused by downstream modules.
 
 ## Main Models
 
@@ -18,18 +19,25 @@ clinical identifier, a typed organization hierarchy, and simple capacity informa
 
 ## Behavior and Data
 
-- `models/res_company.py` renames the main company label to `Organization Name`, exposes the related identifier, and adds
-  `type_id`, `capacity`, `capacity_unit`, and computed `display_capacity`.
-- Organization names use a custom `name_get` and `_name_search` so users can search by either organization name or identifier.
-- `models/res_company_type.py` defines a parent-child coding hierarchy for organization types and blocks recursive structures.
-- `data/res_company_type_data.xml` seeds the base organization type records used by the type selector.
-- `res.company.type` creates that base type in `init()` when none exists, so the companies that exist at install time get a type
-  and `type_id` gets its NOT NULL constraint.
+- `models/res_company.py` renames the main company label to `Organization Name`, exposes
+  the related identifier, and adds `type_id`, `capacity`, `capacity_unit`, and computed
+  `display_capacity`.
+- Organization names use a custom `name_get` and `_name_search` so users can search by
+  either organization name or identifier.
+- `models/res_company_type.py` defines a parent-child coding hierarchy for organization
+  types and blocks recursive structures.
+- `data/res_company_type_data.xml` seeds the base organization type records used by the
+  type selector.
+- `res.company.type` creates that base type in `init()` when none exists, so the
+  companies that exist at install time get a type and `type_id` gets its NOT NULL
+  constraint.
 
 ## Views and Security
 
-- `views/res_company_views.xml` adds the healthcare organization fields onto the company form.
-- `views/res_company_type_views.xml` provides maintenance views for the organization type hierarchy.
+- `views/res_company_views.xml` adds the healthcare organization fields onto the company
+  form.
+- `views/res_company_type_views.xml` provides maintenance views for the organization
+  type hierarchy.
 - `security/ir.model.access.csv` grants access to the custom organization type model.
 
 ## Dependencies
@@ -40,6 +48,8 @@ clinical identifier, a typed organization hierarchy, and simple capacity informa
 
 ## Verification
 
-- Re-check organization create and edit flows, especially identifier search and the displayed organization label.
+- Re-check organization create and edit flows, especially identifier search and the
+  displayed organization label.
 - Confirm organization type hierarchy edits reject recursive parent assignments.
-- `tests/test_res_company.py` checks the NOT NULL constraint on `type_id` and the capacity label.
+- `tests/test_res_company.py` checks the NOT NULL constraint on `type_id` and the
+  capacity label.
