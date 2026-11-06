@@ -7,10 +7,7 @@ class Partner(models.Model):
 
     identifier = fields.Char()
 
-    _sql_constraints = [
-        (
-            "identifier_unique",
-            "unique (identifier)",
-            "This identifier already exist!",
-        ),
-    ]
+    _identifier_unique = models.Constraint(
+        "unique (identifier)",
+        "This identifier already exist!",
+    )
