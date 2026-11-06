@@ -9,3 +9,4 @@ class TimeOfDay(models.Model):
     _inherit = ["ni.timing.timing.tod", "ni.coding"]
 
     timing_id = fields.Many2one("ni.timing.timing", required=False, store=False)
+    code_id = fields.Many2one(string="Time of Day Code")

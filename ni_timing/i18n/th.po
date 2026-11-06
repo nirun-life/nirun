@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-05 10:00+0000\n"
-"PO-Revision-Date: 2026-11-05 10:00+0000\n"
+"POT-Creation-Date: 2026-11-05 10:07+0000\n"
+"PO-Revision-Date: 2026-11-05 10:07+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,28 +18,24 @@ msgstr ""
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "%(min)s-%(max)s times"
 msgstr "%(min)s-%(max)s ครั้ง"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "%(offset)s min %(when)s"
 msgstr "%(offset)s นาที %(when)s"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "%s times"
 msgstr "%s ครั้ง"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing_tod.py:0
-#, python-format
 msgid "24 hrs"
 msgstr "24 ชั่วโมง"
 
@@ -166,7 +162,6 @@ msgstr "เลือกจาก..."
 #: model:ir.model.fields,field_description:ni_timing.field_ni_timing_timing__code
 #: model:ir.model.fields,field_description:ni_timing.field_ni_timing_timing_tod__code_id
 #: model:ir.model.fields,field_description:ni_timing.field_ni_timing_tod__code
-#: model:ir.model.fields,field_description:ni_timing.field_ni_timing_tod__code_id
 msgid "Code"
 msgstr "รหัส"
 
@@ -258,11 +253,6 @@ msgstr "อาหารเย็น"
 #: model:ir.model.fields,field_description:ni_timing.field_ni_timing_tod__display_name
 msgid "Display Name"
 msgstr "ชื่อ"
-
-#. module: ni_timing
-#: model_terms:ir.ui.view,arch_db:ni_timing.ni_timing_timing_tod_view_kanban
-msgid "Dropdown menu"
-msgstr "เมนูดรอปดาวน์"
 
 #. module: ni_timing
 #: model:ir.model.fields,field_description:ni_timing.field_ni_timing_mixin__timing_duration
@@ -464,49 +454,42 @@ msgstr ""
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "If there's a duration, there needs to be duration units"
 msgstr "ต้องกำหนดหน่วยของระยะเวลา"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "If there's a durationMax, there must be a duration"
 msgstr "ต้องกำหนดระยะเวลาเริ่มต้น"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "If there's a frequencyMax, there must be a frequency"
 msgstr "ต้องกำหนดจำนวนครั้งเริ่มต้น"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "If there's a period, there needs to be period units"
 msgstr "ต้องกำหนดหน่วยของช่วงเวลาเกิดซ้ำ"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "If there's a periodMax, there must be a period"
 msgstr "ต้องกำหนดช่วงเวลาเกิดซ้ำเริ่มต้น"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "If there's a time_of_day, there cannot be a when, or vice versa"
 msgstr "ถ้ากำหนดช่วงเวลาแล้ว ห้ามระบุเวลา หรือในทางกลับ"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "If there's an offset, there must be a when (and not C, CM, CD, CV)"
 msgstr "หากระบุเวลาก่อนหลัง ต้องกำหนดช่วงเวลา และไม่ใช่ช่วงเวลาพร้อมอาหารเช้า,กลางวัน,เย็น"
 
@@ -765,6 +748,11 @@ msgid "Time of Day"
 msgstr "กำหนดเวลา"
 
 #. module: ni_timing
+#: model:ir.model.fields,field_description:ni_timing.field_ni_timing_tod__code_id
+msgid "Time of Day Code"
+msgstr "รหัสกำหนดเวลา"
+
+#. module: ni_timing
 #: model:ir.model,name:ni_timing.model_ni_timing_tod
 msgid "Time of Day Coding"
 msgstr "กำหนดเวลา"
@@ -959,147 +947,126 @@ msgstr "พร้อมอาหารกลางวัน"
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "day"
 msgstr "วัน"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "days"
 msgstr "วัน"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "duration SHALL be a non-negative value"
 msgstr "ระยะเวลาไม่ควรเป็นค่าติดลบ"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "duration max must be more than min [%s]"
 msgstr "ระยะเวลาสูงสุดต้องไม่น้อยกว่าเริ่มต้น [%s]"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "every %(min)s-%(max)s %(unit)s"
 msgstr "ทุก %(min)s-%(max)s %(unit)s"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "every %(period)s %(unit)s"
 msgstr "ทุก %(period)s %(unit)s"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "every %s"
 msgstr "ทุก%s "
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "for %(duration)s %(unit)s"
 msgstr "เป็นเวลา %(duration)s %(unit)s"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "for %(min)s-%(max)s %(unit)s"
 msgstr "เป็นเวลา %(min)s-%(max)s %(unit)s"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "frequency SHALL be a non-negative value"
 msgstr "ความถี่ไม่ควรเป็นค่าติดลบ"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "frequency max must be more than min [%s]"
 msgstr "ความถี่สูงสุดควรมีค่ามีกว่าความถี่เริ่มต้น [%s]"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "hour"
 msgstr "ชั่วโมง"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "hours"
 msgstr "ชั่วโมง"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "minute"
 msgstr "นาที"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "minutes"
 msgstr "นาที"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "month"
 msgstr "เดือน"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "months"
 msgstr "เดือน"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "period SHALL be a non-negative value"
 msgstr "ช่วงเวลาไม่ควรเป็นค่าติดลบ"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "period max must be more than min [%s]"
 msgstr "ช่วงเวลาสูงสุดต้องไม่น้อยกว่าเริ่มต้น [%s]"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "second"
 msgstr "วินาที"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "seconds"
 msgstr "วินาที"
 
@@ -1112,27 +1079,23 @@ msgstr ""
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "week"
 msgstr "สัปดาห์"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "weeks"
 msgstr "สัปดาห์"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "year"
 msgstr "ปี"
 
 #. module: ni_timing
 #. odoo-python
 #: code:addons/ni_timing/models/ni_timing_timing.py:0
-#, python-format
 msgid "years"
 msgstr "ปี"
