@@ -42,7 +42,7 @@ class Company(models.Model):
         org = self
         name = org.name
         if not self._context.get("no_identifier") and self.identifier:
-            name = "{} ({})".format(name, self.identifier)
+            name = f"{name} ({self.identifier})"
         return name
 
     @api.model
