@@ -35,29 +35,30 @@ class Company(models.Model):
             else:
                 rec.display_capacity = None
 
-    def name_get(self):
-        return [(org.id, org._get_name()) for org in self]
-
-    def _get_name(self):
-        org = self
-        name = org.name
-        if not self._context.get("no_identifier") and self.identifier:
-            name = f"{name} ({self.identifier})"
-        return name
+    @api.depends("name", "identifier")
+    @api.depends_context("no_identifier")
+    def _compute_display_name(self):
+        for org in self:
+            name = org.name
+            if not self.env.context.get("no_identifier") and org.identifier:
+                name = f"{name} ({org.identifier})"
+            org.display_name = name
 
     @api.model
-    def _name_search(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        args = list(args or [])
-        if not (name == "" and operator == "ilike"):
-            if len(name.split()) > 1:
-                for n in name.split():
-                    args.append(("name", operator, n))
+    def _name_search(self, name, domain=None, operator="ilike", limit=None, order=None):
+        # Match every word of a multi-word name, or a single word on the name or
+        # the identifier. The criterion goes into the domain, so the core
+        # override still applies (user_preference company filter).
+        domain = list(domain or [])
+        if name and isinstance(name, str):
+            words = name.split()
+            if len(words) > 1:
+                domain += [("name", operator, word) for word in words]
             else:
-                args += [
+                domain += [
                     "|",
                     ("name", operator, name),
                     ("identifier", operator, name),
                 ]
-        return self._search(args, limit=limit, access_rights_uid=name_get_uid)
+            name, operator = "", "ilike"
+        return super()._name_search(name, domain, operator, limit, order)
