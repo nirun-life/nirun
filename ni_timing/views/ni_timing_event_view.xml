@@ -7,7 +7,7 @@
     <record id="ni_timing_event_action" model="ir.actions.act_window">
         <field name="name">Timing Event</field>
         <field name="res_model">ni.timing.event</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <record id="ni_timing_event_view_search" model="ir.ui.view">
         <field name="name">ni.timing.event.view.search</field>
@@ -27,16 +27,16 @@
         </field>
     </record>
     <record id="ni_timing_event_view_tree" model="ir.ui.view">
-        <field name="name">ni.timing.event.view.tree</field>
+        <field name="name">ni.timing.event.view.list</field>
         <field name="model">ni.timing.event</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="code" optional="show" />
                 <field name="color" optional="hide" widget="color_picker" />
                 <field name="active" optional="hide" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_timing_event_view_form" model="ir.ui.view">
