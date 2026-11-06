@@ -199,7 +199,10 @@ class Timing(models.Model):
         ):
             return _("%s times") % self.frequency
         if self.frequency and self.frequency_max:
-            return _("%s-%s times") % (self.frequency, self.frequency_max)
+            return _("%(min)s-%(max)s times") % {
+                "min": self.frequency,
+                "max": self.frequency_max,
+            }
 
     @property
     def period_text(self):
@@ -210,16 +213,16 @@ class Timing(models.Model):
                 else ""
             )
         if self.period > 1 and (not self.period_max or self.period == self.period_max):
-            return _("every %s %s") % (
-                self.period,
-                time_unit_plural.get(self.period_unit),
-            )
+            return _("every %(period)s %(unit)s") % {
+                "period": self.period,
+                "unit": time_unit_plural.get(self.period_unit),
+            }
         if self.period and self.period_max:
-            return _("every %s-%s %s") % (
-                self.period,
-                self.period_max,
-                time_unit_plural.get(self.period_unit),
-            )
+            return _("every %(min)s-%(max)s %(unit)s") % {
+                "min": self.period,
+                "max": self.period_max,
+                "unit": time_unit_plural.get(self.period_unit),
+            }
         else:
             return ""
 
@@ -236,7 +239,8 @@ class Timing(models.Model):
         return (
             ", ".join(wh)
             if not self.offset
-            else _("%s min %s") % (self.offset, ", ".join(wh))
+            else _("%(offset)s min %(when)s")
+            % {"offset": self.offset, "when": ", ".join(wh)}
         )
 
     @property
@@ -244,18 +248,18 @@ class Timing(models.Model):
         if self.duration and (
             not self.duration_max or self.duration_max == self.duration
         ):
-            return _("for %s %s") % (
-                self.duration,
-                time_unit.get(self.duration_unit)
+            return _("for %(duration)s %(unit)s") % {
+                "duration": self.duration,
+                "unit": time_unit.get(self.duration_unit)
                 if self.duration == 1
                 else time_unit_plural.get(self.duration_unit),
-            )
+            }
         if self.duration and self.duration_max:
-            return _("for %s-%s %s") % (
-                self.duration,
-                self.duration_max,
-                time_unit_plural.get(self.duration_unit),
-            )
+            return _("for %(min)s-%(max)s %(unit)s") % {
+                "min": self.duration,
+                "max": self.duration_max,
+                "unit": time_unit_plural.get(self.duration_unit),
+            }
         else:
             return ""
 
@@ -372,7 +376,7 @@ class Timing(models.Model):
     def garbage_collect(self):
         from odoo.tools.date_utils import get_timedelta
 
-        limit_date = fields.datetime.utcnow() - get_timedelta(1, "day")
+        limit_date = fields.Datetime.now() - get_timedelta(1, "day")
 
         return self.search(
             [
