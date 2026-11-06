@@ -1,6 +1,6 @@
 # Organization (`ni_organization`)
 
-Odoo 18.0 module that extends `res.company` into a healthcare organization record with
+Odoo 19.0 module that extends `res.company` into a healthcare organization record with
 typed facilities, shared identifiers, and searchable capacity metadata.
 
 ## Purpose

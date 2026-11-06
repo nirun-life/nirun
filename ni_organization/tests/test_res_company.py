@@ -56,6 +56,7 @@ class TestResCompany(TransactionCase):
         )
         self.assertFalse(found("NTH-0001 Clinic"))
         self.assertEqual(
-            found("Nirun", args=[("id", "!=", other.id)]) & {self.company.id, other.id},
+            found("Nirun", domain=[("id", "!=", other.id)])
+            & {self.company.id, other.id},
             {self.company.id},
         )
