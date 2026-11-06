@@ -1,6 +1,6 @@
 # Patient Benefit (`ni_benefit`)
 
-Odoo 17.0 module that adds a reusable benefit or entitlement vocabulary and links those
+Odoo 18.0 module that adds a reusable benefit or entitlement vocabulary and links those
 benefit records directly to patients.
 
 ## Purpose
@@ -30,7 +30,8 @@ patient model.
 - `views/ni_benefit_views.xml` provides list and form maintenance for the benefit
   catalog.
 - `views/ni_benefit_menu.xml` adds the setup menu entry for benefit administration.
-- `security/ir.model.access.csv` grants access to the benefit model.
+- `security/ir.model.access.csv` grants access to the benefit model. Read access is
+  granted to internal, portal and public users; administrators can edit.
 
 ## Dependencies
 
