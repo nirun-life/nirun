@@ -9,7 +9,7 @@ class TimingMixin(models.AbstractModel):
 
     timing_id = fields.Many2one(
         "ni.timing.timing",
-        auto_join=True,
+        bypass_search_access=True,
         ondelete="set null",
         domain=[
             ("res_model", "=", lambda self: self._name),
