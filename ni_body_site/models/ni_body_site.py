@@ -10,7 +10,7 @@ class BodySite(models.Model):
     _parent_store = True
 
     parent_id = fields.Many2one("ni.body.site", index=True, ondelete="set null")
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
