@@ -1,6 +1,6 @@
 # Nirun - Timing
 
-Odoo 17.0 module that models timing, dose cadence, and scheduling patterns for clinical
+Odoo 18.0 module that models timing, dose cadence, and scheduling patterns for clinical
 use. It supports reusable timing templates and time-of-day breakdowns that can be shared
 by medication- and care-related modules.
 
@@ -31,6 +31,9 @@ vocabulary.
 - `data/ir_cron_data.xml` registers scheduled maintenance jobs.
 - `views/ni_timing_*` expose the timing dictionaries, templates, and concrete timing
   records.
+- `security/ir.model.access.csv` grants read access on the timing models to internal,
+  portal and public users; internal users edit timings, administrators edit the
+  dictionaries and templates.
 
 ## Dependencies
 
