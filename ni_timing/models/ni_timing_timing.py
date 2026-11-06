@@ -99,13 +99,16 @@ class Timing(models.Model):
         "ni_timing_event_rel",
         "timing_id",
         "event_id",
-        auto_join=True,
+        bypass_search_access=True,
     )
     time_of_day = fields.One2many("ni.timing.timing.tod", "timing_id")
 
     def init(self):
         tools.create_index(
-            self._cr, "ni_timing_res_model_id_idx", self._table, ["res_model", "res_id"]
+            self.env.cr,
+            "ni_timing_res_model_id_idx",
+            self._table,
+            ["res_model", "res_id"],
         )
 
     @api.depends(
