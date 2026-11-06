@@ -3,7 +3,7 @@
 {
     "name": "Organization",
     "summary": "Healthcare organization and facility management",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.1.1",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
