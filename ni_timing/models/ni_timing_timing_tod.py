@@ -4,7 +4,7 @@ import math
 
 import pytz
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 def float_time_convert(float_val):
@@ -15,7 +15,7 @@ def float_time_convert(float_val):
 
 def float_time_format(float_val):
     h, m = float_time_convert(float_val)
-    return "%0d:%02d" % (h, m)
+    return f"{h:d}:{m:02d}"
 
 
 def _tz_get(self):
@@ -55,7 +55,7 @@ class TimingTimeOfDay(models.Model):
     def _compute_name(self):
         for rec in self:
             if rec.all_day:
-                rec.name = _("24 hrs")
+                rec.name = self.env._("24 hrs")
                 continue
             res = []
             if rec.start_time:
