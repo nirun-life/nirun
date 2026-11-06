@@ -80,7 +80,7 @@ class TimingMixin(models.AbstractModel):
                 tmpl = self._get_timing_tmpl(vals.get("timing_tmpl_id"))
                 vals["timing_id"] = tmpl.to_timing().ids[0]
 
-        records = super(TimingMixin, self).create(vals_list)
+        records = super().create(vals_list)
         for rec in records:
             if rec.timing_id:
                 rec.timing_id.write({"res_model": rec._name, "res_id": rec.id})
@@ -94,9 +94,9 @@ class TimingMixin(models.AbstractModel):
             vals["timing_id"] = tmpl.to_timing(
                 {"res_model": self._name, "res_id": self.id}
             ).ids[0]
-            return super(TimingMixin, self).write(vals)
+            return super().write(vals)
 
-        success = super(TimingMixin, self).write(vals)
+        success = super().write(vals)
         if timing_tmpl:
             # create timing record for each record that were write
             tmpl = self._get_timing_tmpl(vals.get("timing_tmpl_id"))
@@ -117,4 +117,4 @@ class TimingMixin(models.AbstractModel):
         self.env["ni.timing.timing"].search(
             [("res_model", "=", self._name), ("res_id", "in", self.ids)]
         ).sudo().unlink()
-        return super(TimingMixin, self).unlink()
+        return super().unlink()
