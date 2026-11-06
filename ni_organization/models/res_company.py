@@ -20,18 +20,18 @@ class Company(models.Model):
     capacity_unit = fields.Selection(
         [("bed", "Beds"), ("pat", "Patients per Day")], default="bed"
     )
-    display_capacity = fields.Char("Capacity", compute="_compute_display_capacity")
+    display_capacity = fields.Char(
+        "Capacity with Unit", compute="_compute_display_capacity"
+    )
 
-    @api.depends("capacity")
+    @api.depends("capacity", "capacity_unit")
     def _compute_display_capacity(self):
+        units = dict(self._fields["capacity_unit"]._description_selection(self.env))
         for rec in self:
             if rec.capacity:
                 rec.display_capacity = "{} {}".format(
-                    rec.capacity,
-                    dict(self._field["capacity_unit"].selection(self))[
-                        rec.capacity_unit
-                    ],
-                )
+                    rec.capacity, units.get(rec.capacity_unit, "")
+                ).strip()
             else:
                 rec.display_capacity = None
 
