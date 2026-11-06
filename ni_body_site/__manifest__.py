@@ -1,0 +1,22 @@
+#  Copyright (c) 2024 NSTDA
+
+{
+    "name": "Nirun - Body Site",
+    "summary": "Anatomical body site and location coding",
+    "version": "17.0.1.0.0",
+    "development_status": "Alpha",
+    "category": "Medical",
+    "author": "NSTDA, Piruin P.",
+    "website": "https://nirun.life/",
+    "license": "LGPL-3",
+    "maintainers": ["piruin"],
+    "depends": ["ni_coding"],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/ni_body_site_views.xml",
+        "data/ni_body_site_data.xml",
+    ],
+    "application": False,
+    "auto_install": False,
+    "installable": True,
+}

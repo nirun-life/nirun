@@ -1,0 +1,23 @@
+#  Copyright (c) 2024 NSTDA
+
+{
+    "name": "Patient Benefit",
+    "summary": "Healthcare benefit and entitlement management",
+    "version": "17.0.1.0.0",
+    "development_status": "Alpha",
+    "category": "Medical",
+    "author": "NSTDA, Piruin P.",
+    "website": "https://nirun.life/",
+    "license": "LGPL-3",
+    "maintainers": ["piruin"],
+    "depends": ["ni_patient"],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/ni_benefit_data.xml",
+        "views/ni_benefit_views.xml",
+        "views/ni_benefit_menu.xml",
+    ],
+    "application": False,
+    "auto_install": False,
+    "installable": True,
+}
