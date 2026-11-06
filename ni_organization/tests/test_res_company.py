@@ -26,3 +26,10 @@ class TestResCompany(TransactionCase):
             .search_count([("type_id", "=", False)])
         )
         self.assertEqual(self.company.type_id, self.org_type)
+
+    def test_display_capacity(self):
+        self.assertFalse(self.company.display_capacity)
+        self.company.write({"capacity": 30, "capacity_unit": "bed"})
+        self.assertEqual(self.company.display_capacity, "30 Beds")
+        self.company.capacity_unit = "pat"
+        self.assertEqual(self.company.display_capacity, "30 Patients per Day")

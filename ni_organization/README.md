@@ -42,4 +42,4 @@ clinical identifier, a typed organization hierarchy, and simple capacity informa
 
 - Re-check organization create and edit flows, especially identifier search and the displayed organization label.
 - Confirm organization type hierarchy edits reject recursive parent assignments.
-- `tests/test_res_company.py` checks the NOT NULL constraint on `type_id`.
+- `tests/test_res_company.py` checks the NOT NULL constraint on `type_id` and the capacity label.
