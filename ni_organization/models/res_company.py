@@ -16,7 +16,10 @@ class Company(models.Model):
     identifier = fields.Char(related="partner_id.identifier", readonly=False)
 
     type_id = fields.Many2one(
-        "res.company.type", required=True, index=True, default=get_default_type
+        "res.company.type",
+        required=True,
+        index=True,
+        default=lambda self: self.get_default_type(),
     )
     capacity = fields.Integer()
     capacity_unit = fields.Selection(
