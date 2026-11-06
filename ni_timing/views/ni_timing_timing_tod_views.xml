@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2021-2023 NSTDA
+  -->
+<odoo>
+    <record id="ni_timing_timing_tod_view_form" model="ir.ui.view">
+        <field name="name">ni.timing.timing.tod.view.form</field>
+        <field name="model">ni.timing.timing.tod</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <field name="name" invisible="1" />
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="all_day" />
+                            <field
+                                name="start_time"
+                                widget="float_time"
+                                invisible="all_day"
+                            />
+                            <field
+                                name="end_time"
+                                widget="float_time"
+                                invisible="all_day"
+                            />
+                            <field name="tz" invisible="all_day" />
+                        </group>
+                        <group>
+                            <field name="code_id" placeholder="Choose form..." />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="ni_timing_timing_tod_view_tree" model="ir.ui.view">
+        <field name="name">ni.timing.timing.tod.view.list</field>
+        <field name="model">ni.timing.timing.tod</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="time" />
+                <field name="all_day" width="1" optional="hide" />
+                <field
+                    name="start_time"
+                    width="2"
+                    widget="float_time"
+                    optional="hide"
+                    invisible="all_day"
+                />
+                <field
+                    name="end_time"
+                    width="2"
+                    widget="float_time"
+                    optional="hide"
+                    invisible="all_day"
+                />
+                <field name="tz" width="2" optional="hide" invisible="all_day" />
+            </list>
+        </field>
+    </record>
+    <record id="ni_timing_timing_tod_view_kanban" model="ir.ui.view">
+        <field name="name">ni.timing.timing.tod.view.kanban</field>
+        <field name="model">ni.timing.timing.tod</field>
+        <field name="arch" type="xml">
+            <kanban highlight_color="color">
+                <templates>
+                    <t t-name="menu">
+                        <a
+                            t-if="widget.editable"
+                            role="menuitem"
+                            type="open"
+                            class="dropdown-item"
+                        >Edit</a>
+                        <field name="color" widget="kanban_color_picker" />
+                    </t>
+                    <t t-name="card">
+                        <field name="name" class="fw-bold" />
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

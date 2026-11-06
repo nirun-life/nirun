@@ -3,7 +3,7 @@
 {
     "name": "Patient",
     "summary": "Core patient data model, encounters, and encounter management",
-    "version": "19.0.1.0.2",
+    "version": "19.0.1.0.3",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
