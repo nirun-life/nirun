@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="ni_benefit_action" model="ir.actions.act_window">
         <field name="name">Benefit</field>
@@ -10,10 +10,21 @@
         <field name="model">ni.benefit</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]" />
-                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
+                <field
+                    name="name"
+                    filter_domain="['|' ,('name', 'ilike', self), ('code', 'ilike', self)]"
+                />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
                 <group name="group_by" string="Group By">
-                    <filter name="system" string="System" context="{'group_by': 'system_id'}" />
+                    <filter
+                        name="system"
+                        string="System"
+                        context="{'group_by': 'system_id'}"
+                    />
                 </group>
             </search>
         </field>
@@ -42,9 +53,9 @@
                 <sheet>
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
+                        invisible="active"
                     />
                     <group>
                         <field name="name" />
@@ -72,9 +83,15 @@
                                 </group>
                                 <group name="metadata" string="Metadata">
                                     <field name="create_date" />
-                                    <field name="create_uid" widget="many2one_avatar_user" />
+                                    <field
+                                        name="create_uid"
+                                        widget="many2one_avatar_user"
+                                    />
                                     <field name="write_date" />
-                                    <field name="write_uid" widget="many2one_avatar_user" />
+                                    <field
+                                        name="write_uid"
+                                        widget="many2one_avatar_user"
+                                    />
                                 </group>
                             </group>
                         </page>
