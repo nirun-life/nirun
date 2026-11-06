@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021-2023 NSTDA
   -->
@@ -57,25 +57,29 @@
                                     <field
                                         name="day_of_week"
                                         widget="many2many_checkboxes"
-                                        attrs="{'invisible': [('period_unit', '!=', 'week')]}"
+                                        invisible="period_unit != 'week'"
                                     />
                                 </group>
                                 <group>
-                                    <field name="time_type" options="{'horizontal':False}" widget="radio" />
+                                    <field
+                                        name="time_type"
+                                        options="{'horizontal':False}"
+                                        widget="radio"
+                                    />
                                     <field
                                         name="when"
-                                        attrs="{'invisible': [('time_type', '!=', 'event')]}"
                                         widget="many2many_tags"
+                                        invisible="time_type != 'event'"
                                     />
                                     <field
                                         name="offset"
                                         string="Min. before/after"
-                                        attrs="{'invisible': [('time_type', '!=', 'event')]}"
+                                        invisible="time_type != 'event'"
                                     />
                                     <field
                                         name="time_of_day"
                                         context="{'default_timing_id': id}"
-                                        attrs="{'invisible': [('time_type', '!=', 'tod')]}"
+                                        invisible="time_type != 'tod'"
                                     >
 
                                     </field>
