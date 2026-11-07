@@ -12,4 +12,5 @@ from . import (
     test_ni_patient_archive_wizard,
     test_ni_patient_display_name,
     test_ni_workflow,
+    test_res_company_name_search,
 )
