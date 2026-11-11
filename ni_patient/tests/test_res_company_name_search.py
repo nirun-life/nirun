@@ -29,4 +29,10 @@ class TestCompanyNameSearch(common.TransactionCase):
         self.assertEqual(self._search("HC-0002"), self.bravo)
 
     def test_vat(self):
+        # ni_organization matches a single word on name and identifier only
+        if any(
+            cls.__module__.startswith("odoo.addons.ni_organization.")
+            for cls in type(self.env["res.company"]).__mro__
+        ):
+            self.skipTest("ni_organization does not search companies by VAT")
         self.assertEqual(self._search("TH111"), self.alpha)
