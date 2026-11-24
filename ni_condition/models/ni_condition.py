@@ -105,7 +105,10 @@ class Condition(models.Model):
     verification_id = fields.Many2one("ni.condition.verification", "")
     note = fields.Text()
     diagnosis_ids = fields.One2many(
-        "ni.encounter.diagnosis", "condition_id", readonly=True
+        "ni.encounter.diagnosis",
+        "condition_id",
+        string="Diagnosis History",
+        readonly=True,
     )
 
     observation_ids = fields.One2many(
