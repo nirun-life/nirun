@@ -28,14 +28,14 @@ class CoverageType(models.Model):
         coverage = self
         name = coverage.name or ""
         if coverage.parent_id and coverage.parent_id.name not in name:
-            name = "{} {}".format(coverage.parent_id.name, name)
+            name = f"{coverage.parent_id.name} {name}"
         if self._context.get("show_code"):
             code = (
-                "{}/{}".format(coverage.parent_id.code, coverage.code)
+                f"{coverage.parent_id.code}/{coverage.code}"
                 if coverage.parent_id
                 else coverage.code
             )
-            name = "{} [{}]".format(name, code)
+            name = f"{name} [{code}]"
         return name
 
     @api.constrains("parent_id")
