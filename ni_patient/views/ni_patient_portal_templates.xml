@@ -171,8 +171,7 @@
                     <!--                    <td>#</td>-->
                     <td>Encounter No.</td>
                     <td>Chief Complaint</td>
-                    <td>Performer</td>
-                    <td>Classification</td>
+                    <td name="th_class">Classification</td>
                     <td>Location</td>
                     <td>Since</td>
                     <td>Until</td>
@@ -191,10 +190,7 @@
                         <td>
                             <t t-esc="encounter.chief_complaint" />
                         </td>
-                        <td>
-                            <t t-esc="encounter.performer_id.name" />
-                        </td>
-                        <td>
+                        <td name="td_class">
                             <t t-esc="encounter.class_id.name" />
                         </td>
                         <td>
@@ -259,7 +255,11 @@
                                 </ul>
                             </li>
                             <li t-if="o.partner_id" class="list-group-item flex-grow-1">
-                                <div class="col-12 col-md-12 pb-2" t-if="o.partner_id">
+                                <div
+                                    name="patient"
+                                    class="col-12 col-md-12 pb-2"
+                                    t-if="o.partner_id"
+                                >
                                     <strong>Patient</strong>
                                     <div class="d-flex flex-nowrap">
                                         <img
@@ -288,44 +288,6 @@
                                             >
                                                 <div
                                                     t-field="o.partner_id"
-                                                    t-options='{"widget": "contact", "fields": ["email"]}'
-                                                />
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="col-12 col-md-12 pb-2"
-                                    t-if="o.performer_id"
-                                >
-                                    <strong>Performer</strong>
-                                    <div class="d-flex flex-nowrap">
-                                        <img
-                                            class="rounded-circle mt-1 o_portal_contact_img"
-                                            t-att-src="image_data_uri(encounter.performer_id.avatar_1024)"
-                                            alt="Contact"
-                                        />
-                                        <div class="ms-2">
-                                            <div
-                                                t-field="o.performer_id.work_contact_id"
-                                                t-options='{"widget": "contact", "fields": ["name"]}'
-                                            />
-                                            <a
-                                                t-attf-href="tel:{{encounter.performer_id.work_contact_id.phone}}"
-                                                t-if="o.performer_id.work_contact_id.phone"
-                                            >
-                                                <div
-                                                    t-field="o.performer_id.work_contact_id"
-                                                    t-options='{"widget": "contact", "fields": ["phone"]}'
-                                                />
-                                            </a>
-                                            <a
-                                                t-if="o.performer_id.work_contact_id.email"
-                                                class="text-break"
-                                                t-attf-href="mailto:{{encounter.performer_id.work_contact_id.email}}"
-                                            >
-                                                <div
-                                                    t-field="o.performer_id.work_contact_id"
                                                     t-options='{"widget": "contact", "fields": ["email"]}'
                                                 />
                                             </a>
@@ -464,99 +426,6 @@
                             </div>
                             <div id="detail" />
                             <div id="tail" />
-                            <div id="vital-sign">
-                                <div>
-                                    <strong>BT:</strong>
-                                    <t t-if="o.body_temp">
-                                        <span t-field="o.body_temp" />
-                                    </t>
-                                    <t t-else="">
-                                        <span class="text-muted mx-1">-</span>
-                                    </t>
-                                    <span class="me-3">°C</span>
-                                    <strong>PR:</strong>
-                                    <t t-if="o.heart_rate">
-                                        <span t-field="o.heart_rate" />
-                                    </t>
-                                    <t t-else="">
-                                        <span class="text-muted mx-1">-</span>
-                                    </t>
-                                    <span class="me-3">/min</span>
-                                    <strong>RR:</strong>
-                                    <t t-if="o.respiratory_rate">
-                                        <span t-field="o.respiratory_rate" />
-                                    </t>
-                                    <t t-else="">
-                                        <span class="text-muted mx-1">-</span>
-                                    </t>
-                                    <span class="me-3">/min</span>
-                                    <strong>
-                                        <span>O</span>
-                                        <sub style="margin-left: -0.25rem">2</sub>
-                                        <span>sat:</span>
-                                    </strong>
-                                    <t t-if="o.oxygen_sat">
-                                        <span t-field="o.oxygen_sat" />
-                                    </t>
-                                    <t t-else="">
-                                        <span class="text-muted mx-1">-</span>
-                                    </t>
-                                    <span class="me-3">%</span>
-                                </div>
-                                <div>
-                                    <strong>BP:</strong>
-                                    <t t-if="o.bp">
-                                        <span t-field="o.bp" />
-                                    </t>
-                                    <t t-else="">
-                                        <span class="text-muted mx-1">-</span>
-                                    </t>
-                                    <span class="me-3">mmHg</span>
-                                    <strong>
-                                        <span t-field="o.glucose_type" />
-                                        :
-                                    </strong>
-                                    <t t-if="o.glucose_type == 'fbs'">
-                                        <t t-if="o.fbs">
-                                            <span t-field="o.fbs" />
-                                        </t>
-                                        <t t-else="">
-                                            <span class="text-muted mx-1">-</span>
-                                        </t>
-                                    </t>
-                                    <t t-else="">
-                                        <t t-if="o.dtx">
-                                            <span t-field="o.dtx" />
-                                        </t>
-                                        <t t-else="">
-                                            <span class="text-muted mx-1">-</span>
-                                        </t>
-                                    </t>
-                                    <span class="me-3">mg/dl</span>
-                                    <strong>BMI:</strong>
-                                    <t t-if="o.bmi">
-                                        <span t-field="o.bmi" />
-                                    </t>
-                                    <t t-else="">
-                                        <span class="text-muted mx-1">-</span>
-                                    </t>
-                                    <span class="me-3">
-                                        kg/m
-                                        <sup style="margin-left: -0.25rem">2</sup>
-                                    </span>
-                                </div>
-                            </div>
-                            <div id="pain" t-if="o.pain_score">
-                                <strong>Pain Score:</strong>
-                                <span class="me-2" t-field="o.pain_score" />
-                                <strong>Area:</strong>
-                                <t t-if="o.pain_area">
-                                    <span t-field="o.pain_area" />
-                                </t>
-                                <t t-else="">
-                                    <span class="text-muted mx-1">-</span>
-                                </t>
-                            </div>
                             <p class="m-0" t-field="o.physical_exam" />
                             <t t-if="not encounter.physical_exam">
                                 <span>-</span>

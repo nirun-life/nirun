@@ -34,6 +34,8 @@ fields.
 - `wizard/ni_observation_wizard_views.xml` provides guided observation entry.
 - `report/ni_patient_observation_view.xml`, `report/ni_encounter_observation_view.xml`,
   and `report/summary_report.xml` provide patient and encounter reporting.
+- `views/ni_patient_portal_templates.xml` adds the vital signs and pain score to the
+  encounter page of the portal.
 - `ni.patient.observation` and `ni.encounter.observation` (`report/`) are SQL views of
   the latest valued observation per `(patient_id, type_id)` and per
   `(encounter_id, type_id)`: highest `occurrence`, ties broken by highest `id`. Rows
