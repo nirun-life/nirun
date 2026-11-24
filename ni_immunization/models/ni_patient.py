@@ -54,7 +54,7 @@ class Patient(models.Model):
             "name": _("Immunization Protection"),
             "type": "ir.actions.act_window",
             "res_model": "ni.immunization.evaluation",
-            "view_mode": "kanban,tree,form",
+            "view_mode": "kanban,list,form",
             "domain": [("patient_id", "=", self.ids[0])],
             "context": {
                 "default_patient_id": self.ids[0],

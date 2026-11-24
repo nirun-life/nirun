@@ -37,7 +37,7 @@ class Encounter(models.Model):
             "name": _("Immunization Evaluation"),
             "type": "ir.actions.act_window",
             "res_model": "ni.immunization.evaluation",
-            "view_mode": "tree,kanban,form",
+            "view_mode": "list,kanban,form",
             "domain": [("patient_id", "=", self[0].patient_id.id)],
             "context": {
                 "default_patient_id": self[0].patient_id.id,
@@ -51,7 +51,7 @@ class Encounter(models.Model):
             "name": _("Immunization History"),
             "type": "ir.actions.act_window",
             "res_model": "ni.immunization",
-            "view_mode": "tree,kanban,form",
+            "view_mode": "list,kanban,form",
             "context": {
                 "search_default_group_by_encounter": 1,
                 "default_patient_id": self[0].patient_id.id,

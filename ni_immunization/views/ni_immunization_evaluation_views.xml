@@ -6,7 +6,7 @@
     <record id="ni_immunization_evaluation_action" model="ir.actions.act_window">
         <field name="name">Immunization Evaluation</field>
         <field name="res_model">ni.immunization.evaluation</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="context">{'search_default_group_by_disease': 1}</field>
     </record>
     <record id="ni_immunization_evaluation_view_search" model="ir.ui.view">
@@ -107,7 +107,7 @@
                     colors="{&quot;valid&quot;: &quot;success&quot;, &quot;not-valid&quot;: &quot;danger&quot;}"
                 />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click">
                             <div class="oe_kanban_content">
                                 <div class="o_kanban_record_top">
@@ -163,10 +163,10 @@
         </field>
     </record>
     <record id="ni_immunization_evaluation_view_tree" model="ir.ui.view">
-        <field name="name">ni.immunization.evaluation.view.tree</field>
+        <field name="name">ni.immunization.evaluation.view.list</field>
         <field name="model">ni.immunization.evaluation</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 decoration-success="protection_status == 'protected'"
                 decoration-warning="protection_status == 'partial'"
                 decoration-muted="protection_status == 'not-protected'"
@@ -205,7 +205,7 @@
                 <control>
                     <create string="Add evaluation" />
                 </control>
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_immunization_evaluation_view_form" model="ir.ui.view">
@@ -306,7 +306,7 @@
                             invisible="not history_ids"
                         >
                             <field name="history_ids" readonly="1" nolabel="1">
-                                <tree
+                                <list
                                     decoration-success="protection_status == 'protected'"
                                     decoration-warning="protection_status == 'partial'"
                                     decoration-muted="protection_status == 'not-protected'"
@@ -326,7 +326,7 @@
                                         decoration-warning="protection_status == 'partial'"
                                         decoration-danger="protection_status == 'not-protected'"
                                     />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
