@@ -33,12 +33,13 @@
                             />
                         </div>
                         <div>
-                            <field name="name" class="w-100" placeholder="Condition name use for display" />
+                            <field
+                                name="name"
+                                class="w-100"
+                                placeholder="Condition name use for display"
+                            />
                         </div>
-                        <p
-                            class="text-muted small"
-                            attrs="{'invisible': ['|', ('code_id', '!=', False), ('name', '!=', False)]}"
-                        >
+                        <p class="text-muted small" invisible="(code_id or name)">
                             Specify condition name here if not found on selectable choice
                             above
                         </p>
@@ -49,12 +50,21 @@
                                 name="role_id"
                                 widget="radio"
                                 options="{'no_open': True}"
-                                attrs="{'required': [('is_diagnosis', '=', True)], 'invisible': [('is_diagnosis', '=', False)]}"
+                                required="is_diagnosis"
+                                invisible="not is_diagnosis"
                             />
-                            <field name="severity" widget="radio" options="{'horizontal': True}" />
+                            <field
+                                name="severity"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                            />
                         </group>
                         <group>
-                            <field name="category_ids" widget="many2many_checkboxes" invisible="1" />
+                            <field
+                                name="category_ids"
+                                widget="many2many_checkboxes"
+                                invisible="1"
+                            />
                             <field name="is_diagnosis" invisible="1" />
                             <field name="is_problem" invisible="1" />
                         </group>
@@ -66,7 +76,7 @@
                             string="Observation"
                             icon="fa-stethoscope"
                             badge="observation_count"
-                            attrs="{'invisible': [('code_id', '=', False)]}"
+                            invisible="not code_id"
                         >
                             <field name="observation_ids" />
                             <field name="observation_count" invisible="1" />
@@ -115,7 +125,7 @@
                     icon="fa-stethoscope"
                     title="Diagnosis (click to unmark)"
                     string="Marked as Diagnosis"
-                    attrs="{'invisible': [('is_diagnosis', '=', False)]}"
+                    invisible="not is_diagnosis"
                 />
                 <button
                     name="action_toggle_is_diagnosis"
@@ -124,7 +134,7 @@
                     icon="fa-stethoscope"
                     title="Not a Diagnosis (click to mark)"
                     string="Mark as Diagnosis"
-                    attrs="{'invisible': [('is_diagnosis', '=', True)]}"
+                    invisible="is_diagnosis"
                 />
                 <button
                     name="action_toggle_is_problem"
@@ -133,7 +143,7 @@
                     icon="fa-list-ul "
                     title="Problem-List Item (click to unmark)"
                     string="Marked as Problem-List"
-                    attrs="{'invisible': ['|', ('is_problem', '=', False), ('is_problem_editable', '=', False)]}"
+                    invisible="(not is_problem or not is_problem_editable)"
                 />
                 <button
                     name="action_toggle_is_problem"
@@ -142,7 +152,7 @@
                     icon="fa-list-ul"
                     title="Not on Problem-List (click to mark)"
                     string="Mark as Problem-List"
-                    attrs="{'invisible': ['|', ('is_problem', '=', True), ('is_problem_editable', '=', False)]}"
+                    invisible="(is_problem or not is_problem_editable)"
                 />
                 <button
                     name="action_toggle_is_problem"
@@ -151,12 +161,15 @@
                     icon="fa-list-ul opacity-50"
                     title="Problem-List Item (set in a prior encounter, locked)"
                     string="Marked as Problem-List"
-                    attrs="{'invisible': ['|', ('is_problem', '=', False), ('is_problem_editable', '=', True)]}"
+                    invisible="(not is_problem or is_problem_editable)"
                 />
                 <field name="create_uid" optional="hide" />
                 <field name="create_date" optional="hide" />
                 <control>
-                    <create string="Add Diagnosis" context="{'default_is_diagnosis': True, 'default_sequence': 0}" />
+                    <create
+                        string="Add Diagnosis"
+                        context="{'default_is_diagnosis': True, 'default_sequence': 0}"
+                    />
                     <create
                         string="Add Problem-List"
                         context="{'default_is_problem': True, 'default_is_diagnosis': False, 'default_sequence': 99}"
