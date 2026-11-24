@@ -7,7 +7,7 @@
         <field name="name">Document Reference</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.document.ref</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('encounter_id', '=', active_id)]</field>
         <field
             name="context"
@@ -56,10 +56,10 @@
         </field>
     </record>
     <record id="ni_document_ref_view_tree" model="ir.ui.view">
-        <field name="name">ni.document.ref.view.tree</field>
+        <field name="name">ni.document.ref.view.list</field>
         <field name="model">ni.document.ref</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="company_id" column_invisible="1" />
                 <field name="patient_id" column_invisible="1" />
                 <field name="encounter_id" column_invisible="1" />
@@ -88,7 +88,7 @@
                 <control>
                     <create string="Add Document" context="{}" />
                 </control>
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_document_ref_view_form" model="ir.ui.view">
@@ -173,7 +173,7 @@
                 <field name="no_data" />
                 <field name="attachment_count" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div t-attf-class="oe_kanban_global_click">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
