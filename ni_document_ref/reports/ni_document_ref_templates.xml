@@ -76,7 +76,7 @@
                                     <span class="me-1">พิมพ์เมื่อ</span>
                                     <t
                                         t-set="lang_id"
-                                        t-value="request.env['res.lang'].search([('code', '=', user.lang)], limit=1)"
+                                        t-value="o.env['res.lang'].search([('code', '=', user.lang)], limit=1)"
                                     />
                                     <span
                                         t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))"
