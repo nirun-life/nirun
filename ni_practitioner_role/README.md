@@ -28,7 +28,8 @@ categories.
 ## Views, Website Flow, and Security
 
 - `controller/main.py` serves QR-code downloads and the public practitioner registration flow at
-  `/practitioner/register/<company_id>/<token>/`.
+  `/practitioner/register/<company_id>/<token>`. The token decides the company and the role: posted values never do. A signed in
+  user only registers their own account, and only for a company they belong to.
 - `views/ni_practitioner_role_template.xml` contains the registration and success templates.
 - `views/res_user_role_views.xml` and `views/res_user_views.xml` expose onboarding and verification actions in the backend.
 - `security/ir_rule.xml` applies company-aware access restrictions for role-linked users.
@@ -44,7 +45,7 @@ categories.
 
 ## Verification
 
-- `tests/` covers the invitation token per company, verification and the registration form.
+- `tests/` covers the invitation token per company, verification and the registration form, including forged submissions.
 - Re-check the practitioner registration flow from invitation link through account creation and post-registration confirmation.
 - Confirm unverified users cannot authenticate until verification is completed.
 - Review employee creation and role-to-category propagation after changes to user or role logic.

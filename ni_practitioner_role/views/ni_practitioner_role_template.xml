@@ -53,10 +53,8 @@
                 <form class="mt-4" action="/practitioner/register/submit" method="post" id="practitioner-info">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                     <input type="hidden" name="company_id" t-att-value="company.id" />
-                    <input type="hidden" name="role_id" t-att-value="role.id" />
                     <input type="hidden" name="token" t-att-value="token" />
                     <input type="text" name="captcha" value="" class="form-control d-none" />
-                    <input type="hidden" name="registered" t-att-value="True" t-if="user" />
                     <t t-set="values" t-value="post or user" />
                     <div class="mb-3">
                         <label class="form-label" for="practitioner_name">
