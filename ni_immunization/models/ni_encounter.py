@@ -21,8 +21,8 @@ class Encounter(models.Model):
 
     def _compute_immunization_count(self):
         immunization = self.env["ni.immunization"].sudo()
-        read = immunization.read_group(
-            [("encounter_id", "in", self.ids)], ["encounter_id"], ["encounter_id"]
+        read = immunization._read_group(
+            [("encounter_id", "in", self.ids)], ["encounter_id"], ["__count"]
         )
         data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
         for enc in self:
