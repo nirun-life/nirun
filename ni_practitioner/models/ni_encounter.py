@@ -43,11 +43,11 @@ class Encounter(models.Model):
                         vals["performer_id"], vals.get("period_start")
                     )
                 )
-        return super(Encounter, self).create(vals_list)
+        return super().create(vals_list)
 
     def write(self, vals):
         if "performer_id" not in vals or not vals.get("performer_id"):
-            return super(Encounter, self).write(vals)
+            return super().write(vals)
 
         vals.update(self._prepare_participant_vals(vals["performer_id"]))
         enc = self.filtered_domain(
@@ -62,7 +62,7 @@ class Encounter(models.Model):
             ]
         )
 
-        result = super(Encounter, self).write(vals)
+        result = super().write(vals)
         if result and prev_pperfomer_ids:
             prev_pperfomer_ids.action_stop(self[0].write_date)
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2023 NSTDA
   -->
@@ -15,7 +15,7 @@
                         name="identifier"
                         placeholder="Credential ID"
                         autocomplete="off"
-                        attrs="{'required': [('code_require_identifier', '=', True)]}"
+                        required="code_require_identifier"
                     />
                 </h2>
             </xpath>
@@ -30,7 +30,10 @@
             <field name="line_type_id" position="before">
                 <field name="name" string="Display Name" />
                 <field name="code_require_identifier" invisible="1" />
-                <field name="issuer_id" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" />
+                <field
+                    name="issuer_id"
+                    options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                />
             </field>
             <field name="line_type_id" position="attributes">
                 <attribute name="invisible">1</attribute>
