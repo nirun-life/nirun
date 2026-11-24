@@ -15,7 +15,11 @@
                     <t t-out="data.identifier" />
                 </span>
                 <span t-if="data.identifier and data.description" class="mx-2">•</span>
-                <span t-if="data.description" t-esc="data.description" />
+                <span
+                    t-if="data.description"
+                    t-out="data.description"
+                    t-ref="link-target-blank"
+                />
             </p>
         </xpath>
     </t>
