@@ -16,6 +16,7 @@
                         name="department_id"
                         options="{'no_open': True, 'no_create': True}"
                         placeholder="Department"
+                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                     />
                 </div>
             </field>
@@ -24,12 +25,14 @@
                     name="performer_id"
                     widget="many2one_avatar_employee"
                     invisible="not show_participant"
+                    readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                 />
                 <field
                     name="performer_license_id"
                     context="{'show_identifier': True}"
                     options="{'always_reload': True}"
                     invisible="1"
+                    readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                 />
                 <field name="performer_license_no" invisible="not show_participant" />
             </field>
