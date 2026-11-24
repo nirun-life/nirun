@@ -12,8 +12,8 @@
     "maintainers": ["piruin"],
     "depends": ["ni_patient", "mail"],
     "data": [
-        "security/ni_procedure_group.xml",
-        "security/ni_procedure_security.xml",
+        "security/ni_communication_group.xml",
+        "security/ni_communication_security.xml",
         "security/ir.model.access.csv",
         "data/ir_sequence_data.xml",
         "data/ni_communication_category_data.xml",

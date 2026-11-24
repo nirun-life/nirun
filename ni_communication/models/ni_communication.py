@@ -14,6 +14,7 @@ class Communication(models.Model):
     _order = "period_start DESC"
     _identifier_ts_field = "period_start"
     _workflow_occurrence_field = "period_start"
+    _rec_names_search = ["category_id.name", "identifier"]
 
     @api.model
     def default_get(self, fields):
@@ -80,7 +81,6 @@ class Communication(models.Model):
             employee_partner_ids = [
                 emp_id.user_partner_id,
                 emp_id.work_contact_id,
-                emp_id.address_home_id,
             ]
             for partner_id in employee_partner_ids:
                 if partner_id:
@@ -88,29 +88,28 @@ class Communication(models.Model):
                     break
         return vals
 
-    def _name_search(
-        self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        args = list(args or [])
-        if not (name == "" and operator == "ilike"):
-            args += [
-                "|",
-                ("category_id", operator, name),
-                ("identifier", operator, name),
-            ]
-        return self._search(args, limit=limit, access_rights_uid=name_get_uid)
-
-    def name_get(self):
-        return [(rec.id, rec._name_get()) for rec in self]
+    @api.depends("category_id.name", "patient_id.display_name", "state", "identifier")
+    @api.depends_context(
+        "show_patient",
+        "show_state",
+        # of the patient name
+        "show_identifier",
+        "show_identification_id",
+        "show_gender_age",
+        "show_age",
+    )
+    def _compute_display_name(self):
+        for communication in self:
+            communication.display_name = communication._name_get()
 
     def _name_get(self):
         commu = self
         name = commu.category_id.name
-        if self._context.get("show_patient"):
+        if self.env.context.get("show_patient"):
             name = f"{commu.patient_id._name_get()}: {name}"
-        if self._context.get("show_state"):
+        if self.env.context.get("show_state"):
             name = f"{name} ({commu._get_state_label()})"
-        if self._context.get("show_identifier"):
+        if self.env.context.get("show_identifier"):
             name = f"{name} - {commu.identifier}"
         return name
 
