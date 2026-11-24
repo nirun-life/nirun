@@ -139,11 +139,11 @@ class Immunization(models.Model):
         rec = self
         name = rec.name or rec.vaccine_id.name
         if self._context.get("show_patient"):
-            name = "{}: {}".format(rec.patient_id._name_get(), name)
+            name = f"{rec.patient_id._name_get()}: {name}"
         if self._context.get("show_state"):
-            name = "{} ({})".format(name, rec._get_state_label())
+            name = f"{name} ({rec._get_state_label()})"
         if self._context.get("show_identifier"):
-            name = "{} - {}".format(name, rec.identifier)
+            name = f"{name} - {rec.identifier}"
         return name
 
     @property
