@@ -55,41 +55,28 @@
                         </group>
                     </form>
                     <kanban create="false" delete="false">
-                        <field name="target_disease_id" />
-                        <field name="dose_number" />
-                        <field name="series_doses" />
-                        <field name="occurrence" />
                         <templates>
                             <t t-name="card">
-                                <div class="oe_kanban_card oe_kanban_global_click">
-                                    <div class="oe_kanban_details">
-                                        <strong>
-                                            <field name="target_disease_id" />
-                                        </strong>
-                                        <div class="mt-1">
-                                            <i
-                                                class="fa fa-eyedropper me-1"
-                                                title="Dose"
-                                            />
-                                            <field name="dose_number" />
-                                            <span>/</span>
-                                            <field name="series_doses" />
-                                        </div>
-                                        <div
-                                            t-if="record.occurrence.value"
-                                            class="mt-1 text-muted"
-                                        >
-                                            <i
-                                                class="fa fa-calendar me-1"
-                                                title="Occurrence"
-                                            />
-                                            <field name="occurrence" />
-                                        </div>
-                                        <div t-else="" class="mt-1 text-warning">
-                                            <i class="fa fa-exclamation-circle me-1" />
-                                            <span>Date not set</span>
-                                        </div>
-                                    </div>
+                                <field name="target_disease_id" class="fw-bolder" />
+                                <div class="mt-1">
+                                    <i class="fa fa-eyedropper me-1" title="Dose" />
+                                    <field name="dose_number" />
+                                    <span>/</span>
+                                    <field name="series_doses" />
+                                </div>
+                                <div
+                                    t-if="record.occurrence.value"
+                                    class="mt-1 text-muted"
+                                >
+                                    <i class="fa fa-calendar me-1" title="Occurrence" />
+                                    <field name="occurrence" />
+                                </div>
+                                <div t-else="" class="mt-1 text-warning">
+                                    <i
+                                        class="fa fa-exclamation-circle me-1"
+                                        title="Date not set"
+                                    />
+                                    <span>Date not set</span>
                                 </div>
                             </t>
                         </templates>
