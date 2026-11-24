@@ -24,7 +24,7 @@ class ConditionCode(models.Model):
         for rec in self:
             name = rec.name or ""
             if rec.parent_id:
-                name = "{}, {}".format(rec.parent_id.name, rec.name)
+                name = f"{rec.parent_id.name}, {rec.name}"
             rec.display_name = name
 
     @api.constrains("parent_id")
