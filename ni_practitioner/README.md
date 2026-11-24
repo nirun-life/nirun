@@ -1,6 +1,6 @@
 # Practitioner (`ni_practitioner`)
 
-Odoo 16.0 module that adapts Odoo HR records for clinical practitioner use in Nirun. It
+Odoo 17.0 module that adapts Odoo HR records for clinical practitioner use in Nirun. It
 adds practitioner-facing resume, license, specialty, and encounter integration so staff
 records can support clinical workflows instead of generic HR data only.
 

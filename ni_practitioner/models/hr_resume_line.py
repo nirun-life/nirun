@@ -13,15 +13,19 @@ class ResumeLine(models.Model):
     identifier = fields.Char("Credential ID")
     issuer_id = fields.Many2one("res.partner", domain="[('is_company', '=', True)]")
 
-    def name_get(self):
-        return [(line.id, line._get_name()) for line in self]
+    @api.depends("name", "identifier", "date_start", "date_end")
+    @api.depends_context("show_identifier", "show_period")
+    def _compute_display_name(self):
+        for line in self:
+            line.display_name = line._get_name()
 
     def _get_name(self):
         line = self
+        context = self.env.context
         name = line.name
-        if self._context.get("show_identifier") and self.identifier:
+        if context.get("show_identifier") and line.identifier:
             name = f"{name} • {line.identifier}"
-        if self._context.get("show_period"):
+        if context.get("show_period"):
             period = [line.date_start, line.date_end or _("Current")]
             name = "{} {}".format(name, " - ".join(str(p) for p in period if p))
         return name
