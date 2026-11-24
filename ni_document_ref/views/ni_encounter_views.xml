@@ -16,6 +16,7 @@
                 <field name="document_count" invisible="1" />
                 <field
                     name="document_ids"
+                    readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                     context="{'default_patient_id': patient_id, 'default_encounter_id':id}"
                 />
                 <button name="action_document_ref" type="object" string="See More" />
