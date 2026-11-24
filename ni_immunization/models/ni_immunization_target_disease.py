@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class ImmunizationTargetDisease(models.Model):
@@ -18,7 +18,7 @@ class ImmunizationTargetDisease(models.Model):
     def action_evaluation(self):
         self.ensure_one()
         return {
-            "name": _("New Evaluation — %s", self.display_name),
+            "name": self.env._("New Evaluation — %s", self.display_name),
             "type": "ir.actions.act_window",
             "res_model": "ni.immunization.evaluation",
             "view_mode": "form",

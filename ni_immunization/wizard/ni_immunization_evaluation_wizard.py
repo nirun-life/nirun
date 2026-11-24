@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -78,7 +78,7 @@ class ImmunizationEvaluationWizard(models.TransientModel):
     def action_next(self):
         self.ensure_one()
         if not self.disease_ids:
-            raise ValidationError(_("Please select at least one disease."))
+            raise ValidationError(self.env._("Please select at least one disease."))
         Evaluation = self.env["ni.immunization.evaluation"]
         lines = []
         for disease in self.disease_ids:
