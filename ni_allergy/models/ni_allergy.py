@@ -51,13 +51,10 @@ class AllergyIntolerance(models.Model):
     reaction_count = fields.Integer(compute="_compute_reaction_count")
     last_occurrence = fields.Datetime(compute="_compute_last_occurrence", store=True)
 
-    _sql_constraints = [
-        (
-            "patient_allergy__uniq",
-            "unique (patient_id, code_id)",
-            "Patient already have this allergy recorded!",
-        ),
-    ]
+    _patient_allergy__uniq = models.Constraint(
+        "unique (patient_id, code_id)",
+        "Patient already have this allergy recorded!",
+    )
 
     @api.model_create_multi
     def create(self, vals_list):
