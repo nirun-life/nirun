@@ -65,7 +65,7 @@ class AllergyIntolerance(models.Model):
             if "name" not in val and "code_id" in val:
                 code = self.env["ni.allergy.code"].browse(val["code_id"])
                 val["name"] = code.name
-        return super(AllergyIntolerance, self).create(vals_list)
+        return super().create(vals_list)
 
     @api.onchange("code_id")
     def _onchange_code_id(self):
@@ -79,11 +79,11 @@ class AllergyIntolerance(models.Model):
         allergy = self
         name = allergy.code_id.name or allergy.name
         if self._context.get("show_patient"):
-            name = "{} - {}".format(allergy.patient_id._name_get(), name)
+            name = f"{allergy.patient_id._name_get()} - {name}"
         if self._context.get("show_criticality") and allergy.criticality:
-            name = "{}[{}]".format(name, allergy._get_criticality_label())
+            name = f"{name}[{allergy._get_criticality_label()}]"
         if self._context.get("show_state"):
-            name = "{} ({})".format(name, allergy._get_state_label())
+            name = f"{name} ({allergy._get_state_label()})"
         return name
 
     @api.depends("code_id")
@@ -105,11 +105,11 @@ class AllergyIntolerance(models.Model):
 
     @api.depends("reaction_ids.onset")
     def _compute_last_occurrence(self):
-        reactions = self.env["ni.allergy.reaction"].read_group(
+        reactions = self.env["ni.allergy.reaction"]._read_group(
             domain=[("allergy_id", "in", self.ids)],
-            fields=["onset:max"],
             groupby=["allergy_id"],
-            orderby="allergy_id",
+            aggregates=["onset:max"],
+            order="allergy_id",
         )
         result = {data["allergy_id"][0]: data["onset"] for data in reactions}
         for allergy in self:
