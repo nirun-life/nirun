@@ -20,7 +20,7 @@ class ResumeLine(models.Model):
         line = self
         name = line.name
         if self._context.get("show_identifier") and self.identifier:
-            name = "{} • {}".format(name, line.identifier)
+            name = f"{name} • {line.identifier}"
         if self._context.get("show_period"):
             period = [line.date_start, line.date_end or _("Current")]
             name = "{} {}".format(name, " - ".join(str(p) for p in period if p))
