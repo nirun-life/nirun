@@ -14,7 +14,7 @@ class TestPractitionerPortal(HttpCase):
                 "name": "Practitioner Portal Admin",
                 "login": "practitioner.portal.admin",
                 "password": cls.portal_password,
-                "groups_id": [
+                "group_ids": [
                     (4, cls.env.ref("base.group_user").id),
                     (4, cls.env.ref("ni_patient.group_admin").id),
                 ],
