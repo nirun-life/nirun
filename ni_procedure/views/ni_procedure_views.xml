@@ -6,7 +6,7 @@
     <record id="ni_procedure_action" model="ir.actions.act_window">
         <field name="name">Procedure</field>
         <field name="res_model">ni.procedure</field>
-        <field name="view_mode">tree,kanban,form,graph,pivot</field>
+        <field name="view_mode">list,kanban,form,graph,pivot</field>
     </record>
     <record id="ni_procedure_action_pivot_from_encounter" model="ir.actions.act_window">
         <field name="name">Procedure</field>
@@ -93,10 +93,10 @@
         </field>
     </record>
     <record id="ni_procedure_view_tree" model="ir.ui.view">
-        <field name="name">ni.procedure.view.tree</field>
+        <field name="name">ni.procedure.view.list</field>
         <field name="model">ni.procedure</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 decoration-info="state in ['preparation', 'suspended']"
                 decoration-muted="state in ['not-done', 'abort']"
             >
@@ -138,7 +138,7 @@
                 <control>
                     <create string="Add procedure" context="{'no_header': True}" />
                 </control>
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_procedure_view_form" model="ir.ui.view">
@@ -266,10 +266,7 @@
                     </group>
                     <field name="note" placeholder="Log a note..." />
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" />
-                    <field name="message_ids" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
@@ -284,7 +281,7 @@
                 <field name="period_start" />
                 <field name="state" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div t-attf-class="oe_kanban_global_click">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
