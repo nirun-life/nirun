@@ -42,3 +42,7 @@ class TestMixin(TransactionCase):
         partner = self.env["res.partner"].create({"name": "BAR"})
         self.assertEqual(partner.name, "BAR")
         self.assertEqual(partner.identifier, "PRN-00001")
+
+    def test_create_with_empty_period_start(self):
+        record = self.env["res.partner"].create({"name": "BAR", "period_start": False})
+        self.assertRegex(record.identifier, r"^PRN-\d{5}$")
