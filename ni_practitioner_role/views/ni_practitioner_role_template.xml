@@ -23,17 +23,23 @@
                             <t t-out="company.name" />
                         </h5>
                         <div class="small">
-                            <t t-out="company.partner_id._display_address(without_company=True)" />
+                            <t
+                                t-out="company.partner_id._display_address(without_company=True)"
+                            />
                         </div>
                         <t t-if="company.phone">
                             <div class="small">
                                 <i class="fa fa-phone" aria-hidden="true" />
-                                <a t-att-href="'tel:%s' % company.phone.replace(' ', '')">
+                                <a
+                                    t-att-href="'tel:%s' % company.phone.replace(' ', '')"
+                                >
                                     <t t-out="company.phone" />
                                 </a>
                                 <t t-if="company.mobile">
                                     <span>,</span>
-                                    <a t-att-href="'tel:%s' % company.mobile.replace(' ', '')">
+                                    <a
+                                        t-att-href="'tel:%s' % company.mobile.replace(' ', '')"
+                                    >
                                         <t t-out="company.mobile" />
                                     </a>
                                 </t>
@@ -50,11 +56,25 @@
                         />
                     </div>
                 </div>
-                <form class="mt-4" action="/practitioner/register/submit" method="post" id="practitioner-info">
-                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                <form
+                    class="mt-4"
+                    action="/practitioner/register/submit"
+                    method="post"
+                    id="practitioner-info"
+                >
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        t-att-value="request.csrf_token()"
+                    />
                     <input type="hidden" name="company_id" t-att-value="company.id" />
                     <input type="hidden" name="token" t-att-value="token" />
-                    <input type="text" name="captcha" value="" class="form-control d-none" />
+                    <input
+                        type="text"
+                        name="captcha"
+                        value=""
+                        class="form-control d-none"
+                    />
                     <t t-set="values" t-value="post or user" />
                     <div class="mb-3">
                         <label class="form-label" for="practitioner_name">
@@ -71,7 +91,11 @@
                             t-att-value="values['login'] if values else ''"
                             t-att-readonly="bool(user)"
                         />
-                        <div class="invalid-feedback" t-out="err['login']" t-if="err.get('login')" />
+                        <div
+                            class="invalid-feedback"
+                            t-out="err['login']"
+                            t-if="err.get('login')"
+                        />
                     </div>
                     <div class="mb-3" t-if="not user">
                         <label class="form-label" for="practitioner_password">
@@ -88,7 +112,11 @@
                             required="1"
                             t-att-value="values['password'] if values else ''"
                         />
-                        <div class="invalid-feedback" t-out="err['password']" t-if="err.get('password')" />
+                        <div
+                            class="invalid-feedback"
+                            t-out="err['password']"
+                            t-if="err.get('password')"
+                        />
                     </div>
                     <hr class="mt24" />
                     <div class="mb-3 mt-3">
@@ -152,7 +180,11 @@
                                 t-att-value="values['mobile'] if values else ''"
                                 t-att-readonly="bool(user)"
                             />
-                            <div class="invalid-feedback" t-out="err['mobile']" t-if="err.get('mobile')" />
+                            <div
+                                class="invalid-feedback"
+                                t-out="err['mobile']"
+                                t-if="err.get('mobile')"
+                            />
                         </div>
                         <div class="col-lg-3 col-6 mb-3">
                             <label class="form-label col-6" for="practitioner_phone">
@@ -167,7 +199,11 @@
                                 t-att-value="values['phone'] if values else ''"
                                 t-att-readonly="bool(user)"
                             />
-                            <div class="invalid-feedback" t-out="err['phone']" t-if="err.get('phone')" />
+                            <div
+                                class="invalid-feedback"
+                                t-out="err['phone']"
+                                t-if="err.get('phone')"
+                            />
                         </div>
                         <div class="col-lg-6 col-12 mb-3">
                             <label for="practitioner_email" class="form-label">
@@ -183,7 +219,11 @@
                                 t-att-value="values['email'] if values else ''"
                                 t-att-readonly="bool(user)"
                             />
-                            <div class="invalid-feedback" t-out="err['email']" t-if="err.get('email')" />
+                            <div
+                                class="invalid-feedback"
+                                t-out="err['email']"
+                                t-if="err.get('email')"
+                            />
                         </div>
                     </div>
                     <div class="mt-2 small">

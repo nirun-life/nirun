@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2023 NSTDA
   -->
@@ -17,14 +17,14 @@
                     string="Verify"
                     icon="fa-check"
                     class="text-success"
-                    attrs="{'invisible': [('verified', '=', True)]}"
+                    invisible="verified"
                 />
                 <button
                     name="action_create_employee"
                     type="object"
                     string="Employee"
                     icon="fa-id-badge"
-                    attrs="{'invisible': [('employee_id', '!=', False)]}"
+                    invisible="employee_id"
                 />
                 <field name="employee_id" invisible="1" />
             </field>
@@ -44,10 +44,14 @@
                         string="Create employee"
                         type="object"
                         name="action_create_employee"
-                        attrs="{'invisible': ['|', '|', ('id', '=', False), ('share', '=', True), ('employee_id', '!=', False)]}"
+                        invisible="((not id or share) or employee_id)"
                     />
                     <!-- share is not correctly recomputed because it depends on fields of reified view => invisible before saving (id=False) -->
-                    <field name="state" widget="statusbar" statusbar_visible="new,active" />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="new,active"
+                    />
                 </header>
             </field>
         </field>

@@ -26,4 +26,4 @@ class Users(models.Model):
     def _check_credentials(self, password, env):
         if not self.verified:
             raise AccessDenied(_("Waiting for verify"))
-        super(Users, self)._check_credentials(password, env)
+        super()._check_credentials(password, env)
