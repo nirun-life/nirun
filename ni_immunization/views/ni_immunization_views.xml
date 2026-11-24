@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!--
-  ~ Copyright (c) 2026 NSTDA
-  -->
 <odoo>
     <record id="ni_immunization_action" model="ir.actions.act_window">
         <field name="name">Immunization</field>
@@ -22,7 +19,7 @@
                 />
                 <filter name="occurrence" string="Occurrence" date="occurrence" />
                 <separator />
-                <group string="Group By">
+                <group>
                     <filter
                         name="group_by_patient"
                         string="Patient"
@@ -333,7 +330,7 @@
                             </t>
                         </div>
                         <div
-                            t-if="record.pending_disease_count.raw_value > 0"
+                            t-if="record.pending_disease_count.raw_value &gt; 0"
                             class="alert alert-warning p-1 mt-1 mb-0 small d-flex align-items-center"
                             role="alert"
                         >
