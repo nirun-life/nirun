@@ -58,7 +58,11 @@ class TestResUsersRole(TestPractitionerRoleCommon):
     def test_unverified_user_cannot_log_in(self):
         password = "not-verified-yet"  # pragma: allowlist secret
         user = self._create_user("unverified", password=password, verified=False)
+        credential = {"login": user.login, "password": password, "type": "password"}
         with self.assertRaises(AccessDenied):
-            user.with_user(user)._check_credentials(password, {"interactive": True})
+            user.with_user(user)._check_credentials(credential, {"interactive": True})
         user.verified = True
-        user.with_user(user)._check_credentials(password, {"interactive": True})
+        info = user.with_user(user)._check_credentials(
+            credential, {"interactive": True}
+        )
+        self.assertEqual(info["uid"], user.id)

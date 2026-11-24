@@ -23,7 +23,7 @@ class Users(models.Model):
             rec.action_create_employee()
             rec.employee_id.license_no = rec.login
 
-    def _check_credentials(self, password, env):
+    def _check_credentials(self, credential, env):
         if not self.verified:
             raise AccessDenied(_("Waiting for verify"))
-        return super()._check_credentials(password, env)
+        return super()._check_credentials(credential, env)

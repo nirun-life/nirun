@@ -23,7 +23,6 @@
         <field name="arch" type="xml">
             <field name="group_id" position="after">
                 <field name="employee_category_ids" widget="many2many_tags" />
-                <field name="access_token" invisible="1" />
                 <button
                     name="action_generate_access_token"
                     type="object"
@@ -50,122 +49,62 @@
         <field name="model">res.users.role</field>
         <field name="arch" type="xml">
             <kanban
-                class="oe_background_grey o_kanban_dashboard o_hr_department_kanban o_kanban_small_column"
+                highlight_color="color"
+                class="o_hr_department_kanban o_kanban_small_column"
                 create="0"
             >
-                <field name="name" />
-                <field name="color" />
-                <field name="user_count" />
-                <field name="user_to_verify_count" />
-                <field name="access_token" />
-                <field name="register_location" />
-                <field name="register_qr_code" />
                 <templates>
+                    <t t-name="menu" t-if="!selection_mode" groups="base.group_system">
+                        <a
+                            t-if="widget.editable"
+                            role="menuitem"
+                            class="dropdown-item"
+                            type="open"
+                        >Settings</a>
+                        <field
+                            t-if="widget.editable"
+                            name="color"
+                            widget="kanban_color_picker"
+                        />
+                    </t>
                     <t t-name="card">
-                        <div
-                            t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''}"
-                        >
-                            <div t-attf-class="o_kanban_card_header">
-                                <div class="o_kanban_card_header_title">
-                                    <div class="o_primary">
-                                        <field name="name" />
-                                    </div>
-                                    <div class="o_secondary">
-                                        <small>
-                                            <field name="comment" />
-                                        </small>
-                                    </div>
-                                </div>
-                                <div
-                                    class="o_kanban_manage_button_section"
-                                    t-if="!selection_mode"
-                                    groups="base.group_system"
+                        <field name="name" class="fw-bold fs-4 ms-2" />
+                        <field name="comment" class="small text-muted ms-2" />
+                        <div class="row g-0 mt-auto pt-3" t-if="!selection_mode">
+                            <div class="col-6 px-2">
+                                <button
+                                    class="btn btn-primary w-100"
+                                    name="action_user_in_role"
+                                    type="object"
                                 >
-                                    <a class="o_kanban_manage_toggle_button" href="#">
-                                        <i
-                                            class="fa fa-ellipsis-v"
-                                            role="img"
-                                            aria-label="Manage"
-                                            title="Manage"
-                                        />
-                                    </a>
-                                </div>
-                            </div>
-                            <div
-                                class="container o_kanban_card_content"
-                                t-if="!selection_mode"
-                            >
-                                <div class="row o_kanban_card_upper_content">
-                                    <!-- placeholder for top content -->
-                                </div>
-                                <div
-                                    class="o_kanban_card_lower_content d-flex"
-                                    style="justify-content: end"
-                                >
-                                    <!-- placeholder for bottom content -->
-                                    <div class="col-6 px-4">
-                                        <button
-                                            class="btn btn-primary w-100 "
-                                            name="action_user_in_role"
-                                            type="object"
-                                        >
-                                            <i
-                                            class="fa fa-users me-2"
-                                            aria-hidden="true"
-                                            title="Users"
-                                        />
-                                            <t t-out="record.user_count.raw_value" />
-                                            Users
-                                            <t
-                                            t-if="record.user_to_verify_count.raw_value > 0"
-                                        >
-                                            <span class="ms-1 badge bg-danger">
-                                                <t
-                                                    t-out="record.user_to_verify_count.raw_value"
-                                                />
-                                            </span>
-                                        </t>
-                                        </button>
-                                    </div>
-                                    <div class="col-6 px-4">
-                                        <button
-                                            class="btn-outline-primary w-100"
-                                            name="action_download_qrcode"
-                                            type="object"
-                                            string="Download"
-                                            icon="fa-qrcode"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                class="o_kanban_card_manage_pane dropdown-menu"
-                                role="menu"
-                            >
-                                <div class="o_kanban_card_manage_section">
-                                    <div
-                                        role="menuitem"
-                                        class="o_kanban_manage_reports"
-                                    >
-                                        <div
-                                            class="o_kanban_card_manage_title ps-4 pb-1"
-                                        >
-                                            <span class="fw-bolder">Configuration</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a
-                                    t-if="widget.editable"
-                                    role="menuitem"
-                                    class="dropdown-item"
-                                    type="edit"
-                                >Settings</a>
-                                <ul
-                                    t-if="widget.editable"
-                                    class="oe_kanban_colorpicker"
-                                    data-field="color"
-                                    role="menu"
+                                    <i
+                                    class="fa fa-users me-2"
+                                    aria-hidden="true"
+                                    title="Users"
                                 />
+                                    <field name="user_count" />
+                                    Users
+                                    <span
+                                    t-if="record.user_to_verify_count.raw_value > 0"
+                                    class="ms-1 badge text-bg-danger"
+                                >
+                                    <field name="user_to_verify_count" />
+                                </span>
+                                </button>
+                            </div>
+                            <div class="col-6 px-2">
+                                <button
+                                    class="btn btn-outline-primary w-100"
+                                    name="action_download_qrcode"
+                                    type="object"
+                                >
+                                    <i
+                                    class="fa fa-qrcode me-2"
+                                    aria-hidden="true"
+                                    title="QR code"
+                                />
+                                    Download
+                                </button>
                             </div>
                         </div>
                     </t>
