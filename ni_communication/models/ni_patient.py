@@ -11,8 +11,8 @@ class Patient(models.Model):
 
     def _compute_communication_count(self):
         communications = self.env["ni.communication"].sudo()
-        read = communications.read_group(
-            [("patient_id", "in", self.ids)], ["patient_id"], ["patient_id"]
+        read = communications._read_group(
+            [("patient_id", "in", self.ids)], ["patient_id"], ["__count"]
         )
         data = {res["patient_id"][0]: res["patient_id_count"] for res in read}
         for patient in self:
