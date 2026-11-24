@@ -33,7 +33,7 @@ class DocumentReference(models.Model):
     attachment_ids = fields.Many2many(
         "ir.attachment",
         required=True,
-        auto_join=True,
+        bypass_search_access=True,
         ondelete="cascade",
     )
     attachment_count = fields.Integer(compute="_compute_attachment_count")
