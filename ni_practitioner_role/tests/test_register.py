@@ -77,7 +77,7 @@ class TestRegister(TestPractitionerRoleCommon, HttpCase):
         self.assertEqual(user.role_line_ids.role_id, self.role)
         if "company_id" in user.role_line_ids._fields:
             self.assertEqual(user.role_line_ids.company_id, self.company)
-        self.assertEqual(user.title, self.title)
+        self.assertEqual(user.title_id, self.title)
         self.assertEqual(user.mobile, "0800000000")
 
     def test_existing_login_is_rejected(self):

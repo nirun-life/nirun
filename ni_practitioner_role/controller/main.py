@@ -2,7 +2,7 @@
 
 import base64
 
-from odoo import _, fields, http
+from odoo import fields, http
 from odoo.http import request
 
 
@@ -57,13 +57,13 @@ class PractitionerRoleController(http.Controller):
         name = (post.get("name") or "").strip()
         err = {}
         if not login:
-            err["login"] = _("Must provide license no.")
+            err["login"] = request.env._("Must provide license no.")
         elif request.env["res.users"].sudo().search([("login", "=", login)], limit=1):
-            err["login"] = _("License No. already exist")
+            err["login"] = request.env._("License No. already exist")
         elif not (post.get("password") or "").strip():
-            err["password"] = _("Must provide password")
+            err["password"] = request.env._("Must provide password")
         elif not name:
-            err["name"] = _("Must provide practitioner name")
+            err["name"] = request.env._("Must provide practitioner name")
         if err:
             error = next(iter(err.values()))
             return self._render_register_form(role, token, error, err, post)
@@ -95,7 +95,7 @@ class PractitionerRoleController(http.Controller):
         user = request.env.user
         company = role.env.company
         if company not in user.company_ids:
-            error = _("You do not have access to this company")
+            error = request.env._("You do not have access to this company")
             return self._render_register_form(role, token, error)
         vals = self._prepare_role_line_value(role.id, company.id)
         lines = user.sudo().role_line_ids.filtered(lambda line: line.role_id == role)
@@ -133,7 +133,7 @@ class PractitionerRoleController(http.Controller):
         return {
             "login": post.get("login").strip(),
             "password": post.get("password").strip(),
-            "title": int(post.get("title")) if post.get("title") else False,
+            "title_id": int(post.get("title")) if post.get("title") else False,
             "name": post.get("name").strip(),
             "email": post.get("email"),
             "phone": post.get("phone"),

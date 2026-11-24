@@ -10,7 +10,13 @@
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["base_user_role", "auth_signup", "ni_practitioner"],
+    "depends": [
+        "auth_signup",
+        "base_user_role",
+        "ni_partner_mobile",
+        "ni_partner_title",
+        "ni_practitioner",
+    ],
     "external_dependencies": {"python": ["qrcode"]},
     "data": [
         "views/res_user_role_views.xml",

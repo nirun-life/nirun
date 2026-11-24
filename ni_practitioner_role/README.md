@@ -1,6 +1,6 @@
 # Practitioner Role (`ni_practitioner_role`)
 
-Odoo 18.0 module that extends user roles with practitioner onboarding, verification,
+Odoo 19.0 module that extends user roles with practitioner onboarding, verification,
 employee creation, and QR-based role registration flows.
 
 ## Purpose
@@ -47,15 +47,15 @@ before login, and can create matching employee records with role-driven categori
 - `base_user_role`
 - `auth_signup`
 - `ni_practitioner` (licence number of the employee)
+- `ni_partner_title` and `ni_partner_mobile` (title and mobile of the registration form)
 - Python `qrcode`
 - Optional: `base_user_role_company` (AGPL-3, so not a dependency). When it is
   installed, the registration form also sets the company of the role line.
 
 ## Upgrade Notes
 
-- `migrations/18.0.1.0.0` copies the invitation tokens from `ir_property` into the jsonb
-  column of 18.0, because OpenUpgrade converts company-dependent fields of the core
-  modules only.
+- `migrations/19.0.1.0.0` copies the role colors from `res_groups`, where 19.0 dropped
+  the field.
 - Roles without a token for a company no longer get one when the link is read, only
   through the button.
 

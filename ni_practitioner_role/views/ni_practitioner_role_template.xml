@@ -35,12 +35,12 @@
                                 >
                                     <t t-out="company.phone" />
                                 </a>
-                                <t t-if="company.mobile">
+                                <t t-if="company.partner_id.mobile">
                                     <span>,</span>
                                     <a
-                                        t-att-href="'tel:%s' % company.mobile.replace(' ', '')"
+                                        t-att-href="'tel:%s' % company.partner_id.mobile.replace(' ', '')"
                                     >
-                                        <t t-out="company.mobile" />
+                                        <t t-out="company.partner_id.mobile" />
                                     </a>
                                 </t>
                             </div>
@@ -149,7 +149,7 @@
                                     id="practitioner_title_name"
                                     name="title"
                                     placeholder="Title"
-                                    t-att-value="user.title.name if user else ''"
+                                    t-att-value="user.title_id.name if user else ''"
                                     t-att-readonly="bool(user)"
                                 />
                             </t>
