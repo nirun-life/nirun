@@ -100,7 +100,10 @@ class WorkflowMixin(models.AbstractModel):
 
     def _get_state_label(self):
         self.ensure_one()
-        return dict(self._fields["state"].selection).get(self.state)
+        # state is a related field: its selection is a function
+        return dict(self._fields["state"]._description_selection(self.env)).get(
+            self.state
+        )
 
     def _safe_get_parent(self):
         if "parent_id" in self._fields and self.parent_id:
