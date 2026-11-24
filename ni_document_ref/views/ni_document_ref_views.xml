@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021-2023 NSTDA
   -->
@@ -9,7 +9,9 @@
         <field name="res_model">ni.document.ref</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('encounter_id', '=', active_id)]</field>
-        <field name="context">{'default_encounter_id': active_id, 'default_patient_id': active_id.patient_id}</field>
+        <field
+            name="context"
+        >{'default_encounter_id': active_id, 'default_patient_id': active_id.patient_id}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">Not Found</p>
             <p>Try remove some filter</p>
@@ -21,13 +23,34 @@
         <field name="arch" type="xml">
             <search>
                 <field name="type_id" />
-                <filter name="inactive" string="Archived" domain="[('active', '=', False)]" />
-                <filter name="group_by_category" string="Category" context="{'group_by':'category_id'}" />
-                <filter name="group_by_type" string="Type" context="{'group_by':'type_id'}" />
-                <filter name="group_by_encounter" string="Type" context="{'group_by':'encounter_id'}" />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
+                <filter
+                    name="group_by_category"
+                    string="Category"
+                    context="{'group_by':'category_id'}"
+                />
+                <filter
+                    name="group_by_type"
+                    string="Type"
+                    context="{'group_by':'type_id'}"
+                />
+                <filter
+                    name="group_by_encounter"
+                    string="Type"
+                    context="{'group_by':'encounter_id'}"
+                />
                 <searchpanel>
                     <field name="type_id" string="Type" enable_counters="1" />
-                    <field name="author_id" string="Author" enable_counters="1" icon="fa-users" />
+                    <field
+                        name="author_id"
+                        string="Author"
+                        enable_counters="1"
+                        icon="fa-users"
+                    />
                 </searchpanel>
             </search>
         </field>
@@ -45,7 +68,11 @@
                 <field name="occurrence" />
                 <field name="type_id" />
                 <field name="author_id" widget="many2one_avatar_user" />
-                <field name="create_uid" optional="hide" widget="many2one_avatar_user" />
+                <field
+                    name="create_uid"
+                    optional="hide"
+                    widget="many2one_avatar_user"
+                />
                 <field name="create_date" optional="hide" />
                 <field name="write_uid" optional="hide" widget="many2one_avatar_user" />
                 <field name="write_date" optional="hide" />
@@ -56,7 +83,7 @@
                     icon="fa-print"
                     type="object"
                     title="Print"
-                    attrs="{'invisible': [('no_data', '=', True)]}"
+                    invisible="no_data"
                 />
                 <control>
                     <create string="Add Document" context="{}" />
@@ -78,9 +105,9 @@
                     <widget
                         name="web_ribbon"
                         class="oe_read_only"
-                        attrs="{'invisible': [('active', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
+                        invisible="active"
                     />
                     <group>
                         <group>
@@ -90,10 +117,18 @@
                         <group>
                             <field name="occurrence" />
                             <field name="author_id" widget="many2one_avatar_employee" />
-                            <field name="author_ids" widget="many2many_avatar_employee" invisible="1" />
+                            <field
+                                name="author_ids"
+                                widget="many2many_avatar_employee"
+                                invisible="1"
+                            />
                         </group>
                     </group>
-                    <field name="data" class="oe-bordered-editor mt-2" placeholder="Document content..." />
+                    <field
+                        name="data"
+                        class="oe-bordered-editor mt-2"
+                        placeholder="Document content..."
+                    />
                     <field
                         name="attachment_ids"
                         widget="many2many_binary"
@@ -136,32 +171,50 @@
                                         </strong>
                                     </div>
                                 </div>
-                                <div t-if="record.attachment_count.raw_value > 0">
-                                    <i class="fa fa-paperclip text-primary" title="Attachment Count" />
+                                <div t-if="record.attachment_count.raw_value &gt; 0">
+                                    <i
+                                        class="fa fa-paperclip text-primary"
+                                        title="Attachment Count"
+                                    />
                                     <field class="ms-1" name="attachment_count" />
                                 </div>
                             </div>
                             <div class="o_kanban_record_content py-2">
-                                <t t-if="record.no_data.raw_value == false" class="p-2 m-2">
+                                <t
+                                    t-if="record.no_data.raw_value == false"
+                                    class="p-2 m-2"
+                                >
                                     <div>
-                                        <field class="kanban_data text-truncate" name="data" />
+                                        <field
+                                            class="kanban_data text-truncate"
+                                            name="data"
+                                        />
                                     </div>
                                 </t>
                                 <t t-else="">
                                     <div>
-                                        <div class="kanban_data text-muted text-center">No content</div>
+                                        <div
+                                            class="kanban_data text-muted text-center"
+                                        >No content</div>
                                     </div>
                                 </t>
                             </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
                                     <div class="text-muted small">
-                                        <i class="fa fa-clock-o me-1" aria-hidden="true" title="Occurence" />
+                                        <i
+                                            class="fa fa-clock-o me-1"
+                                            aria-hidden="true"
+                                            title="Occurence"
+                                        />
                                         <field name="occurrence" />
                                     </div>
                                 </div>
                                 <div class="oe_kanban_bottom_right me-1">
-                                    <field name="author_id" widget="many2one_avatar_employee" />
+                                    <field
+                                        name="author_id"
+                                        widget="many2one_avatar_employee"
+                                    />
                                 </div>
                             </div>
                         </div>
