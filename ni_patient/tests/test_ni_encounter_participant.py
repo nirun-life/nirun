@@ -20,12 +20,12 @@ class TestEncounterParticipant(TransactionCase):
                 "permit_no": "RN-0001",
             }
         )
-        patient = cls.env["ni.patient"].create(
+        cls.patient = cls.env["ni.patient"].create(
             {"partner_id": cls.env["res.partner"].create({"name": "Ada"}).id}
         )
         cls.encounter = cls.env["ni.encounter"].create(
             {
-                "patient_id": patient.id,
+                "patient_id": cls.patient.id,
                 "class_id": cls.env["ni.encounter.class"].search([], limit=1).id,
                 "participant_ids": [
                     (
@@ -52,3 +52,46 @@ class TestEncounterParticipant(TransactionCase):
         self.assertEqual(values["participant_id"][0], encounter.participant_ids.id)
         self.assertEqual(values["participant_title"], "Registered Nurse")
         self.assertEqual(values["participant_permit_no"], "RN-0001")
+
+    def _create_draft_encounter(self, period_start):
+        return self.env["ni.encounter"].create(
+            {
+                "patient_id": self.patient.id,
+                "class_id": self.encounter.class_id.id,
+                "period_start": period_start,
+            }
+        )
+
+    def _create_clinician_employee(self):
+        return self.env["hr.employee"].create(
+            {"name": "Clinician", "user_id": self.clinician.id}
+        )
+
+    def test_confirm_adds_employee_as_participant(self):
+        """Confirming an encounter adds the user's employee as participant."""
+        employee = self._create_clinician_employee()
+        encounter = self._create_draft_encounter(fields.Datetime.now())
+        encounter.with_user(self.clinician).action_confirm()
+        self.assertEqual(encounter.state, "in-progress")
+        self.assertEqual(encounter.participant_ids.employee_id, employee)
+        self.assertEqual(encounter.participant_ids.user_id, self.clinician)
+        self.assertTrue(encounter.with_user(self.clinician).participate)
+
+    def test_confirm_planned_does_not_add_participant_twice(self):
+        """The participant added when planning is kept when the visit starts."""
+        employee = self._create_clinician_employee()
+        encounter = self._create_draft_encounter(
+            fields.Datetime.add(fields.Datetime.now(), days=1)
+        )
+        encounter.with_user(self.clinician).action_confirm()
+        self.assertEqual(encounter.state, "planned")
+        self.assertEqual(encounter.participant_ids.employee_id, employee)
+        encounter.with_user(self.clinician).action_confirm()
+        self.assertEqual(encounter.state, "in-progress")
+        self.assertEqual(len(encounter.participant_ids), 1)
+
+    def test_confirm_without_employee_adds_no_participant(self):
+        encounter = self._create_draft_encounter(fields.Datetime.now())
+        encounter.with_user(self.clinician).action_confirm()
+        self.assertEqual(encounter.state, "in-progress")
+        self.assertFalse(encounter.participant_ids)
