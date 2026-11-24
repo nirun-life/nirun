@@ -30,7 +30,7 @@ class Communication(models.Model):
                 self = self.with_context(
                     default_sender_employee_id=enc[0].performer_id.id
                 )
-        return super(Communication, self).default_get(fields)
+        return super().default_get(fields)
 
     @api.model
     def _get_default_category(self):
@@ -67,11 +67,11 @@ class Communication(models.Model):
         for vals in vals_list:
             self._prepare_sender_id(vals)
 
-        return super(Communication, self).create(vals_list)
+        return super().create(vals_list)
 
     def write(self, vals):
         self._prepare_sender_id(vals)
-        return super(Communication, self).write(vals)
+        return super().write(vals)
 
     @api.model
     def _prepare_sender_id(self, vals):
@@ -107,11 +107,11 @@ class Communication(models.Model):
         commu = self
         name = commu.category_id.name
         if self._context.get("show_patient"):
-            name = "{}: {}".format(commu.patient_id._name_get(), name)
+            name = f"{commu.patient_id._name_get()}: {name}"
         if self._context.get("show_state"):
-            name = "{} ({})".format(name, commu._get_state_label())
+            name = f"{name} ({commu._get_state_label()})"
         if self._context.get("show_identifier"):
-            name = "{} - {}".format(name, commu.identifier)
+            name = f"{name} - {commu.identifier}"
         return name
 
     @property

@@ -21,7 +21,7 @@ class Discharge(models.TransientModel):
                 limit=1,
             )
             self = self.with_context(default_discharge_communication_id=com.id)
-        return super(Discharge, self).default_get(fields)
+        return super().default_get(fields)
 
     discharge_communication_id = fields.Many2one(
         "ni.communication", domain="[('encounter_id', '=', encounter_id)]"
@@ -32,7 +32,7 @@ class Discharge(models.TransientModel):
     suggest_content_ids = fields.Many2many("ni.communication.content")
 
     def discharge(self):
-        super(Discharge, self).discharge()
+        super().discharge()
 
         if not self.discharge_communication_id:
             now = fields.Datetime.now()
