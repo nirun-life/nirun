@@ -81,11 +81,9 @@ class PractitionerRoleController(http.Controller):
                     {
                         "role_line_ids": [
                             fields.Command.create(
-                                {
-                                    "role_id": int(post.get("role_id")),
-                                    "date_from": fields.Date.today(),
-                                    "company_id": comp_id,
-                                }
+                                self._prepare_role_line_value(
+                                    int(post.get("role_id")), comp_id
+                                )
                             )
                         ],
                     }
@@ -123,7 +121,7 @@ class PractitionerRoleController(http.Controller):
         return {
             "login": post.get("login").strip(),
             "password": post.get("password").strip(),
-            "title": int(post.get("title_id")) if post.get("title_id") else False,
+            "title": int(post.get("title")) if post.get("title") else False,
             "name": post.get("name").strip(),
             "email": post.get("email"),
             "phone": post.get("phone"),
@@ -132,12 +130,13 @@ class PractitionerRoleController(http.Controller):
             "verified": False,
             "company_ids": [fields.Command.link(comp_id)],
             "role_line_ids": [
-                fields.Command.create(
-                    {
-                        "role_id": role_id,
-                        "date_from": fields.Date.today(),
-                        "company_id": comp_id,
-                    }
-                )
+                fields.Command.create(self._prepare_role_line_value(role_id, comp_id))
             ],
         }
+
+    def _prepare_role_line_value(self, role_id, company_id):
+        vals = {"role_id": role_id, "date_from": fields.Date.today()}
+        # Only with base_user_role_company, which is AGPL-3 and so not a dependency
+        if "company_id" in request.env["res.users.role.line"]._fields:
+            vals["company_id"] = company_id
+        return vals
