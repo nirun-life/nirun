@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2022. NSTDA
   -->
@@ -15,7 +15,7 @@
                     badge="communication_count"
                     icon="fa-comments"
                     groups="ni_communication.group_viewer"
-                    attrs="{'invisible': [('show_communication', '=', False)]}"
+                    invisible="not show_communication"
                 >
                     <field name="show_communication" invisible="1" />
                     <field name="communication_count" invisible="1" />
@@ -23,7 +23,12 @@
                         name="communication_ids"
                         context="{'default_encounter_id': id, 'default_patient_id': patient_id, 'default_state':'completed'}"
                     />
-                    <button name="action_communication" type="object" title="Communication" string="See More" />
+                    <button
+                        name="action_communication"
+                        type="object"
+                        title="Communication"
+                        string="See More"
+                    />
                 </page>
             </xpath>
         </field>
