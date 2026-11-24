@@ -12,7 +12,7 @@ class EmployeeCategory(models.Model):
     _parent_store = True
 
     parent_id = fields.Many2one("hr.employee.category", index=True, ondelete="cascade")
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
