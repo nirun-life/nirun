@@ -32,7 +32,7 @@ class Discharge(models.TransientModel):
     suggest_content_ids = fields.Many2many("ni.communication.content")
 
     def discharge(self):
-        super().discharge()
+        res = super().discharge()
 
         if not self.discharge_communication_id:
             now = fields.Datetime.now()
@@ -54,3 +54,4 @@ class Discharge(models.TransientModel):
                 "discharge_communication_id": self.discharge_communication_id.id,
             }
         )
+        return res

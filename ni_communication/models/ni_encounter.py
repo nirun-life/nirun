@@ -2,15 +2,11 @@
 
 from odoo import fields, models
 
-from odoo.addons.ni_patient.models.ni_encounter import LOCK_STATE_DICT
-
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
-    communication_ids = fields.One2many(
-        "ni.communication", "encounter_id", states=LOCK_STATE_DICT
-    )
+    communication_ids = fields.One2many("ni.communication", "encounter_id")
     communication_count = fields.Integer(compute="_compute_communication_count")
 
     discharge_communication_id = fields.Many2one(
@@ -26,7 +22,7 @@ class Encounter(models.Model):
         read = communication._read_group(
             [("encounter_id", "in", self.ids)], ["encounter_id"], ["__count"]
         )
-        data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
+        data = {encounter.id: count for encounter, count in read}
         for encounter in self:
             encounter.communication_count = data.get(encounter.id, 0)
 
