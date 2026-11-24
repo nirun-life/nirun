@@ -6,7 +6,7 @@
     <record id="ni_coverage_copay_action" model="ir.actions.act_window">
         <field name="name">Coverage Copay</field>
         <field name="res_model">ni.coverage.copay</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <record id="ni_coverage_copay_view_search" model="ir.ui.view">
         <field name="name">ni.coverage.copay.view.search</field>
@@ -26,15 +26,15 @@
         </field>
     </record>
     <record id="ni_coverage_copay_view_tree" model="ir.ui.view">
-        <field name="name">ni.coverage.copay.view.tree</field>
+        <field name="name">ni.coverage.copay.view.list</field>
         <field name="model">ni.coverage.copay</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sequence" widget="handle" />
                 <field name="code" optional="show" />
                 <field name="name" />
                 <field name="active" optional="hide" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_coverage_copay_view_form" model="ir.ui.view">
