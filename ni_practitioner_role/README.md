@@ -1,6 +1,6 @@
 # Practitioner Role (`ni_practitioner_role`)
 
-Odoo 17.0 module that extends user roles with practitioner onboarding, verification,
+Odoo 18.0 module that extends user roles with practitioner onboarding, verification,
 employee creation, and QR-based role registration flows.
 
 ## Purpose
@@ -53,8 +53,9 @@ before login, and can create matching employee records with role-driven categori
 
 ## Upgrade Notes
 
-- Views and actions were `noupdate` up to 16.0. `migrations/17.0.1.0.0` clears the flag
-  so they follow the version; only the overrides of the `base` menus stay `noupdate`.
+- `migrations/18.0.1.0.0` copies the invitation tokens from `ir_property` into the jsonb
+  column of 18.0, because OpenUpgrade converts company-dependent fields of the core
+  modules only.
 - Roles without a token for a company no longer get one when the link is read, only
   through the button.
 
