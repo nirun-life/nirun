@@ -84,7 +84,7 @@ class Encounter(models.Model):
             "res_model": "ni.condition",
             "type": "ir.actions.act_window",
             "target": "current",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("patient_id", "=", self.patient_id.id)],
             "context": ctx,
         }

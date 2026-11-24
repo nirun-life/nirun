@@ -25,7 +25,7 @@ class DiagnosisRole(models.Model):
     parent_id = fields.Many2one(
         "ni.encounter.diagnosis.role", index=True, ondelete="cascade"
     )
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
