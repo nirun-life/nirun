@@ -116,13 +116,10 @@ class Condition(models.Model):
     )
     observation_count = fields.Integer(compute="_compute_observation")
 
-    _sql_constraints = [
-        (
-            "patient_id_code_id_uniq",
-            "unique (patient_id, code_id)",
-            "Patient already have this condition!",
-        ),
-    ]
+    _patient_id_code_id_uniq = models.Constraint(
+        "unique (patient_id, code_id)",
+        "Patient already have this condition!",
+    )
 
     @api.depends("code_id", "patient_id")
     def _compute_observation(self):
