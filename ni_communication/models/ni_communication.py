@@ -42,7 +42,7 @@ class Communication(models.Model):
         "ni.communication.category",
         required=True,
         index=True,
-        default=_get_default_category,
+        default=lambda self: self._get_default_category(),
     )
     occurrence = fields.Datetime("Occurrence", related="period_start", default=None)
     period_start = fields.Datetime("Sent")
