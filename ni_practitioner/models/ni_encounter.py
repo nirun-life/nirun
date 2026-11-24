@@ -4,8 +4,6 @@
 from odoo import api, fields, models
 from odoo.models import Command
 
-from odoo.addons.ni_patient.models.ni_encounter import LOCK_STATE_DICT
-
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
@@ -15,14 +13,13 @@ class Encounter(models.Model):
         index=True,
         tracking=True,
         check_company=True,
-        states=LOCK_STATE_DICT,
-        domain="[('company_id', 'in', [company_id, False]),('department_id', '=?', department_id )]",
+        domain="[('company_id', 'in', [company_id, False]), "
+        "('department_id', '=?', department_id)]",
     )
     performer_license_id = fields.Many2one(
         "hr.resume.line",
         "License",
         tracking=True,
-        states=LOCK_STATE_DICT,
         domain="[('employee_id', '=', performer_id), ('identifier', '!=', False)]",
     )
     performer_license_no = fields.Char(string="License No.")
@@ -30,7 +27,6 @@ class Encounter(models.Model):
         "hr.department",
         index=True,
         tracking=True,
-        states=LOCK_STATE_DICT,
         check_company=True,
     )
 

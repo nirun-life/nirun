@@ -26,7 +26,7 @@
     ],
     "assets": {
         "web.assets_backend": [
-            "/ni_practitioner/static/src/xml/resume_templates.xml",
+            "ni_practitioner/static/src/xml/resume_templates.xml",
         ],
     },
     "pre_init_hook": "pre_init_hook",
