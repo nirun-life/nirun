@@ -3,7 +3,7 @@
 {
     "name": "Allergy & Intolerance",
     "summary": "Patient allergy and intolerance records and alerts",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.1.1",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
