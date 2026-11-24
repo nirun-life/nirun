@@ -3,7 +3,7 @@
 {
     "name": "Practitioner",
     "summary": "Healthcare practitioner and skill management",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.1.1",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
@@ -22,6 +22,7 @@
         "views/hr_resume_line_code_views.xml",
         "views/hr_resume_menu.xml",
         "views/ni_encounter_view.xml",
+        "views/ni_patient_portal_templates.xml",
     ],
     "assets": {
         "web.assets_backend": [

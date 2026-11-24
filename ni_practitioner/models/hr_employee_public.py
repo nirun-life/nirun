@@ -8,3 +8,4 @@ class EmployeePublic(models.Model):
 
     license_id = fields.Many2one("hr.resume.line")
     license_no = fields.Char("License No.")
+    license_default_id = fields.Many2one("hr.resume.line")
