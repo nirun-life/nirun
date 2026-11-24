@@ -13,7 +13,7 @@
         <field name="name">Users</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.users</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('role_line_ids.role_id', '=', active_id)]</field>
     </record>
     <record id="res_users_role_view_form_inherit" model="ir.ui.view">
@@ -61,7 +61,7 @@
                 <field name="register_location" />
                 <field name="register_qr_code" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div
                             t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''}"
                         >
@@ -110,21 +110,21 @@
                                             type="object"
                                         >
                                             <i
-                                                class="fa fa-users me-2"
-                                                aria-hidden="true"
-                                                title="Users"
-                                            />
+                                            class="fa fa-users me-2"
+                                            aria-hidden="true"
+                                            title="Users"
+                                        />
                                             <t t-out="record.user_count.raw_value" />
                                             Users
                                             <t
-                                                t-if="record.user_to_verify_count.raw_value > 0"
-                                            >
-                                                <span class="ms-1 badge bg-danger">
-                                                    <t
-                                                        t-out="record.user_to_verify_count.raw_value"
-                                                    />
-                                                </span>
-                                            </t>
+                                            t-if="record.user_to_verify_count.raw_value > 0"
+                                        >
+                                            <span class="ms-1 badge bg-danger">
+                                                <t
+                                                    t-out="record.user_to_verify_count.raw_value"
+                                                />
+                                            </span>
+                                        </t>
                                         </button>
                                     </div>
                                     <div class="col-6 px-4">

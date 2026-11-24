@@ -82,7 +82,7 @@ class Roles(models.Model):
             "name": self.name,
             "res_model": "res.users",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "context": ctx,
             "domain": [
                 ("company_ids", "=", self.env.company.id),
