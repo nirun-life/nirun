@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -9,7 +9,7 @@ class CoverageType(models.Model):
     _description = "Coverage Type"
     _inherit = ["ni.coding"]
     _parent_store = True
-    _rec_names_search = ["name", "parent_id", "code"]
+    _rec_names_search = ["name", "parent_id.name", "code", "abbr"]
 
     parent_id = fields.Many2one("ni.coverage.type", index=True, ondelete="set null")
     parent_path = fields.Char(index=True)
@@ -40,8 +40,10 @@ class CoverageType(models.Model):
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
-        if not self._check_recursion():
-            raise ValidationError(_("Error! You cannot create recursive data."))
+        if self._has_cycle():
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
 
     @api.depends("child_ids")
     def _compute_child_count(self):
