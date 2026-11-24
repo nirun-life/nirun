@@ -3,7 +3,7 @@
 {
     "name": "Observation",
     "summary": "Clinical observations including vital signs, lab results, and measurements",
-    "version": "16.0.0.6.3",
+    "version": "16.0.0.6.4",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
@@ -33,6 +33,7 @@
         "views/ni_observation_menu.xml",
         "views/ni_patient_views.xml",
         "views/ni_encounter_views.xml",
+        "views/ni_patient_portal_templates.xml",
         "report/ni_encounter_observation_view.xml",
         "report/ni_patient_observation_view.xml",
         "report/summary_report.xml",
