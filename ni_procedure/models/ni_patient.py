@@ -11,8 +11,8 @@ class Patient(models.Model):
 
     def _compute_procedure_count(self):
         procedures = self.env["ni.procedure"].sudo()
-        read = procedures.read_group(
-            [("patient_id", "in", self.ids)], ["patient_id"], ["patient_id"]
+        read = procedures._read_group(
+            [("patient_id", "in", self.ids)], ["patient_id"], ["__count"]
         )
         data = {res["patient_id"][0]: res["patient_id_count"] for res in read}
         for patient in self:
