@@ -6,7 +6,7 @@
     <record id="ni_immunization_action" model="ir.actions.act_window">
         <field name="name">Immunization</field>
         <field name="res_model">ni.immunization</field>
-        <field name="view_mode">tree,kanban,form,graph,pivot</field>
+        <field name="view_mode">list,kanban,form,graph,pivot</field>
     </record>
     <record id="ni_immunization_view_search" model="ir.ui.view">
         <field name="name">ni.immunization.view.search</field>
@@ -79,10 +79,10 @@
         </field>
     </record>
     <record id="ni_immunization_view_tree" model="ir.ui.view">
-        <field name="name">ni.immunization.view.tree</field>
+        <field name="name">ni.immunization.view.list</field>
         <field name="model">ni.immunization</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 decoration-info="state in ['preparation', 'suspended']"
                 decoration-muted="state in ['not-done', 'abort']"
                 decoration-danger="pending_disease_count &gt; 0"
@@ -131,7 +131,7 @@
                 <control>
                     <create string="Add immunization" context="{'no_header': True}" />
                 </control>
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_immunization_view_form" model="ir.ui.view">
@@ -287,7 +287,7 @@
                                 nolabel="1"
                                 context="{'default_immunization_id': id}"
                             >
-                                <tree create="false">
+                                <list create="false">
                                     <field name="target_disease_id" />
                                     <field name="occurrence" optional="hide" />
                                     <field name="dose_number" string="Dose" />
@@ -304,7 +304,7 @@
                                         decoration-warning="protection_status == 'partial'"
                                         decoration-danger="protection_status == 'not-protected'"
                                     />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Notes" icon="fa-pencil-square">
@@ -329,7 +329,7 @@
                 <field name="pending_disease_ids" />
                 <field name="pending_disease_count" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div t-attf-class="oe_kanban_global_click">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
