@@ -13,7 +13,7 @@
                 <field name="immunization_id" invisible="1" />
                 <field name="state" invisible="1" />
                 <field name="available_disease_ids" invisible="1" />
-                <group states="1" string="Select diseases to record dose">
+                <group invisible="state != '1'" string="Select diseases to record dose">
                     <label for="disease_ids" />
                     <div>
                         <field
@@ -28,8 +28,8 @@
                         />
                     </div>
                 </group>
-                <separator states="2" string="Fill-in dose information" />
-                <field name="line_ids" states="2">
+                <separator invisible="state != '2'" string="Fill-in dose information" />
+                <field name="line_ids" invisible="state != '2'">
                     <tree editable="bottom" create="false" delete="false">
                         <field name="target_disease_id" readonly="1" />
                         <field name="series_doses" readonly="1" />
@@ -37,7 +37,7 @@
                         <field
                             name="occurrence"
                             placeholder="optional"
-                            invisible="parent.immunization_id"
+                            column_invisible="parent.immunization_id"
                         />
                     </tree>
                     <form>
@@ -101,16 +101,21 @@
                         type="object"
                         string="Next"
                         class="btn-primary"
-                        states="1"
+                        invisible="state != '1'"
                     />
                     <button
                         name="action_apply"
                         type="object"
                         string="Save"
                         class="btn-primary"
-                        states="2"
+                        invisible="state != '2'"
                     />
-                    <button name="action_back" type="object" string="Back" states="2" />
+                    <button
+                        name="action_back"
+                        type="object"
+                        string="Back"
+                        invisible="state != '2'"
+                    />
                     <button special="cancel" string="Cancel" />
                 </footer>
             </form>

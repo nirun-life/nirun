@@ -18,7 +18,7 @@ class ImmunizationTargetDisease(models.Model):
     def action_evaluation(self):
         self.ensure_one()
         return {
-            "name": _("New Evaluation — %s") % self.display_name,
+            "name": _("New Evaluation — %s", self.display_name),
             "type": "ir.actions.act_window",
             "res_model": "ni.immunization.evaluation",
             "view_mode": "form",
