@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2022-2023. NSTDA
   -->
@@ -23,30 +23,44 @@
                 <filter
                     name="occurrence_today"
                     string="Today"
-                    domain="[
-                    ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
-                    ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))
-                    ]"
+                    domain="[                     ('occurrence', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),                     ('occurrence', '&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))                     ]"
                 />
                 <filter
                     name="occurrence_yesterday"
                     string="Yesterday"
-                    domain="[
-                    ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
-                    ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))
-                    ]"
+                    domain="[                     ('occurrence', '&gt;=', (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),                     ('occurrence', '&lt;=',(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 23:23:59'))                     ]"
                 />
                 <filter name="occurrence" string="Occurrence" date="occurrence" />
                 <separator />
                 <group string="Group By">
-                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
-                    <filter name="group_by_encounter" string="Encounter" context="{'group_by': 'encounter_id'}" />
+                    <filter
+                        name="group_by_patient"
+                        string="Patient"
+                        context="{'group_by': 'patient_id'}"
+                    />
+                    <filter
+                        name="group_by_encounter"
+                        string="Encounter"
+                        context="{'group_by': 'encounter_id'}"
+                    />
                     <separator />
-                    <filter name="group_by_code" string="Code" context="{'group_by': 'code_id'}" />
-                    <filter name="group_by_outcome" string="Outcome" context="{'group_by': 'outcome_id'}" />
+                    <filter
+                        name="group_by_code"
+                        string="Code"
+                        context="{'group_by': 'code_id'}"
+                    />
+                    <filter
+                        name="group_by_outcome"
+                        string="Outcome"
+                        context="{'group_by': 'outcome_id'}"
+                    />
                 </group>
                 <searchpanel>
-                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" />
+                    <field
+                        name="company_id"
+                        groups="base.group_multi_company"
+                        icon="fa-building"
+                    />
                     <field name="category_id" enable_counters="1" />
                     <field name="performer_id" enable_counters="1" icon="fa-user" />
                     <field name="outcome_id" enable_counters="1" icon="fa-bullseye" />
@@ -95,7 +109,11 @@
                 <field name="period_end" optional="hide" />
                 <field name="duration_hours" widget="float_time" optional="hide" />
                 <field name="location_id" optional="hide" />
-                <field name="performer_id" widget="many2one_avatar_employee" optional="hide" />
+                <field
+                    name="performer_id"
+                    widget="many2one_avatar_employee"
+                    optional="hide"
+                />
                 <field
                     name="outcome_id"
                     widget="badge"
@@ -136,11 +154,36 @@
                         states="preparation"
                         type="object"
                     />
-                    <button name="action_complete" string="Complete" states="preparation,in-progress" type="object" />
-                    <button name="action_not_done" string="Decline" states="preparation" type="object" />
-                    <button name="action_suspend" string="Suspend" states="in-progress" type="object" />
-                    <button name="action_not_done" string="Abort" states="in-progress" type="object" />
-                    <button name="action_resume" string="Resume" states="suspended" type="object" />
+                    <button
+                        name="action_complete"
+                        string="Complete"
+                        states="preparation,in-progress"
+                        type="object"
+                    />
+                    <button
+                        name="action_not_done"
+                        string="Decline"
+                        states="preparation"
+                        type="object"
+                    />
+                    <button
+                        name="action_suspend"
+                        string="Suspend"
+                        states="in-progress"
+                        type="object"
+                    />
+                    <button
+                        name="action_not_done"
+                        string="Abort"
+                        states="in-progress"
+                        type="object"
+                    />
+                    <button
+                        name="action_resume"
+                        string="Resume"
+                        states="suspended"
+                        type="object"
+                    />
                     <field
                         name="state"
                         widget="statusbar"
@@ -155,15 +198,24 @@
                             <field
                                 class="oe_inline text-muted"
                                 name="identifier"
-                                attrs="{'invisible': [('id', '=', False)]}"
                                 readonly="True"
+                                invisible="not id"
                             />
                         </div>
                         <h4>
-                            <field name="code_id" class="w-100" placeholder="Search..." options="{'no_open': True}" />
+                            <field
+                                name="code_id"
+                                class="w-100"
+                                placeholder="Search..."
+                                options="{'no_open': True}"
+                            />
                         </h4>
                         <div class="small">
-                            <field name="category_id" class="oe_inline" options="{'no_open': True}" />
+                            <field
+                                name="category_id"
+                                class="oe_inline"
+                                options="{'no_open': True}"
+                            />
                         </div>
                     </div>
                     <group>
@@ -184,15 +236,31 @@
                             <field name="period_end" />
                             <label for="duration_hours" />
                             <div>
-                                <field name="duration_hours" widget="float_time" string="Duration" class="oe_inline" />
+                                <field
+                                    name="duration_hours"
+                                    widget="float_time"
+                                    string="Duration"
+                                    class="oe_inline"
+                                />
                                 <span>hours</span>
                             </div>
                         </group>
                         <group>
-                            <field name="company_id" invisible="1" options="{'no_open': True}" />
-                            <field name="performer_id" widget="many2one_avatar_employee" />
+                            <field
+                                name="company_id"
+                                invisible="1"
+                                options="{'no_open': True}"
+                            />
+                            <field
+                                name="performer_id"
+                                widget="many2one_avatar_employee"
+                            />
                             <field name="location_id" options="{'no_open': True}" />
-                            <field name="outcome_id" widget="radio" options="{'no_open': True}" />
+                            <field
+                                name="outcome_id"
+                                widget="radio"
+                                options="{'no_open': True}"
+                            />
                         </group>
                     </group>
                     <field name="note" placeholder="Log a note..." />
@@ -230,12 +298,19 @@
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
                                     <div class="text-muted small">
-                                        <i class="fa fa-clock-o me-1" aria-hidden="true" title="Starting at" />
+                                        <i
+                                            class="fa fa-clock-o me-1"
+                                            aria-hidden="true"
+                                            title="Starting at"
+                                        />
                                         <field name="period_start" />
                                     </div>
                                 </div>
                                 <div class="oe_kanban_bottom_right mr4">
-                                    <field name="performer_id" widget="many2one_avatar_employee" />
+                                    <field
+                                        name="performer_id"
+                                        widget="many2one_avatar_employee"
+                                    />
                                 </div>
                             </div>
                         </div>
