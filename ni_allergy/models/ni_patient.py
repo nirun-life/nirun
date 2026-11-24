@@ -1,7 +1,7 @@
 #  Copyright (c) 2021-2023 NSTDA
 import ast
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -57,7 +57,7 @@ class Patient(models.Model):
             .sudo()
             ._for_xml_id("ni_allergy.ni_allergy_action")
         )
-        action["display_name"] = _("%(name)s's Allergy", name=self.name)
+        action["display_name"] = self.env._("%(name)s's Allergy", name=self.name)
         context = action["context"].replace("active_id", str(self.id))
         context = ast.literal_eval(context)
         context.update(
@@ -88,4 +88,4 @@ class Patient(models.Model):
             if rec.allergy != "identified" and rec.allergy_ids:
                 rec.allergy_ids = [fields.Command.clear()]
             if rec.allergy == "identified" and not rec.allergy_ids:
-                raise UserError(_("Must identify at least one allergy record"))
+                raise UserError(self.env._("Must identify at least one allergy record"))
