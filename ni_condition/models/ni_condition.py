@@ -211,19 +211,40 @@ class Condition(models.Model):
         for rec in self.filtered(lambda r: r.code_id):
             rec.name = rec.code_id.name
 
-    def name_get(self):
-        return [(rec.id, rec._name_get()) for rec in self]
+    @api.depends(
+        "name",
+        "code_id.name",
+        "code_id.code",
+        "patient_id.display_name",
+        "severity",
+        "clinical_state",
+    )
+    @api.depends_context(
+        "show_code",
+        "show_patient",
+        "show_severity",
+        "show_state",
+        # of the patient name
+        "show_identifier",
+        "show_identification_id",
+        "show_gender_age",
+        "show_age",
+    )
+    def _compute_display_name(self):
+        for condition in self:
+            condition.display_name = condition._name_get()
 
     def _name_get(self):
         condition = self
+        context = self.env.context
         name = condition.name or condition.code_id.name
-        if self._context.get("show_code") and condition.code_id.code:
+        if context.get("show_code") and condition.code_id.code:
             name = f"[{name}] {condition.code_id.code}"
-        if self._context.get("show_patient"):
+        if context.get("show_patient"):
             name = f"{condition.patient_id._name_get()}: {name}"
-        if self._context.get("show_severity") and condition.severity:
+        if context.get("show_severity") and condition.severity:
             name = f"{name}[{condition.get_severity_label()}]"
-        if self._context.get("show_state"):
+        if context.get("show_state"):
             name = f"{name} ({condition.get_state_label()})"
         return name
 

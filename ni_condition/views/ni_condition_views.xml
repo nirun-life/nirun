@@ -75,13 +75,13 @@
         <field name="model">ni.condition</field>
         <field name="arch" type="xml">
             <tree create="0">
-                <field name="company_id" invisible="1" />
-                <field name="patient_id" invisible="1" />
-                <field name="encounter_id" invisible="1" />
-                <field name="code_id" invisible="1" />
+                <field name="company_id" column_invisible="1" />
+                <field name="patient_id" column_invisible="1" />
+                <field name="encounter_id" column_invisible="1" />
+                <field name="code_id" column_invisible="1" />
                 <field name="name" />
-                <field name="is_problem" invisible="1" />
-                <field name="is_diagnosis" invisible="1" />
+                <field name="is_problem" column_invisible="1" />
+                <field name="is_diagnosis" column_invisible="1" />
                 <field name="verification_id" optional="hide" />
                 <field name="duration" optional="show" />
                 <field
@@ -113,7 +113,7 @@
                 <field name="company_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
-                <header invisible="not id">
+                <header invisible="not id or context.get('no_header')">
                     <button
                         name="action_active"
                         type="object"
@@ -280,7 +280,10 @@
                                         decoration-danger="role_decoration == 'danger'"
                                         decoration-muted="role_decoration == 'muted'"
                                     />
-                                    <field name="role_decoration" invisible="1" />
+                                    <field
+                                        name="role_decoration"
+                                        column_invisible="1"
+                                    />
                                 </tree>
                             </field>
                         </page>
