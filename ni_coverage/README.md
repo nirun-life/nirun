@@ -1,6 +1,6 @@
 # Coverage (`ni_coverage`)
 
-Odoo 18.0 module that records patient insurance coverage, coverage type, co-pay
+Odoo 19.0 module that records patient insurance coverage, coverage type, co-pay
 structure, and insurance plans for Nirun. It provides structured benefit and policy data
 so patient financial coverage can be linked to the clinical record.
 
