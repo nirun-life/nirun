@@ -3,7 +3,7 @@
 {
     "name": "Related Person",
     "summary": "Patient family members and related person relationships",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.1.1",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
