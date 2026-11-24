@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-11 14:07+0000\n"
-"PO-Revision-Date: 2023-08-11 14:07+0000\n"
+"POT-Creation-Date: 2026-11-24 12:44+0000\n"
+"PO-Revision-Date: 2026-11-24 12:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -79,6 +79,8 @@ msgstr "สี"
 #: model:ir.actions.act_window,name:ni_communication.ni_communication_action_pivot_from_encounter
 #: model:ir.model,name:ni_communication.model_ni_communication
 #: model:ir.model.fields,field_description:ni_communication.field_ni_encounter__communication_ids
+#: model:ir.model.fields,field_description:ni_communication.field_ni_encounter__show_communication
+#: model:ir.model.fields,field_description:ni_communication.field_ni_encounter_class__communication
 #: model:ir.model.fields,field_description:ni_communication.field_ni_patient__communication_ids
 #: model:ir.module.category,name:ni_communication.module_category_medical_communication
 #: model:ir.ui.menu,name:ni_communication.ni_communication_menu_section
@@ -111,9 +113,11 @@ msgstr "บริษัท"
 
 #. module: ni_communication
 #: model:ir.model.fields,field_description:ni_communication.field_ni_communication__content_ids
+#: model:ir.model.fields,field_description:ni_communication.field_ni_communication_category__content_ids
 #: model:ir.model.fields,field_description:ni_communication.field_ni_encounter__discharge_communication_content_ids
 #: model:ir.model.fields,field_description:ni_communication.field_ni_encounter_discharge_wizard__discharge_communication_content_ids
 #: model:ir.ui.menu,name:ni_communication.ni_communication_content_menu
+#: model_terms:ir.ui.view,arch_db:ni_communication.ni_communication_category_view_form
 msgid "Content"
 msgstr "เนื้อหา"
 
@@ -195,9 +199,19 @@ msgid "Encounter"
 msgstr "ข้อมูลรับบริการ"
 
 #. module: ni_communication
+#: model:ir.model,name:ni_communication.model_ni_encounter_class
+msgid "Encounter Classification"
+msgstr "ประเภทการรับบริการ"
+
+#. module: ni_communication
 #: model:ir.model.fields,field_description:ni_communication.field_ni_communication__encounter_id
 msgid "Encounter No."
 msgstr "เลขรับบริการ"
+
+#. module: ni_communication
+#: model:ir.model.fields,field_description:ni_communication.field_ni_communication__enforce_specialty
+msgid "Enforce Specialty"
+msgstr "บังคับความเชี่ยวชาญ"
 
 #. module: ni_communication
 #: model:ir.model.fields,field_description:ni_communication.field_ni_communication__event_id
@@ -251,13 +265,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:ni_communication.field_ni_communication__is_present
 msgid "Is Present"
 msgstr ""
-
-#. module: ni_communication
-#: model:ir.model.fields,field_description:ni_communication.field_ni_communication____last_update
-#: model:ir.model.fields,field_description:ni_communication.field_ni_communication_category____last_update
-#: model:ir.model.fields,field_description:ni_communication.field_ni_communication_content____last_update
-msgid "Last Modified on"
-msgstr "แก้ไขล่าสุดเมื่อ"
 
 #. module: ni_communication
 #: model:ir.model.fields,field_description:ni_communication.field_ni_communication__write_uid
@@ -379,6 +386,12 @@ msgid "Sequence"
 msgstr "ลำดับ"
 
 #. module: ni_communication
+#: model:ir.model.fields,help:ni_communication.field_ni_encounter__show_communication
+#: model:ir.model.fields,help:ni_communication.field_ni_encounter_class__communication
+msgid "Show/Hide Communication feature"
+msgstr "แสดง/ซ่อนการพูดคุยสื่อสาร"
+
+#. module: ni_communication
 #: model:ir.model.fields,field_description:ni_communication.field_ni_communication__period_start_date
 msgid "Since (Date)"
 msgstr "ตั้งแต่วันที่"
@@ -429,6 +442,11 @@ msgstr ""
 #: model:res.groups,name:ni_communication.group_user
 msgid "User"
 msgstr "ผู้ใช้งาน"
+
+#. module: ni_communication
+#: model:ir.model.fields,field_description:ni_communication.field_ni_communication__user_specialty
+msgid "User Specialty"
+msgstr "ความเชี่ยวชาญของผู้ใช้"
 
 #. module: ni_communication
 #: model:res.groups,name:ni_communication.group_viewer
