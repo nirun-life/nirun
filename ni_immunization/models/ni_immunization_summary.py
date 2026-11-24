@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class ImmunizationSummary(models.Model):
@@ -24,8 +24,8 @@ class ImmunizationSummary(models.Model):
     )
     last_evaluation = fields.Datetime(readonly=True)
     last_immunization = fields.Date(readonly=True)
-    dose_count = fields.Integer("Doses", readonly=True, group_operator="max")
-    series_doses = fields.Integer("Required", readonly=True, group_operator="max")
+    dose_count = fields.Integer(readonly=True, aggregator="max")
+    series_doses = fields.Integer("Required", readonly=True, aggregator="max")
     dose_progress = fields.Char("Doses", readonly=True)
     evaluation_ids = fields.Many2many(
         "ni.immunization.evaluation",
@@ -82,7 +82,7 @@ class ImmunizationSummary(models.Model):
         ctx = self.env.context
         return {
             "type": "ir.actions.act_window",
-            "name": _("Add Dose"),
+            "name": self.env._("Add Dose"),
             "res_model": "ni.immunization.evaluation",
             "view_mode": "form",
             "target": "new",

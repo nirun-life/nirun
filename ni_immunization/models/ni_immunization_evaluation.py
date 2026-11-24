@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import SUPERUSER_ID, _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -44,8 +44,8 @@ class ImmunizationEvaluation(models.Model):
         "Reason", help="Reason why the doses is considered invalid"
     )
     series = fields.Char(help="Name of the vaccine series")
-    dose_number = fields.Integer("Dose #", default=1, group_operator="max")
-    series_doses = fields.Integer("Doses Required", default=1, group_operator="max")
+    dose_number = fields.Integer("Dose #", default=1, aggregator="max")
+    series_doses = fields.Integer("Doses Required", default=1, aggregator="max")
     protection_status = fields.Selection(
         [
             ("protected", "Protected"),
@@ -108,8 +108,8 @@ class ImmunizationEvaluation(models.Model):
             )
 
     @api.model
-    def _read_group_target_disease_ids(self, diseases, domain, order):
-        disease_ids = diseases._search([], order=order, access_rights_uid=SUPERUSER_ID)
+    def _read_group_target_disease_ids(self, diseases, domain):
+        disease_ids = diseases.sudo()._search([], order=diseases._order)
         return diseases.browse(disease_ids)
 
     @api.depends("target_disease_id", "dose_number")
@@ -145,7 +145,7 @@ class ImmunizationEvaluation(models.Model):
         for rec in self.filtered("immunization_id"):
             if rec.immunization_id.patient_id != rec.patient_id:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "The referenced immunization dose belongs to a "
                         "different patient."
                     )
@@ -153,7 +153,7 @@ class ImmunizationEvaluation(models.Model):
             vaccine_diseases = rec.immunization_id.vaccine_id.target_disease_ids
             if vaccine_diseases and rec.target_disease_id not in vaccine_diseases:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "The vaccine '%(vaccine)s' does not target '%(disease)s'.",
                         vaccine=rec.immunization_id.vaccine_id.display_name,
                         disease=rec.target_disease_id.display_name,
@@ -169,7 +169,7 @@ class ImmunizationEvaluation(models.Model):
             )
             if duplicate:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "An evaluation for '%(disease)s' already references this "
                         "immunization dose.",
                         disease=rec.target_disease_id.display_name,
@@ -193,7 +193,7 @@ class ImmunizationEvaluation(models.Model):
             )
             if duplicate:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "A valid dose #%(dose)s already exists for %(disease)s "
                         "on this patient.",
                         dose=rec.dose_number,

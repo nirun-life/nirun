@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class Immunization(models.Model):
@@ -81,7 +81,7 @@ class Immunization(models.Model):
             ctx["default_target_disease_id"] = self.pending_disease_ids.id
         return {
             "type": "ir.actions.act_window",
-            "name": _("Add Evaluation"),
+            "name": self.env._("Add Evaluation"),
             "res_model": "ni.immunization.evaluation",
             "view_mode": "form",
             "target": "new",

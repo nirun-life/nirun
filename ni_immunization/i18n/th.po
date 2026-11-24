@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 14:33+0000\n"
-"PO-Revision-Date: 2026-11-24 14:33+0000\n"
+"POT-Creation-Date: 2026-11-24 14:34+0000\n"
+"PO-Revision-Date: 2026-11-24 14:34+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -214,11 +214,9 @@ msgstr "<i class=\"fa fa-clock-o me-1\" aria-hidden=\"true\" title=\"วัน�
 #. module: ni_immunization
 #: model_terms:ir.ui.view,arch_db:ni_immunization.ni_immunization_evaluation_wizard_view_form
 msgid ""
-"<i class=\"fa fa-exclamation-circle me-1\"/>\n"
-"                                            <span>Date not set</span>"
-msgstr ""
-"<i class=\"fa fa-exclamation-circle me-1\"/>\n"
-"                                            <span>ไม่ระบุวันที่รับวัคซีน</span>"
+"<i class=\"fa fa-exclamation-circle me-1\" title=\"Date not set\"/>\n"
+"                                    <span>Date not set</span>"
+msgstr "<i class=\"fa fa-exclamation-circle me-1\" title=\"ไม่ระบุวันที่รับวัคซีน\"/>\n                                    <span>ไม่ระบุวันที่รับวัคซีน</span>"
 
 #. module: ni_immunization
 #: model_terms:ir.ui.view,arch_db:ni_immunization.ni_immunization_view_kanban
@@ -263,7 +261,6 @@ msgstr ""
 #. module: ni_immunization
 #. odoo-python
 #: code:addons/ni_immunization/models/ni_immunization_evaluation.py:0
-#, python-format
 msgid "A valid dose #%(dose)s already exists for %(disease)s on this patient."
 msgstr "ผู้รับบริการรายนี้มีเข็มที่ %(dose)s ของ %(disease)s ที่ใช้ได้อยู่แล้ว"
 
@@ -292,14 +289,12 @@ msgstr "ใช้งาน"
 #: model_terms:ir.ui.view,arch_db:ni_immunization.ni_immunization_summary_view_form
 #: model_terms:ir.ui.view,arch_db:ni_immunization.ni_immunization_summary_view_kanban
 #: model_terms:ir.ui.view,arch_db:ni_immunization.ni_immunization_summary_view_tree
-#, python-format
 msgid "Add Dose"
 msgstr "เพิ่มเข็มวัคซีน"
 
 #. module: ni_immunization
 #. odoo-python
 #: code:addons/ni_immunization/models/ni_immunization.py:0
-#, python-format
 msgid "Add Evaluation"
 msgstr "เพิ่มการประเมิน"
 
@@ -331,7 +326,6 @@ msgstr "ทั้งหมด"
 #. module: ni_immunization
 #. odoo-python
 #: code:addons/ni_immunization/models/ni_immunization_evaluation.py:0
-#, python-format
 msgid ""
 "An evaluation for '%(disease)s' already references this immunization dose."
 msgstr "มีการประเมินโรค '%(disease)s' ที่อ้างอิงวัคซีนนี้แล้ว"
@@ -519,6 +513,11 @@ msgid "Dose #"
 msgstr "เข็มที่"
 
 #. module: ni_immunization
+#: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_summary__dose_count
+msgid "Dose Count"
+msgstr "เข็มวัคซีน"
+
+#. module: ni_immunization
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization__dose_quantity
 msgid "Dose Quantity"
 msgstr "ปริมาณวัคซีน"
@@ -530,7 +529,6 @@ msgstr "สถานะเข็มวัคซีน"
 
 #. module: ni_immunization
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_evaluation_wizard__line_ids
-#: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_summary__dose_count
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_summary__dose_progress
 #: model_terms:ir.ui.view,arch_db:ni_immunization.ni_immunization_summary_view_form
 #: model_terms:ir.ui.view,arch_db:ni_immunization.ni_immunization_summary_view_tree
@@ -688,7 +686,6 @@ msgstr "รหัสอ้างอิง"
 #. module: ni_immunization
 #: model:ir.actions.act_window,name:ni_immunization.ni_immunization_action
 #: model:ir.model,name:ni_immunization.model_ni_immunization
-#: model:ir.model.fields,field_description:ni_immunization.field_ni_encounter__immunization_ids
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_encounter__show_immunization
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_encounter_class__immunization
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_evaluation_wizard__immunization_id
@@ -727,7 +724,6 @@ msgstr "เข็มวัคซีน"
 #: code:addons/ni_immunization/models/ni_encounter.py:0
 #: model:ir.actions.act_window,name:ni_immunization.ni_immunization_evaluation_action
 #: model:ir.model,name:ni_immunization.model_ni_immunization_evaluation
-#, python-format
 msgid "Immunization Evaluation"
 msgstr "การประเมินการให้วัคซีน"
 
@@ -735,7 +731,6 @@ msgstr "การประเมินการให้วัคซีน"
 #. odoo-python
 #: code:addons/ni_immunization/models/ni_encounter.py:0
 #: model:ir.model,name:ni_immunization.model_ni_immunization_evaluation_wizard
-#, python-format
 msgid "Immunization Evaluation Wizard"
 msgstr "ตัวช่วยประเมินการรับวัคซีน"
 
@@ -747,14 +742,12 @@ msgstr "รายการประเมินการรับวัคซี
 #. module: ni_immunization
 #. odoo-python
 #: code:addons/ni_immunization/models/ni_encounter.py:0
-#, python-format
 msgid "Immunization History"
 msgstr "ประวัติการให้วัคซีน"
 
 #. module: ni_immunization
 #. odoo-python
 #: code:addons/ni_immunization/models/ni_patient.py:0
-#, python-format
 msgid "Immunization Protection"
 msgstr "ภูมิคุ้มกันจากวัคซีน"
 
@@ -773,6 +766,11 @@ msgstr "สรุปการฉีดวัคซีน"
 #: model:ir.model,name:ni_immunization.model_ni_immunization_target_disease
 msgid "Immunization Target Disease"
 msgstr "โรคเป้าหมายของวัคซีน"
+
+#. module: ni_immunization
+#: model:ir.model.fields,field_description:ni_immunization.field_ni_encounter__immunization_ids
+msgid "Immunizations"
+msgstr "การให้วัคซีน"
 
 #. module: ni_immunization
 #: model:ni.immunization.vaccine,definition:ni_immunization.vaccine_hav
@@ -925,7 +923,6 @@ msgstr "การประเมินใหม่"
 #. module: ni_immunization
 #. odoo-python
 #: code:addons/ni_immunization/models/ni_immunization_target_disease.py:0
-#, python-format
 msgid "New Evaluation — %s"
 msgstr "การประเมินใหม่ — %s"
 
@@ -1046,7 +1043,6 @@ msgstr "ไอกรน"
 #. module: ni_immunization
 #. odoo-python
 #: code:addons/ni_immunization/wizard/ni_immunization_evaluation_wizard.py:0
-#, python-format
 msgid "Please select at least one disease."
 msgstr "กรุณาเลือกโรคอย่างน้อยหนึ่งโรค"
 
@@ -1267,14 +1263,12 @@ msgstr "บาดทะยัก"
 #. module: ni_immunization
 #. odoo-python
 #: code:addons/ni_immunization/models/ni_immunization_evaluation.py:0
-#, python-format
 msgid "The referenced immunization dose belongs to a different patient."
 msgstr "วัคซีนที่อ้างอิงเป็นของผู้ป่วยรายอื่น"
 
 #. module: ni_immunization
 #. odoo-python
 #: code:addons/ni_immunization/models/ni_immunization_evaluation.py:0
-#, python-format
 msgid "The vaccine '%(vaccine)s' does not target '%(disease)s'."
 msgstr "วัคซีน '%(vaccine)s' ไม่ครอบคลุมโรค '%(disease)s'"
 
