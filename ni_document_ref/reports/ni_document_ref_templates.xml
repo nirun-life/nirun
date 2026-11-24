@@ -82,7 +82,7 @@
                                         t-value="o.env['res.lang'].search([('code', '=', user.lang)], limit=1)"
                                     />
                                     <span
-                                        t-esc="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))"
+                                        t-out="context_timestamp(datetime.datetime.now()).strftime('{} {}'.format(lang_id.date_format, lang_id.time_format))"
                                     />
                                 </div>
                             </div>
