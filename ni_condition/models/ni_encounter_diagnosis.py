@@ -29,13 +29,10 @@ class Diagnosis(models.Model):
     condition_id = fields.Many2one("ni.condition", required=True, ondelete="restrict")
     is_problem_editable = fields.Boolean(compute="_compute_is_problem_editable")
 
-    _sql_constraints = [
-        (
-            "encounter_id_condition_id_uniq",
-            "unique (encounter_id, condition_id)",
-            "Condition must be unique!",
-        ),
-    ]
+    _encounter_id_condition_id_uniq = models.Constraint(
+        "unique (encounter_id, condition_id)",
+        "Condition must be unique!",
+    )
 
     @api.onchange("code_id")
     def _onchange_code_id(self):

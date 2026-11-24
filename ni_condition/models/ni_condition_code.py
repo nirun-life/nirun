@@ -32,13 +32,10 @@ class ConditionCode(models.Model):
         "Observation Count", compute="_compute_observation_code_count"
     )
 
-    _sql_constraints = [
-        (
-            "system_name_uniq",
-            "unique (system_id, parent_id, name)",
-            "This name already exists!",
-        ),
-    ]
+    _system_name_uniq = models.Constraint(
+        "unique (system_id, parent_id, name)",
+        "This name already exists!",
+    )
 
     @api.depends("observation_code_ids")
     def _compute_observation_code_count(self):
