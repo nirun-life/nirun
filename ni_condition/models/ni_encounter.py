@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -62,7 +62,7 @@ class Encounter(models.Model):
                 )
                 if role_count > role.limit:
                     raise ValidationError(
-                        _(
+                        self.env._(
                             "Diagnosis as [%(role)s] has reached limit at "
                             "%(limit)s item",
                             role=role.name,
@@ -80,7 +80,7 @@ class Encounter(models.Model):
             }
         )
         view = {
-            "name": _("Problem List"),
+            "name": self.env._("Problem List"),
             "res_model": "ni.condition",
             "type": "ir.actions.act_window",
             "target": "current",
