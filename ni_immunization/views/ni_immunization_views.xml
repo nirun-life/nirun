@@ -88,8 +88,8 @@
                 decoration-danger="pending_disease_count &gt; 0"
             >
                 <field name="identifier" optional="hide" />
-                <field name="encounter_id" invisible="1" />
-                <field name="patient_id" invisible="1" />
+                <field name="encounter_id" column_invisible="1" />
+                <field name="patient_id" column_invisible="1" />
                 <field name="vaccine_id" />
                 <field name="occurrence" />
                 <field name="lot_number" optional="hide" />
@@ -119,10 +119,7 @@
                     options="{'color_field': 'color'}"
                     optional="hide"
                 />
-                <field
-                    name="pending_disease_count"
-                    invisible="pending_disease_count == 0"
-                />
+                <field name="pending_disease_count" column_invisible="1" />
                 <button
                     name="action_evaluate"
                     type="object"
@@ -147,19 +144,19 @@
                         name="action_complete"
                         string="Complete"
                         class="oe_highlight"
-                        states="preparation,in-progress"
+                        invisible="state not in ('preparation', 'in-progress')"
                         type="object"
                     />
                     <button
                         name="action_not_done"
                         string="Not Done"
-                        states="preparation"
+                        invisible="state != 'preparation'"
                         type="object"
                     />
                     <button
                         name="action_abort"
                         string="Abort"
-                        states="in-progress"
+                        invisible="state != 'in-progress'"
                         type="object"
                     />
                     <field
@@ -373,7 +370,6 @@
                                             icon="fa-shield"
                                             string="Evaluate"
                                             class="btn btn-outline-warning btn-sm ms-1"
-                                            t-on-click.stop="() =&gt; {}"
                                         />
                                     </div>
                                 </t>

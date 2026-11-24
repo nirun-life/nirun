@@ -137,3 +137,11 @@ erDiagram
 | -------------- | -------------------------------------------------------- |
 | `ni_patient`   | `ni.patient`, `ni.encounter`, workflow/identifier mixins |
 | `ni_body_site` | `ni.body.site` for injection site selection              |
+
+---
+
+## Tests
+
+- `tests/test_ni_immunization.py` covers evaluation (also without an encounter), the
+  protection summary, the wizard, the grouping by disease, constraints, display names
+  and counters.
