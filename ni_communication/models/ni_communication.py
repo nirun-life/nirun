@@ -44,7 +44,7 @@ class Communication(models.Model):
         index=True,
         default=_get_default_category,
     )
-    occurrence = fields.Datetime(related="period_start", default=None)
+    occurrence = fields.Datetime("Occurrence", related="period_start", default=None)
     period_start = fields.Datetime("Sent")
     period_end = fields.Datetime("Received")
     duration_hours = fields.Float(default=0.05)
