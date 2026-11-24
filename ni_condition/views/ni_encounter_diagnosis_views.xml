@@ -87,10 +87,10 @@
         </field>
     </record>
     <record id="ni_encounter_diagnosis_view_tree" model="ir.ui.view">
-        <field name="name">ni.encounter.diagnosis.view.tree</field>
+        <field name="name">ni.encounter.diagnosis.view.list</field>
         <field name="model">ni.encounter.diagnosis</field>
         <field name="arch" type="xml">
-            <tree decoration-muted="is_problem and not is_diagnosis">
+            <list decoration-muted="is_problem and not is_diagnosis">
                 <field name="company_id" column_invisible="1" />
                 <field name="encounter_id" column_invisible="1" />
                 <field name="patient_id" column_invisible="1" />
@@ -175,7 +175,7 @@
                         context="{'default_is_problem': True, 'default_is_diagnosis': False, 'default_sequence': 99}"
                     />
                 </control>
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_encounter_diagnosis_view_kanban" model="ir.ui.view">
@@ -188,7 +188,7 @@
                 <field name="role_id" />
                 <field name="severity" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div t-attf-class="oe_kanban_global_click">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">

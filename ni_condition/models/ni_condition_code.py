@@ -10,7 +10,7 @@ class ConditionCode(models.Model):
     _parent_store = True
 
     parent_id = fields.Many2one("ni.condition.code", index=True, ondelete="cascade")
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
 
     specialty_ids = fields.Many2many(
         "hr.job",
