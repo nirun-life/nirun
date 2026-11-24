@@ -1,12 +1,12 @@
 #  Copyright (c) 2022. NSTDA
 
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
-    procedure_ids = fields.One2many("ni.procedure", "encounter_id")
+    procedure_ids = fields.One2many("ni.procedure", "encounter_id", string="Procedures")
     procedure_count = fields.Integer(compute="_compute_procedure_count")
 
     def _compute_procedure_count(self):
@@ -20,7 +20,7 @@ class Encounter(models.Model):
 
     def action_procedure(self):
         action = {
-            "name": _("Procedure History"),
+            "name": self.env._("Procedure History"),
             "type": "ir.actions.act_window",
             "res_model": "ni.procedure",
             "view_mode": "list,kanban,form,graph,pivot",
