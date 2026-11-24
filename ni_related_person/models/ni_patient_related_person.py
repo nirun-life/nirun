@@ -44,7 +44,7 @@ class RelatedPerson(models.Model):
             def convert(value):
                 return value.id if isinstance(value, models.BaseModel) else value
 
-            value = {key: convert(self.parent_id[key]) for key in address_fields}
+            value = {key: convert(self.patient_id[key]) for key in address_fields}
             self.update(value)
 
     @api.constrains("partner_id", "patient_id")
