@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2026 NSTDA
   -->
@@ -16,7 +16,11 @@
                 <group states="1" string="Select diseases to record dose">
                     <label for="disease_ids" />
                     <div>
-                        <field name="filter_status" widget="radio" options="{'horizontal': True}" />
+                        <field
+                            name="filter_status"
+                            widget="radio"
+                            options="{'horizontal': True}"
+                        />
                         <field
                             name="disease_ids"
                             widget="many2many_checkboxes"
@@ -33,7 +37,7 @@
                         <field
                             name="occurrence"
                             placeholder="optional"
-                            attrs="{'invisible': [('parent.immunization_id', '!=', False)]}"
+                            invisible="parent.immunization_id"
                         />
                     </tree>
                     <form>
@@ -63,13 +67,22 @@
                                             <field name="target_disease_id" />
                                         </strong>
                                         <div class="mt-1">
-                                            <i class="fa fa-eyedropper me-1" title="Dose" />
+                                            <i
+                                                class="fa fa-eyedropper me-1"
+                                                title="Dose"
+                                            />
                                             <field name="dose_number" />
                                             <span>/</span>
                                             <field name="series_doses" />
                                         </div>
-                                        <div t-if="record.occurrence.value" class="mt-1 text-muted">
-                                            <i class="fa fa-calendar me-1" title="Occurrence" />
+                                        <div
+                                            t-if="record.occurrence.value"
+                                            class="mt-1 text-muted"
+                                        >
+                                            <i
+                                                class="fa fa-calendar me-1"
+                                                title="Occurrence"
+                                            />
                                             <field name="occurrence" />
                                         </div>
                                         <div t-else="" class="mt-1 text-warning">
@@ -83,8 +96,20 @@
                     </kanban>
                 </field>
                 <footer>
-                    <button name="action_next" type="object" string="Next" class="btn-primary" states="1" />
-                    <button name="action_apply" type="object" string="Save" class="btn-primary" states="2" />
+                    <button
+                        name="action_next"
+                        type="object"
+                        string="Next"
+                        class="btn-primary"
+                        states="1"
+                    />
+                    <button
+                        name="action_apply"
+                        type="object"
+                        string="Save"
+                        class="btn-primary"
+                        states="2"
+                    />
                     <button name="action_back" type="object" string="Back" states="2" />
                     <button special="cancel" string="Cancel" />
                 </footer>
