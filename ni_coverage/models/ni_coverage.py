@@ -46,7 +46,7 @@ class Coverage(models.Model):
     policy_holder_id = fields.Many2one("res.partner", help="Owner of the policy")
     insurer = fields.Many2one("res.partner", domain=[("is_company", "=", True)])
 
-    period_start = fields.Date(default=None)
+    period_start = fields.Datetime(default=None)
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -84,7 +84,6 @@ class Coverage(models.Model):
             if rec.insurance_plan_id:
                 rec.name = rec.insurance_plan_id.name
                 rec.type_id = rec.insurance_plan_id.type_id
-                rec.beneficiary_id = rec.insurance_plan_id.benefit_ids.copy()
 
     def get_state_label(self):
         self.ensure_one()
