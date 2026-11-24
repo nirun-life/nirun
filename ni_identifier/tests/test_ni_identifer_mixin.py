@@ -39,3 +39,9 @@ class TestMixin(TransactionCase):
         with self.assertLogs(logger, level="WARNING"):
             record = self.env["ni.identifier.test"].create({"name": "BAR"})
         self.assertEqual(record.identifier, "New")
+
+    def test_create_with_empty_period_start(self):
+        record = self.env["ni.identifier.test"].create(
+            {"name": "BAR", "period_start": False}
+        )
+        self.assertRegex(record.identifier, r"^TST-\d{5}$")

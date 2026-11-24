@@ -9,3 +9,4 @@ class NiIdentifierTest(models.Model):
     _description = "Identifier Mixin Test"
 
     name = fields.Char()
+    period_start = fields.Datetime()
