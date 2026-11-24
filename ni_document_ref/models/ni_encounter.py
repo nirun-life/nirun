@@ -2,15 +2,11 @@
 
 from odoo import api, fields, models
 
-from odoo.addons.ni_patient.models.ni_encounter import LOCK_STATE_DICT
-
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
-    document_ids = fields.One2many(
-        "ni.document.ref", "encounter_id", states=LOCK_STATE_DICT
-    )
+    document_ids = fields.One2many("ni.document.ref", "encounter_id")
     document_count = fields.Integer(compute="_compute_document_count")
 
     @api.depends("document_ids")
