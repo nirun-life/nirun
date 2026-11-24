@@ -1,5 +1,5 @@
 #  Copyright (c) 2024 NSTDA
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -51,4 +51,4 @@ class RelatedPerson(models.Model):
     def _check_no_recursive(self):
         for rec in self:
             if rec.partner_id == rec.patient_id.partner_id:
-                raise UserError(_("Patient must not related to themselves"))
+                raise UserError(self.env._("Patient must not related to themselves"))
