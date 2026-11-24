@@ -6,7 +6,7 @@
     <record id="ni_insurance_plan_action" model="ir.actions.act_window">
         <field name="name">Insurance Plan</field>
         <field name="res_model">ni.insurance.plan</field>
-        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="view_mode">list,form,pivot,graph</field>
     </record>
     <record id="ni_insurance_plan_view_search" model="ir.ui.view">
         <field name="name">ni.insurance.plan.view.search</field>
@@ -34,17 +34,17 @@
         </field>
     </record>
     <record id="ni_insurance_plan_view_tree" model="ir.ui.view">
-        <field name="name">ni.insurance.plan.view.tree</field>
+        <field name="name">ni.insurance.plan.view.list</field>
         <field name="model">ni.insurance.plan</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="alias" optional="show" />
                 <field name="code" optional="show" />
                 <field name="issuer_id" />
                 <field name="type_id" />
                 <field name="patient_count" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_insurance_plan_view_form" model="ir.ui.view">
@@ -109,13 +109,13 @@
                         </page>
                         <page name="benefit" string="Benefit">
                             <field name="benefit_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="plan_id" column_invisible="1" />
                                     <field name="sequence" widget="handle" />
                                     <field name="type_id" />
                                     <field name="value" sum="Total" />
                                     <field name="value_percentage" avg="Average" />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Extra Info" groups="base.group_no_one">
