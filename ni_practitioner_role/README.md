@@ -1,6 +1,6 @@
 # Practitioner Role (`ni_practitioner_role`)
 
-Odoo 16.0 module that extends user roles with practitioner onboarding, verification,
+Odoo 17.0 module that extends user roles with practitioner onboarding, verification,
 employee creation, and QR-based role registration flows.
 
 ## Purpose
@@ -23,7 +23,8 @@ before login, and can create matching employee records with role-driven categori
 - `action_verify()` and `action_verify_employee()` can create an `hr.employee` record
   for the user and populate the employee license number from the login.
 - `models/res_users_role.py` adds `employee_category_ids`, company-dependent invitation
-  tokens, registration URLs, QR-code generation, and per-role counts for users and
+  tokens (created with the role, or with the "Create Invitation Link" button for another
+  company), registration URLs, QR-code generation, and per-role counts for users and
   unverified users.
 - Role verification can also copy employee categories from the assigned roles onto the
   generated employee record.
@@ -50,10 +51,17 @@ before login, and can create matching employee records with role-driven categori
 - Optional: `base_user_role_company` (AGPL-3, so not a dependency). When it is
   installed, the registration form also sets the company of the role line.
 
+## Upgrade Notes
+
+- Views and actions were `noupdate` up to 16.0. `migrations/17.0.1.0.0` clears the flag
+  so they follow the version; only the overrides of the `base` menus stay `noupdate`.
+- Roles without a token for a company no longer get one when the link is read, only
+  through the button.
+
 ## Verification
 
 - `tests/` covers the invitation token per company, verification and the registration
-  form, including forged submissions.
+  form.
 - Re-check the practitioner registration flow from invitation link through account
   creation and post-registration confirmation.
 - Confirm unverified users cannot authenticate until verification is completed.
