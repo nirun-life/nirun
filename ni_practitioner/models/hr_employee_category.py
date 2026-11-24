@@ -1,5 +1,5 @@
 #  Copyright (c) 2023 NSTDA
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class EmployeeCategory(models.Model):
@@ -17,4 +17,6 @@ class EmployeeCategory(models.Model):
     @api.constrains("parent_id")
     def _check_parent_id(self):
         if self._has_cycle():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+            raise models.ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )

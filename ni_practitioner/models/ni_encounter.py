@@ -1,8 +1,7 @@
 #  Copyright (c) 2023 NSTDA
 
 
-from odoo import api, fields, models
-from odoo.models import Command
+from odoo import Command, api, fields, models
 
 
 class Encounter(models.Model):
