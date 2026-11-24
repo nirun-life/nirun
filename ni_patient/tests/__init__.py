@@ -10,6 +10,7 @@ from . import (
     test_ni_patient,
     test_ni_patient_address,
     test_ni_patient_archive_wizard,
+    test_ni_patient_portal,
     test_ni_patient_display_name,
     test_ni_workflow,
 )
