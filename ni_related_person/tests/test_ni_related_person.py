@@ -83,3 +83,18 @@ class TestRelatedPerson(TransactionCase):
                     "patient_id": self.patient.id,
                 }
             )
+
+    def test_title_and_mobile(self):
+        title = self.env["res.partner.title"].create({"name": "Test title"})
+        with Form(self.patient) as form:
+            with form.related_person_ids.new() as line:
+                line.name = "Father"
+                line.relationship_ids.add(self.env.ref("ni_related_person.REL_FTH"))
+                line.title_id = title
+                line.mobile = "0810000001"
+        person = self.patient.related_person_ids
+        person.invalidate_recordset()
+        self.assertEqual(person.title_id, title)
+        self.assertEqual(person.partner_id.title_id, title)
+        self.assertEqual(person.mobile, "0810000001")
+        self.assertEqual(person.partner_id.mobile, "0810000001")

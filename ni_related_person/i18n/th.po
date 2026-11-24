@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-11-24 12:04+0000\n"
 "PO-Revision-Date: 2026-11-24 12:04+0000\n"
@@ -72,11 +72,6 @@ msgid "Activity Type Icon"
 msgstr ""
 
 #. module: ni_related_person
-#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__additional_info
-msgid "Additional info"
-msgstr ""
-
-#. module: ni_related_person
 #: model_terms:ir.ui.view,arch_db:ni_related_person.ni_patient_related_person_view_form
 msgid "Address"
 msgstr "ที่อยู่"
@@ -85,6 +80,11 @@ msgstr "ที่อยู่"
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__type
 msgid "Address Type"
 msgstr "ประเภทที่อยุ่"
+
+#. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__type_address_label
+msgid "Address Type Description"
+msgstr "คำอธิบายประเภทที่อยู่"
 
 #. module: ni_related_person
 #: model:ni.patient.relationship,name:ni_related_person.REL_CHLDADOPT
@@ -190,11 +190,6 @@ msgid "Blacklist"
 msgstr "บัญชีดำ"
 
 #. module: ni_related_person
-#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__mobile_blacklisted
-msgid "Blacklisted Phone Is Mobile"
-msgstr ""
-
-#. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__phone_blacklisted
 msgid "Blacklisted Phone is Phone"
 msgstr ""
@@ -205,6 +200,11 @@ msgid "Bounce"
 msgstr ""
 
 #. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__channel_member_ids
+msgid "Channel Member"
+msgstr "สมาชิกช่อง"
+
+#. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__channel_ids
 msgid "Channels"
 msgstr ""
@@ -212,11 +212,6 @@ msgstr ""
 #. module: ni_related_person
 #: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__is_company
 msgid "Check if the contact is a company, otherwise it is a person"
-msgstr ""
-
-#. module: ni_related_person
-#: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__employee
-msgid "Check this box if this contact is an Employee."
 msgstr ""
 
 #. module: ni_related_person
@@ -286,14 +281,14 @@ msgid "Company Name Entity"
 msgstr ""
 
 #. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__company_registry_placeholder
+msgid "Company Registry Placeholder"
+msgstr "ตัวอย่างเลขทะเบียนบริษัท"
+
+#. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__company_type
 msgid "Company Type"
 msgstr "ประเภทหน่วยบริการ"
-
-#. module: ni_related_person
-#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__partner_gid
-msgid "Company database ID"
-msgstr ""
 
 #. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__contact_address
@@ -364,10 +359,11 @@ msgid "Definition..."
 msgstr "คำนิยาม..."
 
 #. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient__display_name
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__display_name
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_relationship__display_name
 msgid "Display Name"
-msgstr "ชื่อแสดง"
+msgstr "ชื่อที่ใช้แสดง"
 
 #. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__duration
@@ -510,20 +506,16 @@ msgid "Grandchild"
 msgstr "หลาน"
 
 #. module: ni_related_person
-#: model_terms:ir.ui.view,arch_db:ni_related_person.ni_patient_relationship_view_search
-msgid "Group By"
-msgstr "จัดกลุ่มโดย"
-
-#. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__has_message
 msgid "Has Message"
 msgstr ""
 
 #. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient__id
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__id
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_relationship__id
 msgid "ID"
-msgstr ""
+msgstr "รหัส"
 
 #. module: ni_related_person
 #: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__identification_id
@@ -602,14 +594,6 @@ msgid "Image 512"
 msgstr ""
 
 #. module: ni_related_person
-#: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__mobile_blacklisted
-msgid ""
-"Indicates if a blacklisted sanitized phone number is a mobile number. Helps "
-"distinguish which number is blacklisted             when there is both a "
-"mobile and phone field in a model."
-msgstr ""
-
-#. module: ni_related_person
 #: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__phone_blacklisted
 msgid ""
 "Indicates if a blacklisted sanitized phone number is a phone number. Helps "
@@ -658,6 +642,11 @@ msgid "Is Future"
 msgstr "อนาคต"
 
 #. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__is_in_call
+msgid "Is In Call"
+msgstr "กำลังสนทนา"
+
+#. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__is_past
 msgid "Is Past"
 msgstr "อดีต"
@@ -703,6 +692,11 @@ msgstr "แก้ไขล่าสุดโดย"
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_relationship__write_date
 msgid "Last Updated on"
 msgstr "แก้ไขล่าสุดเมื่อ"
+
+#. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__main_user_id
+msgid "Main User"
+msgstr "ผู้ใช้หลัก"
 
 #. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__message_has_error
@@ -792,6 +786,11 @@ msgid "Number of messages with delivery error"
 msgstr ""
 
 #. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__offline_since
+msgid "Offline since"
+msgstr "ออฟไลน์ตั้งแต่"
+
+#. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__parent_name
 msgid "Parent name"
 msgstr ""
@@ -849,8 +848,18 @@ msgstr "โทรศัพท์ที่ขึ้นบัญชีดำ"
 
 #. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__phone_mobile_search
-msgid "Phone/Mobile"
+msgid "Phone Number"
 msgstr "เบอร์ติดต่อ"
+
+#. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__properties
+msgid "Properties"
+msgstr "คุณสมบัติ"
+
+#. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__properties_base_definition_id
+msgid "Properties Base Definition"
+msgstr "นิยามคุณสมบัติพื้นฐาน"
 
 #. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__ref
@@ -911,6 +920,11 @@ msgstr "ศาสนา"
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__activity_user_id
 msgid "Responsible User"
 msgstr "ผู้ใช้ที่รับผิดชอบ"
+
+#. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__rtc_session_ids
+msgid "Rtc Session"
+msgstr "เซสชันการโทร"
 
 #. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__message_has_sms_error
@@ -979,11 +993,6 @@ msgid "Spouse"
 msgstr "คู่สมรส"
 
 #. module: ni_related_person
-#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__starred_message_ids
-msgid "Starred Message"
-msgstr "ข้อความติดดาว"
-
-#. module: ni_related_person
 #: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__state_id
 #: model_terms:ir.ui.view,arch_db:ni_related_person.ni_patient_related_person_view_form
 msgid "State"
@@ -993,6 +1002,11 @@ msgstr "สถานะ"
 #: model:ni.patient.relationship,name:ni_related_person.REL_S
 msgid "State Agency"
 msgstr "หน่วยงานของรัฐ"
+
+#. module: ni_related_person
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__application_statistics
+msgid "Stats"
+msgstr "สถิติ"
 
 #. module: ni_related_person
 #: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__activity_state
@@ -1057,14 +1071,6 @@ msgid ""
 msgstr ""
 
 #. module: ni_related_person
-#: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__vat
-msgid ""
-"The Tax Identification Number. Values here will be validated based on the "
-"country format. You can use '/' to indicate that the partner is not subject "
-"to tax."
-msgstr ""
-
-#. module: ni_related_person
 #: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__user_id
 msgid "The internal user in charge of this contact."
 msgstr ""
@@ -1075,6 +1081,13 @@ msgid ""
 "The registry number of the company. Use it if it is different from the Tax "
 "ID. It must be unique across all partners of a same country"
 msgstr ""
+
+#. module: ni_related_person
+#: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__main_user_id
+msgid ""
+"There can be several users related to the same partner. When a single user "
+"is needed, this field attempts to find the most appropriate one."
+msgstr "ผู้ติดต่อหนึ่งรายอาจมีผู้ใช้หลายคน เมื่อจำเป็นต้องใช้ผู้ใช้คนเดียว ฟิลด์นี้จะเลือกผู้ใช้ที่เหมาะสมที่สุด"
 
 #. module: ni_related_person
 #: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__email_normalized
@@ -1094,7 +1107,7 @@ msgid "Timezone offset"
 msgstr ""
 
 #. module: ni_related_person
-#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__title
+#: model:ir.model.fields,field_description:ni_related_person.field_ni_patient_related_person__title_id
 #: model_terms:ir.ui.view,arch_db:ni_related_person.ni_patient_related_person_view_form
 msgid "Title"
 msgstr "คำนำหน้า"
@@ -1161,6 +1174,16 @@ msgid ""
 "If the timezone is not set, UTC (Coordinated Universal Time) is used.\n"
 "Anywhere else, time values are computed according to the time offset of your web client."
 msgstr ""
+
+#. module: ni_related_person
+#: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__employee
+msgid "Whether this contact is an Employee."
+msgstr "เลือกช่องนี้หากผู้ติดต่อรายนี้เป็นพนักงาน"
+
+#. module: ni_related_person
+#: model:ir.model.fields,help:ni_related_person.field_ni_patient_related_person__vat
+msgid "You can use '/' to indicate that the customer has no Tax ID."
+msgstr "เลขประจำตัวผู้เสียภาษี ค่าที่ป้อนจะถูกตรวจสอบตามรูปแบบของประเทศ สามารถใช้ '/' เพื่อระบุว่าคู่ค้าไม่ต้องเสียภาษี"
 
 #. module: ni_related_person
 #: model_terms:ir.ui.view,arch_db:ni_related_person.ni_patient_related_person_view_form
