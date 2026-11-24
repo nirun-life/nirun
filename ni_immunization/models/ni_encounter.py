@@ -1,12 +1,14 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
     show_immunization = fields.Boolean(related="class_id.immunization")
-    immunization_ids = fields.One2many("ni.immunization", "encounter_id")
+    immunization_ids = fields.One2many(
+        "ni.immunization", "encounter_id", string="Immunizations"
+    )
     immunization_count = fields.Integer(compute="_compute_immunization_count")
     evaluation_ids = fields.One2many("ni.immunization.evaluation", "encounter_id")
     immunization_summary_ids = fields.One2many(
@@ -25,7 +27,7 @@ class Encounter(models.Model):
     def action_immunization_evaluation_wizard(self):
         return {
             "type": "ir.actions.act_window",
-            "name": _("Immunization Evaluation Wizard"),
+            "name": self.env._("Immunization Evaluation Wizard"),
             "res_model": "ni.immunization.evaluation.wizard",
             "view_mode": "form",
             "target": "new",
@@ -34,7 +36,7 @@ class Encounter(models.Model):
 
     def action_immunization_evaluation(self):
         return {
-            "name": _("Immunization Evaluation"),
+            "name": self.env._("Immunization Evaluation"),
             "type": "ir.actions.act_window",
             "res_model": "ni.immunization.evaluation",
             "view_mode": "list,kanban,form",
@@ -48,7 +50,7 @@ class Encounter(models.Model):
 
     def action_immunization(self):
         action = {
-            "name": _("Immunization History"),
+            "name": self.env._("Immunization History"),
             "type": "ir.actions.act_window",
             "res_model": "ni.immunization",
             "view_mode": "list,kanban,form",

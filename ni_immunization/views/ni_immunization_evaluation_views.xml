@@ -94,69 +94,53 @@
                 quick_create_view="ni_immunization.ni_immunization_evaluation_view_quick_create"
                 expand="1"
             >
-                <field name="target_disease_id" />
-                <field name="dose_number" />
-                <field name="series_doses" />
                 <field name="dose_status" />
-                <field name="protection_status" />
-                <field name="immunization_date" />
-                <field name="immunization_id" />
-                <field name="patient_id" />
                 <progressbar
                     field="dose_status"
-                    colors="{&quot;valid&quot;: &quot;success&quot;, &quot;not-valid&quot;: &quot;danger&quot;}"
+                    colors='{"valid": "success", "not-valid": "danger"}'
                 />
                 <templates>
                     <t t-name="card">
-                        <div class="oe_kanban_global_click">
-                            <div class="oe_kanban_content">
-                                <div class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings">
-                                        <strong class="o_kanban_record_title">
-                                            <field name="patient_id" />
-                                            <span>
-                                                Dose #
-                                                <field name="dose_number" />
-                                            </span>
-                                        </strong>
-                                    </div>
-                                    <div class="o_kanban_record_top_right">
-                                        <field
-                                            name="protection_status"
-                                            widget="label_selection"
-                                            options="{                                                 'classes': {                                                     'protected': 'success',                                                     'partial': 'warning',                                                     'not-protected': 'danger'                                                 }                                             }"
-                                        />
-                                    </div>
-                                </div>
-                                <div class="o_kanban_record_body">
-                                    <t t-if="record.immunization_date.raw_value">
-                                        <span class="text-muted">
-                                            <field name="immunization_date" />
-                                        </span>
-                                    </t>
-                                    <div>
-                                        Dose
-                                        <field name="dose_number" class="oe_inline" />
-                                        /
-                                        <field name="series_doses" class="oe_inline" />
-                                    </div>
-                                </div>
-                                <div class="o_kanban_record_bottom">
-                                    <div class="oe_kanban_bottom_left">
-                                        <field
-                                            name="dose_status"
-                                            widget="label_selection"
-                                            options="{                                                 'classes': {                                                     'valid': 'success',                                                     'not-valid': 'danger'                                                 }                                             }"
-                                        />
-                                    </div>
-                                    <div class="oe_kanban_bottom_right">
-                                        <t t-if="record.immunization_id.raw_value">
-                                            <field name="immunization_id" />
-                                        </t>
-                                    </div>
-                                </div>
+                        <div class="d-flex justify-content-between">
+                            <div class="fw-bolder">
+                                <field name="patient_id" />
+                                <span class="ms-1">
+                                    Dose #
+                                    <field name="dose_number" />
+                                </span>
                             </div>
+                            <field
+                                name="protection_status"
+                                widget="label_selection"
+                                options="{
+                                    'classes': {
+                                        'protected': 'success',
+                                        'partial': 'warning',
+                                        'not-protected': 'danger'
+                                    }
+                                }"
+                            />
                         </div>
+                        <field name="immunization_date" class="text-muted" />
+                        <div>
+                            Dose
+                            <field name="dose_number" class="oe_inline" />
+                            /
+                            <field name="series_doses" class="oe_inline" />
+                        </div>
+                        <footer>
+                            <field
+                                name="dose_status"
+                                widget="label_selection"
+                                options="{
+                                    'classes': {
+                                        'valid': 'success',
+                                        'not-valid': 'danger'
+                                    }
+                                }"
+                            />
+                            <field name="immunization_id" class="ms-auto" />
+                        </footer>
                     </t>
                 </templates>
             </kanban>

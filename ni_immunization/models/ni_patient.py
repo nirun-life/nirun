@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class Patient(models.Model):
@@ -51,7 +51,7 @@ class Patient(models.Model):
 
     def action_immunization_evaluation(self):
         return {
-            "name": _("Immunization Protection"),
+            "name": self.env._("Immunization Protection"),
             "type": "ir.actions.act_window",
             "res_model": "ni.immunization.evaluation",
             "view_mode": "kanban,list,form",
