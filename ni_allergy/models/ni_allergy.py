@@ -72,17 +72,31 @@ class AllergyIntolerance(models.Model):
         for rec in self.filtered(lambda r: r.code_id):
             rec.name = rec.code_id.name
 
-    def name_get(self):
-        return [(rec.id, rec._name_get()) for rec in self]
+    @api.depends(
+        "name", "code_id.name", "criticality", "state", "patient_id.display_name"
+    )
+    @api.depends_context(
+        "show_patient",
+        "show_criticality",
+        "show_state",
+        # of the patient name
+        "show_identifier",
+        "show_identification_id",
+        "show_gender_age",
+        "show_age",
+    )
+    def _compute_display_name(self):
+        for allergy in self:
+            allergy.display_name = allergy._name_get()
 
     def _name_get(self):
         allergy = self
         name = allergy.code_id.name or allergy.name
-        if self._context.get("show_patient"):
+        if self.env.context.get("show_patient"):
             name = f"{allergy.patient_id._name_get()} - {name}"
-        if self._context.get("show_criticality") and allergy.criticality:
+        if self.env.context.get("show_criticality") and allergy.criticality:
             name = f"{name}[{allergy._get_criticality_label()}]"
-        if self._context.get("show_state"):
+        if self.env.context.get("show_state"):
             name = f"{name} ({allergy._get_state_label()})"
         return name
 
@@ -106,14 +120,11 @@ class AllergyIntolerance(models.Model):
     @api.depends("reaction_ids.onset")
     def _compute_last_occurrence(self):
         reactions = self.env["ni.allergy.reaction"]._read_group(
-            domain=[("allergy_id", "in", self.ids)],
-            groupby=["allergy_id"],
-            aggregates=["onset:max"],
-            order="allergy_id",
+            [("allergy_id", "in", self.ids)], ["allergy_id"], ["onset:max"]
         )
-        result = {data["allergy_id"][0]: data["onset"] for data in reactions}
+        result = {allergy.id: onset for allergy, onset in reactions}
         for allergy in self:
-            allergy.last_occurrence = result.get(allergy.id, 0)
+            allergy.last_occurrence = result.get(allergy.id)
 
     def action_inactive(self):
         self.write({"state": "inactive"})
