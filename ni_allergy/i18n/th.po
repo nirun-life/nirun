@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 07:54+0000\n"
-"PO-Revision-Date: 2024-07-11 07:54+0000\n"
+"POT-Creation-Date: 2026-11-24 12:44+0000\n"
+"PO-Revision-Date: 2026-11-24 12:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -36,6 +36,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ni_allergy.ni_allergy_view_kanban
 msgid "<span class=\"text-muted\">N/A</span>"
 msgstr "<span class=\"text-muted\">ไม่มีข้อมูล</span>"
+
+#. module: ni_allergy
+#: model_terms:ir.ui.view,arch_db:ni_allergy.encounter_summary_report_inherit
+#: model_terms:ir.ui.view,arch_db:ni_allergy.portal_my_patient_encounter_inherit
+msgid "<strong>Allergy:</strong>"
+msgstr "<strong>การแพ้:</strong>"
 
 #. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_code__abbr
@@ -218,6 +224,11 @@ msgid "Encounter No."
 msgstr "รหัสรับบริการ"
 
 #. module: ni_allergy
+#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__enforce_specialty
+msgid "Enforce Specialty"
+msgstr "บังคับความเชี่ยวชาญ"
+
+#. module: ni_allergy
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy__category__environment
 #: model:ir.model.fields.selection,name:ni_allergy.selection__ni_allergy_code__category__environment
 msgid "Environment"
@@ -266,13 +277,6 @@ msgid "Intolerance"
 msgstr "ภูมิแพ้แฝง"
 
 #. module: ni_allergy
-#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy____last_update
-#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_code____last_update
-#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_reaction____last_update
-msgid "Last Modified on"
-msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
-
-#. module: ni_allergy
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__last_occurrence
 msgid "Last Occurrence"
 msgstr "มีอาการล่าสุดเมื่อ"
@@ -315,6 +319,7 @@ msgstr "ปานกลาง"
 
 #. module: ni_allergy
 #. odoo-python
+#: code:addons/ni_allergy/models/ni_encounter.py:0
 #: code:addons/ni_allergy/models/ni_patient.py:0
 #, python-format
 msgid "Must identify at least one allergy record"
@@ -459,3 +464,8 @@ msgstr "ไม่สามารถระบุได้"
 #: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy_code__system
 msgid "Url"
 msgstr ""
+
+#. module: ni_allergy
+#: model:ir.model.fields,field_description:ni_allergy.field_ni_allergy__user_specialty
+msgid "User Specialty"
+msgstr "ความเชี่ยวชาญของผู้ใช้"

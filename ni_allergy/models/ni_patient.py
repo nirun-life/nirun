@@ -31,7 +31,6 @@ class Patient(models.Model):
         # This inverse function is good for simple version if require detail in allergy
         # 'allergy_code' should always set as READONLY
         # NOTE this also not work as expected on encounter form
-        params = self._context.get("params", {})
         for rec in self:
             cmd = []
             rmv = [
@@ -41,10 +40,7 @@ class Patient(models.Model):
             ]
             for code in rec.allergy_code_ids:
                 if not rec.allergy_ids.filtered_domain([("code_id", "=", code.id)]):
-                    val = {"code_id": code.id}
-                    if params.get("model") == "ni.encounter":
-                        val["encounter_id"] = params.get("id")
-                    cmd += [fields.Command.create(val)]
+                    cmd.append(fields.Command.create({"code_id": code.id}))
             if cmd or rmv:
                 cmd = rmv + cmd
                 rec.allergy_ids = cmd
