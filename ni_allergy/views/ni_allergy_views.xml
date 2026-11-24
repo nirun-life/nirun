@@ -248,54 +248,33 @@
         <field name="model">ni.allergy</field>
         <field name="arch" type="xml">
             <kanban>
-                <field name="name" />
-                <field name="type" />
-                <field name="criticality" />
                 <templates>
                     <t t-name="card">
-                        <div class="oe_kanban_global_click">
-                            <div class="oe_kanban_details">
-                                <ul>
-                                    <li>
-                                        <label for="name" class="small">
-                                            <t t-if="record.type.value">
-                                                <field name="type" />
-                                            </t>
-                                            <t t-else="">Allergy</t>
-                                        </label>
-                                        <div class="float-end">
-                                            <field
-                                                name="category"
-                                                widget="badge"
-                                                decoration-info="category=='biologic'"
-                                                decoration-danger="category=='medication'"
-                                                decoration-warning="category=='food'"
-                                                decoration-success="category=='environment'"
-                                            />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <field class="h4" name="name" />
-                                    </li>
-                                    <li>
-                                        <label
-                                            for="criticality"
-                                            class="small text-muted me-2"
-                                        >Criticality :</label>
-                                        <t t-if="record.criticality.value">
-                                            <field
-                                                name="criticality"
-                                                widget="badge"
-                                                decoration-info="criticality=='low'"
-                                                decoration-danger="criticality=='high'"
-                                            />
-                                        </t>
-                                        <t t-else="">
-                                            <span class="text-muted">N/A</span>
-                                        </t>
-                                    </li>
-                                </ul>
-                            </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="small">
+                                <field t-if="record.type.value" name="type" />
+                                <t t-else="">Allergy</t>
+                            </span>
+                            <field
+                                name="category"
+                                widget="badge"
+                                decoration-info="category=='biologic'"
+                                decoration-danger="category=='medication'"
+                                decoration-warning="category=='food'"
+                                decoration-success="category=='environment'"
+                            />
+                        </div>
+                        <field class="h4" name="name" />
+                        <div>
+                            <span class="small text-muted me-2">Criticality :</span>
+                            <field
+                                t-if="record.criticality.value"
+                                name="criticality"
+                                widget="badge"
+                                decoration-info="criticality=='low'"
+                                decoration-danger="criticality=='high'"
+                            />
+                            <span t-else="" class="text-muted">N/A</span>
                         </div>
                     </t>
                 </templates>
