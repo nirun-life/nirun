@@ -1,19 +1,22 @@
 # ni_immunization — Immunization
 
-Tracks vaccine administration and immunization evaluations for patients within the Nirun healthcare platform.
+Tracks vaccine administration and immunization evaluations for patients within the Nirun
+healthcare platform.
 
 ## Clinical Business
 
 ### Vaccine Administration
 
-Records each dose given to a patient during an encounter: the vaccine product, occurrence datetime, lot number, expiration date,
-dose quantity, administration route, injection site, and the performing clinician. Route options are pre-filtered by the
+Records each dose given to a patient during an encounter: the vaccine product,
+occurrence datetime, lot number, expiration date, dose quantity, administration route,
+injection site, and the performing clinician. Route options are pre-filtered by the
 vaccine's default route; available body sites are filtered by the chosen route.
 
 ### Immunization Evaluation
 
-Assesses whether a recorded dose (or a manually entered historical dose) is valid and how it contributes to a patient's
-protection against a specific target disease. Each evaluation records:
+Assesses whether a recorded dose (or a manually entered historical dose) is valid and
+how it contributes to a patient's protection against a specific target disease. Each
+evaluation records:
 
 - **Target disease** — the disease being assessed
 - **Immunization date** — when the dose was physically administered
@@ -24,26 +27,31 @@ protection against a specific target disease. Each evaluation records:
 
 Business rules enforced:
 
-- A vaccine's target diseases constrain which diseases can be evaluated against that dose.
+- A vaccine's target diseases constrain which diseases can be evaluated against that
+  dose.
 - Only one valid evaluation per `(patient, disease, dose_number)` may exist.
-- A single immunization dose cannot be referenced by two evaluations for the same disease.
+- A single immunization dose cannot be referenced by two evaluations for the same
+  disease.
 - An evaluation cannot reference a dose that belongs to a different patient.
 
 ### Protection Summary
 
-A read-only SQL view (`ni.immunization.summary`) aggregates evaluations per `(patient, disease)` to expose the current
-protection status, last immunization date, and last evaluation date. This drives the summary tab on the patient encounter and
-the kanban/tree views in the Immunization menu.
+A read-only SQL view (`ni.immunization.summary`) aggregates evaluations per
+`(patient, disease)` to expose the current protection status, last immunization date,
+and last evaluation date. This drives the summary tab on the patient encounter and the
+kanban/tree views in the Immunization menu.
 
 ### Batch Evaluation Wizard
 
-A two-step wizard lets clinicians evaluate multiple diseases at once from the encounter form: select diseases (filtered by
-protection status), then confirm dose numbers and dates in a single submit.
+A two-step wizard lets clinicians evaluate multiple diseases at once from the encounter
+form: select diseases (filtered by protection status), then confirm dose numbers and
+dates in a single submit.
 
 ### Pending Disease Alerts
 
-After recording an immunization, the system computes which of the vaccine's target diseases have not yet been evaluated. These
-appear as an inline alert on both the immunization form and the kanban card, with a direct **Evaluate** button.
+After recording an immunization, the system computes which of the vaccine's target
+diseases have not yet been evaluated. These appear as an inline alert on both the
+immunization form and the kanban card, with a direct **Evaluate** button.
 
 ---
 
