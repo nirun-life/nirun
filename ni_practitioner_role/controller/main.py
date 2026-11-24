@@ -115,7 +115,7 @@ class PractitionerRoleController(http.Controller):
                 "company": role.env.company,
                 "role": role,
                 "user": None if user._is_public() else user,
-                "titles": request.env["res.partner.title"].search([]),
+                "titles": request.env["res.partner.title"].sudo().search([]),
                 "token": token,
                 "error": error,
                 "err": err or {},
