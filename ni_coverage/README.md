@@ -1,6 +1,6 @@
 # Coverage (`ni_coverage`)
 
-Odoo 16.0 module that records patient insurance coverage, coverage type, co-pay
+Odoo 17.0 module that records patient insurance coverage, coverage type, co-pay
 structure, and insurance plans for Nirun. It provides structured benefit and policy data
 so patient financial coverage can be linked to the clinical record.
 
@@ -32,6 +32,13 @@ team can track coverage status, subscriber details, and beneficiary costs.
 - `views/ni_patient_views.xml` and `views/ni_encounter_views.xml` surface coverage
   information in patient and encounter contexts.
 
+## Behavior
+
+- A coverage linked to an insurance plan shows the benefit lines of the plan; without a
+  plan it has its own lines.
+- The name of an insurance plan starts with its issuer. Pass `show_issuer=False` in the
+  context to leave it out; `show_alias` and `show_code` add the alias and the code.
+
 ## Security and Dependencies
 
 - `security/ir.model.access.csv` grants model permissions.
@@ -43,3 +50,5 @@ team can track coverage status, subscriber details, and beneficiary costs.
   changing `ni.coverage` or insurance plan logic.
 - Confirm patient and encounter coverage displays still reflect the intended active and
   historical policy data.
+- `tests/test_ni_coverage.py` covers periods, plan selection, display names, the type
+  hierarchy and the unique benefit types.

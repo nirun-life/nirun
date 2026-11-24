@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class CoverageBenefit(models.Model):
@@ -17,6 +17,6 @@ class CoverageBenefit(models.Model):
         (
             "type_in_coverage__uniq",
             "unique (coverage_id, type_id)",
-            _("Beneficiary Type must be unique !"),
+            "Beneficiary Type must be unique !",
         ),
     ]
