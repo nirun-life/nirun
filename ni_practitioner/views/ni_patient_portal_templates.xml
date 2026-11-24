@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2026 NSTDA
+  -->
+<odoo>
+    <template id="portal_my_patient_inherit" inherit_id="ni_patient.portal_my_patient">
+        <xpath expr="//td[@name='th_class']" position="before">
+            <td>Performer</td>
+        </xpath>
+        <xpath expr="//td[@name='td_class']" position="before">
+            <td>
+                <t t-esc="encounter.performer_id.name" />
+            </td>
+        </xpath>
+    </template>
+    <template id="portal_my_patient_encounter_inherit" inherit_id="ni_patient.portal_my_patient_encounter">
+        <xpath expr="//div[@name='patient']" position="after">
+            <div class="col-12 col-md-12 pb-2" t-if="o.performer_id">
+                <strong>Performer</strong>
+                <div class="d-flex flex-nowrap">
+                    <img
+                        class="rounded-circle mt-1 o_portal_contact_img"
+                        t-att-src="image_data_uri(encounter.performer_id.avatar_1024)"
+                        alt="Contact"
+                    />
+                    <div class="ms-2">
+                        <div
+                            t-field="o.performer_id.work_contact_id"
+                            t-options='{"widget": "contact", "fields": ["name"]}'
+                        />
+                        <a
+                            t-attf-href="tel:{{encounter.performer_id.work_contact_id.phone}}"
+                            t-if="o.performer_id.work_contact_id.phone"
+                        >
+                            <div
+                                t-field="o.performer_id.work_contact_id"
+                                t-options='{"widget": "contact", "fields": ["phone"]}'
+                            />
+                        </a>
+                        <a
+                            t-if="o.performer_id.work_contact_id.email"
+                            class="text-break"
+                            t-attf-href="mailto:{{encounter.performer_id.work_contact_id.email}}"
+                        >
+                            <div
+                                t-field="o.performer_id.work_contact_id"
+                                t-options='{"widget": "contact", "fields": ["email"]}'
+                            />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>
