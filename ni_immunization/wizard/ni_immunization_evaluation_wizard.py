@@ -7,8 +7,8 @@ class ImmunizationEvaluationWizard(models.TransientModel):
     _name = "ni.immunization.evaluation.wizard"
     _description = "Immunization Evaluation Wizard"
 
-    encounter_id = fields.Many2one("ni.encounter", required=True)
-    patient_id = fields.Many2one(related="encounter_id.patient_id")
+    encounter_id = fields.Many2one("ni.encounter")
+    patient_id = fields.Many2one("ni.patient", compute="_compute_patient_id")
     immunization_id = fields.Many2one("ni.immunization", ondelete="cascade")
     state = fields.Selection(
         [("1", "Disease"), ("2", "Dose")], default="1", required=True
@@ -37,6 +37,13 @@ class ImmunizationEvaluationWizard(models.TransientModel):
     line_ids = fields.One2many(
         "ni.immunization.evaluation.wizard.line", "wizard_id", string="Doses"
     )
+
+    @api.depends("encounter_id.patient_id", "immunization_id.patient_id")
+    def _compute_patient_id(self):
+        for wiz in self:
+            wiz.patient_id = (
+                wiz.immunization_id.patient_id or wiz.encounter_id.patient_id
+            )
 
     @api.depends("patient_id", "filter_status")
     def _compute_available_disease_ids(self):
