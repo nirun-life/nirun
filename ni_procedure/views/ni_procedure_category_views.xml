@@ -6,19 +6,19 @@
     <record id="ni_procedure_category_action" model="ir.actions.act_window">
         <field name="name">Procedure Category</field>
         <field name="res_model">ni.procedure.category</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <record id="ni_procedure_category_view_tree" model="ir.ui.view">
-        <field name="name">ni.procedure.category.view.tree</field>
+        <field name="name">ni.procedure.category.view.list</field>
         <field name="model">ni.procedure.category</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="code" optional="show" />
                 <field name="definition" optional="show" />
                 <field name="active" optional="hide" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_procedure_category_view_form" model="ir.ui.view">
