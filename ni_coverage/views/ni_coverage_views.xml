@@ -6,7 +6,7 @@
     <record id="ni_coverage_action" model="ir.actions.act_window">
         <field name="name">Coverage</field>
         <field name="res_model">ni.coverage</field>
-        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="view_mode">list,form,pivot,graph</field>
         <field name="context">{'search_default_group_by_name': True}</field>
     </record>
     <record id="ni_coverage_view_search" model="ir.ui.view">
@@ -41,10 +41,10 @@
         </field>
     </record>
     <record id="ni_coverage_view_tree" model="ir.ui.view">
-        <field name="name">ni.coverage.view.tree</field>
+        <field name="name">ni.coverage.view.list</field>
         <field name="model">ni.coverage</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 decoration-bf="state == 'draft'"
                 decoration-muted="state in ['cancelled', 'entered-in-error']"
             >
@@ -60,7 +60,7 @@
                 <field name="period_start" optional="show" />
                 <field name="period_end" optional="show" />
                 <field name="state" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_coverage_view_form" model="ir.ui.view">
@@ -124,25 +124,25 @@
                     <notebook>
                         <page name="benefit" string="Benefit">
                             <field name="benefit_ids" invisible="insurance_plan_id">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="coverage_id" column_invisible="1" />
                                     <field name="sequence" widget="handle" />
                                     <field name="type_id" />
                                     <field name="value" sum="Total" />
                                     <field name="value_percentage" avg="Average" />
-                                </tree>
+                                </list>
                             </field>
                             <field
                                 name="insurance_plan_cost_ids"
                                 invisible="not insurance_plan_id"
                             >
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="plan_id" column_invisible="1" />
                                     <field name="sequence" widget="handle" />
                                     <field name="type_id" />
                                     <field name="value" sum="Total" />
                                     <field name="value_percentage" avg="Average" />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page name="detail" string="Detail">
