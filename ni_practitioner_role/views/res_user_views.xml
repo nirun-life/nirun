@@ -8,7 +8,7 @@
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_tree" />
         <field name="arch" type="xml">
-            <field name="company_id" position="after">
+            <field name="role" position="after">
                 <field name="active" widget="boolean_toggle" />
                 <field name="verified" />
                 <button
@@ -50,16 +50,6 @@
                     />
                 </header>
             </sheet>
-        </field>
-    </record>
-    <record id="res_users_view_form_inherit_simple_hr" model="ir.ui.view">
-        <field name="name">res.users.view.form.inherit.simple.hr</field>
-        <field name="model">res.users</field>
-        <field name="inherit_id" ref="hr.view_users_simple_form_inherit_hr" />
-        <field name="arch" type="xml">
-            <field name="create_employee" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </field>
         </field>
     </record>
 </odoo>

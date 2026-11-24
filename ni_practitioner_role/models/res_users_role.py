@@ -14,6 +14,8 @@ class Roles(models.Model):
 
     REGISTER_ROUTE = "practitioner/register"
 
+    # res.groups has no color any more
+    color = fields.Integer("Color Index")
     employee_category_ids = fields.Many2many("hr.employee.category")
     user_count = fields.Integer(compute="_compute_user_count")
     user_to_verify_count = fields.Integer(compute="_compute_user_count")
@@ -55,11 +57,13 @@ class Roles(models.Model):
                 rec.register_location = False
                 rec.register_qr_code = False
                 continue
-            rec.register_location = "%s/%s/%d/%s" % (
-                rec.get_base_url(),
-                self.REGISTER_ROUTE,
-                rec.env.company.id,
-                rec.access_token,
+            rec.register_location = "/".join(
+                [
+                    rec.get_base_url(),
+                    self.REGISTER_ROUTE,
+                    str(rec.env.company.id),
+                    rec.access_token,
+                ]
             )
             rec.register_qr_code = rec._generate_qr(rec.register_location)
 
@@ -98,6 +102,6 @@ class Roles(models.Model):
         self._generate_access_token()
         return {
             "type": "ir.actions.act_url",
-            "url": "/practitioner-role/%d/qrcode" % self.id,
+            "url": f"/practitioner-role/{self.id}/qrcode",
             "target": "self",
         }
