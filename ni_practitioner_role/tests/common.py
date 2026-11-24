@@ -11,7 +11,12 @@ class TestPractitionerRoleCommon(TransactionCase):
         cls.other_company = cls.env["res.company"].create({"name": "Second Clinic"})
         cls.category = cls.env["hr.employee.category"].create({"name": "Test nurse"})
         cls.role = cls.env["res.users.role"].create(
-            {"name": "Test role", "employee_category_ids": [(4, cls.category.id)]}
+            {
+                "name": "Test role",
+                "employee_category_ids": [(4, cls.category.id)],
+                # base_user_role replaces the groups of a user by those of the roles
+                "implied_ids": [(4, cls.env.ref("base.group_user").id)],
+            }
         )
 
     @classmethod
