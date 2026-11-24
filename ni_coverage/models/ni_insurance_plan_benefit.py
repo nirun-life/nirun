@@ -12,10 +12,7 @@ class InsurancePlanBenefit(models.Model):
         "ni.insurance.plan", index=True, required=True, ondelete="cascade"
     )
 
-    _sql_constraints = [
-        (
-            "type_in_plan__uniq",
-            "unique (plan_id, type_id)",
-            "Beneficiary Type must be unique !",
-        ),
-    ]
+    _type_in_plan__uniq = models.Constraint(
+        "unique (plan_id, type_id)",
+        "Beneficiary Type must be unique !",
+    )
