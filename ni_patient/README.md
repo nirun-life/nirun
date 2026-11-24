@@ -37,7 +37,9 @@ read-only workflow timeline that combines events and requests into a single pati
 - `views/ni_patient_views.xml`, `views/ni_encounter_views.xml`, and the related support views define the core patient and
   encounter UI.
 - Portal templates in `views/ni_patient_portal.xml` and `views/ni_patient_portal_templates.xml` expose patient-facing entry
-  points.
+  points. They may only use fields of this module and its dependencies: modules that add data to the encounter inherit the
+  templates (`td_class`, `th_class`, `patient`, `tail` are stable anchors), as `ni_practitioner` does for the performer and
+  `ni_observation` for the vital signs.
 
 ## Frontend View Registrations
 
