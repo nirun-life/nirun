@@ -23,7 +23,7 @@ class PractitionerRoleController(http.Controller):
                         ),
                     ],
                 )
-        return request.not_found()
+        raise request.not_found()
 
     @http.route(
         "/practitioner/register/<int:company_id>/<token>",
