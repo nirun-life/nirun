@@ -82,7 +82,8 @@ class Diagnosis(models.Model):
             if not rec.is_diagnosis and not rec.is_problem:
                 raise UserError(
                     _(
-                        "Diagnosis line must be at least a Diagnosis or a Problem-List Item"
+                        "Diagnosis line must be at least a Diagnosis or a "
+                        "Problem-List Item"
                     )
                 )
 
@@ -127,7 +128,8 @@ class Diagnosis(models.Model):
             if not rec.is_problem_editable:
                 raise UserError(
                     _(
-                        "Problem-List status was set in a prior encounter and can't be changed here"
+                        "Problem-List status was set in a prior encounter and "
+                        "can't be changed here"
                     )
                 )
             rec.is_problem = not rec.is_problem

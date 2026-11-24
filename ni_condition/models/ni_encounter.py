@@ -11,7 +11,7 @@ class Encounter(models.Model):
     diagnosis_count = fields.Integer(compute="_compute_diagnosis_count")
 
     def action_confirm(self):
-        super().action_confirm()
+        res = super().action_confirm()
         for rec in self:
             if not rec.diagnosis_ids:
                 prob = self.env["ni.condition"].search(
@@ -33,14 +33,18 @@ class Encounter(models.Model):
                         ]
                     }
                     rec.write(vals)
+        return res
 
     @api.depends("diagnosis_ids")
     def _compute_diagnosis_count(self):
-        procedure = self.env["ni.encounter.diagnosis"].sudo()
-        read = procedure._read_group(
-            [("encounter_id", "in", self.ids)], ["encounter_id"], ["__count"]
+        read = (
+            self.env["ni.encounter.diagnosis"]
+            .sudo()
+            ._read_group(
+                [("encounter_id", "in", self.ids)], ["encounter_id"], ["__count"]
+            )
         )
-        data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
+        data = {encounter.id: count for encounter, count in read}
         for encounter in self:
             encounter.diagnosis_count = data.get(encounter.id, 0)
 
@@ -59,9 +63,10 @@ class Encounter(models.Model):
                 if role_count > role.limit:
                     raise ValidationError(
                         _(
-                            "Diagnosis as [{}] has reached limit at {} item".format(
-                                role.name, role.limit
-                            )
+                            "Diagnosis as [%(role)s] has reached limit at "
+                            "%(limit)s item",
+                            role=role.name,
+                            limit=role.limit,
                         )
                     )
 

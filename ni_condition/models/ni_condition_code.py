@@ -50,23 +50,12 @@ class ConditionCode(models.Model):
             raise models.ValidationError(_("Error! You cannot create recursive data."))
 
     def _get_name(self):
-        coding = self
-        name = coding.name
-        if (
-            self._context.get("show_parent")
-            and "parent_id" in self._fields
-            and coding._fields["parent_id"]
-        ):
-            names = []
-            current = coding
-            while current:
-                names.append(current.name)
-                current = current.parent_id
-            name = self._display_name_separator.join(reversed(names))
-        if self._context.get("show_abbr") and self.abbr:
-            name = f"{name} ({coding.abbr})"
-        if self._context.get("show_code") and self.code:
-            name = f"{coding.code}  {name}"
-        if self._context.get("only_abbr") and self.abbr:
-            name = coding.abbr
+        # Same as ni.coding, but the code goes first without brackets
+        coding = self.with_context(show_code=False)
+        name = super(ConditionCode, coding)._get_name()
+        context = self.env.context
+        if context.get("only_abbr") and self.abbr:
+            return name
+        if context.get("show_code") and self.code:
+            name = f"{self.code}  {name}"
         return name
