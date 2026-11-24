@@ -1,7 +1,7 @@
 # Related Person (`ni_related_person`)
 
 `ni_related_person` records patient family members and other related people in Nirun
-Odoo 18.0. It links related contacts to a patient using structured relationship coding
+Odoo 19.0. It links related contacts to a patient using structured relationship coding
 and optional period fields, while reusing `res.partner` as the underlying contact.
 
 ## What This Module Owns
@@ -56,7 +56,8 @@ Relationship vocabulary
 ## Security And Dependencies
 
 - `security/ir.model.access.csv` grants model permissions.
-- Dependencies: `ni_patient`.
+- Dependencies: `ni_patient`, `ni_partner_title` (`title_id`) and `ni_partner_mobile`
+  (`mobile`).
 
 ## Permission Matrix
 
