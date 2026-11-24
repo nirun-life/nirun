@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021-2023 NSTDA
   -->
@@ -14,22 +14,53 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" />
-                <field name="patient_id" invisible="context.get('default_patient_id')" />
+                <field
+                    name="patient_id"
+                    invisible="context.get('default_patient_id')"
+                />
                 <separator />
-                <filter name="active" string="Active" domain="[('state', '=', 'active')]" />
-                <filter name="inactive" string="Inactive" domain="[('state', '=', 'inactive')]" />
-                <filter name="resolved" string="Resolved" domain="[('state', '=', 'resolved')]" />
+                <filter
+                    name="active"
+                    string="Active"
+                    domain="[('state', '=', 'active')]"
+                />
+                <filter
+                    name="inactive"
+                    string="Inactive"
+                    domain="[('state', '=', 'inactive')]"
+                />
+                <filter
+                    name="resolved"
+                    string="Resolved"
+                    domain="[('state', '=', 'resolved')]"
+                />
                 <separator />
-                <filter name="criticality_high" string="High" domain="[('criticality', '=', 'high')]" />
-                <filter name="criticality_low" string="Low" domain="[('criticality', '=', 'low')]" />
+                <filter
+                    name="criticality_high"
+                    string="High"
+                    domain="[('criticality', '=', 'high')]"
+                />
+                <filter
+                    name="criticality_low"
+                    string="Low"
+                    domain="[('criticality', '=', 'low')]"
+                />
                 <filter
                     name="criticality_unable_to_assess"
                     string="Unable to Access"
                     domain="[('criticality', '=', 'unable-to-assess')]"
                 />
                 <group>
-                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
-                    <filter name="group_by_code" string="Allergy / Intolerance" context="{'group_by': 'code_id'}" />
+                    <filter
+                        name="group_by_patient"
+                        string="Patient"
+                        context="{'group_by': 'patient_id'}"
+                    />
+                    <filter
+                        name="group_by_code"
+                        string="Allergy / Intolerance"
+                        context="{'group_by': 'code_id'}"
+                    />
                 </group>
                 <searchpanel>
                     <field name="category" enable_counters="1" />
@@ -73,7 +104,10 @@
                     states="active,inactive"
                 />
                 <control>
-                    <create string="Add Allergy" context="{'default_state': 'active', 'default_type': 'allergy'}" />
+                    <create
+                        string="Add Allergy"
+                        context="{'default_state': 'active', 'default_type': 'allergy'}"
+                    />
                     <create
                         string="Add Intolerance"
                         context="{'default_state': 'active', 'default_type': 'intolerance'}"
@@ -93,25 +127,43 @@
                 <field name="encounter_id" invisible="1" />
                 <field name="sequence" invisible="1" />
                 <header class="oe_read_only" invisible="context.get('no_header')">
-                    <button name="action_active" string="Active" states="resolved" type="object" />
-                    <button name="action_resolve" string="Resolve" states="active" type="object" />
-                    <field name="state" statusbar_visible="active,resolved" widget="statusbar" />
+                    <button
+                        name="action_active"
+                        string="Active"
+                        states="resolved"
+                        type="object"
+                    />
+                    <button
+                        name="action_resolve"
+                        string="Resolve"
+                        states="active"
+                        type="object"
+                    />
+                    <field
+                        name="state"
+                        statusbar_visible="active,resolved"
+                        widget="statusbar"
+                    />
                 </header>
                 <sheet>
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('state', '!=', 'inactive')]}"
                         bg_color="bg-success"
                         title="Inactive"
+                        invisible="state != 'inactive'"
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('state', '!=', 'resolved')]}"
                         bg_color="bg-success"
                         title="Resolved"
+                        invisible="state != 'resolved'"
                     />
                     <group>
-                        <field name="category" widget="radio" options="{'horizontal': True}" />
+                        <field
+                            name="category"
+                            widget="radio"
+                            options="{'horizontal': True}"
+                        />
                         <label for="name" />
                         <div>
                             <field
@@ -122,19 +174,27 @@
                                 domain="[('category', '=', category)]"
                                 context="{'default_category': category}"
                             />
-                            <field name="name" string="Substance" placeholder="Type Substance/Product name" />
+                            <field
+                                name="name"
+                                string="Substance"
+                                placeholder="Type Substance/Product name"
+                            />
                         </div>
                     </group>
                     <group>
                         <group>
-                            <field name="criticality" widget="radio" options="{'horizontal': True}" />
+                            <field
+                                name="criticality"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                            />
                         </group>
                         <group>
                             <field
                                 name="type"
                                 widget="radio"
                                 options="{'horizontal': True}"
-                                attrs="{'invisible': [('category', 'not in', ['food', 'medication'])]}"
+                                invisible="category not in ['food', 'medication']"
                             />
                         </group>
                     </group>
@@ -142,15 +202,27 @@
                         <page name="note" string="Note" icon="fa-pencil-square-o">
                             <field name="note" placeholder="Additional note..." />
                         </page>
-                        <page name="reaction" string="Reaction Event" icon="fa-life-ring" badge="reaction_count">
-                            <group attrs="{'invisible': [('reaction_ids', '=', False)]}">
+                        <page
+                            name="reaction"
+                            string="Reaction Event"
+                            icon="fa-life-ring"
+                            badge="reaction_count"
+                        >
+                            <group invisible="not reaction_ids">
                                 <field name="last_occurrence" />
                             </group>
                             <field name="reaction_count" invisible="1" />
-                            <field name="reaction_ids" context="{'default_allergy_id': id}" mode="tree">
+                            <field
+                                name="reaction_ids"
+                                context="{'default_allergy_id': id}"
+                                mode="tree"
+                            >
                                 <tree editable="top">
                                     <field name="onset" width="1" />
-                                    <field name="description" placeholder="Description of the event as a whole" />
+                                    <field
+                                        name="description"
+                                        placeholder="Description of the event as a whole"
+                                    />
                                     <field name="severity" optional="show" />
                                     <field name="note" optional="hide" />
                                 </tree>
@@ -206,7 +278,10 @@
                                         <field class="h4" name="name" />
                                     </li>
                                     <li>
-                                        <label for="criticality" class="small text-muted me-2">Criticality :</label>
+                                        <label
+                                            for="criticality"
+                                            class="small text-muted me-2"
+                                        >Criticality :</label>
                                         <t t-if="record.criticality.value">
                                             <field
                                                 name="criticality"
