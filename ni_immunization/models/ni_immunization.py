@@ -11,34 +11,30 @@ class Immunization(models.Model):
     ]
     _order = "occurrence DESC, id DESC"
     _identifier_ts_field = "occurrence"
+    _rec_names_search = ["name", "identifier"]
 
-    name = fields.Char(related="vaccine_id.name", store=True)
-    vaccine_id = fields.Many2one(
-        "ni.immunization.vaccine", "Vaccine", required=True, tracking=True
-    )
+    name = fields.Char(related="vaccine_id.name")
+    vaccine_id = fields.Many2one("ni.immunization.vaccine", "Vaccine", required=True)
     vaccine_route_id = fields.Many2one(related="vaccine_id.route_id")
-    lot_number = fields.Char(tracking=True)
-    expiration_date = fields.Date(tracking=True)
+    lot_number = fields.Char()
+    expiration_date = fields.Date()
     dose_quantity = fields.Float(digits=(6, 2))
 
-    location_id = fields.Many2one("ni.location", tracking=True)
+    location_id = fields.Many2one("ni.location")
     route_id = fields.Many2one(
         "ni.immunization.route",
-        tracking=True,
         domain="[('id', '=', vaccine_route_id)] if vaccine_route_id else []",
     )
     route_site_ids = fields.Many2many(related="route_id.site_ids")
     site_id = fields.Many2one(
         "ni.body.site",
         "Injection Site",
-        tracking=True,
         domain="[('id', 'in', route_site_ids)] if route_site_ids else []",
     )
     performer_id = fields.Many2one(
         "hr.employee",
         required=True,
         default=lambda self: self.env.user.employee_id,
-        tracking=True,
     )
     state = fields.Selection(default="completed")
     note = fields.Text()
@@ -60,6 +56,7 @@ class Immunization(models.Model):
             """
         )
 
+    @api.depends("evaluation_ids")
     def _compute_evaluation_count(self):
         for rec in self:
             rec.evaluation_count = len(rec.evaluation_ids)
@@ -124,25 +121,28 @@ class Immunization(models.Model):
         )
         return wizard._reopen()
 
-    def _name_search(
-        self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        args = list(args or [])
-        if not (name == "" and operator == "ilike"):
-            args += ["|", ("name", operator, name), ("identifier", operator, name)]
-        return self._search(args, limit=limit, access_rights_uid=name_get_uid)
-
-    def name_get(self):
-        return [(rec.id, rec._name_get()) for rec in self]
+    @api.depends("vaccine_id.name", "patient_id.display_name", "state", "identifier")
+    @api.depends_context(
+        "show_patient",
+        "show_state",
+        # of the patient name
+        "show_identifier",
+        "show_identification_id",
+        "show_gender_age",
+        "show_age",
+    )
+    def _compute_display_name(self):
+        for immunization in self:
+            immunization.display_name = immunization._name_get()
 
     def _name_get(self):
         rec = self
         name = rec.name or rec.vaccine_id.name
-        if self._context.get("show_patient"):
+        if self.env.context.get("show_patient"):
             name = f"{rec.patient_id._name_get()}: {name}"
-        if self._context.get("show_state"):
+        if self.env.context.get("show_state"):
             name = f"{name} ({rec._get_state_label()})"
-        if self._context.get("show_identifier"):
+        if self.env.context.get("show_identifier"):
             name = f"{name} - {rec.identifier}"
         return name
 
