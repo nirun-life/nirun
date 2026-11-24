@@ -166,70 +166,44 @@
         <field name="model">ni.document.ref</field>
         <field name="arch" type="xml">
             <kanban>
-                <field name="type_id" />
-                <field name="author_id" />
-                <field name="occurrence" />
-                <field name="data" />
                 <field name="no_data" />
-                <field name="attachment_count" />
                 <templates>
                     <t t-name="card">
-                        <div t-attf-class="oe_kanban_global_click">
-                            <div class="o_kanban_record_top">
-                                <div class="o_kanban_record_headings">
-                                    <div class="o_kanban_record_title">
-                                        <strong>
-                                            <field name="type_id" />
-                                        </strong>
-                                    </div>
-                                </div>
-                                <div t-if="record.attachment_count.raw_value &gt; 0">
-                                    <i
-                                        class="fa fa-paperclip text-primary"
-                                        title="Attachment Count"
-                                    />
-                                    <field class="ms-1" name="attachment_count" />
-                                </div>
-                            </div>
-                            <div class="o_kanban_record_content py-2">
-                                <t
-                                    t-if="record.no_data.raw_value == false"
-                                    class="p-2 m-2"
-                                >
-                                    <div>
-                                        <field
-                                            class="kanban_data text-truncate"
-                                            name="data"
-                                        />
-                                    </div>
-                                </t>
-                                <t t-else="">
-                                    <div>
-                                        <div
-                                            class="kanban_data text-muted text-center"
-                                        >No content</div>
-                                    </div>
-                                </t>
-                            </div>
-                            <div class="o_kanban_record_bottom">
-                                <div class="oe_kanban_bottom_left">
-                                    <div class="text-muted small">
-                                        <i
-                                            class="fa fa-clock-o me-1"
-                                            aria-hidden="true"
-                                            title="Occurence"
-                                        />
-                                        <field name="occurrence" />
-                                    </div>
-                                </div>
-                                <div class="oe_kanban_bottom_right me-1">
-                                    <field
-                                        name="author_id"
-                                        widget="many2one_avatar_employee"
-                                    />
-                                </div>
+                        <div class="d-flex justify-content-between">
+                            <field name="type_id" class="fw-bolder" />
+                            <div t-if="record.attachment_count.raw_value > 0">
+                                <i
+                                    class="fa fa-paperclip text-primary"
+                                    title="Attachment Count"
+                                />
+                                <field class="ms-1" name="attachment_count" />
                             </div>
                         </div>
+                        <div class="py-2">
+                            <field
+                                t-if="!record.no_data.raw_value"
+                                class="kanban_data text-truncate"
+                                name="data"
+                            />
+                            <div t-else="" class="kanban_data text-muted text-center">
+                                No content
+                            </div>
+                        </div>
+                        <footer>
+                            <div class="text-muted small">
+                                <i
+                                    class="fa fa-clock-o me-1"
+                                    aria-hidden="true"
+                                    title="Occurence"
+                                />
+                                <field name="occurrence" />
+                            </div>
+                            <field
+                                name="author_id"
+                                widget="many2one_avatar_employee"
+                                class="ms-auto"
+                            />
+                        </footer>
                     </t>
                 </templates>
             </kanban>
