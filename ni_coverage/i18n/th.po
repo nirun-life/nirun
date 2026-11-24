@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-11 08:30+0000\n"
-"PO-Revision-Date: 2023-08-11 08:30+0000\n"
+"POT-Creation-Date: 2026-11-24 12:03+0000\n"
+"PO-Revision-Date: 2026-11-24 12:03+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -539,12 +539,8 @@ msgid "Beneficiary"
 msgstr "ผู้รับผลประโยชน์"
 
 #. module: ni_coverage
-#. odoo-python
-#: code:addons/ni_coverage/models/ni_coverage_benefit.py:0
-#: code:addons/ni_coverage/models/ni_insurance_plan_benefit.py:0
 #: model:ir.model.constraint,message:ni_coverage.constraint_ni_coverage_benefit_type_in_coverage__uniq
 #: model:ir.model.constraint,message:ni_coverage.constraint_ni_insurance_plan_benefit_type_in_plan__uniq
-#, python-format
 msgid "Beneficiary Type must be unique !"
 msgstr "ประเภทสิทธิการรักษาต้องไม่ซ้ำกัน"
 
@@ -563,6 +559,17 @@ msgstr "ถูกยกเลิก"
 #: model:ni.coverage.type,name:ni_coverage.type_CHAR
 msgid "Charity Program"
 msgstr "โปรแกรมการกุศล"
+
+#. module: ni_coverage
+#: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage_type__child_ids
+#: model_terms:ir.ui.view,arch_db:ni_coverage.ni_coverage_type_view_form
+msgid "Child"
+msgstr "รายการย่อย"
+
+#. module: ni_coverage
+#: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage_type__child_count
+msgid "Child Count"
+msgstr "จำนวนรายการย่อย"
 
 #. module: ni_coverage
 #: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage_copay__code
@@ -1081,16 +1088,6 @@ msgid "Kind"
 msgstr "ชนิด"
 
 #. module: ni_coverage
-#: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage____last_update
-#: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage_benefit____last_update
-#: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage_copay____last_update
-#: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage_type____last_update
-#: model:ir.model.fields,field_description:ni_coverage.field_ni_insurance_plan____last_update
-#: model:ir.model.fields,field_description:ni_coverage.field_ni_insurance_plan_benefit____last_update
-msgid "Last Modified on"
-msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
-
-#. module: ni_coverage
 #: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage__write_uid
 #: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage_benefit__write_uid
 #: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage_copay__write_uid
@@ -1250,11 +1247,6 @@ msgid "Period End Date Calendar"
 msgstr ""
 
 #. module: ni_coverage
-#: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage__period_start
-msgid "Since"
-msgstr "ตั้งแต่"
-
-#. module: ni_coverage
 #: model:ir.model.fields,field_description:ni_coverage.field_ni_insurance_plan_benefit__plan_id
 msgid "Plan"
 msgstr "แผน"
@@ -1375,6 +1367,11 @@ msgid ""
 "arising from vision services. A health insurance policy that covers benefits"
 " for vision care services, prescriptions, and products."
 msgstr ""
+
+#. module: ni_coverage
+#: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage__period_start
+msgid "Since"
+msgstr "ตั้งแต่"
 
 #. module: ni_coverage
 #: model:ir.model.fields,field_description:ni_coverage.field_ni_coverage__period_start_date

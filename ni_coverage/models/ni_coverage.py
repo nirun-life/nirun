@@ -66,15 +66,27 @@ class Coverage(models.Model):
         help="Patient payments for services/products",
     )
 
-    def name_get(self):
-        return [(rec.id, rec._name_get()) for rec in self]
+    @api.depends("name", "state", "patient_id.display_name")
+    @api.depends_context(
+        "show_patient",
+        "show_state",
+        # of the patient name
+        "show_identifier",
+        "show_identification_id",
+        "show_gender_age",
+        "show_age",
+    )
+    def _compute_display_name(self):
+        for coverage in self:
+            coverage.display_name = coverage._name_get()
 
     def _name_get(self):
         coverage = self
+        context = self.env.context
         name = coverage.name or ""
-        if self._context.get("show_patient"):
+        if context.get("show_patient"):
             name = f"{coverage.patient_id._name_get()}, {name}"
-        if self._context.get("show_state"):
+        if context.get("show_state"):
             name = f"{name} ({coverage.get_state_label()})"
         return name
 
