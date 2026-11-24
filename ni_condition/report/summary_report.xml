@@ -12,8 +12,8 @@
                 <strong>Chronic:</strong>
                 <span class="me-2">
                     <t t-foreach="o.condition_problem_ids" t-as="condition">
-                        <t t-esc="condition.code_id.name" />
-                        <t t-if="not condition_last" t-esc="', '" />
+                        <t t-out="condition.code_id.name" />
+                        <t t-if="not condition_last" t-out="', '" />
                     </t>
                 </span>
             </div>

@@ -1,6 +1,7 @@
 #  Copyright (c) 2021-2023 NSTDA
 
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class ConditionCode(models.Model):
@@ -22,5 +23,5 @@ class ConditionCode(models.Model):
 
     @api.constrains("parent_id")
     def _check_hierarchy(self):
-        if not self._check_recursion():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+        if self._has_cycle():
+            raise ValidationError(_("Error! You cannot create recursive data."))

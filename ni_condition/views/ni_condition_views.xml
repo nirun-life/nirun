@@ -169,7 +169,7 @@
                                 context="{'show_code': True, 'default_system_id': system_id}"
                             />
                         </div>
-                        <div>
+                        <div class="d-flex align-items-center">
                             <field
                                 name="name"
                                 class="w-100"
@@ -316,68 +316,36 @@
         <field name="model">ni.condition</field>
         <field name="arch" type="xml">
             <kanban>
-                <field name="name" />
-                <field name="code" />
-                <field name="severity" />
                 <templates>
                     <t t-name="card">
-                        <div class="oe_kanban_global_click">
-                            <div class="oe_kanban_details">
-                                <ul>
-                                    <li>
-                                        <field class="h5" name="name" />
-                                        <t t-if="record.code.value">
-                                            <div class="float-end">
-                                                <span
-                                                    class="o_form_label small text-muted"
-                                                >code</span>
-                                                <span
-                                                    class="badge text-bg-info mx-2"
-                                                    t-out="record.code.value"
-                                                />
-                                            </div>
-                                        </t>
-                                    </li>
-                                    <li>
-                                        <i
-                                            class="fa fa-clock-o me-2 text-primary"
-                                            title="Duration"
-                                        />
-                                        <label
-                                            for="duration"
-                                            class="small text-muted me-2"
-                                        >Duration :</label>
-                                        <t t-if="record.duration.value">
-                                            <field name="duration" />
-                                        </t>
-                                        <t t-else="">
-                                            <span class="text-muted">N/A</span>
-                                        </t>
-                                    </li>
-                                    <li>
-                                        <i
-                                            class="fa fa-fire me-2 text-danger"
-                                            title="Severity"
-                                        />
-                                        <label
-                                            for="severity"
-                                            class="small text-muted me-2"
-                                        >Severity :</label>
-                                        <t t-if="record.severity.value">
-                                            <field
-                                                name="severity"
-                                                widget="badge"
-                                                decoration-info="severity=='mild'"
-                                                decoration-warning="severity=='moderate'"
-                                                decoration-danger="severity=='severe'"
-                                            />
-                                        </t>
-                                        <t t-else="">
-                                            <span class="text-muted">N/A</span>
-                                        </t>
-                                    </li>
-                                </ul>
+                        <div class="d-flex">
+                            <field class="h5" name="name" />
+                            <div class="ms-auto" invisible="not code">
+                                <span class="o_form_label small text-muted">code</span>
+                                <field name="code" class="badge text-bg-info mx-2" />
                             </div>
+                        </div>
+                        <div>
+                            <i
+                                class="fa fa-clock-o me-2 text-primary"
+                                title="Duration"
+                            />
+                            <span class="small text-muted me-2">Duration :</span>
+                            <field name="duration" invisible="not duration" />
+                            <span class="text-muted" invisible="duration">N/A</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fa fa-fire me-2 text-danger" title="Severity" />
+                            <span class="small text-muted me-2">Severity :</span>
+                            <field
+                                name="severity"
+                                widget="badge"
+                                decoration-info="severity=='mild'"
+                                decoration-warning="severity=='moderate'"
+                                decoration-danger="severity=='severe'"
+                                invisible="not severity"
+                            />
+                            <span class="text-muted" invisible="severity">N/A</span>
                         </div>
                     </t>
                 </templates>
