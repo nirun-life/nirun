@@ -47,7 +47,7 @@ class AllergyIntolerance(models.Model):
     )
     note = fields.Text()
 
-    reaction_ids = fields.One2many("ni.allergy.reaction", "allergy_id", "Reaction")
+    reaction_ids = fields.One2many("ni.allergy.reaction", "allergy_id")
     reaction_count = fields.Integer(compute="_compute_reaction_count")
     last_occurrence = fields.Datetime(compute="_compute_last_occurrence", store=True)
 

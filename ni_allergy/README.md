@@ -1,6 +1,6 @@
 # Allergy (`ni_allergy`)
 
-Odoo 18.0 module that records patient allergies and intolerances for Nirun. It tracks
+Odoo 19.0 module that records patient allergies and intolerances for Nirun. It tracks
 allergy substances, reactions, criticality, and status so clinical teams can surface
 safety alerts in patient and encounter flows.
 
