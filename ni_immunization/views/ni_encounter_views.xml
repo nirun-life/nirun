@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2026 NSTDA
   -->
@@ -16,18 +16,19 @@
                     name="immunization"
                     string="Immunization"
                     icon="fa-shield"
-                    attrs="{'invisible': [('show_immunization', '=', False)]}"
                     badge="protected_disease_count"
+                    invisible="not show_immunization"
                 >
                     <field name="protected_disease_count" invisible="1" />
                     <notebook orientation="original" class="no_controller">
-                        <page name="immunization_summary" string="Summary" icon="fa-shield">
+                        <page
+                            name="immunization_summary"
+                            string="Summary"
+                            icon="fa-shield"
+                        >
                             <field
                                 name="immunization_summary_ids"
-                                context="{
-                                    'default_encounter_id': id,
-                                    'default_patient_id': patient_id
-                                }"
+                                context="{                                     'default_encounter_id': id,                                     'default_patient_id': patient_id                                 }"
                             />
                             <button
                                 name="action_immunization_evaluation"
@@ -43,16 +44,21 @@
                                 class="btn-primary mb-3"
                             />
                         </page>
-                        <page name="immunization_records" string="Records" icon="fa-list">
+                        <page
+                            name="immunization_records"
+                            string="Records"
+                            icon="fa-list"
+                        >
                             <field
                                 name="immunization_ids"
-                                context="{
-                                    'default_encounter_id': id,
-                                    'default_patient_id': patient_id,
-                                    'no_header': True
-                                }"
+                                context="{                                     'default_encounter_id': id,                                     'default_patient_id': patient_id,                                     'no_header': True                                 }"
                             />
-                            <button name="action_immunization" type="object" string="See More" class="btn-secondary" />
+                            <button
+                                name="action_immunization"
+                                type="object"
+                                string="See More"
+                                class="btn-secondary"
+                            />
                         </page>
                     </notebook>
                 </page>
