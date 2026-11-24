@@ -3,7 +3,7 @@
 {
     "name": "Procedure",
     "summary": "Medical procedures and surgical interventions tracking",
-    "version": "16.0.0.1.1",
+    "version": "17.0.1.0.0",
     "development_status": "Alpha",
     "category": "Medical/Summary",
     "author": "NSTDA, Piruin P.",
