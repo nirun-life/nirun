@@ -37,10 +37,14 @@ categories.
 
 - `base_user_role`
 - `auth_signup`
-- `hr`
+- `ni_practitioner` (licence number of the employee)
+- Python `qrcode`
+- Optional: `base_user_role_company` (AGPL-3, so not a dependency). When it is installed, the registration form also sets the
+  company of the role line.
 
 ## Verification
 
+- `tests/` covers the invitation token per company, verification and the registration form.
 - Re-check the practitioner registration flow from invitation link through account creation and post-registration confirmation.
 - Confirm unverified users cannot authenticate until verification is completed.
 - Review employee creation and role-to-category propagation after changes to user or role logic.
