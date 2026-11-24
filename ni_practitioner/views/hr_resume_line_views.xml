@@ -27,19 +27,17 @@
                     placeholder="e.g. Doctor of Medicine"
                 />
             </field>
-            <field name="line_type_id" position="before">
-                <field name="name" string="Display Name" />
-                <field name="code_require_identifier" invisible="1" />
-                <field
-                    name="issuer_id"
-                    options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
-                />
-            </field>
+            <xpath expr="//group[@id='resume_line_dates']" position="before">
+                <group>
+                    <field name="name" string="Display Name" />
+                    <field
+                        name="issuer_id"
+                        options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                    />
+                </group>
+            </xpath>
             <field name="line_type_id" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </field>
-            <field name="display_type" position="attributes">
-                <attribute name="invisible">True</attribute>
             </field>
         </field>
     </record>

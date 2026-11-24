@@ -3,7 +3,7 @@ from odoo import fields, models
 
 
 class User(models.Model):
-    _inherit = ["res.users"]
+    _inherit = "res.users"
 
     license_id = fields.Many2one(
         related="employee_id.license_id",

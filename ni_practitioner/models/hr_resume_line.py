@@ -1,6 +1,6 @@
 #  Copyright (c) 2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -26,7 +26,7 @@ class ResumeLine(models.Model):
         if context.get("show_identifier") and line.identifier:
             name = f"{name} • {line.identifier}"
         if context.get("show_period"):
-            period = [line.date_start, line.date_end or _("Current")]
+            period = [line.date_start, line.date_end or self.env._("Current")]
             name = "{} {}".format(name, " - ".join(str(p) for p in period if p))
         return name
 
@@ -45,7 +45,9 @@ class ResumeLine(models.Model):
             if rec.date_end and rec.date_start > rec.date_end:
                 # Not sure why origin's _sql_constraint not work for this case
                 raise ValidationError(
-                    _("The start date must be anterior to the end date.")
+                    self.env._("The start date must be anterior to the end date.")
                 )
             if rec.date_start > fields.Date.today():
-                raise ValidationError(_("The start Date must not be in the future."))
+                raise ValidationError(
+                    self.env._("The start Date must not be in the future.")
+                )
