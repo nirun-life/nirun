@@ -804,7 +804,7 @@ class Encounter(models.Model):
         if type_id:
             val.update({"type_id": type_id if isinstance(type_id, int) else type_id.id})
 
-        self.write({"participant_ids": [models.Command.create(val)]})
+        self.write({"participant_ids": [Command.create(val)]})
 
     def action_quit(self):
         self.participant_ids.filtered(
