@@ -49,27 +49,19 @@ class ImmunizationEvaluationWizard(models.TransientModel):
     def _compute_available_disease_ids(self):
         Disease = self.env["ni.immunization.target.disease"]
         Summary = self.env["ni.immunization.summary"]
-        all_diseases = Disease.search([])
         for wiz in self:
-            if wiz.filter_status == "all" or not wiz.patient_id:
-                wiz.available_disease_ids = all_diseases
-                continue
-            protected_ids = set(
-                Summary.search(
+            domain = []
+            if wiz.filter_status != "all" and wiz.patient_id:
+                protected = Summary.search(
                     [
                         ("patient_id", "=", wiz.patient_id.id),
                         ("protection_status", "=", "protected"),
                     ]
-                )
-                .mapped("target_disease_id")
-                .ids
-            )
-            if wiz.filter_status == "protected":
-                wiz.available_disease_ids = Disease.browse(protected_ids)
-            else:
-                wiz.available_disease_ids = all_diseases.filtered(
-                    lambda d, ids=protected_ids: d.id not in ids
-                )
+                ).target_disease_id
+                operator = "in" if wiz.filter_status == "protected" else "not in"
+                domain = [("id", operator, protected.ids)]
+            # a short vocabulary, shown as checkboxes
+            wiz.available_disease_ids = Disease.search(domain)  # pylint: disable=no-search-all
 
     @api.onchange("filter_status")
     def _onchange_filter_status(self):

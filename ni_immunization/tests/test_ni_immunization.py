@@ -89,16 +89,16 @@ class TestImmunization(TransactionCase):
         self.assertEqual(immunization.site_id, self.route.site_ids)
 
     def test_group_by_disease(self):
-        groups = (
+        result = (
             self.env["ni.immunization.evaluation"]
             .with_context(read_group_expand=True)
-            .read_group(
+            .web_read_group(
                 [("patient_id", "=", self.patient.id)],
                 ["target_disease_id"],
-                ["target_disease_id"],
+                ["__count"],
             )
         )
-        found = {g["target_disease_id"][0] for g in groups}
+        found = {group["target_disease_id"][0] for group in result["groups"]}
         self.assertTrue(set(self.diseases.ids) <= found)
 
     def test_evaluation_form(self):
