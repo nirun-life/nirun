@@ -12,8 +12,8 @@
                 <strong>Allergy:</strong>
                 <span class="me-2" t-if="o.allergy == 'identified'">
                     <t t-foreach="o.allergy_ids" t-as="allergy">
-                        <t t-esc="allergy.code_id.name" />
-                        <t t-if="not allergy_last" t-esc="','" />
+                        <t t-out="allergy.code_id.name" />
+                        <t t-if="not allergy_last" t-out="','" />
                     </t>
                 </span>
                 <span t-else="" t-field="o.allergy" />
