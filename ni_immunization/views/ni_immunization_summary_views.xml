@@ -24,9 +24,19 @@
                     decoration-danger="protection_status == 'not-protected'"
                 />
                 <field name="last_immunization" string="Last Dose" />
-                <field name="last_evaluation" string="Last Evaluation" optional="hide" />
+                <field
+                    name="last_evaluation"
+                    string="Last Evaluation"
+                    optional="hide"
+                />
                 <field name="dose_progress" string="Doses" />
-                <button name="action_add_evaluation" type="object" string="Add Dose" icon="fa-plus" class="btn-sm" />
+                <button
+                    name="action_add_evaluation"
+                    type="object"
+                    string="Add Dose"
+                    icon="fa-plus"
+                    class="btn-sm"
+                />
             </tree>
         </field>
     </record>
@@ -131,11 +141,20 @@
                                 <div class="o_kanban_record_bottom mt-2">
                                     <div class="oe_kanban_bottom_left text-muted">
                                         <span class="me-3">
-                                            <i class="fa fa-eyedropper me-1" title="Doses" />
+                                            <i
+                                                class="fa fa-eyedropper me-1"
+                                                title="Doses"
+                                            />
                                             <field name="dose_progress" />
                                         </span>
-                                        <span class="me-3" t-if="record.last_immunization.value">
-                                            <i class="fa fa-calendar me-1" title="Last immunization" />
+                                        <span
+                                            class="me-3"
+                                            t-if="record.last_immunization.value"
+                                        >
+                                            <i
+                                                class="fa fa-calendar me-1"
+                                                title="Last immunization"
+                                            />
                                             <field name="last_immunization" />
                                         </span>
                                     </div>
@@ -163,8 +182,16 @@
             <search>
                 <field name="patient_id" />
                 <field name="target_disease_id" />
-                <filter name="protected" string="Protected" domain="[('protection_status', '=', 'protected')]" />
-                <filter name="partial" string="Partial" domain="[('protection_status', '=', 'partial')]" />
+                <filter
+                    name="protected"
+                    string="Protected"
+                    domain="[('protection_status', '=', 'protected')]"
+                />
+                <filter
+                    name="partial"
+                    string="Partial"
+                    domain="[('protection_status', '=', 'partial')]"
+                />
                 <filter
                     name="not_protected"
                     string="Not Protected"
