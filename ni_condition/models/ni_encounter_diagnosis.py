@@ -1,6 +1,6 @@
 #  Copyright (c) 2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -71,14 +71,14 @@ class Diagnosis(models.Model):
     def _check_is_diagnosis(self):
         for rec in self:
             if rec.is_diagnosis and not rec.role_id:
-                raise UserError(_("Encounter Diagnosis must specify role"))
+                raise UserError(self.env._("Encounter Diagnosis must specify role"))
 
     @api.constrains("is_diagnosis", "is_problem")
     def _check_is_diagnosis_or_problem(self):
         for rec in self:
             if not rec.is_diagnosis and not rec.is_problem:
                 raise UserError(
-                    _(
+                    self.env._(
                         "Diagnosis line must be at least a Diagnosis or a "
                         "Problem-List Item"
                     )
@@ -124,7 +124,7 @@ class Diagnosis(models.Model):
         for rec in self:
             if not rec.is_problem_editable:
                 raise UserError(
-                    _(
+                    self.env._(
                         "Problem-List status was set in a prior encounter and "
                         "can't be changed here"
                     )

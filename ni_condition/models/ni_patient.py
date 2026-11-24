@@ -1,14 +1,12 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class Patient(models.Model):
     _inherit = "ni.patient"
 
-    condition_ids = fields.One2many(
-        "ni.condition", "patient_id", string="Condition", check_company=True
-    )
+    condition_ids = fields.One2many("ni.condition", "patient_id", check_company=True)
     condition_code_ids = fields.Many2many(
         "ni.condition.code",
         compute="_compute_condition_problem_ids",
@@ -68,7 +66,7 @@ class Patient(models.Model):
             }
         )
         view = {
-            "name": _("Problem List"),
+            "name": self.env._("Problem List"),
             "res_model": "ni.condition",
             "type": "ir.actions.act_window",
             "target": "current",

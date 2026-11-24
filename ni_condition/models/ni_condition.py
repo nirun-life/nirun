@@ -3,7 +3,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -143,9 +143,11 @@ class Condition(models.Model):
             self.period_type = "date"
             return {
                 "warning": {
-                    "title": _("Warning!"),
-                    "message": _("%s must specify birthday to set onset age")
-                    % self.patient_id.name,
+                    "title": self.env._("Warning!"),
+                    "message": self.env._(
+                        "%s must specify birthday to set onset age",
+                        self.patient_id.name,
+                    ),
                 }
             }
 
@@ -285,9 +287,9 @@ class Condition(models.Model):
     @property
     def _workflow_name(self) -> str:
         if self.is_diagnosis:
-            return _("Diagnosis Encounter")
+            return self.env._("Diagnosis Encounter")
         elif self.is_problem:
-            return _("Problem List Item")
+            return self.env._("Problem List Item")
         else:
             return self._description
 
@@ -304,11 +306,15 @@ class Condition(models.Model):
     def _check_age(self):
         for rec in self:
             if rec.age_start and rec.age_start > rec.patient_id.age:
-                raise UserError(_("Onset age must not be more than patient age"))
+                raise UserError(
+                    self.env._("Onset age must not be more than patient age")
+                )
             if rec.age_end and rec.age_end > rec.patient_id.age:
-                raise UserError(_("Abatement age must not be more than patient age"))
+                raise UserError(
+                    self.env._("Abatement age must not be more than patient age")
+                )
             if rec.age_start and rec.age_end and rec.age_end < rec.age_start:
-                raise UserError(_("Abatement age must be more than onset age"))
+                raise UserError(self.env._("Abatement age must be more than onset age"))
 
     @api.constrains("code_id", "system_id")
     def _check_(self):
