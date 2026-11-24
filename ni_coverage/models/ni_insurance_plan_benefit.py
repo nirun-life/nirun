@@ -1,6 +1,6 @@
 #  Copyright (c) 2021 NSTDA
 
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class InsurancePlanBenefit(models.Model):
@@ -16,6 +16,6 @@ class InsurancePlanBenefit(models.Model):
         (
             "type_in_plan__uniq",
             "unique (plan_id, type_id)",
-            _("Beneficiary Type must be unique !"),
+            "Beneficiary Type must be unique !",
         ),
     ]
