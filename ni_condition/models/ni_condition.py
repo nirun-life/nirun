@@ -218,13 +218,13 @@ class Condition(models.Model):
         condition = self
         name = condition.name or condition.code_id.name
         if self._context.get("show_code") and condition.code_id.code:
-            name = "[{}] {}".format(name, condition.code_id.code)
+            name = f"[{name}] {condition.code_id.code}"
         if self._context.get("show_patient"):
-            name = "{}: {}".format(condition.patient_id._name_get(), name)
+            name = f"{condition.patient_id._name_get()}: {name}"
         if self._context.get("show_severity") and condition.severity:
-            name = "{}[{}]".format(name, condition.get_severity_label())
+            name = f"{name}[{condition.get_severity_label()}]"
         if self._context.get("show_state"):
-            name = "{} ({})".format(name, condition.get_state_label())
+            name = f"{name} ({condition.get_state_label()})"
         return name
 
     def get_severity_label(self):
@@ -274,9 +274,9 @@ class Condition(models.Model):
     def _workflow_summary(self):
         summary = self.code_id.name
         if self.severity:
-            summary = "{} ({})".format(summary, self.get_severity_label())
+            summary = f"{summary} ({self.get_severity_label()})"
         if self.verification_id:
-            summary = "{} - {}".format(summary, self.verification_id.display_name)
+            summary = f"{summary} - {self.verification_id.display_name}"
         return summary
 
     @api.constrains("age_start", "age_end")
