@@ -50,15 +50,15 @@ class Procedure(models.Model):
         procedure = self
         name = procedure.name or procedure.code_id.name
         if self._context.get("show_category") and procedure.category_id:
-            name = "{},{}".format(procedure.category_id.name, name)
+            name = f"{procedure.category_id.name},{name}"
         if self._context.get("show_code") and procedure.code_id.code:
-            name = "[{}] {}".format(name, procedure.code_id.code)
+            name = f"[{name}] {procedure.code_id.code}"
         if self._context.get("show_patient"):
-            name = "{}: {}".format(procedure.patient_id._name_get(), name)
+            name = f"{procedure.patient_id._name_get()}: {name}"
         if self._context.get("show_state"):
-            name = "{} ({})".format(name, procedure._get_state_label())
+            name = f"{name} ({procedure._get_state_label()})"
         if self._context.get("show_identifier"):
-            name = "{} - {}".format(name, procedure.identifier)
+            name = f"{name} - {procedure.identifier}"
         return name
 
     @api.onchange("code_id")
@@ -75,5 +75,5 @@ class Procedure(models.Model):
     def _workflow_summary(self):
         res = self.outcome_id.name or self.name
         if self.note:
-            res = "{}; {}".format(res, self.note)
+            res = f"{res}; {self.note}"
         return res

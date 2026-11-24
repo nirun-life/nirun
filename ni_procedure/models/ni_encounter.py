@@ -15,8 +15,8 @@ class Encounter(models.Model):
 
     def _compute_procedure_count(self):
         procedure = self.env["ni.procedure"].sudo()
-        read = procedure.read_group(
-            [("encounter_id", "in", self.ids)], ["encounter_id"], ["encounter_id"]
+        read = procedure._read_group(
+            [("encounter_id", "in", self.ids)], ["encounter_id"], ["__count"]
         )
         data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
         for encounter in self:
