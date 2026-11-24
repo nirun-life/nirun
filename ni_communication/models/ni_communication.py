@@ -43,7 +43,7 @@ class Communication(models.Model):
         index=True,
         default=_get_default_category,
     )
-    occurrence = fields.Datetime(related="period_start")
+    occurrence = fields.Datetime(related="period_start", default=None)
     period_start = fields.Datetime("Sent")
     period_end = fields.Datetime("Received")
     duration_hours = fields.Float(default=0.05)
@@ -75,10 +75,8 @@ class Communication(models.Model):
 
     @api.model
     def _prepare_sender_id(self, vals):
-        if "sender_employee_id" in vals:
-            emp_id = (
-                self.env["hr.employee"].sudo().browse(vals["sender_employee_id"])[0]
-            )
+        if vals.get("sender_employee_id"):
+            emp_id = self.env["hr.employee"].sudo().browse(vals["sender_employee_id"])
             employee_partner_ids = [
                 emp_id.user_partner_id,
                 emp_id.work_contact_id,
@@ -95,7 +93,11 @@ class Communication(models.Model):
     ):
         args = list(args or [])
         if not (name == "" and operator == "ilike"):
-            args += ["|", ("name", operator, name), ("identifier", operator, name)]
+            args += [
+                "|",
+                ("category_id", operator, name),
+                ("identifier", operator, name),
+            ]
         return self._search(args, limit=limit, access_rights_uid=name_get_uid)
 
     def name_get(self):
@@ -117,7 +119,7 @@ class Communication(models.Model):
         res = self.category_id.name
         if self.content_ids:
             payload = [c.name for c in self.content_ids]
-            "{}; {}".format(res, ", ".join(payload))
+            res = "{}; {}".format(res, ", ".join(payload))
         return res
 
     @api.onchange("category_id")

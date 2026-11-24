@@ -3,7 +3,7 @@
 {
     "name": "Communication",
     "summary": "Patient communication and contact information tracking",
-    "version": "16.0.0.1.1",
+    "version": "16.0.0.1.2",
     "development_status": "Alpha",
     "category": "Medical/Summary",
     "author": "NSTDA, Piruin P.",

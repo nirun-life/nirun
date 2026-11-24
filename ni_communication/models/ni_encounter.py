@@ -14,7 +14,7 @@ class Encounter(models.Model):
     communication_count = fields.Integer(compute="_compute_communication_count")
 
     discharge_communication_id = fields.Many2one(
-        "ni.communication", domain=[("encounter_id", "=", id)]
+        "ni.communication", domain="[('encounter_id', '=', id)]"
     )
     discharge_communication_content_ids = fields.Many2many(
         related="discharge_communication_id.content_ids"
