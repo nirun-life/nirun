@@ -158,82 +158,51 @@
         <field name="name">ni.patient.related.person.view.kanban</field>
         <field name="model">ni.patient.related.person</field>
         <field name="arch" type="xml">
-            <kanban>
-                <field name="name" />
-                <field name="vat" />
-                <field name="image_1024" />
+            <kanban class="o_res_partner_kanban">
                 <field name="image_128" />
                 <templates>
-                    <t t-name="card">
-                        <div
-                            class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban"
-                        >
+                    <t t-name="card" class="flex-row">
+                        <aside class="o_kanban_aside_full">
                             <field
                                 name="image_1024"
-                                class="o_kanban_image_fill_left d-block"
-                                preview_image="image_128"
-                                widget="background_image"
-                                options="{'zoom': true, 'zoom_delay': 1000}"
+                                class="o_kanban_image_fill w-100"
+                                widget="image"
+                                options="{'img_class': 'object-fit-cover', 'preview_image': 'image_128', 'zoom': true, 'zoom_delay': 1000}"
                             />
-                            <div class="oe_kanban_details">
-                                <div name="kanban_top" class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings">
-                                        <span class="o_kanban_record_title">
-                                            <field
-                                                name="name"
-                                                placeholder="Related Person's Name"
-                                            />
-                                        </span>
-                                        <span
-                                            class="o_kanban_record_subtitle small"
-                                            t-if="record.vat.value"
-                                        >
-                                            <t t-out="record.vat.value" />
-                                        </span>
-                                    </div>
-                                </div>
-                                <field
-                                    name="relationship_ids"
-                                    widget="many2many_tags"
-                                    options="{'color_field': 'color'}"
+                        </aside>
+                        <main class="ps-2 ps-md-0">
+                            <field name="name" class="fw-bolder" />
+                            <field name="vat" class="small text-muted" />
+                            <field
+                                name="relationship_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color'}"
+                            />
+                            <div t-if="record.phone.raw_value" class="mt-2">
+                                <i
+                                    class="fa fa-phone me-2"
+                                    aria-hidden="true"
+                                    title="phone"
                                 />
-                                <div
-                                    class="oe_kanban_details d-flex flex-column justify-content-between"
-                                >
-                                    <div class="mt-2">
-                                        <ul>
-                                            <li t-if="record.phone.raw_value">
-                                                <i
-                                                    class="fa fa-phone me-2"
-                                                    aria-hidden="true"
-                                                    title="phone"
-                                                />
-                                                <field name="phone" />
-                                            </li>
-                                            <li t-if="record.mobile.raw_value">
-                                                <i
-                                                    class="fa fa-mobile me-2"
-                                                    aria-hidden="true"
-                                                    title="mobile"
-                                                />
-                                                <field name="mobile" />
-                                            </li>
-                                            <li
-                                                t-if="record.email.raw_value"
-                                                class="o_text_overflow"
-                                            >
-                                                <i
-                                                    class="fa fa-envelope me-2"
-                                                    aria-hidden="true"
-                                                    title="email"
-                                                />
-                                                <field name="email" widget="email" />
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <field name="phone" />
                             </div>
-                        </div>
+                            <div t-if="record.mobile.raw_value">
+                                <i
+                                    class="fa fa-mobile me-2"
+                                    aria-hidden="true"
+                                    title="mobile"
+                                />
+                                <field name="mobile" />
+                            </div>
+                            <div t-if="record.email.raw_value" class="text-truncate">
+                                <i
+                                    class="fa fa-envelope me-2"
+                                    aria-hidden="true"
+                                    title="email"
+                                />
+                                <field name="email" widget="email" />
+                            </div>
+                        </main>
                     </t>
                 </templates>
             </kanban>
