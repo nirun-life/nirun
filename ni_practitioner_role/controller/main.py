@@ -26,98 +26,110 @@ class PractitionerRoleController(http.Controller):
         return request.not_found()
 
     @http.route(
-        "/practitioner/register/<int:company_id>/<token>/",
+        "/practitioner/register/<int:company_id>/<token>",
         type="http",
         auth="public",
         website=True,
     )
     def form_register(self, company_id, token, **kwargs):
-        company = request.env["res.company"].browse(company_id)
+        role = self._get_role(company_id, token)
+        return self._render_register_form(role, token)
+
+    @http.route(
+        "/practitioner/register/submit",
+        type="http",
+        auth="public",
+        website=True,
+        methods=["POST"],
+    )
+    def form_register_submit(self, **post):
+        if post.get("captcha"):
+            return request.redirect(request.httprequest.referrer or "/")
+
+        # The invitation decides the company and the role, never the posted values
+        token = post.get("token")
+        role = self._get_role(post.get("company_id"), token)
+        company = role.env.company
+        if not request.env.user._is_public():
+            return self._register_current_user(role, token)
+
+        login = (post.get("login") or "").strip()
+        name = (post.get("name") or "").strip()
+        err = {}
+        if not login:
+            err["login"] = _("Must provide license no.")
+        elif request.env["res.users"].sudo().search([("login", "=", login)], limit=1):
+            err["login"] = _("License No. already exist")
+        elif not (post.get("password") or "").strip():
+            err["password"] = _("Must provide password")
+        elif not name:
+            err["name"] = _("Must provide practitioner name")
+        if err:
+            error = next(iter(err.values()))
+            return self._render_register_form(role, token, error, err, post)
+
+        request.env["res.users"].sudo().create(self._prepare_user_value(post, role))
+        return self._render_successful(company)
+
+    def _get_role(self, company_id, token):
+        """Role (in the company of the invitation) that a token gives access to"""
+        try:
+            company = request.env["res.company"].sudo().browse(int(company_id)).exists()
+        except (TypeError, ValueError):
+            company = request.env["res.company"]
+        # An empty token would match the roles that have none
+        if not company or not token:
+            raise request.not_found()
         role = (
             request.env["res.users.role"]
             .sudo()
             .with_company(company)
-            .search([("access_token", "=", token)])
+            .search([("access_token", "=", token)], limit=1)
         )
-        if role:
-            public_user = request.env.user.login == "public"
-            vals = {
+        if not role:
+            raise request.not_found()
+        return role
+
+    def _register_current_user(self, role, token):
+        """Add the role to the signed in user, whatever login was posted"""
+        user = request.env.user
+        company = role.env.company
+        if company not in user.company_ids:
+            error = _("You do not have access to this company")
+            return self._render_register_form(role, token, error)
+        vals = self._prepare_role_line_value(role.id, company.id)
+        lines = user.sudo().role_line_ids.filtered(lambda line: line.role_id == role)
+        if "company_id" in vals:
+            lines = lines.filtered(
+                lambda line: not line.company_id or line.company_id == company
+            )
+        if not lines:
+            user.sudo().write({"role_line_ids": [fields.Command.create(vals)]})
+        return self._render_successful(company)
+
+    def _render_register_form(self, role, token, error=None, err=None, post=None):
+        user = request.env.user
+        return request.render(
+            "ni_practitioner_role.register_form",
+            {
                 "company": role.env.company,
                 "role": role,
-                "user": request.env.user if not public_user else None,
+                "user": None if user._is_public() else user,
                 "titles": request.env["res.partner.title"].search([]),
                 "token": token,
-                "error": kwargs.get("error"),
-                "err": kwargs.get("err") or dict(),
-                "post": kwargs.get("post"),
-            }
-            return request.render("ni_practitioner_role.register_form", vals)
-        else:
-            return request.not_found()
-
-    @http.route(
-        "/practitioner/register/submit", type="http", auth="public", website=True
-    )
-    def form_register_submit(self, **post):
-        if not post or post.get("captcha"):
-            return request.redirect(request.httprequest.referrer)
-
-        comp_id = int(post.get("company_id"))
-        token = post.get("token")
-        login = post.get("login").strip()
-
-        user = request.env["res.users"].sudo().search([("login", "=", login)], limit=1)
-        if user:
-            if not post.get("registered"):
-                return self.form_register(
-                    comp_id,
-                    token,
-                    error=_("License No. already exist"),
-                    err={"login": _("License No. already exist")},
-                    post=post,
-                )
-            else:
-                user.write(
-                    {
-                        "role_line_ids": [
-                            fields.Command.create(
-                                self._prepare_role_line_value(
-                                    int(post.get("role_id")), comp_id
-                                )
-                            )
-                        ],
-                    }
-                )
-                return request.render(
-                    "ni_practitioner_role.register_successful",
-                    {
-                        "company": request.env["res.company"].browse(comp_id),
-                    },
-                )
-
-        name = post.get("name").strip()
-        if not name:
-            return self.form_register(
-                comp_id,
-                token,
-                error=_("Must provide practitioner name"),
-                err={"name": _("Must provide practitioner name")},
-                post=post,
-            )
-
-        val = self._prepare_user_value(post)
-        request.env["res.users"].sudo().create(val)
-
-        return request.render(
-            "ni_practitioner_role.register_successful",
-            {
-                "company": request.env["res.company"].sudo().browse(comp_id),
+                "error": error,
+                "err": err or {},
+                "post": post,
             },
         )
 
-    def _prepare_user_value(self, post):
-        comp_id = int(post.get("company_id"))
-        role_id = int(post.get("role_id"))
+    def _render_successful(self, company):
+        return request.render(
+            "ni_practitioner_role.register_successful", {"company": company.sudo()}
+        )
+
+    def _prepare_user_value(self, post, role):
+        company = role.env.company
         return {
             "login": post.get("login").strip(),
             "password": post.get("password").strip(),
@@ -126,11 +138,13 @@ class PractitionerRoleController(http.Controller):
             "email": post.get("email"),
             "phone": post.get("phone"),
             "mobile": post.get("mobile"),
-            "company_id": comp_id,
+            "company_id": company.id,
             "verified": False,
-            "company_ids": [fields.Command.link(comp_id)],
+            "company_ids": [fields.Command.link(company.id)],
             "role_line_ids": [
-                fields.Command.create(self._prepare_role_line_value(role_id, comp_id))
+                fields.Command.create(
+                    self._prepare_role_line_value(role.id, company.id)
+                )
             ],
         }
 
