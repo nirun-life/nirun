@@ -2,13 +2,6 @@
 
 from odoo import api, fields, models
 
-LOCK_STATE_DICT = {
-    "completed": [("readonly", True)],
-    "not-done": [("readonly", True)],
-    "abort": [("readonly", True)],
-    "suspended": [("readonly", True)],
-}
-
 
 class DocumentReference(models.Model):
     _name = "ni.document.ref"
@@ -25,9 +18,7 @@ class DocumentReference(models.Model):
             res["type_id"] = type_id or None
         return res
 
-    type_id = fields.Many2one(
-        "ni.document.ref.type", index=True, required=True, states=LOCK_STATE_DICT
-    )
+    type_id = fields.Many2one("ni.document.ref.type", index=True, required=True)
     category_id = fields.Many2one(
         "ni.document.ref.category", related="type_id.category_id", store=True
     )
@@ -36,21 +27,17 @@ class DocumentReference(models.Model):
         "hr.employee",
         index=True,
         default=lambda self: self.env.user.employee_id,
-        states=LOCK_STATE_DICT,
     )
-    author_ids = fields.Many2many(
-        "hr.employee", string="Co-Authors", states=LOCK_STATE_DICT
-    )
+    author_ids = fields.Many2many("hr.employee", string="Co-Authors")
 
     attachment_ids = fields.Many2many(
         "ir.attachment",
         required=True,
         auto_join=True,
         ondelete="cascade",
-        states=LOCK_STATE_DICT,
     )
     attachment_count = fields.Integer(compute="_compute_attachment_count")
-    data = fields.Html(states=LOCK_STATE_DICT)
+    data = fields.Html()
     no_data = fields.Boolean(compute="_compute_no_data")
     state = fields.Selection(default="in-progress")
     active = fields.Boolean(default=True)

@@ -1,6 +1,6 @@
 # Document Reference (`ni_document_ref`)
 
-Odoo 16.0 module that manages clinical document references and attached files for Nirun.
+Odoo 17.0 module that manages clinical document references and attached files for Nirun.
 It links authored documents into the patient workflow timeline, with document type
 defaults, co-author handling, printable output, and summary reporting.
 
@@ -44,3 +44,5 @@ authorship, type and category metadata, and printable output.
   attachment-count behavior after changing `ni.document.ref` creation logic.
 - Re-check document printing, kanban presentation, and encounter-linked document views
   after changing type, category, or report behavior.
+- `tests/test_ni_document_ref.py` covers the report, defaults, authors, the lock of
+  finished documents and the counter.
