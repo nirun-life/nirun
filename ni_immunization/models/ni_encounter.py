@@ -1,20 +1,14 @@
 #  Copyright (c) 2026 NSTDA
 from odoo import _, fields, models
 
-from odoo.addons.ni_patient.models.ni_encounter import LOCK_STATE_DICT
-
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
     show_immunization = fields.Boolean(related="class_id.immunization")
-    immunization_ids = fields.One2many(
-        "ni.immunization", "encounter_id", states=LOCK_STATE_DICT
-    )
+    immunization_ids = fields.One2many("ni.immunization", "encounter_id")
     immunization_count = fields.Integer(compute="_compute_immunization_count")
-    evaluation_ids = fields.One2many(
-        "ni.immunization.evaluation", "encounter_id", states=LOCK_STATE_DICT
-    )
+    evaluation_ids = fields.One2many("ni.immunization.evaluation", "encounter_id")
     immunization_summary_ids = fields.One2many(
         related="patient_id.immunization_summary_ids", readonly=True
     )
@@ -24,7 +18,7 @@ class Encounter(models.Model):
         read = immunization._read_group(
             [("encounter_id", "in", self.ids)], ["encounter_id"], ["__count"]
         )
-        data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
+        data = {encounter.id: count for encounter, count in read}
         for enc in self:
             enc.immunization_count = data.get(enc.id, 0)
 

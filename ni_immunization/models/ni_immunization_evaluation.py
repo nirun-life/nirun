@@ -17,7 +17,7 @@ class ImmunizationEvaluation(models.Model):
     occurrence = fields.Datetime("Asserted On")
     occurrence_date = fields.Datetime("Assert Date")
 
-    immunization_date = fields.Date("Immunization Date")
+    immunization_date = fields.Date()
     immunization_id = fields.Many2one(
         "ni.immunization",
         "Immunization Dose",
@@ -70,7 +70,8 @@ class ImmunizationEvaluation(models.Model):
         self.env.cr.execute(
             """
             CREATE INDEX IF NOT EXISTS ni_immunization_evaluation_company_disease_idx
-            ON ni_immunization_evaluation (company_id, patient_id, target_disease_id, occurrence DESC)
+            ON ni_immunization_evaluation
+            (company_id, patient_id, target_disease_id, occurrence DESC)
             """
         )
         self.env.cr.execute(
@@ -145,7 +146,8 @@ class ImmunizationEvaluation(models.Model):
             if rec.immunization_id.patient_id != rec.patient_id:
                 raise ValidationError(
                     _(
-                        "The referenced immunization dose belongs to a different patient."
+                        "The referenced immunization dose belongs to a "
+                        "different patient."
                     )
                 )
             vaccine_diseases = rec.immunization_id.vaccine_id.target_disease_ids
@@ -168,7 +170,8 @@ class ImmunizationEvaluation(models.Model):
             if duplicate:
                 raise ValidationError(
                     _(
-                        "An evaluation for '%(disease)s' already references this immunization dose.",
+                        "An evaluation for '%(disease)s' already references this "
+                        "immunization dose.",
                         disease=rec.target_disease_id.display_name,
                     )
                 )
@@ -190,8 +193,12 @@ class ImmunizationEvaluation(models.Model):
             )
             if duplicate:
                 raise ValidationError(
-                    f"A valid dose #{rec.dose_number} already exists for "
-                    f"{rec.target_disease_id.display_name} on this patient."
+                    _(
+                        "A valid dose #%(dose)s already exists for %(disease)s "
+                        "on this patient.",
+                        dose=rec.dose_number,
+                        disease=rec.target_disease_id.display_name,
+                    )
                 )
 
     @api.onchange("target_disease_id", "patient_id")

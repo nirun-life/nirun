@@ -68,7 +68,7 @@ class ImmunizationEvaluationWizard(models.TransientModel):
                 wiz.available_disease_ids = Disease.browse(protected_ids)
             else:
                 wiz.available_disease_ids = all_diseases.filtered(
-                    lambda d: d.id not in protected_ids
+                    lambda d, ids=protected_ids: d.id not in ids
                 )
 
     @api.onchange("filter_status")
