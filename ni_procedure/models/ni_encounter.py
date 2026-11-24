@@ -23,7 +23,7 @@ class Encounter(models.Model):
             "name": _("Procedure History"),
             "type": "ir.actions.act_window",
             "res_model": "ni.procedure",
-            "view_mode": "tree,kanban,form,graph,pivot",
+            "view_mode": "list,kanban,form,graph,pivot",
             "context": {
                 "search_default_group_by_encounter": 1,
                 "default_patient_id": self[0].patient_id.id,
