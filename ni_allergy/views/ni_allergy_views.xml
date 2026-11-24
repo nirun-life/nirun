@@ -73,9 +73,9 @@
         <field name="model">ni.allergy</field>
         <field name="arch" type="xml">
             <tree decoration-muted="state in ['inactive','resolved']">
-                <field name="company_id" invisible="1" />
-                <field name="patient_id" invisible="1" />
-                <field name="encounter_id" invisible="1" />
+                <field name="company_id" column_invisible="1" />
+                <field name="patient_id" column_invisible="1" />
+                <field name="encounter_id" column_invisible="1" />
                 <field name="sequence" widget="handle" />
                 <field name="type" optional="hide" />
                 <field name="category" optional="hide" />
@@ -101,7 +101,7 @@
                     type="object"
                     string="Resolve"
                     class="btn-secondary"
-                    states="active,inactive"
+                    invisible="state not in ('active', 'inactive')"
                 />
                 <control>
                     <create
@@ -130,13 +130,13 @@
                     <button
                         name="action_active"
                         string="Active"
-                        states="resolved"
+                        invisible="state != 'resolved'"
                         type="object"
                     />
                     <button
                         name="action_resolve"
                         string="Resolve"
-                        states="active"
+                        invisible="state != 'active'"
                         type="object"
                     />
                     <field
