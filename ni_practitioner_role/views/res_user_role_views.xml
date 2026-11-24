@@ -46,7 +46,9 @@
                 <field name="register_qr_code" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''}">
+                        <div
+                            t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''}"
+                        >
                             <div t-attf-class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
@@ -64,24 +66,47 @@
                                     groups="base.group_system"
                                 >
                                     <a class="o_kanban_manage_toggle_button" href="#">
-                                        <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage" />
+                                        <i
+                                            class="fa fa-ellipsis-v"
+                                            role="img"
+                                            aria-label="Manage"
+                                            title="Manage"
+                                        />
                                     </a>
                                 </div>
                             </div>
-                            <div class="container o_kanban_card_content" t-if="!selection_mode">
+                            <div
+                                class="container o_kanban_card_content"
+                                t-if="!selection_mode"
+                            >
                                 <div class="row o_kanban_card_upper_content">
                                     <!-- placeholder for top content -->
                                 </div>
-                                <div class="o_kanban_card_lower_content d-flex" style="justify-content: end">
+                                <div
+                                    class="o_kanban_card_lower_content d-flex"
+                                    style="justify-content: end"
+                                >
                                     <!-- placeholder for bottom content -->
                                     <div class="col-6 px-4">
-                                        <button class="btn btn-primary w-100 " name="action_user_in_role" type="object">
-                                            <i class="fa fa-users me-2" aria-hidden="true" title="Users" />
+                                        <button
+                                            class="btn btn-primary w-100 "
+                                            name="action_user_in_role"
+                                            type="object"
+                                        >
+                                            <i
+                                                class="fa fa-users me-2"
+                                                aria-hidden="true"
+                                                title="Users"
+                                            />
                                             <t t-out="record.user_count.raw_value" />
                                             Users
-                                            <t t-if="record.user_to_verify_count.raw_value > 0">
+                                            <t
+                                                t-if="record.user_to_verify_count.raw_value > 0"
+                                            >
                                                 <span class="ms-1 badge bg-danger">
-                                                    <t t-out="record.user_to_verify_count.raw_value" />
+                                                    <t
+                                                        t-out="record.user_to_verify_count.raw_value"
+                                                    />
                                                 </span>
                                             </t>
                                         </button>
@@ -97,15 +122,28 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                            <div
+                                class="o_kanban_card_manage_pane dropdown-menu"
+                                role="menu"
+                            >
                                 <div class="o_kanban_card_manage_section">
-                                    <div role="menuitem" class="o_kanban_manage_reports">
-                                        <div class="o_kanban_card_manage_title ps-4 pb-1">
+                                    <div
+                                        role="menuitem"
+                                        class="o_kanban_manage_reports"
+                                    >
+                                        <div
+                                            class="o_kanban_card_manage_title ps-4 pb-1"
+                                        >
                                             <span class="fw-bolder">Configuration</span>
                                         </div>
                                     </div>
                                 </div>
-                                <a t-if="widget.editable" role="menuitem" class="dropdown-item" type="edit">Settings</a>
+                                <a
+                                    t-if="widget.editable"
+                                    role="menuitem"
+                                    class="dropdown-item"
+                                    type="edit"
+                                >Settings</a>
                                 <ul
                                     t-if="widget.editable"
                                     class="oe_kanban_colorpicker"
