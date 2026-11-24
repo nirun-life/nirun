@@ -14,24 +14,24 @@
                 <field name="problem_count" invisible="1" />
                 <p
                     class="h4 mt-4"
-                    attrs="{'invisible': ['|', ('show_problem_list', '=', False), ('problem_count', '!=', 0)]}"
+                    invisible="(not show_problem_list or problem_count != 0)"
                 >
                     No chronic recorded!
                 </p>
-                <p class="text-muted small" attrs="{'invisible': [('show_problem_list', '=', False)]}">
+                <p class="text-muted small" invisible="not show_problem_list">
                     You can add more chronics at Problem-List section
                 </p>
                 <field
                     name="condition_problem_ids"
                     mode="kanban"
                     context="{'default_is_problem': True, 'default_encounter_id':id }"
-                    attrs="{'invisible': [('show_problem_list', '=', False)]}"
+                    invisible="not show_problem_list"
                 />
                 <field
                     name="condition_ids"
                     mode="kanban"
                     context="{'default_is_problem': True, 'default_encounter_id':id }"
-                    attrs="{'invisible': [('show_problem_list', '=', True)]}"
+                    invisible="show_problem_list"
                 />
             </xpath>
             <xpath expr="//notebook/page[@name='problem']" position="attributes">
