@@ -171,7 +171,7 @@
                 decoration-warning="protection_status == 'partial'"
                 decoration-muted="protection_status == 'not-protected'"
             >
-                <field name="patient_id" invisible="1" />
+                <field name="patient_id" column_invisible="1" />
                 <field name="target_disease_id" />
                 <field name="occurrence" optional="show" />
                 <field name="immunization_id" optional="show" />
@@ -223,6 +223,7 @@
                             widget="many2one_avatar"
                             placeholder="Select patient..."
                         />
+                        <field name="company_id" invisible="1" />
                         <field name="encounter_id" invisible="1" />
                     </group>
                     <field name="vaccine_target_disease_ids" invisible="1" />
