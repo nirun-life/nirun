@@ -3,14 +3,15 @@
 {
     "name": "Practitioner Role",
     "summary": "User role and permission management for practitioners",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.1.1",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
     "website": "https://nirun.life/",
     "license": "LGPL-3",
     "maintainers": ["piruin"],
-    "depends": ["base_user_role", "auth_signup", "hr"],
+    "depends": ["base_user_role", "auth_signup", "ni_practitioner"],
+    "external_dependencies": {"python": ["qrcode"]},
     "data": [
         # "security/ir.model.access.csv",
         "views/res_user_role_views.xml",
