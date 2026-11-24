@@ -6,7 +6,7 @@
     <record id="ni_condition_action" model="ir.actions.act_window">
         <field name="name">Conditions</field>
         <field name="res_model">ni.condition</field>
-        <field name="view_mode">pivot,graph,tree,form</field>
+        <field name="view_mode">pivot,graph,list,form</field>
     </record>
     <record id="ni_condition_view_search" model="ir.ui.view">
         <field name="name">ni.condition.view.search</field>
@@ -71,10 +71,10 @@
         </field>
     </record>
     <record id="ni_condition_view_tree" model="ir.ui.view">
-        <field name="name">ni.condition.view.tree</field>
+        <field name="name">ni.condition.view.list</field>
         <field name="model">ni.condition</field>
         <field name="arch" type="xml">
-            <tree create="0">
+            <list create="0">
                 <field name="company_id" column_invisible="1" />
                 <field name="patient_id" column_invisible="1" />
                 <field name="encounter_id" column_invisible="1" />
@@ -101,7 +101,7 @@
                         context="{'default_is_problem': True}"
                     />
                 </control>
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_condition_view_form" model="ir.ui.view">
@@ -267,7 +267,7 @@
                             groups="base.group_no_one"
                         >
                             <field name="diagnosis_ids">
-                                <tree default_order="encounter_start desc">
+                                <list default_order="encounter_start desc">
                                     <field name="encounter_id" />
                                     <field name="encounter_start" />
                                     <field
@@ -284,7 +284,7 @@
                                         name="role_decoration"
                                         column_invisible="1"
                                     />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page name="note" string="Note" icon="fa-sticky-note-o">
@@ -320,7 +320,7 @@
                 <field name="code" />
                 <field name="severity" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click">
                             <div class="oe_kanban_details">
                                 <ul>
