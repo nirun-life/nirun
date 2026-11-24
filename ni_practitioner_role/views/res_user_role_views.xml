@@ -2,7 +2,7 @@
 <!--
   ~ Copyright (c) 2023 NSTDA
   -->
-<odoo noupdate="1">
+<odoo>
     <record id="res_users_role_action" model="ir.actions.act_window">
         <field name="name">Role</field>
         <field name="type">ir.actions.act_window</field>
@@ -14,7 +14,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.users</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('role_ids', '=', active_id)]</field>
+        <field name="domain">[('role_line_ids.role_id', '=', active_id)]</field>
     </record>
     <record id="res_users_role_view_form_inherit" model="ir.ui.view">
         <field name="name">res.users.role.view.form.inherit</field>
@@ -24,8 +24,24 @@
             <field name="group_id" position="after">
                 <field name="employee_category_ids" widget="many2many_tags" />
                 <field name="access_token" invisible="1" />
-                <field name="register_location" widget="CopyClipboardURL" />
-                <field name="register_qr_code" widget='image' />
+                <button
+                    name="action_generate_access_token"
+                    type="object"
+                    string="Create Invitation Link"
+                    class="btn-secondary"
+                    colspan="2"
+                    invisible="not id or access_token"
+                />
+                <field
+                    name="register_location"
+                    widget="CopyClipboardURL"
+                    invisible="not access_token"
+                />
+                <field
+                    name="register_qr_code"
+                    widget="image"
+                    invisible="not access_token"
+                />
             </field>
         </field>
     </record>
@@ -163,10 +179,12 @@
         groups="base.group_erp_manager"
         web_icon="ni_practitioner_role,static/description/icon.png"
     />
-    <record id="base.menu_users" model="ir.ui.menu">
-        <field name="groups_id" eval="[(4, ref('base.group_system'))]" />
-    </record>
-    <record id="base.menu_management" model="ir.ui.menu">
-        <field name="groups_id" eval="[(4, ref('base.group_system'))]" />
-    </record>
+    <data noupdate="1">
+        <record id="base.menu_users" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]" />
+        </record>
+        <record id="base.menu_management" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]" />
+        </record>
+    </data>
 </odoo>

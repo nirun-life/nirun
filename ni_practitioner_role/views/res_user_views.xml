@@ -26,7 +26,7 @@
                     icon="fa-id-badge"
                     invisible="employee_id"
                 />
-                <field name="employee_id" invisible="1" />
+                <field name="employee_id" column_invisible="1" />
             </field>
         </field>
     </record>
@@ -44,7 +44,7 @@
                         string="Create employee"
                         type="object"
                         name="action_create_employee"
-                        invisible="((not id or share) or employee_id)"
+                        invisible="not id or share or employee_id"
                     />
                     <!-- share is not correctly recomputed because it depends on fields of reified view => invisible before saving (id=False) -->
                     <field
