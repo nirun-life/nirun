@@ -12,7 +12,7 @@ class CoverageType(models.Model):
     _rec_names_search = ["name", "parent_id", "code"]
 
     parent_id = fields.Many2one("ni.coverage.type", index=True, ondelete="set null")
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
     child_ids = fields.One2many("ni.coverage.type", "parent_id")
     child_count = fields.Integer(compute="_compute_child_count", store=True)
 
