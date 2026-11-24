@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-10 10:40+0000\n"
-"PO-Revision-Date: 2023-08-10 10:40+0000\n"
+"POT-Creation-Date: 2026-11-24 12:44+0000\n"
+"PO-Revision-Date: 2026-11-24 12:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -208,7 +208,6 @@ msgstr "ชื่อแสดง"
 #. module: ni_document_ref
 #: model:ir.model.fields,field_description:ni_document_ref.field_ni_encounter__document_ids
 #: model:ir.model.fields,field_description:ni_document_ref.field_ni_patient__document_ids
-#: model_terms:ir.ui.view,arch_db:ni_document_ref.ni_encounter_view_form_inherit
 msgid "Document"
 msgstr "เอกสาร"
 
@@ -216,6 +215,11 @@ msgstr "เอกสาร"
 #: model:ir.model.fields,field_description:ni_document_ref.field_ni_encounter__document_count
 msgid "Document Count"
 msgstr "จำนวนเอกสาร"
+
+#. module: ni_document_ref
+#: model:ir.model.fields,field_description:ni_document_ref.field_hr_job__document_ref_type_id
+msgid "Document Ref Type"
+msgstr "ประเภทเอกสารอ้างอิง"
 
 #. module: ni_document_ref
 #: model:ir.actions.act_window,name:ni_document_ref.ni_document_ref_action
@@ -246,11 +250,12 @@ msgstr "เนื้อหา..."
 
 #. module: ni_document_ref
 #: model:ir.actions.report,name:ni_document_ref.action_report_document
-msgid "Document Reference"
+msgid "DocumentReference"
 msgstr "เอกสารอ้างอิง"
 
 #. module: ni_document_ref
 #: model:ir.model,name:ni_document_ref.model_ni_encounter
+#: model_terms:ir.ui.view,arch_db:ni_document_ref.ni_document_ref_view_search
 msgid "Encounter"
 msgstr "ข้อมูลรับบริการ"
 
@@ -258,6 +263,11 @@ msgstr "ข้อมูลรับบริการ"
 #: model:ir.model.fields,field_description:ni_document_ref.field_ni_document_ref__encounter_id
 msgid "Encounter No."
 msgstr "เลขที่รับบริการ"
+
+#. module: ni_document_ref
+#: model:ir.model.fields,field_description:ni_document_ref.field_ni_document_ref__enforce_specialty
+msgid "Enforce Specialty"
+msgstr "บังคับความเชี่ยวชาญ"
 
 #. module: ni_document_ref
 #: model:ir.model.fields,field_description:ni_document_ref.field_ni_document_ref__event_id
@@ -288,11 +298,9 @@ msgid "Identifier"
 msgstr ""
 
 #. module: ni_document_ref
-#: model:ir.model.fields,field_description:ni_document_ref.field_ni_document_ref____last_update
-#: model:ir.model.fields,field_description:ni_document_ref.field_ni_document_ref_category____last_update
-#: model:ir.model.fields,field_description:ni_document_ref.field_ni_document_ref_type____last_update
-msgid "Last Modified on"
-msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
+#: model:ir.model,name:ni_document_ref.model_hr_job
+msgid "Job Position"
+msgstr "ตำแหน่งงาน"
 
 #. module: ni_document_ref
 #: model:ir.model.fields,field_description:ni_document_ref.field_ni_document_ref__write_uid
@@ -432,6 +440,16 @@ msgstr "ประเภท"
 #: model:ir.model.fields,field_description:ni_document_ref.field_ni_document_ref_type__system
 msgid "Url"
 msgstr ""
+
+#. module: ni_document_ref
+#: model:ir.model.fields,field_description:ni_document_ref.field_ni_document_ref__user_specialty
+msgid "User Specialty"
+msgstr "ความเชี่ยวชาญของผู้ใช้"
+
+#. module: ni_document_ref
+#: model:ir.model.fields,help:ni_document_ref.field_hr_job__document_ref_type_id
+msgid "default document ref type for this job role"
+msgstr "ประเภทเอกสารอ้างอิงเริ่มต้นของตำแหน่งงานนี้"
 
 #. module: ni_document_ref
 #: model_terms:ir.ui.view,arch_db:ni_document_ref.ni_document_ref_type_view_form
