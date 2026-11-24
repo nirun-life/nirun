@@ -26,16 +26,20 @@ practitioner identifiers, then links those staff records into encounter workflow
 - `views/hr_employee_view.xml`, `views/hr_resume_line_views.xml`, `views/hr_resume_line_code_views.xml`, and
   `views/hr_employee_category_views.xml` provide the main practitioner UI.
 - `views/ni_encounter_view.xml` links practitioner information into encounter workflows.
+- `views/ni_patient_portal_templates.xml` adds the performer to the encounter pages of the `ni_patient` portal.
 - `static/src/xml/resume_templates.xml` customizes backend resume rendering.
 
 ## Operational Notes and Dependencies
 
 - `hook.py` defines a `pre_init_hook` that adds the `active` column to `hr_employee_category` before Odoo model initialization.
 - `security/ir.model.access.csv` grants model permissions.
+- Every stored field added to `hr.employee` without HR groups must also be on `hr.employee.public`, because users without HR
+  rights read employees through that view.
 - The module depends on `hr_skills` and `ni_patient`.
 
 ## Verification
 
+- `tests/` covers the default licence, resume line names, the encounter performer and the portal pages.
 - Re-check installation or migration paths that touch `hr_employee_category`, because the module relies on the pre-init hook to
   prepare that table.
 - Re-check employee license selection, resume-line coding, and encounter practitioner displays after changing HR model
