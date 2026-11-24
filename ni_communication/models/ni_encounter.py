@@ -23,8 +23,8 @@ class Encounter(models.Model):
 
     def _compute_communication_count(self):
         communication = self.env["ni.communication"].sudo()
-        read = communication.read_group(
-            [("encounter_id", "in", self.ids)], ["encounter_id"], ["encounter_id"]
+        read = communication._read_group(
+            [("encounter_id", "in", self.ids)], ["encounter_id"], ["__count"]
         )
         data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
         for encounter in self:

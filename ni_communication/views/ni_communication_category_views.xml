@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2022. NSTDA
   -->
@@ -32,9 +32,9 @@
                 <sheet>
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('active', '=', True)]}"
                         bg_color="bg-danger"
                         title="Archived"
+                        invisible="active"
                     />
                     <group>
                         <group>
@@ -48,7 +48,10 @@
                     </group>
                     <notebook>
                         <page name="content" string="Content">
-                            <field name="content_ids" context="{'default_category_id': id}" />
+                            <field
+                                name="content_ids"
+                                context="{'default_category_id': id}"
+                            />
                         </page>
                         <page string="Definition">
                             <field name="definition" />
