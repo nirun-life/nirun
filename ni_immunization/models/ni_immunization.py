@@ -14,7 +14,7 @@ class Immunization(models.Model):
     _rec_names_search = ["name", "identifier"]
 
     name = fields.Char(related="vaccine_id.name")
-    vaccine_id = fields.Many2one("ni.immunization.vaccine", "Vaccine", required=True)
+    vaccine_id = fields.Many2one("ni.immunization.vaccine", required=True)
     vaccine_route_id = fields.Many2one(related="vaccine_id.route_id")
     lot_number = fields.Char()
     expiration_date = fields.Date()
@@ -47,14 +47,9 @@ class Immunization(models.Model):
     )
     pending_disease_count = fields.Integer(compute="_compute_pending")
 
-    def init(self):
-        self.env.cr.execute(
-            """
-            CREATE INDEX IF NOT EXISTS ni_immunization_encounter_idx
-            ON ni_immunization (company_id, encounter_id)
-            WHERE encounter_id IS NOT NULL
-            """
-        )
+    _encounter_idx = models.Index(
+        "(company_id, encounter_id) WHERE encounter_id IS NOT NULL"
+    )
 
     @api.depends("evaluation_ids")
     def _compute_evaluation_count(self):

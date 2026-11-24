@@ -48,14 +48,6 @@ class ImmunizationSummary(models.Model):
     def init(self):
         self.env.cr.execute(
             """
-            CREATE INDEX IF NOT EXISTS ni_immunization_evaluation_summary_idx
-            ON ni_immunization_evaluation
-            (patient_id, target_disease_id, dose_number DESC, id DESC)
-            INCLUDE (dose_status, series_doses, occurrence, immunization_date)
-            """
-        )
-        self.env.cr.execute(
-            """
             CREATE OR REPLACE VIEW ni_immunization_summary AS (
                 SELECT DISTINCT ON (patient_id, target_disease_id)
                     id,

@@ -26,7 +26,6 @@ class ImmunizationEvaluation(models.Model):
     )
     target_disease_id = fields.Many2one(
         "ni.immunization.target.disease",
-        "Target Disease",
         required=True,
         index=True,
         group_expand="_read_group_target_disease_ids",
@@ -63,24 +62,19 @@ class ImmunizationEvaluation(models.Model):
     history_ids = fields.Many2many(
         "ni.immunization.evaluation",
         compute="_compute_history_ids",
-        string="History",
     )
 
-    def init(self):
-        self.env.cr.execute(
-            """
-            CREATE INDEX IF NOT EXISTS ni_immunization_evaluation_company_disease_idx
-            ON ni_immunization_evaluation
-            (company_id, patient_id, target_disease_id, occurrence DESC)
-            """
-        )
-        self.env.cr.execute(
-            """
-            CREATE INDEX IF NOT EXISTS ni_immunization_evaluation_encounter_idx
-            ON ni_immunization_evaluation (company_id, encounter_id)
-            WHERE encounter_id IS NOT NULL
-            """
-        )
+    _company_disease_idx = models.Index(
+        "(company_id, patient_id, target_disease_id, occurrence DESC)"
+    )
+    _encounter_idx = models.Index(
+        "(company_id, encounter_id) WHERE encounter_id IS NOT NULL"
+    )
+    # read by the view of ni.immunization.summary
+    _summary_idx = models.Index(
+        "(patient_id, target_disease_id, dose_number DESC, id DESC)"
+        " INCLUDE (dose_status, series_doses, occurrence, immunization_date)"
+    )
 
     @property
     def _workflow_name(self):

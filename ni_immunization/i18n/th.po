@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-11-24 14:34+0000\n"
 "PO-Revision-Date: 2026-11-24 14:34+0000\n"
@@ -484,6 +484,8 @@ msgid "Diseases"
 msgstr "โรค"
 
 #. module: ni_immunization
+#: model:ir.model.fields,field_description:ni_immunization.field_ni_encounter__display_name
+#: model:ir.model.fields,field_description:ni_immunization.field_ni_encounter_class__display_name
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization__display_name
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_evaluation__display_name
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_evaluation_wizard__display_name
@@ -492,8 +494,9 @@ msgstr "โรค"
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_summary__display_name
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_target_disease__display_name
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_vaccine__display_name
+#: model:ir.model.fields,field_description:ni_immunization.field_ni_patient__display_name
 msgid "Display Name"
-msgstr "ชื่อที่แสดง"
+msgstr "ชื่อที่ใช้แสดง"
 
 #. module: ni_immunization
 #: model:ir.model.fields.selection,name:ni_immunization.selection__ni_immunization_evaluation_wizard__state__2
@@ -626,11 +629,6 @@ msgid "Given as MMR; 2 doses at 9 months and 18 months."
 msgstr "ให้ในรูปแบบวัคซีนรวม MMR ฉีด 2 เข็ม ที่อายุ 9 เดือน และ 18 เดือน"
 
 #. module: ni_immunization
-#: model_terms:ir.ui.view,arch_db:ni_immunization.ni_immunization_view_search
-msgid "Group By"
-msgstr "จัดกลุ่มตาม"
-
-#. module: ni_immunization
 #: model:ni.immunization.vaccine,name:ni_immunization.vaccine_hpv9
 msgid "HPV9 (Gardasil 9)"
 msgstr ""
@@ -661,6 +659,8 @@ msgid "Human Papillomavirus"
 msgstr "ไวรัสเอชพีวี (HPV)"
 
 #. module: ni_immunization
+#: model:ir.model.fields,field_description:ni_immunization.field_ni_encounter__id
+#: model:ir.model.fields,field_description:ni_immunization.field_ni_encounter_class__id
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization__id
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_evaluation__id
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_evaluation_wizard__id
@@ -669,6 +669,7 @@ msgstr "ไวรัสเอชพีวี (HPV)"
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_summary__id
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_target_disease__id
 #: model:ir.model.fields,field_description:ni_immunization.field_ni_immunization_vaccine__id
+#: model:ir.model.fields,field_description:ni_immunization.field_ni_patient__id
 msgid "ID"
 msgstr "รหัส"
 
@@ -693,6 +694,7 @@ msgstr "รหัสอ้างอิง"
 #: model:ir.module.category,name:ni_immunization.module_category_medical_immunization
 #: model:ir.ui.menu,name:ni_immunization.ni_immunization_main_menu
 #: model:ir.ui.menu,name:ni_immunization.ni_immunization_menu_section
+#: model:res.groups.privilege,name:ni_immunization.res_groups_privilege_immunization
 #: model_terms:ir.ui.view,arch_db:ni_immunization.ni_encounter_view_form_inherit
 msgid "Immunization"
 msgstr "การให้วัคซีน"
