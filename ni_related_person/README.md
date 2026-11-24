@@ -1,7 +1,7 @@
 # Related Person (`ni_related_person`)
 
 `ni_related_person` records patient family members and other related people in Nirun
-Odoo 16.0. It links related contacts to a patient using structured relationship coding
+Odoo 17.0. It links related contacts to a patient using structured relationship coding
 and optional period fields, while reusing `res.partner` as the underlying contact.
 
 ## What This Module Owns
@@ -75,3 +75,8 @@ Relationship vocabulary
   can affect that helper.
 - The module is patient-form driven, so changes to `ni.patient` views are part of the
   module surface.
+
+## Tests
+
+- `tests/test_ni_related_person.py` covers new and existing contacts, the address copy,
+  the default patient and the self-reference check.
