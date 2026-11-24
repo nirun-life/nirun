@@ -30,7 +30,7 @@ class IdentifierMixin(models.AbstractModel):
                 == self._identifier_default
             ):
                 seq_date = fields.Date.today()
-                if self._identifier_ts_field in vals:
+                if vals.get(self._identifier_ts_field):
                     seq_date = fields.Datetime.context_timestamp(
                         self,
                         fields.Datetime.to_datetime(vals[self._identifier_ts_field]),
