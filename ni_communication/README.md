@@ -1,6 +1,6 @@
 # Communication (`ni_communication`)
 
-Odoo 16.0 module that records patient communications and contact events for Nirun. It
+Odoo 17.0 module that records patient communications and contact events for Nirun. It
 tracks communication category, content, sender, recipients, and sent or received timing
 so outreach and clinical contact activity can be stored as structured events.
 
@@ -38,8 +38,10 @@ normalization.
 ## Security and Dependencies
 
 - `security/ir.model.access.csv` grants model permissions.
-- `security/ni_procedure_group.xml` and `security/ni_procedure_security.xml` currently
-  provide the module's additional security records.
+- `security/ni_communication_group.xml` and `security/ni_communication_security.xml`
+  define the access groups and the company rule.
+- The sender partner is taken from the user of the sender employee, then from the work
+  contact.
 - The module depends on `ni_patient` and `mail`.
 
 ## Verification
@@ -48,3 +50,5 @@ normalization.
   summary behavior after changing communication creation logic.
 - Re-check encounter-linked communication views and discharge-adjacent flows after
   changing communication category or content handling.
+- `tests/test_ni_communication.py` covers display names, search, the sender, the sent
+  time, counters and the discharge wizard.

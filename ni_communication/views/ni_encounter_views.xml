@@ -21,6 +21,7 @@
                     <field name="communication_count" invisible="1" />
                     <field
                         name="communication_ids"
+                        readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                         context="{'default_encounter_id': id, 'default_patient_id': patient_id, 'default_state':'completed'}"
                     />
                     <button
