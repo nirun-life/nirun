@@ -1,6 +1,6 @@
 # Procedure (`ni_procedure`)
 
-Odoo 18.0 module that implements structured clinical procedures for Nirun. It tracks
+Odoo 19.0 module that implements structured clinical procedures for Nirun. It tracks
 performed procedures, their categories and outcomes, and exposes them in patient and
 encounter contexts for the shared clinical timeline.
 
