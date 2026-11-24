@@ -169,3 +169,14 @@ class TestCoverage(TransactionCase):
     def test_plan_benefit_type_unique(self):
         with mute_logger("odoo.sql_db"), self.assertRaises(IntegrityError):
             self.plan.benefit_ids = [(0, 0, {"type_id": self.copay[0].id})]
+
+    def test_coverage_type_search_by_parent(self):
+        child = self.env["ni.coverage.type"].create(
+            {"name": "Child", "code": "TCC", "parent_id": self.coverage_type.id}
+        )
+        found = dict(self.env["ni.coverage.type"].name_search("Coverage Type"))
+        self.assertNotIn(child.id, found, "Several words match the name only")
+        self.assertIn(child.id, dict(self.env["ni.coverage.type"].name_search("TCC")))
+        self.coverage_type.name = "Parentonly"
+        found = dict(self.env["ni.coverage.type"].name_search("Parentonly"))
+        self.assertIn(child.id, found)
