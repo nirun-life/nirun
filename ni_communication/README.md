@@ -1,6 +1,6 @@
 # Communication (`ni_communication`)
 
-Odoo 18.0 module that records patient communications and contact events for Nirun. It
+Odoo 19.0 module that records patient communications and contact events for Nirun. It
 tracks communication category, content, sender, recipients, and sent or received timing
 so outreach and clinical contact activity can be stored as structured events.
 
