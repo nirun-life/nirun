@@ -73,9 +73,9 @@ class Coverage(models.Model):
         coverage = self
         name = coverage.name or ""
         if self._context.get("show_patient"):
-            name = "{}, {}".format(coverage.patient_id._name_get(), name)
+            name = f"{coverage.patient_id._name_get()}, {name}"
         if self._context.get("show_state"):
-            name = "{} ({})".format(name, coverage.get_state_label())
+            name = f"{name} ({coverage.get_state_label()})"
         return name
 
     @api.onchange("insurance_plan_id")
