@@ -101,8 +101,8 @@
                 decoration-muted="state in ['not-done', 'abort']"
             >
                 <field name="identifier" optional="hide" />
-                <field name="encounter_id" invisible="1" />
-                <field name="patient_id" invisible="1" />
+                <field name="encounter_id" column_invisible="1" />
+                <field name="patient_id" column_invisible="1" />
                 <field name="code_id" />
                 <field name="category_id" optional="hide" />
                 <field name="period_start" optional="show" />
@@ -125,7 +125,7 @@
                     decoration-warning="outcome_display_class == 'warning'"
                     optional="hide"
                 />
-                <field name="outcome_display_class" invisible="1" />
+                <field name="outcome_display_class" column_invisible="1" />
                 <field
                     name="state"
                     widget="badge"
@@ -151,37 +151,37 @@
                         name="action_start"
                         string="Start"
                         class="oe_highlight"
-                        states="preparation"
+                        invisible="state != 'preparation'"
                         type="object"
                     />
                     <button
                         name="action_complete"
                         string="Complete"
-                        states="preparation,in-progress"
+                        invisible="state not in ('preparation', 'in-progress')"
                         type="object"
                     />
                     <button
                         name="action_not_done"
                         string="Decline"
-                        states="preparation"
+                        invisible="state != 'preparation'"
                         type="object"
                     />
                     <button
                         name="action_suspend"
                         string="Suspend"
-                        states="in-progress"
+                        invisible="state != 'in-progress'"
                         type="object"
                     />
                     <button
                         name="action_not_done"
                         string="Abort"
-                        states="in-progress"
+                        invisible="state != 'in-progress'"
                         type="object"
                     />
                     <button
                         name="action_resume"
                         string="Resume"
-                        states="suspended"
+                        invisible="state != 'suspended'"
                         type="object"
                     />
                     <field
@@ -259,6 +259,7 @@
                             <field
                                 name="outcome_id"
                                 widget="radio"
+                                readonly="state != 'completed'"
                                 options="{'no_open': True}"
                             />
                         </group>
