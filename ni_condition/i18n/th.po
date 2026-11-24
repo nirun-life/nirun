@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 04:46+0000\n"
-"PO-Revision-Date: 2026-11-24 04:46+0000\n"
+"POT-Creation-Date: 2026-11-24 04:49+0000\n"
+"PO-Revision-Date: 2026-11-24 04:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -69,20 +69,23 @@ msgstr ""
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_condition.py:0
-#, python-format
 msgid "%s must specify birthday to set onset age"
 msgstr ""
 "ระบุวันเริ่มปัญหา/โรคในรูปแบบอายุ จำเป็นต้องระบุวัน/เดือน/ปีเกิดของ %s ก่อน"
 
 #. module: ni_condition
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_kanban
-msgid "<i class=\"fa fa-clock-o me-2 text-primary\" title=\"Duration\"/>"
-msgstr ""
+msgid ""
+"<i class=\"fa fa-clock-o me-2 text-primary\" title=\"Duration\"/>\n"
+"                            <span class=\"small text-muted me-2\">Duration :</span>"
+msgstr "<i class=\"fa fa-clock-o me-2 text-primary\" title=\"ระยะเวลา\"/>\n                            <span class=\"small text-muted me-2\">ระยะเวลา :</span>"
 
 #. module: ni_condition
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_kanban
-msgid "<i class=\"fa fa-fire me-2 text-danger\" title=\"Severity\"/>"
-msgstr ""
+msgid ""
+"<i class=\"fa fa-fire me-2 text-danger\" title=\"Severity\"/>\n"
+"                            <span class=\"small text-muted me-2\">Severity :</span>"
+msgstr "<i class=\"fa fa-fire me-2 text-danger\" title=\"ความรุนแรง\"/>\n                            <span class=\"small text-muted me-2\">ความรุนแรง :</span>"
 
 #. module: ni_condition
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_kanban
@@ -116,8 +119,13 @@ msgstr ""
 
 #. module: ni_condition
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_kanban
-msgid "<span class=\"text-muted\">N/A</span>"
-msgstr "<span class=\"text-muted\">ไม่มีข้อมูล</span>"
+msgid "<span class=\"text-muted\" invisible=\"duration\">N/A</span>"
+msgstr "<span class=\"text-muted\" invisible=\"duration\">ไม่มีข้อมูล</span>"
+
+#. module: ni_condition
+#: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_kanban
+msgid "<span class=\"text-muted\" invisible=\"severity\">N/A</span>"
+msgstr "<span class=\"text-muted\" invisible=\"severity\">ไม่มีข้อมูล</span>"
 
 #. module: ni_condition
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
@@ -158,14 +166,12 @@ msgstr "หายเมื่อวันที"
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_condition.py:0
-#, python-format
 msgid "Abatement age must be more than onset age"
 msgstr "อายุที่หายต้องมากกว่าอายุที่เริ่มเป็น"
 
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_condition.py:0
-#, python-format
 msgid "Abatement age must not be more than patient age"
 msgstr "อายุที่เริ่มเป็นต้องไม่มากกว่าอายุของผู้รับบริการ"
 
@@ -353,10 +359,7 @@ msgid "Condition Verification"
 msgstr "การยืนยันโรค/ปัญหา"
 
 #. module: ni_condition
-#. odoo-python
-#: code:addons/ni_condition/models/ni_encounter_diagnosis.py:0
 #: model:ir.model.constraint,message:ni_condition.constraint_ni_encounter_diagnosis_encounter_id_condition_id_uniq
-#, python-format
 msgid "Condition must be unique!"
 msgstr "รายการปัญหาต้องไม่ซ้ำกัน"
 
@@ -440,10 +443,8 @@ msgstr "คำนิยาม..."
 
 #. module: ni_condition
 #: model:ir.model,name:ni_condition.model_ni_encounter_diagnosis
-#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__diagnosis_ids
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition__is_diagnosis
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter__diagnosis_ids
-#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__diagnosis_ids
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__is_diagnosis
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis_role_wizard__diagnosis_id
 msgid "Diagnosis"
@@ -462,11 +463,12 @@ msgstr "จำนวนผลวินิจฉัย"
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_condition.py:0
-#, python-format
 msgid "Diagnosis Encounter"
 msgstr "การวินิจฉัย"
 
 #. module: ni_condition
+#: model:ir.model.fields,field_description:ni_condition.field_ni_condition__diagnosis_ids
+#: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__diagnosis_ids
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_form
 msgid "Diagnosis History"
 msgstr "ประวัติการรักษา"
@@ -481,14 +483,12 @@ msgstr "ประเภทวินิจฉัย"
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_encounter.py:0
-#, python-format
 msgid "Diagnosis as [%(role)s] has reached limit at %(limit)s item"
 msgstr "ปัญหาประเภท [%(role)s] ถึงขีดจำกันที่จำนวน %(limit)s รายแล้ว"
 
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_encounter_diagnosis.py:0
-#, python-format
 msgid "Diagnosis line must be at least a Diagnosis or a Problem-List Item"
 msgstr "รายการวินิจฉัยต้องเป็นอย่างน้อยหนึ่งใน การวินิจฉัย หรือ ปัญหาเรื้อรัง"
 
@@ -550,11 +550,6 @@ msgid "Duration (years)"
 msgstr "ระยะเวลา (ปี)"
 
 #. module: ni_condition
-#: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_kanban
-msgid "Duration :"
-msgstr "ระยะเวลา :"
-
-#. module: ni_condition
 #: model:ir.model,name:ni_condition.model_ni_encounter
 #: model:ir.model.fields,field_description:ni_condition.field_ni_condition_latest__encounter_id
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__encounter_id
@@ -571,7 +566,6 @@ msgstr "การวินิจฉัย"
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_encounter_diagnosis.py:0
-#, python-format
 msgid "Encounter Diagnosis must specify role"
 msgstr "ปัญหาที่เกี่ยวกับการรับบริการต้องระบุประเภท"
 
@@ -592,7 +586,6 @@ msgstr ""
 #: code:addons/ni_condition/models/ni_condition_code.py:0
 #: code:addons/ni_condition/models/ni_condition_verification.py:0
 #: code:addons/ni_condition/models/ni_encounter_diagnosis_role.py:0
-#, python-format
 msgid "Error! You cannot create recursive data."
 msgstr ""
 
@@ -807,7 +800,6 @@ msgstr "เริ่มเป็นเมื่อ"
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_condition.py:0
-#, python-format
 msgid "Onset age must not be more than patient age"
 msgstr "อายุที่พบปัญหา/โรคต้องไม่มากว่าอายุของผู้รับบริการ"
 
@@ -892,7 +884,6 @@ msgstr "จำนวนปัญหา"
 #. odoo-python
 #: code:addons/ni_condition/models/ni_encounter.py:0
 #: code:addons/ni_condition/models/ni_patient.py:0
-#, python-format
 msgid "Problem List"
 msgstr "รายการปัญหา"
 
@@ -901,7 +892,6 @@ msgstr "รายการปัญหา"
 #: code:addons/ni_condition/models/ni_condition.py:0
 #: model:ni.condition.category,name:ni_condition.problem_list_item
 #: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_search
-#, python-format
 msgid "Problem List Item"
 msgstr "รายการปัญหา"
 
@@ -918,7 +908,6 @@ msgstr "ปัญหาเรื้อรัง (กำหนดไว้ใน�
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_encounter_diagnosis.py:0
-#, python-format
 msgid ""
 "Problem-List status was set in a prior encounter and can't be changed here"
 msgstr ""
@@ -1023,11 +1012,6 @@ msgstr "รุนแรง"
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__severity
 msgid "Severity"
 msgstr "ความรุนแรง"
-
-#. module: ni_condition
-#: model_terms:ir.ui.view,arch_db:ni_condition.ni_condition_view_kanban
-msgid "Severity :"
-msgstr "ความรุนแรง :"
 
 #. module: ni_condition
 #: model:ir.model.fields,field_description:ni_condition.field_ni_encounter_diagnosis__encounter_start
@@ -1148,7 +1132,6 @@ msgstr ""
 #. module: ni_condition
 #. odoo-python
 #: code:addons/ni_condition/models/ni_condition.py:0
-#, python-format
 msgid "Warning!"
 msgstr ""
 
