@@ -2,15 +2,11 @@
 
 from odoo import _, fields, models
 
-from odoo.addons.ni_patient.models.ni_encounter import LOCK_STATE_DICT
-
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
-    procedure_ids = fields.One2many(
-        "ni.procedure", "encounter_id", states=LOCK_STATE_DICT
-    )
+    procedure_ids = fields.One2many("ni.procedure", "encounter_id")
     procedure_count = fields.Integer(compute="_compute_procedure_count")
 
     def _compute_procedure_count(self):
@@ -18,7 +14,7 @@ class Encounter(models.Model):
         read = procedure._read_group(
             [("encounter_id", "in", self.ids)], ["encounter_id"], ["__count"]
         )
-        data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
+        data = {encounter.id: count for encounter, count in read}
         for encounter in self:
             encounter.procedure_count = data.get(encounter.id, 0)
 
