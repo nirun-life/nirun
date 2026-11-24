@@ -10,7 +10,7 @@ class ResumeLineCode(models.Model):
     _parent_store = True
 
     parent_id = fields.Many2one("hr.resume.line.code", index=True, ondelete="set null")
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
 
     issuer_id = fields.Many2one("res.partner", domain="[('is_company', '=', True)]")
     type_id = fields.Many2one("hr.resume.line.type")
