@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021 NSTDA
   -->
@@ -21,9 +21,21 @@
                 <field name="patient_id" />
                 <field name="type_id" />
                 <group name="Group By">
-                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
-                    <filter name="group_by_type" string="Type" context="{'group_by': 'type_id'}" />
-                    <filter name="group_by_name" string="Coverage Name" context="{'group_by': 'name'}" />
+                    <filter
+                        name="group_by_patient"
+                        string="Patient"
+                        context="{'group_by': 'patient_id'}"
+                    />
+                    <filter
+                        name="group_by_type"
+                        string="Type"
+                        context="{'group_by': 'type_id'}"
+                    />
+                    <filter
+                        name="group_by_name"
+                        string="Coverage Name"
+                        context="{'group_by': 'name'}"
+                    />
                 </group>
             </search>
         </field>
@@ -32,8 +44,14 @@
         <field name="name">ni.coverage.view.tree</field>
         <field name="model">ni.coverage</field>
         <field name="arch" type="xml">
-            <tree decoration-bf="state == 'draft'" decoration-muted="state in ['cancelled', 'entered-in-error']">
-                <field name="name" invisible="context.get('search_default_group_by_name', False)" />
+            <tree
+                decoration-bf="state == 'draft'"
+                decoration-muted="state in ['cancelled', 'entered-in-error']"
+            >
+                <field
+                    name="name"
+                    invisible="context.get('search_default_group_by_name', False)"
+                />
                 <field name="patient_id" />
                 <field name="type_id" />
                 <field name="insurance_plan_id" optional="hide" />
@@ -61,18 +79,22 @@
                     />
                 </header>
                 <sheet>
-                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
-                    <widget
-                        name="web_ribbon"
-                        attrs="{'invisible': [('state', '!=', 'cancelled')]}"
-                        bg_color="bg-warning"
-                        title="Archived"
+                    <div
+                        name="button_box"
+                        class="oe_button_box"
+                        groups="base.group_user"
                     />
                     <widget
                         name="web_ribbon"
-                        attrs="{'invisible': [('state', '!=', 'entered-in-error')]}"
+                        bg_color="bg-warning"
+                        title="Archived"
+                        invisible="state != 'cancelled'"
+                    />
+                    <widget
+                        name="web_ribbon"
                         bg_color="bg-danger"
                         title="Error Entry"
+                        invisible="state != 'entered-in-error'"
                     />
                     <div class="oe_title">
                         <h1>
@@ -83,19 +105,25 @@
                     </div>
                     <group>
                         <group>
-                            <field name="patient_id" required="not context.get('sub_view', False)" />
+                            <field
+                                name="patient_id"
+                                required="not context.get('sub_view', False)"
+                            />
                             <field name="period_start" />
                             <field name="period_end" />
                         </group>
                         <group>
-                            <field name="company_id" groups="base.group_multi_company" />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                            />
                             <field name="type_id" />
                             <field name="insurance_plan_id" />
                         </group>
                     </group>
                     <notebook>
                         <page name="benefit" string="Benefit">
-                            <field name="benefit_ids" attrs="{'invisible': [('insurance_plan_id', '!=', False)]}">
+                            <field name="benefit_ids" invisible="insurance_plan_id">
                                 <tree editable="Bottom">
                                     <field name="coverage_id" invisible="1" />
                                     <field name="sequence" widget="handle" />
@@ -106,7 +134,7 @@
                             </field>
                             <field
                                 name="insurance_plan_cost_ids"
-                                attrs="{'invisible': [('insurance_plan_id', '=', False)]}"
+                                invisible="not insurance_plan_id"
                             >
                                 <tree editable="Bottom">
                                     <field name="plan_id" invisible="1" />
