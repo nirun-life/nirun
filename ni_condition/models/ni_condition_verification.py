@@ -8,18 +8,11 @@ class ConditionCode(models.Model):
     _description = "Condition Verification"
     _inherit = ["ni.coding"]
 
-    display_name = fields.Char(
-        "Verification", compute="_compute_display_name", index=True
-    )
-
     parent_id = fields.Many2one(
         "ni.condition.verification", index=True, ondelete="set null"
     )
 
-    def name_get(self):
-        return [(rec.id, rec.display_name) for rec in self]
-
-    @api.depends("name", "parent_id")
+    @api.depends("name", "parent_id.name")
     def _compute_display_name(self):
         for rec in self:
             name = rec.name or ""

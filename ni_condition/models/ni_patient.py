@@ -24,8 +24,8 @@ class Patient(models.Model):
     condition_report_ids = fields.One2many("ni.condition.latest", "patient_id")
 
     def _inverse_condition_problem_ids(self):
-        # This inverse function is good for simple version if require detail in condition
-        # 'condition_problem_ids' should always set as READONLY
+        # This inverse function is good for simple version if require detail in
+        # condition 'condition_problem_ids' should always set as READONLY
         # NOTE this also not work as expected on encounter form
         for rec in self:
             cmd = []
