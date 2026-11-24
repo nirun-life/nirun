@@ -10,10 +10,10 @@
         </field>
     </record>
     <record id="ni_patient_related_person_view_tree" model="ir.ui.view">
-        <field name="name">ni.patient.related.person.view.tree</field>
+        <field name="name">ni.patient.related.person.view.list</field>
         <field name="model">ni.patient.related.person</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="display_age" optional="show" />
@@ -26,7 +26,7 @@
                     options="{'color_field': 'color'}"
                     optional="show"
                 />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_patient_related_person_view_form" model="ir.ui.view">
@@ -164,7 +164,7 @@
                 <field name="image_1024" />
                 <field name="image_128" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div
                             class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban"
                         >
