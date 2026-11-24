@@ -19,7 +19,7 @@ class DocumentReference(models.Model):
 
     @api.model
     def default_get(self, fields):
-        res = super(DocumentReference, self).default_get(fields)
+        res = super().default_get(fields)
         if "type_id" in fields and "type_id" not in res:
             type_id = self.env.user.employee_id.job_id.document_ref_type_id.id
             res["type_id"] = type_id or None
@@ -78,7 +78,7 @@ class DocumentReference(models.Model):
                     cmd.append(fields.Command.link(self.env.user.employee_id.id))
                 vals["author_ids"] = cmd
 
-        return super(DocumentReference, self).create(vals_list)
+        return super().create(vals_list)
 
     def action_close_dialog(self):
         return {"type": "ir.actions.act_window_close"}
