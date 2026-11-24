@@ -6,7 +6,7 @@
     <record id="hr_resume_line_code_action" model="ir.actions.act_window">
         <field name="name">Resume Line Code</field>
         <field name="res_model">hr.resume.line.code</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <record id="hr_resume_line_code_view_search" model="ir.ui.view">
         <field name="name">hr.resume.line.code.view.search</field>
@@ -33,10 +33,10 @@
         </field>
     </record>
     <record id="hr_resume_line_code_view_tree" model="ir.ui.view">
-        <field name="name">hr.resume.line.code.view.tree</field>
+        <field name="name">hr.resume.line.code.view.list</field>
         <field name="model">hr.resume.line.code</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="code" optional="show" />
@@ -44,7 +44,7 @@
                 <field name="system_id" optional="show" />
                 <field name="color" widget="color_picker" />
                 <field name="active" optional="hide" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="hr_resume_line_code_view_form" model="ir.ui.view">
