@@ -21,7 +21,7 @@ class Patient(models.Model):
         read = immunization._read_group(
             [("patient_id", "in", self.ids)], ["patient_id"], ["__count"]
         )
-        data = {res["patient_id"][0]: res["patient_id_count"] for res in read}
+        data = {patient.id: count for patient, count in read}
         for patient in self:
             patient.immunization_count = data.get(patient.id, 0)
 
