@@ -75,5 +75,5 @@ class Procedure(models.Model):
     def _workflow_summary(self):
         res = self.outcome_id.name or self.name
         if self.note:
-            "{}; {}".format(res, self.note)
+            res = "{}; {}".format(res, self.note)
         return res
