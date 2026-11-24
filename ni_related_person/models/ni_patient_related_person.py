@@ -12,7 +12,7 @@ class RelatedPerson(models.Model):
 
     @api.model
     def default_get(self, fields):
-        res = super(RelatedPerson, self).default_get(fields)
+        res = super().default_get(fields)
         if "parent_id" in fields and "parent_id" not in res:
             if self.env.context.get("active_model") == "ni.patient":
                 res["patient_id"] = self.env.context["active_id"]
