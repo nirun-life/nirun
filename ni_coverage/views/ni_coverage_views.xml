@@ -50,7 +50,7 @@
             >
                 <field
                     name="name"
-                    invisible="context.get('search_default_group_by_name', False)"
+                    column_invisible="context.get('search_default_group_by_name', False)"
                 />
                 <field name="patient_id" />
                 <field name="type_id" />
@@ -124,8 +124,8 @@
                     <notebook>
                         <page name="benefit" string="Benefit">
                             <field name="benefit_ids" invisible="insurance_plan_id">
-                                <tree editable="Bottom">
-                                    <field name="coverage_id" invisible="1" />
+                                <tree editable="bottom">
+                                    <field name="coverage_id" column_invisible="1" />
                                     <field name="sequence" widget="handle" />
                                     <field name="type_id" />
                                     <field name="value" sum="Total" />
@@ -136,8 +136,8 @@
                                 name="insurance_plan_cost_ids"
                                 invisible="not insurance_plan_id"
                             >
-                                <tree editable="Bottom">
-                                    <field name="plan_id" invisible="1" />
+                                <tree editable="bottom">
+                                    <field name="plan_id" column_invisible="1" />
                                     <field name="sequence" widget="handle" />
                                     <field name="type_id" />
                                     <field name="value" sum="Total" />

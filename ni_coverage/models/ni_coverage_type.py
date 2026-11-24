@@ -1,6 +1,7 @@
 #  Copyright (c) 2021 NSTDA
 
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class CoverageType(models.Model):
@@ -21,27 +22,26 @@ class CoverageType(models.Model):
         required=True,
     )
 
-    def name_get(self):
-        return [(rec.id, rec._name_get()) for rec in self]
+    @api.depends("parent_id.code")
+    def _compute_display_name(self):
+        for coverage_type in self:
+            coverage_type.display_name = coverage_type._name_get()
 
     def _name_get(self):
-        coverage = self
-        name = coverage.name or ""
-        if coverage.parent_id and coverage.parent_id.name not in name:
-            name = f"{coverage.parent_id.name} {name}"
-        if self._context.get("show_code"):
-            code = (
-                f"{coverage.parent_id.code}/{coverage.code}"
-                if coverage.parent_id
-                else coverage.code
-            )
+        coverage_type = self
+        parent = coverage_type.parent_id
+        name = coverage_type.name or ""
+        if parent and parent.name not in name:
+            name = f"{parent.name} {name}"
+        if self.env.context.get("show_code"):
+            code = f"{parent.code}/{coverage_type.code}" if parent else self.code
             name = f"{name} [{code}]"
         return name
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
         if not self._check_recursion():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+            raise ValidationError(_("Error! You cannot create recursive data."))
 
     @api.depends("child_ids")
     def _compute_child_count(self):
