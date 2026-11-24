@@ -6,7 +6,9 @@ from odoo import fields, models
 class Encounter(models.Model):
     _inherit = "ni.encounter"
 
-    communication_ids = fields.One2many("ni.communication", "encounter_id")
+    communication_ids = fields.One2many(
+        "ni.communication", "encounter_id", string="Communications"
+    )
     communication_count = fields.Integer(compute="_compute_communication_count")
 
     discharge_communication_id = fields.Many2one(
