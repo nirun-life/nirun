@@ -23,7 +23,7 @@ class Encounter(models.Model):
         "License",
         tracking=True,
         states=LOCK_STATE_DICT,
-        domain=[("employee_id", "=", performer_id)],
+        domain="[('employee_id', '=', performer_id), ('identifier', '!=', False)]",
     )
     performer_license_no = fields.Char(string="License No.")
     department_id = fields.Many2one(
@@ -99,14 +99,6 @@ class Encounter(models.Model):
 
         if not self.department_id and self.performer_id.department_id:
             self.department_id = self.performer_id.department_id
-        return {
-            "domain": {
-                "performer_license_id": [
-                    ("employee_id", "=", self.performer_id.id),
-                    ("identifier", "!=", False),
-                ]
-            }
-        }
 
     @api.onchange("department_id")
     def _onchange_department_id(self):
