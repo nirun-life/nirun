@@ -16,7 +16,7 @@ class TestRegister(TestPractitionerRoleCommon, HttpCase):
 
     def _url(self, company):
         role = self.role.with_company(company)
-        self.assertTrue(role.register_location)
+        role.action_generate_access_token()
         return f"/practitioner/register/{company.id}/{role.access_token}"
 
     def _form(self, company):

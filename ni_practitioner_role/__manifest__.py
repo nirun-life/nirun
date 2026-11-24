@@ -13,7 +13,6 @@
     "depends": ["base_user_role", "auth_signup", "ni_practitioner"],
     "external_dependencies": {"python": ["qrcode"]},
     "data": [
-        # "security/ir.model.access.csv",
         "views/res_user_role_views.xml",
         "views/res_user_views.xml",
         "security/ir_rule.xml",
