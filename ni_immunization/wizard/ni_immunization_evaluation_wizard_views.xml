@@ -30,7 +30,7 @@
                 </group>
                 <separator invisible="state != '2'" string="Fill-in dose information" />
                 <field name="line_ids" invisible="state != '2'">
-                    <tree editable="bottom" create="false" delete="false">
+                    <list editable="bottom" create="false" delete="false">
                         <field name="target_disease_id" readonly="1" />
                         <field name="series_doses" readonly="1" />
                         <field name="dose_number" />
@@ -39,7 +39,7 @@
                             placeholder="optional"
                             column_invisible="parent.immunization_id"
                         />
-                    </tree>
+                    </list>
                     <form>
                         <group>
                             <field name="target_disease_id" readonly="1" />
@@ -60,7 +60,7 @@
                         <field name="series_doses" />
                         <field name="occurrence" />
                         <templates>
-                            <t t-name="kanban-box">
+                            <t t-name="card">
                                 <div class="oe_kanban_card oe_kanban_global_click">
                                     <div class="oe_kanban_details">
                                         <strong>
