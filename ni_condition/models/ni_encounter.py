@@ -11,7 +11,7 @@ class Encounter(models.Model):
     diagnosis_count = fields.Integer(compute="_compute_diagnosis_count")
 
     def action_confirm(self):
-        super(Encounter, self).action_confirm()
+        super().action_confirm()
         for rec in self:
             if not rec.diagnosis_ids:
                 prob = self.env["ni.condition"].search(
@@ -37,8 +37,8 @@ class Encounter(models.Model):
     @api.depends("diagnosis_ids")
     def _compute_diagnosis_count(self):
         procedure = self.env["ni.encounter.diagnosis"].sudo()
-        read = procedure.read_group(
-            [("encounter_id", "in", self.ids)], ["encounter_id"], ["encounter_id"]
+        read = procedure._read_group(
+            [("encounter_id", "in", self.ids)], ["encounter_id"], ["__count"]
         )
         data = {res["encounter_id"][0]: res["encounter_id_count"] for res in read}
         for encounter in self:

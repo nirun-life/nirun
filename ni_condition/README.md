@@ -1,13 +1,15 @@
 # Condition (`ni_condition`)
 
-Odoo 16.0 module that implements FHIR-style patient conditions and diagnoses for Nirun. It records persistent problems,
-encounter diagnoses, verification states, and condition categories so clinical teams can track active and historical diagnoses
-in structured form.
+Odoo 16.0 module that implements FHIR-style patient conditions and diagnoses for Nirun.
+It records persistent problems, encounter diagnoses, verification states, and condition
+categories so clinical teams can track active and historical diagnoses in structured
+form.
 
 ## Purpose
 
-`ni_condition` extends the core patient and observation stack with diagnosis-oriented records. It supports both long-lived
-problem tracking and encounter-linked diagnoses, while keeping terminology aligned with shared coding dictionaries.
+`ni_condition` extends the core patient and observation stack with diagnosis-oriented
+records. It supports both long-lived problem tracking and encounter-linked diagnoses,
+while keeping terminology aligned with shared coding dictionaries.
 
 ## Main Models
 
@@ -25,10 +27,11 @@ problem tracking and encounter-linked diagnoses, while keeping terminology align
 
 - `data/ni_condition_category_data.xml`, `data/ni_condition_verification_data.xml`, and
   `data/ni_encounter_diagnosis_role_data.xml` seed the supporting vocabularies.
-- `views/ni_condition_views.xml`, `views/ni_encounter_diagnosis_views.xml`, and the related code/category/verification views
-  provide the clinical UI.
-- `views/ni_patient_views.xml`, `views/ni_encounter_views.xml`, and `views/ni_patient_portal_templates.xml` surface condition
-  data in patient, encounter, and portal contexts.
+- `views/ni_condition_views.xml`, `views/ni_encounter_diagnosis_views.xml`, and the
+  related code/category/verification views provide the clinical UI.
+- `views/ni_patient_views.xml`, `views/ni_encounter_views.xml`, and
+  `views/ni_patient_portal_templates.xml` surface condition data in patient, encounter,
+  and portal contexts.
 - `report/summary_report.xml` adds condition information to summary reporting.
 
 ## Security and Dependencies
@@ -39,4 +42,5 @@ problem tracking and encounter-linked diagnoses, while keeping terminology align
 
 ## Verification
 
-- Re-check patient, encounter, and portal condition displays after changing diagnosis models, rules, or summary output.
+- Re-check patient, encounter, and portal condition displays after changing diagnosis
+  models, rules, or summary output.
