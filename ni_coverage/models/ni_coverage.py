@@ -19,14 +19,12 @@ class Coverage(models.Model):
     )
     company_id = fields.Many2one(
         "res.company",
-        "Company",
         required=True,
         index=True,
         default=lambda self: self.env.company,
     )
     patient_id = fields.Many2one(
         "ni.patient",
-        "Patient",
         store=True,
         index=True,
         ondelete="cascade",
