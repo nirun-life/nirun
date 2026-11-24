@@ -3,7 +3,7 @@
 {
     "name": "Condition (Problem)",
     "summary": "Medical conditions and diagnoses for patients",
-    "version": "16.0.0.3.1",
+    "version": "17.0.1.0.0",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",

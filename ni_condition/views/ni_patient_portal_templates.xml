@@ -3,7 +3,10 @@
   ~ Copyright (c) 2024 NSTDA
   -->
 <odoo>
-    <template id="portal_my_patient_encounter_inherit" inherit_id="ni_patient.portal_my_patient_encounter">
+    <template
+        id="portal_my_patient_encounter_inherit"
+        inherit_id="ni_patient.portal_my_patient_encounter"
+    >
         <xpath expr="//div[@id='pme']/div/strong" position="after">
             <div id="chronic">
                 <strong>Chronic:</strong>
@@ -19,7 +22,10 @@
             <t id="problem" t-if="o.show_problem_list">
                 <div class="mt-2" id="problem">
                     <strong>Problem List:</strong>
-                    <table class="table table-sm o_main_table table-borderless" id="-table">
+                    <table
+                        class="table table-sm o_main_table table-borderless"
+                        id="-table"
+                    >
                         <thead style="display: table-row-group">
                             <tr>
                                 <th name="th_category" class="text-start">Category</th>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2021-2023 NSTDA
   -->
@@ -15,19 +15,56 @@
             <search>
                 <field name="patient_id" />
                 <field name="code_id" />
-                <filter name="problem" string="Problem List Item" domain="[('is_problem', '=', True)]" />
-                <filter name="diagnosis" string="Encounter Diagnosis" domain="[('is_diagnosis', '=', True)]" />
+                <filter
+                    name="problem"
+                    string="Problem List Item"
+                    domain="[('is_problem', '=', True)]"
+                />
+                <filter
+                    name="diagnosis"
+                    string="Encounter Diagnosis"
+                    domain="[('is_diagnosis', '=', True)]"
+                />
                 <separator />
-                <filter name="active" string="Suffering" domain="[('clinical_state', '=', 'active')]" />
-                <filter name="remission" string="Remission" domain="[('clinical_state', '=', 'remission')]" />
-                <filter name="resolved" string="Resolved" domain="[('clinical_state', '=', 'resolved')]" />
+                <filter
+                    name="active"
+                    string="Suffering"
+                    domain="[('clinical_state', '=', 'active')]"
+                />
+                <filter
+                    name="remission"
+                    string="Remission"
+                    domain="[('clinical_state', '=', 'remission')]"
+                />
+                <filter
+                    name="resolved"
+                    string="Resolved"
+                    domain="[('clinical_state', '=', 'resolved')]"
+                />
                 <group name="Group By">
-                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}" />
-                    <filter name="group_by_encounter" string="Encounter" context="{'group_by': 'encounter_id'}" />
-                    <filter name="group_by_condition" string="Condition / Problem" context="{'group_by': 'code_id'}" />
+                    <filter
+                        name="group_by_patient"
+                        string="Patient"
+                        context="{'group_by': 'patient_id'}"
+                    />
+                    <filter
+                        name="group_by_encounter"
+                        string="Encounter"
+                        context="{'group_by': 'encounter_id'}"
+                    />
+                    <filter
+                        name="group_by_condition"
+                        string="Condition / Problem"
+                        context="{'group_by': 'code_id'}"
+                    />
                 </group>
                 <searchpanel>
-                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" enable_counters="1" />
+                    <field
+                        name="company_id"
+                        groups="base.group_multi_company"
+                        icon="fa-building"
+                        enable_counters="1"
+                    />
                     <field name="category_ids" select="multi" enable_counters="1" />
                 </searchpanel>
             </search>
@@ -59,7 +96,10 @@
                 <field name="create_date" optional="hide" />
                 <field name="clinical_state" widget="badge" optional="show" />
                 <control>
-                    <create string="Add Problem" context="{'default_is_problem': True}" />
+                    <create
+                        string="Add Problem"
+                        context="{'default_is_problem': True}"
+                    />
                 </control>
             </tree>
         </field>
@@ -73,36 +113,44 @@
                 <field name="company_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
-                <header attrs="{'invisible': [('id', '=', False)]}" invisible="context.get('no_header')">
+                <header invisible="not id">
                     <button
                         name="action_active"
                         type="object"
                         string="Recurrence"
-                        attrs="{'invisible': [('clinical_state', 'not in', ['resolved'])]}"
+                        invisible="clinical_state not in ['resolved']"
                     />
                     <button
                         name="action_active"
                         type="object"
                         string="Relapse"
-                        attrs="{'invisible': [('clinical_state', 'not in', ['remission'])]}"
+                        invisible="clinical_state not in ['remission']"
                     />
                     <button
                         name="action_remission"
                         string="Remission"
-                        attrs="{'invisible': [('clinical_state', 'in', ['remission', 'resolved'])]}"
                         type="object"
+                        invisible="clinical_state in ['remission', 'resolved']"
                     />
                     <button
                         name="action_resolve"
                         class="btn-primary"
                         string="Resolve"
-                        attrs="{'invisible': [('clinical_state', '=', 'resolved')]}"
                         type="object"
+                        invisible="clinical_state == 'resolved'"
                     />
-                    <field name="clinical_state" statusbar_visible="active,remission,resolved" widget="statusbar" />
+                    <field
+                        name="clinical_state"
+                        statusbar_visible="active,remission,resolved"
+                        widget="statusbar"
+                    />
                 </header>
                 <sheet>
-                    <div name="button_box" class="oe_button_box" groups="base.group_user" />
+                    <div
+                        name="button_box"
+                        class="oe_button_box"
+                        groups="base.group_user"
+                    />
                     <field name="system_ids" invisible="1" />
                     <div class="mb24">
                         <label for="name" />
@@ -122,20 +170,24 @@
                             />
                         </div>
                         <div>
-                            <field name="name" class="w-100" placeholder="Condition name use for display" />
+                            <field
+                                name="name"
+                                class="w-100"
+                                placeholder="Condition name use for display"
+                            />
                         </div>
-                        <p
-                            class="text-muted small"
-                            attrs="{'invisible': ['|', ('code_id', '!=', False), ('name', '!=', False)]}"
-                        >
+                        <p class="text-muted small" invisible="(code_id or name)">
                             Specify condition name here if not found on selectable choice
                             above
                         </p>
                     </div>
-                    <div name="category" invisible="not context.get('show_category', False)">
+                    <div
+                        name="category"
+                        invisible="not context.get('show_category', False)"
+                    >
                         <field name="is_problem" />
                         <label for="is_problem" />
-                        <span class="ml-4" attrs="{'invisible': [('encounter_id', '=', False)]}">
+                        <span class="ml-4" invisible="not encounter_id">
                             <field name="is_diagnosis" />
                             <label for="is_diagnosis" />
                         </span>
@@ -151,45 +203,69 @@
                                 <field name="period_type" class="fw-bold" />
                             </span>
                             <div>
-                                <div class="o_row" attrs="{'invisible': [('period_type', '!=', 'age')]}">
-                                    <field name="age_start" class="o_narrow_field" placeholder="Onset Age" />
+                                <div class="o_row" invisible="period_type != 'age'">
+                                    <field
+                                        name="age_start"
+                                        class="o_narrow_field"
+                                        placeholder="Onset Age"
+                                    />
                                     <span>Year</span>
                                 </div>
-                                <div class="o_row" attrs="{'invisible': [('period_type', '!=', 'date')]}">
-                                    <field name="period_start_date" placeholder="Onset Date" />
+                                <div class="o_row" invisible="period_type != 'date'">
+                                    <field
+                                        name="period_start_date"
+                                        placeholder="Onset Date"
+                                    />
                                 </div>
-                                <div class="o_row" attrs="{'invisible': [('period_type', '!=', 'datetime')]}">
+                                <div
+                                    class="o_row"
+                                    invisible="period_type != 'datetime'"
+                                >
                                     <field name="period_start" placeholder="Onset" />
                                 </div>
                             </div>
                             <label
                                 for="period_end"
-                                attrs="{'invisible': [('clinical_state', 'not in', ['inactive','resolved'])]}"
+                                invisible="clinical_state not in ['inactive', 'resolved']"
                             />
                             <div
                                 class="o_row"
-                                attrs="{'invisible': [('clinical_state', 'not in', ['inactive','resolved'])]}"
+                                invisible="clinical_state not in ['inactive', 'resolved']"
                             >
-                                <span attrs="{'invisible': [('period_type', '!=', 'age')]}">
+                                <span invisible="period_type != 'age'">
                                     <field name="age_end" class="o_narrow_field" />
                                     <span>Year</span>
                                 </span>
-                                <span attrs="{'invisible': [('period_type', '!=', 'date')]}">
+                                <span invisible="period_type != 'date'">
                                     <field name="period_end_date" />
                                 </span>
-                                <span attrs="{'invisible': [('period_type', '!=', 'datetime')]}">
+                                <span invisible="period_type != 'datetime'">
                                     <field name="period_end" />
                                 </span>
                             </div>
-                            <field name="severity" widget="radio" options="{'horizontal': True}" />
+                            <field
+                                name="severity"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                            />
                         </group>
                     </group>
                     <notebook>
-                        <page name="observation" string="Observation" icon="fa-stethoscope" badge="observation_count">
+                        <page
+                            name="observation"
+                            string="Observation"
+                            icon="fa-stethoscope"
+                            badge="observation_count"
+                        >
                             <field name="observation_ids" />
                             <field name="observation_count" invisible="1" />
                         </page>
-                        <page name="history" string="Diagnosis History" icon="fa-history" groups="base.group_no_one">
+                        <page
+                            name="history"
+                            string="Diagnosis History"
+                            icon="fa-history"
+                            groups="base.group_no_one"
+                        >
                             <field name="diagnosis_ids">
                                 <tree default_order="encounter_start desc">
                                     <field name="encounter_id" />
@@ -211,7 +287,11 @@
                         <page name="note" string="Note" icon="fa-sticky-note-o">
                             <field name="note" placeholder="Additional note..." />
                         </page>
-                        <page name="extra_info" string="Extra Info" groups="base.group_no_one">
+                        <page
+                            name="extra_info"
+                            string="Extra Info"
+                            groups="base.group_no_one"
+                        >
                             <group>
                                 <group>
                                     <field name="create_date" readonly="1" />
@@ -245,14 +325,25 @@
                                         <field class="h5" name="name" />
                                         <t t-if="record.code.value">
                                             <div class="float-end">
-                                                <span class="o_form_label small text-muted">code</span>
-                                                <span class="badge text-bg-info mx-2" t-out="record.code.value" />
+                                                <span
+                                                    class="o_form_label small text-muted"
+                                                >code</span>
+                                                <span
+                                                    class="badge text-bg-info mx-2"
+                                                    t-out="record.code.value"
+                                                />
                                             </div>
                                         </t>
                                     </li>
                                     <li>
-                                        <i class="fa fa-clock-o me-2 text-primary" title="Duration" />
-                                        <label for="duration" class="small text-muted me-2">Duration :</label>
+                                        <i
+                                            class="fa fa-clock-o me-2 text-primary"
+                                            title="Duration"
+                                        />
+                                        <label
+                                            for="duration"
+                                            class="small text-muted me-2"
+                                        >Duration :</label>
                                         <t t-if="record.duration.value">
                                             <field name="duration" />
                                         </t>
@@ -261,8 +352,14 @@
                                         </t>
                                     </li>
                                     <li>
-                                        <i class="fa fa-fire me-2 text-danger" title="Severity" />
-                                        <label for="severity" class="small text-muted me-2">Severity :</label>
+                                        <i
+                                            class="fa fa-fire me-2 text-danger"
+                                            title="Severity"
+                                        />
+                                        <label
+                                            for="severity"
+                                            class="small text-muted me-2"
+                                        >Severity :</label>
                                         <t t-if="record.severity.value">
                                             <field
                                                 name="severity"
