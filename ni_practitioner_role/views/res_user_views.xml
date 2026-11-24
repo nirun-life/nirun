@@ -26,7 +26,6 @@
                     icon="fa-id-badge"
                     invisible="employee_id"
                 />
-                <field name="employee_id" column_invisible="1" />
             </field>
         </field>
     </record>
@@ -35,11 +34,8 @@
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_simple_form" />
         <field name="arch" type="xml">
-            <field position="after" name="id">
+            <sheet position="before">
                 <header>
-                    <field name="share" invisible="1" />
-                    <field name="employee_ids" invisible="1" />
-                    <field name="employee_id" invisible="1" />
                     <button
                         string="Create employee"
                         type="object"
@@ -53,7 +49,7 @@
                         statusbar_visible="new,active"
                     />
                 </header>
-            </field>
+            </sheet>
         </field>
     </record>
     <record id="res_users_view_form_inherit_simple_hr" model="ir.ui.view">
