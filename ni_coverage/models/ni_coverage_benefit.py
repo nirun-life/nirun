@@ -13,10 +13,7 @@ class CoverageBenefit(models.Model):
     )
     patient_id = fields.Many2one(related="coverage_id.patient_id")
 
-    _sql_constraints = [
-        (
-            "type_in_coverage__uniq",
-            "unique (coverage_id, type_id)",
-            "Beneficiary Type must be unique !",
-        ),
-    ]
+    _type_in_coverage__uniq = models.Constraint(
+        "unique (coverage_id, type_id)",
+        "Beneficiary Type must be unique !",
+    )
