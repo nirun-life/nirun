@@ -57,9 +57,9 @@ class InsurancePlan(models.Model):
         plan = self
         name = plan.name or ""
         if self._context.get("show_issuer") and plan.issuer_id:
-            name = "{}, {}".format(plan.issuer_id.name, name)
+            name = f"{plan.issuer_id.name}, {name}"
         if self._context.get("show_alias") and plan.alias:
-            name = "{} ({})".format(name, plan.alias)
+            name = f"{name} ({plan.alias})"
         if self._context.get("show_code") and plan.code:
-            name = "[{}] {}".format(plan.code, name)
+            name = f"[{plan.code}] {name}"
         return name
