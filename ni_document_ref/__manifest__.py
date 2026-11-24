@@ -3,7 +3,7 @@
 {
     "name": "Document Reference",
     "summary": "Clinical document attachment and reference management",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "development_status": "Alpha",
     "category": "Healthcare",
     "author": "NSTDA, Piruin P.",
