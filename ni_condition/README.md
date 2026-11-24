@@ -1,6 +1,6 @@
 # Condition (`ni_condition`)
 
-Odoo 17.0 module that implements FHIR-style patient conditions and diagnoses for Nirun.
+Odoo 18.0 module that implements FHIR-style patient conditions and diagnoses for Nirun.
 It records persistent problems, encounter diagnoses, verification states, and condition
 categories so clinical teams can track active and historical diagnoses in structured
 form.

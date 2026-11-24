@@ -33,7 +33,7 @@ class Diagnosis(models.Model):
         (
             "encounter_id_condition_id_uniq",
             "unique (encounter_id, condition_id)",
-            _("Condition must be unique!"),
+            "Condition must be unique!",
         ),
     ]
 

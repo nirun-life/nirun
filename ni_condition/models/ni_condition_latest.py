@@ -1,6 +1,7 @@
 #  Copyright (c) 2021-2023 NSTDA
 
 from odoo import api, fields, models, tools
+from odoo.tools import SQL
 
 
 class ConditionLatest(models.Model):
@@ -55,36 +56,37 @@ class ConditionLatest(models.Model):
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)
         self.env.cr.execute(
-            """CREATE OR REPLACE VIEW %s AS (
-            SELECT
-                c.id,
-                c.id AS condition_id,
-                c.company_id,
-                c.patient_id,
-                c.encounter_id,
-                c.name,
-                c.code_id,
-                c.code,
-                c.is_problem,
-                c.is_diagnosis,
-                c.severity,
-                c.clinical_state,
-                c.verification_id,
-                c.period_start,
-                c.period_end,
-                c.note,
-                c.create_uid,
-                c.create_date,
-                c.write_uid,
-                c.write_date
-            FROM ni_condition c
-            WHERE c.id IN (
-                SELECT max(id)
-                FROM ni_condition
-                WHERE clinical_state IN ('active', 'recurrence', 'remission')
-                GROUP BY patient_id, code_id
+            SQL(
+                """CREATE OR REPLACE VIEW %s AS (
+                SELECT
+                    c.id,
+                    c.id AS condition_id,
+                    c.company_id,
+                    c.patient_id,
+                    c.encounter_id,
+                    c.name,
+                    c.code_id,
+                    c.code,
+                    c.is_problem,
+                    c.is_diagnosis,
+                    c.severity,
+                    c.clinical_state,
+                    c.verification_id,
+                    c.period_start,
+                    c.period_end,
+                    c.note,
+                    c.create_uid,
+                    c.create_date,
+                    c.write_uid,
+                    c.write_date
+                FROM ni_condition c
+                WHERE c.id IN (
+                    SELECT max(id)
+                    FROM ni_condition
+                    WHERE clinical_state IN ('active', 'recurrence', 'remission')
+                    GROUP BY patient_id, code_id
+                )
+            )""",
+                SQL.identifier(self._table),
             )
-        )
-        """
-            % self._table
         )
