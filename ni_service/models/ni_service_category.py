@@ -47,8 +47,9 @@ class ServiceCategory(models.Model):
     def create(self, vals_list):
         if not self.env.user.has_group("ni_patient.group_admin"):
             allowed_company_ids = set(self.env.user.company_ids.ids)
+            defaults = self.default_get(["company_id"])
             for vals in vals_list:
-                company_id = vals.get("company_id")
+                company_id = vals.get("company_id", defaults.get("company_id"))
                 if not company_id or company_id not in allowed_company_ids:
                     raise AccessError(
                         _(

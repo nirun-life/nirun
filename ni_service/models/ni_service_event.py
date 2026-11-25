@@ -347,20 +347,20 @@ class ServiceEvent(models.Model):
             if not rec.attendance_id:
                 continue
 
-            date = rec.start_date or rec.start.date() or fields.Date.today()
-            tz = rec.event_tz or self.env.user.tz
+            date = rec._get_local_date() or fields.Date.context_today(rec)
+            tz = rec.event_tz
             attends = rec.attendance_ids.sorted("hour_from")
             rec.start = self.float_time_to_datetime(date, attends[0].hour_from, tz)
             rec.stop = self.float_time_to_datetime(date, attends[-1].hour_to, tz)
             rec.allday = False
 
     def float_time_to_datetime(self, date, float_time, tz=None):
-        if not float_time:
+        if float_time is False or float_time is None:
             return False
         if not date:
-            date = fields.Date.today()
+            date = fields.Date.context_today(self)
         if not tz:
-            tz = self.env.user.tz
+            tz = self.env.user.tz or "UTC"
 
         start_of_day = datetime.now(timezone(tz)).replace(
             year=date.year,
@@ -372,15 +372,23 @@ class ServiceEvent(models.Model):
             microsecond=0,
         )
         hours = int(float_time)
-        minutes = int((float_time - hours) * 60)
+        minutes = round((float_time - hours) * 60)
 
         local_dt = start_of_day + timedelta(hours=hours, minutes=minutes)
         return local_dt.astimezone(pytz.UTC).replace(tzinfo=None)
 
-    @api.depends("start_date")
+    def _get_local_date(self):
+        """Day of the event for the user: ``start`` is in UTC"""
+        self.ensure_one()
+        if self.start_date or not self.start:
+            return self.start_date
+        return fields.Datetime.context_timestamp(self, self.start).date()
+
+    @api.depends("start_date", "start")
+    @api.depends_context("tz", "uid")
     def _compute_dayofweek(self):
         for rec in self:
-            date = rec.start_date or rec.start
+            date = rec._get_local_date()
             rec.dayofweek = str(date.weekday()) if date else None
 
     def action_open_calendar_event(self):

@@ -1,7 +1,5 @@
 #  Copyright (c) 2024 NSTDA
 
-from pytz import timezone
-
 from odoo import api, fields, models, tools
 
 
@@ -103,8 +101,11 @@ class EncounterServiceAttendance(models.Model):
     @api.depends("encounter_id", "encounter_date")
     def _compute_dayofweek(self):
         for rec in self:
-            rec.dayofweek = str(
-                rec.encounter_date.astimezone(timezone(self.env.user.tz)).weekday()
+            date = rec.encounter_date
+            rec.dayofweek = (
+                str(fields.Datetime.context_timestamp(rec, date).weekday())
+                if date
+                else False
             )
 
     def _find_matching_request(self):
@@ -148,11 +149,9 @@ class EncounterServiceAttendance(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get("service_id") and vals.get("service_ids"):
-                service_id = (
-                    self.new({"service_ids": vals["service_ids"]}).service_ids[:1].id
-                )
-                if service_id:
-                    vals["service_id"] = service_id
+                services = self.new({"service_ids": vals["service_ids"]}).service_ids
+                if services:
+                    vals["service_id"] = services[0]._origin.id
         records = super().create(vals_list)
         for rec in records:
             if not rec.request_id:
