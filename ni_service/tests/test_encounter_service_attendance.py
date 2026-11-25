@@ -107,6 +107,17 @@ class TestFindMatchingRequest(TestServiceCommon):
         )
         self.assertEqual(attendance.request_id, self.service_request)
 
+    def test_create_takes_the_first_service(self):
+        attendance = self.env["ni.encounter.service.attendance"].create(
+            {
+                "encounter_id": self.encounter.id,
+                "attendance_id": self.attendance_slot.id,
+                "service_ids": [(4, self.service.id)],
+            }
+        )
+        self.assertEqual(attendance.service_id, self.service)
+        self.assertEqual(attendance.request_id, self.service_request)
+
     def test_existing_request_id_not_overridden_on_create(self):
         other_request = self.env["ni.service.request"].create(
             {
@@ -201,3 +212,66 @@ class TestFindMatchingRequest(TestServiceCommon):
             }
         )
         self.assertFalse(attendance.request_id)
+
+
+@tagged("-at_install", "post_install")
+class TestGenerateService(TestServiceCommon):
+    def setUp(self):
+        super().setUp()
+        self.service.write(
+            {
+                "calendar_id": self.calendar.id,
+                "attendance_ids": [(4, self.attendance_slot.id)],
+            }
+        )
+        self.encounter.resource_calendar_id = self.calendar
+
+    def _create_event(self, day="2027-01-04", **vals):
+        return self.env["ni.service.event"].create(
+            {
+                "service_id": self.service.id,
+                "service_ids": [(4, self.service.id)],
+                "calendar_id": self.calendar.id,
+                "attendance_ids": [(4, self.attendance_slot.id)],
+                "start": f"{day} 01:00:00",
+                "stop": f"{day} 05:00:00",
+                **vals,
+            }
+        )
+
+    def _generate(self):
+        self.encounter.action_generate_service_resource()
+        return self.encounter.service_attendance_ids
+
+    def test_generate_without_event(self):
+        line = self._generate()
+        self.assertEqual(line.service_id, self.service)
+        self.assertEqual(line.attendance_id, self.attendance_slot)
+        self.assertFalse(line.service_event_id)
+
+    def test_generate_prefers_the_planned_event(self):
+        event = self._create_event()
+        planned = self._create_event(plan_patient_ids=[(4, self.patient.id)])
+        self._create_event("2027-01-11", plan_patient_ids=[(4, self.patient.id)])
+        self.assertEqual(self._generate().service_event_id, planned)
+        planned.plan_patient_ids = False
+        planned.unlink()
+        self.assertEqual(self._generate().service_event_id, event)
+
+    def test_generate_takes_the_day_of_the_user(self):
+        # Monday 06:30 in Bangkok, Sunday in UTC
+        event = self._create_event()
+        self.encounter.period_start = "2027-01-03 23:30:00"
+        line = self._generate()
+        self.assertEqual(line.dayofweek, "0")
+        self.assertEqual(line.service_event_id, event)
+
+    def test_generate_user_without_timezone(self):
+        event = self._create_event()
+        self.env.user.tz = False
+        line = self._generate()
+        self.assertEqual(line.dayofweek, "0")
+        self.assertEqual(line.service_event_id, event)
+
+    def test_day_of_week_without_encounter(self):
+        self.assertFalse(self.env["ni.encounter.service.attendance"].new().dayofweek)
