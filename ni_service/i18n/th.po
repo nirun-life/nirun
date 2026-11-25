@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-11-24 17:36+0000\n"
 "PO-Revision-Date: 2026-11-24 17:36+0000\n"
@@ -502,14 +502,21 @@ msgid "Display Description"
 msgstr "แสดงรายละเอียด"
 
 #. module: ni_service
+#: model:ir.model.fields,field_description:ni_service.field_calendar_attendee__display_name
+#: model:ir.model.fields,field_description:ni_service.field_calendar_event__display_name
+#: model:ir.model.fields,field_description:ni_service.field_hr_job__display_name
+#: model:ir.model.fields,field_description:ni_service.field_ni_encounter__display_name
+#: model:ir.model.fields,field_description:ni_service.field_ni_encounter_class__display_name
 #: model:ir.model.fields,field_description:ni_service.field_ni_encounter_service_attendance__display_name
 #: model:ir.model.fields,field_description:ni_service.field_ni_service__display_name
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_category__display_name
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__display_name
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_request__display_name
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_type__display_name
+#: model:ir.model.fields,field_description:ni_service.field_res_company__display_name
+#: model:ir.model.fields,field_description:ni_service.field_resource_calendar_attendance__display_name
 msgid "Display Name"
-msgstr "ชื่อ"
+msgstr "แสดงชื่อ"
 
 #. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__display_plan_patient
@@ -586,6 +593,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ni_service.ni_encounter_service_attendance_view_kanban
 msgid "Editable"
 msgstr "แก้ไขได้"
+
+#. module: ni_service
+#: model:ir.model.fields,field_description:ni_service.field_ni_service_event__effective_privacy
+msgid "Effective Privacy"
+msgstr ""
 
 #. module: ni_service
 #: model:ir.model,name:ni_service.model_ni_encounter
@@ -762,12 +774,6 @@ msgid "Group Activity"
 msgstr "กิจกรรมกลุ่ม"
 
 #. module: ni_service
-#: model_terms:ir.ui.view,arch_db:ni_service.ni_service_category_view_search
-#: model_terms:ir.ui.view,arch_db:ni_service.ni_service_type_view_search
-msgid "Group By"
-msgstr ""
-
-#. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__has_image
 msgid "Has Image"
 msgstr ""
@@ -793,14 +799,21 @@ msgid "How long when it happens"
 msgstr ""
 
 #. module: ni_service
+#: model:ir.model.fields,field_description:ni_service.field_calendar_attendee__id
+#: model:ir.model.fields,field_description:ni_service.field_calendar_event__id
+#: model:ir.model.fields,field_description:ni_service.field_hr_job__id
+#: model:ir.model.fields,field_description:ni_service.field_ni_encounter__id
+#: model:ir.model.fields,field_description:ni_service.field_ni_encounter_class__id
 #: model:ir.model.fields,field_description:ni_service.field_ni_encounter_service_attendance__id
 #: model:ir.model.fields,field_description:ni_service.field_ni_service__id
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_category__id
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__id
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_request__id
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_type__id
+#: model:ir.model.fields,field_description:ni_service.field_res_company__id
+#: model:ir.model.fields,field_description:ni_service.field_resource_calendar_attendance__id
 msgid "ID"
-msgstr ""
+msgstr "ไอดี"
 
 #. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_request__identifier
@@ -1078,6 +1091,11 @@ msgstr "ไม่พบกิจกรรม"
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_request__note
 msgid "Note"
 msgstr "หมายเหตุ"
+
+#. module: ni_service
+#: model:ir.model.fields,field_description:ni_service.field_ni_service_event__notes
+msgid "Notes"
+msgstr "บันทึกภายใน"
 
 #. module: ni_service
 #: model:ir.model.fields,help:ni_service.field_ni_service_event__alarm_ids
@@ -1762,7 +1780,7 @@ msgstr "รูปแบบสีของประเภท"
 
 #. module: ni_service
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_event__unavailable_partner_ids
-msgid "Unavailable Partner"
+msgid "Unavailable Attendees"
 msgstr ""
 
 #. module: ni_service
@@ -1847,6 +1865,20 @@ msgstr "จ.-ศ."
 #: model:ir.model.fields,field_description:ni_service.field_ni_service_request__timing_when
 msgid "When"
 msgstr "เมื่อ"
+
+#. module: ni_service
+#: model:ir.model.fields,help:ni_service.field_ni_service_event__description
+msgid ""
+"When synchronization with an external calendar is active, this description "
+"is synchronized         with the one of the associated meeting in that "
+"external calendar. Any update will be propagated there         and vice "
+"versa."
+msgstr ""
+
+#. module: ni_service
+#: model:ir.model.fields,help:ni_service.field_ni_service_event__effective_privacy
+msgid "Whether the event is private, considering the user privacy"
+msgstr ""
 
 #. module: ni_service
 #: model:ir.model,name:ni_service.model_resource_calendar_attendance
