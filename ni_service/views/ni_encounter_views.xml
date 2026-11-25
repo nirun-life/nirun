@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2024 NSTDA
   -->
@@ -9,7 +9,7 @@
         <field name="inherit_id" ref="ni_patient.ni_encounter_class_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[1]/group" position="after">
-                <group string="Service" attrs="{'invisible': [('service', '=', False)]}">
+                <group string="Service" invisible="not service">
                     <field name="service_calendar_id" />
                 </group>
             </xpath>
@@ -24,20 +24,29 @@
                 <group>
                     <label for="resource_calendar_id" />
                     <div class="o_row">
-                        <field name="resource_calendar_id" options="{'no_create': True, 'no_open':True}" />
+                        <field
+                            name="resource_calendar_id"
+                            options="{'no_create': True, 'no_open':True}"
+                        />
                         <button
                             name="action_generate_service_resource"
                             type="object"
                             string="Generate Services"
                             icon="fa-refresh"
-                            attrs="{'invisible': [('state', 'in', ['cancelled', 'finished', 'entered-in-error'])]}"
+                            invisible="state in ['cancelled', 'finished', 'entered-in-error']"
                         />
                     </div>
                 </group>
-                <field name="service_attendance_ids" context="{'default_encounter_id': id}" />
+                <field
+                    name="service_attendance_ids"
+                    context="{'default_encounter_id': id}"
+                />
             </xpath>
             <xpath expr="//page[@name='order']" position="inside">
-                <field name="service_request_ids" context="{'default_intent': 'order'}" />
+                <field
+                    name="service_request_ids"
+                    context="{'default_intent': 'order'}"
+                />
             </xpath>
         </field>
     </record>
