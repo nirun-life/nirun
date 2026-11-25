@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2024 NSTDA
   -->
@@ -22,9 +22,13 @@
                             type="object"
                             class="oe_stat_button"
                             icon="fa-calendar"
-                            attrs="{'invisible': [('event_count', '=', 0)]}"
+                            invisible="event_count == 0"
                         >
-                            <field name="event_count" widget="statinfo" string="Events" />
+                            <field
+                                name="event_count"
+                                widget="statinfo"
+                                string="Events"
+                            />
                         </button>
                     </div>
                     <div>
@@ -33,8 +37,8 @@
                             <field
                                 name="identifier"
                                 class="oe_inline text-muted"
-                                attrs="{'invisible': [('id', '=', False)]}"
                                 readonly="1"
+                                invisible="not id"
                             />
                         </div>
                         <field
@@ -49,9 +53,13 @@
                             widget="many2many_tags"
                             options="{'color_field': 'color'}"
                             placeholder="Services..."
-                            attrs="{'required': [('name', '=', False)]}"
+                            required="not name"
                         />
-                        <field name="name" class="w-100" placeholder="Specify service name" />
+                        <field
+                            name="name"
+                            class="w-100"
+                            placeholder="Specify service name"
+                        />
                     </div>
                     <group class="mt-3">
                         <label for="timing_id" />
@@ -59,12 +67,13 @@
                             <field
                                 name="timing_tmpl_id"
                                 options="{'no_create':True, 'no_create_edit':True, 'no_open': True}"
-                                attrs="{'invisible': [('timing_id', '!=', False)], 'required':[('timing_id', '=', False)]}"
                                 placeholder="choose from..."
+                                invisible="timing_id"
+                                required="not timing_id"
                             />
                             <span
                                 class="oe_edit_only"
-                                attrs="{'invisible': ['|', ('timing_id', '!=', False), ('timing_tmpl_id','!=', False)]}"
+                                invisible="(timing_id or timing_tmpl_id)"
                             >
                                 or
                             </span>
@@ -72,8 +81,9 @@
                                 name="timing_id"
                                 domain="[('id', '=', False)]"
                                 options="{'no_quick_create':True}"
-                                attrs="{'invisible': [('timing_tmpl_id', '!=', False)], 'required':[('timing_tmpl_id', '=', False)]}"
                                 placeholder="create new..."
+                                invisible="timing_tmpl_id"
+                                required="not timing_tmpl_id"
                             />
                         </div>
                         <label for="period_start" string="Occurrence" />
@@ -84,13 +94,25 @@
                     </group>
                     <field name="note" placeholder="Additional note..." />
                     <notebook>
-                        <page string="Events" icon="fa-history" attrs="{'invisible': [('id', '=', False)]}">
-                            <field name="attendance_ids" readonly="1" context="{'default_request_id': id}">
+                        <page string="Events" icon="fa-history" invisible="not id">
+                            <field
+                                name="attendance_ids"
+                                readonly="1"
+                                context="{'default_request_id': id}"
+                            >
                                 <tree decoration-muted="not start">
                                     <field name="encounter_id" optional="hide" />
-                                    <field name="start" string="Event Start" optional="show" />
+                                    <field
+                                        name="start"
+                                        string="Event Start"
+                                        optional="show"
+                                    />
                                     <field name="duration" widget="float_time" />
-                                    <field name="service_ids" widget="many2many_tags" optional="show" />
+                                    <field
+                                        name="service_ids"
+                                        widget="many2many_tags"
+                                        optional="show"
+                                    />
                                     <field name="service_event_id" optional="hide" />
                                     <field name="note" widget="char" optional="show" />
                                 </tree>
@@ -109,7 +131,11 @@
                 <field name="name" invisible="1" />
                 <field name="patient_id" invisible="1" />
                 <field name="encounter_id" invisible="1" />
-                <field name="service_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+                <field
+                    name="service_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                />
                 <field name="category_id" widget="badge" />
                 <field name="timing_id" />
                 <control>
@@ -138,7 +164,7 @@
                             <div class="oe_kanban_details">
                                 <ul>
                                     <li>
-                                        <t t-if="record.service_count.raw_value > 1">
+                                        <t t-if="record.service_count.raw_value &gt; 1">
                                             <field
                                                 class="h6 lh-base"
                                                 name="service_ids"
@@ -151,19 +177,36 @@
                                         </t>
                                     </li>
                                     <li t-if="record.category_id.raw_value">
-                                        <i class="fa fa-th-large me-2 text-muted" title="Occurrence" />
-                                        <label for="category_id" class="small text-muted me-2">Category :</label>
+                                        <i
+                                            class="fa fa-th-large me-2 text-muted"
+                                            title="Occurrence"
+                                        />
+                                        <label
+                                            for="category_id"
+                                            class="small text-muted me-2"
+                                        >Category :</label>
                                         <field name="category_id" />
                                     </li>
                                     <li>
-                                        <i class="fa fa-clock-o me-2 text-primary" title="Occurrence" />
-                                        <label for="timing_id" class="small text-muted me-2">Occurrence :</label>
+                                        <i
+                                            class="fa fa-clock-o me-2 text-primary"
+                                            title="Occurrence"
+                                        />
+                                        <label
+                                            for="timing_id"
+                                            class="small text-muted me-2"
+                                        >Occurrence :</label>
                                         <field name="timing_id" />
                                     </li>
-                                    <li t-if="record.event_count.raw_value > 0">
-                                        <i class="fa fa-calendar-check-o me-2 text-success" title="Events" />
+                                    <li t-if="record.event_count.raw_value &gt; 0">
+                                        <i
+                                            class="fa fa-calendar-check-o me-2 text-success"
+                                            title="Events"
+                                        />
                                         <field name="event_count" />
-                                        <span class="small text-muted ms-1">events</span>
+                                        <span
+                                            class="small text-muted ms-1"
+                                        >events</span>
                                     </li>
                                 </ul>
                             </div>

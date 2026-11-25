@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2024 NSTDA
   -->
@@ -7,7 +7,11 @@
         <field name="name">ni.encounter.service.attendance.view.tree</field>
         <field name="model">ni.encounter.service.attendance</field>
         <field name="arch" type="xml">
-            <tree decoration-muted="editable == False" decoration-info="editable == True" default_order="sequence">
+            <tree
+                decoration-muted="editable == False"
+                decoration-info="editable == True"
+                default_order="sequence"
+            >
                 <field name="sequence" invisible="1" />
                 <field name="editable" invisible="1" />
                 <field name="encounter_id" invisible="1" />
@@ -17,11 +21,15 @@
                 <field name="service_ids" invisible="1" />
                 <field
                     name="attendance_id"
-                    attrs="{'readonly': [('editable', '=', False)]}"
                     options="{'no_open': True}"
+                    readonly="not editable"
                 />
                 <field name="name" />
-                <field name="partner_ids" widget="many2many_tags_avatar" optional="hide" />
+                <field
+                    name="partner_ids"
+                    widget="many2many_tags_avatar"
+                    optional="hide"
+                />
                 <field name="note" widget="char" optional="show" />
                 <control>
                     <create string="Add Service" context="{}" />
@@ -45,21 +53,31 @@
                     <t t-name="kanban-box">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_content">
-                                <div class="d-flex justify-content-between align-items-center">
+                                <div
+                                    class="d-flex justify-content-between align-items-center"
+                                >
                                     <div class="fw-bold">
                                         <field name="hour_from" widget="float_time" />
                                         <span class="mx-1">-</span>
                                         <field name="hour_to" widget="float_time" />
                                     </div>
                                     <div class="text-muted">
-                                        <span t-if="record.editable.raw_value" class="me-2" title="Editable">
+                                        <span
+                                            t-if="record.editable.raw_value"
+                                            class="me-2"
+                                            title="Editable"
+                                        >
                                             <i class="fa fa-pencil text-info" />
                                         </span>
                                     </div>
                                 </div>
                                 <div class="mt-2">
                                     <field name="name" />
-                                    <span class="mx-3" t-if="record.note.raw_value" title="Has note">
+                                    <span
+                                        class="mx-3"
+                                        t-if="record.note.raw_value"
+                                        title="Has note"
+                                    >
                                         <i class="fa fa-sticky-note text-warning" />
                                     </span>
                                 </div>
@@ -92,7 +110,7 @@
                             name="attendance_id"
                             options="{'no_create': True, 'no_open':True}"
                             domain="[('calendar_id', '=', resource_calendar_id),('dayofweek', '=', dayofweek)]"
-                            attrs="{'readonly': [('editable', '=', False)]}"
+                            readonly="not editable"
                         />
                         <label for="service_ids" />
                         <div>
@@ -100,10 +118,10 @@
                                 name="service_ids"
                                 widget="many2many_tags"
                                 options="{'color_field': 'color', 'no_create': True, 'no_open':True}"
-                                attrs="{'readonly': [('editable', '=', False)]}"
                                 required="True"
+                                readonly="not editable"
                             />
-                            <div class="o_row" attrs="{'invisible': [('request_id', '=', False)]}">
+                            <div class="o_row" invisible="not request_id">
                                 <label for="display_request_id" />
                                 <field name="display_request_id" />
                             </div>
