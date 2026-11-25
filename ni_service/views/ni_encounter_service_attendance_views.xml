@@ -4,10 +4,10 @@
   -->
 <odoo>
     <record id="ni_encounter_service_attendance_view_tree" model="ir.ui.view">
-        <field name="name">ni.encounter.service.attendance.view.tree</field>
+        <field name="name">ni.encounter.service.attendance.view.list</field>
         <field name="model">ni.encounter.service.attendance</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 decoration-muted="editable == False"
                 decoration-info="editable == True"
                 default_order="sequence"
@@ -34,7 +34,7 @@
                 <control>
                     <create string="Add Service" context="{}" />
                 </control>
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_encounter_service_attendance_view_kanban" model="ir.ui.view">
@@ -50,7 +50,7 @@
                 <field name="note" />
                 <field name="sequence" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_content">
                                 <div
