@@ -1,6 +1,6 @@
 #  Copyright (c) 2024 NSTDA
-from odoo import _, api, fields, models
-from odoo.exceptions import AccessError
+from odoo import api, fields, models
+from odoo.exceptions import AccessError, ValidationError
 
 
 class ServiceCategory(models.Model):
@@ -52,7 +52,7 @@ class ServiceCategory(models.Model):
                 company_id = vals.get("company_id", defaults.get("company_id"))
                 if not company_id or company_id not in allowed_company_ids:
                     raise AccessError(
-                        _(
+                        self.env._(
                             "Only service administrators can create or move shared "
                             "service categories."
                         )
@@ -69,7 +69,7 @@ class ServiceCategory(models.Model):
                     or target_company_id not in allowed_company_ids
                 ):
                     raise AccessError(
-                        _(
+                        self.env._(
                             "Only service administrators can create or move shared "
                             "service categories."
                         )
@@ -80,11 +80,16 @@ class ServiceCategory(models.Model):
             )
             if shared:
                 raise AccessError(
-                    _("Only service administrators can edit shared service categories.")
+                    self.env._(
+                        "Only service administrators can edit shared "
+                        "service categories."
+                    )
                 )
         return super().write(vals)
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
-        if not self._check_recursion():
-            raise models.ValidationError(_("Error! You cannot create recursive data."))
+        if self._has_cycle():
+            raise ValidationError(
+                self.env._("Error! You cannot create recursive data.")
+            )
