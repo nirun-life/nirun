@@ -32,7 +32,9 @@ class EncounterServiceAttendance(models.Model):
     resource_calendar_id = fields.Many2one(
         related="encounter_id.resource_calendar_id", store=True
     )
-    display_calendar_id = fields.Many2one(related="resource_calendar_id")
+    display_calendar_id = fields.Many2one(
+        related="resource_calendar_id", string="Working Calendar"
+    )
 
     name = fields.Char(compute="_compute_name", store=True)
 
@@ -50,7 +52,6 @@ class EncounterServiceAttendance(models.Model):
     )
     service_id = fields.Many2one(
         "ni.service",
-        "Service",
         required=True,
         domain="[('attendance_ids', '=', attendance_id)]",
         ondelete="restrict",
@@ -60,6 +61,7 @@ class EncounterServiceAttendance(models.Model):
         "ni_encounter_service_attendance_rel",
         "attendance_id",
         "service_id",
+        string="Services",
         domain="[('attendance_ids', '=', attendance_id)]",
         ondelete="restrict",
     )
@@ -70,7 +72,7 @@ class EncounterServiceAttendance(models.Model):
         index=True,
         help="Request of this attendance",
     )
-    display_request_id = fields.Many2one(related="request_id")
+    display_request_id = fields.Many2one(related="request_id", string="Service Request")
     service_event_id = fields.Many2one(
         "ni.service.event", index=True, domain="[('service_id', '=', service_id)]"
     )
