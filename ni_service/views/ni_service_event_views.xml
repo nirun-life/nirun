@@ -7,7 +7,7 @@
         <field name="name">Service Calendar</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service.event</field>
-        <field name="view_mode">calendar,tree,kanban,pivot,graph,form</field>
+        <field name="view_mode">calendar,list,kanban,pivot,graph,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">No Schedule</p>
         </field>
@@ -189,12 +189,12 @@
                         >
                             <field name="encounter_count" invisible="1" />
                             <field name="encounter_ids">
-                                <tree>
+                                <list>
                                     <field name="identifier" />
                                     <field name="patient_id" widget="many2one_avatar" />
                                     <field name="gender" />
                                     <field name="age" />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page name="description" string="Description">
@@ -202,10 +202,7 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" />
-                    <field name="message_ids" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
@@ -273,10 +270,10 @@
         </field>
     </record>
     <record id="ni_service_event_view_tree" model="ir.ui.view">
-        <field name="name">ni.service.event.view.tree</field>
+        <field name="name">ni.service.event.view.list</field>
         <field name="model">ni.service.event</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" decoration-bf="1" />
                 <field name="start" string="Start Date" readonly="1" />
                 <field name="user_id" widget="many2one_avatar_user" optional="hide" />
@@ -293,7 +290,7 @@
                     options="{'color_field': 'color'}"
                 />
                 <field name="description" optional="hide" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_service_event_view_form_quick_create" model="ir.ui.view">
@@ -380,11 +377,7 @@
                 <field name="company_id" />
                 <field name="has_image" />
                 <templates>
-                    <t
-                        t-name="kanban-menu"
-                        t-if="!selection_mode"
-                        groups="base.group_user"
-                    >
+                    <t t-name="menu" t-if="!selection_mode" groups="base.group_user">
                         <a
                             t-if="widget.editable"
                             role="menuitem"
@@ -396,7 +389,7 @@
                         <div role="separator" class="dropdown-divider" />
                         <ul class="oe_kanban_colorpicker" data-field="color" />
                     </t>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div
                             t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) : ''}} oe_kanban_card oe_kanban_global_click"
                         >
