@@ -22,7 +22,7 @@ class TestServiceCommon(common.TransactionCase):
                 "password": "service-user",  # pragma: allowlist secret
                 "company_id": self.env.company.id,
                 "company_ids": [(6, 0, [self.env.company.id])],
-                "groups_id": [
+                "group_ids": [
                     (4, self.ref("base.group_user")),
                     (4, self.ref("ni_patient.group_user")),
                 ],
@@ -36,7 +36,7 @@ class TestServiceCommon(common.TransactionCase):
                 "password": "service-manager",  # pragma: allowlist secret
                 "company_id": self.env.company.id,
                 "company_ids": [(6, 0, [self.env.company.id])],
-                "groups_id": [
+                "group_ids": [
                     (4, self.ref("base.group_user")),
                     (4, self.ref("ni_patient.group_manager")),
                 ],
@@ -50,7 +50,7 @@ class TestServiceCommon(common.TransactionCase):
                 "password": "service-admin",  # pragma: allowlist secret
                 "company_id": self.env.company.id,
                 "company_ids": [(6, 0, [self.env.company.id])],
-                "groups_id": [
+                "group_ids": [
                     (4, self.ref("base.group_user")),
                     (4, self.ref("ni_patient.group_admin")),
                 ],
