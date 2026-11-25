@@ -6,7 +6,7 @@ from odoo import api, fields, models, tools
 class EncounterServiceAttendance(models.Model):
     _name = "ni.encounter.service.attendance"
     _description = "Service Attendance"
-    _order = "sequence"
+    _order = "sequence, id"
 
     sequence = fields.Integer(related="attendance_id.sequence", store=True)
     encounter_id = fields.Many2one("ni.encounter", required=True, ondelete="cascade")
@@ -53,7 +53,6 @@ class EncounterServiceAttendance(models.Model):
         "Service",
         required=True,
         domain="[('attendance_ids', '=', attendance_id)]",
-        check_company=True,
         ondelete="restrict",
     )
     service_ids = fields.Many2many(
@@ -62,7 +61,6 @@ class EncounterServiceAttendance(models.Model):
         "attendance_id",
         "service_id",
         domain="[('attendance_ids', '=', attendance_id)]",
-        check_company=True,
         ondelete="restrict",
     )
     request_id = fields.Many2one(
@@ -92,7 +90,7 @@ class EncounterServiceAttendance(models.Model):
 
     def init(self):
         tools.create_index(
-            self._cr,
+            self.env.cr,
             f"{self._table}_service_id_encounter_date_idx",
             self._table,
             ["service_id", "encounter_date"],

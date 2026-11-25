@@ -3,7 +3,7 @@
 from freezegun import freeze_time
 
 from odoo import fields
-from odoo.tests import tagged
+from odoo.tests import Form, tagged
 
 from .common import TestServiceCommon
 
@@ -97,3 +97,37 @@ class TestServiceEvent(TestServiceCommon):
         self.assertEqual(
             str(event.float_time_to_datetime(date, 8.0)), "2027-01-04 08:00:00"
         )
+
+    def test_event_is_a_calendar_event(self):
+        event = self._create_event(name="Ignored")
+        meeting = event.event_id
+        self.assertEqual(meeting.name, self.service.name)
+        self.assertEqual(meeting.start, event.start)
+        self.assertEqual(event.duration, 1.0)
+
+        # moved in the service calendar, then in the personal calendar
+        event.write({"start": "2027-01-05 08:00:00", "stop": "2027-01-05 10:00:00"})
+        self.assertEqual(str(meeting.start), "2027-01-05 08:00:00")
+        self.assertEqual(meeting.duration, 2.0)
+        meeting.write({"start": "2027-01-06 08:00:00", "stop": "2027-01-06 09:00:00"})
+        self.assertEqual(str(event.start), "2027-01-06 08:00:00")
+        self.assertEqual(event.duration, 1.0)
+        self.assertEqual(event.dayofweek, "2")
+
+        meeting.unlink()
+        self.assertFalse(event.exists())
+
+    def test_form(self):
+        self.service.employee_ids = self.env["hr.employee"].create(
+            {"name": "Therapist", "user_id": self.service_manager.id}
+        )
+        form = Form(self.env["ni.service.event"].with_user(self.service_user))
+        form.service_ids.add(self.service)
+        form.start = "2027-01-04 02:00:00"
+        form.stop = "2027-01-04 03:00:00"
+        event = form.save()
+        self.assertEqual(event.service_id, self.service)
+        self.assertEqual(event.mode, "single")
+        self.assertEqual(event.user_id, self.service_user)
+        self.assertIn(self.service_manager.partner_id, event.partner_ids)
+        self.assertEqual(event.service_category_id, self.category)

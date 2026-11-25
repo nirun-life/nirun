@@ -58,21 +58,18 @@ class TestServiceCategories(TestServiceCommon):
                 }
             )
 
-    def test_backfill_cron_restores_category_membership(self):
-        self.env.cr.execute(
-            "DELETE FROM ni_service_category_rel WHERE service_id = %s",
-            (self.service.id,),
+    def test_category_kanban_shows_every_category(self):
+        empty = self.env["ni.service.category"].create(
+            {"name": "Empty", "code": "empty"}
         )
-        self.env.invalidate_all()
-
-        self.assertFalse(self.service.category_ids)
-
-        self.env["ni.service"]._cron_backfill_category_ids()
-        self.env.invalidate_all()
-
-        self.assertEqual(self.service.category_ids.ids, [self.category.id])
-        cron = self.env.ref("ni_service.ir_cron_backfill_category_ids")
-        self.assertFalse(cron.active)
+        groups = (
+            self.env["ni.service.event"]
+            .with_user(self.service_user)
+            .web_read_group([], [], ["service_category_id"])["groups"]
+        )
+        ids = [g["service_category_id"][0] for g in groups if g["service_category_id"]]
+        self.assertIn(empty.id, ids)
+        self.assertIn(self.category.id, ids)
 
     def test_private_category_is_company_editable(self):
         category = (
