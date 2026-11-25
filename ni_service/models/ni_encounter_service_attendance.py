@@ -82,13 +82,10 @@ class EncounterServiceAttendance(models.Model):
     editable = fields.Boolean(default=True)
     note = fields.Text()
 
-    _sql_constraints = [
-        (
-            "encounter_attendance_uniq",
-            "unique (encounter_id, attendance_id)",
-            "The attendance time must be unique!",
-        ),
-    ]
+    _encounter_attendance_uniq = models.Constraint(
+        "unique (encounter_id, attendance_id)",
+        "The attendance time must be unique!",
+    )
 
     def init(self):
         tools.create_index(

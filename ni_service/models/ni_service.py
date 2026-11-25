@@ -114,13 +114,10 @@ class Service(models.Model):
     event_count = fields.Integer(compute="_compute_event_count")
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [
-        (
-            "system_name_uniq",
-            "unique (company_id, name, type_id)",
-            "This name already exists!",
-        )
-    ]
+    _system_name_uniq = models.Constraint(
+        "unique (company_id, name, type_id)",
+        "This name already exists!",
+    )
 
     @api.depends("category_id", "category_ids")
     def _compute_category(self):
