@@ -358,7 +358,7 @@ class Service(models.Model):
             "res_model": "ni.service.event",
             "type": "ir.actions.act_window",
             "target": self.env.context.get("target", "current"),
-            "view_mode": "calendar,tree,form",
+            "view_mode": "calendar,list,form",
             "domain": [("service_ids", "=", self.id)],
             "context": ctx,
         }

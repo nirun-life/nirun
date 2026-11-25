@@ -30,7 +30,7 @@ class ServiceCategory(models.Model):
     )
 
     parent_id = fields.Many2one("ni.service.category", index=True, ondelete="set null")
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
     service_ids = fields.Many2many(
         "ni.service",
         "ni_service_category_rel",
