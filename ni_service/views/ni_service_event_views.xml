@@ -19,7 +19,7 @@
             <search>
                 <field name="service_id" />
                 <field name="partner_ids" />
-                <filter name="start" date="start" default_period="this_month" />
+                <filter name="start" date="start" default_period="month" />
                 <filter
                     string="This Month"
                     name="this_month"
@@ -362,75 +362,51 @@
         <field name="model">ni.service.event</field>
         <field name="arch" type="xml">
             <kanban
+                highlight_color="color"
                 quick_create_view="ni_service.ni_service_event_view_form_quick_create"
                 default_group_by="service_category_id"
             >
-                <field name="name" />
-                <field name="plan_patient_ids" />
-                <field name="color" />
-                <field name="start" />
-                <field name="start_date" />
-                <field name="service_ids" />
-                <field name="service_id" />
-                <field name="mode" />
-                <field name="service_category_id" />
-                <field name="company_id" />
                 <field name="has_image" />
                 <templates>
                     <t t-name="menu" t-if="!selection_mode" groups="base.group_user">
                         <a
                             t-if="widget.editable"
                             role="menuitem"
-                            type="edit"
+                            type="open"
                             class="dropdown-item"
                         >
                             Edit
                         </a>
                         <div role="separator" class="dropdown-divider" />
-                        <ul class="oe_kanban_colorpicker" data-field="color" />
+                        <field name="color" widget="kanban_color_picker" />
                     </t>
                     <t t-name="card">
-                        <div
-                            t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) : ''}} oe_kanban_card oe_kanban_global_click"
-                        >
-                            <div class="oe_kanban_content">
-                                <div class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings">
-                                        <div>
-                                            <field
-                                                name="service_category_ids"
-                                                widget="many2many_tags"
-                                                options="{'color_field': 'color'}"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div t-if="record.has_image.raw_value">
-                                    <field
-                                        name="image_1"
-                                        widget="image"
-                                        style="margin: 4px -8px;"
-                                    />
-                                </div>
-                                <field name="name" />
-                                <div class="o_kanban_record_body mt-2">
-                                    <div class="small text-muted">
-                                        <i
-                                            class="fa fa-clock-o me-1"
-                                            aria-hidden="true"
-                                            title="start"
-                                        />
-                                        <field name="start" widget="remaining_days" />
-                                    </div>
-                                    <div class="mt-2">
-                                        <field
-                                            name="plan_patient_ids"
-                                            widget="many2many_tags_avatar"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                        <field
+                            name="service_category_ids"
+                            widget="many2many_tags"
+                            options="{'color_field': 'color'}"
+                        />
+                        <div t-if="record.has_image.raw_value">
+                            <field
+                                name="image_1"
+                                widget="image"
+                                style="margin: 4px -8px;"
+                            />
                         </div>
+                        <field name="name" />
+                        <div class="d-flex align-items-center small text-muted mt-2">
+                            <i
+                                class="fa fa-clock-o me-1"
+                                aria-hidden="true"
+                                title="start"
+                            />
+                            <field name="start" widget="remaining_days" />
+                        </div>
+                        <field
+                            name="plan_patient_ids"
+                            class="mt-2"
+                            widget="many2many_tags_avatar"
+                        />
                     </t>
                 </templates>
             </kanban>

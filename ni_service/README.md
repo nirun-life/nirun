@@ -1,6 +1,6 @@
 # Service (`ni_service`)
 
-`ni_service` is the Nirun Odoo 17.0 module for healthcare service cataloging, service
+`ni_service` is the Nirun Odoo 18.0 module for healthcare service cataloging, service
 requests, scheduled service delivery, and encounter attendance tracking. It bridges
 clinical requests with `calendar.event` records and keeps the service timeline linked to
 patients, encounters, and requests.
@@ -68,19 +68,19 @@ Encounter timeline / reporting
 | `Service > Configuration > Routine`  | `ni_service.ni_service_routine_action` | Manage the routine-service subset                                                 |
 | `Service > Configuration > Category` | `ni_service_category_action`           | Maintain service category vocabulary                                              |
 | `Service > Configuration > Type`     | `ni_service_type_action`               | Maintain service type vocabulary                                                  |
-| `Calendar > Service Calendar`        | `ni_service_event_action`              | Work with scheduled service events in calendar/tree/kanban/pivot/graph/form views |
+| `Calendar > Service Calendar`        | `ni_service_event_action`              | Work with scheduled service events in calendar/list/kanban/pivot/graph/form views |
 | `Calendar > Personal Calendar`       | `calendar.action_calendar_event`       | Fall back to the standard personal calendar                                       |
 
 ## Views And Rules
 
 | Model                             | Main view types                                          | Notes                                                                                |
 | --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `ni.service`                      | tree, form, search                                       | Catalog browsing, calendar assignment, attendance templates, practitioner assignment |
-| `ni.service.request`              | tree, kanban, form                                       | Request entry and event follow-up                                                    |
-| `ni.service.event`                | calendar, tree, kanban, pivot, graph, form, quick-create | Scheduling, planning, analytics, and fast creation                                   |
-| `ni.encounter.service.attendance` | tree, kanban, form                                       | Encounter-service bridge and request matching                                        |
-| `ni.service.category`             | tree, form, search                                       | Category vocabulary maintenance                                                      |
-| `ni.service.type`                 | tree, form, search                                       | Type vocabulary maintenance                                                          |
+| `ni.service`                      | list, form, search                                       | Catalog browsing, calendar assignment, attendance templates, practitioner assignment |
+| `ni.service.request`              | list, kanban, form                                       | Request entry and event follow-up                                                    |
+| `ni.service.event`                | calendar, list, kanban, pivot, graph, form, quick-create | Scheduling, planning, analytics, and fast creation                                   |
+| `ni.encounter.service.attendance` | list, kanban, form                                       | Encounter-service bridge and request matching                                        |
+| `ni.service.category`             | list, form, search                                       | Category vocabulary maintenance                                                      |
+| `ni.service.type`                 | list, form, search                                       | Type vocabulary maintenance                                                          |
 
 | View                                              | Modified by                                    | Why                                                                        |
 | ------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------- |
@@ -102,7 +102,6 @@ Encounter timeline / reporting
 | `ni.service.event` constrains calendar/attendance combinations                | Invalid combinations can clear data or raise user errors                                      |
 | `ni.encounter.service.attendance` auto-matches a request                      | Matching depends on patient, service, and period alignment                                    |
 | `ni.service` and `ni.service.event` are multi-company scoped                  | Visibility depends on company context, not global access                                      |
-| Migration `17.0.1.0.0` makes the primary category one of the categories       | It replaces the 16.0 backfill cron, which was started by hand                                 |
 | `res.company.service_multi_category` defaults to enabled                      | Disable only for legacy single-category workflows                                             |
 
 ## Security And Dependencies
@@ -120,7 +119,7 @@ Encounter timeline / reporting
 | `ni.service.type`                 | read for everyone; full access for `ni_patient.group_manager` and `ni_patient.group_admin` | shared records admin-only; private records company-scoped | Coding vocabulary             |
 | `ni.service.request`              | full access for `ni_patient.group_user`                                                    | no module-specific record rule                            | Request workflow              |
 | `ni.service.event`                | full access for `ni_patient.group_user`                                                    | multi-company: `company_id in company_ids`                | Calendar-backed service event |
-| `ni.encounter.service.attendance` | full access for everyone                                                                   | no module-specific record rule                            | Encounter attendance bridge   |
+| `ni.encounter.service.attendance` | read for `ni_patient.group_viewer`; full access for `ni_patient.group_user`                | no module-specific record rule                            | Encounter attendance bridge   |
 
 ## Dependency And Extension Map
 

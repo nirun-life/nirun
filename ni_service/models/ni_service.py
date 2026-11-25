@@ -5,7 +5,7 @@ from datetime import timedelta
 
 from babel.dates import format_date
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -43,15 +43,19 @@ class Service(models.Model):
         "category_id",
         string="Categories",
     )
-    category = fields.Char(compute="_compute_category", store=True)
-    category_decoration = fields.Selection(related="category_id.decoration")
+    category = fields.Char("Category Names", compute="_compute_category", store=True)
+    category_decoration = fields.Selection(
+        related="category_id.decoration", string="Category Decoration"
+    )
     type_id = fields.Many2one("ni.service.type", index=True)
-    type_decoration = fields.Selection(related="type_id.decoration")
+    type_decoration = fields.Selection(
+        related="type_id.decoration", string="Type Decoration"
+    )
     calendar_id = fields.Many2one(
         "resource.calendar", required=False, domain="[('company_id', '=', company_id)]"
     )
     calendar_ids = fields.Many2many(
-        "resource.calendar", compute="_compute_calendar_ids"
+        "resource.calendar", string="Calendars", compute="_compute_calendar_ids"
     )
     calendar_count = fields.Integer(compute="_compute_calendar_ids")
     duration = fields.Float()
@@ -99,7 +103,9 @@ class Service(models.Model):
     )
     recurrence = fields.Boolean(default=True)
     calendar = fields.Boolean(
-        default=False, help="Indicate this service will be booking in to calendar"
+        "Book in Calendar",
+        default=False,
+        help="Indicate this service will be booking in to calendar",
     )
     editable = fields.Boolean(
         default=True, help="Indicate user can edit this service or not when generate"
@@ -157,7 +163,9 @@ class Service(models.Model):
                 continue
             if len(rec.category_ids) > 1:
                 raise ValidationError(
-                    _("Multiple service categories are not allowed for this company.")
+                    self.env._(
+                        "Multiple service categories are not allowed for this company."
+                    )
                 )
 
     def get_default_calendar(self, raise_err=False):
@@ -168,8 +176,9 @@ class Service(models.Model):
             return self.calendar_ids[0]
         elif raise_err:
             raise ValidationError(
-                _("Misconfiguration on {}, please contact the administrator").format(
-                    self.name
+                self.env._(
+                    "Misconfiguration on %s, please contact the administrator",
+                    self.name,
                 )
             )
         else:
@@ -292,7 +301,7 @@ class Service(models.Model):
                         "values": values,
                         "area": True,
                         "title": "",
-                        "key": _("Patients Attended"),
+                        "key": self.env._("Patients Attended"),
                         "color": rec._get_dashboard_graph_color(),
                     }
                 ]

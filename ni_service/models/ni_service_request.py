@@ -1,6 +1,6 @@
 #  Copyright (c) 2024 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -45,6 +45,12 @@ class ServiceRequest(models.Model):
     event_count = fields.Integer(compute="_compute_event_count")
     note = fields.Text()
 
+    # same labels as the fields of ni.period.mixin
+    timing_bound_start = fields.Datetime(string="Timing Since")
+    timing_bound_end = fields.Datetime(string="Timing Until")
+    timing_duration = fields.Integer(string="Repeat Duration")
+    timing_period = fields.Integer(string="Repeat Period")
+
     @api.depends("attendance_ids.service_event_id")
     def _compute_event_count(self):
         attendances = self.env["ni.encounter.service.attendance"].sudo()
@@ -62,7 +68,7 @@ class ServiceRequest(models.Model):
         event_ids = self.attendance_ids.mapped("service_event_id").filtered("id").ids
         return {
             "type": "ir.actions.act_window",
-            "name": _("Service Events"),
+            "name": self.env._("Service Events"),
             "res_model": "ni.service.event",
             "view_mode": "list,calendar,form",
             "domain": [("id", "in", event_ids)],
@@ -80,7 +86,7 @@ class ServiceRequest(models.Model):
         if self.env.context.get("show_identifier") and self.identifier:
             name = f"[{self.identifier}] {name}"
         if self.env.context.get("show_period") and self.period_start_date:
-            end = self.period_end_date or _("ongoing")
+            end = self.period_end_date or self.env._("ongoing")
             name = f"{name} ({self.period_start_date} → {end})"
         if self.env.context.get("show_state"):
             selection = dict(self._fields["state"]._description_selection(self.env))
@@ -137,4 +143,4 @@ class ServiceRequest(models.Model):
                 name = name if len(name) <= 128 else name[:125] + "..."
                 rec.name = name + f" (+{rec.service_count - 2})"
             if not rec.service_ids and not rec.name:
-                raise UserError(_("Must specify at least one service"))
+                raise UserError(self.env._("Must specify at least one service"))
