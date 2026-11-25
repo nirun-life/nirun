@@ -53,7 +53,8 @@ class ServiceCategory(models.Model):
                 if not company_id or company_id not in allowed_company_ids:
                     raise AccessError(
                         _(
-                            "Only service administrators can create or move shared service categories."
+                            "Only service administrators can create or move shared "
+                            "service categories."
                         )
                     )
         return super().create(vals_list)
@@ -69,7 +70,8 @@ class ServiceCategory(models.Model):
                 ):
                     raise AccessError(
                         _(
-                            "Only service administrators can create or move shared service categories."
+                            "Only service administrators can create or move shared "
+                            "service categories."
                         )
                     )
             shared = self.filtered(
