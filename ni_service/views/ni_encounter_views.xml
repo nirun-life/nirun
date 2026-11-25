@@ -26,6 +26,7 @@
                     <div class="o_row">
                         <field
                             name="resource_calendar_id"
+                            readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                             options="{'no_create': True, 'no_open':True}"
                         />
                         <button
@@ -39,6 +40,7 @@
                 </group>
                 <field
                     name="service_attendance_ids"
+                    readonly="state in ('cancelled', 'entered-in-error', 'finished')"
                     context="{'default_encounter_id': id}"
                 />
             </xpath>

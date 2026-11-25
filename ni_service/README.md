@@ -1,6 +1,6 @@
 # Service (`ni_service`)
 
-`ni_service` is the Nirun Odoo 16.0 module for healthcare service cataloging, service
+`ni_service` is the Nirun Odoo 17.0 module for healthcare service cataloging, service
 requests, scheduled service delivery, and encounter attendance tracking. It bridges
 clinical requests with `calendar.event` records and keeps the service timeline linked to
 patients, encounters, and requests.
@@ -102,8 +102,8 @@ Encounter timeline / reporting
 | `ni.service.event` constrains calendar/attendance combinations                | Invalid combinations can clear data or raise user errors                                      |
 | `ni.encounter.service.attendance` auto-matches a request                      | Matching depends on patient, service, and period alignment                                    |
 | `ni.service` and `ni.service.event` are multi-company scoped                  | Visibility depends on company context, not global access                                      |
+| Migration `17.0.1.0.0` makes the primary category one of the categories       | It replaces the 16.0 backfill cron, which was started by hand                                 |
 | `res.company.service_multi_category` defaults to enabled                      | Disable only for legacy single-category workflows                                             |
-| `ir.cron` backfill job is scheduled for install time + 3 minutes              | It can be run once and deactivates itself after populating legacy membership                  |
 
 ## Security And Dependencies
 
@@ -139,13 +139,11 @@ Encounter timeline / reporting
 `models/ni_service_event.py` declares indexes that were first created by hand on
 production:
 
-| Index                                               | Definition                                                              |
-| --------------------------------------------------- | ----------------------------------------------------------------------- |
-| `calendar_event_id_filter_idx`                      | `calendar_event (id) INCLUDE (active, start, stop, allday, start_date)` |
-| `calendar_attendee_event_id_index`                  | `calendar_attendee (event_id)`                                          |
-| `ni_service_event_message_main_attachment_id_index` | `btree_not_null`; attachment FK checks on delete                        |
-| `ni_service_event_displayed_image_id_index`         | `btree_not_null`; attachment FK checks on delete                        |
-| `calendar_event_message_main_attachment_id_index`   | `btree_not_null`; attachment FK checks on delete                        |
+| Index                                       | Definition                                                              |
+| ------------------------------------------- | ----------------------------------------------------------------------- |
+| `calendar_event_id_filter_idx`              | `calendar_event (id) INCLUDE (active, start, stop, allday, start_date)` |
+| `calendar_attendee_event_id_index`          | `calendar_attendee (event_id)`                                          |
+| `ni_service_event_displayed_image_id_index` | `btree_not_null`; attachment FK checks on delete                        |
 
 Invariant: keep these names unchanged. Odoo skips an index by name, so a rename makes
 `-u` run a write-blocking `CREATE INDEX` on multi-million-row production tables.
