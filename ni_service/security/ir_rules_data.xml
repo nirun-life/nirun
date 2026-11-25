@@ -17,7 +17,9 @@
         <field name="perm_write" eval="False" />
         <field name="perm_create" eval="False" />
         <field name="perm_unlink" eval="False" />
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field
+            name="domain_force"
+        >['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
     <record id="ni_service_category_user_rule" model="ir.rule">
         <field name="name">Service Category: private edit</field>
@@ -27,7 +29,9 @@
         <field name="perm_write" eval="True" />
         <field name="perm_create" eval="True" />
         <field name="perm_unlink" eval="True" />
-        <field name="domain_force">[('company_id', '!=', False), ('company_id', 'in', company_ids)]</field>
+        <field
+            name="domain_force"
+        >[('company_id', '!=', False), ('company_id', 'in', company_ids)]</field>
     </record>
     <record id="ni_service_category_admin_rule" model="ir.rule">
         <field name="name">Service Category: admin all</field>
@@ -47,7 +51,9 @@
         <field name="perm_write" eval="False" />
         <field name="perm_create" eval="False" />
         <field name="perm_unlink" eval="False" />
-        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field
+            name="domain_force"
+        >['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
     <record id="ni_service_type_user_rule" model="ir.rule">
         <field name="name">Service Type: private edit</field>
@@ -57,7 +63,9 @@
         <field name="perm_write" eval="True" />
         <field name="perm_create" eval="True" />
         <field name="perm_unlink" eval="True" />
-        <field name="domain_force">[('company_id', '!=', False), ('company_id', 'in', company_ids)]</field>
+        <field
+            name="domain_force"
+        >[('company_id', '!=', False), ('company_id', 'in', company_ids)]</field>
     </record>
     <record id="ni_service_type_admin_rule" model="ir.rule">
         <field name="name">Service Type: admin all</field>
