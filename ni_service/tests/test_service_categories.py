@@ -94,6 +94,15 @@ class TestServiceCategories(TestServiceCommon):
         self.assertEqual(category.name, "Private Rehab Updated")
         self.assertEqual(category.company_id, self.env.company)
 
+    def test_private_category_takes_the_company_of_the_user(self):
+        category = (
+            self.env["ni.service.category"]
+            .with_user(self.service_manager)
+            .create({"name": "Private Rehab", "code": "priv-rehab"})
+        )
+
+        self.assertEqual(category.company_id, self.service_manager.company_id)
+
     def test_shared_category_requires_admin(self):
         with self.assertRaises(AccessError):
             self.env["ni.service.category"].with_user(self.service_manager).create(
