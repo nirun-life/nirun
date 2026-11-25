@@ -65,12 +65,7 @@ class TestCompletionPage(common.TransactionCase):
         return str(
             self.env["ir.qweb"]._render(
                 "survey.survey_fill_form_done",
-                {
-                    "survey": self.survey,
-                    "answer": response,
-                    "graph_data": False,
-                    "is_partner_subject": True,
-                },
+                {"survey": self.survey, "answer": response, "graph_data": False},
             )
         )
 

@@ -14,10 +14,16 @@
             expr="//div[hasclass('o_survey_finished')]/h1[t]/t[1]"
             position="attributes"
         >
-            <attribute name="t-if" separator=" and " add="is_partner_subject" />
+            <attribute
+                name="t-if"
+                separator=" and "
+                add="survey.subject_type == 'res.partner'"
+            />
         </xpath>
         <xpath expr="//div[hasclass('o_survey_finished')]/h1[t]" position="after">
-            <div t-if="survey.scoring_type != 'no_scoring' and not is_partner_subject">
+            <div
+                t-if="survey.scoring_type != 'no_scoring' and survey.subject_type != 'res.partner'"
+            >
                 <t t-esc="answer.subject_name" />
                 scored
                 <t t-esc="answer.scoring_percentage" />
