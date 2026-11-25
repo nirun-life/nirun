@@ -1,7 +1,5 @@
 #  Copyright (c) 2024 NSTDA
 
-from collections import defaultdict
-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -37,6 +35,7 @@ class ServiceRequest(models.Model):
         "service_id",
         check_company=True,
     )
+    service_ids_domain = fields.Binary(compute="_compute_service_ids_domain")
     service_count = fields.Integer(compute="_compute_service_count")
     body_site_ids = fields.Many2many(
         "ni.body.site", "ni_service_request_body_site", "request_id", "site_id"
@@ -49,16 +48,14 @@ class ServiceRequest(models.Model):
     @api.depends("attendance_ids.service_event_id")
     def _compute_event_count(self):
         attendances = self.env["ni.encounter.service.attendance"].sudo()
-        grp = attendances._read_group(
+        read = attendances._read_group(
             [("request_id", "in", self.ids), ("service_event_id", "!=", False)],
-            ["request_id", "service_event_id"],
-            ["__count"],
+            ["request_id"],
+            ["service_event_id:count_distinct"],
         )
-        data = defaultdict(set)
-        for res in grp:
-            data[res["request_id"][0]].add(res["service_event_id"][0])
+        data = {request.id: count for request, count in read}
         for rec in self:
-            rec.event_count = len(data.get(rec.id, ()))
+            rec.event_count = data.get(rec.id, 0)
 
     def action_view_events(self):
         self.ensure_one()
@@ -71,18 +68,21 @@ class ServiceRequest(models.Model):
             "domain": [("id", "in", event_ids)],
         }
 
-    def name_get(self):
-        return [(rec.id, rec._get_name()) for rec in self]
+    @api.depends("name", "identifier", "state", "period_start_date", "period_end_date")
+    @api.depends_context("show_identifier", "show_period", "show_state")
+    def _compute_display_name(self):
+        for rec in self:
+            rec.display_name = rec._get_name()
 
     def _get_name(self):
         self.ensure_one()
         name = self.name or self.identifier or ""
-        if self._context.get("show_identifier") and self.identifier:
+        if self.env.context.get("show_identifier") and self.identifier:
             name = f"[{self.identifier}] {name}"
-        if self._context.get("show_period") and self.period_start_date:
+        if self.env.context.get("show_period") and self.period_start_date:
             end = self.period_end_date or _("ongoing")
             name = f"{name} ({self.period_start_date} → {end})"
-        if self._context.get("show_state"):
+        if self.env.context.get("show_state"):
             selection = dict(self._fields["state"]._description_selection(self.env))
             name = f"{name} [{selection.get(self.state, self.state)}]"
         return name
@@ -95,23 +95,21 @@ class ServiceRequest(models.Model):
             ("specialty_ids", "=", self.user_specialty.id),
         ]
 
-    @api.onchange("category_id")
-    def _onchange_category_id(self):
-        if self.category_id:
-            category_ids = (
-                self.env["ni.service.category"]
-                .search([("id", "child_of", self.category_id.id)])
-                .ids
-            )
-            domain = [
-                ("category_ids", "in", category_ids),
-                "|",
-                ("specialty_ids", "=", False),
-                ("specialty_ids", "=", self.user_specialty.id),
-            ]
-        else:
-            domain = self._default_service_domain()
-        return {"domain": {"service_ids": domain}}
+    @api.depends("category_id", "company_id", "user_specialty")
+    def _compute_service_ids_domain(self):
+        for rec in self:
+            if rec.category_id:
+                domain = [
+                    ("category_ids", "child_of", rec.category_id.ids),
+                    "|",
+                    ("specialty_ids", "=", False),
+                    ("specialty_ids", "=", rec.user_specialty.id),
+                ]
+            else:
+                domain = rec._default_service_domain()
+            if rec.company_id:
+                domain = [("company_id", "=", rec.company_id.id), *domain]
+            rec.service_ids_domain = domain
 
     @api.onchange("service_ids")
     def _onchange_service_ids(self):

@@ -1,3 +1,5 @@
 from . import test_encounter_service_attendance
 from . import test_service_categories
 from . import test_service_event
+from . import test_migration
+from . import test_service_request

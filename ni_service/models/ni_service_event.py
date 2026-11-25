@@ -13,10 +13,8 @@ from odoo.tools import pytz
 class Event(models.Model):
     _inherit = "calendar.event"
 
-    message_main_attachment_id = fields.Many2one(index="btree_not_null")
-
     def init(self):
-        super().init()
+        res = super().init()
         # Index names match the ones created by hand on production; a different
         # name would make -u rebuild them with a write-blocking CREATE INDEX.
         self.env.cr.execute(
@@ -26,10 +24,12 @@ class Event(models.Model):
             INCLUDE (active, start, stop, allday, start_date)
             """
         )
+        return res
 
     @api.model
     def _get_public_fields(self):
-        # Work around to prevent maximum recursive errors when open event from other user who not service event's creator
+        # Work around to prevent maximum recursive errors when open event from
+        # other user who not service event's creator
         return super()._get_public_fields() | {"attendee_ids"}
 
 
@@ -133,13 +133,15 @@ class ServiceEvent(models.Model):
     attendance_id = fields.Many2one(
         "resource.calendar.attendance",
         required=False,
-        domain="[('calendar_id', '=', calendar_id), ('dayofweek', '=?', dayofweek), ('id', 'in', service_attendance_id),  ]",
+        domain="[('calendar_id', '=', calendar_id), ('dayofweek', '=?', dayofweek), "
+        "('id', 'in', service_attendance_id)]",
         compute="_compute_attendance_id",
         inverse="_inverse_attendance_id",
     )
     attendance_ids = fields.Many2many(
         "resource.calendar.attendance",
-        domain="[('calendar_id', '=', calendar_id),  ('dayofweek', '=?', dayofweek), ('id', 'in', service_attendance_id),]",
+        domain="[('calendar_id', '=', calendar_id), ('dayofweek', '=?', dayofweek), "
+        "('id', 'in', service_attendance_id)]",
     )
     service_attendance_id = fields.Many2many(
         related="service_id.attendance_ids", help="Use to filter attendance_id"
@@ -200,17 +202,16 @@ class ServiceEvent(models.Model):
         string="Cover Image",
         index="btree_not_null",
     )
-    message_main_attachment_id = fields.Many2one(index="btree_not_null")
 
     def init(self):
         tools.create_index(
-            self._cr,
+            self.env.cr,
             f"{self._table}_event_id_id_idx",
             self._table,
             ["event_id", "id"],
         )
         tools.create_index(
-            self._cr,
+            self.env.cr,
             f"{self._table}_service_id_start_id_idx",
             self._table,
             ["service_id", "start", "id"],
@@ -338,7 +339,7 @@ class ServiceEvent(models.Model):
         for rec in self:
             if rec.attendance_ids:
                 remove_att = rec.attendance_ids.filtered(
-                    lambda a: a.dayofweek != rec.dayofweek
+                    lambda a, day=rec.dayofweek: a.dayofweek != day
                 )
                 if remove_att:
                     rec.attendance_ids = [

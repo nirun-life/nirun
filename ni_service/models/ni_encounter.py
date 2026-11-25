@@ -5,8 +5,6 @@ from pytz import UTC
 
 from odoo import api, fields, models
 
-from odoo.addons.ni_patient.models.ni_encounter import LOCK_STATE_DICT
-
 
 class Encounter(models.Model):
     _inherit = "ni.encounter"
@@ -15,12 +13,10 @@ class Encounter(models.Model):
         "resource.calendar",
         "Calendar",
         check_company=True,
-        states=LOCK_STATE_DICT,
     )
     service_attendance_ids = fields.One2many(
         "ni.encounter.service.attendance",
         "encounter_id",
-        states=LOCK_STATE_DICT,
     )
     service_request_ids = fields.One2many("ni.service.request", "encounter_id")
 
