@@ -64,7 +64,7 @@ class ServiceRequest(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Service Events"),
             "res_model": "ni.service.event",
-            "view_mode": "tree,calendar,form",
+            "view_mode": "list,calendar,form",
             "domain": [("id", "in", event_ids)],
         }
 
