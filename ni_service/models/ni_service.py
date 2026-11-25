@@ -19,7 +19,7 @@ class Service(models.Model):
 
     @api.model
     def default_get(self, fields):
-        res = super(Service, self).default_get(fields)
+        res = super().default_get(fields)
         if "company_id" in res:
             comp = self.env["res.company"].browse(res["company_id"])
             if comp.service_calendar_id:
@@ -336,8 +336,8 @@ class Service(models.Model):
     @api.depends("event_ids")
     def _compute_event_count(self):
         events = self.env["ni.service.event"].sudo()
-        read = events.read_group(
-            [("service_id", "in", self.ids)], ["service_id"], ["service_id"]
+        read = events._read_group(
+            [("service_id", "in", self.ids)], ["service_id"], ["__count"]
         )
         data = {res["service_id"][0]: res["service_id_count"] for res in read}
         for rec in self:
