@@ -15,7 +15,6 @@ EVENT_STOP = "2027-01-04 09:00:00"
 class TestServiceEvent(TestServiceCommon):
     @freeze_time(EVENT_START)
     def test_create_service_event(self):
-
         event = self.env["ni.service.event"].create(
             {
                 "service_id": self.service.id,

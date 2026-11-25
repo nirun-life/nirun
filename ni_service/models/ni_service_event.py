@@ -30,7 +30,7 @@ class Event(models.Model):
     @api.model
     def _get_public_fields(self):
         # Work around to prevent maximum recursive errors when open event from other user who not service event's creator
-        return super(Event, self)._get_public_fields() | {"attendee_ids"}
+        return super()._get_public_fields() | {"attendee_ids"}
 
 
 class Attendee(models.Model):
@@ -48,7 +48,7 @@ class ServiceEvent(models.Model):
 
     @api.model
     def default_get(self, fields):
-        res = super(ServiceEvent, self).default_get(fields)
+        res = super().default_get(fields)
         if "service_ids" in fields and "service_ids" not in res:
             if self.env.context.get("default_service_id"):
                 res["service_ids"] = [
