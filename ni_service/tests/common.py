@@ -3,7 +3,8 @@
 from odoo import fields
 from odoo.tests import common
 
-# Request period: 2027-01-04 → 2027-03-31 (future, avoids period_start_date default=today issue)
+# Request period: 2027-01-04 → 2027-03-31
+# (future, avoids period_start_date default=today issue)
 REQUEST_START = "2027-01-04 08:00:00"  # Monday
 REQUEST_END = "2027-03-31 23:59:59"
 ENCOUNTER_START = REQUEST_START  # encounter must be <= request period_start

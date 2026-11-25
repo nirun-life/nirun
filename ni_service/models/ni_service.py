@@ -13,7 +13,7 @@ class Service(models.Model):
     _name = "ni.service"
     _description = "Service"
     _inherit = "ni.coding"
-    _order = "sequence"
+    _order = "sequence, id"
 
     _rec_name = "name"
 
@@ -61,7 +61,6 @@ class Service(models.Model):
         "service_id",
         "attendance_id",
         domain="[('calendar_id', '=', calendar_id)]",
-        index=True,
     )
     attendance_count = fields.Integer(compute="_compute_attendance_count")
     dayofweek = fields.Selection(
@@ -277,7 +276,7 @@ class Service(models.Model):
 
         counts = self._get_dashboard_graph_patient_counts(range_start, range_end)
 
-        locale = self._context.get("lang") or "en_US"
+        locale = self.env.context.get("lang") or "en_US"
         for rec in self:
             values = [
                 {
@@ -339,7 +338,7 @@ class Service(models.Model):
         read = events._read_group(
             [("service_id", "in", self.ids)], ["service_id"], ["__count"]
         )
-        data = {res["service_id"][0]: res["service_id_count"] for res in read}
+        data = {service.id: count for service, count in read}
         for rec in self:
             rec.event_count = data.get(rec.id, 0)
 
@@ -364,12 +363,3 @@ class Service(models.Model):
             "context": ctx,
         }
         return view
-
-    @api.model
-    def _cron_backfill_category_ids(self):
-        self.search([("category_id", "!=", False)])._sync_category_relations()
-        cron = self.env.ref(
-            "ni_service.ir_cron_backfill_category_ids", raise_if_not_found=False
-        )
-        if cron:
-            cron.sudo().write({"active": False})

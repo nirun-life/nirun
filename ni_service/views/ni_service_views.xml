@@ -45,9 +45,9 @@
         <field name="model">ni.service</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="active" invisible="1" />
-                <field name="calendar_id" invisible="1" />
-                <field name="category_id" invisible="1" />
+                <field name="active" column_invisible="1" />
+                <field name="calendar_id" column_invisible="1" />
+                <field name="category_id" column_invisible="1" />
                 <field name="sequence" widget="handle" />
                 <field
                     name="company_id"
@@ -72,7 +72,7 @@
                     decoration-danger="type_decoration == 'danger'"
                     decoration-muted="type_decoration == 'muted'"
                 />
-                <field name="type_decoration" invisible="1" />
+                <field name="type_decoration" column_invisible="1" />
                 <field name="duration" widget="float_time" optional="show" />
                 <field name="attendance_ids" widget="many2many_tags" optional="hide" />
                 <field name="employee_id" widget="many2one_avatar" optional="show" />
@@ -316,7 +316,7 @@
                             <field name="employee_count" invisible="1" />
                             <field name="employee_ids">
                                 <tree default_order="department_id, name">
-                                    <field name="company_id" invisible="1" />
+                                    <field name="company_id" column_invisible="1" />
                                     <field name="name" />
                                     <field name="job_title" optional="show" />
                                     <field name="department_id" />
