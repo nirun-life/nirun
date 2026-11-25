@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2024 NSTDA
   -->
@@ -8,7 +8,10 @@
         <field name="model">ni.service</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('category', 'ilike', self)]" />
+                <field
+                    name="name"
+                    filter_domain="['|', ('name', 'ilike', self), ('category', 'ilike', self)]"
+                />
                 <field name="employee_ids" />
                 <filter
                     name="service"
@@ -21,9 +24,16 @@
                     domain="[('category_ids', 'in', [%(ni_service.categ_routine)d])]"
                 />
                 <filter name="group_type_id" context="{'group_by': 'type_id'}" />
-                <filter name="group_category_id" context="{'group_by': 'category_id'}" />
+                <filter
+                    name="group_category_id"
+                    context="{'group_by': 'category_id'}"
+                />
                 <searchpanel>
-                    <field name="company_id" groups="base.group_multi_company" icon="fa-building" />
+                    <field
+                        name="company_id"
+                        groups="base.group_multi_company"
+                        icon="fa-building"
+                    />
                     <field name="category_ids" select="multi" enable_counters="1" />
                     <field name="type_id" icon="fa-th-large" enable_counters="1" />
                 </searchpanel>
@@ -39,9 +49,18 @@
                 <field name="calendar_id" invisible="1" />
                 <field name="category_id" invisible="1" />
                 <field name="sequence" widget="handle" />
-                <field name="company_id" groups="base.group_multi_company" optional="hide" />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="hide"
+                />
                 <field name="name" />
-                <field name="category_ids" optional="hide" widget="many2many_tags" options="{'color_field': 'color'}" />
+                <field
+                    name="category_ids"
+                    optional="hide"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                />
                 <field
                     name="type_id"
                     optional="hide"
@@ -80,7 +99,9 @@
                             t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_card oe_kanban_global_click"
                         >
                             <div class="oe_kanban_content">
-                                <div class="d-flex align-items-start justify-content-between gap-2">
+                                <div
+                                    class="d-flex align-items-start justify-content-between gap-2"
+                                >
                                     <strong class="o_kanban_record_title">
                                         <field name="name" />
                                     </strong>
@@ -104,11 +125,18 @@
                                     />
                                 </div>
                                 <div class="text-muted small mt-1">
-                                    <i class="fa fa-clock-o mx-1" aria-hidden="true" title="Duration" />
+                                    <i
+                                        class="fa fa-clock-o mx-1"
+                                        aria-hidden="true"
+                                        title="Duration"
+                                    />
                                     <field name="duration" widget="float_time" />
                                     hours
                                 </div>
-                                <div class="o_kanban_graph_section mt-1" t-if="record.dashboard_graph_data.raw_value">
+                                <div
+                                    class="o_kanban_graph_section mt-1"
+                                    t-if="record.dashboard_graph_data.raw_value"
+                                >
                                     <field
                                         name="dashboard_graph_data"
                                         widget="dashboard_graph"
@@ -128,7 +156,10 @@
                                         <field name="next_date" />
                                     </div>
                                     <div class="oe_kanban_bottom_right">
-                                        <field name="employee_id" widget="many2one_avatar_employee" />
+                                        <field
+                                            name="employee_id"
+                                            widget="many2one_avatar_employee"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -155,7 +186,11 @@
                             class="oe_stat_button"
                             invisible="context.get('no_create_event', True)"
                         >
-                            <field name="event_count" widget="statinfo" string="Events" />
+                            <field
+                                name="event_count"
+                                widget="statinfo"
+                                string="Events"
+                            />
                         </button>
                     </div>
                     <div class="oe_title mb24">
@@ -170,7 +205,7 @@
                                 placeholder="Categories..."
                                 widget="many2many_tags"
                                 options="{'no_open': True, 'no_create':True, 'color_field': 'color'}"
-                                attrs="{'invisible': [('company_multi_category', '=', False)]}"
+                                invisible="not company_multi_category"
                             />
                         </div>
                     </div>
@@ -179,12 +214,12 @@
                             <label
                                 for="category_id"
                                 string="Category"
-                                attrs="{'invisible': [('company_multi_category', '=', False)]}"
+                                invisible="not company_multi_category"
                             />
                             <label
                                 for="category_id"
                                 string="Primary Category"
-                                attrs="{'invisible': [('company_multi_category', '=', True)]}"
+                                invisible="company_multi_category"
                             />
                             <div class="o_row">
                                 <field
@@ -194,8 +229,16 @@
                                 />
                             </div>
                             <field name="type_id" options="{'no_open': True}" />
-                            <field name="specialty_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
-                            <field name="employee_id" widget="many2one_avatar_employee" options="{'no_open': True}" />
+                            <field
+                                name="specialty_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color'}"
+                            />
+                            <field
+                                name="employee_id"
+                                widget="many2one_avatar_employee"
+                                options="{'no_open': True}"
+                            />
                         </group>
                         <group>
                             <field
@@ -203,48 +246,73 @@
                                 groups="base.group_multi_company"
                                 options="{'no_create': True, 'no_open':True}"
                             />
-                            <field name="next_date" attrs="{'invisible': [('next_date', '=', False)]}" />
+                            <field name="next_date" invisible="not next_date" />
                             <label for="duration" />
                             <div class="o_row">
-                                <field name="duration" widget="float_time" class="oe_inline" />
+                                <field
+                                    name="duration"
+                                    widget="float_time"
+                                    class="oe_inline"
+                                />
                                 <span class="ps-2">hours</span>
                             </div>
                         </group>
                     </group>
                     <notebook>
-                        <page name="description" string="Description" icon="fa-file-text-o">
+                        <page
+                            name="description"
+                            string="Description"
+                            icon="fa-file-text-o"
+                        >
                             <field name="description" />
                         </page>
-                        <page name="calendar" string="Calendar" icon="fa-calendar" badge="attendance_count">
+                        <page
+                            name="calendar"
+                            string="Calendar"
+                            icon="fa-calendar"
+                            badge="attendance_count"
+                        >
                             <group>
                                 <label for="calendar_id" />
                                 <div class="o_row">
-                                    <field name="calendar_id" options="{'no_create': True, 'no_open':True}" />
+                                    <field
+                                        name="calendar_id"
+                                        options="{'no_create': True, 'no_open':True}"
+                                    />
                                     <button
                                         name="action_default_attendance"
                                         type="object"
                                         string="Apply"
                                         confirm="This action will override already selected attendance. Do you want to continue?"
-                                        attrs="{'invisible': [('calendar_id', '=', False)]}"
+                                        invisible="not calendar_id"
                                     />
                                 </div>
                             </group>
                             <field name="attendance_count" invisible="1" />
-                            <field name="attendance_ids" attrs="{'invisible': [('calendar_id', '=', False)]}">
+                            <field name="attendance_ids" invisible="not calendar_id">
                                 <tree default_order="calendar_id, dayofweek, hour_from">
                                     <field name="calendar_id" optional="show" />
                                     <field name="name" optional="hide" />
                                     <field name="dayofweek" />
                                     <field name="day_period" optional="show" />
                                     <field name="hour_from" widget="float_time" />
-                                    <field name="hour_to" widget="float_time" optional="show" />
+                                    <field
+                                        name="hour_to"
+                                        widget="float_time"
+                                        optional="show"
+                                    />
                                 </tree>
                             </field>
-                            <p class="text-center" attrs="{'invisible': [('calendar_id', '!=', False)]}">
+                            <p class="text-center" invisible="calendar_id">
                                 Please choose calendar resource for this service
                             </p>
                         </page>
-                        <page name="employee" string="Practitioner" icon="fa-users" badge="employee_count">
+                        <page
+                            name="employee"
+                            string="Practitioner"
+                            icon="fa-users"
+                            badge="employee_count"
+                        >
                             <field name="employee_count" invisible="1" />
                             <field name="employee_ids">
                                 <tree default_order="department_id, name">
@@ -266,11 +334,19 @@
                                 class="btn-secondary oe_edit_only"
                             />
                         </page>
-                        <page name="extra" string="Extra Info" groups="base.group_no_one">
+                        <page
+                            name="extra"
+                            string="Extra Info"
+                            groups="base.group_no_one"
+                        >
                             <group>
                                 <field name="sequence" />
                                 <field name="color" widget="color_picker" />
-                                <field name="editable" widget="boolean_toggle" class="ms-4" />
+                                <field
+                                    name="editable"
+                                    widget="boolean_toggle"
+                                    class="ms-4"
+                                />
                             </group>
                         </page>
                     </notebook>
@@ -283,7 +359,9 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ni.service</field>
         <field name="view_mode">kanban,tree,form</field>
-        <field name="context">{'search_default_service': 1, 'no_create_event': 0}</field>
+        <field
+            name="context"
+        >{'search_default_service': 1, 'no_create_event': 0}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">No Service found</p>
         </field>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2024 NSTDA
   -->
@@ -40,11 +40,20 @@
                     name="last_fiscal_year"
                     domain="[('start', '&gt;=', ((context_today() - relativedelta(years=1)).strftime('%Y-10-01') if context_today().month &gt;= 10 else (context_today() - relativedelta(years=2)).strftime('%Y-10-01'))), ('start', '&lt;', (context_today().strftime('%Y-10-01') if context_today().month &gt;= 10 else (context_today() - relativedelta(years=1)).strftime('%Y-10-01')))]"
                 />
-                <filter name="group_service_category_id" context="{'group_by': 'service_category_id'}" />
-                <filter name="group_plan_patient_ids" context="{'group_by': 'plan_patient_ids'}" />
+                <filter
+                    name="group_service_category_id"
+                    context="{'group_by': 'service_category_id'}"
+                />
+                <filter
+                    name="group_plan_patient_ids"
+                    context="{'group_by': 'plan_patient_ids'}"
+                />
                 <filter name="group_start" context="{'group_by': 'start:month'}" />
                 <searchpanel view_types="list">
-                    <field name="service_category_id" invisible="context.get('default_service_category_id')" />
+                    <field
+                        name="service_category_id"
+                        invisible="context.get('default_service_category_id')"
+                    />
                 </searchpanel>
             </search>
         </field>
@@ -60,7 +69,7 @@
                         name="web_ribbon"
                         title="Archived"
                         bg_color="bg-danger"
-                        attrs="{'invisible': [('active', '=', True)]}"
+                        invisible="active"
                     />
                     <field name="res_model" invisible="1" />
                     <field name="res_id" invisible="1" />
@@ -82,7 +91,8 @@
                                 placeholder="Service Name..."
                                 options="{'no_create': True, 'no_open': True}"
                                 domain="[('category_ids', 'not in', [%(ni_service.categ_routine)d]), '|', ('specialty_ids', '=', False), ('specialty_ids', '=', user_specialty)]"
-                                attrs="{'invisible': [('mode', '!=', 'single')], 'required': [('mode', '=', 'single')]}"
+                                invisible="mode != 'single'"
+                                required="mode == 'single'"
                             />
                             <field
                                 name="service_ids"
@@ -91,7 +101,8 @@
                                 widget="many2many_tags"
                                 options="{'color_field': 'color', 'always_reload': True, 'no_create': True}"
                                 force_save="1"
-                                attrs="{'invisible': [('mode', '!=', 'multi')], 'required': [('mode', '=', 'multi')]}"
+                                invisible="mode != 'multi'"
+                                required="mode == 'multi'"
                             />
                         </h2>
                     </div>
@@ -111,7 +122,7 @@
                             <field
                                 name="stop"
                                 string="Ending At"
-                                attrs="{'invisible': [('service_calendar_count', '!=', 0)]}"
+                                invisible="service_calendar_count != 0"
                             />
                             <field name="dayofweek" invisible="1" />
                             <field name="service_attendance_id" invisible="1" />
@@ -119,8 +130,8 @@
                             <field name="service_calendar_count" invisible="1" />
                             <field
                                 name="calendar_id"
-                                attrs="{'invisible': [('service_calendar_count', '&lt;', 1)]}"
                                 widget="radio"
+                                invisible="service_calendar_count &lt; 1"
                             />
                             <field name="service_attendance_count" invisible="1" />
                             <field name="attendance_id" invisible="1" />
@@ -128,7 +139,8 @@
                                 name="attendance_ids"
                                 widget="many2many_checkboxes"
                                 force_save="1"
-                                attrs="{'required': [('service_attendance_count', '&gt;', 0)],'invisible': [('service_attendance_count', '=', 0)]}"
+                                required="service_attendance_count &gt; 0"
+                                invisible="service_attendance_count == 0"
                             />
                             <label for="duration" />
                             <div class="o_row">
@@ -136,7 +148,7 @@
                                     name="duration"
                                     class="oe_inline"
                                     widget="float_time"
-                                    attrs="{'readonly': [('attendance_id', '!=', False)]}"
+                                    readonly="attendance_id"
                                 />
                                 <span>hours</span>
                             </div>
@@ -165,7 +177,11 @@
                         </group>
                     </group>
                     <group>
-                        <field name="plan_patient_ids" widget="many2many_tags_avatar" placeholder="Add patients..." />
+                        <field
+                            name="plan_patient_ids"
+                            widget="many2many_tags_avatar"
+                            placeholder="Add patients..."
+                        />
                     </group>
                     <notebook>
                         <page
@@ -173,7 +189,7 @@
                             string="Encounter"
                             badge="encounter_count"
                             icon="fa-users"
-                            attrs="{'invisible': [('encounter_count', '=', 0)]}"
+                            invisible="encounter_count == 0"
                         >
                             <field name="encounter_count" invisible="1" />
                             <field name="encounter_ids">
@@ -230,32 +246,32 @@
                     name="patient_ids"
                     widget="many2many_tags_avatar"
                     options="{'block': True, 'icon': 'fa fa-users', 'color_field': 'color'}"
-                    attrs="{'invisible': [('patient_count', '=', 0)]}"
+                    invisible="patient_count == 0"
                 />
                 <field
                     name="service_category_id"
                     options="{'block': True, 'icon': 'fa fa-folder', 'color_field': 'color'}"
-                    attrs="{'invisible': [('service_category_id', '=', False)]}"
                     widget="badge"
                     filters="1"
+                    invisible="not service_category_id"
                 />
                 <field
                     name="service_type_id"
                     options="{'block': True, 'icon': 'fa fa-th-large', 'color_field': 'color'}"
-                    attrs="{'invisible': [('service_type_id', '=', False)]}"
                     widget="badge"
                     filters="1"
+                    invisible="not service_type_id"
                 />
                 <field name="is_highlighted" invisible="1" />
                 <field name="is_organizer_alone" invisible="1" />
                 <field name="display_description" invisible="1" />
-                <field name="location" attrs="{'invisible': [('location', '=', False)]}" />
-                <field name="description" attrs="{'invisible': [('display_description', '=', False)]}" />
+                <field name="location" invisible="not location" />
+                <field name="description" invisible="not display_description" />
                 <field
                     name="plan_patient_ids"
                     options="{'block': True, 'icon': 'fa fa-address-book-o'}"
                     widget="many2many_tags"
-                    attrs="{'invisible': [('display_plan_patient', '=', False)]}"
+                    invisible="not display_plan_patient"
                 />
                 <field name="display_plan_patient" invisible="1" />
             </calendar>
@@ -269,8 +285,18 @@
                 <field name="name" decoration-bf="1" />
                 <field name="start" string="Start Date" readonly="1" />
                 <field name="user_id" widget="many2one_avatar_user" optional="hide" />
-                <field name="partner_ids" widget="many2many_tags" optional="show" options="{'color_field': 'color'}" />
-                <field name="categ_ids" widget="many2many_tags" optional="hide" options="{'color_field': 'color'}" />
+                <field
+                    name="partner_ids"
+                    widget="many2many_tags"
+                    optional="show"
+                    options="{'color_field': 'color'}"
+                />
+                <field
+                    name="categ_ids"
+                    widget="many2many_tags"
+                    optional="hide"
+                    options="{'color_field': 'color'}"
+                />
                 <field name="description" optional="hide" />
             </tree>
         </field>
@@ -284,7 +310,11 @@
                     <field name="mode" invisible="1" />
                     <field name="company_id" invisible="1" />
                     <field name="name" invisible="1" />
-                    <field name="service_category_id" options="{'no_open': True}" invisible="1" />
+                    <field
+                        name="service_category_id"
+                        options="{'no_open': True}"
+                        invisible="1"
+                    />
                     <field name="service_id" invisible="1" />
                     <field name="plan_patient_ids" widget="many2many_tags_avatar" />
                     <field
@@ -305,19 +335,29 @@
                     </div>
                     <label for="duration" />
                     <div class="o_row">
-                        <field name="duration" widget="float_time" force_save="1" class="o_narrow_field" />
+                        <field
+                            name="duration"
+                            widget="float_time"
+                            force_save="1"
+                            class="o_narrow_field"
+                        />
                         <span class="mx-1">hours</span>
                     </div>
                     <label for="image_1" string="Image" />
                     <field name="has_image" invisible="1" />
                     <div class="o_row">
-                        <field name="image_1" widget="image" class="oe_avatar" options="{'zoom': true}" />
+                        <field
+                            name="image_1"
+                            widget="image"
+                            class="oe_avatar"
+                            options="{'zoom': true}"
+                        />
                         <field
                             name="image_2"
                             widget="image"
                             class="oe_avatar"
                             options="{'zoom': true}"
-                            attrs="{'invisible': [('image_1', '=', False)]}"
+                            invisible="not image_1"
                         />
                     </div>
                     <field name="color" invisible="1" />
@@ -377,25 +417,47 @@
                                             <span class="fa fa-ellipsis-v" />
                                         </a>
                                         <div class="dropdown-menu" role="menu">
-                                            <a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">
+                                            <a
+                                                t-if="widget.editable"
+                                                role="menuitem"
+                                                type="edit"
+                                                class="dropdown-item"
+                                            >
                                                 Edit
                                             </a>
-                                            <div role="separator" class="dropdown-divider" />
-                                            <ul class="oe_kanban_colorpicker" data-field="color" />
+                                            <div
+                                                role="separator"
+                                                class="dropdown-divider"
+                                            />
+                                            <ul
+                                                class="oe_kanban_colorpicker"
+                                                data-field="color"
+                                            />
                                         </div>
                                     </div>
                                 </div>
                                 <div t-if="record.has_image.raw_value">
-                                    <field name="image_1" widget="image" style="margin: 4px -8px;" />
+                                    <field
+                                        name="image_1"
+                                        widget="image"
+                                        style="margin: 4px -8px;"
+                                    />
                                 </div>
                                 <field name="name" />
                                 <div class="o_kanban_record_body mt-2">
                                     <div class="small text-muted">
-                                        <i class="fa fa-clock-o me-1" aria-hidden="true" title="start" />
+                                        <i
+                                            class="fa fa-clock-o me-1"
+                                            aria-hidden="true"
+                                            title="start"
+                                        />
                                         <field name="start" widget="remaining_days" />
                                     </div>
                                     <div class="mt-2">
-                                        <field name="plan_patient_ids" widget="many2many_tags_avatar" />
+                                        <field
+                                            name="plan_patient_ids"
+                                            widget="many2many_tags_avatar"
+                                        />
                                     </div>
                                 </div>
                             </div>

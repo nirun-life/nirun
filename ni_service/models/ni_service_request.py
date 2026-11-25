@@ -49,11 +49,10 @@ class ServiceRequest(models.Model):
     @api.depends("attendance_ids.service_event_id")
     def _compute_event_count(self):
         attendances = self.env["ni.encounter.service.attendance"].sudo()
-        grp = attendances.read_group(
+        grp = attendances._read_group(
             [("request_id", "in", self.ids), ("service_event_id", "!=", False)],
             ["request_id", "service_event_id"],
-            ["request_id", "service_event_id"],
-            lazy=False,
+            ["__count"],
         )
         data = defaultdict(set)
         for res in grp:

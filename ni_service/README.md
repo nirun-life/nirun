@@ -1,18 +1,22 @@
 # Service (`ni_service`)
 
-`ni_service` is the Nirun Odoo 16.0 module for healthcare service cataloging, service requests, scheduled service delivery, and
-encounter attendance tracking. It bridges clinical requests with `calendar.event` records and keeps the service timeline linked
-to patients, encounters, and requests.
+`ni_service` is the Nirun Odoo 16.0 module for healthcare service cataloging, service
+requests, scheduled service delivery, and encounter attendance tracking. It bridges
+clinical requests with `calendar.event` records and keeps the service timeline linked to
+patients, encounters, and requests.
 
 ## What This Module Owns
 
 - Service catalog records and vocabularies.
-- Service requests that follow the workflow/timing/period stack used by other clinical request models.
+- Service requests that follow the workflow/timing/period stack used by other clinical
+  request models.
 - Calendar-backed service events.
 - Encounter attendance records that can be matched back to the originating request.
-- Small extensions to related Odoo models such as `calendar.event`, `res.company`, `hr.job`, and `resource.calendar.attendance`.
+- Small extensions to related Odoo models such as `calendar.event`, `res.company`,
+  `hr.job`, and `resource.calendar.attendance`.
 - Company-level control over whether services can belong to multiple categories.
-- Service categories and service types that can be either company-private or shared across companies.
+- Service categories and service types that can be either company-private or shared
+  across companies.
 
 ## Core Models
 
@@ -132,7 +136,8 @@ Encounter timeline / reporting
 
 ## Database Indexes
 
-`models/ni_service_event.py` declares indexes that were first created by hand on production:
+`models/ni_service_event.py` declares indexes that were first created by hand on
+production:
 
 | Index                                               | Definition                                                              |
 | --------------------------------------------------- | ----------------------------------------------------------------------- |
@@ -142,9 +147,10 @@ Encounter timeline / reporting
 | `ni_service_event_displayed_image_id_index`         | `btree_not_null`; attachment FK checks on delete                        |
 | `calendar_event_message_main_attachment_id_index`   | `btree_not_null`; attachment FK checks on delete                        |
 
-Invariant: keep these names unchanged. Odoo skips an index by name, so a rename makes `-u` run a write-blocking `CREATE INDEX`
-on multi-million-row production tables.
+Invariant: keep these names unchanged. Odoo skips an index by name, so a rename makes
+`-u` run a write-blocking `CREATE INDEX` on multi-million-row production tables.
 
-Invariant: `ServiceEvent.create()` clears `active_model`/`active_id` from the context. Otherwise `calendar.event.default_get`
-links the event to the record the form was opened from (for example `ni.patient`), and `calendar.event.create` adds a Meeting
+Invariant: `ServiceEvent.create()` clears `active_model`/`active_id` from the context.
+Otherwise `calendar.event.default_get` links the event to the record the form was opened
+from (for example `ni.patient`), and `calendar.event.create` adds a Meeting
 `mail.activity` on it for every service event.
