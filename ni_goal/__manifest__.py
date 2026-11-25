@@ -3,7 +3,7 @@
 {
     "name": "Goal",
     "summary": "Patient care goals and goal achievement tracking",
-    "version": "16.0.0.2.0",
+    "version": "16.0.0.2.1",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
