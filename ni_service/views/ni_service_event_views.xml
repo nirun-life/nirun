@@ -50,10 +50,7 @@
                 />
                 <filter name="group_start" context="{'group_by': 'start:month'}" />
                 <searchpanel view_types="list">
-                    <field
-                        name="service_category_id"
-                        invisible="context.get('default_service_category_id')"
-                    />
+                    <field name="service_category_id" />
                 </searchpanel>
             </search>
         </field>
@@ -73,7 +70,6 @@
                     />
                     <field name="res_model" invisible="1" />
                     <field name="res_id" invisible="1" />
-                    <field name="attendee_status" invisible="1" />
                     <field name="active" invisible="1" />
                     <field name="event_id" invisible="1" />
                     <field name="privacy" invisible="1" />
@@ -166,7 +162,7 @@
                                     widget="many2many_tags_avatar"
                                     placeholder="Add practitioner..."
                                     string="Practitioner"
-                                    domain="[('type','!=','private'), ('is_company', '=', False)]"
+                                    domain="[('is_company', '=', False)]"
                                     options="{'no_create': True}"
                                 />
                                 <p class="text-muted small">
@@ -224,7 +220,7 @@
                 date_delay="duration"
                 all_day="allday"
                 mode="month"
-                quick_add="0"
+                quick_create="0"
                 event_open_popup="1"
                 color="user_id"
             >
@@ -233,7 +229,6 @@
                     filters="1"
                     options="{'block': True, 'icon': 'fa fa-calendar', 'no_open': True}"
                 />
-                <field name="attendee_status" invisible="1" />
                 <field
                     name="user_id"
                     filters="1"
@@ -320,7 +315,7 @@
                     <field
                         name="service_ids"
                         widget="many2many_checkboxes"
-                        domain="[('category_ids', 'in', service_category_id)]"
+                        domain="[('category_ids', '=', service_category_id)]"
                     />
                     <label for="start" string="Working Time" />
                     <div>
@@ -385,6 +380,22 @@
                 <field name="company_id" />
                 <field name="has_image" />
                 <templates>
+                    <t
+                        t-name="kanban-menu"
+                        t-if="!selection_mode"
+                        groups="base.group_user"
+                    >
+                        <a
+                            t-if="widget.editable"
+                            role="menuitem"
+                            type="edit"
+                            class="dropdown-item"
+                        >
+                            Edit
+                        </a>
+                        <div role="separator" class="dropdown-divider" />
+                        <ul class="oe_kanban_colorpicker" data-field="color" />
+                    </t>
                     <t t-name="kanban-box">
                         <div
                             t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) : ''}} oe_kanban_card oe_kanban_global_click"
@@ -397,41 +408,6 @@
                                                 name="service_category_ids"
                                                 widget="many2many_tags"
                                                 options="{'color_field': 'color'}"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="o_dropdown_kanban dropdown"
-                                        t-if="!selection_mode"
-                                        groups="base.group_user"
-                                    >
-                                        <a
-                                            role="button"
-                                            class="dropdown-toggle o-no-caret btn"
-                                            data-bs-toggle="dropdown"
-                                            data-bs-display="static"
-                                            href="#"
-                                            aria-label="Dropdown menu"
-                                            title="Dropdown menu"
-                                        >
-                                            <span class="fa fa-ellipsis-v" />
-                                        </a>
-                                        <div class="dropdown-menu" role="menu">
-                                            <a
-                                                t-if="widget.editable"
-                                                role="menuitem"
-                                                type="edit"
-                                                class="dropdown-item"
-                                            >
-                                                Edit
-                                            </a>
-                                            <div
-                                                role="separator"
-                                                class="dropdown-divider"
-                                            />
-                                            <ul
-                                                class="oe_kanban_colorpicker"
-                                                data-field="color"
                                             />
                                         </div>
                                     </div>
