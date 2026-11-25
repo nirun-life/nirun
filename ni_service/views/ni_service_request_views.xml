@@ -150,68 +150,43 @@
         <field name="name">ni.service.request.view.kanban</field>
         <field name="model">ni.service.request</field>
         <field name="arch" type="xml">
-            <kanban>
-                <field name="color" />
-                <field name="category_id" />
-                <field name="name" />
+            <kanban highlight_color="color">
                 <field name="service_count" />
-                <field name="service_ids" />
-                <field name="timing_id" />
-                <field name="event_count" />
                 <templates>
                     <t t-name="card">
-                        <div
-                            t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_card oe_kanban_global_click"
-                        >
-                            <div class="oe_kanban_details">
-                                <ul>
-                                    <li>
-                                        <t t-if="record.service_count.raw_value &gt; 1">
-                                            <field
-                                                class="h6 lh-base"
-                                                name="service_ids"
-                                                widget="many2many_tags"
-                                                options="{'color_field': 'color'}"
-                                            />
-                                        </t>
-                                        <t t-else="">
-                                            <field name="name" />
-                                        </t>
-                                    </li>
-                                    <li t-if="record.category_id.raw_value">
-                                        <i
-                                            class="fa fa-th-large me-2 text-muted"
-                                            title="Occurrence"
-                                        />
-                                        <label
-                                            for="category_id"
-                                            class="small text-muted me-2"
-                                        >Category :</label>
-                                        <field name="category_id" />
-                                    </li>
-                                    <li>
-                                        <i
-                                            class="fa fa-clock-o me-2 text-primary"
-                                            title="Occurrence"
-                                        />
-                                        <label
-                                            for="timing_id"
-                                            class="small text-muted me-2"
-                                        >Occurrence :</label>
-                                        <field name="timing_id" />
-                                    </li>
-                                    <li t-if="record.event_count.raw_value &gt; 0">
-                                        <i
-                                            class="fa fa-calendar-check-o me-2 text-success"
-                                            title="Events"
-                                        />
-                                        <field name="event_count" />
-                                        <span
-                                            class="small text-muted ms-1"
-                                        >events</span>
-                                    </li>
-                                </ul>
-                            </div>
+                        <field
+                            t-if="record.service_count.raw_value &gt; 1"
+                            class="h6 lh-base"
+                            name="service_ids"
+                            widget="many2many_tags"
+                            options="{'color_field': 'color'}"
+                        />
+                        <t t-else="">
+                            <field name="name" />
+                        </t>
+                        <div t-if="record.category_id.raw_value">
+                            <i
+                                class="fa fa-th-large me-2 text-muted"
+                                title="Category"
+                            />
+                            <span class="small text-muted me-2">Category :</span>
+                            <field name="category_id" />
+                        </div>
+                        <div>
+                            <i
+                                class="fa fa-clock-o me-2 text-primary"
+                                title="Occurrence"
+                            />
+                            <span class="small text-muted me-2">Occurrence :</span>
+                            <field name="timing_id" />
+                        </div>
+                        <div t-if="record.event_count.raw_value &gt; 0">
+                            <i
+                                class="fa fa-calendar-check-o me-2 text-success"
+                                title="Events"
+                            />
+                            <field name="event_count" />
+                            <span class="small text-muted ms-1">events</span>
                         </div>
                     </t>
                 </templates>

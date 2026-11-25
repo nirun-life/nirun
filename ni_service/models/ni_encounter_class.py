@@ -6,4 +6,6 @@ class EncounterClass(models.Model):
     _inherit = "ni.encounter.class"
 
     service_calendar_id = fields.Many2one("resource.calendar")
-    service_ids = fields.Many2many("ni.service", help="Default Service")
+    service_ids = fields.Many2many(
+        "ni.service", string="Services", help="Default Service"
+    )

@@ -2,12 +2,11 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
 
-from pytz import timezone
+from pytz import UTC, timezone
 
-from odoo import SUPERUSER_ID, _, api, fields, models, tools
+from odoo import api, fields, models, tools
 from odoo.exceptions import UserError
 from odoo.fields import Command
-from odoo.tools import pytz
 
 
 class Event(models.Model):
@@ -57,10 +56,10 @@ class ServiceEvent(models.Model):
         return res
 
     @api.model
-    def _read_group_category_ids(self, category, domain, order):
+    def _read_group_category_ids(self, categories, domain):
         # We need this to show all service category on kanban view
-        category_ids = category._search([], order=order, access_rights_uid=SUPERUSER_ID)
-        return category.browse(category_ids)
+        category_ids = categories.sudo()._search([], order=categories._order)
+        return categories.browse(category_ids)
 
     name = fields.Char(related="event_id.name", inherited=True, string="Event Name")
 
@@ -100,6 +99,7 @@ class ServiceEvent(models.Model):
         "ni_service_event_rel",
         "event_id",
         "service_id",
+        string="Services",
         ondelete="restrict",
         check_company=True,
         domain=lambda self: [
@@ -126,7 +126,9 @@ class ServiceEvent(models.Model):
         "resource.calendar", domain="[('id', 'in', service_calendar_ids)]"
     )
     service_calendar_ids = fields.Many2many(
-        related="service_id.calendar_ids", help="Use to filter calendar_id"
+        related="service_id.calendar_ids",
+        string="Service Calendars",
+        help="Use to filter calendar_id",
     )
     service_calendar_count = fields.Integer(related="service_id.calendar_count")
 
@@ -140,11 +142,14 @@ class ServiceEvent(models.Model):
     )
     attendance_ids = fields.Many2many(
         "resource.calendar.attendance",
+        string="Attendances",
         domain="[('calendar_id', '=', calendar_id), ('dayofweek', '=?', dayofweek), "
         "('id', 'in', service_attendance_id)]",
     )
     service_attendance_id = fields.Many2many(
-        related="service_id.attendance_ids", help="Use to filter attendance_id"
+        related="service_id.attendance_ids",
+        string="Service Attendances",
+        help="Use to filter attendance_id",
     )
     service_attendance_count = fields.Integer(related="service_id.attendance_count")
     dayofweek = fields.Selection(
@@ -376,7 +381,7 @@ class ServiceEvent(models.Model):
         minutes = round((float_time - hours) * 60)
 
         local_dt = start_of_day + timedelta(hours=hours, minutes=minutes)
-        return local_dt.astimezone(pytz.UTC).replace(tzinfo=None)
+        return local_dt.astimezone(UTC).replace(tzinfo=None)
 
     def _get_local_date(self):
         """Day of the event for the user: ``start`` is in UTC"""
@@ -416,7 +421,7 @@ class ServiceEvent(models.Model):
             if (rec.mode == "single" and not rec.service_id) or (
                 rec.mode == "multi" and not rec.service_ids
             ):
-                raise UserError(_("Please select at least one service"))
+                raise UserError(self.env._("Please select at least one service"))
             if rec.mode == "single" and rec.service_count > 1:
                 rec.service_ids = [Command.set([rec.service_id.id])]
             if rec.mode == "multi":
@@ -436,7 +441,7 @@ class ServiceEvent(models.Model):
             if not rec.service_id or not rec.service_attendance_id:
                 continue
             if not rec.calendar_id or not rec.attendance_ids:
-                raise UserError(_("Please specify calendar and attendance"))
+                raise UserError(self.env._("Please specify calendar and attendance"))
 
             if rec.attendance_ids[0].calendar_id != rec.calendar_id:
                 rec.attendance_ids = None
@@ -451,5 +456,5 @@ class ServiceEvent(models.Model):
             for att in attends:
                 diff = att.hour_from - end_hour
                 if diff > 0.1668:
-                    raise UserError(_("Attendance times must be sequential"))
+                    raise UserError(self.env._("Attendance times must be sequential"))
                 end_hour = att.hour_to
