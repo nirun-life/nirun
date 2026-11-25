@@ -1,7 +1,7 @@
 #  Copyright (c) 2024 NSTDA
 from datetime import datetime
 
-from pytz import timezone
+from pytz import UTC
 
 from odoo import api, fields, models
 
@@ -32,29 +32,26 @@ class Encounter(models.Model):
 
     def action_generate_service_resource(self):
         self.ensure_one()
+        local_start = fields.Datetime.context_timestamp(self, self.period_start)
         attendance_ids = self.env["resource.calendar.attendance"].search(
             [
                 ("calendar_id", "=", self.resource_calendar_id.id),
-                (
-                    "dayofweek",
-                    "=",
-                    self.period_start.astimezone(timezone(self.env.user.tz)).weekday(),
-                ),
+                ("dayofweek", "=", str(local_start.weekday())),
             ]
         )
         service_ids = self.env["ni.service"].search(
             [("attendance_ids", "in", attendance_ids.ids)]
         )
-        date_start = datetime.combine(self.period_start, datetime.min.time()).strftime(
-            "%Y-%m-%d %H:%M:%S"
+        # events of the day of the user, as for the day of week above
+        date_start, date_end = (
+            local_start.tzinfo.localize(datetime.combine(local_start.date(), time))
+            .astimezone(UTC)
+            .replace(tzinfo=None)
+            for time in (datetime.min.time(), datetime.max.time())
         )
-        date_end = datetime.combine(self.period_start, datetime.max.time()).strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-
         event_ids = self.env["ni.service.event"].search(
             [
-                ("attendance_id", "in", attendance_ids.ids),
+                ("attendance_ids", "in", attendance_ids.ids),
                 ("start", ">=", date_start),
                 ("start", "<=", date_end),
             ]
