@@ -65,7 +65,8 @@ class TestServiceCategories(TestServiceCommon):
         groups = (
             self.env["ni.service.event"]
             .with_user(self.service_user)
-            .web_read_group([], [], ["service_category_id"])["groups"]
+            .with_context(read_group_expand=True)
+            .web_read_group([], ["service_category_id"], ["__count"])["groups"]
         )
         ids = [g["service_category_id"][0] for g in groups if g["service_category_id"]]
         self.assertIn(empty.id, ids)

@@ -1,6 +1,6 @@
 # Service (`ni_service`)
 
-`ni_service` is the Nirun Odoo 18.0 module for healthcare service cataloging, service
+`ni_service` is the Nirun Odoo 19.0 module for healthcare service cataloging, service
 requests, scheduled service delivery, and encounter attendance tracking. It bridges
 clinical requests with `calendar.event` records and keeps the service timeline linked to
 patients, encounters, and requests.
