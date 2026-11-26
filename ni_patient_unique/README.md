@@ -1,6 +1,6 @@
 # Patients - Unique (`ni_patient_unique`)
 
-Odoo 16.0 auto-installed addon that enforces company- and nationality-scoped uniqueness
+Odoo 17.0 auto-installed addon that enforces company- and nationality-scoped uniqueness
 for patient identification IDs.
 
 ## Purpose
@@ -20,6 +20,8 @@ nationality combination.
 - `models/ni_patient.py` redefines `identification_id` as a stored field.
 - The module adds a SQL constraint on `(company_id, nationality_id, identification_id)`
   with a patient-specific error message.
+- Patients without identification ID or without nationality are not compared (`NULL` in
+  the constraint).
 - The module is `auto_install=True`, so it is intended to apply automatically alongside
   `ni_patient`.
 
