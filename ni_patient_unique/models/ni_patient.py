@@ -1,5 +1,5 @@
 #  Copyright (c) 2025 NSTDA
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class Patient(models.Model):
@@ -11,6 +11,6 @@ class Patient(models.Model):
         (
             "identification_id__uniq",
             "unique (company_id, nationality_id, identification_id)",
-            _("Patient's identification ID must be unique!"),
+            "Patient's identification ID must be unique!",
         ),
     ]
