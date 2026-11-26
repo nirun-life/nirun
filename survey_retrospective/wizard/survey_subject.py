@@ -16,7 +16,7 @@ class SurveySubjectWizard(models.TransientModel):
     survey_date = fields.Datetime()
 
     def subject_get(self):
-        res = super(SurveySubjectWizard, self).subject_get()
+        res = super().subject_get()
         if self.retrospective:
             res.update({"retrospective": True})
         return res
