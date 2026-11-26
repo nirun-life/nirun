@@ -1,6 +1,6 @@
 # Patients - Birthdate Est. (`ni_patient_birthdate_est`)
 
-Odoo 16.0 module that marks estimated birthdates explicitly and normalizes them to
+Odoo 17.0 module that marks estimated birthdates explicitly and normalizes them to
 `1 January` when the exact day and month are unknown.
 
 ## Purpose
@@ -10,11 +10,10 @@ and encounter workflows can distinguish between exact dates and year-only estima
 
 ## Main Models
 
-| Model          | Role                                                    |
-| -------------- | ------------------------------------------------------- |
-| `res.partner`  | Stores the estimate flag and SQL constraint             |
-| `ni.patient`   | Exposes the estimate flag through the patient record    |
-| `ni.encounter` | Keeps the same onchange behavior in encounter workflows |
+| Model         | Role                                                 |
+| ------------- | ---------------------------------------------------- |
+| `res.partner` | Stores the estimate flag and SQL constraint          |
+| `ni.patient`  | Exposes the estimate flag through the patient record |
 
 ## Behavior
 
@@ -22,10 +21,10 @@ and encounter workflows can distinguish between exact dates and year-only estima
   requiring estimated birthdates to use day `1`.
 - The constraint checks the day only, not the month. The flag is not required: partners
   older than the module have no value.
-- Onchange handlers in `res.partner`, `ni.patient`, and `ni.encounter` normalize the
-  date to `1 January` of the selected year whenever the estimate flag is turned on.
-- `views/ni_patient_views.xml` exposes the estimated-birthdate behavior in the patient
-  form.
+- An onchange in `ni.patient` normalizes the date to `1 January` of the selected year
+  when the estimate flag is turned on. The encounter form does not show the flag, so
+  `ni.encounter` and `res.partner` have no onchange of their own.
+- `views/ni_patient_views.xml` shows the flag next to the birthdate of the patient form.
 
 ## Dependencies
 
@@ -33,6 +32,6 @@ and encounter workflows can distinguish between exact dates and year-only estima
 
 ## Verification
 
-- Re-check patient and encounter forms to confirm enabling the estimate flag rewrites
-  the date to `1 January`.
+- Re-check the patient form to confirm enabling the estimate flag rewrites the date to
+  `1 January`.
 - Confirm records with estimated birthdates cannot violate the SQL constraint.
