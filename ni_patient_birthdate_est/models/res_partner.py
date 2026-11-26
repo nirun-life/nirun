@@ -13,6 +13,10 @@ class Partner(models.Model):
     )
 
     _birthdate_estimate_check = models.Constraint(
-        "CHECK (\n                birthdate_estimate is FALSE or\n                birthdate_estimate is NULL or\n                (birthdate_estimate is TRUE and EXTRACT(DAY FROM birthdate) = 1)\n            )",
+        """CHECK (
+                birthdate_estimate is FALSE or
+                birthdate_estimate is NULL or
+                (birthdate_estimate is TRUE and EXTRACT(DAY FROM birthdate) = 1)
+            )""",
         "Birth date must be 1 January",
     )
