@@ -1,5 +1,9 @@
 # Patients - Firstname and Lastname (`ni_patient_firstname`)
 
+> **Retired (decision D12, nirun-life/nirun#194).** This module is not ported to 17.0, 18.0 or 19.0. Patients keep the single
+> `res.partner.name` field. It is uninstalled at the 19.0 cutover together with `partner_firstname` (nirun-life/nirun#211),
+> after a copy of the first and last names.
+
 Odoo 16.0 auto-installed addon that adapts the patient form to use split first-name and last-name fields from
 `partner_firstname`.
 
