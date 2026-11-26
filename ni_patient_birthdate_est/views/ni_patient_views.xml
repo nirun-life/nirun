@@ -4,29 +4,21 @@
   -->
 <odoo>
     <record id="ni_patient_view_form" model="ir.ui.view">
-        <field name="name">ni.patient.view.form.inherit.religion</field>
+        <field name="name">ni.patient.view.form.inherit.birthdate.estimate</field>
         <field name="model">ni.patient</field>
         <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
         <field name="priority">100</field>
         <field name="arch" type="xml">
             <field name="birthdate" position="replace">
-                <label class="mr-2" for="birthdate" />
+                <label for="birthdate" />
                 <div class="o_row">
-                    <field name="birthdate" />
-                    <span>
-                        <field name="birthdate_estimate" class="oe_edit_only" />
-                        <label
-                            string="Estimate"
-                            class="oe_edit_only"
-                            for="birthdate_estimate"
-                        />
-                        <label
-                            string="Estimate"
-                            class="oe_read_only"
-                            for="birthdate_estimate"
-                            invisible="not birthdate_estimate"
-                        />
-                    </span>
+                    <field
+                        name="birthdate"
+                        placeholder="e.g. 31/01/1950"
+                        class="me-2"
+                    />
+                    <field name="birthdate_estimate" />
+                    <label string="Estimate" for="birthdate_estimate" />
                 </div>
             </field>
         </field>
