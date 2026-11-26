@@ -1,6 +1,6 @@
 #  Copyright (c) 2021-2023 NSTDA
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -29,6 +29,6 @@ class SurveySubjectWizard(models.TransientModel):
     @api.constrains("retrospective", "survey_date")
     def check_survey_date(self):
         if self.retrospective and not self.survey_date:
-            raise ValidationError(_("Survey date is require!"))
+            raise ValidationError(self.env._("Survey date is require!"))
         if self.survey_date and self.survey_date >= fields.Datetime.now():
-            raise ValidationError(_("Survey date must not be in future!"))
+            raise ValidationError(self.env._("Survey date must not be in future!"))
