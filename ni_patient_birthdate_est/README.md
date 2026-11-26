@@ -1,6 +1,6 @@
 # Patients - Birthdate Est. (`ni_patient_birthdate_est`)
 
-Odoo 17.0 module that marks estimated birthdates explicitly and normalizes them to
+Odoo 18.0 module that marks estimated birthdates explicitly and normalizes them to
 `1 January` when the exact day and month are unknown.
 
 ## Purpose
