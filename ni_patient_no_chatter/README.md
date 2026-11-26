@@ -1,6 +1,6 @@
 # Patients - No Chatter (`ni_patient_no_chatter`)
 
-Odoo 16.0 module that adds a context-driven way to open patient and encounter forms
+Odoo 17.0 module that adds a context-driven way to open patient and encounter forms
 without the standard chatter pane.
 
 ## Purpose
