@@ -15,12 +15,16 @@
                     <field name="birthdate" />
                     <span>
                         <field name="birthdate_estimate" class="oe_edit_only" />
-                        <label string="Estimate" class="oe_edit_only" for="birthdate_estimate" />
                         <label
                             string="Estimate"
-                            attrs="{'invisible': [('birthdate_estimate', '!=', True)]}"
+                            class="oe_edit_only"
+                            for="birthdate_estimate"
+                        />
+                        <label
+                            string="Estimate"
                             class="oe_read_only"
                             for="birthdate_estimate"
+                            invisible="not birthdate_estimate"
                         />
                     </span>
                 </div>
