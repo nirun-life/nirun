@@ -15,7 +15,6 @@ class Encounter(models.Model):
             "type": "ir.actions.act_window",
             "target": self.env.context.get("target", "main"),
             "res_id": self.ids[0],
-            "view_type": "form",
             "views": [[False, "form"]],
             "context": ctx,
         }
