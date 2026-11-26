@@ -3,7 +3,7 @@
 {
     "name": "Patients - Birthdate Est.",
     "summary": "Estimated birthdate calculation for patients with unknown dates",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.1.1",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",

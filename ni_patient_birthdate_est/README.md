@@ -20,6 +20,7 @@ between exact dates and year-only estimates.
 
 - `models/res_partner.py` adds `birthdate_estimate` and enforces a database constraint requiring estimated birthdates to use day
   `1`.
+- The constraint checks the day only, not the month. The flag is not required: partners older than the module have no value.
 - Onchange handlers in `res.partner`, `ni.patient`, and `ni.encounter` normalize the date to `1 January` of the selected year
   whenever the estimate flag is turned on.
 - `views/ni_patient_views.xml` exposes the estimated-birthdate behavior in the patient form.
