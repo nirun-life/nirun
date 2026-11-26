@@ -3,7 +3,7 @@
 {
     "name": "Survey - Retrospective",
     "summary": "Retrospective survey administration and analysis",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "development_status": "Alpha",
     "category": "Marketing/Surveys",
     "author": "NSTDA, Piruin P.",
