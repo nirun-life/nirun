@@ -36,7 +36,6 @@ class TestRetrospectiveWizard(common.TransactionCase):
         answer = self.env["survey.user_input"].search(
             [("survey_id", "=", self.survey.id)], order="id desc", limit=1
         )
-        answer.invalidate_recordset()  # create_date is rewritten with raw SQL
         return answer
 
     def test_retrospective_backdates_answer_and_marks_started(self):
