@@ -8,7 +8,6 @@ class Partner(models.Model):
     birthdate_estimate = fields.Boolean(
         "Estimate Date of Birth",
         default=False,
-        required=True,
         help="Indicate whether input birthday is estimated value, "
         "Exactly date of birth is unknown.",
     )
