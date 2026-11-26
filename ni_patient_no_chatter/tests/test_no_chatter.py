@@ -37,7 +37,7 @@ class TestNoChatter(TransactionCase):
     def test_chatter_follows_the_context(self):
         for model in ("ni.patient", "ni.encounter"):
             arch = etree.fromstring(self.env[model].get_view(view_type="form")["arch"])
-            chatter = arch.xpath("//div[@name='chatter']")
+            chatter = arch.xpath("//chatter")
             self.assertEqual(len(chatter), 1, model)
             self.assertEqual(
                 chatter[0].get("invisible"), "context.get('no_chatter', True)"
