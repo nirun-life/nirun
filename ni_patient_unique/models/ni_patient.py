@@ -7,10 +7,7 @@ class Patient(models.Model):
 
     identification_id = fields.Char(store=True)
 
-    _sql_constraints = [
-        (
-            "identification_id__uniq",
-            "unique (company_id, nationality_id, identification_id)",
-            "Patient's identification ID must be unique!",
-        ),
-    ]
+    _identification_id__uniq = models.Constraint(
+        "unique (company_id, nationality_id, identification_id)",
+        "Patient's identification ID must be unique!",
+    )
