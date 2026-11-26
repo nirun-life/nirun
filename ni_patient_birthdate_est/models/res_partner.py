@@ -12,14 +12,7 @@ class Partner(models.Model):
         "Exactly date of birth is unknown.",
     )
 
-    _sql_constraints = [
-        (
-            "birthdate_estimate_check",
-            """CHECK (
-                birthdate_estimate is FALSE or
-                birthdate_estimate is NULL or
-                (birthdate_estimate is TRUE and EXTRACT(DAY FROM birthdate) = 1)
-            )""",
-            "Birth date must be 1 January",
-        ),
-    ]
+    _birthdate_estimate_check = models.Constraint(
+        "CHECK (\n                birthdate_estimate is FALSE or\n                birthdate_estimate is NULL or\n                (birthdate_estimate is TRUE and EXTRACT(DAY FROM birthdate) = 1)\n            )",
+        "Birth date must be 1 January",
+    )
