@@ -2,6 +2,7 @@
 
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import SQL
 
 
 class SurveySubjectWizard(models.TransientModel):
@@ -20,8 +21,11 @@ class SurveySubjectWizard(models.TransientModel):
         answer = super()._create_answer()
         if self.retrospective:
             self.env.cr.execute(
-                "UPDATE survey_user_input SET create_date = %s WHERE id = %s",
-                (self.survey_date, answer.id),
+                SQL(
+                    "UPDATE survey_user_input SET create_date = %s WHERE id = %s",
+                    self.survey_date,
+                    answer.id,
+                )
             )
             answer.invalidate_recordset(["create_date"])
         return answer
