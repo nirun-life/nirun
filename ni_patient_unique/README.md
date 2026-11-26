@@ -1,6 +1,6 @@
 # Patients - Unique (`ni_patient_unique`)
 
-Odoo 18.0 auto-installed addon that enforces company- and nationality-scoped uniqueness
+Odoo 19.0 auto-installed addon that enforces company- and nationality-scoped uniqueness
 for patient identification IDs.
 
 ## Purpose
