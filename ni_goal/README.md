@@ -42,7 +42,6 @@ state-change workflow that can record comments and achievement changes.
   values) with `target_code_operator` deciding how the observed value(s) on the latest
   matching observation must relate to that set (implemented in
   `ni.goal._match_target_code`):
-
   - `=` (Match) — the observed values are exactly the same set as the target set (order
     doesn't matter).
   - `!=` (Not Match) — the observed values are not exactly the same set as the target
@@ -62,7 +61,6 @@ state-change workflow that can record comments and achievement changes.
 - For numeric measures, `ni.goal.code.target_type` decides how the template's
   `target_min`/`target_max` are derived when applied to a goal (in
   `ni.goal._onchange_code_id`):
-
   - `fix` (Fix Value) — `target_fix_min`/`target_fix_max` are copied onto the goal's
     `target_min`/`target_max` as-is, a fixed absolute range.
   - `ratio` (Ratio) — the goal's `target_min`/`target_max` are computed as the patient's
