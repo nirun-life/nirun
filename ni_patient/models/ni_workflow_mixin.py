@@ -123,6 +123,7 @@ class EventMixin(models.AbstractModel):
         "Event",
         auto_join=True,
         ondelete="cascade",
+        index=True,
         domain=lambda self: (
             f"[('res_model', '=', '{self._name}'), ('res_id', '=', id)]"
         ),
@@ -192,6 +193,7 @@ class RequestMixin(models.AbstractModel):
         "Request",
         auto_join=True,
         ondelete="cascade",
+        index=True,
         readonly=True,
         domain=lambda self: (
             f"[('res_model', '=', '{self._name}'), ('res_id', '=', id)]"
