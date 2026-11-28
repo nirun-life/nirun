@@ -11,7 +11,7 @@ class GoalState(models.Model):
     _parent_store = True
 
     parent_id = fields.Many2one("ni.goal.state", index=True, ondelete="set null")
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
 
     achievement_id = fields.Many2one(
         "ni.goal.achievement",

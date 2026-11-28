@@ -33,7 +33,7 @@ class Encounter(models.Model):
             "name": _("Goal"),
             "res_model": "ni.goal",
             "type": "ir.actions.act_window",
-            "view_mode": "kanban,tree,form",
+            "view_mode": "kanban,list,form",
             "domain": [("patient_id", "=", self.patient_id.id)],
             "context": {
                 "default_patient_id": self.patient_id.id,
