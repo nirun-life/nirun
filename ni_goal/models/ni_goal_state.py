@@ -15,7 +15,7 @@ class GoalState(models.Model):
     achievement_id = fields.Many2one(
         "ni.goal.achievement",
         help="Default achievement of this state",
-        domain="[('id', 'in' , 'achievement_ids')]",
+        domain="[('id', 'in', achievement_ids)]",
     )
     achievement_ids = fields.Many2many(
         "ni.goal.achievement", help="Achievements allows in this state"
