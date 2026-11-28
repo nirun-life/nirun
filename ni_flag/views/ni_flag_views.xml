@@ -65,10 +65,10 @@
         </field>
     </record>
     <record id="ni_flag_view_tree" model="ir.ui.view">
-        <field name="name">ni.flag.view.tree</field>
+        <field name="name">ni.flag.view.list</field>
         <field name="model">ni.flag</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 decoration-muted="status != 'active'"
                 decoration-danger="status == 'entered-in-error'"
             >
@@ -97,7 +97,7 @@
                 <field name="period_start" string="Valid From" optional="show" />
                 <field name="period_end" string="Valid Until" optional="show" />
                 <field name="author_id" widget="many2one_avatar_user" optional="hide" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_flag_view_kanban" model="ir.ui.view">
@@ -124,7 +124,7 @@
                 <field name="status" />
                 <field name="note" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div
                             t-attf-class="oe_kanban_global_click o_kanban_card #{record.status.raw_value !== 'active' ? 'opacity-75' : ''}"
                         >
@@ -294,7 +294,7 @@
     <record id="ni_flag_action" model="ir.actions.act_window">
         <field name="name">Flags Report</field>
         <field name="res_model">ni.flag</field>
-        <field name="view_mode">kanban,tree,pivot,graph,form</field>
+        <field name="view_mode">kanban,list,pivot,graph,form</field>
         <field
             name="context"
         >{'search_default_active': True, 'search_default_group_code': 1}</field>
@@ -302,13 +302,13 @@
     <record id="ni_patient_flag_action" model="ir.actions.act_window">
         <field name="name">Patient Flags</field>
         <field name="res_model">ni.flag</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="context">{'search_default_group_state': 1}</field>
     </record>
     <record id="ni_encounter_flag_action" model="ir.actions.act_window">
         <field name="name">Encounter Flags</field>
         <field name="res_model">ni.flag</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="context">{'search_default_group_encounter': 1}</field>
     </record>
 </odoo>

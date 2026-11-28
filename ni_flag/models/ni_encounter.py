@@ -172,7 +172,7 @@ class Encounter(models.Model):
             "name": "Flag Recommendations",
             "type": "ir.actions.act_window",
             "res_model": "ni.flag.recommendation",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("encounter_id", "=", self.id)],
             "context": {"search_default_pending": True},
         }

@@ -142,7 +142,7 @@ class TestFlag(common.TransactionCase):
         expected_action = self.env.ref("ni_flag.ni_patient_flag_action")
 
         self.assertEqual(action["res_model"], "ni.flag")
-        self.assertEqual(action["view_mode"], "kanban,tree,form")
+        self.assertEqual(action["view_mode"], "kanban,list,form")
         self.assertEqual(action["id"], expected_action.id)
         self.assertEqual(action["domain"], [("patient_id", "=", self.patient.id)])
         self.assertEqual(action["context"]["default_patient_id"], self.patient.id)
@@ -154,7 +154,7 @@ class TestFlag(common.TransactionCase):
         expected_action = self.env.ref("ni_flag.ni_encounter_flag_action")
 
         self.assertEqual(action["res_model"], "ni.flag")
-        self.assertEqual(action["view_mode"], "kanban,tree,form")
+        self.assertEqual(action["view_mode"], "kanban,list,form")
         self.assertEqual(action["id"], expected_action.id)
         self.assertEqual(action["domain"], [("encounter_id", "=", self.encounter.id)])
         self.assertEqual(action["context"]["default_patient_id"], self.patient.id)

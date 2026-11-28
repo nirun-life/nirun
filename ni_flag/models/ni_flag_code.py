@@ -38,6 +38,6 @@ class FlagCode(models.Model):
             "name": self.name,
             "type": "ir.actions.act_window",
             "res_model": "ni.patient",
-            "view_mode": "kanban,tree,form",
+            "view_mode": "kanban,list,form",
             "domain": [("id", "in", active_flags.mapped("patient_id").ids)],
         }

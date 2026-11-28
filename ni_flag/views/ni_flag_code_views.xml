@@ -4,16 +4,16 @@
   -->
 <odoo>
     <record id="ni_flag_code_view_tree" model="ir.ui.view">
-        <field name="name">ni.flag.code.view.tree</field>
+        <field name="name">ni.flag.code.view.list</field>
         <field name="model">ni.flag.code</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="code" />
                 <field name="abbr" optional="hide" />
                 <field name="system_id" optional="hide" />
                 <field name="patient_count" string="Active Patients" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_flag_code_view_form" model="ir.ui.view">
@@ -64,10 +64,10 @@
     <record id="ni_flag_code_action" model="ir.actions.act_window">
         <field name="name">Flag Codes</field>
         <field name="res_model">ni.flag.code</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field
             name="view_ids"
-            eval="[(5, 0, 0),                    (0, 0, {'view_mode': 'tree', 'view_id': ref('ni_flag_code_view_tree')}),                    (0, 0, {'view_mode': 'form', 'view_id': ref('ni_flag_code_view_form')})]"
+            eval="[(5, 0, 0),                    (0, 0, {'view_mode': 'list', 'view_id': ref('ni_flag_code_view_tree')}),                    (0, 0, {'view_mode': 'form', 'view_id': ref('ni_flag_code_view_form')})]"
         />
     </record>
 </odoo>

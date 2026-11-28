@@ -2,7 +2,7 @@
 {
     "name": "Flag",
     "summary": "Prospective warnings and notes about a patient (FHIR Flag resource)",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "development_status": "Alpha",
     "category": "Medical",
     "author": "NSTDA, Piruin P.",
