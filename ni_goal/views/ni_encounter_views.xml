@@ -9,7 +9,12 @@
         <field name="inherit_id" ref="ni_patient.ni_encounter_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//page[@name='careplan']" position="after">
-                <page name="goal" string="Goal" icon="fa-flag-o" badge="ongoing_goal_count">
+                <page
+                    name="goal"
+                    string="Goal"
+                    icon="fa-flag-o"
+                    badge="ongoing_goal_count"
+                >
                     <field name="ongoing_goal_count" invisible="1" />
                     <p class="text-muted small ms-1 mb-0">
                         Showing only ongoing goals.
@@ -23,7 +28,12 @@
                         readonly="1"
                         context="{'default_patient_id': patient_id, 'default_encounter_id': id}"
                     />
-                    <button name="action_goal" type="object" string="See More" class="btn-secondary" />
+                    <button
+                        name="action_goal"
+                        type="object"
+                        string="See More"
+                        class="btn-secondary"
+                    />
                     <button
                         name="action_new_goal"
                         type="object"
