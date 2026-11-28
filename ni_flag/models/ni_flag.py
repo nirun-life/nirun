@@ -99,11 +99,10 @@ class Flag(models.Model):
     def action_entered_in_error(self):
         self.write({"status": "entered-in-error", "period_end": fields.Datetime.now()})
 
-    def name_get(self):
-        return [(rec.id, rec._name_get()) for rec in self]
-
-    def _name_get(self):
-        return self.code_id.name if self.code_id else self.identifier
+    @api.depends("code_id.name", "identifier")
+    def _compute_display_name(self):
+        for rec in self:
+            rec.display_name = rec.code_id.name or rec.identifier
 
     @api.model
     def garbage_collect(self, max_age_seconds=60):
