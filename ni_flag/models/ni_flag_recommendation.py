@@ -1,6 +1,6 @@
 #  Copyright (c) 2026 NSTDA
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class FlagRecommendation(models.Model):
@@ -89,8 +89,10 @@ class FlagRecommendation(models.Model):
             rec.write({"flag_id": flag.id})
         return True
 
-    def name_get(self):
-        return [(rec.id, rec.flag_code_id.name or rec.name) for rec in self]
+    @api.depends("flag_code_id.name", "name")
+    def _compute_display_name(self):
+        for rec in self:
+            rec.display_name = rec.flag_code_id.name or rec.name
 
     def _flag_values(self, origin):
         self.ensure_one()

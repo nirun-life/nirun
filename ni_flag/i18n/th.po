@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-08 07:36+0000\n"
-"PO-Revision-Date: 2026-06-08 07:36+0000\n"
+"POT-Creation-Date: 2026-11-28 16:51+0000\n"
+"PO-Revision-Date: 2026-11-28 16:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -151,6 +151,11 @@ msgstr "สี"
 #: model:ir.model.fields,field_description:ni_flag.field_ni_flag_recommendation__company_id
 msgid "Company"
 msgstr "บริษัท"
+
+#. module: ni_flag
+#: model:ir.ui.menu,name:ni_flag.ni_flag_config_menu
+msgid "Configuration"
+msgstr "การตั้งค่า"
 
 #. module: ni_flag
 #: model_terms:ir.ui.view,arch_db:ni_flag.ni_flag_code_view_form
@@ -380,7 +385,6 @@ msgstr "ข้อเสนอแนะธงเตือน"
 
 #. module: ni_flag
 #: model:ir.actions.server,name:ni_flag.ir_cron_flag_garbage_collect_ir_actions_server
-#: model:ir.cron,cron_name:ni_flag.ir_cron_flag_garbage_collect
 msgid "Flag: garbage collect accidental flags"
 msgstr "ธงเตือน: ล้างข้อมูลธงเตือนที่สร้างโดยไม่ตั้งใจ"
 
@@ -388,7 +392,6 @@ msgstr "ธงเตือน: ล้างข้อมูลธงเตือ�
 #: model:ir.model.fields,field_description:ni_flag.field_ni_encounter__flag_code_ids
 #: model:ir.model.fields,field_description:ni_flag.field_ni_patient__flag_code_ids
 #: model:ir.ui.menu,name:ni_flag.flag_menu_root
-#: model:ir.ui.menu,name:ni_flag.ni_flag_config_menu
 msgid "Flags"
 msgstr "ธงเตือน"
 
@@ -401,12 +404,15 @@ msgstr "รายงานธงเตือน"
 #. module: ni_flag
 #: model:ni.flag.category,definition:ni_flag.category_administrative
 msgid "Flags related to administrative processes such as billing or consent"
-msgstr "ธงเตือนที่เกี่ยวข้องกับกระบวนการด้านธุรการ เช่น การเรียกเก็บเงินหรือการยินยอม"
+msgstr ""
+"ธงเตือนที่เกี่ยวข้องกับกระบวนการด้านธุรการ เช่น "
+"การเรียกเก็บเงินหรือการยินยอม"
 
 #. module: ni_flag
 #: model:ni.flag.category,definition:ni_flag.category_behavioral
 msgid "Flags related to patient behavior or safety concerns"
-msgstr "ธงเตือนที่เกี่ยวข้องกับพฤติกรรมของผู้รับบริการหรือข้อกังวลด้านความปลอดภัย"
+msgstr ""
+"ธงเตือนที่เกี่ยวข้องกับพฤติกรรมของผู้รับบริการหรือข้อกังวลด้านความปลอดภัย"
 
 #. module: ni_flag
 #: model:ni.flag.category,definition:ni_flag.category_research
@@ -422,7 +428,8 @@ msgstr "ธงเตือนที่เกี่ยวข้องกับภ
 #: model:ir.model.fields,help:ni_flag.field_ni_encounter__encounter_flag_code_ids
 msgid ""
 "Flags that apply only to this encounter and do not carry to other visits."
-msgstr "ธงเตือนที่ใช้เฉพาะกับการรับบริการครั้งนี้และไม่ติดไปยังการมารับบริการครั้งอื่น"
+msgstr ""
+"ธงเตือนที่ใช้เฉพาะกับการรับบริการครั้งนี้และไม่ติดไปยังการมารับบริการครั้งอื่น"
 
 #. module: ni_flag
 #: model_terms:ir.ui.view,arch_db:ni_flag.ni_flag_view_kanban
@@ -497,16 +504,6 @@ msgstr "เป็นปัจจุบัน"
 #: model:ni.flag.code,name:ni_flag.code_isolation
 msgid "Isolation Precautions"
 msgstr "ข้อควรระวังการแยกโรค"
-
-#. module: ni_flag
-#: model:ir.model.fields,field_description:ni_flag.field_ni_flag____last_update
-#: model:ir.model.fields,field_description:ni_flag.field_ni_flag_category____last_update
-#: model:ir.model.fields,field_description:ni_flag.field_ni_flag_code____last_update
-#: model:ir.model.fields,field_description:ni_flag.field_ni_flag_conflict_wizard____last_update
-#: model:ir.model.fields,field_description:ni_flag.field_ni_flag_recommendation____last_update
-#: model:ir.model.fields,field_description:ni_flag.field_ni_flag_recommendation_rule____last_update
-msgid "Last Modified on"
-msgstr "แก้ไขล่าสุดเมื่อ"
 
 #. module: ni_flag
 #: model:ir.model.fields,field_description:ni_flag.field_ni_flag__write_uid
@@ -640,7 +637,8 @@ msgstr "ธงเตือนผู้รับบริการ"
 #: model:ir.model.fields,help:ni_flag.field_ni_encounter__patient_flag_code_ids
 msgid ""
 "Patient-wide flags that stay visible across all encounters for this patient."
-msgstr "ธงเตือนระดับผู้รับบริการที่แสดงข้ามการรับบริการทั้งหมดของผู้รับบริการรายนี้"
+msgstr ""
+"ธงเตือนระดับผู้รับบริการที่แสดงข้ามการรับบริการทั้งหมดของผู้รับบริการรายนี้"
 
 #. module: ni_flag
 #: model_terms:ir.ui.view,arch_db:ni_flag.ni_flag_view_kanban
