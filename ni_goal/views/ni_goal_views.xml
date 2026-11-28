@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) 2024 NSTDA
+  -->
+<odoo>
+    <record id="ni_goal_view_search" model="ir.ui.view">
+        <field name="name">ni.goal.view.search</field>
+        <field name="model">ni.goal</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="patient_id" />
+                <field name="code_id" />
+                <field name="category_id" />
+                <field name="condition_ids" />
+                <separator />
+                <filter
+                    name="ongoing"
+                    string="Ongoing"
+                    domain="[('state_id.code', 'not in', ['completed', 'cancelled', 'entered-in-error', 'rejected'])]"
+                />
+                <filter
+                    name="achieved"
+                    string="Achieved"
+                    domain="[('is_achieved', '=', True)]"
+                />
+                <separator />
+                <filter
+                    name="proposed"
+                    string="Proposed"
+                    domain="[('state_id.code', '=', 'proposed')]"
+                />
+                <filter
+                    name="planned"
+                    string="Planned"
+                    domain="[('state_id.code', '=', 'planned')]"
+                />
+                <filter
+                    name="active"
+                    string="Active"
+                    domain="[('state_id.code', '=', 'active')]"
+                />
+                <filter
+                    name="on_hold"
+                    string="On Hold"
+                    domain="[('state_id.code', '=', 'on-hold')]"
+                />
+                <filter
+                    name="completed"
+                    string="Completed"
+                    domain="[('state_id.code', '=', 'completed')]"
+                />
+                <separator />
+                <group string="Group By">
+                    <filter
+                        name="group_category"
+                        string="Category"
+                        context="{'group_by': 'category_id'}"
+                    />
+                    <filter
+                        name="group_state"
+                        string="State"
+                        context="{'group_by': 'state_id'}"
+                    />
+                    <filter
+                        name="group_patient"
+                        string="Patient"
+                        context="{'group_by': 'patient_id'}"
+                    />
+                </group>
+                <searchpanel>
+                    <field name="category_id" icon="fa-th-large" />
+                    <field name="achievement_id" icon="fa-flag" />
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+    <record id="ni_goal_view_form" model="ir.ui.view">
+        <field name="name">ni.goal.view.form</field>
+        <field name="model">ni.goal</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <field name="patient_id" invisible="1" />
+                <field name="encounter_id" invisible="1" />
+                <field name="company_id" invisible="1" />
+                <field name="user_specialty" invisible="1" />
+                <header>
+                    <button
+                        name="action_mark_achieved"
+                        type="object"
+                        icon="fa-check"
+                        class="text-success"
+                        string="Achieved"
+                        invisible="not state_achievable"
+                    />
+                    <button
+                        name="action_mark_not_achieved"
+                        type="object"
+                        icon="fa-times"
+                        string="Not achieve"
+                        class="text-danger"
+                        invisible="not state_achievable"
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <field
+                            name="category_id"
+                            widget="radio"
+                            options="{'horizontal': True, 'no_open': True}"
+                            invisible="context.get('default_category_id')"
+                        />
+                        <field
+                            name="category_name"
+                            invisible="not context.get('default_category_id')"
+                        />
+                        <label for="code_id" class="oe_edit_only" />
+                        <div class="o_row">
+                            <field
+                                name="code_id"
+                                class="oe_edit_only"
+                                context="{'default_category_id': category_id}"
+                                placeholder="Search for predefined goal..."
+                                options="{'no_open': True}"
+                            />
+                        </div>
+                        <field name="name" placeholder="Describe goal" />
+                    </group>
+                    <group>
+                        <group>
+                            <field name="state_id" options="{'no_open': True}" />
+                            <field name="state_achievement_ids" invisible="1" />
+                            <field name="state_decoration" invisible="1" />
+                            <field name="state_achievable" invisible="1" />
+                            <field
+                                name="achievement_id"
+                                options="{'no_open': True}"
+                                invisible="not state_achievement_ids"
+                            />
+                            <field name="achievement_decoration" invisible="1" />
+                        </group>
+                        <group>
+                            <field
+                                name="outcome_observation_id"
+                                options="{'no_open': True}"
+                                readonly="1"
+                                invisible="not outcome_observation_id"
+                            />
+                            <field
+                                name="address_observation_id"
+                                options="{'no_open': True}"
+                                readonly="1"
+                                invisible="not address_observation_id"
+                            />
+                        </group>
+                    </group>
+                    <div invisible="not last_comment">
+                        <label for="last_comment" class="mt-4" />
+                        <field name="last_comment" readonly="1" />
+                        <div class="text-muted small mt-1">
+                            <field
+                                name="last_comment_author_id"
+                                widget="many2one_avatar"
+                                options="{'no_open': True}"
+                            />
+                            <field name="last_comment_date" readonly="1" class="ms-2" />
+                        </div>
+                    </div>
+                    <notebook>
+                        <page name="target" string="Target" icon="fa-bullseye">
+                            <group>
+                                <group>
+                                    <field name="observation_type_id" />
+                                    <field name="target_value_type" invisible="1" />
+                                    <label for="target_min" string="Target Value" />
+                                    <div
+                                        class="o_row"
+                                        invisible="target_value_type not in ['int', 'float']"
+                                    >
+                                        <field name="target_min" />
+                                        <span class="mx-2">-</span>
+                                        <field name="target_max" />
+                                        <field
+                                            name="target_unit_id"
+                                            options="{'no_open': True}"
+                                        />
+                                    </div>
+                                    <div
+                                        invisible="target_value_type not in ['code_id', 'code_ids']"
+                                    >
+                                        <field name="target_code_operator" />
+                                        <field
+                                            name="target_code_ids"
+                                            widget="many2many_tags"
+                                            options="{'color_field': 'color'}"
+                                        />
+                                    </div>
+                                </group>
+                                <group>
+                                    <field
+                                        name="observation_id"
+                                        options="{'no_open': True}"
+                                    />
+                                    <field
+                                        name="target_status"
+                                        widget="badge"
+                                        decoration-success="target_status == 'in_range'"
+                                        decoration-danger="target_status == 'out_of_range'"
+                                    />
+                                </group>
+                            </group>
+                            <separator string="History" />
+                            <field name="observation_ids" />
+                        </page>
+                        <page name="addresses" string="Addresses" icon="fa-list-ul">
+                            <p class="text-muted">Issues addressed by this goal</p>
+                            <field name="condition_ids" mode="kanban" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+    <record id="ni_goal_view_tree" model="ir.ui.view">
+        <field name="name">ni.goal.view.list</field>
+        <field name="model">ni.goal</field>
+        <field name="arch" type="xml">
+            <list
+                decoration-primary="state_decoration == 'primary'"
+                decoration-success="state_decoration == 'success'"
+                decoration-info="state_decoration == 'info'"
+                decoration-warning="state_decoration == 'warning'"
+                decoration-danger="state_decoration == 'danger'"
+                decoration-muted="state_decoration == 'muted'"
+            >
+                <field name="encounter_id" invisible="1" />
+                <field name="patient_id" invisible="1" />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="hide"
+                />
+                <field name="user_specialty" invisible="1" />
+                <field name="name" />
+                <field name="condition_ids" widget="many2many_tags" />
+                <field
+                    name="state_id"
+                    widget="badge"
+                    decoration-primary="state_decoration == 'primary'"
+                    decoration-success="state_decoration == 'success'"
+                    decoration-info="state_decoration == 'info'"
+                    decoration-warning="state_decoration == 'warning'"
+                    decoration-danger="state_decoration == 'danger'"
+                    decoration-muted="state_decoration == 'muted'"
+                    optional="show"
+                />
+                <field name="state_decoration" invisible="1" />
+                <field name="state_achievement_ids" invisible="1" />
+                <field name="state_achievable" invisible="1" />
+                <field
+                    name="achievement_id"
+                    widget="badge"
+                    decoration-primary="achievement_decoration == 'primary'"
+                    decoration-success="achievement_decoration == 'success'"
+                    decoration-info="achievement_decoration == 'info'"
+                    decoration-warning="achievement_decoration == 'warning'"
+                    decoration-danger="achievement_decoration == 'danger'"
+                    decoration-muted="achievement_decoration == 'muted'"
+                    invisible="not state_achievement_ids"
+                />
+                <field name="achievement_decoration" invisible="1" />
+                <button
+                    name="action_mark_achieved"
+                    type="object"
+                    icon="fa-check"
+                    class="text-success"
+                    title="Mark achieved"
+                    invisible="not state_achievable"
+                />
+                <button
+                    name="action_mark_not_achieved"
+                    type="object"
+                    icon="fa-times"
+                    class="text-danger"
+                    title="Mark not achieved"
+                    invisible="not state_achievable"
+                />
+                <button
+                    name="action_edit"
+                    class="oe_read_only"
+                    type="object"
+                    string="Edit"
+                    icon="fa-pencil-square"
+                />
+                <control>
+                    <create string="Add goal" context="{}" />
+                </control>
+            </list>
+        </field>
+    </record>
+    <record id="ni_goal_view_kanban" model="ir.ui.view">
+        <field name="name">ni.goal.view.kanban</field>
+        <field name="model">ni.goal</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state_id">
+                <field name="name" />
+                <field name="code_id" />
+                <field name="state_id" />
+                <field name="state_decoration" invisible="1" />
+                <field name="state_icon" invisible="1" />
+                <field name="achievement_id" />
+                <field name="achievement_icon" invisible="1" />
+                <field name="achievement_decoration" invisible="1" />
+                <field name="observation_type_id" />
+                <field name="observation_id" />
+                <field name="category_id" />
+                <field name="patient_id" />
+                <field name="condition_ids" />
+                <field name="achievement_code" />
+                <field name="last_comment_author_id" />
+                <field name="last_comment_date" />
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="d-flex align-items-start gap-2 p-1">
+                                <button
+                                    name="action_state_wizard"
+                                    type="object"
+                                    t-attf-class="btn btn-sm p-1 lh-1 text-{{record.achievement_id.raw_value ? record.achievement_decoration.raw_value : record.state_decoration.raw_value}}"
+                                    t-attf-title="State : {{record.state_id.value}} | {{record.achievement_id.value}}"
+                                >
+                                    <i
+                                        t-attf-class="fa {{record.achievement_id.raw_value ? record.achievement_icon.value : record.state_icon.value}} fa-lg"
+                                    />
+                                </button>
+                                <div>
+                                    <div
+                                        t-if="record.category_id.raw_value"
+                                        class="text-muted small"
+                                    >
+                                        <field name="category_id" />
+                                    </div>
+                                    <div class="fw-bold">
+                                        <field name="name" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <ul>
+                                    <li>
+                                        <field
+                                            name="condition_ids"
+                                            widget="many2many_tags"
+                                        />
+                                    </li>
+                                    <li t-if="record.observation_type_id.raw_value">
+                                        <label
+                                            for="observation_id"
+                                            class="small text-muted me-2"
+                                        >
+                                            <field name="observation_type_id" />
+                                            :
+                                        </label>
+                                        <t t-if="record.observation_id.raw_value">
+                                            <field name="observation_id" />
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted">N/A</span>
+                                        </t>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div
+                                t-if="record.last_comment_date.raw_value"
+                                class="o_kanban_record_bottom border-top mt-1 pt-1"
+                            >
+                                <div class="oe_kanban_bottom_left text-muted small">
+                                    <field
+                                        name="last_comment_author_id"
+                                        widget="many2one_avatar"
+                                    />
+                                </div>
+                                <div class="oe_kanban_bottom_right text-muted small">
+                                    <field name="last_comment_date" />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>
