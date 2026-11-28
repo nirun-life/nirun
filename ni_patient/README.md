@@ -69,6 +69,10 @@ read-only workflow timeline that combines events and requests into a single pati
 keys without a table scan. The generated names (`<table>_<column>_index`) match indexes already on production; do not rename
 them.
 
+`event_id` on `ni.workflow.event.mixin` and `request_id` on `ni.workflow.request.mixin` use `index=True`, so every model that
+inherits a workflow mixin gets `<table>_event_id_index` or `<table>_request_id_index`. Saving a record updates its stored
+related workflow fields, and the ORM then looks the record up by this column; without the index that is a table scan.
+
 ## Dependencies
 
 - `ni_coding`
