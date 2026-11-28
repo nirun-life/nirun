@@ -39,14 +39,18 @@ class Patient(models.Model):
             )
             current_codes = active.mapped("code_id")
             to_add = rec.flag_code_ids - current_codes
-            to_remove = active.filtered(lambda f: f.code_id not in rec.flag_code_ids)
+            to_remove = active.filtered(
+                lambda f, codes=rec.flag_code_ids: f.code_id not in codes
+            )
             for code in to_add:
                 Flag.create({"patient_id": rec.id, "code_id": code.id})
             to_remove.action_inactive()
 
     def action_manage_flags(self):
         self.ensure_one()
-        action = self.env.ref("ni_flag.ni_patient_flag_action").read()[0]
+        action = self.env["ir.actions.act_window"]._for_xml_id(
+            "ni_flag.ni_patient_flag_action"
+        )
         action["domain"] = [("patient_id", "=", self.id)]
         action_context = action.get("context")
         context = (

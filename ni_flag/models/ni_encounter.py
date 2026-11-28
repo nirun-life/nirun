@@ -12,21 +12,24 @@ class Encounter(models.Model):
         "encounter_id",
         string="Flag Records",
         check_company=True,
-        help="Prospective warnings of potential issues when providing care to the patient.",
+        help="Prospective warnings of potential issues when providing care to the "
+        "patient.",
     )
     patient_flag_code_ids = fields.Many2many(
         "ni.flag.code",
         compute="_compute_patient_flag_code_ids",
         inverse="_inverse_patient_flag_code_ids",
         string="Patient Flags",
-        help="Patient-wide flags that stay visible across all encounters for this patient.",
+        help="Patient-wide flags that stay visible across all encounters for this "
+        "patient.",
     )
     encounter_flag_code_ids = fields.Many2many(
         "ni.flag.code",
         compute="_compute_encounter_flag_code_ids",
         inverse="_inverse_encounter_flag_code_ids",
         string="Encounter Flags",
-        help="Flags that apply only to this encounter and do not carry to other visits.",
+        help="Flags that apply only to this encounter and do not carry to other "
+        "visits.",
     )
     active_flag_code_ids = fields.Many2many(
         "ni.flag.code",
@@ -60,7 +63,7 @@ class Encounter(models.Model):
             current_codes = active.mapped("code_id")
             to_add = rec.patient_flag_code_ids - current_codes
             to_remove = active.filtered(
-                lambda f: f.code_id not in rec.patient_flag_code_ids
+                lambda f, codes=rec.patient_flag_code_ids: f.code_id not in codes
             )
             for code in to_add:
                 Flag.create({"patient_id": rec.patient_id.id, "code_id": code.id})
@@ -79,7 +82,7 @@ class Encounter(models.Model):
             current_codes = active.mapped("code_id")
             to_add = rec.encounter_flag_code_ids - current_codes
             to_remove = active.filtered(
-                lambda f: f.code_id not in rec.encounter_flag_code_ids
+                lambda f, codes=rec.encounter_flag_code_ids: f.code_id not in codes
             )
             for code in to_add:
                 Flag.create(
@@ -148,7 +151,7 @@ class Encounter(models.Model):
             ["encounter_id"],
             ["__count"],
         )
-        mapped = {item["encounter_id"][0]: item["encounter_id_count"] for item in data}
+        mapped = {encounter.id: count for encounter, count in data}
         for rec in self:
             rec.pending_flag_recommendation_count = mapped.get(rec.id, 0)
 
@@ -176,7 +179,9 @@ class Encounter(models.Model):
 
     def action_manage_flags(self):
         self.ensure_one()
-        action = self.env.ref("ni_flag.ni_encounter_flag_action").read()[0]
+        action = self.env["ir.actions.act_window"]._for_xml_id(
+            "ni_flag.ni_encounter_flag_action"
+        )
         action["domain"] = [("encounter_id", "=", self.id)]
         action_context = action.get("context")
         context = (

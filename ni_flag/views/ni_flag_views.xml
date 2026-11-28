@@ -74,7 +74,7 @@
             >
                 <field
                     name="patient_id"
-                    column_invisible="parent.model == 'ni.patient'"
+                    column_invisible="context.get('default_patient_id')"
                 />
                 <field name="encounter_id" optional="hide" />
                 <field name="code_id" />
@@ -202,6 +202,7 @@
                     <field name="status" widget="statusbar" readonly="1" />
                 </header>
                 <sheet>
+                    <field name="company_id" invisible="1" />
                     <widget
                         name="web_ribbon"
                         title="Inactive"

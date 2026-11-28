@@ -14,7 +14,8 @@ class FlagCode(models.Model):
         "code_id",
         "conflict_code_id",
         string="Conflicting Flag Codes",
-        help="Active flags with these codes should be replaced when this flag is applied.",
+        help="Active flags with these codes should be replaced when this flag is "
+        "applied.",
     )
 
     @api.depends_context("company")
@@ -24,7 +25,7 @@ class FlagCode(models.Model):
             ["code_id"],
             ["patient_id:count_distinct"],
         )
-        mapped = {d["code_id"][0]: d["patient_id"] for d in data}
+        mapped = {code.id: count for code, count in data}
         for rec in self:
             rec.patient_count = mapped.get(rec.id, 0)
 
