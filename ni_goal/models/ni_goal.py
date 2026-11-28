@@ -25,7 +25,8 @@ class Goal(models.Model):
         index=True,
         ondelete="restrict",
         help="Code describing goal",
-        domain="['|', ('specialty_ids', '=', False), ('specialty_ids', '=', user_specialty)]",
+        domain="['|', ('specialty_ids', '=', False), ('specialty_ids', '=', "
+        "user_specialty)]",
     )
     category_id = fields.Many2one("ni.goal.category")
     category_name = fields.Char("Category Name", related="category_id.name")
@@ -84,9 +85,12 @@ class Goal(models.Model):
         ],
         "Operator",
         help="How the observed value(s) must relate to the target codes: "
-        "'Match'/'Not Match' compare the observed values against the target set exactly (order doesn't matter); "
-        "'Contain'/'Not Contain' require every observed value to be (not be) a member of the target set; "
-        "'Child of'/'Parent of' require every observed value to be a descendant/ancestor (or itself) of some target "
+        "'Match'/'Not Match' compare the observed values against the target set "
+        "exactly (order doesn't matter); "
+        "'Contain'/'Not Contain' require every observed value to be (not be) a member "
+        "of the target set; "
+        "'Child of'/'Parent of' require every observed value to be a "
+        "descendant/ancestor (or itself) of some target "
         "value, walking the target codes' parent hierarchy.",
     )
     target_code_ids = fields.Many2many(
