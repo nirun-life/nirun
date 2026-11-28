@@ -87,14 +87,13 @@
             <xpath expr="//kanban/templates" position="before">
                 <field name="active_flag_code_ids" />
             </xpath>
-            <xpath expr="//field[@name='reason_ids']/ancestor::div[1]" position="after">
-                <div class="my-1">
-                    <field
-                        name="active_flag_code_ids"
-                        widget="many2many_tags"
-                        options="{'color_field': 'color', 'no_open': True}"
-                    />
-                </div>
+            <xpath expr="//templates//field[@name='reason_ids']" position="after">
+                <field
+                    name="active_flag_code_ids"
+                    class="my-1"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color', 'no_open': True}"
+                />
             </xpath>
         </field>
     </record>
