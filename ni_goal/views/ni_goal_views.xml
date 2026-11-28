@@ -227,10 +227,10 @@
         </field>
     </record>
     <record id="ni_goal_view_tree" model="ir.ui.view">
-        <field name="name">ni.goal.view.tree</field>
+        <field name="name">ni.goal.view.list</field>
         <field name="model">ni.goal</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 decoration-primary="state_decoration == 'primary'"
                 decoration-success="state_decoration == 'success'"
                 decoration-info="state_decoration == 'info'"
@@ -300,7 +300,7 @@
                 <control>
                     <create string="Add goal" context="{}" />
                 </control>
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ni_goal_view_kanban" model="ir.ui.view">
@@ -325,7 +325,7 @@
                 <field name="last_comment_author_id" />
                 <field name="last_comment_date" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click">
                             <div class="d-flex align-items-start gap-2 p-1">
                                 <button

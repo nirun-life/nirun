@@ -11,7 +11,7 @@ class GoalAchievement(models.Model):
     _parent_store = True
 
     parent_id = fields.Many2one("ni.goal.achievement", index=True, ondelete="set null")
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
 
     icon = fields.Char(default="fa-flag")
     decoration = fields.Selection(
