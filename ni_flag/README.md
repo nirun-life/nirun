@@ -1,6 +1,6 @@
 # Flag (`ni_flag`)
 
-Odoo 18.0 module implementing the HL7 FHIR R4 Flag resource for the Nirun healthcare
+Odoo 19.0 module implementing the HL7 FHIR R4 Flag resource for the Nirun healthcare
 platform. It records prospective warnings and safety notes about a patient and now
 supports observation-driven flag recommendations with evidence and conflict handling.
 

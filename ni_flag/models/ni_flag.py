@@ -38,7 +38,6 @@ class Flag(models.Model):
     color = fields.Integer(related="code_id.color", store=True)
     author_id = fields.Many2one(
         "res.users",
-        "Author",
         default=lambda self: self.env.user,
     )
     note = fields.Text()
@@ -54,7 +53,6 @@ class Flag(models.Model):
     )
     source_observation_id = fields.Many2one(
         "ni.observation",
-        "Source Observation",
         ondelete="set null",
         index=True,
         help="Observation that caused this flag to be recommended or created.",
