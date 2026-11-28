@@ -19,7 +19,9 @@ class GoalState(models.Model):
         domain="[('id', 'in', achievement_ids)]",
     )
     achievement_ids = fields.Many2many(
-        "ni.goal.achievement", help="Achievements allows in this state"
+        "ni.goal.achievement",
+        string="Allowed Achievements",
+        help="Achievements allows in this state",
     )
     decoration = fields.Selection(
         [
@@ -39,5 +41,5 @@ class GoalState(models.Model):
 
     @api.constrains("parent_id")
     def _check_parent_id(self):
-        if not self._check_recursion():
+        if self._has_cycle():
             raise ValidationError(_("Error! You cannot create recursive data."))

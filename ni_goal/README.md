@@ -1,6 +1,6 @@
 # Goal (`ni_goal`)
 
-Odoo 17.0 module that tracks patient care goals, goal state, and achievement progress
+Odoo 18.0 module that tracks patient care goals, goal state, and achievement progress
 for Nirun. It connects goals to observations and conditions so teams can monitor target
 outcomes against real patient measurements.
 
