@@ -53,9 +53,13 @@
                     type="object"
                     class="oe_stat_button"
                     icon="fa-lightbulb-o"
-                    attrs="{'invisible': [('pending_flag_recommendation_count', '=', 0)]}"
+                    invisible="pending_flag_recommendation_count == 0"
                 >
-                    <field name="pending_flag_recommendation_count" widget="statinfo" string="Flag Suggestions" />
+                    <field
+                        name="pending_flag_recommendation_count"
+                        widget="statinfo"
+                        string="Flag Suggestions"
+                    />
                 </button>
             </xpath>
         </field>

@@ -18,13 +18,16 @@
         <field name="model">ni.patient</field>
         <field name="inherit_id" ref="ni_patient.ni_patient_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//group[@name='encounter']/field[@name='encounter_id']" position="after">
+            <xpath
+                expr="//group[@name='encounter']/field[@name='encounter_id']"
+                position="after"
+            >
                 <field
                     name="flag_code_ids"
                     widget="many2many_tags"
                     options="{'color_field': 'color', 'no_create': False, 'no_open': True}"
-                    attrs="{'invisible': [('id', '=', False)]}"
                     class="mb-2"
+                    invisible="not id"
                 />
             </xpath>
         </field>
@@ -59,7 +62,11 @@
             </xpath>
             <xpath expr="//search/separator[last()]" position="after">
                 <separator />
-                <filter name="has_active_flag" string="Has Active Flag" domain="[('flag_ids.status', '=', 'active')]" />
+                <filter
+                    name="has_active_flag"
+                    string="Has Active Flag"
+                    domain="[('flag_ids.status', '=', 'active')]"
+                />
             </xpath>
         </field>
     </record>
