@@ -9,13 +9,10 @@ class FlagRecommendation(models.Model):
     _inherit = ["ni.patient.res"]
     _order = "create_date DESC, id DESC"
     _check_period_start = False
-    _sql_constraints = [
-        (
-            "ni_flag_recommendation_rule_source_uniq",
-            "unique(rule_id, source_observation_id)",
-            "A rule can only recommend once per source observation.",
-        ),
-    ]
+    _ni_flag_recommendation_rule_source_uniq = models.Constraint(
+        "unique(rule_id, source_observation_id)",
+        "A rule can only recommend once per source observation.",
+    )
 
     name = fields.Char(required=True)
     flag_code_id = fields.Many2one("ni.flag.code", required=True, ondelete="restrict")
