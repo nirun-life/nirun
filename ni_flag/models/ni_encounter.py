@@ -143,10 +143,10 @@ class Encounter(models.Model):
         return [("id", "in", list(encounter_ids))]
 
     def _compute_pending_flag_recommendation_count(self):
-        data = self.env["ni.flag.recommendation"].read_group(
+        data = self.env["ni.flag.recommendation"]._read_group(
             [("encounter_id", "in", self.ids), ("state", "=", "pending")],
             ["encounter_id"],
-            ["encounter_id"],
+            ["__count"],
         )
         mapped = {item["encounter_id"][0]: item["encounter_id_count"] for item in data}
         for rec in self:

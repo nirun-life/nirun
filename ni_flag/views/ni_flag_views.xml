@@ -13,17 +13,53 @@
                 <field name="origin" />
                 <field name="source_observation_id" />
                 <field name="recommendation_id" />
-                <filter name="active" string="Active" domain="[('status', '=', 'active')]" />
-                <filter name="inactive" string="Inactive" domain="[('status', '=', 'inactive')]" />
+                <filter
+                    name="active"
+                    string="Active"
+                    domain="[('status', '=', 'active')]"
+                />
+                <filter
+                    name="inactive"
+                    string="Inactive"
+                    domain="[('status', '=', 'inactive')]"
+                />
                 <separator />
                 <group expand="0" string="Group By">
-                    <filter name="group_state" string="State" context="{'group_by': 'status'}" />
-                    <filter name="group_code" string="Flag" context="{'group_by': 'code_id'}" />
-                    <filter name="group_patient" string="Patient" context="{'group_by': 'patient_id'}" />
-                    <filter name="group_encounter" string="Encounter" context="{'group_by': 'encounter_id'}" />
-                    <filter name="group_category" string="Category" context="{'group_by': 'category_ids'}" />
-                    <filter name="group_origin" string="Origin" context="{'group_by': 'origin'}" />
-                    <filter name="group_author" string="Author" context="{'group_by': 'author_id'}" />
+                    <filter
+                        name="group_state"
+                        string="State"
+                        context="{'group_by': 'status'}"
+                    />
+                    <filter
+                        name="group_code"
+                        string="Flag"
+                        context="{'group_by': 'code_id'}"
+                    />
+                    <filter
+                        name="group_patient"
+                        string="Patient"
+                        context="{'group_by': 'patient_id'}"
+                    />
+                    <filter
+                        name="group_encounter"
+                        string="Encounter"
+                        context="{'group_by': 'encounter_id'}"
+                    />
+                    <filter
+                        name="group_category"
+                        string="Category"
+                        context="{'group_by': 'category_ids'}"
+                    />
+                    <filter
+                        name="group_origin"
+                        string="Origin"
+                        context="{'group_by': 'origin'}"
+                    />
+                    <filter
+                        name="group_author"
+                        string="Author"
+                        context="{'group_by': 'author_id'}"
+                    />
                 </group>
             </search>
         </field>
@@ -32,14 +68,25 @@
         <field name="name">ni.flag.view.tree</field>
         <field name="model">ni.flag</field>
         <field name="arch" type="xml">
-            <tree decoration-muted="status != 'active'" decoration-danger="status == 'entered-in-error'">
-                <field name="patient_id" attrs="{'column_invisible': [('parent.model', '=', 'ni.patient')]}" />
+            <tree
+                decoration-muted="status != 'active'"
+                decoration-danger="status == 'entered-in-error'"
+            >
+                <field
+                    name="patient_id"
+                    column_invisible="parent.model == 'ni.patient'"
+                />
                 <field name="encounter_id" optional="hide" />
                 <field name="code_id" />
                 <field name="origin" widget="badge" optional="show" />
                 <field name="source_observation_id" optional="show" />
                 <field name="evidence_summary" optional="hide" />
-                <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show" />
+                <field
+                    name="category_ids"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    optional="show"
+                />
                 <field
                     name="status"
                     widget="badge"
@@ -57,10 +104,15 @@
         <field name="name">ni.flag.view.kanban</field>
         <field name="model">ni.flag</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="status" class="o_kanban_small_column" sample="1" quick_create="0">
+            <kanban
+                default_group_by="status"
+                class="o_kanban_small_column"
+                sample="1"
+                quick_create="0"
+            >
                 <progressbar
                     field="status"
-                    colors='{"active": "success", "inactive": "warning", "entered-in-error": "danger"}'
+                    colors="{&quot;active&quot;: &quot;success&quot;, &quot;inactive&quot;: &quot;warning&quot;, &quot;entered-in-error&quot;: &quot;danger&quot;}"
                 />
                 <field name="code_id" />
                 <field name="patient_id" />
@@ -76,7 +128,9 @@
                         <div
                             t-attf-class="oe_kanban_global_click o_kanban_card #{record.status.raw_value !== 'active' ? 'opacity-75' : ''}"
                         >
-                            <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                            <div
+                                class="d-flex align-items-start justify-content-between gap-2 mb-2"
+                            >
                                 <strong class="o_kanban_record_title">
                                     <field name="code_id" />
                                 </strong>
@@ -88,11 +142,14 @@
                                     decoration-danger="status == 'entered-in-error'"
                                 />
                             </div>
-                            <div class="text-muted small" invisible="context.get('default_patient_id')">
+                            <div
+                                class="text-muted small"
+                                invisible="context.get('default_patient_id')"
+                            >
                                 Patient:
                                 <field name="patient_id" />
                             </div>
-                            <div class="text-muted small" attrs="{'invisible': [('encounter_id', '=', False)]}">
+                            <div class="text-muted small" invisible="not encounter_id">
                                 Encounter:
                                 <field name="encounter_id" />
                             </div>
@@ -100,21 +157,21 @@
                                 Origin:
                                 <field name="origin" />
                             </div>
-                            <div class="small mt-1" attrs="{'invisible': [('origin', '=', 'manual')]}">
+                            <div class="small mt-1" invisible="origin == 'manual'">
                                 Evidence:
                                 <field name="evidence_summary" />
                             </div>
                             <div class="text-muted small mt-2">
-                                <span attrs="{'invisible': [('period_start', '=', False)]}">
+                                <span invisible="not period_start">
                                     From
                                     <field name="period_start" />
                                 </span>
-                                <span attrs="{'invisible': [('period_end', '=', False)]}">
+                                <span invisible="not period_end">
                                     to
                                     <field name="period_end" />
                                 </span>
                             </div>
-                            <div class="small mt-2" attrs="{'invisible': [('note', '=', False)]}">
+                            <div class="small mt-2" invisible="not note">
                                 <field name="note" />
                             </div>
                         </div>
@@ -133,14 +190,14 @@
                         name="action_inactive"
                         string="Set Inactive"
                         type="object"
-                        attrs="{'invisible': [('status', '!=', 'active')]}"
+                        invisible="status != 'active'"
                     />
                     <button
                         name="action_active"
                         string="Set Active"
                         type="object"
-                        attrs="{'invisible': [('status', '=', 'active')]}"
                         class="btn-primary"
+                        invisible="status == 'active'"
                     />
                     <field name="status" widget="statusbar" readonly="1" />
                 </header>
@@ -149,17 +206,17 @@
                         name="web_ribbon"
                         title="Inactive"
                         bg_color="bg-warning"
-                        attrs="{'invisible': [('status', '!=', 'inactive')]}"
+                        invisible="status != 'inactive'"
                     />
                     <widget
                         name="web_ribbon"
                         title="Entered in Error"
                         bg_color="bg-danger"
-                        attrs="{'invisible': [('status', '!=', 'entered-in-error')]}"
+                        invisible="status != 'entered-in-error'"
                     />
                     <group>
                         <group>
-                            <field name="patient_id" attrs="{'invisible': [('id', '!=', False)]}" />
+                            <field name="patient_id" invisible="id" />
                             <field name="encounter_id" options="{'no_create': True}" />
                             <field name="code_id" options="{'no_create': True}" />
                             <field
@@ -181,12 +238,24 @@
                         <page name="evidence" string="Evidence">
                             <group>
                                 <field name="origin" readonly="1" />
-                                <field name="source_observation_id" readonly="1" options="{'no_create': True}" />
-                                <field name="recommendation_id" readonly="1" options="{'no_create': True}" />
+                                <field
+                                    name="source_observation_id"
+                                    readonly="1"
+                                    options="{'no_create': True}"
+                                />
+                                <field
+                                    name="recommendation_id"
+                                    readonly="1"
+                                    options="{'no_create': True}"
+                                />
                                 <field name="evidence_summary" readonly="1" />
                             </group>
                         </page>
-                        <page name="extra" string="Extra Info" groups="base.group_no_one">
+                        <page
+                            name="extra"
+                            string="Extra Info"
+                            groups="base.group_no_one"
+                        >
                             <group>
                                 <field name="identifier" readonly="1" />
                                 <field name="create_uid" readonly="1" />
@@ -225,7 +294,9 @@
         <field name="name">Flags Report</field>
         <field name="res_model">ni.flag</field>
         <field name="view_mode">kanban,tree,pivot,graph,form</field>
-        <field name="context">{'search_default_active': True, 'search_default_group_code': 1}</field>
+        <field
+            name="context"
+        >{'search_default_active': True, 'search_default_group_code': 1}</field>
     </record>
     <record id="ni_patient_flag_action" model="ir.actions.act_window">
         <field name="name">Patient Flags</field>

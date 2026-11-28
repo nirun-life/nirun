@@ -19,10 +19,10 @@ class FlagCode(models.Model):
 
     @api.depends_context("company")
     def _compute_patient_count(self):
-        data = self.env["ni.flag"].read_group(
+        data = self.env["ni.flag"]._read_group(
             [("code_id", "in", self.ids), ("status", "=", "active")],
-            ["code_id", "patient_id:count_distinct"],
             ["code_id"],
+            ["patient_id:count_distinct"],
         )
         mapped = {d["code_id"][0]: d["patient_id"] for d in data}
         for rec in self:
