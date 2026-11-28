@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2024 NSTDA
   -->
@@ -19,18 +19,54 @@
                     string="Ongoing"
                     domain="[('state_id.code', 'not in', ['completed', 'cancelled', 'entered-in-error', 'rejected'])]"
                 />
-                <filter name="achieved" string="Achieved" domain="[('is_achieved', '=', True)]" />
+                <filter
+                    name="achieved"
+                    string="Achieved"
+                    domain="[('is_achieved', '=', True)]"
+                />
                 <separator />
-                <filter name="proposed" string="Proposed" domain="[('state_id.code', '=', 'proposed')]" />
-                <filter name="planned" string="Planned" domain="[('state_id.code', '=', 'planned')]" />
-                <filter name="active" string="Active" domain="[('state_id.code', '=', 'active')]" />
-                <filter name="on_hold" string="On Hold" domain="[('state_id.code', '=', 'on-hold')]" />
-                <filter name="completed" string="Completed" domain="[('state_id.code', '=', 'completed')]" />
+                <filter
+                    name="proposed"
+                    string="Proposed"
+                    domain="[('state_id.code', '=', 'proposed')]"
+                />
+                <filter
+                    name="planned"
+                    string="Planned"
+                    domain="[('state_id.code', '=', 'planned')]"
+                />
+                <filter
+                    name="active"
+                    string="Active"
+                    domain="[('state_id.code', '=', 'active')]"
+                />
+                <filter
+                    name="on_hold"
+                    string="On Hold"
+                    domain="[('state_id.code', '=', 'on-hold')]"
+                />
+                <filter
+                    name="completed"
+                    string="Completed"
+                    domain="[('state_id.code', '=', 'completed')]"
+                />
                 <separator />
                 <group string="Group By">
-                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}" />
-                    <filter name="group_state" string="State" context="{'group_by': 'state_id'}" />
-                    <filter name="group_patient" string="Patient" context="{'group_by': 'patient_id'}" />
+                    <filter
+                        name="group_category"
+                        string="Category"
+                        context="{'group_by': 'category_id'}"
+                    />
+                    <filter
+                        name="group_state"
+                        string="State"
+                        context="{'group_by': 'state_id'}"
+                    />
+                    <filter
+                        name="group_patient"
+                        string="Patient"
+                        context="{'group_by': 'patient_id'}"
+                    />
                 </group>
                 <searchpanel>
                     <field name="category_id" icon="fa-th-large" />
@@ -55,7 +91,7 @@
                         icon="fa-check"
                         class="text-success"
                         string="Achieved"
-                        attrs="{'invisible': [('state_achievable', '=', False)]}"
+                        invisible="not state_achievable"
                     />
                     <button
                         name="action_mark_not_achieved"
@@ -63,7 +99,7 @@
                         icon="fa-times"
                         string="Not achieve"
                         class="text-danger"
-                        attrs="{'invisible': [('state_achievable', '=', False)]}"
+                        invisible="not state_achievable"
                     />
                 </header>
                 <sheet>
@@ -74,7 +110,10 @@
                             options="{'horizontal': True, 'no_open': True}"
                             invisible="context.get('default_category_id')"
                         />
-                        <field name="category_name" invisible="not context.get('default_category_id')" />
+                        <field
+                            name="category_name"
+                            invisible="not context.get('default_category_id')"
+                        />
                         <label for="code_id" class="oe_edit_only" />
                         <div class="o_row">
                             <field
@@ -96,7 +135,7 @@
                             <field
                                 name="achievement_id"
                                 options="{'no_open': True}"
-                                attrs="{'invisible': [('state_achievement_ids', '=', False)]}"
+                                invisible="not state_achievement_ids"
                             />
                             <field name="achievement_decoration" invisible="1" />
                         </group>
@@ -105,21 +144,25 @@
                                 name="outcome_observation_id"
                                 options="{'no_open': True}"
                                 readonly="1"
-                                attrs="{'invisible': [('outcome_observation_id', '=', False)]}"
+                                invisible="not outcome_observation_id"
                             />
                             <field
                                 name="address_observation_id"
                                 options="{'no_open': True}"
                                 readonly="1"
-                                attrs="{'invisible': [('address_observation_id', '=', False)]}"
+                                invisible="not address_observation_id"
                             />
                         </group>
                     </group>
-                    <div attrs="{'invisible': [('last_comment', '=', False)]}">
+                    <div invisible="not last_comment">
                         <label for="last_comment" class="mt-4" />
                         <field name="last_comment" readonly="1" />
                         <div class="text-muted small mt-1">
-                            <field name="last_comment_author_id" widget="many2one_avatar" options="{'no_open': True}" />
+                            <field
+                                name="last_comment_author_id"
+                                widget="many2one_avatar"
+                                options="{'no_open': True}"
+                            />
                             <field name="last_comment_date" readonly="1" class="ms-2" />
                         </div>
                     </div>
@@ -132,15 +175,18 @@
                                     <label for="target_min" string="Target Value" />
                                     <div
                                         class="o_row"
-                                        attrs="{'invisible': [('target_value_type', 'not in', ['int', 'float'])]}"
+                                        invisible="target_value_type not in ['int', 'float']"
                                     >
                                         <field name="target_min" />
                                         <span class="mx-2">-</span>
                                         <field name="target_max" />
-                                        <field name="target_unit_id" options="{'no_open': True}" />
+                                        <field
+                                            name="target_unit_id"
+                                            options="{'no_open': True}"
+                                        />
                                     </div>
                                     <div
-                                        attrs="{'invisible': [('target_value_type', 'not in', ['code_id', 'code_ids'])]}"
+                                        invisible="target_value_type not in ['code_id', 'code_ids']"
                                     >
                                         <field name="target_code_operator" />
                                         <field
@@ -151,7 +197,10 @@
                                     </div>
                                 </group>
                                 <group>
-                                    <field name="observation_id" options="{'no_open': True}" />
+                                    <field
+                                        name="observation_id"
+                                        options="{'no_open': True}"
+                                    />
                                     <field
                                         name="target_status"
                                         widget="badge"
@@ -191,7 +240,11 @@
             >
                 <field name="encounter_id" invisible="1" />
                 <field name="patient_id" invisible="1" />
-                <field name="company_id" groups="base.group_multi_company" optional="hide" />
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="hide"
+                />
                 <field name="user_specialty" invisible="1" />
                 <field name="name" />
                 <field name="condition_ids" widget="many2many_tags" />
@@ -218,7 +271,7 @@
                     decoration-warning="achievement_decoration == 'warning'"
                     decoration-danger="achievement_decoration == 'danger'"
                     decoration-muted="achievement_decoration == 'muted'"
-                    attrs="{'invisible': [('state_achievement_ids', '=', False)]}"
+                    invisible="not state_achievement_ids"
                 />
                 <field name="achievement_decoration" invisible="1" />
                 <button
@@ -227,7 +280,7 @@
                     icon="fa-check"
                     class="text-success"
                     title="Mark achieved"
-                    attrs="{'invisible': [('state_achievable', '=', False)]}"
+                    invisible="not state_achievable"
                 />
                 <button
                     name="action_mark_not_achieved"
@@ -235,9 +288,15 @@
                     icon="fa-times"
                     class="text-danger"
                     title="Mark not achieved"
-                    attrs="{'invisible': [('state_achievable', '=', False)]}"
+                    invisible="not state_achievable"
                 />
-                <button name="action_edit" class="oe_read_only" type="object" string="Edit" icon="fa-pencil-square" />
+                <button
+                    name="action_edit"
+                    class="oe_read_only"
+                    type="object"
+                    string="Edit"
+                    icon="fa-pencil-square"
+                />
                 <control>
                     <create string="Add goal" context="{}" />
                 </control>
@@ -280,7 +339,10 @@
                                     />
                                 </button>
                                 <div>
-                                    <div t-if="record.category_id.raw_value" class="text-muted small">
+                                    <div
+                                        t-if="record.category_id.raw_value"
+                                        class="text-muted small"
+                                    >
                                         <field name="category_id" />
                                     </div>
                                     <div class="fw-bold">
@@ -291,10 +353,16 @@
                             <div class="oe_kanban_details">
                                 <ul>
                                     <li>
-                                        <field name="condition_ids" widget="many2many_tags" />
+                                        <field
+                                            name="condition_ids"
+                                            widget="many2many_tags"
+                                        />
                                     </li>
                                     <li t-if="record.observation_type_id.raw_value">
-                                        <label for="observation_id" class="small text-muted me-2">
+                                        <label
+                                            for="observation_id"
+                                            class="small text-muted me-2"
+                                        >
                                             <field name="observation_type_id" />
                                             :
                                         </label>
@@ -312,7 +380,10 @@
                                 class="o_kanban_record_bottom border-top mt-1 pt-1"
                             >
                                 <div class="oe_kanban_bottom_left text-muted small">
-                                    <field name="last_comment_author_id" widget="many2one_avatar" />
+                                    <field
+                                        name="last_comment_author_id"
+                                        widget="many2one_avatar"
+                                    />
                                 </div>
                                 <div class="oe_kanban_bottom_right text-muted small">
                                     <field name="last_comment_date" />
