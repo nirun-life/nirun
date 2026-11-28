@@ -1,5 +1,6 @@
 #  Copyright (c) 2024 NSTDA
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class GoalState(models.Model):
@@ -36,8 +37,7 @@ class GoalState(models.Model):
     fold = fields.Boolean(default=False)
     icon = fields.Char(default="fa-circle")
 
-
-@api.constrains("parent_id")
-def _check_parent_id(self):
-    if not self._check_recursion():
-        raise models.ValidationError(_("Error! You cannot create recursive data."))
+    @api.constrains("parent_id")
+    def _check_parent_id(self):
+        if not self._check_recursion():
+            raise ValidationError(_("Error! You cannot create recursive data."))
