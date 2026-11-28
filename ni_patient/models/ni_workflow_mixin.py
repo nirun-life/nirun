@@ -122,6 +122,7 @@ class EventMixin(models.AbstractModel):
         "ni.workflow.event",
         bypass_search_access=True,
         ondelete="cascade",
+        index=True,
         domain=lambda self: (
             f"[('res_model', '=', '{self._name}'), ('res_id', '=', id)]"
         ),
@@ -190,6 +191,7 @@ class RequestMixin(models.AbstractModel):
         "ni.workflow.request",
         bypass_search_access=True,
         ondelete="cascade",
+        index=True,
         readonly=True,
         domain=lambda self: (
             f"[('res_model', '=', '{self._name}'), ('res_id', '=', id)]"
