@@ -34,7 +34,7 @@ class Encounter(models.Model):
     active_flag_code_ids = fields.Many2many(
         "ni.flag.code",
         compute="_compute_active_flag_code_ids",
-        string="Active Flags",
+        string="Current Flags",
         search="_search_active_flag_code_ids",
     )
     pending_flag_recommendation_count = fields.Integer(

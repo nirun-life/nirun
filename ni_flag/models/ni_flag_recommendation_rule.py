@@ -29,6 +29,7 @@ class FlagRecommendationRule(models.Model):
         "ni_flag_rule_value_code_rel",
         "rule_id",
         "value_code_id",
+        string="Value Codes",
         help="Match when a multi-choice observation includes any of these values.",
     )
     flag_code_id = fields.Many2one("ni.flag.code", required=True, ondelete="restrict")
