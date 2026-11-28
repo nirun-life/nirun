@@ -40,8 +40,12 @@ class Goal(models.Model):
         tracking=True,
     )
     achievement_code = fields.Char(related="achievement_id.code", store=True)
-    achievement_icon = fields.Char(related="achievement_id.icon")
-    achievement_decoration = fields.Selection(related="achievement_id.decoration")
+    achievement_icon = fields.Char(
+        related="achievement_id.icon", string="Achievement Icon"
+    )
+    achievement_decoration = fields.Selection(
+        related="achievement_id.decoration", string="Achievement Decoration"
+    )
     achievement_color = fields.Integer(related="achievement_id.color")
     is_achieved = fields.Boolean(
         default=False, compute="_compute_is_achieved", search="_search_is_achieved"
@@ -56,9 +60,13 @@ class Goal(models.Model):
         group_expand="_expand_state_ids",
     )
     state_achievable = fields.Boolean(related="state_id.achievable")
-    state_achievement_ids = fields.Many2many(related="state_id.achievement_ids")
-    state_decoration = fields.Selection(related="state_id.decoration")
-    state_icon = fields.Char(related="state_id.icon")
+    state_achievement_ids = fields.Many2many(
+        related="state_id.achievement_ids", string="Allowed Achievements"
+    )
+    state_decoration = fields.Selection(
+        related="state_id.decoration", string="State Decoration"
+    )
+    state_icon = fields.Char(related="state_id.icon", string="State Icon")
     last_comment = fields.Html(compute="_compute_last_comment")
     last_comment_author_id = fields.Many2one(
         "res.partner", compute="_compute_last_comment"
@@ -284,8 +292,8 @@ class Goal(models.Model):
                 rec.target_display = False
 
     @api.model
-    def _expand_state_ids(self, states, domain, order):
-        return states.search([], order=order)
+    def _expand_state_ids(self, states, domain):
+        return states.search([])
 
     @api.depends("achievement_id")
     def _compute_is_achieved(self):

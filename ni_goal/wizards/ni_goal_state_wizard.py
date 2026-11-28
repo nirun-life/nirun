@@ -12,7 +12,9 @@ class GoalStateWizard(models.TransientModel):
     state_id = fields.Many2one(
         "ni.goal.state", string="State", required=True, ondelete="restrict"
     )
-    state_achievement_ids = fields.Many2many(related="state_id.achievement_ids")
+    state_achievement_ids = fields.Many2many(
+        related="state_id.achievement_ids", string="Allowed Achievements"
+    )
     achievement_id = fields.Many2one(
         "ni.goal.achievement",
         ondelete="restrict",
