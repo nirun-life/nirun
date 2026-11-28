@@ -1,7 +1,7 @@
 #  Copyright (c) 2024 NSTDA
 import logging
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -106,9 +106,11 @@ class Goal(models.Model):
     )
     target_display = fields.Char(compute="_compute_target_display")
     observation_id = fields.Many2one(
-        "ni.observation", "Latest", compute="_compute_observation"
+        "ni.observation", "Latest", compute="_compute_observation", compute_sudo=True
     )
-    observation_ids = fields.Many2many("ni.observation", compute="_compute_observation")
+    observation_ids = fields.Many2many(
+        "ni.observation", compute="_compute_observation", compute_sudo=True
+    )
     address_observation_id = fields.Many2one(
         "ni.observation",
         "Baseline",
@@ -226,11 +228,11 @@ class Goal(models.Model):
             if obs:
                 rec.target_status = rec._match_target(obs)
             if not rec.address_observation_id:
-                rec.target_alert_message = _(
+                rec.target_alert_message = self.env._(
                     "No baseline measurement has been recorded for this target yet."
                 )
             elif obs and obs == rec.address_observation_id:
-                rec.target_alert_message = _(
+                rec.target_alert_message = self.env._(
                     "No measurement has been recorded since the baseline value yet."
                 )
 
@@ -293,7 +295,7 @@ class Goal(models.Model):
 
     @api.model
     def _expand_state_ids(self, states, domain):
-        return states.search([])
+        return states.browse(states._search([], order=states._order))
 
     @api.depends("achievement_id")
     def _compute_is_achieved(self):
@@ -393,7 +395,7 @@ class Goal(models.Model):
     def _open_state_wizard(self, default_state, default_achievement):
         self.ensure_one()
         return {
-            "name": _("Update Goal"),
+            "name": self.env._("Update Goal"),
             "res_model": "ni.goal.state.wizard",
             "type": "ir.actions.act_window",
             "view_mode": "form",
@@ -418,7 +420,7 @@ class Goal(models.Model):
     def action_state_wizard(self):
         self.ensure_one()
         return {
-            "name": _("Update Goal"),
+            "name": self.env._("Update Goal"),
             "res_model": "ni.goal.state.wizard",
             "type": "ir.actions.act_window",
             "view_mode": "form",
@@ -429,7 +431,7 @@ class Goal(models.Model):
     def action_edit(self):
         self.ensure_one()
         view = {
-            "name": _("Edit"),
+            "name": self.env._("Edit"),
             "res_model": self._name,
             "type": "ir.actions.act_window",
             "target": self.env.context.get("target", "current"),

@@ -1,5 +1,5 @@
 #  Copyright (c) 2026 NSTDA
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 _TERMINAL_STATES = ["completed", "cancelled", "entered-in-error", "rejected"]
 
@@ -30,7 +30,7 @@ class Encounter(models.Model):
     def action_goal(self):
         self.ensure_one()
         return {
-            "name": _("Goal"),
+            "name": self.env._("Goal"),
             "res_model": "ni.goal",
             "type": "ir.actions.act_window",
             "view_mode": "kanban,list,form",
@@ -44,7 +44,7 @@ class Encounter(models.Model):
     def action_new_goal(self):
         self.ensure_one()
         return {
-            "name": _("New Goal"),
+            "name": self.env._("New Goal"),
             "res_model": "ni.goal",
             "type": "ir.actions.act_window",
             "view_mode": "form",

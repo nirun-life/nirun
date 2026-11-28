@@ -18,12 +18,14 @@ class TestGoalKanban(common.TransactionCase):
         )
 
     def test_kanban_shows_every_state(self):
-        groups = self.env["ni.goal"].read_group(
-            [("patient_id", "=", self.patient.id)],
-            ["state_id"],
-            ["state_id"],
+        groups = (
+            self.env["ni.goal"]
+            .with_context(read_group_expand=True)
+            .web_read_group(
+                [("patient_id", "=", self.patient.id)], ["state_id"], ["__count"]
+            )["groups"]
         )
         states = self.env["ni.goal.state"].search([])
         self.assertEqual(len(groups), len(states))
-        counts = {g["state_id"][0]: g["state_id_count"] for g in groups}
+        counts = {g["state_id"][0]: g["__count"] for g in groups}
         self.assertEqual(counts[self.env.ref("ni_goal.goal_state_active").id], 1)
