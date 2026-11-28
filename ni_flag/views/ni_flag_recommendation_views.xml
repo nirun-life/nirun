@@ -12,14 +12,42 @@
                 <field name="patient_id" />
                 <field name="encounter_id" />
                 <field name="source_observation_id" />
-                <filter name="pending" string="Pending" domain="[('state', '=', 'pending')]" />
-                <filter name="accepted" string="Accepted" domain="[('state', '=', 'accepted')]" />
-                <filter name="auto_applied" string="Auto Applied" domain="[('state', '=', 'auto_applied')]" />
-                <filter name="dismissed" string="Dismissed" domain="[('state', '=', 'dismissed')]" />
+                <filter
+                    name="pending"
+                    string="Pending"
+                    domain="[('state', '=', 'pending')]"
+                />
+                <filter
+                    name="accepted"
+                    string="Accepted"
+                    domain="[('state', '=', 'accepted')]"
+                />
+                <filter
+                    name="auto_applied"
+                    string="Auto Applied"
+                    domain="[('state', '=', 'auto_applied')]"
+                />
+                <filter
+                    name="dismissed"
+                    string="Dismissed"
+                    domain="[('state', '=', 'dismissed')]"
+                />
                 <group expand="0" string="Group By">
-                    <filter name="group_flag" string="Flag" context="{'group_by': 'flag_code_id'}" />
-                    <filter name="group_state" string="State" context="{'group_by': 'state'}" />
-                    <filter name="group_rule" string="Rule" context="{'group_by': 'rule_id'}" />
+                    <filter
+                        name="group_flag"
+                        string="Flag"
+                        context="{'group_by': 'flag_code_id'}"
+                    />
+                    <filter
+                        name="group_state"
+                        string="State"
+                        context="{'group_by': 'state'}"
+                    />
+                    <filter
+                        name="group_rule"
+                        string="Rule"
+                        context="{'group_by': 'rule_id'}"
+                    />
                 </group>
             </search>
         </field>
@@ -51,13 +79,13 @@
                         type="object"
                         string="Accept"
                         class="btn-primary"
-                        attrs="{'invisible': [('state', '!=', 'pending')]}"
+                        invisible="state != 'pending'"
                     />
                     <button
                         name="action_dismiss"
                         type="object"
                         string="Dismiss"
-                        attrs="{'invisible': [('state', '!=', 'pending')]}"
+                        invisible="state != 'pending'"
                     />
                     <field name="state" widget="statusbar" readonly="1" />
                 </header>
