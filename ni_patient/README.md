@@ -117,6 +117,12 @@ and requests into a single patient history.
 foreign key without a table scan. The generated name (`<table>_<column>_index`) matches
 the index already on production; do not rename it.
 
+`event_id` on `ni.workflow.event.mixin` and `request_id` on `ni.workflow.request.mixin`
+use `index=True`, so every model that inherits a workflow mixin gets
+`<table>__event_id_index` or `<table>__request_id_index`. Saving a record updates its
+stored related workflow fields, and the ORM then looks the record up by this column;
+without the index that is a table scan.
+
 Since 17.0, `message_main_attachment_id` belongs to `mail.thread.main.attachment`, which
 `ni.patient` and `res.partner` do not inherit, so the 16.0 indexes on that field are not
 declared here.
